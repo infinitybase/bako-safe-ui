@@ -1,103 +1,112 @@
-import { Avatar, HStack, Text, VStack } from '@chakra-ui/react';
-
-import { useNetworks } from '@/modules/network/hooks';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
-import { formatAssetAmount } from '@/utils';
+import { Box, Flex, Icon, Text } from '@chakra-ui/react';
+import { motion } from 'framer-motion';
+import { useState } from 'react';
 
 import { UseTransactionSocket } from '../../hooks';
 import { SimplifiedOperation } from '../../services/simplify-transaction';
+import { DappTransaction } from '.';
 
-interface OperationProps {
+const MotionBox = motion(Box);
+
+type DappTransactionProps = {
+  operation: SimplifiedOperation;
+  isChild?: boolean;
   vault?: UseTransactionSocket['vault'];
-  operation?: SimplifiedOperation;
-}
-
-const formatUsdValue = (amount: string, price?: number) => {
-  if (!price) return '$0.00';
-  const value = parseFloat(amount) * price;
-  return value.toLocaleString('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
 };
 
-const DappTransactionOperation = ({ vault, operation }: OperationProps) => {
-  const { assetsMap, fuelsTokens, tokensUSD } = useWorkspaceContext();
-  const { currentNetwork } = useNetworks();
-  const { to, assetsToFrom, from } = operation ?? {};
-  if (!to || !from || !vault || !operation) return null;
+function DappTransactionOperation({
+  operation,
+  vault,
+  isChild = false,
+}: DappTransactionProps) {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const isGrouped = (operation.operations?.length || 0) > 1;
 
-  // Processa os assets
-  const processedAssets = assetsToFrom?.map((sent) => {
-    const assetInfo = assetsMap?.[sent.assetId] || {
-      name: 'Unknown',
-      symbol: 'UNKNOWN',
-      icon: '',
-      decimals: 18,
-    };
-
-    const amount = formatAssetAmount({
-      fuelsTokens,
-      chainId: currentNetwork.chainId,
-      assetId: sent.assetId,
-      amount: sent.amount,
-    });
-
-    const usdPrice = tokensUSD.data?.[sent.assetId]?.usdAmount;
-    const usdValue = formatUsdValue(amount, usdPrice);
-
-    return {
-      ...assetInfo,
-      amount,
-      usdValue,
-      assetId: sent.assetId,
-    };
-  });
-
-  const bech32Address = vault.address;
-  const isVault = bech32Address === vault?.address;
-  const title = isVault ? vault?.name : 'Unknown';
-  //const primaryAsset = processedAssets?.[0];
-  console.log(operation, processedAssets);
   return (
-    <VStack>
-      <HStack>
-        <Avatar
-          mb={2}
-          name={title}
-          bgColor="grey.950"
-          variant="roundedSquare"
-          boxSize="40px"
-          fontSize="xs"
-          color="white"
-        />
-        <VStack>
-          {' '}
-          <Text
-            textAlign="center"
-            variant="title"
-            fontSize="sm"
-            mb={1}
-            noOfLines={1}
-          >
-            {title}
-          </Text>
-          <Text
-            textAlign="center"
-            variant="description"
-            fontSize="xs"
-            color="grey.250"
-            mb={1}
-            noOfLines={1}
-          >
-            {vault.address}
-          </Text>
-        </VStack>
-      </HStack>
-    </VStack>
-  );
-};
+    <Box w="100%">
+      <Flex p={isChild ? 0 : '2px'} gap="8px" direction="column">
+        <Box
+          w="100%"
+          borderRadius="8px"
+          overflow="hidden"
+          boxShadow="0px 2px 6px -1px rgba(32, 32, 32, 0.1), 0px 0px 0px 1px rgba(32, 32, 32, 0.12)"
+        >
+          <DappTransaction.Operation vault={vault!} operation={operation} />
+        </Box>
+      </Flex>
 
+      {isGrouped && (
+        <>
+          <Flex
+            as="button"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setIsExpanded(!isExpanded);
+            }}
+            align="center"
+            justify="center"
+            w="100%"
+            bg="transparent"
+            border="none"
+            py="8px"
+            cursor="pointer"
+          >
+            <Text
+              display="flex"
+              alignItems="center"
+              gap="8px"
+              color="gray.400"
+              fontSize="sm"
+            >
+              <Box
+                as={Icon}
+                transform={isExpanded ? 'rotate(45deg)' : 'rotate(0deg)'}
+                transition="all 0.2s ease"
+                viewBox="0 0 24 24"
+              >
+                <path fill="currentColor" d="M12 2L12 22M2 12L22 12" />
+              </Box>
+              {isExpanded ? 'Collapse' : 'Expand'}
+              {!isExpanded && (
+                <Text as="span" fontSize="sm" color="gray.500">
+                  (+{operation.operations?.length} operations)
+                </Text>
+              )}
+            </Text>
+          </Flex>
+
+          <MotionBox
+            initial={{ height: 0, opacity: 0 }}
+            animate={{
+              height: isExpanded ? 'auto' : 0,
+              opacity: isExpanded ? 1 : 0,
+            }}
+            transition={{
+              duration: 0.3,
+              ease: 'easeInOut',
+              opacity: { duration: 0.2 },
+            }}
+            display="flex"
+            flexDirection="column"
+            gap="2px"
+            p="2px"
+          >
+            {operation.operations?.map((op, index) => (
+              <Flex
+                key={`${op.type}-${op.from?.address || ''}-${op.to?.address || ''}-${index}`}
+                w="100%"
+                borderRadius="8px"
+                overflow="hidden"
+                boxShadow="0px 2px 6px -1px rgba(32,32,32,0.1), 0px 0px 0px 1px rgba(32,32,32,0.12)"
+              >
+                <DappTransactionOperation operation={op} isChild />
+              </Flex>
+            ))}
+          </MotionBox>
+        </>
+      )}
+    </Box>
+  );
+}
 export { DappTransactionOperation };
