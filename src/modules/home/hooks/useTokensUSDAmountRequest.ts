@@ -13,8 +13,6 @@ export type ITokens = {
 };
 
 const useTokensUSDAmountRequest = () => {
-  // eslint-disable-next-line react-compiler/react-compiler
-  'use no memo';
   const { data, ...query } = useQuery({
     queryKey: ['tokens'],
     queryFn: () => HomeService.getTokensUSDAmount(),

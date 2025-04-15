@@ -14,11 +14,7 @@ if (mode !== 'development') {
 export default defineConfig({
   mode,
   plugins: [
-    react({
-      babel: {
-        plugins: [['babel-plugin-react-compiler', { target: '18' }]], // React 18
-      },
-    }),
+    react(),
     tsconfigPaths(),
     createHtmlPlugin({
       inject: {

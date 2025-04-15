@@ -34,8 +34,6 @@ export type WorkspaceAuthentication = {
 };
 
 const useAuth = (): IUseAuthReturn => {
-  // eslint-disable-next-line react-compiler/react-compiler
-  'use no memo';
   const { infos, isLoading, isFetching, refetch } = useUserInfoRequest();
   const [invalidAccount, setInvalidAccount] = useState(false);
   const { fuel } = useFuel();

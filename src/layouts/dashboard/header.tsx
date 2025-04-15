@@ -75,7 +75,6 @@ const TopBarItem = chakra(SpacedBox, {
 });
 
 const UserBox = () => {
-  'use no memo';
   const {
     authDetails,
     screenSizes: {
