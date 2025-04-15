@@ -40,12 +40,14 @@ interface UseBakoSafeCreateTransactionParams {
   vault: Vault;
   assetsMap: AssetMap;
   onSuccess: (result: TransactionWithVault) => void;
-  onError: () => void;
+  onError: (error: Error) => void;
 }
 
 const useBakoSafeCreateTransaction = ({
   vault,
   assetsMap,
+  onSuccess,
+  onError,
   ...options
 }: UseBakoSafeCreateTransactionParams) => {
   return useBakoSafeMutation(
@@ -58,16 +60,24 @@ const useBakoSafeCreateTransaction = ({
 
           return {
             ...asset,
-            amount: bn.parseUnits(asset.amount, units).format(),
+            amount: bn
+              .parseUnits(asset.amount.replace(/,/g, ''), units)
+              .format(),
           };
         }),
       });
+
       const transaction = await TransactionService.getByHash(hashTxId, [
         TransactionStatus.AWAIT_REQUIREMENTS,
       ]);
+
       return transaction;
     },
-    options,
+    {
+      onSuccess,
+      onError,
+      ...options,
+    },
   );
 };
 

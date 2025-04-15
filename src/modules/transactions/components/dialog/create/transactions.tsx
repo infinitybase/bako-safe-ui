@@ -13,7 +13,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { Address, bn, isB256 } from 'fuels';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Controller } from 'react-hook-form';
 
 import { AmountInput, Autocomplete, UserAddIcon } from '@/components';
@@ -321,6 +321,49 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
   //   return 450;
   // };
 
+  const [ethAssetId, setEthAssetId] = useState<string | undefined>();
+
+  useEffect(() => {
+    const fetchEthAssetId = async () => {
+      const provider = await providerInstance;
+      const baseAssetId = await provider.getBaseAssetId();
+      setEthAssetId(baseAssetId);
+    };
+
+    fetchEthAssetId();
+  }, [providerInstance]);
+
+  const { hasEthForFee } = useMemo(() => {
+    if (!ethAssetId) return { hasEthForFee: false };
+
+    let feeAlreadyAdded = false;
+
+    const used = transactions.fields.reduce((acc, _, index) => {
+      const transaction = form.watch(`transactions.${index}`);
+      if (transaction.asset !== ethAssetId) return acc;
+
+      const amount = Number(transaction.amount || 0);
+      let fee = 0;
+
+      if (!feeAlreadyAdded) {
+        fee = Number(transaction.fee || 0);
+        feeAlreadyAdded = true;
+      }
+
+      return acc + amount + fee;
+    }, 0);
+
+    const asset = assets.assets?.find((a) => a.assetId === ethAssetId);
+    const totalEth = asset?.amount ? bn(asset.amount).formatUnits() : 0;
+
+    const hasEnough = Number(totalEth) >= Number(used.toFixed(9));
+
+    return {
+      totalEthUsed: used,
+      hasEthForFee: hasEnough,
+    };
+  }, [transactions.fields, form, assets.assets, ethAssetId]);
+
   return (
     <Accordion
       index={accordion.index}
@@ -349,6 +392,7 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
         if (resolvedLabel?.startsWith('@')) {
           resolvedLabel = resolvedLabel?.split(' ')[0];
         }
+
         const hasEmptyField = Object.entries(transaction)
           .filter(([key]) => key !== 'resolvedLabel')
           .some(([, value]) => value === '');
@@ -358,15 +402,19 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
 
         const isDisabled =
           hasEmptyField || fieldState.invalid || isCurrentAmountZero;
+
         const contact = nicks.find(
           (nick) => nick.user.address === transaction.value,
         )?.nickname;
+
         const resolverName = getResolverName(transaction.value);
         let recipientLabel =
           contact ?? resolverName ?? AddressUtils.format(transaction.value);
+
         if (resolvedLabel?.startsWith('@')) {
           recipientLabel = resolvedLabel;
         }
+
         const isNFT = isNFTAsset(transaction.asset);
 
         return (
@@ -374,7 +422,13 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
             key={field.id}
             mb={6}
             borderWidth={1}
-            borderColor="grey.925"
+            borderColor={
+              !hasEthForFee &&
+              transaction.asset === ethAssetId &&
+              !isCurrentAmountZero
+                ? 'red.500'
+                : 'grey.925'
+            }
             borderRadius={10}
             backgroundColor="dark.950"
           >
@@ -424,40 +478,51 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
           </AccordionItem>
         );
       })}
-
-      <Center mt={6}>
-        <Tooltip
-          label="All available assets have been used."
-          isDisabled={!form.allAssetsUsed}
-          hasArrow
-          placement="top"
-        >
-          <Button
+      <Center mt={6} flexDirection="column" w="full">
+        {!hasEthForFee ? (
+          <Text
+            color="error.500"
+            fontSize="sm"
             w="full"
-            leftIcon={<UserAddIcon />}
-            variant="primary"
-            bgColor="grey.200"
-            border="none"
-            _hover={{
-              opacity: 0.8,
-            }}
-            _disabled={{
-              cursor: 'not-allowed',
-              opacity: 0.6,
-            }}
-            isDisabled={form.allAssetsUsed}
-            onClick={() => {
-              transactions.append({
-                amount: '',
-                asset: NativeAssetId,
-                value: '',
-              });
-              delay(() => accordion.open(transactions.fields.length), 100);
-            }}
+            textAlign="center"
+            mt={2}
           >
-            Add more recipients
-          </Button>
-        </Tooltip>
+            Insufficient funds for gas
+          </Text>
+        ) : (
+          <Tooltip
+            label="All available assets have been used."
+            isDisabled={!form.allAssetsUsed}
+            hasArrow
+            placement="top"
+          >
+            <Button
+              w="full"
+              leftIcon={<UserAddIcon />}
+              variant="primary"
+              bgColor="grey.200"
+              border="none"
+              _hover={{
+                opacity: 0.8,
+              }}
+              _disabled={{
+                cursor: 'not-allowed',
+                opacity: 0.6,
+              }}
+              isDisabled={form.allAssetsUsed}
+              onClick={() => {
+                transactions.append({
+                  amount: '',
+                  asset: NativeAssetId,
+                  value: '',
+                });
+                delay(() => accordion.open(transactions.fields.length), 100);
+              }}
+            >
+              Add more recipients
+            </Button>
+          </Tooltip>
+        )}
       </Center>
     </Accordion>
   );
