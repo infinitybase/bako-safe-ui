@@ -17,12 +17,7 @@ import { useFuel } from '@fuels/react';
 import { useEffect, useState } from 'react';
 import { RiLogoutBoxRLine } from 'react-icons/ri';
 
-import {
-  BakoLoading,
-  CustomSkeleton,
-  EmptyBox,
-  LineCloseIcon,
-} from '@/components';
+import { CustomSkeleton, EmptyBox, LineCloseIcon } from '@/components';
 import { Container } from '@/layouts/dapp/container';
 import { useQueryParams } from '@/modules/auth';
 import { TypeUser } from '@/modules/auth/services';
@@ -39,7 +34,6 @@ import { useAuthSocket, useVerifyBrowserType } from '../hooks';
 const VaultConnector = () => {
   const { name, origin, sessionId, request_id } = useQueryParams();
   const [dynamicHeight, setDynamicHeight] = useState(0);
-  const [connectingManually, setConnectingManually] = useState(false);
 
   const {
     authDetails: { userInfos, handlers },
@@ -97,10 +91,6 @@ const VaultConnector = () => {
     const dividedBy = clientWindowHeight >= 750 ? 1.64 : 1.8;
     setDynamicHeight(clientWindowHeight / dividedBy);
   }, []);
-
-  if (isLoading || (send.isPending && !connectingManually)) {
-    return <BakoLoading />;
-  }
 
   const logout = async () => {
     try {
@@ -355,22 +345,14 @@ const VaultConnector = () => {
                 }
                 //leftIcon={<RiLink size={22} />}
                 onClick={() => {
-                  setConnectingManually(true);
-                  send.mutate(
-                    {
-                      name: name!,
-                      origin: origin!,
-                      sessionId: sessionId!,
-                      request_id: request_id!,
-                      vaultId: selectedVaultId,
-                      userAddress: userInfos.address,
-                    },
-                    {
-                      onError: () => {
-                        setConnectingManually(false);
-                      },
-                    },
-                  );
+                  send.mutate({
+                    name: name!,
+                    origin: origin!,
+                    sessionId: sessionId!,
+                    request_id: request_id!,
+                    vaultId: selectedVaultId,
+                    userAddress: userInfos.address,
+                  });
                 }}
                 isLoading={send.isPending}
               >

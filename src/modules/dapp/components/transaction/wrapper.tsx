@@ -3,7 +3,6 @@ import { ReactNode, useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 
 import {
-  BakoLoading,
   CustomSkeleton,
   Dialog,
   LineCloseIcon,
@@ -64,10 +63,6 @@ const DappTransactionWrapper = (props: DappTransactionWrapperProps) => {
   useEffect(() => {
     setClosePopover(inView.inView);
   }, [inView.inView]);
-
-  if (!transactionSummary) {
-    return <BakoLoading />;
-  }
 
   return (
     <Container>
