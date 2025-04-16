@@ -8,6 +8,7 @@ import {
 } from '@chakra-ui/react';
 
 import { Nullable } from '@/modules/core';
+import { colors } from '@/themes/colors';
 
 interface DappRequestingFromProps extends CardProps {
   name: Nullable<string>;
@@ -20,7 +21,7 @@ const DappRequestingFrom = (props: DappRequestingFromProps) => {
   return (
     <Card
       {...rest}
-      bgColor="#201F1D"
+      bgColor={colors.connector.backgroundColor}
       borderRadius={8}
       p={2}
       borderColor="grey.950"

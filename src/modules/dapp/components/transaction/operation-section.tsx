@@ -3,6 +3,8 @@ import { motion } from 'framer-motion';
 
 const MotionBox = motion(Box);
 
+import { colors } from '@/themes/colors';
+
 import { UseTransactionSocket } from '../../hooks';
 import { SimplifiedOperation } from '../../services/simplify-transaction';
 import { DappTransaction } from '.';
@@ -28,7 +30,7 @@ export function DappTransactionOperationSection({
 
   return (
     <Box
-      bg="#201F1D"
+      bg={colors.connector.backgroundColor}
       borderRadius="8px"
       mb="8px"
       overflow="hidden"
