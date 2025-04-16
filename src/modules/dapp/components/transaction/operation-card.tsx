@@ -14,6 +14,7 @@ import { HiOutlineDocumentText } from 'react-icons/hi2';
 import { MdOutlineFileCopy } from 'react-icons/md';
 import { PiArrowCircleDownLight } from 'react-icons/pi';
 
+import { AddressUtils } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { UseTransactionSocket } from '../../hooks';
@@ -27,18 +28,13 @@ type DappTransactionCardProps = {
   vault?: UseTransactionSocket['vault'];
 };
 
-function shortAddress(addr: string) {
-  if (!addr) return '';
-  return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
-}
-
-export function DappTransactionOperationCard({
+function DappTransactionOperationCard({
   operation,
   vault,
 }: DappTransactionCardProps) {
   const { tokensUSD, assetsMap } = useWorkspaceContext();
   const { onCopy, hasCopied } = useClipboard(vault?.address || '');
-
+  console.log(assetsMap);
   const getAssetPrice = (assetId: string) => {
     return tokensUSD.data?.[assetId]?.usdAmount ?? 0;
   };
@@ -71,36 +67,71 @@ export function DappTransactionOperationCard({
 
   return (
     <VStack spacing="2" align="stretch" w="100%" p={2}>
-      <Flex align="center" gap="10px" pb="2" pl="1">
-        <Avatar
-          name={vault?.name ?? ''}
-          color="gray.100"
-          bgColor="gray.700"
-          boxSize="40px"
-          borderRadius="4px"
-          fontSize="xs"
-        />
-        <Box>
-          <Text fontSize="sm" fontWeight="semibold" color="white">
-            {vault?.name ?? 'Personal Vault'}
-          </Text>
-          <Flex align="center" gap="1">
-            <Text fontSize="xs" color="gray.400">
-              {shortAddress(vault?.address || '')}
+      {operation.isFromCurrentAccount ? (
+        <Flex align="center" gap="10px" pb="2" pl="1">
+          <Avatar
+            name={vault?.name}
+            color="gray.100"
+            bgColor="gray.700"
+            boxSize="40px"
+            borderRadius="4px"
+            fontSize="xs"
+          />
+          <Box>
+            <Text fontSize="sm" fontWeight="semibold" color="white">
+              {vault?.name}
             </Text>
-            <Tooltip label={hasCopied ? 'Copied!' : 'Copy'} closeOnClick>
-              <IconButton
-                icon={<MdOutlineFileCopy />}
-                onClick={onCopy}
-                size="xs"
-                variant="ghost"
-                aria-label="Copy address"
-                color="gray.400"
-              />
-            </Tooltip>
-          </Flex>
-        </Box>
-      </Flex>
+            <Flex align="center" gap="1">
+              <Text fontSize="xs" color="gray.400">
+                {AddressUtils.format(operation.from.address, 6)}
+              </Text>
+              <Tooltip label={hasCopied ? 'Copied!' : 'Copy'} closeOnClick>
+                <IconButton
+                  icon={<MdOutlineFileCopy />}
+                  onClick={onCopy}
+                  size="xs"
+                  variant="ghost"
+                  aria-label="Copy address"
+                  color="gray.400"
+                />
+              </Tooltip>
+            </Flex>
+          </Box>
+        </Flex>
+      ) : (
+        <Flex align="center" gap="10px" pt="2" pl="1">
+          <Avatar
+            name={'Other vault'}
+            color="gray.100"
+            bgColor="gray.700"
+            boxSize="40px"
+            borderRadius="4px"
+            fontSize="xs"
+          />
+          <Box>
+            <Text fontSize="sm" fontWeight="semibold" color="white">
+              Other vault
+            </Text>
+            <Flex align="center" gap="1">
+              <Text fontSize="xs" color="gray.400">
+                {AddressUtils.format(operation.from.address, 6)}
+              </Text>
+              <Tooltip label="Copy" closeOnClick>
+                <IconButton
+                  icon={<MdOutlineFileCopy />}
+                  onClick={() =>
+                    navigator.clipboard.writeText(operation.from.address)
+                  }
+                  size="xs"
+                  variant="ghost"
+                  aria-label="Copy address"
+                  color="gray.400"
+                />
+              </Tooltip>
+            </Flex>
+          </Box>
+        </Flex>
+      )}
 
       <Box position="relative" ml="20px" pl="4">
         <Box
@@ -126,59 +157,95 @@ export function DappTransactionOperationCard({
             </Text>
           </Flex>
 
-          <Flex align="center" gap="2" pt="1">
-            {asset?.icon && (
-              <Box boxSize="20px">
-                <img
-                  src={asset.icon}
-                  alt="Asset icon"
-                  style={{ width: '100%', height: '100%' }}
-                />
-              </Box>
-            )}
-            <Text fontSize="sm" color="white" fontWeight="medium">
-              {bn(operation?.assets?.[0]?.amount || 0).formatUnits()}{' '}
-              {asset?.slug}
-            </Text>
-            <Text fontSize="sm" color="gray.400" fontWeight="medium">
-              ~ {formatted}
-            </Text>
-          </Flex>
+          {!isContract && (
+            <Flex align="center" gap="2" pt="1">
+              {asset?.icon && (
+                <Box boxSize="20px">
+                  <img
+                    src={asset.icon}
+                    alt="Asset icon"
+                    style={{ width: '100%', height: '100%' }}
+                  />
+                </Box>
+              )}
+              <Text fontSize="sm" color="white" fontWeight="medium">
+                {bn(operation?.assets?.[0]?.amount || 0).formatUnits()}{' '}
+                {asset?.slug}
+              </Text>
+              <Text fontSize="sm" color="gray.400" fontWeight="medium">
+                ~ {formatted}
+              </Text>
+            </Flex>
+          )}
         </VStack>
       </Box>
 
-      <Flex align="center" gap="10px" pt="2" pl="1">
-        <Avatar
-          name={'Other vault'}
-          color="gray.100"
-          bgColor="gray.700"
-          boxSize="40px"
-          borderRadius="4px"
-          fontSize="xs"
-        />
-        <Box>
-          <Text fontSize="sm" fontWeight="semibold" color="white">
-            Other vault
-          </Text>
-          <Flex align="center" gap="1">
-            <Text fontSize="xs" color="gray.400">
-              {shortAddress(operation.to.address)}
+      {operation.isToCurrentAccount ? (
+        <Flex align="center" gap="10px" pb="2" pl="1">
+          <Avatar
+            name={vault?.name}
+            color="gray.100"
+            bgColor="gray.700"
+            boxSize="40px"
+            borderRadius="4px"
+            fontSize="xs"
+          />
+          <Box>
+            <Text fontSize="sm" fontWeight="semibold" color="white">
+              {vault?.name}
             </Text>
-            <Tooltip label="Copy" closeOnClick>
-              <IconButton
-                icon={<MdOutlineFileCopy />}
-                onClick={() =>
-                  navigator.clipboard.writeText(operation.to.address)
-                }
-                size="xs"
-                variant="ghost"
-                aria-label="Copy address"
-                color="gray.400"
-              />
-            </Tooltip>
-          </Flex>
-        </Box>
-      </Flex>
+            <Flex align="center" gap="1">
+              <Text fontSize="xs" color="gray.400">
+                {AddressUtils.format(operation.to.address, 6)}
+              </Text>
+              <Tooltip label={hasCopied ? 'Copied!' : 'Copy'} closeOnClick>
+                <IconButton
+                  icon={<MdOutlineFileCopy />}
+                  onClick={onCopy}
+                  size="xs"
+                  variant="ghost"
+                  aria-label="Copy address"
+                  color="gray.400"
+                />
+              </Tooltip>
+            </Flex>
+          </Box>
+        </Flex>
+      ) : (
+        <Flex align="center" gap="10px" pt="2" pl="1">
+          <Avatar
+            name={'Other vault'}
+            color="gray.100"
+            bgColor="gray.700"
+            boxSize="40px"
+            borderRadius="4px"
+            fontSize="xs"
+          />
+          <Box>
+            <Text fontSize="sm" fontWeight="semibold" color="white">
+              Other vault
+            </Text>
+            <Flex align="center" gap="1">
+              <Text fontSize="xs" color="gray.400">
+                {AddressUtils.format(operation.to.address, 6)}
+              </Text>
+              <Tooltip label="Copy" closeOnClick>
+                <IconButton
+                  icon={<MdOutlineFileCopy />}
+                  onClick={() =>
+                    navigator.clipboard.writeText(operation.to.address)
+                  }
+                  size="xs"
+                  variant="ghost"
+                  aria-label="Copy address"
+                  color="gray.400"
+                />
+              </Tooltip>
+            </Flex>
+          </Box>
+        </Flex>
+      )}
     </VStack>
   );
 }
+export { DappTransactionOperationCard };

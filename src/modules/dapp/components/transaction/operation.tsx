@@ -1,10 +1,11 @@
+import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons';
 import { Box, Flex, Icon, Text } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 
 import { UseTransactionSocket } from '../../hooks';
 import { SimplifiedOperation } from '../../services/simplify-transaction';
-import { DappTransactionOperationCard } from './operation-card';
+import { DappTransaction } from '.';
 
 const MotionBox = motion(Box);
 
@@ -31,7 +32,7 @@ function DappTransactionOperation({
           overflow="hidden"
           boxShadow="0px 2px 6px -1px rgba(32, 32, 32, 0.1), 0px 0px 0px 1px rgba(32, 32, 32, 0.12)"
         >
-          <DappTransactionOperationCard vault={vault!} operation={operation} />
+          <DappTransaction.Card vault={vault!} operation={operation} />
         </Box>
       </Flex>
 
@@ -45,7 +46,7 @@ function DappTransactionOperation({
               setIsExpanded(!isExpanded);
             }}
             align="center"
-            justify="center"
+            justify="flex-start"
             w="100%"
             bg="transparent"
             border="none"
@@ -67,7 +68,14 @@ function DappTransactionOperation({
               >
                 <path fill="currentColor" d="M12 2L12 22M2 12L22 12" />
               </Box>
-              {isExpanded ? 'Collapse' : 'Expand'}
+              <Flex align="center" gap="2">
+                {isExpanded ? (
+                  <ChevronUpIcon boxSize="4" />
+                ) : (
+                  <ChevronDownIcon boxSize="4" />
+                )}
+                <Text>{isExpanded ? 'Collapse' : 'Expand'}</Text>
+              </Flex>
               {!isExpanded && (
                 <Text as="span" fontSize="sm" color="gray.500">
                   (+{operation.operations?.length} operations)
@@ -100,7 +108,11 @@ function DappTransactionOperation({
                 overflow="hidden"
                 boxShadow="0px 2px 6px -1px rgba(32,32,32,0.1), 0px 0px 0px 1px rgba(32,32,32,0.12)"
               >
-                <DappTransactionOperation operation={op} isChild />
+                <DappTransactionOperation
+                  operation={op}
+                  vault={vault!}
+                  isChild
+                />
               </Flex>
             ))}
           </MotionBox>

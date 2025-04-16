@@ -29,11 +29,13 @@ export function DappTransactionOperationSection({
 
   return (
     <Box
-      bg="#201f1d"
+      bg="dark.200"
       borderRadius="10px"
       mb="8px"
       overflow="hidden"
       color="white"
+      borderColor="grey.950"
+      borderWidth="1px"
       w="100%"
     >
       {hasTitle && (
@@ -53,7 +55,7 @@ export function DappTransactionOperationSection({
             <Text
               fontSize="13px"
               letterSpacing="-0.01em"
-              color="#646464"
+              color="white"
               fontWeight="500"
             >
               {title}
@@ -87,7 +89,7 @@ export function DappTransactionOperationSection({
             display="flex"
             cursor="default"
             w="100%"
-            bg="#201f1d"
+            bg="dark.200"
             px="16px"
             alignItems="center"
             border="none"

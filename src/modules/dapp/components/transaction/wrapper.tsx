@@ -166,7 +166,7 @@ const DappTransactionWrapper = (props: DappTransactionWrapperProps) => {
         left="50%"
         transform="translateX(-50%)"
         w="full"
-        maxW={404}
+        maxW={382}
         px={4}
         pt={4}
         pb={6}
