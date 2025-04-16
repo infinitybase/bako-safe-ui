@@ -1,5 +1,20 @@
-import { Avatar, Box, Flex, Icon, Text, VStack } from '@chakra-ui/react';
-import { MdOutlineContacts, MdOutlineSend } from 'react-icons/md';
+import {
+  Avatar,
+  Box,
+  Flex,
+  Icon,
+  IconButton,
+  Text,
+  Tooltip,
+  useClipboard,
+  VStack,
+} from '@chakra-ui/react';
+import { bn } from 'fuels';
+import { HiOutlineDocumentText } from 'react-icons/hi2';
+import { MdOutlineFileCopy } from 'react-icons/md';
+import { PiArrowCircleDownLight } from 'react-icons/pi';
+
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { UseTransactionSocket } from '../../hooks';
 import {
@@ -12,105 +27,156 @@ type DappTransactionCardProps = {
   vault?: UseTransactionSocket['vault'];
 };
 
+function shortAddress(addr: string) {
+  if (!addr) return '';
+  return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
+}
+
 export function DappTransactionOperationCard({
   operation,
   vault,
 }: DappTransactionCardProps) {
+  const { tokensUSD, assetsMap } = useWorkspaceContext();
+  const { onCopy, hasCopied } = useClipboard(vault?.address || '');
+
+  const getAssetPrice = (assetId: string) => {
+    return tokensUSD.data?.[assetId]?.usdAmount ?? 0;
+  };
+
+  const asset = Object.values(assetsMap).find(
+    (a) => a.assetId === operation?.assets?.[0]?.assetId,
+  );
+
+  const formatUsdEstimate = (amount: string, assetId: string) => {
+    if (!amount || !assetId) return '$0.00';
+    const price = getAssetPrice(assetId);
+    const estimated = parseFloat(amount) * price;
+    return estimated.toLocaleString('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 3,
+    });
+  };
+
+  const formatted =
+    operation.assets && operation.assets[0]
+      ? formatUsdEstimate(
+          bn(operation.assets[0].amount).formatUnits(),
+          operation.assets[0].assetId,
+        )
+      : '$0.00';
+
   const isContract = operation.type === TxCategory.CONTRACTCALL;
-  const isTransfer = operation.type === TxCategory.SEND;
-  console.log(isContract, isTransfer, vault, operation);
+
   return (
-    <VStack spacing="0" align="stretch" w="100%">
-      {/* Vault 1 */}
+    <VStack spacing="2" align="stretch" w="100%" p={2}>
       <Flex align="center" gap="10px" pb="2" pl="1">
-        <Box
-          bg="gray.700"
-          color="white"
-          fontWeight="bold"
+        <Avatar
+          name={vault?.name ?? ''}
+          color="gray.100"
+          bgColor="gray.700"
+          boxSize="40px"
+          borderRadius="4px"
           fontSize="xs"
-          px="2"
-          py="1"
-          borderRadius="md"
-        >
-          PV
-        </Box>
+        />
         <Box>
-          <Text fontSize="sm" fontWeight="semibold">
-            Personal Vault
+          <Text fontSize="sm" fontWeight="semibold" color="white">
+            {vault?.name ?? 'Personal Vault'}
           </Text>
-          <Text fontSize="xs" color="gray.500">
-            0xfu...2928
-          </Text>
+          <Flex align="center" gap="1">
+            <Text fontSize="xs" color="gray.400">
+              {shortAddress(vault?.address || '')}
+            </Text>
+            <Tooltip label={hasCopied ? 'Copied!' : 'Copy'} closeOnClick>
+              <IconButton
+                icon={<MdOutlineFileCopy />}
+                onClick={onCopy}
+                size="xs"
+                variant="ghost"
+                aria-label="Copy address"
+                color="gray.400"
+              />
+            </Tooltip>
+          </Flex>
         </Box>
       </Flex>
 
-      {/* Operation 1 - Calling contract */}
-      <Flex ml="18px" pl="9px" borderLeft="2px solid" borderColor="gray.500">
-        <VStack spacing="0" align="flex-start">
-          <Flex align="center" gap="8px" py="1">
-            <Icon as={MdOutlineContacts} color="yellow.500" boxSize="5" />
+      <Box position="relative" ml="20px" pl="4">
+        <Box
+          position="absolute"
+          top="-3"
+          bottom="-3"
+          left="3px"
+          width="2px"
+          bg="gray.600"
+          zIndex="0"
+        />
+        <VStack spacing="1" align="flex-start" position="relative">
+          <Flex align="center" gap="2">
+            <Icon
+              as={isContract ? HiOutlineDocumentText : PiArrowCircleDownLight}
+              color="orange.400"
+              boxSize="20px"
+              borderRadius="full"
+              filter="drop-shadow(0 0 1px rgba(0,0,0,0.2))"
+            />
             <Text fontSize="sm" color="orange.400" fontWeight="medium">
-              Calling contract
+              {isContract ? 'Calling contract' : 'Sending funds'}
             </Text>
           </Flex>
-          <Flex align="center" gap="8px" pb="3">
-            <Text fontSize="sm" color="blue.400" fontWeight="medium">
-              ⧫ 0.0458 ETH ~ $175.43
+
+          <Flex align="center" gap="2" pt="1">
+            {asset?.icon && (
+              <Box boxSize="20px">
+                <img
+                  src={asset.icon}
+                  alt="Asset icon"
+                  style={{ width: '100%', height: '100%' }}
+                />
+              </Box>
+            )}
+            <Text fontSize="sm" color="white" fontWeight="medium">
+              {bn(operation?.assets?.[0]?.amount || 0).formatUnits()}{' '}
+              {asset?.slug}
+            </Text>
+            <Text fontSize="sm" color="gray.400" fontWeight="medium">
+              ~ {formatted}
             </Text>
           </Flex>
         </VStack>
-      </Flex>
+      </Box>
 
-      {/* Middle entity */}
-      <Flex align="center" gap="10px" pb="2" pl="1" pt="1">
-        <Avatar bg="green.500" name="Mira V1 Core" size="sm" />
-        <Box>
-          <Text fontSize="sm" fontWeight="semibold">
-            Mira V1 Core
-          </Text>
-          <Text fontSize="xs" color="gray.500">
-            0xfu...2928
-          </Text>
-        </Box>
-      </Flex>
-
-      {/* Operation 2 - Sending funds */}
-      <Flex ml="18px" pl="9px" borderLeft="2px solid" borderColor="gray.500">
-        <VStack spacing="0" align="flex-start">
-          <Flex align="center" gap="8px" py="1">
-            <Icon as={MdOutlineSend} color="yellow.500" boxSize="5" />
-            <Text fontSize="sm" color="orange.400" fontWeight="medium">
-              Sending funds
-            </Text>
-          </Flex>
-          <Flex align="center" gap="8px" pb="3">
-            <Text fontSize="sm" color="blue.400" fontWeight="medium">
-              ⧫ 0.0457 ~ $173.87
-            </Text>
-          </Flex>
-        </VStack>
-      </Flex>
-
-      {/* Vault 2 */}
       <Flex align="center" gap="10px" pt="2" pl="1">
-        <Box
-          bg="gray.700"
-          color="white"
-          fontWeight="bold"
+        <Avatar
+          name={'Other vault'}
+          color="gray.100"
+          bgColor="gray.700"
+          boxSize="40px"
+          borderRadius="4px"
           fontSize="xs"
-          px="2"
-          py="1"
-          borderRadius="md"
-        >
-          OV
-        </Box>
+        />
         <Box>
-          <Text fontSize="sm" fontWeight="semibold">
+          <Text fontSize="sm" fontWeight="semibold" color="white">
             Other vault
           </Text>
-          <Text fontSize="xs" color="gray.500">
-            0xfu...7894
-          </Text>
+          <Flex align="center" gap="1">
+            <Text fontSize="xs" color="gray.400">
+              {shortAddress(operation.to.address)}
+            </Text>
+            <Tooltip label="Copy" closeOnClick>
+              <IconButton
+                icon={<MdOutlineFileCopy />}
+                onClick={() =>
+                  navigator.clipboard.writeText(operation.to.address)
+                }
+                size="xs"
+                variant="ghost"
+                aria-label="Copy address"
+                color="gray.400"
+              />
+            </Tooltip>
+          </Flex>
         </Box>
       </Flex>
     </VStack>
