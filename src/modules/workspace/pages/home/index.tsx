@@ -72,6 +72,7 @@ const WorkspacePage = () => {
       workspaceVaults: { vaultsMax, extraCount },
     },
     screenSizes: { isMobile },
+    tokensUSD,
   } = useWorkspaceContext();
 
   const recentVaults = latestPredicates.data?.predicates?.data;
@@ -401,6 +402,7 @@ const WorkspacePage = () => {
                         viewAllRedirect={Pages.balanceWorkspace({
                           workspaceId,
                         })}
+                        tokensUSD={tokensUSD.data}
                       />
                     </HStack>
                   )}
