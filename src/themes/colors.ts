@@ -84,6 +84,7 @@ const colors = {
     'transaction-card-hover': 'rgba(84, 76, 76, 0.25)',
     'transaction-border': '#35302F',
   },
+  overlay: '#151413A6',
   connector: {
     overlay: '#151413A6',
     avatarColor: '#AAA6A1',
