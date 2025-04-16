@@ -10,9 +10,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { bn } from 'fuels';
-import { HiOutlineDocumentText } from 'react-icons/hi2';
-import { MdOutlineFileCopy } from 'react-icons/md';
-import { PiArrowCircleDownLight } from 'react-icons/pi';
+import { PiArrowCircleDownLight, PiCopyThin } from 'react-icons/pi';
 
 import { AddressUtils } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
@@ -34,7 +32,7 @@ function DappTransactionOperationCard({
 }: DappTransactionCardProps) {
   const { tokensUSD, assetsMap } = useWorkspaceContext();
   const { onCopy, hasCopied } = useClipboard(vault?.address || '');
-  console.log(assetsMap);
+
   const getAssetPrice = (assetId: string) => {
     return tokensUSD.data?.[assetId]?.usdAmount ?? 0;
   };
@@ -61,38 +59,51 @@ function DappTransactionOperationCard({
           bn(operation.assets[0].amount).formatUnits(),
           operation.assets[0].assetId,
         )
-      : '$0.00';
+      : null;
 
   const isContract = operation.type === TxCategory.CONTRACTCALL;
 
+  const avatarColor = '#AAA6A1';
+  const avatarBg = '#353230';
+  const addressColor = '#AAA6A1';
+  const nameColor = 'white';
+  const iconColor = '#F5A623';
+  const textColor = '#CFCCC9';
+  const usdColor = '#868079';
+  const lineColor = '#353230';
+
   return (
-    <VStack spacing="2" align="stretch" w="100%" p={2}>
+    <VStack spacing="8" align="stretch" w="100%" p={2}>
       {operation.isFromCurrentAccount ? (
         <Flex align="center" gap="10px" pb="2" pl="1">
           <Avatar
             name={vault?.name}
-            color="gray.100"
-            bgColor="gray.700"
+            color={avatarColor}
+            bgColor={avatarBg}
             boxSize="40px"
             borderRadius="4px"
             fontSize="xs"
+            zIndex={1}
           />
-          <Box>
-            <Text fontSize="sm" fontWeight="semibold" color="white">
+          <Box pl={2}>
+            <Text fontSize="sm" fontWeight="semibold" color={nameColor}>
               {vault?.name}
             </Text>
             <Flex align="center" gap="1">
-              <Text fontSize="xs" color="gray.400">
+              <Text fontSize="xs" color={addressColor}>
                 {AddressUtils.format(operation.from.address, 6)}
               </Text>
               <Tooltip label={hasCopied ? 'Copied!' : 'Copy'} closeOnClick>
                 <IconButton
-                  icon={<MdOutlineFileCopy />}
+                  icon={<PiCopyThin />}
                   onClick={onCopy}
                   size="xs"
                   variant="ghost"
                   aria-label="Copy address"
-                  color="gray.400"
+                  color={addressColor}
+                  _hover={{ background: 'transparent' }}
+                  _active={{ background: 'transparent' }}
+                  _focus={{ boxShadow: 'none' }}
                 />
               </Tooltip>
             </Flex>
@@ -102,30 +113,34 @@ function DappTransactionOperationCard({
         <Flex align="center" gap="10px" pt="2" pl="1">
           <Avatar
             name={'Other vault'}
-            color="gray.100"
-            bgColor="gray.700"
+            color={avatarColor}
+            bgColor={avatarBg}
             boxSize="40px"
             borderRadius="4px"
             fontSize="xs"
+            zIndex={1}
           />
-          <Box>
-            <Text fontSize="sm" fontWeight="semibold" color="white">
+          <Box pl={2}>
+            <Text fontSize="sm" fontWeight="semibold" color={nameColor}>
               Other vault
             </Text>
             <Flex align="center" gap="1">
-              <Text fontSize="xs" color="gray.400">
+              <Text fontSize="xs" color={addressColor}>
                 {AddressUtils.format(operation.from.address, 6)}
               </Text>
               <Tooltip label="Copy" closeOnClick>
                 <IconButton
-                  icon={<MdOutlineFileCopy />}
+                  icon={<PiCopyThin />}
                   onClick={() =>
                     navigator.clipboard.writeText(operation.from.address)
                   }
                   size="xs"
                   variant="ghost"
                   aria-label="Copy address"
-                  color="gray.400"
+                  color={addressColor}
+                  _hover={{ background: 'transparent' }}
+                  _active={{ background: 'transparent' }}
+                  _focus={{ boxShadow: 'none' }}
                 />
               </Tooltip>
             </Flex>
@@ -136,45 +151,62 @@ function DappTransactionOperationCard({
       <Box position="relative" ml="20px" pl="4">
         <Box
           position="absolute"
-          top="-3"
-          bottom="-3"
+          top="-50px"
+          bottom="-50px"
           left="3px"
           width="2px"
-          bg="gray.600"
+          bg={lineColor}
           zIndex="0"
         />
-        <VStack spacing="1" align="flex-start" position="relative">
-          <Flex align="center" gap="2">
+        <VStack
+          spacing="3"
+          align="flex-start"
+          position="relative"
+          pt="1"
+          pb="1"
+        >
+          <Flex align="center" gap="3" position="relative" zIndex="1">
             <Icon
-              as={isContract ? HiOutlineDocumentText : PiArrowCircleDownLight}
-              color="orange.400"
+              as={PiArrowCircleDownLight}
+              color={iconColor}
               boxSize="20px"
+              position="absolute"
+              left="-22px"
+              top="50%"
+              bg="dark.200"
+              transform="translateY(-50%)"
               borderRadius="full"
               filter="drop-shadow(0 0 1px rgba(0,0,0,0.2))"
             />
-            <Text fontSize="sm" color="orange.400" fontWeight="medium">
+            <Text fontSize="sm" color={iconColor} fontWeight="medium" pl={6}>
               {isContract ? 'Calling contract' : 'Sending funds'}
             </Text>
           </Flex>
 
-          {!isContract && (
-            <Flex align="center" gap="2" pt="1">
-              {asset?.icon && (
-                <Box boxSize="20px">
+          {(!isContract ||
+            Number(bn(operation?.assets?.[0]?.amount || 0)) > 0.00000001) && (
+            <Flex align="center" gap="3" pt="1" pl={asset?.icon ? 6 : 0}>
+              <Box width="16px" height="16px">
+                {asset?.icon ? (
                   <img
                     src={asset.icon}
                     alt="Asset icon"
                     style={{ width: '100%', height: '100%' }}
                   />
-                </Box>
+                ) : null}
+              </Box>
+              <Text fontSize="sm" color={textColor} fontWeight="medium">
+                {bn(operation?.assets?.[0]?.amount || 0).formatUnits() ===
+                '0.000000001'
+                  ? '1'
+                  : bn(operation?.assets?.[0]?.amount || 0).formatUnits()}{' '}
+                {asset?.slug || 'Unknown asset'}
+              </Text>
+              {formatted !== '$0.00' && (
+                <Text fontSize="sm" color={usdColor} fontWeight="medium">
+                  ~ {formatted}
+                </Text>
               )}
-              <Text fontSize="sm" color="white" fontWeight="medium">
-                {bn(operation?.assets?.[0]?.amount || 0).formatUnits()}{' '}
-                {asset?.slug}
-              </Text>
-              <Text fontSize="sm" color="gray.400" fontWeight="medium">
-                ~ {formatted}
-              </Text>
             </Flex>
           )}
         </VStack>
@@ -184,28 +216,32 @@ function DappTransactionOperationCard({
         <Flex align="center" gap="10px" pb="2" pl="1">
           <Avatar
             name={vault?.name}
-            color="gray.100"
-            bgColor="gray.700"
+            color={avatarColor}
+            bgColor={avatarBg}
             boxSize="40px"
             borderRadius="4px"
             fontSize="xs"
+            zIndex={1}
           />
-          <Box>
-            <Text fontSize="sm" fontWeight="semibold" color="white">
+          <Box pl={2}>
+            <Text fontSize="sm" fontWeight="semibold" color={nameColor}>
               {vault?.name}
             </Text>
             <Flex align="center" gap="1">
-              <Text fontSize="xs" color="gray.400">
+              <Text fontSize="xs" color={addressColor}>
                 {AddressUtils.format(operation.to.address, 6)}
               </Text>
               <Tooltip label={hasCopied ? 'Copied!' : 'Copy'} closeOnClick>
                 <IconButton
-                  icon={<MdOutlineFileCopy />}
+                  icon={<PiCopyThin />}
                   onClick={onCopy}
                   size="xs"
                   variant="ghost"
                   aria-label="Copy address"
-                  color="gray.400"
+                  color={addressColor}
+                  _hover={{ background: 'transparent' }}
+                  _active={{ background: 'transparent' }}
+                  _focus={{ boxShadow: 'none' }}
                 />
               </Tooltip>
             </Flex>
@@ -215,30 +251,34 @@ function DappTransactionOperationCard({
         <Flex align="center" gap="10px" pt="2" pl="1">
           <Avatar
             name={'Other vault'}
-            color="gray.100"
-            bgColor="gray.700"
+            color={avatarColor}
+            bgColor={avatarBg}
             boxSize="40px"
             borderRadius="4px"
             fontSize="xs"
+            zIndex={1}
           />
-          <Box>
-            <Text fontSize="sm" fontWeight="semibold" color="white">
+          <Box pl={2}>
+            <Text fontSize="sm" fontWeight="semibold" color={nameColor}>
               Other vault
             </Text>
             <Flex align="center" gap="1">
-              <Text fontSize="xs" color="gray.400">
+              <Text fontSize="xs" color={addressColor}>
                 {AddressUtils.format(operation.to.address, 6)}
               </Text>
               <Tooltip label="Copy" closeOnClick>
                 <IconButton
-                  icon={<MdOutlineFileCopy />}
+                  icon={<PiCopyThin />}
                   onClick={() =>
                     navigator.clipboard.writeText(operation.to.address)
                   }
                   size="xs"
                   variant="ghost"
                   aria-label="Copy address"
-                  color="gray.400"
+                  color={addressColor}
+                  _hover={{ background: 'transparent' }}
+                  _active={{ background: 'transparent' }}
+                  _focus={{ boxShadow: 'none' }}
                 />
               </Tooltip>
             </Flex>
@@ -248,4 +288,5 @@ function DappTransactionOperationCard({
     </VStack>
   );
 }
+
 export { DappTransactionOperationCard };

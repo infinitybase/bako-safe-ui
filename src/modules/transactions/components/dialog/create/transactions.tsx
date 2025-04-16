@@ -1,6 +1,8 @@
+import { CloseIcon } from '@chakra-ui/icons';
 import {
   Accordion,
   AccordionItem,
+  Box,
   Button,
   Center,
   CircularProgress,
@@ -8,12 +10,13 @@ import {
   FormHelperText,
   FormLabel,
   HStack,
+  IconButton,
   Text,
   Tooltip,
   VStack,
 } from '@chakra-ui/react';
 import { Address, bn, isB256 } from 'fuels';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Controller } from 'react-hook-form';
 
 import { AmountInput, Autocomplete, UserAddIcon } from '@/components';
@@ -22,12 +25,7 @@ import {
   CreateContactDialog,
   useAddressBookAutocompleteOptions,
 } from '@/modules/addressBook';
-import {
-  AddressUtils,
-  AssetSelect,
-  delay,
-  NativeAssetId,
-} from '@/modules/core';
+import { AddressUtils, AssetSelect, delay } from '@/modules/core';
 import { useBakoIDClient } from '@/modules/core/hooks/bako-id';
 import {
   useAssetSelectOptions,
@@ -75,6 +73,7 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
     vaultDetails: {
       assets: { isNFTAsset },
     },
+    tokensUSD,
   } = useWorkspaceContext();
   const balanceAvailable = getBalanceAvailable();
   const {
@@ -114,6 +113,23 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
     getBalanceAvailable,
   });
 
+  const getAssetPrice = (assetId: string) => {
+    return tokensUSD.data?.[assetId]?.usdAmount ?? 0;
+  };
+
+  const formatUsdEstimate = (amount: string, assetId: string) => {
+    if (!amount || !assetId) return '$0.00';
+    const price = getAssetPrice(assetId);
+    const estimated = parseFloat(amount) * price;
+
+    return estimated.toLocaleString('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+  };
+
   return (
     <>
       <CreateContactDialog
@@ -130,6 +146,7 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
             const appliedOptions = optionsRequests[index].options.filter(
               (a) => Address.fromString(a.value).toString() !== field.value,
             );
+
             const showAddToAddressBook =
               canAddMember &&
               !fieldState.invalid &&
@@ -145,141 +162,299 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
                 );
 
             return (
-              <FormControl isInvalid={fieldState.invalid}>
-                <Autocomplete
-                  value={
-                    form.watch(`transactions.${index}.resolvedLabel`) ||
-                    field.value
-                  }
-                  label={`Recipient ${index + 1} address`}
-                  ariaLabel={`Autocomplete Recipient Address ${index + 1}`}
-                  onChange={field.onChange}
-                  onInputChange={async (value: string) => {
-                    const result = { value, label: value };
-                    if (value.startsWith('@')) {
-                      const address = await fetchResolveAddress.handler(
-                        value.split(' - ').at(0)!,
-                      );
-
-                      if (address) {
-                        result.value = address;
-                        result.label = AddressBookUtils.formatForAutocomplete(
-                          value,
-                          address,
-                        );
-                        console.log('result.label:', result.label);
+              <HStack
+                align="start"
+                spacing={2}
+                position="relative"
+                width="100%"
+              >
+                <FormControl isInvalid={fieldState.invalid} flex="1">
+                  <Box position="relative">
+                    <Autocomplete
+                      value={
+                        form.watch(`transactions.${index}.resolvedLabel`) ||
+                        field.value ||
+                        ''
                       }
-                    } else if (isB256(value)) {
-                      const name = await fetchResolverName.handler(value);
-                      if (name) {
-                        result.label = AddressBookUtils.formatForAutocomplete(
-                          name,
-                          value,
-                        );
-                      }
-                      result.value = new Address(value).toB256();
-                    }
+                      label={`Recipient ${index + 1} address`}
+                      ariaLabel={`Autocomplete Recipient Address ${index + 1}`}
+                      onChange={field.onChange}
+                      onInputChange={async (value: string) => {
+                        const result = { value, label: value };
 
-                    field.onChange(result.value);
-                    form.setValue(
-                      `transactions.${index}.resolvedLabel`,
-                      result.label,
-                    );
-                    return result;
-                  }}
-                  isLoading={
-                    !optionsRequests[index].isSuccess ||
-                    fetchResolveAddress.isLoading ||
-                    fetchResolverName.isLoading
-                  }
-                  options={appliedOptions}
-                  inView={inView}
-                  clearable={false}
-                  optionsRef={optionRef}
-                  variant="dark"
-                />
-                <FormHelperText color="error.500">
-                  {fieldState.error?.message}
-                </FormHelperText>
-                <AddToAddressBook
-                  visible={showAddToAddressBook}
-                  onAdd={() => handleOpenDialog?.({ address: field.value })}
-                />
-              </FormControl>
+                        if (value.startsWith('@')) {
+                          const address = await fetchResolveAddress.handler(
+                            value.split(' - ').at(0)!,
+                          );
+
+                          if (address) {
+                            result.value = address;
+                            result.label =
+                              AddressBookUtils.formatForAutocomplete(
+                                value,
+                                address,
+                              );
+                          }
+                        } else if (isB256(value)) {
+                          const name = await fetchResolverName.handler(value);
+                          if (name) {
+                            result.label =
+                              AddressBookUtils.formatForAutocomplete(
+                                name,
+                                value,
+                              );
+                          }
+                          result.value = new Address(value).toB256();
+                        }
+
+                        field.onChange(result.value);
+                        form.setValue(
+                          `transactions.${index}.resolvedLabel`,
+                          result.label,
+                        );
+                        return result;
+                      }}
+                      isLoading={
+                        !optionsRequests[index].isSuccess ||
+                        fetchResolveAddress.isLoading ||
+                        fetchResolverName.isLoading
+                      }
+                      options={appliedOptions}
+                      inView={inView}
+                      clearable={false}
+                      optionsRef={optionRef}
+                      variant="dark"
+                    />
+                    {field.value && (
+                      <IconButton
+                        aria-label="Clear"
+                        icon={<CloseIcon boxSize={2.5} />}
+                        size="xs"
+                        variant="ghost"
+                        position="absolute"
+                        top="50%"
+                        right="0.5rem"
+                        bg="#201F1D"
+                        padding="0.5rem"
+                        paddingTop={'20px'}
+                        paddingBottom={'20px'}
+                        borderRadius="md"
+                        _hover={{ bg: '#201F1D' }}
+                        color={'white'}
+                        transform="translateY(-50%)"
+                        zIndex={1}
+                        onClick={() => {
+                          field.onChange(null);
+                        }}
+                      />
+                    )}
+                  </Box>
+                  <FormHelperText color="error.500">
+                    {fieldState.error?.message}
+                  </FormHelperText>
+                  <AddToAddressBook
+                    visible={showAddToAddressBook}
+                    onAdd={() => handleOpenDialog?.({ address: field.value })}
+                  />
+                </FormControl>
+              </HStack>
             );
           }}
         />
+
         <Controller
           name={`transactions.${index}.asset`}
           control={form.control}
-          render={({ field, fieldState }) => (
-            <AssetSelect
-              isInvalid={fieldState.invalid}
-              options={assetsOptions}
-              name={`transaction.${index}.asset`}
-              value={field.value}
-              onChange={(e) => {
-                field.onChange(e);
+          render={({ field, fieldState }) => {
+            return (
+              <HStack
+                align="start"
+                spacing={2}
+                position="relative"
+                width="100%"
+              >
+                <AssetSelect
+                  isInvalid={fieldState.invalid}
+                  options={assetsOptions}
+                  name={`transaction.${index}.asset`}
+                  value={field.value}
+                  onChange={(e) => {
+                    field.onChange(e);
 
-                if (isNFTAsset(e)) {
-                  form.setValue(`transactions.${index}.amount`, bn(1).format());
-                  return;
-                }
+                    if (isNFTAsset(e)) {
+                      form.setValue(
+                        `transactions.${index}.amount`,
+                        bn(1).format(),
+                      );
+                      return;
+                    }
 
-                if (isNFTAsset(field.value)) {
-                  form.setValue(`transactions.${index}.amount`, '');
-                }
-              }}
-              helperText={
-                <FormHelperText
-                  color={fieldState.invalid ? 'error.500' : 'grey.200'}
-                >
-                  {fieldState.error?.message ??
-                    'Select the asset you want to send'}
-                </FormHelperText>
-              }
-            />
-          )}
+                    if (isNFTAsset(field.value)) {
+                      form.setValue(`transactions.${index}.amount`, '');
+                    }
+                  }}
+                  helperText={
+                    <FormHelperText
+                      color={fieldState.error ? 'error.500' : 'white'}
+                    >
+                      {!isNFT && (
+                        <Text display="flex" alignItems="center" mt={1}>
+                          {!field.value ? (
+                            'Select an asset to see the balance'
+                          ) : parseFloat(balanceAvailable) > 0 ? (
+                            isFeeCalcLoading ? (
+                              <>
+                                Balance (available):{' '}
+                                <CircularProgress
+                                  trackColor="dark.100"
+                                  size={3}
+                                  isIndeterminate
+                                  color="brand.500"
+                                  ml={1}
+                                />
+                              </>
+                            ) : (
+                              <>
+                                Balance (available):{' '}
+                                {assets.getAssetInfo(asset)?.slug}{' '}
+                                {balanceAvailable}
+                              </>
+                            )
+                          ) : null}
+                        </Text>
+                      )}
+                    </FormHelperText>
+                  }
+                />
+                {field.value && (
+                  <IconButton
+                    aria-label="Clear"
+                    icon={<CloseIcon boxSize={2.5} />}
+                    size="xs"
+                    variant="ghost"
+                    position="absolute"
+                    top={isNFT ? '47%' : '38%'}
+                    right="0.5rem"
+                    bg="#201F1D"
+                    padding="0.5rem"
+                    paddingTop={'20px'}
+                    paddingBottom={'20px'}
+                    borderRadius="md"
+                    _hover={{ bg: '#201F1D' }}
+                    color={'white'}
+                    transform="translateY(-50%)"
+                    zIndex={1}
+                    onClick={() => {
+                      field.onChange(null);
+                      form.setValue(`transactions.${index}.amount`, '');
+                    }}
+                  />
+                )}
+              </HStack>
+            );
+          }}
         />
+
         <Controller
           name={`transactions.${index}.amount`}
           control={form.control}
           render={({ field, fieldState }) => {
+            const usdEstimate = formatUsdEstimate(
+              field.value,
+              form.watch(`transactions.${index}.asset`),
+            );
+            const usdNumber = parseFloat(usdEstimate.replace(/[^\d.-]/g, ''));
+
             return (
-              <FormControl>
-                <AmountInput
-                  id="transaction_amount"
-                  placeholder=" "
-                  value={isNFT ? '1' : field.value}
-                  onChange={field.onChange}
-                  isInvalid={fieldState.invalid}
-                  isDisabled={isNFT}
-                />
-                <FormLabel color="gray">Amount</FormLabel>
-                <FormHelperText>
-                  {!isNFT && parseFloat(balanceAvailable) > 0 && asset && (
-                    <Text display="flex" alignItems="center">
-                      Balance (available):{' '}
-                      {isFeeCalcLoading ? (
-                        <CircularProgress
-                          trackColor="dark.100"
-                          size={3}
-                          isIndeterminate
-                          color="brand.500"
-                          ml={1}
+              <HStack
+                align="start"
+                spacing={2}
+                position="relative"
+                width="100%"
+              >
+                <FormControl variant="floating" isInvalid={fieldState.invalid}>
+                  <Box position="relative">
+                    <AmountInput
+                      placeholder=" "
+                      value={isNFT ? '1' : field.value}
+                      onFocus={() => {
+                        if (field.value === '.00' || field.value === '0.00') {
+                          field.value = '';
+                        }
+                      }}
+                      onChange={field.onChange}
+                      isInvalid={fieldState.invalid}
+                      isDisabled={isNFT}
+                    />
+                    <FormLabel>Amount</FormLabel>
+
+                    <FormHelperText
+                      color={fieldState.invalid ? 'error.500' : 'gray.400'}
+                    >
+                      {fieldState.error?.message ? (
+                        <Text fontSize="sm" lineHeight="short">
+                          {fieldState.error.message}
+                        </Text>
+                      ) : !isNFT ? (
+                        <Text
+                          fontSize="sm"
+                          lineHeight="short"
+                          color="gray.500"
+                          opacity={usdNumber > 0 ? 1 : 0}
+                        >
+                          ~ {usdEstimate}
+                        </Text>
+                      ) : null}
+                    </FormHelperText>
+
+                    {!isNFT && (
+                      <HStack
+                        position="absolute"
+                        top="35%"
+                        right="0.75rem"
+                        spacing={1}
+                        zIndex={1}
+                        bg="#201F1D"
+                        transform="translateY(-50%)"
+                      >
+                        <IconButton
+                          aria-label="Clear"
+                          icon={<CloseIcon boxSize={2.5} />}
+                          size="xs"
+                          variant="ghost"
+                          color={'white'}
+                          padding={4}
+                          bg="201F1D"
+                          _hover={{ bg: '#201F1D' }}
+                          zIndex={1}
+                          onClick={() => field.onChange('')}
                         />
-                      ) : (
-                        <>
-                          {assets.getAssetInfo(asset)?.slug} {balanceAvailable}
-                        </>
-                      )}
-                    </Text>
-                  )}
-                </FormHelperText>
-                <FormHelperText color="error.500">
-                  {fieldState.error?.message}
-                </FormHelperText>
-              </FormControl>
+                        <Button
+                          size="xs"
+                          bg="transparent"
+                          border="1px solid "
+                          borderColor="white"
+                          borderRadius="md"
+                          color={'white'}
+                          fontWeight="bold"
+                          _hover={{
+                            bg: 'grey.900',
+                          }}
+                          _active={{
+                            bg: 'grey.850',
+                          }}
+                          onClick={() => {
+                            const max = getBalanceAvailable();
+                            field.onChange(max);
+                          }}
+                        >
+                          MAX
+                        </Button>
+                      </HStack>
+                    )}
+                  </Box>
+                </FormControl>
+              </HStack>
             );
           }}
         />
@@ -311,22 +486,55 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
     handlers: { getResolverName },
   } = useBakoIDClient(providerInstance);
 
-  // Logic to fix the button in the footer
-  // const accordionHeight = () => {
-  //   if (isMobile && isLargerThan900) return 500;
-  //   if (isMobile && isLargerThan768) return 400;
-  //   if (isMobile && isLargerThan660) return 220;
-  //   if (isMobile && isLargerThan600) return 200;
+  const [ethAssetId, setEthAssetId] = useState<string | undefined>();
 
-  //   return 450;
-  // };
+  useEffect(() => {
+    const fetchEthAssetId = async () => {
+      const provider = await providerInstance;
+      const baseAssetId = await provider.getBaseAssetId();
+      setEthAssetId(baseAssetId);
+    };
+
+    fetchEthAssetId();
+  }, [providerInstance]);
+
+  const { hasEthForFee } = useMemo(() => {
+    if (!ethAssetId) return { hasEthForFee: false };
+
+    let feeAlreadyAdded = false;
+
+    const used = transactions.fields.reduce((acc, _, index) => {
+      const transaction = form.watch(`transactions.${index}`);
+      if (transaction.asset !== ethAssetId) return acc;
+
+      const amount = Number(transaction.amount || 0);
+      let fee = 0;
+
+      if (!feeAlreadyAdded) {
+        fee = Number(transaction.fee || 0);
+        feeAlreadyAdded = true;
+      }
+
+      return acc + amount + fee;
+    }, 0);
+
+    const asset = assets.assets?.find((a) => a.assetId === ethAssetId);
+    const totalEth = asset?.amount ? bn(asset.amount).formatUnits() : 0;
+
+    const hasEnough = Number(totalEth) >= Number(used.toFixed(9));
+
+    return {
+      totalEthUsed: used,
+      hasEthForFee: hasEnough,
+    };
+  }, [transactions.fields, form, assets.assets, ethAssetId]);
 
   return (
     <Accordion
       index={accordion.index}
       overflowY="auto"
       pb={isMobile ? 10 : 0}
-      maxH={450}
+      maxH={'450px'}
       pr={{ base: 1, sm: 0 }}
       sx={{
         '&::-webkit-scrollbar': {
@@ -349,6 +557,7 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
         if (resolvedLabel?.startsWith('@')) {
           resolvedLabel = resolvedLabel?.split(' ')[0];
         }
+
         const hasEmptyField = Object.entries(transaction)
           .filter(([key]) => key !== 'resolvedLabel')
           .some(([, value]) => value === '');
@@ -358,15 +567,19 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
 
         const isDisabled =
           hasEmptyField || fieldState.invalid || isCurrentAmountZero;
+
         const contact = nicks.find(
           (nick) => nick.user.address === transaction.value,
         )?.nickname;
+
         const resolverName = getResolverName(transaction.value);
         let recipientLabel =
           contact ?? resolverName ?? AddressUtils.format(transaction.value);
+
         if (resolvedLabel?.startsWith('@')) {
           recipientLabel = resolvedLabel;
         }
+
         const isNFT = isNFTAsset(transaction.asset);
 
         return (
@@ -374,7 +587,13 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
             key={field.id}
             mb={6}
             borderWidth={1}
-            borderColor="grey.925"
+            borderColor={
+              !hasEthForFee &&
+              transaction.asset === ethAssetId &&
+              !isCurrentAmountZero
+                ? 'red.500'
+                : 'grey.925'
+            }
             borderRadius={10}
             backgroundColor="dark.950"
           >
@@ -424,40 +643,51 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
           </AccordionItem>
         );
       })}
-
-      <Center mt={6}>
-        <Tooltip
-          label="All available assets have been used."
-          isDisabled={!form.allAssetsUsed}
-          hasArrow
-          placement="top"
-        >
-          <Button
+      <Center mt={6} flexDirection="column" w="full">
+        {!hasEthForFee ? (
+          <Text
+            color="error.500"
+            fontSize="sm"
             w="full"
-            leftIcon={<UserAddIcon />}
-            variant="primary"
-            bgColor="grey.200"
-            border="none"
-            _hover={{
-              opacity: 0.8,
-            }}
-            _disabled={{
-              cursor: 'not-allowed',
-              opacity: 0.6,
-            }}
-            isDisabled={form.allAssetsUsed}
-            onClick={() => {
-              transactions.append({
-                amount: '',
-                asset: NativeAssetId,
-                value: '',
-              });
-              delay(() => accordion.open(transactions.fields.length), 100);
-            }}
+            textAlign="center"
+            mt={2}
           >
-            Add more recipients
-          </Button>
-        </Tooltip>
+            Insufficient funds for gas
+          </Text>
+        ) : (
+          <Tooltip
+            label="All available assets have been used."
+            isDisabled={!form.allAssetsUsed}
+            hasArrow
+            placement="top"
+          >
+            <Button
+              w="full"
+              leftIcon={<UserAddIcon />}
+              variant="primary"
+              bgColor="grey.200"
+              border="none"
+              _hover={{
+                opacity: 0.8,
+              }}
+              _disabled={{
+                cursor: 'not-allowed',
+                opacity: 0.6,
+              }}
+              isDisabled={form.allAssetsUsed}
+              onClick={() => {
+                transactions.append({
+                  amount: '',
+                  asset: ethAssetId ? ethAssetId : '',
+                  value: '',
+                });
+                delay(() => accordion.open(transactions.fields.length), 100);
+              }}
+            >
+              Add more recipients
+            </Button>
+          </Tooltip>
+        )}
       </Center>
     </Accordion>
   );

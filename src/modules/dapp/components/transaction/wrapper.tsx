@@ -72,7 +72,6 @@ const DappTransactionWrapper = (props: DappTransactionWrapperProps) => {
 
   return (
     <Container>
-      {/* Barra de expiração fixa */}
       <Box position="fixed" top={0} w="full" zIndex={100} left={0}>
         <TransactionExpire
           validAt={validAt}
@@ -81,7 +80,6 @@ const DappTransactionWrapper = (props: DappTransactionWrapperProps) => {
         />
       </Box>
 
-      {/* Overlay de loading com transição suave */}
       <Flex
         position="fixed"
         top={0}
@@ -135,31 +133,38 @@ const DappTransactionWrapper = (props: DappTransactionWrapperProps) => {
             vault={vault!}
             sectionKey="main"
           />
-          <DappTransaction.OperationSection
-            title="Intermediate contract calls"
-            operations={
-              transaction?.categorizedOperations.intermediateContractCalls || []
-            }
-            isOpen={intermediateOpen}
-            onToggle={toggleIntermediate}
-            vault={vault!}
-            sectionKey="intermediate"
-          />
-          <DappTransaction.OperationSection
-            title="Operations not related to your vault"
-            operations={
-              transaction?.categorizedOperations.notRelatedToCurrentAccount ||
-              []
-            }
-            isOpen={unrelatedOpen}
-            onToggle={toggleUnrelated}
-            vault={vault!}
-            sectionKey="unrelated"
-          />
+          {(transaction?.categorizedOperations.intermediateContractCalls
+            ?.length ?? 0) > 0 && (
+            <DappTransaction.OperationSection
+              title="Intermediate contract calls"
+              operations={
+                transaction?.categorizedOperations.intermediateContractCalls ||
+                []
+              }
+              isOpen={intermediateOpen}
+              onToggle={toggleIntermediate}
+              vault={vault!}
+              sectionKey="intermediate"
+            />
+          )}
+
+          {(transaction?.categorizedOperations.notRelatedToCurrentAccount
+            ?.length ?? 0) > 0 && (
+            <DappTransaction.OperationSection
+              title="Operations not related to your vault"
+              operations={
+                transaction?.categorizedOperations.notRelatedToCurrentAccount ||
+                []
+              }
+              isOpen={unrelatedOpen}
+              onToggle={toggleUnrelated}
+              vault={vault!}
+              sectionKey="unrelated"
+            />
+          )}
         </VStack>
       </Dapp.Content>
 
-      {/* Footer fixo centralizado */}
       <Box
         position="fixed"
         bottom={0}

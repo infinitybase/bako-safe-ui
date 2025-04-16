@@ -46,20 +46,15 @@ function DappTransactionOperation({
               setIsExpanded(!isExpanded);
             }}
             align="center"
-            justify="flex-start"
+            justify="space-between"
             w="100%"
             bg="transparent"
             border="none"
             py="8px"
             cursor="pointer"
+            pr={4}
           >
-            <Text
-              display="flex"
-              alignItems="center"
-              gap="8px"
-              color="gray.400"
-              fontSize="sm"
-            >
+            <Flex align="center" gap="2">
               <Box
                 as={Icon}
                 transform={isExpanded ? 'rotate(45deg)' : 'rotate(0deg)'}
@@ -68,20 +63,23 @@ function DappTransactionOperation({
               >
                 <path fill="currentColor" d="M12 2L12 22M2 12L22 12" />
               </Box>
-              <Flex align="center" gap="2">
-                {isExpanded ? (
-                  <ChevronUpIcon boxSize="4" />
-                ) : (
-                  <ChevronDownIcon boxSize="4" />
-                )}
-                <Text>{isExpanded ? 'Collapse' : 'Expand'}</Text>
-              </Flex>
+
+              <Text color="#CFCCC9" fontSize="sm">
+                {isExpanded ? 'Collapse' : 'Expand'}
+              </Text>
+
               {!isExpanded && (
-                <Text as="span" fontSize="sm" color="gray.500">
+                <Text as="span" fontSize="sm" color="#868079">
                   (+{operation.operations?.length} operations)
                 </Text>
               )}
-            </Text>
+            </Flex>
+
+            {isExpanded ? (
+              <ChevronUpIcon boxSize="4" color="gray.400" />
+            ) : (
+              <ChevronDownIcon boxSize="4" color="gray.400" />
+            )}
           </Flex>
 
           <MotionBox

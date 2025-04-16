@@ -25,12 +25,11 @@ export function DappTransactionOperationSection({
   sectionKey,
 }: DappTransactionOperationSectionProps) {
   const hasTitle = Boolean(title);
-  const hasOperations = operations.length > 0;
 
   return (
     <Box
-      bg="dark.200"
-      borderRadius="10px"
+      bg="#201F1D"
+      borderRadius="8px"
       mb="8px"
       overflow="hidden"
       color="white"
@@ -72,35 +71,17 @@ export function DappTransactionOperationSection({
         p="2px"
         gap="2px"
       >
-        {hasOperations ? (
-          operations.map((operation, index) => (
-            <Box
-              key={`${sectionKey}-${index}`}
-              w="100%"
-              borderRadius="8px"
-              overflow="hidden"
-              boxShadow="0px 2px 6px -1px rgba(32, 32, 32, 0.1), 0px 0px 0px 1px rgba(32, 32, 32, 0.12)"
-            >
-              <DappTransaction.Operation vault={vault!} operation={operation} />
-            </Box>
-          ))
-        ) : hasTitle ? (
+        {operations.map((operation, index) => (
           <Box
-            display="flex"
-            cursor="default"
+            key={`${sectionKey}-${index}`}
             w="100%"
-            bg="dark.200"
-            px="16px"
-            alignItems="center"
-            border="none"
-            minH="36px"
-            borderRadius="10px"
+            borderRadius="8px"
+            overflow="hidden"
+            boxShadow="0px 2px 6px -1px rgba(32, 32, 32, 0.1), 0px 0px 0px 1px rgba(32, 32, 32, 0.12)"
           >
-            <Text fontSize="14px" color="white" fontWeight="500">
-              No operations available.
-            </Text>
+            <DappTransaction.Operation vault={vault!} operation={operation} />
           </Box>
-        ) : null}
+        ))}
       </MotionBox>
     </Box>
   );
