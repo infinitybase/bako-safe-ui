@@ -95,6 +95,7 @@ const colors = {
     usdColor: '#868079',
     lineColor: '#353230',
     backgroundColor: '#201F1D',
+    alertbg: '#007FDB26',
   },
 };
 

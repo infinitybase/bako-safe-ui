@@ -8,6 +8,8 @@ import {
   VStack,
 } from '@chakra-ui/react';
 
+import { colors } from '@/themes/colors';
+
 interface HeaderProps extends StackProps {
   title: string;
   description: string;
@@ -30,7 +32,7 @@ const Header = ({
         status="info"
         variant="subtle"
         borderRadius="md"
-        bg="#007FDB26"
+        bg={colors.connector.avatarBg}
         color="blue.100"
         px={4}
         py={2}
