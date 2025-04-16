@@ -22,7 +22,7 @@ const Header = ({
   ...stackProps
 }: HeaderProps) => (
   <VStack w="full" mb={12} spacing={4} alignItems="flex-start" {...stackProps}>
-    <Heading fontSize={titleFontSize ? titleFontSize : '2xl'} color="white">
+    <Heading fontSize={titleFontSize ? titleFontSize : 'xl'} color="white">
       {title}
     </Heading>
     <Box w="full">
@@ -30,7 +30,7 @@ const Header = ({
         status="info"
         variant="subtle"
         borderRadius="md"
-        bg="blue.900"
+        bg="#007FDB26"
         color="blue.100"
         px={4}
         py={2}
