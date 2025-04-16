@@ -88,6 +88,17 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
 
   const resolveTransactionCosts = useMutation({
     mutationFn: TransactionService.resolveTransactionCosts,
+    onError: (error) => {
+      if (
+        error.message.includes('255 coin limit') ||
+        error.message.includes('no coins')
+      ) {
+        form.setError(`transactions.${accordion.index}.amount`, {
+          message: '⚠️ Not enough ETH to pay for transaction fee!',
+          type: 'coin_limit',
+        });
+      }
+    },
   });
 
   const transactionFee = resolveTransactionCosts.data?.fee.format();
@@ -266,13 +277,6 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     props?.onClose();
   };
 
-  const debouncedResolveTransactionCosts = useCallback(
-    debounce((assets, vault) => {
-      resolveTransactionCosts.mutate({ assets, vault });
-    }, 300),
-    [],
-  );
-
   const transactionsForm = useWatch({
     control: form.control,
     name: 'transactions',
@@ -324,13 +328,11 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
       transactionFee && Number(transactionFee) > 0 ? transactionFee : null;
     const newFee = _transactionFee || validTransactionFee || '0.000';
     const transactions = form.getValues('transactions') || [];
-
     transactions.forEach((_, index) => {
       form.setValue(`transactions.${index}.fee`, newFee, {
         shouldValidate: true,
       });
     });
-
     setValidTransactionFee(newFee);
   }, [transactionFee]);
 
@@ -339,6 +341,13 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
       form.trigger(`transactions.${accordion.index}.amount`);
     }
   }, [accordion.index, resolveTransactionCosts.data, currentFieldAsset]);
+
+  const debouncedResolveTransactionCosts = useCallback(
+    debounce(async (assets, vault) => {
+      await resolveTransactionCosts.mutateAsync({ assets, vault });
+    }, 300),
+    [],
+  );
 
   useEffect(() => {
     if (
@@ -349,27 +358,60 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
 
     const transactions = form.getValues('transactions');
 
+    const startsWithZeroDecimal = (amount: string) => /^0\.\d+$/.test(amount);
+
+    const formatAmount = (amount: string) => {
+      try {
+        const sanitizedAmount = amount.replace(/(?<=\d),(?=\d{3})/g, '');
+
+        if (startsWithZeroDecimal(sanitizedAmount)) return sanitizedAmount;
+
+        let floatAmount = parseFloat(sanitizedAmount);
+        if (isNaN(floatAmount)) throw new Error(`Invalid Value: ${amount}`);
+
+        if (floatAmount >= 100) {
+          floatAmount = Math.floor(floatAmount);
+        }
+
+        return bn(floatAmount.toString()).formatUnits().replace(/,/g, '');
+      } catch (error) {
+        return amount;
+      }
+    };
+
+    const processTransactions = (transactions: any[]) =>
+      transactions
+        .map(({ amount, value, asset }) => {
+          const formattedAmount = formatAmount(amount);
+          return {
+            to: value || recipientMock,
+            amount: formattedAmount,
+            assetId: asset,
+          };
+        })
+        .filter(({ amount }) => Number(amount) > 0);
+
     const assets =
-      Number(transactionTotalAmount) > 0
-        ? transactions!
-            .map((transaction) => ({
-              to: transaction.value || recipientMock,
-              amount: transaction.amount,
-              assetId: transaction.asset,
-            }))
-            .filter(
-              (transaction) =>
-                !isNaN(Number(transaction.amount)) &&
-                Number(transaction.amount) > 0,
-            )
-        : currentVaultAssets?.map((asset) => ({
-            to: recipientMock,
-            amount: asset.amount,
-            assetId: asset.assetId,
-          }));
+      Number(transactionTotalAmount?.replace(/,/g, '')) > 0
+        ? processTransactions(transactions!)
+        : processTransactions(
+            currentVaultAssets?.map(({ amount, assetId }) => ({
+              amount: amount || '0',
+              asset: assetId,
+              value: recipientMock,
+            })) || [],
+          );
 
     debouncedResolveTransactionCosts(assets, vault!);
-  }, [transactionTotalAmount, currentVaultAssets, currentFieldAsset].filter(Boolean));
+  }, [
+    transactionTotalAmount,
+    currentVaultAssets,
+    currentFieldAsset,
+    currentFieldAmount,
+    debouncedResolveTransactionCosts,
+    form,
+    vault,
+  ]);
 
   useEffect(() => {
     if (firstRender && vault) {
