@@ -85,6 +85,13 @@ const colors = {
     'transaction-border': '#35302F',
   },
   overlay: '#151413A6',
+  connector: {
+    iconColor: '#F5A623',
+    textColor: '#CFCCC9',
+    usdColor: '#868079',
+    backgroundColor: '#201F1D',
+    alertbg: '#007FDB26',
+  },
 };
 
 export { colors };

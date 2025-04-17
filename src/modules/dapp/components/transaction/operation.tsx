@@ -1,95 +1,122 @@
-import { Box, HStack, VStack } from '@chakra-ui/react';
-import { Operation } from 'fuels';
+import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons';
+import { Box, Flex, Icon, Text } from '@chakra-ui/react';
+import { motion } from 'framer-motion';
+import { useState } from 'react';
 
-import { CustomSkeleton } from '@/components';
-import { DappTransactionAsset } from '@/modules/dapp/components/transaction/asset';
-import { DappTransactionFromTo } from '@/modules/dapp/components/transaction/from-to';
-import { RecipientCard } from '@/modules/dapp/components/transaction/recipient';
-import { useNetworks } from '@/modules/network/hooks';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
-import { formatAssetAmount } from '@/utils';
+import { UseTransactionSocket } from '../../hooks';
+import { SimplifiedOperation } from '../../services/simplify-transaction';
+import { DappTransaction } from '.';
 
-interface OperationProps {
-  vault?: {
-    name: string;
-    predicateAddress: string;
-  };
-  operation?: Operation;
-}
+const MotionBox = motion(Box);
 
-export const DappTransactionOperationSekeleton = () => (
-  <VStack w="full">
-    <HStack spacing={0} w="full">
-      <RecipientCard justifyContent="space-between">
-        {/*<CustomSkeleton w="full" h={5} borderRadius={2} />*/}
-        <CustomSkeleton w="full" h="100px" borderRadius={2} />
-        <CustomSkeleton w="full" h={8} borderRadius={2} />
-      </RecipientCard>
-      <RecipientCard justifyContent="space-between">
-        <CustomSkeleton w="full" h="100px" borderRadius={2} />
-        <CustomSkeleton w="full" h={8} borderRadius={2} />
-      </RecipientCard>
-    </HStack>
-    <RecipientCard display="flex" flexDirection="row" gap={3} minH="95px">
-      <CustomSkeleton w={200} h="70px" borderRadius={2} />
-      <CustomSkeleton w="full" h="70px" borderRadius={2} />
-    </RecipientCard>
-  </VStack>
-);
-
-const DappTransactionOperation = ({ vault, operation }: OperationProps) => {
-  const { assetsMap, fuelsTokens } = useWorkspaceContext();
-  const { to, assetsSent, from } = operation ?? {};
-
-  const { currentNetwork } = useNetworks();
-
-  if (!to || !from || !vault) return null;
-
-  const assetData = assetsSent?.map((sent) => {
-    return assetsMap?.[sent.assetId] && assetsMap?.[sent.assetId]
-      ? { ...assetsMap?.[sent.assetId], amount: sent.amount }
-      : {
-          ...assetsMap?.['UNKNOWN'],
-          amount: sent.amount,
-        };
-  });
-
-  const assets = assetData?.map((data) => {
-    const assetAmount = formatAssetAmount({
-      fuelsTokens,
-      chainId: currentNetwork.chainId,
-      assetId: data.assetId,
-      amount: data.amount,
-    });
-
-    return {
-      icon: data?.icon,
-      amount: assetAmount,
-      assetId: data?.assetId,
-      name: data?.name,
-      slug: data?.slug,
-    };
-  });
-
-  const hasAssets = !!assets?.length;
-
-  return (
-    <Box w="full" mb={7}>
-      <DappTransactionFromTo
-        from={{
-          address: from.address,
-          type: from.type,
-        }}
-        to={{
-          address: to.address,
-          type: to.type,
-        }}
-        vault={vault}
-        hasAssets={hasAssets}
-      />
-      {assets && <DappTransactionAsset assets={assets} />}
-    </Box>
-  );
+type DappTransactionProps = {
+  operation: SimplifiedOperation;
+  isChild?: boolean;
+  vault?: UseTransactionSocket['vault'];
 };
 
+function DappTransactionOperation({
+  operation,
+  vault,
+  isChild = false,
+}: DappTransactionProps) {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const isGrouped = (operation.operations?.length || 0) > 1;
+
+  return (
+    <Box w="100%">
+      <Flex p={isChild ? 0 : '2px'} gap="8px" direction="column">
+        <Box
+          w="100%"
+          borderRadius="8px"
+          overflow="hidden"
+          boxShadow="0px 2px 6px -1px rgba(32, 32, 32, 0.1), 0px 0px 0px 1px rgba(32, 32, 32, 0.12)"
+        >
+          <DappTransaction.Card vault={vault!} operation={operation} />
+        </Box>
+      </Flex>
+
+      {isGrouped && (
+        <>
+          <Flex
+            as="button"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setIsExpanded(!isExpanded);
+            }}
+            align="center"
+            justify="space-between"
+            w="100%"
+            bg="transparent"
+            border="none"
+            py="8px"
+            cursor="pointer"
+            pr={4}
+          >
+            <Flex align="center" gap="2">
+              <Box
+                as={Icon}
+                transform={isExpanded ? 'rotate(45deg)' : 'rotate(0deg)'}
+                transition="all 0.2s ease"
+                viewBox="0 0 24 24"
+              >
+                <path fill="currentColor" d="M12 2L12 22M2 12L22 12" />
+              </Box>
+
+              <Text color="connector.textColor" fontSize="sm">
+                {isExpanded ? 'Collapse' : 'Expand'}
+              </Text>
+
+              {!isExpanded && (
+                <Text as="span" fontSize="sm" color="connector.usdColor">
+                  (+{operation.operations?.length} operations)
+                </Text>
+              )}
+            </Flex>
+
+            {isExpanded ? (
+              <ChevronUpIcon boxSize="4" color="gray.400" />
+            ) : (
+              <ChevronDownIcon boxSize="4" color="gray.400" />
+            )}
+          </Flex>
+
+          <MotionBox
+            initial={{ height: 0, opacity: 0 }}
+            animate={{
+              height: isExpanded ? 'auto' : 0,
+              opacity: isExpanded ? 1 : 0,
+            }}
+            transition={{
+              duration: 0.3,
+              ease: 'easeInOut',
+              opacity: { duration: 0.2 },
+            }}
+            display="flex"
+            flexDirection="column"
+            gap="2px"
+            p="2px"
+          >
+            {operation.operations?.map((op, index) => (
+              <Flex
+                key={`${op.type}-${op.from?.address || ''}-${op.to?.address || ''}-${index}`}
+                w="100%"
+                borderRadius="8px"
+                overflow="hidden"
+                boxShadow="0px 2px 6px -1px rgba(32,32,32,0.1), 0px 0px 0px 1px rgba(32,32,32,0.12)"
+              >
+                <DappTransactionOperation
+                  operation={op}
+                  vault={vault!}
+                  isChild
+                />
+              </Flex>
+            ))}
+          </MotionBox>
+        </>
+      )}
+    </Box>
+  );
+}
 export { DappTransactionOperation };
