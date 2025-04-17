@@ -3,8 +3,6 @@ import { Box, Flex, Icon, Text } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 
-import { colors } from '@/themes/colors';
-
 import { UseTransactionSocket } from '../../hooks';
 import { SimplifiedOperation } from '../../services/simplify-transaction';
 import { DappTransaction } from '.';
@@ -66,12 +64,12 @@ function DappTransactionOperation({
                 <path fill="currentColor" d="M12 2L12 22M2 12L22 12" />
               </Box>
 
-              <Text color={colors.connector.textColor} fontSize="sm">
+              <Text color="connector.textColor" fontSize="sm">
                 {isExpanded ? 'Collapse' : 'Expand'}
               </Text>
 
               {!isExpanded && (
-                <Text as="span" fontSize="sm" color={colors.connector.usdColor}>
+                <Text as="span" fontSize="sm" color="connector.usdColor">
                   (+{operation.operations?.length} operations)
                 </Text>
               )}

@@ -14,7 +14,6 @@ import { PiArrowCircleDownLight, PiCopyThin } from 'react-icons/pi';
 
 import { AddressUtils } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
-import { colors } from '@/themes/colors';
 
 import { UseTransactionSocket } from '../../hooks';
 import {
@@ -70,23 +69,19 @@ function DappTransactionOperationCard({
         <Flex align="center" gap="10px" pb="2" pl="1">
           <Avatar
             name={vault?.name}
-            color={colors.connector.avatarColor}
-            bgColor={colors.connector.avatarBg}
+            color="grey.250"
+            bgColor="grey.950"
             boxSize="40px"
             borderRadius="4px"
             fontSize="xs"
             zIndex={1}
           />
           <Box pl={2}>
-            <Text
-              fontSize="sm"
-              fontWeight="semibold"
-              color={colors.connector.nameColor}
-            >
+            <Text fontSize="sm" fontWeight="semibold" color="white">
               {vault?.name}
             </Text>
             <Flex align="center" gap="1">
-              <Text fontSize="xs" color={colors.connector.addressColor}>
+              <Text fontSize="xs" color="grey.250">
                 {AddressUtils.format(operation.from.address, 6)}
               </Text>
               <Tooltip label={hasCopied ? 'Copied!' : 'Copy'} closeOnClick>
@@ -96,7 +91,7 @@ function DappTransactionOperationCard({
                   size="xs"
                   variant="ghost"
                   aria-label="Copy address"
-                  color={colors.connector.addressColor}
+                  color="grey.250"
                   _hover={{ background: 'transparent' }}
                   _active={{ background: 'transparent' }}
                   _focus={{ boxShadow: 'none' }}
@@ -109,23 +104,19 @@ function DappTransactionOperationCard({
         <Flex align="center" gap="10px" pt="2" pl="1">
           <Avatar
             name={'Other vault'}
-            color={colors.connector.avatarColor}
-            bgColor={colors.connector.avatarBg}
+            color="grey.250"
+            bgColor="grey.950"
             boxSize="40px"
             borderRadius="4px"
             fontSize="xs"
             zIndex={1}
           />
           <Box pl={2}>
-            <Text
-              fontSize="sm"
-              fontWeight="semibold"
-              color={colors.connector.nameColor}
-            >
+            <Text fontSize="sm" fontWeight="semibold" color="white">
               Other vault
             </Text>
             <Flex align="center" gap="1">
-              <Text fontSize="xs" color={colors.connector.addressColor}>
+              <Text fontSize="xs" color="grey.250">
                 {AddressUtils.format(operation.from.address, 6)}
               </Text>
               <Tooltip label="Copy" closeOnClick>
@@ -137,7 +128,7 @@ function DappTransactionOperationCard({
                   size="xs"
                   variant="ghost"
                   aria-label="Copy address"
-                  color={colors.connector.addressColor}
+                  color="grey.250"
                   _hover={{ background: 'transparent' }}
                   _active={{ background: 'transparent' }}
                   _focus={{ boxShadow: 'none' }}
@@ -155,7 +146,7 @@ function DappTransactionOperationCard({
           bottom="-50px"
           left="3px"
           width="2px"
-          bg={colors.connector.lineColor}
+          bg="grey.950"
           zIndex="0"
         />
         <VStack
@@ -168,11 +159,11 @@ function DappTransactionOperationCard({
           <Flex align="center" gap="3" position="relative" zIndex="1">
             <Icon
               as={PiArrowCircleDownLight}
-              color={colors.connector.iconColor}
+              color="connector.iconColor"
               boxSize="20px"
               position="absolute"
               left="-22px"
-              top="50%"
+              top="55%"
               bg="dark.200"
               transform="translateY(-50%)"
               borderRadius="full"
@@ -180,7 +171,7 @@ function DappTransactionOperationCard({
             />
             <Text
               fontSize="sm"
-              color={colors.connector.iconColor}
+              color="connector.iconColor"
               fontWeight="medium"
               pl={6}
             >
@@ -190,7 +181,7 @@ function DappTransactionOperationCard({
 
           {(!isContract ||
             Number(bn(operation?.assets?.[0]?.amount || 0)) > 0.00000001) && (
-            <Flex align="center" gap="3" pt="1" pl={asset?.icon ? 6 : 0}>
+            <Flex align="center" gap="2" pt="1" pl={asset?.icon ? 6 : 0}>
               <Box width="16px" height="16px">
                 {asset?.icon && (
                   <img
@@ -202,7 +193,7 @@ function DappTransactionOperationCard({
               </Box>
               <Text
                 fontSize="sm"
-                color={colors.connector.textColor}
+                color="connector.textColor"
                 fontWeight="medium"
               >
                 {bn(operation?.assets?.[0]?.amount || 0).formatUnits() ===
@@ -214,10 +205,10 @@ function DappTransactionOperationCard({
               {formatted !== '$0.00' && (
                 <Text
                   fontSize="sm"
-                  color={colors.connector.usdColor}
+                  color="connector.usdColor"
                   fontWeight="medium"
                 >
-                  ~ {formatted}
+                  {`~ ${formatted}`}
                 </Text>
               )}
             </Flex>
@@ -229,23 +220,19 @@ function DappTransactionOperationCard({
         <Flex align="center" gap="10px" pb="2" pl="1">
           <Avatar
             name={vault?.name}
-            color={colors.connector.avatarColor}
-            bgColor={colors.connector.avatarBg}
+            color="grey.250"
+            bgColor="grey.950"
             boxSize="40px"
             borderRadius="4px"
             fontSize="xs"
             zIndex={1}
           />
           <Box pl={2}>
-            <Text
-              fontSize="sm"
-              fontWeight="semibold"
-              color={colors.connector.nameColor}
-            >
+            <Text fontSize="sm" fontWeight="semibold" color="white">
               {vault?.name}
             </Text>
             <Flex align="center" gap="1">
-              <Text fontSize="xs" color={colors.connector.addressColor}>
+              <Text fontSize="xs" color="grey.250">
                 {AddressUtils.format(operation.to.address, 6)}
               </Text>
               <Tooltip label={hasCopied ? 'Copied!' : 'Copy'} closeOnClick>
@@ -255,7 +242,7 @@ function DappTransactionOperationCard({
                   size="xs"
                   variant="ghost"
                   aria-label="Copy address"
-                  color={colors.connector.addressColor}
+                  color="grey.250"
                   _hover={{ background: 'transparent' }}
                   _active={{ background: 'transparent' }}
                   _focus={{ boxShadow: 'none' }}
@@ -268,23 +255,19 @@ function DappTransactionOperationCard({
         <Flex align="center" gap="10px" pt="2" pl="1">
           <Avatar
             name={'Other vault'}
-            color={colors.connector.avatarColor}
-            bgColor={colors.connector.avatarBg}
+            color="grey.250"
+            bgColor="grey.950"
             boxSize="40px"
             borderRadius="4px"
             fontSize="xs"
             zIndex={1}
           />
           <Box pl={2}>
-            <Text
-              fontSize="sm"
-              fontWeight="semibold"
-              color={colors.connector.nameColor}
-            >
+            <Text fontSize="sm" fontWeight="semibold" color="white">
               Other vault
             </Text>
             <Flex align="center" gap="1">
-              <Text fontSize="xs" color={colors.connector.addressColor}>
+              <Text fontSize="xs" color="grey.250">
                 {AddressUtils.format(operation.to.address, 6)}
               </Text>
               <Tooltip label="Copy" closeOnClick>
@@ -296,7 +279,7 @@ function DappTransactionOperationCard({
                   size="xs"
                   variant="ghost"
                   aria-label="Copy address"
-                  color={colors.connector.addressColor}
+                  color="grey.250"
                   _hover={{ background: 'transparent' }}
                   _active={{ background: 'transparent' }}
                   _focus={{ boxShadow: 'none' }}

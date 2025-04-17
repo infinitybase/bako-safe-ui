@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 
 const MotionBox = motion(Box);
 
-import { colors } from '@/themes/colors';
+import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons';
 
 import { UseTransactionSocket } from '../../hooks';
 import { SimplifiedOperation } from '../../services/simplify-transaction';
@@ -30,7 +30,7 @@ export function DappTransactionOperationSection({
 
   return (
     <Box
-      bg={colors.connector.backgroundColor}
+      bg="connector.backgroundColor"
       borderRadius="8px"
       mb="8px"
       overflow="hidden"
@@ -52,16 +52,20 @@ export function DappTransactionOperationSection({
           minH="36px"
           justify="space-between"
         >
-          <Flex gap="8px" align="center">
-            <Text
-              fontSize="13px"
-              letterSpacing="-0.01em"
-              color="white"
-              fontWeight="500"
-            >
-              {title}
-            </Text>
-          </Flex>
+          <Text
+            fontSize="13px"
+            letterSpacing="-0.01em"
+            color="white"
+            fontWeight="500"
+          >
+            {title}
+          </Text>
+
+          {isOpen ? (
+            <ChevronUpIcon boxSize="4" color="gray.400" />
+          ) : (
+            <ChevronDownIcon boxSize="4" color="gray.400" />
+          )}
         </Flex>
       )}
 
