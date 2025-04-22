@@ -27,6 +27,7 @@ export const transactionStatus = ({
   const witness = witnesses?.find((t) => t.account === account);
   const howManyDeclined =
     witnesses.filter((w) => w.status === WitnessStatus.REJECTED).length ?? 0;
+  const emptyWitnesses = witnesses.length === 0;
 
   return {
     isCompleted:
@@ -36,7 +37,7 @@ export const transactionStatus = ({
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     isSigned: [DONE, CANCELED].includes(witness?.status),
-    isPending: witness?.status !== PENDING,
+    isPending: emptyWitnesses ? false : witness?.status !== PENDING,
     isReproved: vaultMembersCount - howManyDeclined < minSigners,
     isError: transaction.status === TransactionStatus.FAILED,
     isCanceled: transaction.status === TransactionStatus.CANCELED,

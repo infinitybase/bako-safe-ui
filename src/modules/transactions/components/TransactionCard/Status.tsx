@@ -30,6 +30,8 @@ const Status = ({
 }: TransactionCardStatusProps) => {
   const { isReproved, isCompleted, isError, isCanceled } = status;
 
+  console.log('[STATUS] status', status);
+
   const signaturesCount =
     transaction!.resume?.witnesses?.filter((w) =>
       [WitnessStatus.DONE, WitnessStatus.CANCELED].includes(w.status),

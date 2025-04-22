@@ -64,6 +64,8 @@ const useVaultTransactionsRequest = (
         return undefined;
       }
 
+      console.log('lastPage', lastPage);
+
       return { offsetDb: lastPage.offsetDb, offsetFuel: lastPage.offsetFuel };
     },
   });
