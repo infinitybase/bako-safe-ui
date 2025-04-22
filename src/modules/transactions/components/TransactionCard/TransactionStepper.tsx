@@ -10,14 +10,15 @@ import {
   Text,
   useSteps,
 } from '@chakra-ui/react';
-import { format, parseISO } from 'date-fns';
-import { useEffect } from 'react';
+import { parseISO } from 'date-fns';
+import { enUS } from 'date-fns/locale';
+import { formatInTimeZone } from 'date-fns-tz';
+import { memo, useEffect, useMemo } from 'react';
 
 import { AddressUtils } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { ITransactionHistory, TransactionHistoryType } from '../../services';
-
 interface TransactionStepperProps {
   steps: ITransactionHistory[];
 }
@@ -57,7 +58,7 @@ const TransactionTypeFormatter = (
   }
 };
 
-const TransactionStepper = ({ steps }: TransactionStepperProps) => {
+const TransactionStepper = memo(({ steps }: TransactionStepperProps) => {
   const {
     authDetails: { userInfos },
     addressBookInfos: {
@@ -71,8 +72,9 @@ const TransactionStepper = ({ steps }: TransactionStepperProps) => {
     count: steps?.length,
   });
 
-  const isDeclined = steps?.find(
-    (steps) => steps.type === TransactionHistoryType.DECLINE,
+  const isDeclined = useMemo(
+    () => steps?.find((steps) => steps.type === TransactionHistoryType.DECLINE),
+    [steps],
   );
   const lastStep = steps?.length - 1;
 
@@ -184,12 +186,24 @@ const TransactionStepper = ({ steps }: TransactionStepperProps) => {
                     >
                       {TransactionTypeFormatter(step, userInfos.address)}
                     </Text>
-                    {!nickname && step.type !== TransactionHistoryType.SEND && (
-                      <Text variant="subtitle" color="grey.425">
-                        {step.owner.address !== userInfos.address &&
-                          AddressUtils.format(`(${step.owner.address})`)}
-                      </Text>
-                    )}
+                    {!nickname &&
+                      step.type !== TransactionHistoryType.SEND &&
+                      step.owner.type === 'WEB_AUTHN' && (
+                        <Text variant="subtitle" color="grey.425">
+                          {step.owner.address !== userInfos.address
+                            ? `(${AddressUtils.format(AddressUtils.toBech32(`${step.owner.address}`))})`
+                            : null}
+                        </Text>
+                      )}
+                    {!nickname &&
+                      step.type !== TransactionHistoryType.SEND &&
+                      step.owner.type !== 'WEB_AUTHN' && (
+                        <Text variant="subtitle" color="grey.425">
+                          {step.owner.address !== userInfos.address
+                            ? AddressUtils.format(`(${step.owner.address})`)
+                            : null}
+                        </Text>
+                      )}
                   </StepTitle>
                   <StepDescription
                     style={{
@@ -199,7 +213,12 @@ const TransactionStepper = ({ steps }: TransactionStepperProps) => {
                     }}
                   >
                     <Text variant="description" color="grey.425" fontSize="xs">
-                      {format(parseISO(step.date), 'EEE MMM d yyyy HH:mm:s')}
+                      {formatInTimeZone(
+                        parseISO(step.date),
+                        Intl.DateTimeFormat().resolvedOptions().timeZone,
+                        'EEE, do MMM, hh:mm a',
+                        { locale: enUS },
+                      )}
                     </Text>
                   </StepDescription>
                 </Box>
@@ -210,6 +229,8 @@ const TransactionStepper = ({ steps }: TransactionStepperProps) => {
       </Stepper>
     </Box>
   );
-};
+});
+
+TransactionStepper.displayName = 'TransactionStepper';
 
 export { TransactionStepper };

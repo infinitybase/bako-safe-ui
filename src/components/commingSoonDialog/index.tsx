@@ -19,6 +19,7 @@ const CommingSoonDialog = ({
 }: CommingSoonDialogProps) => {
   return (
     <Dialog.Modal
+      id="coming-soon-toast"
       isOpen={isOpen}
       onClose={onClose}
       closeOnOverlayClick={false}

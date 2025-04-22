@@ -23,7 +23,16 @@ export const vaultInfinityQueryKey = {
     status?: string,
     type?: TransactionType,
     id?: string,
-  ) => [VAULT_TRANSACTIONS_LIST_PAGINATION, vaultId, status, type, id],
+  ) => {
+    const key = [VAULT_TRANSACTIONS_LIST_PAGINATION];
+
+    if (vaultId) key.push(vaultId);
+    if (status) key.push(status);
+    if (type) key.push(type);
+    if (id) key.push(id);
+
+    return key;
+  },
 };
 
 const useVaultTransactionsRequest = (
@@ -75,6 +84,7 @@ const useVaultTransactionsRequest = (
 
   return {
     ...query,
+    queryKey,
     transactions: useGroupTransactionsByMonth(transactionsList),
   };
 };

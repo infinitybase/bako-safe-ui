@@ -34,6 +34,8 @@ const AddressWithCopyBtn = ({
     screenSizes: { isExtraSmall },
   } = useWorkspaceContext();
 
+  const ariaLabel = rest['aria-label'] || 'Copy';
+
   const address = useMemo(() => {
     if (isB256(value)) {
       return FuelsAddress.fromB256(value).toString();
@@ -53,6 +55,7 @@ const AddressWithCopyBtn = ({
       justifyContent={isSidebarAddress ? 'start' : 'end'}
       gap={3}
       {...rest}
+      aria-label={undefined}
     >
       <Address
         value={address}
@@ -66,7 +69,7 @@ const AddressWithCopyBtn = ({
         display={hideCopyButton ? 'none' : 'initial'}
         size="xs"
         minW={2}
-        aria-label="Copy"
+        aria-label={ariaLabel}
         addressToCopy={address}
         {...copyBtnProps}
       />

@@ -1,3 +1,5 @@
+import { useMemo } from 'react';
+
 import { useTransactionHistoryRequest } from './useTransactionHistoryRequest';
 
 export const useTransactionHistory = (
@@ -15,10 +17,13 @@ export const useTransactionHistory = (
     isDeposit,
   });
 
+  const transactionHistory = useMemo(
+    () => transactionHistoryRequest?.data?.map((transaction) => transaction),
+    [transactionHistoryRequest],
+  );
+
   return {
     ...transactionHistoryRequest,
-    transactionHistory: transactionHistoryRequest?.data?.map(
-      (transaction) => transaction,
-    ),
+    transactionHistory,
   };
 };

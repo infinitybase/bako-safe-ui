@@ -31,6 +31,11 @@ export enum TransactionHistoryType {
 
 export type ITransactionStatusFilter = TransactionStatus[] | string[] | string;
 
+export enum TypeUser {
+  FUEL = 'FUEL',
+  WEB_AUTHN = 'WEB_AUTHN',
+}
+
 export interface ITransactionHistory {
   type: TransactionHistoryType;
   date: string;
@@ -38,6 +43,7 @@ export interface ITransactionHistory {
     id: string;
     avatar: string;
     address: string;
+    type: TypeUser;
   };
 }
 
@@ -58,6 +64,7 @@ export interface TransactionDetails {
 export interface ITransactionPending {
   ofUser: number;
   transactionsBlocked: boolean;
+  pendingSignature: boolean;
 }
 
 export interface GetTransactionParams {
@@ -158,6 +165,34 @@ export interface ResolveTransactionCostInput {
 export enum TransactionOrderBy {
   CREATED_AT = 'createdAt',
   UPDATED_AT = 'updatedAt',
+}
+
+export interface ITransactionQueryOldData {
+  currentPage: number;
+  data: ITransaction[];
+  nextPage: number;
+  perPage: number;
+  prevPage: number;
+  total: number;
+  totalPages: number;
+}
+
+export interface ITransactionQueryUpdatePage {
+  page?: number;
+  perPage?: number;
+  data: ITransaction[];
+}
+
+export interface ITransactionInfinityQueryData {
+  pageParams: ITransactionQueryUpdatePage;
+  pages: ITransactionQueryUpdatePage[];
+}
+
+export interface ITransactionReactQueryUpdate {
+  type: '[UPDATED]' | '[CREATED]' | '[CANCELED]';
+  transaction: ITransaction;
+  history: ITransactionHistory;
+  sessionId: string;
 }
 
 export type GetTransactionResponse = ITransaction;

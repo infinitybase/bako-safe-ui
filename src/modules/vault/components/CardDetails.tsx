@@ -107,9 +107,9 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
       handlers: { hasPermission },
     },
     screenSizes: { isMobile },
+    tokensUSD,
   } = useWorkspaceContext();
   const { checkNetwork } = useNetworks();
-
   const isTestnet = checkNetwork(NetworkType.TESTNET);
 
   const balanceFormatted = bn(bn.parseUnits(ethBalance ?? '0.000'))?.format({
@@ -442,6 +442,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                       containerRef={assetsContainerRef}
                       assets={assets.assets!}
                       nfts={assets.nfts!}
+                      tokensUSD={tokensUSD.data}
                       visibleBalance={visibleBalance}
                       viewAllRedirect={Pages.vaultBalance({
                         vaultId: vault.data?.id,

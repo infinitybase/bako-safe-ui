@@ -1,4 +1,5 @@
 import {
+  Avatar,
   Box,
   Button,
   Card,
@@ -6,22 +7,22 @@ import {
   Flex,
   Heading,
   HStack,
+  Spacer,
   Spinner,
   Text,
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
+import { useFuel } from '@fuels/react';
 import { useEffect, useState } from 'react';
-import { RiLink } from 'react-icons/ri';
+import { RiLogoutBoxRLine } from 'react-icons/ri';
 
-import {
-  BakoLoading,
-  CustomSkeleton,
-  EmptyBox,
-  LineCloseIcon,
-} from '@/components';
+import { CustomSkeleton, EmptyBox, LineCloseIcon } from '@/components';
 import { Container } from '@/layouts/dapp/container';
 import { useQueryParams } from '@/modules/auth';
+import { TypeUser } from '@/modules/auth/services';
+import { AddressUtils } from '@/modules/core';
+import { EConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
 import { CreateVaultDialog } from '@/modules/vault';
 import { VaultItemBox } from '@/modules/vault/components/modal/box';
 import { useVaultDrawer } from '@/modules/vault/components/modal/hook';
@@ -33,12 +34,13 @@ import { useAuthSocket, useVerifyBrowserType } from '../hooks';
 const VaultConnector = () => {
   const { name, origin, sessionId, request_id } = useQueryParams();
   const [dynamicHeight, setDynamicHeight] = useState(0);
-  const [connectingManually, setConnectingManually] = useState(false);
 
   const {
     authDetails: { userInfos, handlers },
   } = useWorkspaceContext();
   const { isSafariBrowser } = useVerifyBrowserType();
+
+  const { fuel } = useFuel();
 
   const {
     request: { vaults, isSuccess, isLoading, isFetching },
@@ -51,6 +53,8 @@ const VaultConnector = () => {
   const { isOpen, onClose, onOpen } = useDisclosure();
 
   const noVaultsAvailable = isSuccess && !vaults.length;
+
+  const isWebAuthn = userInfos?.type.type === TypeUser.WEB_AUTHN;
 
   useEffect(() => {
     if (
@@ -84,27 +88,104 @@ const VaultConnector = () => {
 
   useEffect(() => {
     const clientWindowHeight = window.innerHeight;
-    const dividedBy = clientWindowHeight >= 750 ? 1.26 : 1.38;
-
+    const dividedBy = clientWindowHeight >= 750 ? 1.64 : 1.8;
     setDynamicHeight(clientWindowHeight / dividedBy);
   }, []);
 
-  if (isLoading || (send.isPending && !connectingManually)) {
-    return <BakoLoading />;
-  }
+  const logout = async () => {
+    try {
+      userInfos?.type.type === TypeUser.FUEL &&
+        userInfos?.type.name !== EConnectors.FULLET &&
+        (await fuel.disconnect());
+    } catch (error) {
+      // eslint-disable-next-line no-empty
+    } finally {
+      handlers.logout?.();
+    }
+  };
 
   return (
-    <Container>
-      <Flex h="$100vh" w="full" overflow="hidden" bgColor="dark.950">
+    <Container w="full">
+      <Flex h="$100vh" w="full" overflow="hidden" direction={'column'}>
         <CreateVaultDialog isOpen={isOpen} onClose={onClose} />
 
-        <Box w={420} px={8} pt={6}>
+        <HStack gap={3} paddingX={6} paddingTop={5} w="full">
+          <Avatar
+            variant="roundedSquare"
+            src={userInfos?.avatar}
+            boxSize={'40px'}
+            border="2px solid #EBA312"
+          />
+
+          <VStack w="full" alignItems={'flex-start'} minW={0}>
+            <Text
+              variant="subtitle"
+              isTruncated
+              w="full"
+              color="grey.75"
+              fontSize={12}
+              fontWeight={500}
+              lineHeight={4}
+            >
+              {isWebAuthn
+                ? userInfos?.name
+                : AddressUtils.format(userInfos?.address, 15)}
+            </Text>
+
+            {isWebAuthn && (
+              <Text
+                variant="subtitle"
+                fontWeight={400}
+                isTruncated
+                w="full"
+                color="grey.550"
+                fontSize={12}
+                lineHeight={4}
+              >
+                {AddressUtils.format(
+                  AddressUtils.toBech32(userInfos?.address),
+                  15,
+                )}
+              </Text>
+            )}
+          </VStack>
+
+          <Spacer />
+
+          <Button
+            variant="primary"
+            color="grey.75"
+            bgColor="grey.825"
+            size="xs"
+            minW={140}
+            height={8}
+            fontWeight={400}
+            fontSize="12px"
+            rightIcon={<RiLogoutBoxRLine size={14} />}
+            onClick={logout}
+          >
+            Change account
+          </Button>
+        </HStack>
+
+        <Divider borderColor="grey.425" marginTop={5} />
+
+        <Box
+          display="flex"
+          w={'full'}
+          flexDirection={'column'}
+          px={6}
+          pt={4}
+          pb={0}
+          //flex={1}
+          //bgColor={'green.100'}
+        >
           <HStack
             spacing={2}
             justifyContent="space-between"
             alignItems="flex-start"
           >
-            <Heading fontSize="md" fontWeight="semibold" color="grey.200">
+            <Heading fontSize={12} fontWeight={700} color="grey.50">
               Select vault
             </Heading>
 
@@ -119,14 +200,12 @@ const VaultConnector = () => {
             )}
           </HStack>
 
-          <Divider borderColor="grey.425" mt={4} />
-
-          <CustomSkeleton h={564} isLoaded={!isLoading} mt={isLoading ? 4 : 0}>
+          <CustomSkeleton isLoaded={!isLoading} mt={4}>
             {/* Result */}
             <VStack
               w="full"
-              h={noVaultsAvailable ? 140 : `${dynamicHeight}px`}
-              pt={4}
+              h={noVaultsAvailable ? 0 : `${dynamicHeight}px`}
+              mt={0}
               spacing={2}
               overflowY="scroll"
               css={{
@@ -134,12 +213,6 @@ const VaultConnector = () => {
                 scrollbarWidth: 'none',
               }}
             >
-              <DappTransaction.RequestingFrom
-                mb={2}
-                name={name}
-                origin={origin}
-              />
-
               {vaults?.map((vault) => {
                 if (!vault) return null;
 
@@ -160,6 +233,7 @@ const VaultConnector = () => {
                     members={members?.length}
                     address={predicateAddress}
                     root={root}
+                    id={id}
                     isActive={selectedVaultId === id}
                     isSingleWorkspace={workspace.single}
                     onClick={() => setSelectedVaultId(id)}
@@ -184,7 +258,7 @@ const VaultConnector = () => {
 
             {/* No vaults */}
             {!isFetching && noVaultsAvailable && (
-              <VStack mb={6}>
+              <VStack mb={6} h={'full'} gap={5}>
                 <Card
                   w="full"
                   bgColor="transparent"
@@ -195,7 +269,7 @@ const VaultConnector = () => {
                   flexDirection="column"
                   alignItems="center"
                   h={224}
-                  my={10}
+                  my={1}
                 >
                   <Flex
                     alignItems="center"
@@ -232,60 +306,61 @@ const VaultConnector = () => {
                 </Button>
               </VStack>
             )}
-
-            {!noVaultsAvailable && <Divider borderColor="grey.425" mb={6} />}
-
-            <HStack w="full" justifyContent="center" pb={10}>
-              <Button
-                variant="secondary"
-                borderColor="grey.75"
-                onClick={() => {
-                  handlers.logout?.(true, window.close);
-                }}
-                w={noVaultsAvailable ? 'full' : 'unset'}
-              >
-                Cancel
-              </Button>
-
-              {!noVaultsAvailable && (
-                <Button
-                  variant="primary"
-                  width="100%"
-                  fontWeight={700}
-                  fontSize={16}
-                  isDisabled={
-                    !selectedVaultId ||
-                    !vaults.length ||
-                    isLoading ||
-                    send.isPending
-                  }
-                  leftIcon={<RiLink size={22} />}
-                  onClick={() => {
-                    setConnectingManually(true);
-                    send.mutate(
-                      {
-                        name: name!,
-                        origin: origin!,
-                        sessionId: sessionId!,
-                        request_id: request_id!,
-                        vaultId: selectedVaultId,
-                        userAddress: userInfos.address,
-                      },
-                      {
-                        onError: () => {
-                          setConnectingManually(false);
-                        },
-                      },
-                    );
-                  }}
-                  isLoading={send.isPending}
-                >
-                  Connect
-                </Button>
-              )}
-            </HStack>
           </CustomSkeleton>
         </Box>
+        <VStack
+          w={'full'}
+          gap={6}
+          p={6}
+          boxShadow={'0px 8px 24px 0px #00000080'}
+          borderTopLeftRadius={16}
+          borderTopRightRadius={16}
+          maxH={195}
+        >
+          <DappTransaction.RequestingFrom name={name} origin={origin} />
+          <HStack w="full" justifyContent="center" spacing={5}>
+            <Button
+              variant="secondary"
+              borderColor="grey.75"
+              paddingX={8}
+              onClick={() => {
+                handlers.logout?.(true, window.close);
+              }}
+              w={noVaultsAvailable ? 'full' : 'unset'}
+            >
+              Cancel
+            </Button>
+
+            {!noVaultsAvailable && (
+              <Button
+                variant="primary"
+                width="100%"
+                fontWeight={700}
+                fontSize={16}
+                isDisabled={
+                  !selectedVaultId ||
+                  !vaults.length ||
+                  isLoading ||
+                  send.isPending
+                }
+                //leftIcon={<RiLink size={22} />}
+                onClick={() => {
+                  send.mutate({
+                    name: name!,
+                    origin: origin!,
+                    sessionId: sessionId!,
+                    request_id: request_id!,
+                    vaultId: selectedVaultId,
+                    userAddress: userInfos.address,
+                  });
+                }}
+                isLoading={send.isPending}
+              >
+                Connect
+              </Button>
+            )}
+          </HStack>
+        </VStack>
       </Flex>
     </Container>
   );

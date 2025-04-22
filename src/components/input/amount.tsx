@@ -71,7 +71,12 @@ const AmountInput = (props: AmountInputProps) => (
     }}
     onBlur={(event: React.FocusEvent<HTMLInputElement>) => {
       let inputValue = event.target.value;
-
+      if (inputValue === '') {
+        inputValue = '';
+        event.target.value = inputValue;
+        props.onChange?.(event);
+        return;
+      }
       if (!inputValue.includes('.')) {
         inputValue = `${inputValue}.00`;
       } else {

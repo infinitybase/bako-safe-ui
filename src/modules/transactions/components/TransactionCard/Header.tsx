@@ -1,5 +1,5 @@
 import { AccordionButton, Box, Grid, HStack } from '@chakra-ui/react';
-import { memo, useRef } from 'react';
+import { memo } from 'react';
 
 import { TransactionState } from '@/modules/core';
 
@@ -52,9 +52,8 @@ export const Header = memo(
               transactionName={
                 isFuelFriday
                   ? 'Fuel Friday'
-                  : (transaction.name ??
-                    transaction.type.slice(0, 1).toUpperCase() +
-                      transaction.type.slice(1).toLowerCase())
+                    : (transaction.name
+                      ?? `${transaction.type.slice(0, 1).toUpperCase()}${transaction.type.slice(1).toLowerCase()}`)
               }
             />
           )}

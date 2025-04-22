@@ -22,6 +22,8 @@ type AccordionActionProp = Pick<
 const AccordionEditAction = (props: AccordionActionProp) => {
   const { isOpen } = useAccordionItemState();
 
+  if (isOpen) return null;
+
   return (
     <IconButton
       p={0}
@@ -32,11 +34,8 @@ const AccordionEditAction = (props: AccordionActionProp) => {
       bgColor="transparent"
       aria-label="Edit transaction"
       icon={<Icon fontSize="xl" color="grey.200" as={EditIcon} />}
-      isDisabled={isOpen}
       onClick={props.onClick}
-    >
-      <AccordionButton />
-    </IconButton>
+    />
   );
 };
 

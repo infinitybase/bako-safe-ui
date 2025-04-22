@@ -32,6 +32,7 @@ export interface AutocompleteOption {
 
 interface AutocompleteProps extends Omit<InputGroupProps, 'onChange'> {
   label?: string;
+  ariaLabel?: string;
   value?: string;
   options?: AutocompleteOption[];
   disabled?: boolean;
@@ -57,6 +58,7 @@ interface AutocompleteProps extends Omit<InputGroupProps, 'onChange'> {
 
 const Autocomplete = ({
   label,
+  ariaLabel,
   value,
   options,
   disabled,
@@ -152,6 +154,11 @@ const Autocomplete = ({
   };
 
   useEffect(() => {
+    if (!value) {
+      setInputValue('');
+      return;
+    }
+
     if (options && options.length > 0) {
       const selectedOption = options.find((option) => option.value === value);
       if (selectedOption) {
@@ -172,6 +179,7 @@ const Autocomplete = ({
     <>
       <InputGroup {...rest}>
         <Input
+          aria-label={ariaLabel ? ariaLabel : 'Autocomplete Input'}
           value={inputValue}
           placeholder=" "
           disabled={disabled}
