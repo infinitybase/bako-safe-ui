@@ -45,8 +45,8 @@ export type Asset = {
 export type NFT = {
   name: string;
   assetId: string;
-  symbol?: string;
-  collection?: string;
+  symbol?: string | undefined | null;
+  collection?: string | undefined | null;
   contractId?: string;
   metadata?: DefaultMetadata;
 };
