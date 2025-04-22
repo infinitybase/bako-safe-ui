@@ -1,30 +1,25 @@
 import {
   Box,
-  Card,
   Center,
+  CloseButton,
+  Flex,
+  FlexProps,
   Grid,
-  HStack,
+  Heading,
   Icon,
-  IconButton,
   Image,
   Skeleton,
   Spinner,
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { css } from '@emotion/react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import NftEmpty from '@/assets/nft-empty.svg';
-import { UpRightArrow } from '@/components';
-import {
-  AddressUtils,
-  Asset,
-  NFT,
-  shakeAnimationY,
-} from '@/modules/core/utils';
-import { NetworkService } from '@/modules/network/services';
-import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
+import { AddressWithCopyBtn, Card, Dialog } from '@/components';
+import { BTCIcon } from '@/components/icons/btc-icon';
+import { ContractIcon } from '@/components/icons/contract-icon';
+import { AddressUtils, Asset, NFT } from '@/modules/core/utils';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useGetNftsInfos, useGetTokenInfos, useScreenSize } from '../../hooks';
@@ -37,14 +32,50 @@ interface NftsBalanceProps {
   nfts?: NFT[];
 }
 
+type NFTTextProps = {
+  value: string;
+  title: string;
+  icon?: React.ReactNode;
+  isCopy?: boolean;
+} & FlexProps;
+
+const NFTText = ({ value, title, icon, isCopy, ...rest }: NFTTextProps) => {
+  return (
+    <Flex
+      flex={1}
+      minW="fit-content"
+      w="full"
+      p={2}
+      gap={3}
+      alignItems="center"
+      borderRadius="md"
+      bg="grey.925"
+      position="relative"
+      {...rest}
+    >
+      {icon && <Icon fontSize={25}>{icon}</Icon>}
+      <Box>
+        <Text fontSize="xs" color="section.500">
+          {title}
+        </Text>
+        <Flex gap={2}>
+          {isCopy ? (
+            <AddressWithCopyBtn value={value} isDetailDialog />
+          ) : (
+            <Text fontSize="sm" color={'white'} wordBreak="break-word">
+              {value}
+            </Text>
+          )}
+        </Flex>
+      </Box>
+    </Flex>
+  );
+};
+
 const NftBalanceCard = ({ nft }: { nft: NFT }) => {
-  const { vault } = useVaultInfosContext();
   const {
-    authDetails: {
-      userInfos: { network },
-    },
     nftList,
-    screenSizes: { isLitteSmall, isSmall },
+    screenSizes: { isLitteSmall },
   } = useWorkspaceContext();
 
   const { nftsInfo, nftImageUrl } = useGetNftsInfos({
@@ -53,129 +84,252 @@ const NftBalanceCard = ({ nft }: { nft: NFT }) => {
   });
 
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [modalImageLoaded, setModalImageLoaded] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
-  const redirectToNetwork = () =>
-    window.open(
-      `${NetworkService.getExplorer(network.url)}/account/${vault.data.predicateAddress}/assets`,
-      '_BLANK',
-    );
-
-  if (!nftsInfo) {
-    return null;
-  }
+  if (!nftsInfo) return null;
 
   return (
-    <Card
-      p={isLitteSmall ? 1 : 2}
-      borderRadius={isLitteSmall ? 5 : 8}
-      borderWidth="1px"
-      borderColor="grey.950"
-      backgroundColor="dark.50"
-      backdropFilter="blur(6px)"
-      boxShadow="lg"
-    >
-      <VStack alignItems="flex-start" gap={isLitteSmall ? 1 : 2}>
-        <Box
-          w="full"
-          aspectRatio={1}
-          borderRadius={5}
-          position="relative"
-          overflow="hidden"
-        >
-          {!imageLoaded && (
-            <>
-              <Skeleton
-                startColor="dark.200"
-                endColor="dark.500"
-                w="full"
-                h="full"
-                position="absolute"
-                top={0}
-                left={0}
-                zIndex={0}
-              />
-              <Center
-                w="full"
-                h="full"
-                position="absolute"
-                top={0}
-                left={0}
-                zIndex={1}
-              >
-                <Spinner
-                  thickness="3px"
-                  speed="0.5s"
-                  color="grey.400"
-                  size="md"
-                />
-              </Center>
-            </>
-          )}
-
-          <Image
+    <>
+      <Card
+        p={isLitteSmall ? 1 : 2}
+        borderRadius={isLitteSmall ? 5 : 8}
+        borderWidth="1px"
+        borderColor="gradients.transaction-border"
+        backgroundColor="dark.50"
+        backgroundImage="gradients.transaction-card"
+        backdropFilter="blur(6px)"
+        boxShadow="lg"
+        onClick={() => setDialogOpen(true)}
+        cursor="pointer"
+      >
+        <VStack alignItems="flex-start" gap={isLitteSmall ? 1 : 2}>
+          <Box
             w="full"
-            h="full"
-            src={nftImageUrl || NftEmpty}
+            aspectRatio={1}
             borderRadius={5}
-            alt="NFT Image"
-            objectFit="cover"
-            onLoad={() => setImageLoaded(true)}
-            opacity={imageLoaded ? 1 : 0}
-            transition="opacity 0.3s ease"
-          />
-        </Box>
-        <VStack alignItems="flex-start" gap={0} maxW="full">
-          <HStack width="full" spacing={isLitteSmall ? 1 : 2} align="center">
-            <Text
-              flex={1}
-              fontSize={isSmall ? '11px' : 'sm'}
-              color="grey.50"
-              noOfLines={1}
-              textOverflow="ellipsis"
-              overflow="hidden"
-              whiteSpace="nowrap"
-              minWidth={0}
-            >
-              {AddressUtils.format(
-                nft.assetId ?? '',
-                isLitteSmall ? 10 : isSmall ? 6 : 10,
-              )}
-            </Text>
-            <IconButton
-              icon={
-                <Icon
-                  className="nft-icon-1"
-                  as={UpRightArrow}
-                  fontSize={isLitteSmall ? 'xs' : 'md'}
-                  color="grey.75"
+            position="relative"
+            overflow="hidden"
+          >
+            {!imageLoaded && (
+              <>
+                <Skeleton
+                  startColor="dark.200"
+                  endColor="dark.500"
+                  w="full"
+                  h="full"
+                  position="absolute"
+                  top={0}
+                  left={0}
+                  zIndex={0}
                 />
-              }
-              aria-label="Explorer"
-              size={isLitteSmall ? 'xxs' : 'xs'}
-              minW="auto"
-              bg="none"
-              h="auto"
-              _hover={{ bg: 'none' }}
-              css={css`
-                &:hover .nft-icon-1 {
-                  animation: ${shakeAnimationY} 0.5s ease-in-out;
-                }
-              `}
-              onClick={redirectToNetwork}
-              flexShrink={0}
+                <Center
+                  w="full"
+                  h="full"
+                  position="absolute"
+                  top={0}
+                  left={0}
+                  zIndex={1}
+                >
+                  <Spinner
+                    thickness="3px"
+                    speed="0.5s"
+                    color="grey.400"
+                    size="md"
+                  />
+                </Center>
+              </>
+            )}
+            <Image
+              w="full"
+              h="full"
+              src={nftImageUrl || NftEmpty}
+              borderRadius={5}
+              alt="NFT Image"
+              objectFit="cover"
+              onLoad={() => setImageLoaded(true)}
+              opacity={imageLoaded ? 1 : 0}
+              transition="opacity 0.3s ease"
             />
-          </HStack>
+          </Box>
+
+          <Text
+            fontSize={isLitteSmall ? 'xs' : 'sm'}
+            color="grey.50"
+            maxW="full"
+            isTruncated
+          >
+            {nftsInfo?.symbol || nftsInfo?.name || nftsInfo.metadata.name
+              ? `${nftsInfo?.symbol || ''} ${nftsInfo?.name || nftsInfo.metadata.name || ''}`.trim()
+              : AddressUtils.format(nftsInfo?.assetId, 10)}
+          </Text>
         </VStack>
-        <Text
-          fontSize={isLitteSmall ? 'xs' : 'sm'}
-          color="grey.50"
-          maxW="full"
-          isTruncated
+      </Card>
+
+      <Dialog.Modal
+        size={{ base: '5xl', md: '4xl' }}
+        onClose={() => setDialogOpen(false)}
+        isOpen={dialogOpen}
+      >
+        <Dialog.Body
+          h="full"
+          display="flex"
+          flexDirection={{ base: 'column-reverse', md: 'row' }}
+          alignItems={{ base: 'center', md: 'flex-start' }}
         >
-          {nftsInfo?.name || 'NFT'}
-        </Text>
-      </VStack>
-    </Card>
+          <Box
+            w={{ base: 'full', md: 'auto' }}
+            maxW={{ base: 'full', sm: '400px' }}
+            position="relative"
+            borderRadius="xl"
+            overflow="hidden"
+          >
+            {!modalImageLoaded && (
+              <>
+                <Skeleton
+                  startColor="dark.200"
+                  endColor="dark.500"
+                  w="full"
+                  h="full"
+                  position="absolute"
+                  top={0}
+                  left={0}
+                  zIndex={0}
+                />
+                <Center
+                  w="full"
+                  h="full"
+                  position="absolute"
+                  top={0}
+                  left={0}
+                  zIndex={1}
+                >
+                  <Spinner
+                    thickness="3px"
+                    speed="0.5s"
+                    color="grey.400"
+                    size="md"
+                  />
+                </Center>
+              </>
+            )}
+            <Image
+              w="full"
+              src={nftImageUrl || NftEmpty}
+              alt="NFT image"
+              borderRadius="xl"
+              onLoad={() => setModalImageLoaded(true)}
+              opacity={modalImageLoaded ? 1 : 0}
+              transition="opacity 0.3s ease"
+            />
+            <Flex direction="row" wrap="wrap" gap={3} mt={3}>
+              <NFTText
+                value={nftsInfo.assetId ?? ''}
+                title="Asset ID"
+                isCopy
+                icon={<BTCIcon />}
+              />
+              <NFTText
+                value={nftsInfo.contractId ?? ''}
+                title="Contract Address"
+                isCopy
+                icon={<ContractIcon />}
+              />
+            </Flex>
+          </Box>
+
+          <VStack
+            maxW="full"
+            flex={1}
+            justifyContent="space-between"
+            alignItems="flex-start"
+            ml={{ base: 0, md: 6 }}
+            h="full"
+          >
+            <Flex
+              w="full"
+              alignItems="flex-start"
+              justifyContent="space-between"
+            >
+              <Heading fontSize="xl">
+                {nftsInfo?.name || nftsInfo?.metadata.name || 'NFT Details'}
+              </Heading>
+              <CloseButton
+                onClick={() => setDialogOpen(false)}
+                w="min-content"
+                h="min-content"
+              />
+            </Flex>
+
+            <Box flex={1} mt={6} maxH="calc(100vh - 300px)" overflowY="auto">
+              <Box mb={6}>
+                <Heading fontSize="md">Description</Heading>
+                <Text mt={3} fontSize="sm" color="section.500">
+                  {nftsInfo?.description ||
+                    nftsInfo.metadata?.description ||
+                    'Description not provided.'}
+                </Text>
+              </Box>
+
+              <Box mb={6}>
+                <Heading fontSize="md">Metadata</Heading>
+                <Flex
+                  w="full"
+                  maxH="260px"
+                  overflowY="auto"
+                  direction="row"
+                  wrap="wrap"
+                  gap={3}
+                  mt={3}
+                  sx={{
+                    '&::-webkit-scrollbar': {
+                      width: '6px',
+                      backgroundColor: 'grey.900',
+                      borderRadius: '30px',
+                    },
+                    '&::-webkit-scrollbar-thumb': {
+                      backgroundColor: 'brand.500',
+                      borderRadius: '30px',
+                    },
+                  }}
+                >
+                  {nftsInfo.metadata?.attributes?.map((attr) => (
+                    <NFTText
+                      key={attr.trait_type}
+                      value={attr.trait_type}
+                      title={`attributes: ${attr.trait_type}`}
+                    />
+                  ))}
+
+                  {Object.entries(nftsInfo.metadata || {})
+                    .filter(
+                      ([key]) =>
+                        key !== 'name' &&
+                        key !== 'description' &&
+                        key !== 'attributes',
+                    )
+                    .map(([key, value]) => (
+                      <NFTText key={key} value={String(value)} title={key} />
+                    ))}
+
+                  {!nftsInfo.metadata?.attributes?.length &&
+                    Object.entries(nftsInfo.metadata || {}).filter(
+                      ([key]) =>
+                        key !== 'name' &&
+                        key !== 'description' &&
+                        key !== 'attributes',
+                    ).length === 0 && (
+                      <Text fontSize="sm" color="section.500">
+                        Empty metadata.
+                      </Text>
+                    )}
+                </Flex>
+              </Box>
+            </Box>
+          </VStack>
+        </Dialog.Body>
+      </Dialog.Modal>
+    </>
   );
 };
 
@@ -235,7 +389,6 @@ const AssetsBalanceCard = ({
 
 const AssetsBalanceList = ({ assets }: AssetsBalanceProps) => {
   const { tokensUSD } = useWorkspaceContext();
-
   return (
     <Grid
       gap={4}
@@ -251,7 +404,6 @@ const AssetsBalanceList = ({ assets }: AssetsBalanceProps) => {
       {assets?.map((asset) => {
         const usdData = tokensUSD.data[asset.assetId.toLowerCase()];
         const usdAmount = usdData?.usdAmount ?? null;
-
         return (
           <AssetsBalanceCard
             key={asset.assetId}
@@ -267,24 +419,45 @@ const AssetsBalanceList = ({ assets }: AssetsBalanceProps) => {
 const NftsBalanceList = ({ nfts }: NftsBalanceProps) => {
   const { isLitteSmall } = useScreenSize();
 
+  const grouped = useMemo(() => {
+    if (!nfts) return {};
+    return nfts.reduce<Record<string, typeof nfts>>((acc, nft) => {
+      const isBakoId = nft.symbol === 'BID' || nft.collection === 'Bako ID';
+      const key = isBakoId ? 'Bako ID' : (nft.collection ?? 'Other');
+      (acc[key] ??= []).push(nft);
+      return acc;
+    }, {});
+  }, [nfts]);
+
   return (
-    <Grid
-      gap={4}
-      templateColumns={
-        isLitteSmall
-          ? 'repeat(2, 1fr)'
-          : {
-              base: 'repeat(3, 1fr)',
-              xs: 'repeat(3, 1fr)',
-              sm: 'repeat(3, 1fr)',
-              md: 'repeat(4, 1fr)',
-              xl: 'repeat(5, 1fr)',
-              '2xl': 'repeat(6, 1fr)',
+    <>
+      {Object.entries(grouped).map(([group, groupNfts]) => (
+        <div key={group}>
+          <h2 style={{ margin: '1rem 0' }}>
+            {group === 'BID' ? 'Bako ID' : group}
+          </h2>
+          <Grid
+            gap={4}
+            templateColumns={
+              isLitteSmall
+                ? 'repeat(2, 1fr)'
+                : {
+                    base: 'repeat(3, 1fr)',
+                    xs: 'repeat(3, 1fr)',
+                    sm: 'repeat(3, 1fr)',
+                    md: 'repeat(4, 1fr)',
+                    xl: 'repeat(5, 1fr)',
+                    '2xl': 'repeat(6, 1fr)',
+                  }
             }
-      }
-    >
-      {nfts?.map((nft) => <NftBalanceCard key={nft.assetId} nft={nft} />)}
-    </Grid>
+          >
+            {groupNfts.map((nft) => (
+              <NftBalanceCard key={nft.assetId} nft={nft} />
+            ))}
+          </Grid>
+        </div>
+      ))}
+    </>
   );
 };
 

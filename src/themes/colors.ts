@@ -78,6 +78,10 @@ const colors = {
     700: 'rgba(0, 127, 219, 0.15)',
     900: 'rgba(0, 127, 219, 0.08)',
   },
+  section: {
+    500: '#868079',
+    200: '#F5F5F5',
+  },
   gradients: {
     'transaction-card':
       'linear-gradient(0deg, rgba(245, 245, 245, 0.03), rgba(245, 245, 245, 0.03)), linear-gradient(180deg, rgba(21, 20, 19, 0.0375) 0%, rgba(21, 20, 19, 0.0625) 28.5%, rgba(21, 20, 19, 0.125) 72%, rgba(21, 20, 19, 0.25) 100%);',

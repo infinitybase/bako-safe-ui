@@ -17,6 +17,8 @@ export type DefaultMetadata = {
 
 export type AssetMap = {
   [assetId: string]: {
+    symbol?: string;
+    collection?: string;
     metadata: DefaultMetadata;
     name: string;
     slug: string;
@@ -25,6 +27,8 @@ export type AssetMap = {
     assetId: string;
     isNFT?: boolean;
     totalSupply?: string;
+    contractId?: string;
+    description?: string;
   };
 };
 
@@ -41,5 +45,8 @@ export type Asset = {
 export type NFT = {
   name: string;
   assetId: string;
+  symbol?: string;
+  collection?: string;
+  contractId?: string;
   metadata?: DefaultMetadata;
 };

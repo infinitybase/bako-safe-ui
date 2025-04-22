@@ -19,7 +19,7 @@ import { useNavigate } from 'react-router-dom';
 import { CustomSkeleton, HomeIcon } from '@/components';
 import { EmptyState } from '@/components/emptyState';
 import { Drawer } from '@/layouts/dashboard/drawer';
-import { AssetsBalanceList, NftsBalanceList, Pages } from '@/modules/core';
+import { AssetsBalanceList, NFT, NftsBalanceList, Pages } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useVaultInfosContext } from '../../VaultInfosProvider';
@@ -189,7 +189,7 @@ const VaultBalancePage = () => {
                 flex={1}
               >
                 {assets.nfts?.length ? (
-                  <NftsBalanceList nfts={assets.nfts!} />
+                  <NftsBalanceList nfts={assets.nfts as NFT[]} />
                 ) : (
                   <EmptyState
                     showAction={false}

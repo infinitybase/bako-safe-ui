@@ -18,6 +18,7 @@ export interface AddressWithCopyBtnProps extends BoxProps {
   copyBtnProps?: Omit<CopyAddressButtonProps, 'aria-label' | 'addressToCopy'>;
   customValue?: string;
   hideCopyButton?: boolean;
+  isDetailDialog?: boolean;
 }
 
 const AddressWithCopyBtn = ({
@@ -28,6 +29,7 @@ const AddressWithCopyBtn = ({
   copyBtnProps,
   customValue,
   hideCopyButton = false,
+  isDetailDialog = false,
   ...rest
 }: AddressWithCopyBtnProps) => {
   const {
@@ -62,6 +64,7 @@ const AddressWithCopyBtn = ({
         customValue={customValue}
         isDeposit={isDeposit}
         isSidebarAddress={isSidebarAddress}
+        isDetailDialog={isDetailDialog}
         {...textProps}
       />
 

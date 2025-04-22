@@ -8,7 +8,8 @@ import {
   VStack,
 } from '@chakra-ui/react';
 
-import { AddAddressBook, AddressWithCopyBtn, Card, Handle } from '@/components';
+import { AddAddressBook, AddressWithCopyBtn, Handle } from '@/components';
+import { Card } from '@/components/card';
 import { TypeUser } from '@/modules/auth';
 import { AddressUtils } from '@/modules/core';
 import { useScreenSize } from '@/modules/core/hooks';
