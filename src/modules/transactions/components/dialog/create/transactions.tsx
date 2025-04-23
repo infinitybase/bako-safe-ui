@@ -234,12 +234,12 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
                         position="absolute"
                         top="50%"
                         right="0.5rem"
-                        bg="#201F1D"
+                        bg="grey.825"
                         padding="0.5rem"
                         paddingTop={'20px'}
                         paddingBottom={'20px'}
                         borderRadius="md"
-                        _hover={{ bg: '#201F1D' }}
+                        _hover={{ bg: 'grey.825' }}
                         color={'white'}
                         transform="translateY(-50%)"
                         zIndex={1}
@@ -295,7 +295,7 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
                   }}
                   helperText={
                     <FormHelperText
-                      color={fieldState.error ? 'error.500' : 'white'}
+                      color={fieldState.error ? 'error.500' : 'grey.425'}
                     >
                       {!isNFT && (
                         <Text display="flex" alignItems="center" mt={1}>
@@ -309,7 +309,7 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
                                   trackColor="dark.100"
                                   size={3}
                                   isIndeterminate
-                                  color="brand.500"
+                                  color="grey.425"
                                   ml={1}
                                 />
                               </>
@@ -335,12 +335,12 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
                     position="absolute"
                     top={isNFT ? '47%' : '38%'}
                     right="0.5rem"
-                    bg="#201F1D"
+                    bg="grey.825"
                     padding="0.5rem"
                     paddingTop={'20px'}
                     paddingBottom={'20px'}
                     borderRadius="md"
-                    _hover={{ bg: '#201F1D' }}
+                    _hover={{ bg: 'grey.825' }}
                     color={'white'}
                     transform="translateY(-50%)"
                     zIndex={1}
@@ -389,6 +389,7 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
                     <FormLabel>Amount</FormLabel>
 
                     <FormHelperText
+                      pl={4}
                       color={fieldState.invalid ? 'error.500' : 'gray.400'}
                     >
                       {fieldState.error?.message ? (
@@ -399,7 +400,7 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
                         <Text
                           fontSize="sm"
                           lineHeight="short"
-                          color="gray.500"
+                          color="grey.425"
                           opacity={usdNumber > 0 ? 1 : 0}
                         >
                           ~ {usdEstimate}
@@ -414,7 +415,7 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
                         right="0.75rem"
                         spacing={1}
                         zIndex={1}
-                        bg="#201F1D"
+                        bg="grey.825"
                         transform="translateY(-50%)"
                       >
                         <IconButton
@@ -424,8 +425,8 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
                           variant="ghost"
                           color={'white'}
                           padding={4}
-                          bg="201F1D"
-                          _hover={{ bg: '#201F1D' }}
+                          bg="grey.825"
+                          _hover={{ bg: 'grey.825' }}
                           zIndex={1}
                           onClick={() => field.onChange('')}
                         />
@@ -437,12 +438,14 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
                           borderRadius="md"
                           color={'white'}
                           fontWeight="bold"
+                          pt={1}
                           _hover={{
                             bg: 'grey.900',
                           }}
                           _active={{
                             bg: 'grey.850',
                           }}
+                          isDisabled={isFeeCalcLoading}
                           onClick={() => {
                             const max = getBalanceAvailable();
                             field.onChange(max);
@@ -542,7 +545,7 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
           maxHeight: '330px',
         },
         '&::-webkit-scrollbar-thumb': {
-          backgroundColor: '#2C2C2C',
+          backgroundColor: 'grey.300',
           borderRadius: '30px',
           height: '10px',
         },
