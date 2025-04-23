@@ -3,8 +3,12 @@ const colors = {
     400: '#EED07C',
     500: '#FFC010',
     600: '#B68F40',
+    700: '#F5A623',
     800: '#B24F18',
     900: '#54372D',
+  },
+  blue: {
+    325: '#007FDB26',
   },
   grey: {
     25: 'rgba(245, 245, 245, 0.1)',
@@ -84,14 +88,11 @@ const colors = {
     'transaction-card-hover': 'rgba(84, 76, 76, 0.25)',
     'transaction-border': '#35302F',
   },
-  overlay: '#151413A6',
-  connector: {
-    iconColor: '#F5A623',
-    textColor: '#CFCCC9',
-    usdColor: '#868079',
-    backgroundColor: '#201F1D',
-    alertbg: '#007FDB26',
+  shadows: {
+    transaction:
+      '0px 2px 6px -1px rgba(32, 32, 32, 0.1), 0px 0px 0px 1px rgba(32, 32, 32, 0.12)',
   },
+  overlay: '#151413A6',
 };
 
 export { colors };

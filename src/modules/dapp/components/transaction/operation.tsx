@@ -13,26 +13,32 @@ type DappTransactionProps = {
   operation: SimplifiedOperation;
   isChild?: boolean;
   vault?: UseTransactionSocket['vault'];
+  main?: boolean;
 };
 
 function DappTransactionOperation({
   operation,
   vault,
+  main,
   isChild = false,
 }: DappTransactionProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const isGrouped = (operation.operations?.length || 0) > 1;
-
+  const mainOp = (operation?.operations?.length ?? 0) > 1 && !!main;
   return (
     <Box w="100%">
-      <Flex p={isChild ? 0 : '2px'} gap="8px" direction="column">
+      <Flex p={isChild ? 0 : '2px'} gap={2} direction="column">
         <Box
           w="100%"
-          borderRadius="8px"
+          borderRadius="md"
           overflow="hidden"
           boxShadow="0px 2px 6px -1px rgba(32, 32, 32, 0.1), 0px 0px 0px 1px rgba(32, 32, 32, 0.12)"
         >
-          <DappTransaction.Card vault={vault!} operation={operation} />
+          <DappTransaction.Card
+            vault={vault!}
+            operation={operation}
+            mainOp={mainOp}
+          />
         </Box>
       </Flex>
 
@@ -50,11 +56,11 @@ function DappTransactionOperation({
             w="100%"
             bg="transparent"
             border="none"
-            py="8px"
+            py={2}
             cursor="pointer"
             pr={4}
           >
-            <Flex align="center" gap="2">
+            <Flex align="center" gap={1}>
               <Box
                 as={Icon}
                 transform={isExpanded ? 'rotate(45deg)' : 'rotate(0deg)'}
@@ -64,12 +70,12 @@ function DappTransactionOperation({
                 <path fill="currentColor" d="M12 2L12 22M2 12L22 12" />
               </Box>
 
-              <Text color="connector.textColor" fontSize="sm">
+              <Text color="grey.75" fontSize="sm">
                 {isExpanded ? 'Collapse' : 'Expand'}
               </Text>
 
               {!isExpanded && (
-                <Text as="span" fontSize="sm" color="connector.usdColor">
+                <Text as="span" fontSize="sm" color="grey.425">
                   (+{operation.operations?.length} operations)
                 </Text>
               )}
@@ -95,16 +101,16 @@ function DappTransactionOperation({
             }}
             display="flex"
             flexDirection="column"
-            gap="2px"
-            p="2px"
+            gap={1}
+            p={0.5}
           >
             {operation.operations?.map((op, index) => (
               <Flex
                 key={`${op.type}-${op.from?.address || ''}-${op.to?.address || ''}-${index}`}
                 w="100%"
-                borderRadius="8px"
+                borderRadius="md"
                 overflow="hidden"
-                boxShadow="0px 2px 6px -1px rgba(32,32,32,0.1), 0px 0px 0px 1px rgba(32,32,32,0.12)"
+                boxShadow="shadows.transaction"
               >
                 <DappTransactionOperation
                   operation={op}

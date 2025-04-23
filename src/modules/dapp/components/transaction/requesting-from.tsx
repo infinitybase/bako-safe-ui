@@ -20,7 +20,7 @@ const DappRequestingFrom = (props: DappRequestingFromProps) => {
   return (
     <Card
       {...rest}
-      bgColor="connector.backgroundColor"
+      bgColor="grey.825"
       borderRadius={8}
       p={2}
       borderColor="grey.950"

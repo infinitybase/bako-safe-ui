@@ -71,7 +71,7 @@ const DappTransactionWrapper = (props: DappTransactionWrapperProps) => {
   const { isOpen: unrelatedOpen, onToggle: toggleUnrelated } = useDisclosure();
 
   return (
-    <Container>
+    <Container w="full">
       <Box position="fixed" top={0} w="full" zIndex={100} left={0}>
         <TransactionExpire
           validAt={validAt}
@@ -97,8 +97,8 @@ const DappTransactionWrapper = (props: DappTransactionWrapperProps) => {
         <Spinner size="lg" color="primary.500" />
       </Flex>
 
-      <Dapp.Content maxW={404} bg="dark.950" pb="250px">
-        <Dapp.Section mb={-7}>
+      <Dapp.Content bg="dark.950" pb="250px">
+        <Dapp.Section>
           <Dapp.Header
             title={title}
             description="Double-check transaction details before submission."
@@ -170,9 +170,8 @@ const DappTransactionWrapper = (props: DappTransactionWrapperProps) => {
         bottom={0}
         left="50%"
         transform="translateX(-50%)"
-        w="full"
-        maxW={382}
-        px={4}
+        w="100%"
+        px={6}
         pt={4}
         pb={6}
         zIndex={200}

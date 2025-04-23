@@ -30,9 +30,9 @@ export function DappTransactionOperationSection({
 
   return (
     <Box
-      bg="connector.backgroundColor"
-      borderRadius="8px"
-      mb="8px"
+      bg="grey.825"
+      borderRadius="md"
+      mb={2}
       overflow="hidden"
       color="white"
       borderColor="grey.950"
@@ -46,14 +46,14 @@ export function DappTransactionOperationSection({
           cursor="pointer"
           w="100%"
           bg="transparent"
-          px="16px"
+          px={4}
           align="center"
           border="none"
           minH="36px"
           justify="space-between"
         >
           <Text
-            fontSize="13px"
+            fontSize="sm"
             letterSpacing="-0.01em"
             color="white"
             fontWeight="500"
@@ -74,18 +74,22 @@ export function DappTransactionOperationSection({
         transition={{ duration: 0.25 }}
         display="flex"
         flexDirection="column"
-        p="2px"
-        gap="2px"
+        p={0.5}
+        gap={0.5}
       >
         {operations.map((operation, index) => (
           <Box
             key={`${sectionKey}-${index}`}
             w="100%"
-            borderRadius="8px"
+            borderRadius="md"
             overflow="hidden"
-            boxShadow="0px 2px 6px -1px rgba(32, 32, 32, 0.1), 0px 0px 0px 1px rgba(32, 32, 32, 0.12)"
+            boxShadow="shadows.transaction"
           >
-            <DappTransaction.Operation vault={vault!} operation={operation} />
+            <DappTransaction.Operation
+              vault={vault!}
+              operation={operation}
+              main={!hasTitle}
+            />
           </Box>
         ))}
       </MotionBox>
