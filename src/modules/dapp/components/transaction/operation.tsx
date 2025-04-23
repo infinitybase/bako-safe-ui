@@ -32,7 +32,7 @@ function DappTransactionOperation({
           w="100%"
           borderRadius="md"
           overflow="hidden"
-          boxShadow="0px 2px 6px -1px rgba(32, 32, 32, 0.1), 0px 0px 0px 1px rgba(32, 32, 32, 0.12)"
+          boxShadow="shadows.transaction"
         >
           <DappTransaction.Card
             vault={vault!}
