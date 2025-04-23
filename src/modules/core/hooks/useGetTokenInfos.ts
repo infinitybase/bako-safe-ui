@@ -47,6 +47,7 @@ const useGetNftsInfos = ({ assetId, nftList }: IUseGetNftInfos) => {
 
     if (imageKey) {
       const parsedUrl = parseURI(nftsInfo.metadata[imageKey]);
+
       if (parsedUrl) return parsedUrl;
     }
 

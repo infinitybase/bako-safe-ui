@@ -8,15 +8,14 @@ import {
   Heading,
   Icon,
   Image,
-  Skeleton,
   Spinner,
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import NftEmpty from '@/assets/nft-empty.svg';
-import { AddressWithCopyBtn, Card, Dialog } from '@/components';
+import { AddressWithCopyBtn, Card, CustomSkeleton, Dialog } from '@/components';
 import { BTCIcon } from '@/components/icons/btc-icon';
 import { ContractIcon } from '@/components/icons/contract-icon';
 import { AddressUtils, Asset, NFT } from '@/modules/core/utils';
@@ -42,9 +41,8 @@ type NFTTextProps = {
 const NFTText = ({ value, title, icon, isCopy, ...rest }: NFTTextProps) => {
   return (
     <Flex
-      flex={1}
       minW="fit-content"
-      w="full"
+      w="auto"
       p={2}
       gap={3}
       alignItems="center"
@@ -72,7 +70,9 @@ const NFTText = ({ value, title, icon, isCopy, ...rest }: NFTTextProps) => {
   );
 };
 
-const NftBalanceCard = ({ nft }: { nft: NFT }) => {
+const FallbackTimeout = 5000;
+
+export const NftBalanceCard = ({ nft }: { nft: NFT }) => {
   const {
     nftList,
     screenSizes: { isLitteSmall },
@@ -83,11 +83,84 @@ const NftBalanceCard = ({ nft }: { nft: NFT }) => {
     nftList,
   });
 
+  const [imageSrc, setImageSrc] = useState(nftImageUrl || NftEmpty);
   const [imageLoaded, setImageLoaded] = useState(false);
+  const imageLoadedRef = useRef(false);
+
   const [modalImageLoaded, setModalImageLoaded] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
 
+  useEffect(() => {
+    setImageSrc(nftImageUrl || NftEmpty);
+    setImageLoaded(false);
+    imageLoadedRef.current = false;
+
+    const timeout = setTimeout(() => {
+      if (!imageLoadedRef.current) {
+        setImageSrc(NftEmpty);
+        setImageLoaded(true);
+        imageLoadedRef.current = true;
+      }
+    }, FallbackTimeout);
+
+    return () => clearTimeout(timeout);
+  }, [nftImageUrl]);
+
   if (!nftsInfo) return null;
+
+  const renderImage = (loaded: boolean, setLoaded: (v: boolean) => void) => (
+    <>
+      {!loaded && (
+        <>
+          <CustomSkeleton
+            startColor="dark.200"
+            endColor="dark.500"
+            w="full"
+            h="full"
+            position="absolute"
+            top={0}
+            left={0}
+            zIndex={0}
+          />
+          <Center
+            w="full"
+            h="full"
+            position="absolute"
+            top={0}
+            left={0}
+            zIndex={1}
+          >
+            <Spinner thickness="3px" speed="0.5s" color="grey.400" size="md" />
+          </Center>
+        </>
+      )}
+      <Image
+        w="full"
+        h="full"
+        src={imageSrc}
+        borderRadius={5}
+        alt="NFT Image"
+        objectFit="cover"
+        onLoad={() => {
+          setLoaded(true);
+          if (!dialogOpen) {
+            imageLoadedRef.current = true;
+          }
+        }}
+        onError={() => {
+          setLoaded(true);
+          if (!dialogOpen) {
+            imageLoadedRef.current = true;
+          }
+        }}
+        opacity={loaded ? 1 : 0}
+        transition="opacity 0.3s ease"
+        position="absolute"
+        top={0}
+        left={0}
+      />
+    </>
+  );
 
   return (
     <>
@@ -111,57 +184,17 @@ const NftBalanceCard = ({ nft }: { nft: NFT }) => {
             position="relative"
             overflow="hidden"
           >
-            {!imageLoaded && (
-              <>
-                <Skeleton
-                  startColor="dark.200"
-                  endColor="dark.500"
-                  w="full"
-                  h="full"
-                  position="absolute"
-                  top={0}
-                  left={0}
-                  zIndex={0}
-                />
-                <Center
-                  w="full"
-                  h="full"
-                  position="absolute"
-                  top={0}
-                  left={0}
-                  zIndex={1}
-                >
-                  <Spinner
-                    thickness="3px"
-                    speed="0.5s"
-                    color="grey.400"
-                    size="md"
-                  />
-                </Center>
-              </>
-            )}
-            <Image
-              w="full"
-              h="full"
-              src={nftImageUrl || NftEmpty}
-              borderRadius={5}
-              alt="NFT Image"
-              objectFit="cover"
-              onLoad={() => setImageLoaded(true)}
-              opacity={imageLoaded ? 1 : 0}
-              transition="opacity 0.3s ease"
-            />
+            {renderImage(imageLoaded, setImageLoaded)}
           </Box>
-
           <Text
             fontSize={isLitteSmall ? 'xs' : 'sm'}
             color="grey.50"
             maxW="full"
             isTruncated
           >
-            {nftsInfo?.symbol || nftsInfo?.name || nftsInfo.metadata.name
-              ? `${nftsInfo?.symbol || ''} ${nftsInfo?.name || nftsInfo.metadata.name || ''}`.trim()
-              : AddressUtils.format(nftsInfo?.assetId, 10)}
+            {nftsInfo.symbol || nftsInfo.name || nftsInfo.metadata.name
+              ? `${nftsInfo.symbol || ''} ${nftsInfo.name || nftsInfo.metadata.name || ''}`.trim()
+              : AddressUtils.format(nftsInfo.assetId, 10)}
           </Text>
         </VStack>
       </Card>
@@ -175,115 +208,104 @@ const NftBalanceCard = ({ nft }: { nft: NFT }) => {
           h="full"
           display="flex"
           flexDirection={{ base: 'column-reverse', md: 'row' }}
-          alignItems={{ base: 'center', md: 'flex-start' }}
+          alignItems={{ base: 'center', md: 'stretch' }}
+          justifyContent="space-between"
+          gap={6}
+          pt={3}
+          pl={3}
+          pr={3}
         >
           <Box
-            w={{ base: 'full', md: 'auto' }}
-            maxW={{ base: 'full', sm: '400px' }}
+            w="432px"
+            flexShrink={0}
             position="relative"
             borderRadius="xl"
             overflow="hidden"
           >
-            {!modalImageLoaded && (
-              <>
-                <Skeleton
-                  startColor="dark.200"
-                  endColor="dark.500"
-                  w="full"
-                  h="full"
-                  position="absolute"
-                  top={0}
-                  left={0}
-                  zIndex={0}
-                />
-                <Center
-                  w="full"
-                  h="full"
-                  position="absolute"
-                  top={0}
-                  left={0}
-                  zIndex={1}
-                >
-                  <Spinner
-                    thickness="3px"
-                    speed="0.5s"
-                    color="grey.400"
-                    size="md"
-                  />
-                </Center>
-              </>
-            )}
-            <Image
+            <Box w="full" aspectRatio={1} position="relative">
+              {renderImage(modalImageLoaded, setModalImageLoaded)}
+            </Box>
+
+            <Flex
+              direction="row"
+              wrap="wrap"
+              gap={3}
+              mt={3}
+              justifyContent="space-between"
               w="full"
-              src={nftImageUrl || NftEmpty}
-              alt="NFT image"
-              borderRadius="xl"
-              onLoad={() => setModalImageLoaded(true)}
-              opacity={modalImageLoaded ? 1 : 0}
-              transition="opacity 0.3s ease"
-            />
-            <Flex direction="row" wrap="wrap" gap={3} mt={3}>
+            >
               <NFTText
                 value={nftsInfo.assetId ?? ''}
                 title="Asset ID"
                 isCopy
                 icon={<BTCIcon />}
+                flex="1"
+                minW="200px"
               />
               <NFTText
                 value={nftsInfo.contractId ?? ''}
                 title="Contract Address"
                 isCopy
                 icon={<ContractIcon />}
+                flex="1"
+                minW="200px"
               />
             </Flex>
           </Box>
 
           <VStack
-            maxW="full"
             flex={1}
             justifyContent="space-between"
             alignItems="flex-start"
-            ml={{ base: 0, md: 6 }}
             h="full"
           >
-            <Flex
-              w="full"
-              alignItems="flex-start"
-              justifyContent="space-between"
-            >
-              <Heading fontSize="xl">
-                {nftsInfo?.name || nftsInfo?.metadata.name || 'NFT Details'}
+            <Flex w="full" alignItems="center" justifyContent="space-between">
+              <Heading fontSize="xl" noOfLines={1}>
+                {nftsInfo.name || nftsInfo.metadata.name || 'NFT Details'}
               </Heading>
-              <CloseButton
-                onClick={() => setDialogOpen(false)}
-                w="min-content"
-                h="min-content"
-              />
+              <CloseButton onClick={() => setDialogOpen(false)} />
             </Flex>
 
-            <Box flex={1} mt={6} maxH="calc(100vh - 300px)" overflowY="auto">
+            <Box
+              flex={1}
+              mt={6}
+              maxH="calc(100vh - 300px)"
+              overflowY="auto"
+              pr={3}
+              sx={{
+                '&::-webkit-scrollbar': {
+                  width: '8px',
+                  backgroundColor: 'grey.900',
+                  borderRadius: '30px',
+                },
+                '&::-webkit-scrollbar-thumb': {
+                  backgroundColor: 'brand.500',
+                  borderRadius: '30px',
+                },
+              }}
+            >
               <Box mb={6}>
                 <Heading fontSize="md">Description</Heading>
                 <Text mt={3} fontSize="sm" color="section.500">
-                  {nftsInfo?.description ||
+                  {nftsInfo.description ||
                     nftsInfo.metadata?.description ||
                     'Description not provided.'}
                 </Text>
               </Box>
 
-              <Box mb={6}>
+              <Box mb={3}>
                 <Heading fontSize="md">Metadata</Heading>
                 <Flex
-                  w="full"
-                  maxH="260px"
-                  overflowY="auto"
+                  maxH={{ base: 'none', md: '294px' }}
+                  overflowY={{ base: 'hidden', md: 'auto' }}
                   direction="row"
                   wrap="wrap"
                   gap={3}
-                  mt={3}
+                  mt={7}
+                  pr={2}
                   sx={{
                     '&::-webkit-scrollbar': {
-                      width: '6px',
+                      width: '5px',
                       backgroundColor: 'grey.900',
                       borderRadius: '30px',
                     },
@@ -293,14 +315,6 @@ const NftBalanceCard = ({ nft }: { nft: NFT }) => {
                     },
                   }}
                 >
-                  {nftsInfo.metadata?.attributes?.map((attr) => (
-                    <NFTText
-                      key={attr.trait_type}
-                      value={attr.trait_type}
-                      title={`attributes: ${attr.trait_type}`}
-                    />
-                  ))}
-
                   {Object.entries(nftsInfo.metadata || {})
                     .filter(
                       ([key]) =>
@@ -311,6 +325,13 @@ const NftBalanceCard = ({ nft }: { nft: NFT }) => {
                     .map(([key, value]) => (
                       <NFTText key={key} value={String(value)} title={key} />
                     ))}
+                  {nftsInfo.metadata?.attributes?.map((attr) => (
+                    <NFTText
+                      key={attr.trait_type}
+                      value={attr.trait_type}
+                      title={`attributes: ${attr.trait_type}`}
+                    />
+                  ))}
 
                   {!nftsInfo.metadata?.attributes?.length &&
                     Object.entries(nftsInfo.metadata || {}).filter(
@@ -444,8 +465,8 @@ const NftsBalanceList = ({ nfts }: NftsBalanceProps) => {
                 : {
                     base: 'repeat(3, 1fr)',
                     xs: 'repeat(3, 1fr)',
-                    sm: 'repeat(3, 1fr)',
-                    md: 'repeat(4, 1fr)',
+                    sm: 'repeat(4, 1fr)',
+                    md: 'repeat(5, 1fr)',
                     xl: 'repeat(5, 1fr)',
                     '2xl': 'repeat(6, 1fr)',
                   }
