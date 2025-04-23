@@ -287,7 +287,7 @@ function DappTransactionOperationCard({
 
   if (mainOp && operation.operations && operation.operations.length > 0) {
     return (
-      <VStack spacing="8" align="stretch" w="100%" p={2}>
+      <VStack spacing={7} align="stretch" w="100%" p={2}>
         <OperationChain
           operations={operation.operations}
           vault={vault}
@@ -301,7 +301,7 @@ function DappTransactionOperationCard({
   }
 
   return (
-    <VStack spacing="8" align="stretch" w="100%" p={2}>
+    <VStack spacing={7} align="stretch" w="100%" p={2}>
       <AddressDisplay
         address={operation.from.address}
         name={
