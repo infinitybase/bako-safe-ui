@@ -30,6 +30,8 @@ const SwitchNetwork = () => {
     >
       <Box
         w="full"
+        display="flex"
+        justifyContent="center"
         overflowY="auto"
         css={{
           '&::-webkit-scrollbar': { width: '0' },
