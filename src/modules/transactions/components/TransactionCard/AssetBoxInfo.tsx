@@ -11,6 +11,7 @@ import { bn } from 'fuels';
 import { useMemo } from 'react';
 import { FaPlay } from 'react-icons/fa';
 
+import NftEmpty from '@/assets/nft-empty.svg';
 import { Address, DoubleArrowIcon, Handle } from '@/components';
 import { DeployIcon } from '@/components/icons/tx-deploy';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
@@ -84,6 +85,11 @@ const AssetBoxInfo = ({
     tokensUSD?.data,
     tokensUSD?.isUnknownToken,
   );
+  const formattedAmount = bn(asset?.amount)?.format({
+    units: assetsMap?.[asset?.assetId ?? '']?.units ?? assetsMap.UNKNOWN.units,
+  });
+  const isNFT = formattedAmount === '0.000000001';
+  const displayAmount = isNFT ? '1' : formattedAmount;
 
   return (
     <HStack
@@ -98,14 +104,14 @@ const AssetBoxInfo = ({
           <Image
             w={6}
             h={6}
-            src={assetInfo?.icon ?? ''}
+            src={isNFT ? NftEmpty : (assetInfo?.icon ?? '')}
             borderRadius={100}
             alt="Asset Icon"
             objectFit="cover"
           />
 
           <Text fontSize="sm" color="grey.500">
-            {assetInfo.slug}
+            {isNFT ? 'NFT' : assetInfo?.slug}
           </Text>
         </VStack>
       )}
@@ -118,11 +124,7 @@ const AssetBoxInfo = ({
           fontSize={isLowerThanFourHundredAndThirty ? 'xs' : 'sm'}
         >
           {isDeposit ? null : '-'}
-          {bn(asset?.amount)?.format({
-            units:
-              assetsMap?.[asset?.assetId ?? '']?.units ??
-              assetsMap.UNKNOWN.units,
-          })}
+          {displayAmount}
         </Text>
         <Text
           textAlign="center"

@@ -86,11 +86,12 @@ const Amount = ({
     () =>
       transaction?.assets.length === 1
         ? bn(transaction.assets[0].amount).format({
-            units: assetsMap[transaction.assets[0].assetId]?.units ?? 15,
+            units: assetsMap[transaction.assets[0].assetId]?.units ?? 9,
           })
         : totalAmoutSent,
     [transaction?.assets, assetsMap, totalAmoutSent],
   );
+  const isNFT = formattedAmount === '0.000000001';
 
   return (
     <HStack
@@ -106,6 +107,7 @@ const Amount = ({
             isMobile={isMobile}
             showOnlyOneAsset={showOnlyOneAsset}
             assetsMap={assetsMap}
+            isNFT={isNFT}
           />
           <Flex
             flexDir={isMultiToken ? 'column-reverse' : 'column'}
@@ -119,7 +121,7 @@ const Amount = ({
               </Text>
             ) : (
               <Text color="grey.75" fontSize="sm">
-                {formattedAmount}
+                {isNFT ? '1' : formattedAmount}
               </Text>
             )}
             <Text

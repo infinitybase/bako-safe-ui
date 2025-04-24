@@ -1,14 +1,16 @@
 import { Image, Text, VStack } from '@chakra-ui/react';
 import { useMemo } from 'react';
 
+import NftEmpty from '@/assets/nft-empty.svg';
 import { AssetModel } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface TokenInfosProps {
   asset: AssetModel;
+  isNFT: boolean;
 }
 
-const TokenInfos = ({ asset }: TokenInfosProps) => {
+const TokenInfos = ({ asset, isNFT }: TokenInfosProps) => {
   const { assetsMap } = useWorkspaceContext();
   const assetInfo = useMemo(
     () =>
@@ -22,13 +24,13 @@ const TokenInfos = ({ asset }: TokenInfosProps) => {
       <Image
         w={6}
         h={6}
-        src={assetInfo?.icon ?? ''}
+        src={isNFT ? NftEmpty : (assetInfo?.icon ?? '')}
         borderRadius={100}
         alt="Asset Icon"
         objectFit="cover"
       />
       <Text fontSize="sm" color="grey.500">
-        {assetInfo?.slug}
+        {isNFT ? 'NFT' : assetInfo?.slug}
       </Text>
     </VStack>
   );

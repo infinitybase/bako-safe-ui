@@ -3,16 +3,17 @@ import { bn } from 'fuels';
 
 import type { AssetModel } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { isHex } from '@/utils';
 
 import { AmountUSD } from '../transfer-details';
-import { isHex } from '@/utils';
 
 interface AmountsInfoProps {
   asset: AssetModel;
   txUSDAmount: string;
+  isNFT: boolean;
 }
 
-const AmountsInfo = ({ asset, txUSDAmount }: AmountsInfoProps) => {
+const AmountsInfo = ({ asset, txUSDAmount, isNFT }: AmountsInfoProps) => {
   const {
     screenSizes: { isMobile },
     assetsMap,
@@ -26,13 +27,15 @@ const AmountsInfo = ({ asset, txUSDAmount }: AmountsInfoProps) => {
         color="grey.75"
         fontSize="sm"
       >
-        {isHex(asset.amount)
-          ? bn(asset?.amount)?.format({
-              units:
-                assetsMap[asset?.assetId ?? '']?.units ??
-                assetsMap.UNKNOWN.units,
-            })
-          : asset.amount}
+        {isNFT
+          ? '1'
+          : isHex(asset.amount)
+            ? bn(asset?.amount)?.format({
+                units:
+                  assetsMap[asset?.assetId ?? '']?.units ??
+                  assetsMap.UNKNOWN.units,
+              })
+            : asset.amount}
       </Text>
       <Text
         textAlign={isMobile ? 'end' : 'center'}
