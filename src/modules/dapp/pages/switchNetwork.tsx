@@ -26,16 +26,19 @@ const SwitchNetwork = () => {
       w="full"
       backgroundColor="#0D0D0C"
       padding={6}
-      gap={3}
       h="$100vh"
-      overflowX="hidden"
-      css={{
-        '&::-webkit-scrollbar': { width: '0' },
-        scrollbarWidth: 'none',
-      }}
     >
-      <VStack maxWidth={404} flex={1}>
-        <VStack flex={1} gap={6} mb={85}>
+      <Box
+        w="full"
+        display="flex"
+        justifyContent="center"
+        overflowY="auto"
+        css={{
+          '&::-webkit-scrollbar': { width: '0' },
+          scrollbarWidth: 'none',
+        }}
+      >
+        <VStack maxWidth={404} w="full" spacing={6} pb={6}>
           <VStack alignItems="flex-start" gap={3}>
             <Text fontSize={16} fontWeight={700} color="grey.50">
               {'Switch Network'}
@@ -96,43 +99,45 @@ const SwitchNetwork = () => {
             />
           </VStack>
         </VStack>
+      </Box>
 
-        <HStack
-          w="full"
-          gap={4}
-          justifyContent={'center'}
-          alignItems={'center'}
-          verticalAlign={'center'}
+      <HStack
+        w="full"
+        gap={4}
+        justifyContent={'center'}
+        alignItems={'center'}
+        maxWidth={404}
+        paddingY={6}
+        bgColor={'#0D0D0C'}
+      >
+        <Button
+          variant="primary"
+          fontWeight={500}
+          color={'grey.75'}
+          bgColor={'#0D0D0C'}
+          border={'1px solid'}
+          borderColor={'grey.75'}
+          letterSpacing={'2%'}
+          borderRadius={8}
+          flex="1"
+          onClick={() => window.close()}
         >
-          <Button
-            variant="primary"
-            fontWeight={500}
-            color={'grey.75'}
-            bgColor={'#0D0D0C'}
-            border={'1px solid'}
-            borderColor={'grey.75'}
-            letterSpacing={'2%'}
-            borderRadius={8}
-            flex="1"
-            onClick={() => window.close()}
-          >
-            Reject
-          </Button>
+          Reject
+        </Button>
 
-          <Button
-            variant="primary"
-            fontWeight={600}
-            borderRadius={8}
-            flex="1"
-            lineHeight={'100%'}
-            letterSpacing={'2%'}
-            isLoading={isSwitching}
-            onClick={() => sendNetworkRequest(dapp)}
-          >
-            Switch network
-          </Button>
-        </HStack>
-      </VStack>
+        <Button
+          variant="primary"
+          fontWeight={600}
+          borderRadius={8}
+          flex="1"
+          lineHeight={'100%'}
+          letterSpacing={'2%'}
+          isLoading={isSwitching}
+          onClick={() => sendNetworkRequest(dapp)}
+        >
+          Switch network
+        </Button>
+      </HStack>
     </VStack>
   );
 };
