@@ -513,7 +513,18 @@ const WorkspacePage = () => {
             gap={6}
           >
             {recentVaults?.map(
-              ({ id, name, workspace, members, description, owner }, index) => {
+              (
+                {
+                  id,
+                  name,
+                  workspace,
+                  members,
+                  description,
+                  owner,
+                  predicateAddress,
+                },
+                index,
+              ) => {
                 const lastCard = index === vaultsMax - 1;
                 const hasMore = extraCount > 0;
 
@@ -550,6 +561,7 @@ const WorkspacePage = () => {
                               }),
                             )
                           }
+                          address={predicateAddress}
                         />
                       )}
                     </CustomSkeleton>

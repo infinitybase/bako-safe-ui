@@ -117,6 +117,7 @@ const useAuth = (): IUseAuthReturn => {
       id: infos?.id!,
       name: infos?.name!,
       onSingleWorkspace: infos?.onSingleWorkspace ?? false,
+      settings: infos?.settings!,
       type: userType(),
       webauthn: infos?.webauthn!,
       workspace: infos?.workspace!,
