@@ -2,33 +2,73 @@ import { CloseIcon, StarIcon } from '@chakra-ui/icons';
 import { Box, Flex, HStack, IconButton, Text } from '@chakra-ui/react';
 import React from 'react';
 
+import { useQueryParams } from '@/modules';
+
 export const BAKO_SUPPORT_SEARCH = 'BAKO_SUPPORT_SEARCH';
 const BAKO_SUPPORT_SEARCH_URL = 'https://forms.gle/xqh4sADPoULPupnG8';
 const BAKO_SUPPORT_SEARCH_ALREADY_RESPONSE =
   'BAKO_SUPPORT_SEARCH_ALREADY_RESPONSE';
 
+const EXPIRE_DAYS = 5;
+
 const FloatingCard = () => {
+  const { sessionId: isFromDapp } = useQueryParams();
+
+  const hasOpened = () => {
+    if (isFromDapp) {
+      return false;
+    }
+
+    const isEnabled = localStorage.getItem(BAKO_SUPPORT_SEARCH) === 'true';
+    if (!isEnabled) {
+      return false;
+    }
+
+    const hasResponded = localStorage.getItem(
+      BAKO_SUPPORT_SEARCH_ALREADY_RESPONSE,
+    );
+    if (!hasResponded) {
+      return true;
+    }
+
+    if (hasResponded === 'permanent') {
+      return false;
+    }
+
+    // Check if the temporary response has expired
+    const expirationDate = new Date(hasResponded);
+    return new Date() >= expirationDate;
+  };
+
   const handleClose = () => {
-    localStorage.setItem(BAKO_SUPPORT_SEARCH, 'false');
+    const expiration = new Date();
+    expiration.setDate(expiration.getDate() + EXPIRE_DAYS);
+    localStorage.setItem(
+      BAKO_SUPPORT_SEARCH_ALREADY_RESPONSE,
+      expiration.toISOString(),
+    );
     setIsVisible(false);
   };
 
-  const hasOpened = () => {
-    const hasSupportSearch =
-      localStorage.getItem(BAKO_SUPPORT_SEARCH) === 'true';
-    const hasResponded =
-      localStorage.getItem(BAKO_SUPPORT_SEARCH_ALREADY_RESPONSE) === 'true';
-
-    return hasSupportSearch && !hasResponded;
-  };
-
   const handleClick = () => {
-    localStorage.setItem(BAKO_SUPPORT_SEARCH_ALREADY_RESPONSE, 'true');
+    localStorage.setItem(BAKO_SUPPORT_SEARCH_ALREADY_RESPONSE, 'permanent');
     window.open(BAKO_SUPPORT_SEARCH_URL, '_blank');
-    handleClose();
+    setIsVisible(false);
   };
 
-  const [isVisible, setIsVisible] = React.useState(hasOpened);
+  const [isVisible, setIsVisible] = React.useState(() => hasOpened());
+
+  React.useEffect(() => {
+    const handleStorageChange = () => {
+      setIsVisible(hasOpened());
+    };
+
+    window.addEventListener('bako-storage-change', handleStorageChange);
+
+    return () => {
+      window.removeEventListener('bako-storage-change', handleStorageChange);
+    };
+  }, []);
 
   if (!isVisible) return null;
 
@@ -47,18 +87,14 @@ const FloatingCard = () => {
       width={{ base: '90%', md: '320px' }}
       zIndex="9999"
     >
-      <Flex
-        alignItems="center"
-        justifyContent="space-between"
-        cursor={'pointer'}
-      >
+      <Flex alignItems="center" justifyContent="space-between" cursor="pointer">
         <HStack spacing={3}>
-          <StarIcon color="#FFC010" boxSize={6} />
+          <StarIcon color="warning.550" boxSize={6} />
           <Box onClick={handleClick}>
-            <Text fontSize="14" color="#151413" lineHeight="1.2">
+            <Text fontSize="14" color="dark.950" lineHeight="1.2">
               Support the Bako team!
             </Text>
-            <Text fontSize="12" color="#5E5955" mt={1} lineHeight="1.4">
+            <Text fontSize="12" color="grey.550" mt={1} lineHeight="1.4">
               Answer our survey and unlock a special reward!
             </Text>
           </Box>

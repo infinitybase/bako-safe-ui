@@ -47,11 +47,13 @@ const useAuth = (): IUseAuthReturn => {
 
   const authenticate = (params: AuthenticateParams) => {
     localStorage.setItem(BAKO_SUPPORT_SEARCH, 'true');
+    window.dispatchEvent(new Event('bako-storage-change'));
     setAuthCookies(params);
   };
 
   const logout = async (removeTokenFromDb = true, callback?: () => void) => {
     localStorage.setItem(BAKO_SUPPORT_SEARCH, 'false');
+    window.dispatchEvent(new Event('bako-storage-change'));
     if (accessToken && removeTokenFromDb) {
       await signOutRequest.mutateAsync();
       callback?.();
@@ -74,6 +76,7 @@ const useAuth = (): IUseAuthReturn => {
 
   const logoutWhenExpired = async () => {
     localStorage.setItem(BAKO_SUPPORT_SEARCH, 'false');
+    window.dispatchEvent(new Event('bako-storage-change'));
     clearAuthCookies();
     queryClient.clear();
     navigate('/?expired=true');
