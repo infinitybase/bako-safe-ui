@@ -260,7 +260,7 @@ const VaultDetailsPage = () => {
         display="flex"
         flexDir={{ base: 'column', xs: isSmall ? 'column' : 'row' }}
         gap={4}
-        mb={2}
+        mb={4}
       >
         <Box
           display="flex"
