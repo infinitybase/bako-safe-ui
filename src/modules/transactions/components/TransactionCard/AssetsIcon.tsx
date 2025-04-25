@@ -12,14 +12,7 @@ interface AssetsIconProps {
 }
 
 export const AssetsIcon = memo(
-  ({
-    assets,
-    isMobile,
-    showOnlyOneAsset,
-    assetsMap,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    isNFT,
-  }: AssetsIconProps) => {
+  ({ assets, isMobile, showOnlyOneAsset, assetsMap }: AssetsIconProps) => {
     return (
       <AvatarGroup
         max={showOnlyOneAsset ? 1 : 2}

@@ -83,7 +83,6 @@ export const useAssetMap = (chainId: number) => {
   const assetsMap = useMemo(() => {
     return assetsMapFromFormattedFn(assetList as unknown as Assets, chainId);
   }, [assetList, chainId]);
-
   return { assetList, nftList, assetsMap };
 };
 

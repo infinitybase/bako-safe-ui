@@ -49,6 +49,7 @@ const AssetBoxInfo = ({
       isLitteSmall,
     },
     assetsMap,
+    nftList,
   } = useWorkspaceContext();
 
   const { resolveAddressContactHandle } = useAddressNicknameResolver([
@@ -88,9 +89,16 @@ const AssetBoxInfo = ({
   const formattedAmount = bn(asset?.amount)?.format({
     units: assetsMap?.[asset?.assetId ?? '']?.units ?? assetsMap.UNKNOWN.units,
   });
-  const isNFT = formattedAmount === '0.000000001';
-  const displayAmount = isNFT ? '1' : formattedAmount;
 
+  const isNFT = useMemo(() => {
+    if (!asset?.assetId) return false;
+    return (
+      nftList.some((nft) => nft.assetId === asset.assetId) ||
+      bn(asset?.amount).eq(bn(1))
+    );
+  }, [asset?.amount, asset?.assetId, nftList]);
+
+  const displayAmount = isNFT ? '1' : formattedAmount;
   return (
     <HStack
       py={2}

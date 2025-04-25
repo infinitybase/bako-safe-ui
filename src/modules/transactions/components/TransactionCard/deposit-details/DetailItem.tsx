@@ -10,6 +10,7 @@ import {
 } from '@chakra-ui/react';
 import type { ITransferAsset } from 'bakosafe';
 import { bn } from 'fuels';
+import { useMemo } from 'react';
 
 import { Address, DoubleArrowIcon, Handle } from '@/components';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
@@ -32,6 +33,7 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
     tokensUSD,
     screenSizes: { isMobile, isExtraSmall, isLitteSmall },
     assetsMap,
+    nftList,
   } = useWorkspaceContext();
   const txUSDAmount = useTxAmountToUSD(
     [
@@ -58,7 +60,15 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
 
   const from = sentBy ? resolveAddressContactHandle(sentBy) : undefined;
   const to = asset?.to ? resolveAddressContactHandle(asset.to) : undefined;
-  const isNFT = asset.amount === '0x1' || asset.amount === '0.000000001';
+
+  const isNFT = useMemo(() => {
+    if (!asset?.assetId) return false;
+    return (
+      nftList.some((nft) => nft.assetId === asset.assetId) ||
+      bn(asset?.amount).eq(bn(1))
+    );
+  }, [asset?.amount, asset?.assetId, nftList]);
+
   return (
     <Grid
       gridTemplateColumns={`repeat(${gridColumnsNumber}, 1fr)`}

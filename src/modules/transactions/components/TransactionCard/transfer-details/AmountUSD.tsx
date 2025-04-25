@@ -6,7 +6,7 @@ interface AmountUSDProps {
 }
 
 const AmountUSD = ({ amount, isNFT }: AmountUSDProps) => {
-  if (isNFT) {
+  if (isNFT || amount === '0.00') {
     return null;
   }
   return (

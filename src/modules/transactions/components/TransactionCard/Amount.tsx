@@ -37,6 +37,7 @@ const Amount = ({
     tokensUSD,
     screenSizes: { isMobile, isExtraSmall },
     assetsMap,
+    nftList,
   } = useWorkspaceContext();
 
   const totalAmoutSent = useMemo(
@@ -64,16 +65,17 @@ const Amount = ({
     [oneAssetOfEach.length],
   );
 
-  const formattedAssets = useMemo(
-    () =>
-      transaction?.assets.map((a) => ({
-        ...a,
-        amount: bn(a?.amount)?.format({
-          units: assetsMap[a?.assetId]?.units ?? assetsMap.UNKNOWN.units,
-        }),
-      })),
-    [transaction?.assets, assetsMap],
-  );
+  const formattedAssets = useMemo(() => {
+    const nftAssetIds = new Set(nftList.map((nft) => nft.assetId));
+
+    return transaction?.assets.map((a) => ({
+      ...a,
+      amount: bn(a?.amount)?.format({
+        units: assetsMap[a?.assetId]?.units ?? assetsMap.UNKNOWN.units,
+      }),
+      isNFT: nftAssetIds.has(a?.assetId) || bn(a?.amount).eq(bn(1)),
+    }));
+  }, [transaction?.assets, assetsMap, nftList]);
 
   const txUSDAmount = useTxAmountToUSD(
     formattedAssets,
@@ -91,8 +93,8 @@ const Amount = ({
         : totalAmoutSent,
     [transaction?.assets, assetsMap, totalAmoutSent],
   );
-
-  const isNFT = formattedAmount === '0.000000001';
+  const isNFT =
+    formattedAssets.length === 1 && formattedAssets[0].isNFT === true;
 
   return (
     <HStack
