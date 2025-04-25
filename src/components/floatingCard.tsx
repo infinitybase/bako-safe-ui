@@ -13,18 +13,20 @@ const EXPIRE_DAYS = 5;
 
 const FloatingCard = () => {
   const { sessionId: isFromDapp } = useQueryParams();
+
   const hasOpened = () => {
-    const isEnabled = localStorage.getItem(BAKO_SUPPORT_SEARCH) === 'true';
-    const hasResponded = localStorage.getItem(
-      BAKO_SUPPORT_SEARCH_ALREADY_RESPONSE,
-    );
     if (isFromDapp) {
       return false;
     }
+
+    const isEnabled = localStorage.getItem(BAKO_SUPPORT_SEARCH) === 'true';
     if (!isEnabled) {
       return false;
     }
 
+    const hasResponded = localStorage.getItem(
+      BAKO_SUPPORT_SEARCH_ALREADY_RESPONSE,
+    );
     if (!hasResponded) {
       return true;
     }
@@ -33,12 +35,9 @@ const FloatingCard = () => {
       return false;
     }
 
+    // Check if the temporary response has expired
     const expirationDate = new Date(hasResponded);
-    if (new Date() >= expirationDate) {
-      return true;
-    } else {
-      return false;
-    }
+    return new Date() >= expirationDate;
   };
 
   const handleClose = () => {
@@ -56,6 +55,7 @@ const FloatingCard = () => {
     window.open(BAKO_SUPPORT_SEARCH_URL, '_blank');
     setIsVisible(false);
   };
+
   const [isVisible, setIsVisible] = React.useState(() => hasOpened());
 
   React.useEffect(() => {
