@@ -2,7 +2,6 @@ import { AvatarGroup, Image } from '@chakra-ui/react';
 import { ITransferAsset } from 'bakosafe';
 import { memo } from 'react';
 
-import NftEmpty from '@/assets/nft-empty.svg';
 import { AssetMap } from '@/modules/core';
 interface AssetsIconProps {
   assets: ITransferAsset[];
@@ -18,6 +17,7 @@ export const AssetsIcon = memo(
     isMobile,
     showOnlyOneAsset,
     assetsMap,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     isNFT,
   }: AssetsIconProps) => {
     return (
@@ -32,13 +32,7 @@ export const AssetsIcon = memo(
             key={asset.assetId}
             w={{ base: '30.5px', sm: 6 }}
             h={{ base: 'full', sm: 6 }}
-            src={
-              isNFT
-                ? NftEmpty
-                : asset.amount === '0x1'
-                  ? NftEmpty
-                  : (assetsMap[asset.assetId]?.icon ?? assetsMap.UNKNOWN.icon)
-            }
+            src={assetsMap[asset.assetId]?.icon ?? assetsMap.UNKNOWN.icon}
             borderRadius={100}
             alt="Asset Icon"
             objectFit="cover"

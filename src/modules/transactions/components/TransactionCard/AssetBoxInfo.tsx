@@ -11,7 +11,6 @@ import { bn } from 'fuels';
 import { useMemo } from 'react';
 import { FaPlay } from 'react-icons/fa';
 
-import NftEmpty from '@/assets/nft-empty.svg';
 import { Address, DoubleArrowIcon, Handle } from '@/components';
 import { DeployIcon } from '@/components/icons/tx-deploy';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
@@ -33,6 +32,7 @@ interface AssetBoxInfoProps extends StackProps {
 
 const AssetBoxInfo = ({
   asset,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   isDeposit,
   isDeploy,
   isContract,
@@ -104,7 +104,7 @@ const AssetBoxInfo = ({
           <Image
             w={6}
             h={6}
-            src={isNFT ? NftEmpty : (assetInfo?.icon ?? '')}
+            src={assetInfo?.icon ?? ''}
             borderRadius={100}
             alt="Asset Icon"
             objectFit="cover"
@@ -123,7 +123,6 @@ const AssetBoxInfo = ({
           color="grey.75"
           fontSize={isLowerThanFourHundredAndThirty ? 'xs' : 'sm'}
         >
-          {isDeposit ? null : '-'}
           {displayAmount}
         </Text>
         <Text
@@ -132,7 +131,7 @@ const AssetBoxInfo = ({
           fontSize="xs"
           color="grey.500"
         >
-          <AmountUSD amount={txUSDAmount} />
+          <AmountUSD amount={txUSDAmount} isNFT={isNFT} />
         </Text>
       </VStack>
 

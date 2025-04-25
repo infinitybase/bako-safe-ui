@@ -43,7 +43,7 @@ const AmountsInfo = ({ asset, txUSDAmount, isNFT }: AmountsInfoProps) => {
         fontSize="xs"
         color="grey.500"
       >
-        <AmountUSD amount={txUSDAmount} />
+        <AmountUSD amount={txUSDAmount} isNFT={isNFT} />
       </Text>
     </VStack>
   );

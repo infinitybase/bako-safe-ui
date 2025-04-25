@@ -22,21 +22,20 @@ import { EmptyState } from '@/components/emptyState';
 import { MenuIcon } from '@/components/icons/menu';
 import WelcomeDialog from '@/components/welcomeDialog';
 import { Drawer } from '@/layouts/dashboard/drawer';
-import { PermissionRoles, SocketEvents } from '@/modules/core';
+import { PermissionRoles } from '@/modules/core';
 import { useGetParams } from '@/modules/core/hooks';
 import { Pages } from '@/modules/core/routes';
 import { useTemplateStore } from '@/modules/template/store/useTemplateStore';
 import { TransactionCard, WaitingSignatureBadge } from '@/modules/transactions';
+import { useTransactionSocketListener } from '@/modules/transactions/hooks/events/useTransactionsSocketListener';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { limitCharacters } from '@/utils/limit-characters';
 
 import { CardDetails } from '../../components/CardDetails';
 import { SignersDetails } from '../../components/SignersDetails';
-import { useVaultInfosContext } from '../../VaultInfosProvider';
-
 import { vaultInfinityQueryKey } from '../../hooks/list/useVaultTransactionsRequest';
-import { useTransactionSocketListener } from '@/modules/transactions/hooks/events/useTransactionsSocketListener';
+import { useVaultInfosContext } from '../../VaultInfosProvider';
 
 const VaultDetailsPage = () => {
   const [welcomeDialogState, setWelcomeDialogState] = useState(true);
@@ -100,7 +99,6 @@ const VaultDetailsPage = () => {
     );
 
   useTransactionSocketListener(vaultQueryKey ?? []);
-
 
   if (!vault) return null;
 
@@ -262,7 +260,7 @@ const VaultDetailsPage = () => {
         display="flex"
         flexDir={{ base: 'column', xs: isSmall ? 'column' : 'row' }}
         gap={4}
-        mb={4}
+        mb={2}
       >
         <Box
           display="flex"
@@ -295,18 +293,21 @@ const VaultDetailsPage = () => {
         h={!vault.isLoading && !isLoading ? 'unset' : '100px'}
       >
         {hasTransactions
-          ? transactions?.map((grouped) => (
-              <Box key={grouped.monthYear} w="full">
-                <TransactionCard.GroupMonth monthYear={grouped.monthYear} />
-                <TransactionCard.List
-                  mt={5}
-                  pb={!isLarge ? 10 : 0}
-                  w="full"
-                  maxH={{ base: undefined, sm: 'calc(100% - 72px)' }}
-                  spacing={0}
-                >
-                  {grouped?.transactions?.map((transaction) => {
-                    return (
+          ? transactions?.map((grouped, index) => {
+              const isLastGroup = index === transactions.length - 1;
+              return (
+                <Box key={grouped.monthYear} w="full">
+                  <TransactionCard.GroupMonth
+                    monthYear={grouped.monthYear}
+                    mb={!isMobile ? 3 : 0}
+                    mt={!isMobile ? 0 : 3}
+                  />
+                  <TransactionCard.List
+                    w="full"
+                    maxH={{ base: undefined, sm: 'calc(100% - 72px)' }}
+                    spacing={0}
+                  >
+                    {grouped?.transactions?.map((transaction) => (
                       <TransactionCard.Item
                         w="full"
                         key={transaction.id}
@@ -315,22 +316,21 @@ const VaultDetailsPage = () => {
                         transaction={transaction}
                         userInfos={userInfos}
                       />
-                    );
-                  })}
+                    ))}
 
-                  {grouped.transactions.length >= 5 && isFetching && (
-                    <Spinner alignSelf={'center'} mt={4} color="brand.500" />
-                  )}
-                </TransactionCard.List>
-              </Box>
-            ))
-          : !hasTransactions &&
-            !!transactions && (
+                    {isLastGroup &&
+                      grouped.transactions.length >= 5 &&
+                      isFetching && (
+                        <Spinner alignSelf="center" mt={4} color="brand.500" />
+                      )}
+                  </TransactionCard.List>
+                </Box>
+              );
+            })
+          : !!transactions && (
               <EmptyState
-                title={'No Data available'}
-                subTitle={
-                  'Currently, there is no available data to display in this section.'
-                }
+                title="No Data available"
+                subTitle="Currently, there is no available data to display in this section."
                 showAction={false}
                 mb={10}
               />

@@ -91,6 +91,7 @@ const Amount = ({
         : totalAmoutSent,
     [transaction?.assets, assetsMap, totalAmoutSent],
   );
+
   const isNFT = formattedAmount === '0.000000001';
 
   return (
@@ -130,7 +131,7 @@ const Amount = ({
               color={isMultiToken ? ' grey.75' : 'grey.425'}
             >
               <CustomSkeleton isLoaded={!tokensUSD?.isLoading}>
-                <AmountUSD amount={txUSDAmount} />
+                <AmountUSD amount={txUSDAmount} isNFT={isNFT} />
               </CustomSkeleton>
             </Text>
           </Flex>

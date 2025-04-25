@@ -1,7 +1,6 @@
 import { Image, Text, VStack } from '@chakra-ui/react';
 import { useMemo } from 'react';
 
-import NftEmpty from '@/assets/nft-empty.svg';
 import { AssetModel } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
@@ -24,7 +23,7 @@ const TokenInfos = ({ asset, isNFT }: TokenInfosProps) => {
       <Image
         w={6}
         h={6}
-        src={isNFT ? NftEmpty : (assetInfo?.icon ?? '')}
+        src={assetInfo?.icon ?? ''}
         borderRadius={100}
         alt="Asset Icon"
         objectFit="cover"
