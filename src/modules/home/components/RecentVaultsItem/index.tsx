@@ -64,6 +64,9 @@ const RecentVaultsItem = memo(
                   }),
                 )
               }
+              inHome
+              isHidden={predicate.isHidden}
+              address={predicate.predicateAddress}
             />
           )}
         </GridItem>

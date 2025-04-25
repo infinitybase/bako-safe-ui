@@ -8,9 +8,13 @@ import {
   Heading,
   HStack,
   Spacer,
+  Spinner,
   Text,
   VStack,
 } from '@chakra-ui/react';
+import { useMutation } from '@tanstack/react-query';
+import { useEffect, useState } from 'react';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 import { Card } from '@/components';
 import { usePermissions } from '@/modules/core/hooks/usePermissions';
@@ -21,25 +25,56 @@ import {
 } from '@/modules/workspace/utils';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
-import { PredicateWorkspace } from '../services';
+import { PredicateWorkspace, VaultService } from '../services';
 
 interface VaultCardProps extends CardProps {
   ownerId: string;
   name: string;
   members: PredicateMember[];
   workspace: PredicateWorkspace;
+  inHome?: boolean;
+  isHidden?: boolean;
+  address: string;
 }
 export const VaultCard = ({
   ownerId,
   name,
   workspace,
   members,
+  inHome,
+  isHidden,
+  address,
   ...rest
 }: VaultCardProps) => {
   const { role } = usePermissions(ownerId);
   const {
     screenSizes: { isExtraSmall },
+    userVaults,
+    workspaceInfos: {
+      requests: { latestPredicates },
+    },
   } = useWorkspaceContext();
+
+  const { mutate: toogleVisibility, isPending } = useMutation({
+    mutationFn: VaultService.toggleVisibility,
+    onSuccess: () => {
+      userVaults.request.refetch();
+      latestPredicates.refetch();
+    },
+  });
+  const [localHidden, setLocalHidden] = useState(isHidden);
+
+  const handleToggle = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setLocalHidden((prev) => !prev);
+    toogleVisibility(address);
+  };
+
+  useEffect(() => {
+    setLocalHidden(isHidden);
+  }, [isHidden]);
+
+  if (inHome && isHidden) return null;
 
   return (
     <Card
@@ -52,9 +87,36 @@ export const VaultCard = ({
       maxW={isExtraSmall ? 272 : 'full'}
       my={{ base: 6, sm: 0 }}
       cursor="pointer"
-      zIndex={100}
+      zIndex={20}
       {...rest}
+      position="relative"
+      opacity={!localHidden ? 1 : 0.5}
+      transition="opacity 0.3s ease-in-out, background 0.3s ease"
     >
+      {inHome ?? (
+        <Box
+          position="absolute"
+          top={3}
+          right={3}
+          cursor={isPending ? 'not-allowed' : 'pointer'}
+          zIndex={10}
+          bg="#F5F5F50D"
+          borderRadius="6px"
+          boxSize={8}
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          onClick={isPending ? undefined : handleToggle}
+        >
+          {isPending ? (
+            <Spinner size="xs" color="grey.400" thickness="2px" speed="0.5s" />
+          ) : localHidden ? (
+            <FaEyeSlash size={16} color="#fff" />
+          ) : (
+            <FaEye size={16} color="#fff" />
+          )}
+        </Box>
+      )}
       <VStack alignItems="flex-start">
         <HStack maxW="80%" justifyContent="space-between" mb={1}>
           <HStack maxW="full">

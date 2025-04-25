@@ -117,6 +117,7 @@ const HomePage = () => {
             </Box>
           </ActionCard.Container>
         </CustomSkeleton>
+
         <CustomSkeleton isLoaded={!latestPredicates.isLoading}>
           <ActionCard.Container
             data-testid="adressBookTab"

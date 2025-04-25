@@ -70,7 +70,8 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
     !form.formState.isValid ||
     form.formState.isSubmitting ||
     isCurrentAmountZero ||
-    isTransactionFeeLoading;
+    isTransactionFeeLoading ||
+    !!resolveTransactionCosts.error;
 
   const isLoading = transactionRequest.isPending || form.formState.isSubmitting;
 

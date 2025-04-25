@@ -179,9 +179,22 @@ const NftBalanceCard = ({ nft }: { nft: NFT }) => {
   );
 };
 
-const AssetsBalanceCard = ({ asset }: { asset: Asset }) => {
+const AssetsBalanceCard = ({
+  asset,
+  usdAmount,
+}: {
+  asset: Asset;
+  usdAmount: number;
+}) => {
   const { assetsMap } = useWorkspaceContext();
   const { assetAmount, assetsInfo } = useGetTokenInfos({ ...asset, assetsMap });
+
+  const transactionAmount = Number(assetAmount) * (usdAmount ?? 0);
+  const formattedAmount = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+  }).format(transactionAmount);
+
   return (
     <Card
       p={4}
@@ -192,7 +205,7 @@ const AssetsBalanceCard = ({ asset }: { asset: Asset }) => {
       backdropFilter="blur(6px)"
       boxShadow="lg"
     >
-      <VStack alignItems="flex-start" gap={2}>
+      <VStack alignItems="flex-start" gap={4}>
         <Image
           w={{ base: 8, sm: 10 }}
           h={{ base: 8, sm: 10 }}
@@ -201,41 +214,55 @@ const AssetsBalanceCard = ({ asset }: { asset: Asset }) => {
           alt="Asset Icon"
           objectFit="cover"
         />
-        <VStack alignItems="flex-start" gap={0} maxW="full">
-          <HStack>
-            <Text fontSize="sm" color="grey.50" maxW="full" isTruncated>
-              {assetsInfo?.name}
+        <VStack alignItems="flex-start" spacing={0} w="full">
+          <Text fontSize="sm" color="grey.50" maxW="full" isTruncated>
+            {assetsInfo?.name}
+          </Text>
+          <Text fontSize="sm" color="grey.50" maxW="full" isTruncated>
+            {assetAmount}{' '}
+            <Text as="span" color="grey.400" fontSize="xs">
+              {assetsInfo?.slug?.toUpperCase() ?? ''}
             </Text>
-          </HStack>
-          <Text fontSize="xs" color="grey.250">
-            {assetsInfo?.slug}
+          </Text>
+          <Text fontSize="xs" color="grey.400" minH="1em">
+            {transactionAmount > 0 ? formattedAmount : ''}
           </Text>
         </VStack>
-        <Text fontSize="sm" color="grey.50" maxW="full" isTruncated>
-          {assetAmount}
-        </Text>
       </VStack>
     </Card>
   );
 };
 
-const AssetsBalanceList = ({ assets }: AssetsBalanceProps) => (
-  <Grid
-    gap={4}
-    templateColumns={{
-      base: 'repeat(1, 1fr)',
-      xs: 'repeat(2, 1fr)',
-      sm: 'repeat(3, 1fr)',
-      md: 'repeat(4, 1fr)',
-      xl: 'repeat(5, 1fr)',
-      '2xl': 'repeat(6, 1fr)',
-    }}
-  >
-    {assets?.map((asset) => (
-      <AssetsBalanceCard key={asset.assetId} asset={asset} />
-    ))}
-  </Grid>
-);
+const AssetsBalanceList = ({ assets }: AssetsBalanceProps) => {
+  const { tokensUSD } = useWorkspaceContext();
+
+  return (
+    <Grid
+      gap={4}
+      templateColumns={{
+        base: 'repeat(1, 1fr)',
+        xs: 'repeat(2, 1fr)',
+        sm: 'repeat(3, 1fr)',
+        md: 'repeat(4, 1fr)',
+        xl: 'repeat(5, 1fr)',
+        '2xl': 'repeat(6, 1fr)',
+      }}
+    >
+      {assets?.map((asset) => {
+        const usdData = tokensUSD.data[asset.assetId.toLowerCase()];
+        const usdAmount = usdData?.usdAmount ?? null;
+
+        return (
+          <AssetsBalanceCard
+            key={asset.assetId}
+            asset={asset}
+            usdAmount={usdAmount}
+          />
+        );
+      })}
+    </Grid>
+  );
+};
 
 const NftsBalanceList = ({ nfts }: NftsBalanceProps) => {
   const { isLitteSmall } = useScreenSize();

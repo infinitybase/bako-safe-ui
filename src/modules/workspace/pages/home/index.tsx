@@ -72,6 +72,7 @@ const WorkspacePage = () => {
       workspaceVaults: { vaultsMax, extraCount },
     },
     screenSizes: { isMobile },
+    tokensUSD,
   } = useWorkspaceContext();
 
   const recentVaults = latestPredicates.data?.predicates?.data;
@@ -401,6 +402,7 @@ const WorkspacePage = () => {
                         viewAllRedirect={Pages.balanceWorkspace({
                           workspaceId,
                         })}
+                        tokensUSD={tokensUSD.data}
                       />
                     </HStack>
                   )}
@@ -511,7 +513,18 @@ const WorkspacePage = () => {
             gap={6}
           >
             {recentVaults?.map(
-              ({ id, name, workspace, members, description, owner }, index) => {
+              (
+                {
+                  id,
+                  name,
+                  workspace,
+                  members,
+                  description,
+                  owner,
+                  predicateAddress,
+                },
+                index,
+              ) => {
                 const lastCard = index === vaultsMax - 1;
                 const hasMore = extraCount > 0;
 
@@ -548,6 +561,7 @@ const WorkspacePage = () => {
                               }),
                             )
                           }
+                          address={predicateAddress}
                         />
                       )}
                     </CustomSkeleton>

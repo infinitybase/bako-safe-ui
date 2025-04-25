@@ -91,6 +91,10 @@ const Select = ({
   };
 
   useEffect(() => {
+    if (!value) {
+      setInputValue('');
+      return;
+    }
     if (options && options.length > 0) {
       const selectedOption = options.find((option) => option.value === value);
       if (selectedOption) {
