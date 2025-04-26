@@ -1,7 +1,7 @@
 import React, { createContext, useEffect, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
 
-import { SocketUsernames, useQueryParams } from '@/modules';
+import { SocketEvents, SocketUsernames, useQueryParams } from '@/modules';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const { VITE_SOCKET_URL, DEV } = import.meta.env;
@@ -32,12 +32,10 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     authDetails: { userInfos },
   } = useWorkspaceContext();
   const { request_id, sessionId } = useQueryParams();
-
   const connectionAttemptedRef = React.useRef(false);
 
   useEffect(() => {
     const onConnect = () => {
-      console.log('[SOCKET] Connected successfully');
       setIsConnected(true);
     };
 
@@ -60,16 +58,19 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     socket.on('disconnect', onDisconnect);
     socket.on('connect_error', onConnectError);
 
-    socket.auth = {
-      username: SocketUsernames.UI,
-      data: new Date(),
-      sessionId: sessionId || userInfos.id,
-      origin,
-      request_id: request_id ?? '',
-    };
+    const hasId = userInfos.id || sessionId;
 
-    if (!socket.connected && !connectionAttemptedRef.current) {
-      console.log('[SOCKET] Attempting to connect');
+    if (hasId && !socket.connected && !connectionAttemptedRef.current) {
+      socket.auth = {
+        username: SocketUsernames.UI,
+        data: new Date(),
+        sessionId: sessionId || userInfos.id,
+        origin,
+        request_id: request_id ?? '',
+      };
+
+      console.log('[SOCKET] Attempting to connect with auth:', socket.auth);
+
       connectionAttemptedRef.current = true;
       socket.connect();
     }
