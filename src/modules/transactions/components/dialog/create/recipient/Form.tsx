@@ -132,10 +132,10 @@ const RecipientFormField = (props: RecipientFormFieldProps) => {
           name={`transactions.${index}.value`}
           control={control}
           render={({ field, fieldState }) => {
+
             const appliedOptions = optionsRequests[index].options.filter(
               (a) => Address.fromString(a.value).toString() !== field.value,
             );
-
             const showAddToAddressBook =
               canAddMember &&
               !fieldState.invalid &&

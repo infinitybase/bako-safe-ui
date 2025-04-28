@@ -24,6 +24,8 @@ interface RecipientItemProps {
   accordion: UseCreateTransaction['accordion'];
   isFeeCalcLoading: boolean;
   getBalanceAvailable: UseCreateTransaction['getBalanceAvailable'];
+  hasEthForFee:boolean;
+  ethAssetId: string | undefined;
 }
 
 const RecipientItem = ({
@@ -35,6 +37,8 @@ const RecipientItem = ({
   accordion,
   isFeeCalcLoading,
   getBalanceAvailable,
+  hasEthForFee,
+  ethAssetId
 }: RecipientItemProps) => {
   const { watch, getFieldState } = useFormContext<ITransactionForm>();
   const {
@@ -75,11 +79,18 @@ const RecipientItem = ({
 
   return (
     <AccordionItem
-      mb={6}
-      borderWidth={1}
-      borderColor="grey.925"
-      borderRadius={10}
-      backgroundColor="dark.950"
+    key={index}
+    mb={6}
+    borderWidth={1}
+    borderColor={
+      !hasEthForFee &&
+      transaction.asset === ethAssetId &&
+      !isCurrentAmountZero
+        ? 'red.500'
+        : 'grey.925'
+    }
+    borderRadius={10}
+    backgroundColor="dark.950"
     >
       <TransactionAccordion.Item
         title={`Recipient ${index + 1}`}
