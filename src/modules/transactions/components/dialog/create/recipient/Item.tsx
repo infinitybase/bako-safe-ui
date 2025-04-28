@@ -79,7 +79,6 @@ const RecipientItem = ({
 
   return (
     <AccordionItem
-    key={index}
     mb={6}
     borderWidth={1}
     borderColor={
