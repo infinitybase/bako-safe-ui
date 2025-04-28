@@ -23,6 +23,7 @@ interface IVaultEvent {
   pending_tx: boolean;
   configurable: string;
   version: string;
+  id: string;
 }
 
 export interface ITransactionSuccess {
@@ -47,6 +48,7 @@ export type UseTransactionSocket = ReturnType<typeof useTransactionSocket>;
 
 export const useTransactionSocket = () => {
   const vaultRef = useRef<IVaultEvent>({
+    id: '',
     name: '',
     address: '',
     description: '',

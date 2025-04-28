@@ -169,7 +169,7 @@ const AssetCard = ({
   // TODO: Abstract to avoid duplicated code
   const redirectToNetwork = () =>
     window.open(
-      `${NetworkService.getExplorer(network.url)}/account/${vault.data.predicateAddress}/assets`,
+      `${NetworkService.getExplorer(network?.url)}/account/${vault.data.predicateAddress}/assets`,
       '_BLANK',
     );
 

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useNavigate } from 'react-router-dom';
 
@@ -6,8 +6,12 @@ import { useUserVaultRequest } from '..';
 
 const useUserVaults = (userAddress: string) => {
   const navigate = useNavigate();
+  const [hidden, sethidden] = useState(false);
   const inView = useInView({ delay: 300 });
-  const vaultsRequest = useUserVaultRequest(userAddress, { perPage: 8 });
+  const vaultsRequest = useUserVaultRequest(userAddress, {
+    perPage: 8,
+    hidden,
+  });
 
   useEffect(() => {
     if (
@@ -22,9 +26,11 @@ const useUserVaults = (userAddress: string) => {
     vaultsRequest.isFetching,
     vaultsRequest.fetchNextPage,
     vaultsRequest.hasNextPage,
+    vaultsRequest,
   ]);
 
   return {
+    filter: { value: hidden, change: sethidden },
     inView,
     request: {
       ...vaultsRequest,
