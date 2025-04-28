@@ -1,5 +1,7 @@
-import { useCallback } from 'react';
 import { QueryKey } from '@tanstack/react-query';
+import { useCallback } from 'react';
+
+import { HomeQueryKey, SocketEvents, WorkspacesQueryKey } from '@/modules/core';
 import { useSocketEvent } from '@/modules/core/hooks/socket/useSocketEvent';
 import { useReactQueryUpdate } from '@/modules/core/hooks/useReactQueryUpdate';
 import {
@@ -8,12 +10,10 @@ import {
 } from '@/modules/transactions/hooks';
 import { TransactionService } from '@/modules/transactions/services';
 import {
-  ITransactionReactQueryUpdate,
-  ITransactionQueryUpdatePage,
   ITransactionInfinityQueryData,
+  ITransactionQueryUpdatePage,
+  ITransactionReactQueryUpdate,
 } from '@/modules/transactions/services/types';
-import { HomeQueryKey, WorkspacesQueryKey } from '@/modules/core';
-import { SocketEvents } from '@/modules/core';
 import { vaultInfinityQueryKey } from '@/modules/vault/hooks/list/useVaultTransactionsRequest';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 

@@ -1,10 +1,7 @@
 import { CloseIcon } from '@chakra-ui/icons';
 import {
-  Accordion,
-  AccordionItem,
   Box,
   Button,
-  Center,
   CircularProgress,
   FormControl,
   FormHelperText,
@@ -12,22 +9,22 @@ import {
   HStack,
   IconButton,
   Text,
-  Tooltip,
   VStack,
 } from '@chakra-ui/react';
 import { Address, bn, isB256 } from 'fuels';
-import { useEffect, useMemo, useState } from 'react';
-import { Controller } from 'react-hook-form';
+import { memo, useMemo } from 'react';
+import { Controller, useFormContext } from 'react-hook-form';
 
-import { AmountInput, Autocomplete, UserAddIcon } from '@/components';
+import { AmountInput, Autocomplete } from '@/components';
 import {
   AddToAddressBook,
   CreateContactDialog,
   useAddressBookAutocompleteOptions,
 } from '@/modules/addressBook';
-import { AddressUtils, AssetSelect, delay } from '@/modules/core';
+import { AddressUtils, AssetSelect } from '@/modules/core';
 import { useBakoIDClient } from '@/modules/core/hooks/bako-id';
 import {
+  ITransactionForm,
   useAssetSelectOptions,
   UseCreateTransaction,
 } from '@/modules/transactions/hooks';
@@ -35,28 +32,17 @@ import { UseVaultDetailsReturn } from '@/modules/vault';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { AddressBookUtils } from '@/utils';
 
-import { TransactionAccordion } from './accordion';
-
-interface TransactionAccordionProps {
-  form: UseCreateTransaction['form'];
-  nicks: UseCreateTransaction['nicks'];
-  assets: UseVaultDetailsReturn['assets'];
-  accordion: UseCreateTransaction['accordion'];
-  transactions: UseCreateTransaction['transactionsFields'];
-  isFeeCalcLoading: boolean;
-  getBalanceAvailable: UseCreateTransaction['getBalanceAvailable'];
-}
-
-interface TransctionFormFieldProps {
-  form: UseCreateTransaction['form'];
+interface RecipientFormFieldProps {
   index: number;
   assets: UseVaultDetailsReturn['assets'];
   isFeeCalcLoading: boolean;
   getBalanceAvailable: UseCreateTransaction['getBalanceAvailable'];
 }
 
-const TransactionFormField = (props: TransctionFormFieldProps) => {
-  const { form, assets, index, isFeeCalcLoading, getBalanceAvailable } = props;
+const RecipientFormField = (props: RecipientFormFieldProps) => {
+  const { assets, index, isFeeCalcLoading, getBalanceAvailable } = props;
+  const { setValue, watch, formState, control } =
+    useFormContext<ITransactionForm>();
 
   const {
     authDetails: { userInfos },
@@ -75,24 +61,27 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
     },
     tokensUSD,
   } = useWorkspaceContext();
+
   const balanceAvailable = getBalanceAvailable();
   const {
     handlers: { fetchResolverName, fetchResolveAddress },
   } = useBakoIDClient(providerInstance);
 
   const setResolverAndHandle = (resolver?: string, handle?: string) => {
-    form.setValue('resolver', resolver);
-    form.setValue('handle', handle);
+    setValue('resolver', resolver);
+    setValue('handle', handle);
 
     return;
   };
+
+  const transactions = watch('transactions') ?? [];
 
   const { optionsRequests, optionRef } = useAddressBookAutocompleteOptions({
     workspaceId: workspaceId!,
     includePersonal: !userInfos.onSingleWorkspace,
     contacts: listContactsRequest.data!,
-    fields: form.watch('transactions')!,
-    errors: form.formState.errors.transactions,
+    fields: transactions,
+    errors: formState.errors.transactions,
     isUsingTemplate: false,
     isFirstLoading: false,
     dynamicCurrentIndex: index,
@@ -100,7 +89,7 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
     setResolverAndHandle,
   });
 
-  const recipients = form.watch('transactions') ?? [];
+  const recipients = watch('transactions') ?? [];
   const asset = recipients?.[index].asset;
 
   const isNFT = useMemo(() => isNFTAsset(asset), [asset, isNFTAsset]);
@@ -141,7 +130,7 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
       <VStack spacing={5}>
         <Controller
           name={`transactions.${index}.value`}
-          control={form.control}
+          control={control}
           render={({ field, fieldState }) => {
             const appliedOptions = optionsRequests[index].options.filter(
               (a) => Address.fromString(a.value).toString() !== field.value,
@@ -172,7 +161,7 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
                   <Box position="relative">
                     <Autocomplete
                       value={
-                        form.watch(`transactions.${index}.resolvedLabel`) ||
+                        watch(`transactions.${index}.resolvedLabel`) ||
                         field.value ||
                         ''
                       }
@@ -208,7 +197,7 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
                         }
 
                         field.onChange(result.value);
-                        form.setValue(
+                        setValue(
                           `transactions.${index}.resolvedLabel`,
                           result.label,
                         );
@@ -264,7 +253,7 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
 
         <Controller
           name={`transactions.${index}.asset`}
-          control={form.control}
+          control={control}
           render={({ field, fieldState }) => {
             return (
               <HStack
@@ -282,15 +271,12 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
                     field.onChange(e);
 
                     if (isNFTAsset(e)) {
-                      form.setValue(
-                        `transactions.${index}.amount`,
-                        bn(1).format(),
-                      );
+                      setValue(`transactions.${index}.amount`, bn(1).format());
                       return;
                     }
 
                     if (isNFTAsset(field.value)) {
-                      form.setValue(`transactions.${index}.amount`, '');
+                      setValue(`transactions.${index}.amount`, '');
                     }
                   }}
                   helperText={
@@ -346,7 +332,7 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
                     zIndex={1}
                     onClick={() => {
                       field.onChange(null);
-                      form.setValue(`transactions.${index}.amount`, '');
+                      setValue(`transactions.${index}.amount`, '');
                     }}
                   />
                 )}
@@ -354,14 +340,13 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
             );
           }}
         />
-
         <Controller
           name={`transactions.${index}.amount`}
-          control={form.control}
+          control={control}
           render={({ field, fieldState }) => {
             const usdEstimate = formatUsdEstimate(
               field.value,
-              form.watch(`transactions.${index}.asset`),
+              watch(`transactions.${index}.asset`),
             );
             const usdNumber = parseFloat(usdEstimate.replace(/[^\d.-]/g, ''));
 
@@ -463,234 +448,4 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
   );
 };
 
-const TransactionAccordions = (props: TransactionAccordionProps) => {
-  const {
-    form,
-    transactions,
-    assets,
-    accordion,
-    nicks,
-    isFeeCalcLoading,
-    getBalanceAvailable,
-  } = props;
-
-  const {
-    screenSizes: { isMobile },
-    providerInstance,
-    vaultDetails: {
-      assets: { isNFTAsset },
-    },
-  } = useWorkspaceContext();
-
-  const {
-    handlers: { getResolverName },
-  } = useBakoIDClient(providerInstance);
-
-  const [ethAssetId, setEthAssetId] = useState<string | undefined>();
-
-  useEffect(() => {
-    const fetchEthAssetId = async () => {
-      const provider = await providerInstance;
-      const baseAssetId = await provider.getBaseAssetId();
-      setEthAssetId(baseAssetId);
-    };
-
-    fetchEthAssetId();
-  }, [providerInstance]);
-
-  const { hasEthForFee } = useMemo(() => {
-    if (!ethAssetId) return { hasEthForFee: false };
-
-    let feeAlreadyAdded = false;
-
-    const used = transactions.fields.reduce((acc, _, index) => {
-      const transaction = form.watch(`transactions.${index}`);
-      if (transaction.asset !== ethAssetId) return acc;
-
-      const amount = Number(transaction.amount || 0);
-      let fee = 0;
-
-      if (!feeAlreadyAdded) {
-        fee = Number(transaction.fee || 0);
-        feeAlreadyAdded = true;
-      }
-
-      return acc + amount + fee;
-    }, 0);
-
-    const asset = assets.assets?.find((a) => a.assetId === ethAssetId);
-    const totalEth = asset?.amount ? bn(asset.amount).formatUnits() : 0;
-
-    const hasEnough = Number(totalEth) >= Number(used.toFixed(9));
-
-    return {
-      totalEthUsed: used,
-      hasEthForFee: hasEnough,
-    };
-  }, [transactions.fields, form, assets.assets, ethAssetId]);
-
-  return (
-    <Accordion
-      index={accordion.index}
-      overflowY="auto"
-      pb={isMobile ? 10 : 0}
-      maxH={'450px'}
-      pr={{ base: 1, sm: 0 }}
-      sx={{
-        '&::-webkit-scrollbar': {
-          width: '5px',
-          maxHeight: '330px',
-        },
-        '&::-webkit-scrollbar-thumb': {
-          backgroundColor: '#2C2C2C',
-          borderRadius: '30px',
-          height: '10px',
-        },
-      }}
-    >
-      {transactions.fields.map((field, index) => {
-        const transaction = form.watch(`transactions.${index}`);
-        const assetSlug = assets.getAssetInfo(transaction.asset)?.slug;
-        const fieldState = form.getFieldState(`transactions.${index}`);
-        let resolvedLabel = form.watch(`transactions.${index}.resolvedLabel`);
-
-        if (resolvedLabel?.startsWith('@')) {
-          resolvedLabel = resolvedLabel?.split(' ')[0];
-        }
-
-        const hasEmptyField = Object.entries(transaction)
-          .filter(([key]) => key !== 'resolvedLabel')
-          .some(([, value]) => value === '');
-
-        const currentAmount = form.watch(`transactions.${index}.amount`);
-        const isCurrentAmountZero = Number(currentAmount) === 0;
-
-        const isDisabled =
-          hasEmptyField || fieldState.invalid || isCurrentAmountZero;
-
-        const contact = nicks.find(
-          (nick) => nick.user.address === transaction.value,
-        )?.nickname;
-
-        const resolverName = getResolverName(transaction.value);
-        let recipientLabel =
-          contact ?? resolverName ?? AddressUtils.format(transaction.value);
-
-        if (resolvedLabel?.startsWith('@')) {
-          recipientLabel = resolvedLabel;
-        }
-
-        const isNFT = isNFTAsset(transaction.asset);
-
-        return (
-          <AccordionItem
-            key={field.id}
-            mb={6}
-            borderWidth={1}
-            borderColor={
-              !hasEthForFee &&
-              transaction.asset === ethAssetId &&
-              !isCurrentAmountZero
-                ? 'red.500'
-                : 'grey.925'
-            }
-            borderRadius={10}
-            backgroundColor="dark.950"
-          >
-            <TransactionAccordion.Item
-              title={`Recipient ${index + 1}`}
-              actions={
-                <TransactionAccordion.Actions>
-                  <HStack spacing={4}>
-                    <TransactionAccordion.EditAction
-                      onClick={() => accordion.open(index)}
-                    />
-                    <TransactionAccordion.DeleteAction
-                      isDisabled={props.transactions.fields.length === 1}
-                      onClick={() => {
-                        transactions.remove(index);
-                        accordion.close();
-                      }}
-                    />
-                  </HStack>
-                  <TransactionAccordion.ConfirmAction
-                    onClick={() => accordion.close()}
-                    isDisabled={isDisabled}
-                    isLoading={!isCurrentAmountZero ? isFeeCalcLoading : false}
-                  />
-                </TransactionAccordion.Actions>
-              }
-              resume={
-                !hasEmptyField && (
-                  <Text fontSize="sm" color="grey.500" mt={2}>
-                    <b>
-                      {isNFT ? 'NFT' : transaction.amount}{' '}
-                      {isNFT ? '' : assetSlug}
-                    </b>{' '}
-                    to <b> {recipientLabel}</b>
-                  </Text>
-                )
-              }
-            >
-              <TransactionFormField
-                index={index}
-                form={form}
-                assets={assets}
-                isFeeCalcLoading={isFeeCalcLoading}
-                getBalanceAvailable={getBalanceAvailable}
-              />
-            </TransactionAccordion.Item>
-          </AccordionItem>
-        );
-      })}
-      <Center mt={6} flexDirection="column" w="full">
-        {!hasEthForFee ? (
-          <Text
-            color="error.500"
-            fontSize="sm"
-            w="full"
-            textAlign="center"
-            mt={2}
-          >
-            Insufficient funds for gas
-          </Text>
-        ) : (
-          <Tooltip
-            label="All available assets have been used."
-            isDisabled={!form.allAssetsUsed}
-            hasArrow
-            placement="top"
-          >
-            <Button
-              w="full"
-              leftIcon={<UserAddIcon />}
-              variant="primary"
-              bgColor="grey.200"
-              border="none"
-              _hover={{
-                opacity: 0.8,
-              }}
-              _disabled={{
-                cursor: 'not-allowed',
-                opacity: 0.6,
-              }}
-              isDisabled={form.allAssetsUsed}
-              onClick={() => {
-                transactions.append({
-                  amount: '',
-                  asset: ethAssetId ? ethAssetId : '',
-                  value: '',
-                });
-                delay(() => accordion.open(transactions.fields.length), 100);
-              }}
-            >
-              Add more recipients
-            </Button>
-          </Tooltip>
-        )}
-      </Center>
-    </Accordion>
-  );
-};
-
-export { TransactionAccordions };
+export default memo(RecipientFormField);

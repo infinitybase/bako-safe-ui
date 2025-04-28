@@ -1,9 +1,6 @@
-import { ChevronRightIcon } from '@chakra-ui/icons';
 import {
   Box,
   Button,
-  Grid,
-  GridItem,
   HStack,
   Icon,
   Stack,
@@ -11,35 +8,36 @@ import {
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
-import { css } from '@emotion/react';
+import { useMemo } from 'react';
 import { FaRegPlusSquare } from 'react-icons/fa';
 
 import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
 import { AddressBookIcon } from '@/components/icons/address-book';
 import { TransactionsIcon } from '@/components/icons/transactions';
-import { shakeAnimationX } from '@/modules/core';
+import { HomeQueryKey } from '@/modules/core';
 import { Pages } from '@/modules/core/routes';
-import { CreateVaultDialog, ExtraVaultCard, VaultCard } from '@/modules/vault';
+import { useTransactionSocketListener } from '@/modules/transactions/hooks/events/useTransactionsSocketListener';
+import { CreateVaultDialog } from '@/modules/vault';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { ActionCard } from '../components/ActionCard';
 import HomeTransactions from '../components/HomeTransactions';
-
-import { HomeQueryKey } from '@/modules/core';
-import { useTransactionSocketListener } from '@/modules/transactions/hooks/events/useTransactionsSocketListener';
+import RecentVaultsList from '../components/RecentVaultsList';
 
 const HomePage = () => {
   const {
     authDetails: { userInfos },
     workspaceInfos: {
-      handlers: { handleWorkspaceSelection, navigate },
+      handlers: { navigate },
       requests: { latestPredicates },
-      workspaceVaults: { extraCount, vaultsMax },
     },
-    screenSizes: { isSmall, isExtraSmall },
   } = useWorkspaceContext();
 
-  const recentVaults = latestPredicates.data?.predicates?.data;
+  const recentVaults = useMemo(
+    () => latestPredicates.data?.predicates?.data,
+    [latestPredicates],
+  );
+
   const { isOpen, onClose, onOpen } = useDisclosure();
 
   const workspaceId = userInfos.workspace?.id;
@@ -146,120 +144,13 @@ const HomePage = () => {
         minH={latestPredicates.isLoading ? '$100vh' : 'fit-content'}
         mt={latestPredicates.isLoading ? 6 : 4}
       >
-        {recentVaults?.length ? (
-          <HStack w="full" justifyContent="space-between" pb={6}>
-            <Text color="white" fontWeight="semibold" fontSize="md">
-              Recently used vaults
-            </Text>
-            <HStack spacing={2}>
-              <Button
-                color="grey.75"
-                variant="txFilterType"
-                alignSelf={{ base: 'stretch', sm: 'flex-end' }}
-                rightIcon={
-                  <Icon
-                    as={ChevronRightIcon}
-                    fontSize="lg"
-                    ml={isSmall ? -1 : 0}
-                    className="btn-icon"
-                    color="grey.75"
-                  />
-                }
-                onClick={() =>
-                  navigate(
-                    Pages.userVaults({ workspaceId: userInfos.workspace?.id }),
-                  )
-                }
-                css={css`
-                  &:hover .btn-icon {
-                    animation: ${shakeAnimationX} 0.5s ease-in-out;
-                  }
-                `}
-                px={isExtraSmall ? 3 : 4}
-              >
-                View all
-              </Button>
-            </HStack>
-          </HStack>
-        ) : null}
-        {recentVaults?.length ? (
-          <Grid
-            mt={{ base: -8, sm: -2 }}
-            w="full"
-            maxW="full"
-            gap={6}
-            templateColumns={{
-              base: 'repeat(1, 1fr)',
-              xs: 'repeat(2, 1fr)',
-              md: 'repeat(3, 1fr)',
-              '2xl': 'repeat(4, 1fr)',
-            }}
-          >
-            {recentVaults?.map(
-              (
-                {
-                  id,
-                  name,
-                  workspace,
-                  members,
-                  description,
-                  owner,
-                  isHidden,
-                  predicateAddress,
-                },
-                index,
-              ) => {
-                const lastCard = index === vaultsMax - 1;
-                const hasMore = extraCount > 0;
+        {recentVaults?.length && (
+          <RecentVaultsList
+            predicates={recentVaults}
+            isLoading={latestPredicates.isLoading}
+          />
+        )}
 
-                return (
-                  <CustomSkeleton
-                    isLoaded={!latestPredicates.isLoading || !!recentVaults}
-                    key={id}
-                    maxH={{ base: 180, sm: 190 }}
-                  >
-                    <GridItem>
-                      {lastCard && hasMore ? (
-                        <ExtraVaultCard
-                          mt={{ base: 6, sm: 'unset' }}
-                          maxH={{ base: 185, sm: 190 }}
-                          extra={extraCount}
-                          onClick={() =>
-                            navigate(
-                              Pages.userVaults({
-                                workspaceId: workspaceId,
-                              }),
-                            )
-                          }
-                        />
-                      ) : (
-                        <VaultCard
-                          ownerId={owner.id}
-                          name={name}
-                          workspace={workspace}
-                          title={description}
-                          members={members!}
-                          onClick={() =>
-                            handleWorkspaceSelection(
-                              workspace.id,
-                              Pages.detailsVault({
-                                workspaceId: workspace.id,
-                                vaultId: id,
-                              }),
-                            )
-                          }
-                          inHome={true}
-                          isHidden={isHidden}
-                          address={predicateAddress}
-                        />
-                      )}
-                    </GridItem>
-                  </CustomSkeleton>
-                );
-              },
-            )}
-          </Grid>
-        ) : null}
         {/* TRANSACTION LIST */}
         <Box minH="650px">
           <HomeTransactions />

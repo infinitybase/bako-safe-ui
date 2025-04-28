@@ -34,7 +34,7 @@ type AddressBookAutocompleteOptionsProps = {
   setResolverAndHandle?: (resolver?: string, handle?: string) => void;
 };
 
-export type AddressesFields = { [key: string]: string }[];
+export type AddressesFields = { value: string }[];
 
 const useAddressBookAutocompleteOptions = ({
   workspaceId,

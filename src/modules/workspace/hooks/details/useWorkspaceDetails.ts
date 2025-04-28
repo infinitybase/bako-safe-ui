@@ -1,4 +1,3 @@
-import type { BakoProvider } from 'bakosafe';
 import { useMemo, useState } from 'react';
 
 import { queryClient, setupAxiosInterceptors } from '@/config';
@@ -39,11 +38,9 @@ const useWorkspaceDetails = () => {
   const { currentNetwork } = useNetworks();
   const { assetsMap, nftList } = useAssetMap(currentNetwork.chainId);
 
-  const providerInstance = useMemo<Promise<BakoProvider>>(async () => {
-    const provider = await ProviderInstance.create(currentNetwork.url);
-
-    return provider.instance;
-  }, [currentNetwork]);
+  const providerInstance = ProviderInstance.create(currentNetwork.url).then(
+    (res) => res.instance,
+  );
 
   // const {
   //   resetAllTransactionsTypeFilters,

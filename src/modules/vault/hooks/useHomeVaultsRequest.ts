@@ -5,6 +5,7 @@ import {
   TransactionOrderBy,
 } from '@/modules/transactions/services';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { DEFAULT_INITIAL_PAGE_PARAM } from '@/utils/constants';
 
 import { VaultService } from '../services';
 
@@ -17,7 +18,7 @@ const useHomeVaultsRequest = (vaultsPerPage: number) => {
     queryKey: ['predicate/home', userInfos.address],
     queryFn: () =>
       VaultService.getAllWithPagination({
-        page: 0,
+        page: DEFAULT_INITIAL_PAGE_PARAM,
         perPage: vaultsPerPage,
         orderBy: TransactionOrderBy.CREATED_AT,
         sort: SortOption.DESC,

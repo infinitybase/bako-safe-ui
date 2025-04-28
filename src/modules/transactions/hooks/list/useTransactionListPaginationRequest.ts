@@ -3,6 +3,7 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { invalidateQueries, WorkspacesQueryKey } from '@/modules/core';
 import { SortOptionTx } from '@/modules/core/hooks/bakosafe/utils/types';
 import { useGroupTransactionsByMonth } from '@/modules/core/hooks/useGroupTransactionsByMonth';
+import { DEFAULT_INITIAL_PAGE_PARAM } from '@/utils/constants';
 
 import {
   GetTransactionParams,
@@ -34,7 +35,7 @@ const useTransactionListPaginationRequest = (
       TransactionService.getTransactionsPagination({
         ...params,
         perPage: 5,
-        page: pageParam || 0,
+        page: pageParam || DEFAULT_INITIAL_PAGE_PARAM,
         orderBy: TransactionOrderBy.CREATED_AT,
         sort: SortOptionTx.DESC,
       }).then((data) => {
@@ -46,7 +47,7 @@ const useTransactionListPaginationRequest = (
         return data;
       }),
     enabled: window.location.pathname != '/',
-    initialPageParam: 0,
+    initialPageParam: DEFAULT_INITIAL_PAGE_PARAM,
     refetchOnWindowFocus: true,
     getNextPageParam: (lastPage) =>
       lastPage.currentPage !== lastPage.totalPages

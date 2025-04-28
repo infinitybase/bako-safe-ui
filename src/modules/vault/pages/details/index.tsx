@@ -22,21 +22,20 @@ import { EmptyState } from '@/components/emptyState';
 import { MenuIcon } from '@/components/icons/menu';
 import WelcomeDialog from '@/components/welcomeDialog';
 import { Drawer } from '@/layouts/dashboard/drawer';
-import { PermissionRoles, SocketEvents } from '@/modules/core';
+import { PermissionRoles } from '@/modules/core';
 import { useGetParams } from '@/modules/core/hooks';
 import { Pages } from '@/modules/core/routes';
 import { useTemplateStore } from '@/modules/template/store/useTemplateStore';
 import { TransactionCard, WaitingSignatureBadge } from '@/modules/transactions';
+import { useTransactionSocketListener } from '@/modules/transactions/hooks/events/useTransactionsSocketListener';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { limitCharacters } from '@/utils/limit-characters';
 
 import { CardDetails } from '../../components/CardDetails';
 import { SignersDetails } from '../../components/SignersDetails';
-import { useVaultInfosContext } from '../../VaultInfosProvider';
-
 import { vaultInfinityQueryKey } from '../../hooks/list/useVaultTransactionsRequest';
-import { useTransactionSocketListener } from '@/modules/transactions/hooks/events/useTransactionsSocketListener';
+import { useVaultInfosContext } from '../../VaultInfosProvider';
 
 const VaultDetailsPage = () => {
   const [welcomeDialogState, setWelcomeDialogState] = useState(true);
@@ -100,7 +99,6 @@ const VaultDetailsPage = () => {
     );
 
   useTransactionSocketListener(vaultQueryKey ?? []);
-
 
   if (!vault) return null;
 
@@ -279,14 +277,13 @@ const VaultDetailsPage = () => {
           />
         </Box>
         <Spacer />
-        {
-          <TransactionTypeFilters
-            currentFilter={txFilterType}
-            incomingAction={handleIncomingAction}
-            outgoingAction={handleOutgoingAction}
-            buttonsFullWidth={isSmall}
-          />
-        }
+
+        <TransactionTypeFilters
+          currentFilter={txFilterType}
+          incomingAction={handleIncomingAction}
+          outgoingAction={handleOutgoingAction}
+          buttonsFullWidth={isSmall}
+        />
       </Box>
 
       <CustomSkeleton
