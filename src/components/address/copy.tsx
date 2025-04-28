@@ -71,6 +71,7 @@ const AddressWithCopyBtn = ({
         minW={2}
         aria-label={ariaLabel}
         addressToCopy={address}
+        isSidebarAddress={isSidebarAddress}
         {...copyBtnProps}
       />
     </Flex>

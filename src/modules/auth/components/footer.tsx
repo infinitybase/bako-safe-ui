@@ -3,12 +3,25 @@ import { FiArrowUpRight } from 'react-icons/fi';
 
 import { FeedbackIcon } from '@/components/icons/feedback';
 import { useScreenSize } from '@/modules/core/hooks';
+import { createGTMCustomEvent } from '@/utils';
 
 const SignInFooter = () => {
   const { isMobile } = useScreenSize();
 
-  const feedbackForm = () =>
-    window.open(import.meta.env.VITE_FEEDBACK_FORM, '_BLANK');
+  const handleLearnMoreClick = () => {
+    createGTMCustomEvent({
+      eventName: 'learn more click',
+      buttonId: 'Login-Screen: learn more fuel network',
+    });
+  };
+
+  const handleFeedbackClick = () => {
+    createGTMCustomEvent({
+      eventName: 'send feedback click',
+      buttonId: 'Login-Screen: send feedback button',
+    });
+    window.open(import.meta.env.VITE_FEEDBACK_FORM, '_blank');
+  };
 
   return (
     <VStack spacing={1} textAlign="center" mt={isMobile ? 6 : 0}>
@@ -26,6 +39,7 @@ const SignInFooter = () => {
         textDecoration="none"
         fontWeight="medium"
         borderRadius={8}
+        onClick={handleLearnMoreClick}
         _hover={{
           textDecoration: 'none',
           color: 'grey.75',
@@ -37,7 +51,7 @@ const SignInFooter = () => {
         <Icon as={FiArrowUpRight} fontSize="md" />
       </Link>
 
-      <HStack cursor="pointer" onClick={feedbackForm} spacing={3} mt={6}>
+      <HStack cursor="pointer" onClick={handleFeedbackClick} spacing={3} mt={6}>
         <Text
           color="grey.250"
           fontWeight={400}

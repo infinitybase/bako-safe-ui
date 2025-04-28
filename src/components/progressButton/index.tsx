@@ -1,6 +1,8 @@
 import { Box, Button, ButtonProps } from '@chakra-ui/react';
 import { ReactNode } from 'react';
 
+import { createGTMCustomEvent } from '@/utils';
+
 interface ProgressButtonProps
   extends Omit<ButtonProps, 'children' | 'position' | 'overflow'> {
   children: ReactNode;
@@ -12,10 +14,25 @@ const ProgressButton = ({
   children,
   progress,
   progressColor,
+  onClick,
   ...rest
 }: ProgressButtonProps) => {
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    createGTMCustomEvent({
+      eventName: `${children} button click`,
+      buttonId: `${children} button click`,
+    });
+
+    onClick?.(e);
+  };
+
   return (
-    <Button position="relative" overflow="hidden" {...rest}>
+    <Button
+      position="relative"
+      overflow="hidden"
+      onClick={handleClick}
+      {...rest}
+    >
       <Box zIndex={1}>{children}</Box>
 
       <Box

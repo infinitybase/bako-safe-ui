@@ -61,8 +61,8 @@ const WebAuthnForm = (props: WebAuthnFormProps) => {
                   field.onChange(username);
 
                   createGTMCustomEvent({
-                    eventName: 'input_username_change',
-                    buttonId: 'fixed_id',
+                    eventName: 'input username change',
+                    buttonId: 'Login-Screen: input username change',
                     username,
                   });
                 }}
@@ -71,8 +71,8 @@ const WebAuthnForm = (props: WebAuthnFormProps) => {
 
                   if (e.key === 'Enter') {
                     createGTMCustomEvent({
-                      eventName: 'input_username_submit',
-                      buttonId: 'fixed_id',
+                      eventName: 'input username submit',
+                      buttonId: 'Login-Screen: input username submit',
                       username: field.value,
                     });
                   }

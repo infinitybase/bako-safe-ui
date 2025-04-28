@@ -13,6 +13,7 @@ import React, { useCallback, useMemo } from 'react';
 
 import { Card } from '@/components';
 import { useScreenSize } from '@/modules/core/hooks';
+import { createGTMCustomEvent } from '@/utils';
 type ConnectorType = {
   name: string;
   label: string;
@@ -60,8 +61,14 @@ const CardConnector = (props: CardConnectorProps) => {
 
   const selectConnector = useCallback(() => {
     if (!connector.isEnabled) return;
+
+    createGTMCustomEvent({
+      eventName: 'wallet connector click',
+      buttonId: `Login-Screen: ${connector.label}`,
+    });
+
     onClick(connector.name);
-  }, [connector.isEnabled, connector.name, onClick]);
+  }, [connector.isEnabled, connector.label, connector.name, onClick]);
 
   return (
     <Card

@@ -8,6 +8,7 @@ import {
 } from '@/components';
 import { useVerifyBrowserType } from '@/modules/dapp/hooks';
 import { TabState, useCreateVaultDialog } from '@/modules/vault/hooks';
+import { createGTMCustomEvent } from '@/utils';
 
 import CreateVaultWarning from '../../CreateVaultWarning';
 import { CreateVaultForm } from './form';
@@ -158,7 +159,13 @@ Bako Safe leverages Fuel predicates to manage vault permissions off-chain. There
               w="65%"
               aria-label="Create Vault Primary Action"
               hidden={steps.step?.hide}
-              onClick={steps.step?.onContinue}
+              onClick={() => {
+                createGTMCustomEvent({
+                  eventName: 'continue create vault button click',
+                  buttonId: 'Create Vault: Continue',
+                });
+                steps.step?.onContinue();
+              }}
               leftIcon={
                 tabs.tab === TabState.ADDRESSES ? <SquarePlusIcon /> : undefined
               }

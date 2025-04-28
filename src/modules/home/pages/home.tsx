@@ -15,15 +15,15 @@ import { FaRegPlusSquare } from 'react-icons/fa';
 import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
 import { AddressBookIcon } from '@/components/icons/address-book';
 import { TransactionsIcon } from '@/components/icons/transactions';
+import { HomeQueryKey } from '@/modules/core';
 import { Pages } from '@/modules/core/routes';
+import { useTransactionSocketListener } from '@/modules/transactions/hooks/events/useTransactionsSocketListener';
 import { CreateVaultDialog, ExtraVaultCard, VaultCard } from '@/modules/vault';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { createGTMCustomEvent } from '@/utils';
 
 import { ActionCard } from '../components/ActionCard';
 import HomeTransactions from '../components/HomeTransactions';
-
-import { HomeQueryKey } from '@/modules/core';
-import { useTransactionSocketListener } from '@/modules/transactions/hooks/events/useTransactionsSocketListener';
 
 const HomePage = () => {
   const {
@@ -67,7 +67,13 @@ const HomePage = () => {
             variant="primary"
             fontWeight="bold"
             leftIcon={<FaRegPlusSquare />}
-            onClick={onOpen}
+            onClick={() => {
+              createGTMCustomEvent({
+                eventName: 'create vault button click',
+                buttonId: 'Home Vault: Create vault',
+              });
+              onOpen();
+            }}
           >
             Create vault
           </Button>
@@ -78,9 +84,13 @@ const HomePage = () => {
           <ActionCard.Container
             data-testid="vaultstab"
             flex={1}
-            onClick={() =>
-              navigate(Pages.userVaults({ workspaceId: workspaceId }))
-            }
+            onClick={() => {
+              createGTMCustomEvent({
+                eventName: 'vaults button click',
+                buttonId: 'Home: Vaults',
+              });
+              navigate(Pages.userVaults({ workspaceId: workspaceId }));
+            }}
           >
             <ActionCard.Icon icon={VaultIcon} />
             <Box>
@@ -97,6 +107,10 @@ const HomePage = () => {
             data-testid="transactionTab"
             flex={1}
             onClick={() => {
+              createGTMCustomEvent({
+                eventName: 'transactions button click',
+                buttonId: 'Home: Transactions',
+              });
               return navigate(
                 Pages.userTransactions({
                   workspaceId: workspaceId,
@@ -116,13 +130,18 @@ const HomePage = () => {
             </Box>
           </ActionCard.Container>
         </CustomSkeleton>
+
         <CustomSkeleton isLoaded={!latestPredicates.isLoading}>
           <ActionCard.Container
             data-testid="adressBookTab"
             flex={1}
-            onClick={() =>
-              navigate(Pages.addressBook({ workspaceId: workspaceId }))
-            }
+            onClick={() => {
+              createGTMCustomEvent({
+                eventName: 'address book button click',
+                buttonId: 'Home: Address book',
+              });
+              navigate(Pages.addressBook({ workspaceId: workspaceId }));
+            }}
           >
             <ActionCard.Icon icon={AddressBookIcon} />
             <Box>

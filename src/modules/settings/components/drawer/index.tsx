@@ -25,6 +25,7 @@ import { LineCloseIcon } from '@/components';
 import { useWebAuthnInput } from '@/modules/auth/hooks/webAuthn';
 import { AddressUtils } from '@/modules/core/utils/address';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { createGTMCustomEvent } from '@/utils';
 import {
   ActionKeys,
   handleActionUsingKeys,
@@ -68,6 +69,15 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
     const _search = AddressUtils.isValid(name) ? '' : name;
     setInputValue(_search);
   }, [name, props.isOpen]);
+
+  useEffect(() => {
+    if (props.isOpen) {
+      createGTMCustomEvent({
+        eventName: 'open settings drawer',
+        buttonId: 'Home Vault: Open Settings Header',
+      });
+    }
+  }, [props.isOpen]);
 
   return (
     <Drawer

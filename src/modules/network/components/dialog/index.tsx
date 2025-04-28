@@ -7,9 +7,11 @@ import {
   Spinner,
   VStack,
 } from '@chakra-ui/react';
+import { useEffect } from 'react';
 import { Controller } from 'react-hook-form';
 
 import { Dialog, DialogModalProps } from '@/components';
+import { createGTMCustomEvent } from '@/utils';
 
 import { useNetworks } from '../../hooks';
 
@@ -25,6 +27,15 @@ const NetworkDialog = ({ ...props }: NetworkDialogProps) => {
     checkNetworkRequest: { isPending: loadingCheck },
     setValidNetwork,
   } = useNetworks(props.onClose);
+
+  useEffect(() => {
+    if (props.isOpen) {
+      createGTMCustomEvent({
+        eventName: 'open network dialog',
+        buttonId: 'Home Vault: Open Network dialog Header',
+      });
+    }
+  }, [props.isOpen]);
 
   return (
     <Dialog.Modal

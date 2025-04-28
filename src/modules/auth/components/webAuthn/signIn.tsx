@@ -47,7 +47,9 @@ const WebAuthnSignIn = (props: WebAuthnSignInProps) => {
         variant="primary"
         fontSize="sm"
         aria-label={formState.label}
-        onClick={formState.handleAction}
+        onClick={() => {
+          formState.handleAction();
+        }}
         _hover={{ opacity: formState.isDisabled && 0.8 }}
         isDisabled={formState.isDisabled}
         progress={formState.actionProgress}
