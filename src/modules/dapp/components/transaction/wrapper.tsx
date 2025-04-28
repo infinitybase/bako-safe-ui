@@ -121,6 +121,7 @@ const DappTransactionWrapper = (props: DappTransactionWrapperProps) => {
                   Vault:
                 </Text>
                 <VaultItemBox
+                  id={vault?.id}
                   name={vault?.name}
                   address={vault?.address}
                   isSingleWorkspace
