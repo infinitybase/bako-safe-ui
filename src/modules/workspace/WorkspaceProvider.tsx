@@ -28,4 +28,4 @@ const useWorkspaceContext = () => {
   return context;
 };
 
-export { useWorkspaceContext, WorkspaceProvider };
+export { WorkspaceProvider, useWorkspaceContext };

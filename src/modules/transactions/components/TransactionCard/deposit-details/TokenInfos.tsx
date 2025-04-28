@@ -6,9 +6,10 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface TokenInfosProps {
   asset: AssetModel;
+  isNFT: boolean;
 }
 
-const TokenInfos = ({ asset }: TokenInfosProps) => {
+const TokenInfos = ({ asset, isNFT }: TokenInfosProps) => {
   const { assetsMap } = useWorkspaceContext();
   const assetInfo = useMemo(
     () =>
@@ -28,7 +29,7 @@ const TokenInfos = ({ asset }: TokenInfosProps) => {
         objectFit="cover"
       />
       <Text fontSize="sm" color="grey.500">
-        {assetInfo?.slug}
+        {isNFT ? 'NFT' : assetInfo?.slug}
       </Text>
     </VStack>
   );

@@ -22,7 +22,8 @@
     "import",
     "simple-import-sort",
     "prettier",
-    "unused-imports"
+    "unused-imports",
+    "eslint-plugin-react-compiler"
   ],
   "parser": "@typescript-eslint/parser",
   "rules": {
@@ -44,12 +45,14 @@
     "jsx-a11y/no-autofocus": "warn",
     "unused-imports/no-unused-vars": [
       "warn",
-      { "vars": "all", "varsIgnorePattern": "^_", "args": "after-used", "argsIgnorePattern": "^_" }
-    ]
+      {
+        "vars": "all",
+        "varsIgnorePattern": "^_",
+        "args": "after-used",
+        "argsIgnorePattern": "^_"
+      }
+    ],
+    "react-compiler/react-compiler": "error"
   },
-  "ignorePatterns": [
-    "dist",
-    ".eslintrc.cjs",
-    "*.svg"
-  ]
+  "ignorePatterns": ["dist", ".eslintrc.cjs", "*.svg"]
 }

@@ -27,14 +27,13 @@ import {
   TransactionCard,
   TransactionFilter,
 } from '@/modules/transactions/components';
+import { useTransactionSocketListener } from '@/modules/transactions/hooks/events/useTransactionsSocketListener';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { StatusFilter } from '../../../transactions/hooks';
-
 import { vaultInfinityQueryKey } from '../../hooks/list/useVaultTransactionsRequest';
-import { useTransactionSocketListener } from '@/modules/transactions/hooks/events/useTransactionsSocketListener';
 
 const TransactionsVaultPage = () => {
   const menuDrawer = useDisclosure();

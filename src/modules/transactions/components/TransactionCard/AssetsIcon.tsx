@@ -3,12 +3,12 @@ import { ITransferAsset } from 'bakosafe';
 import { memo } from 'react';
 
 import { AssetMap } from '@/modules/core';
-
 interface AssetsIconProps {
   assets: ITransferAsset[];
   isMobile: boolean;
   showOnlyOneAsset: boolean;
   assetsMap: AssetMap;
+  isNFT: boolean;
 }
 
 export const AssetsIcon = memo(

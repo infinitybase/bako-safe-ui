@@ -30,9 +30,8 @@ import {
   WaitingSignatureBadge,
 } from '../../components';
 import { StatusFilter } from '../../hooks';
-import { useTransactionsContext } from '../../providers/TransactionsProvider';
-import { transactionStatus } from '../../utils';
 import { useTransactionSocketListener } from '../../hooks/events/useTransactionsSocketListener';
+import { useTransactionsContext } from '../../providers/TransactionsProvider';
 
 const UserTransactionsPage = () => {
   const {
