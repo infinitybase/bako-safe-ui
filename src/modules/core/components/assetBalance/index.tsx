@@ -14,7 +14,6 @@ import {
 } from '@chakra-ui/react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
-import NftEmpty from '@/assets/nft-empty.svg';
 import { AddressWithCopyBtn, Card, CustomSkeleton, Dialog } from '@/components';
 import { BTCIcon } from '@/components/icons/btc-icon';
 import { ContractIcon } from '@/components/icons/contract-icon';
@@ -82,6 +81,8 @@ export const NftBalanceCard = ({ nft }: { nft: NFT }) => {
     assetId: nft.assetId,
     nftList,
   });
+
+  const NftEmpty = `/nft-empty.svg`;
 
   const [imageSrc, setImageSrc] = useState(nftImageUrl || NftEmpty);
   const [imageLoaded, setImageLoaded] = useState(false);
