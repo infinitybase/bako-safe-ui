@@ -1,4 +1,4 @@
-import { Accordion, Button, Center, Tooltip } from '@chakra-ui/react';
+import { Accordion, Button, Center, Text, Tooltip } from '@chakra-ui/react';
 import { memo } from 'react';
 
 import { UserAddIcon } from '@/components';
@@ -11,6 +11,8 @@ interface RecipientListProps {
   transactions: UseCreateTransaction['transactionsFields'];
   children: React.ReactNode;
   allAssetsUsed: boolean;
+  hasEthForFee:boolean;
+  ethAssetId: string | undefined;
 }
 
 export const RecipientList = ({
@@ -18,6 +20,8 @@ export const RecipientList = ({
   accordion,
   children,
   allAssetsUsed,
+  hasEthForFee,
+  ethAssetId
 }: RecipientListProps) => {
   const {
     screenSizes: { isMobile },
@@ -26,12 +30,12 @@ export const RecipientList = ({
   const handleAddMoreRecipient = () => {
     transactions.append({
       amount: '',
-      asset: NativeAssetId,
+      asset: ethAssetId ? ethAssetId : '',
       value: '',
     });
     delay(() => accordion.open(transactions.fields.length), 100);
   };
-
+  
   return (
     <Accordion
       index={accordion.index}
@@ -53,32 +57,44 @@ export const RecipientList = ({
     >
       {children}
 
-      <Center mt={6}>
-        <Tooltip
-          label="All available assets have been used."
-          isDisabled={!allAssetsUsed}
-          hasArrow
-          placement="top"
-        >
-          <Button
+      <Center mt={6} flexDirection="column" w="full">
+        {!hasEthForFee ? (
+          <Text
+            color="error.500"
+            fontSize="sm"
             w="full"
-            leftIcon={<UserAddIcon />}
-            variant="primary"
-            bgColor="grey.200"
-            border="none"
-            _hover={{
-              opacity: 0.8,
-            }}
-            _disabled={{
-              cursor: 'not-allowed',
-              opacity: 0.6,
-            }}
-            isDisabled={allAssetsUsed}
-            onClick={handleAddMoreRecipient}
+            textAlign="center"
+            mt={2}
           >
-            Add more recipients
-          </Button>
-        </Tooltip>
+            Insufficient funds for gas
+          </Text>
+        ) : (
+          <Tooltip
+            label="All available assets have been used."
+            isDisabled={!allAssetsUsed}
+            hasArrow
+            placement="top"
+          >
+            <Button
+              w="full"
+              leftIcon={<UserAddIcon />}
+              variant="primary"
+              bgColor="grey.200"
+              border="none"
+              _hover={{
+                opacity: 0.8,
+              }}
+              _disabled={{
+                cursor: 'not-allowed',
+                opacity: 0.6,
+              }}
+              isDisabled={allAssetsUsed}
+              onClick={handleAddMoreRecipient}
+            >
+              Add more recipients
+            </Button>
+          </Tooltip>
+        )}
       </Center>
     </Accordion>
   );

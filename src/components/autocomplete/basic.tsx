@@ -54,7 +54,6 @@ interface AutocompleteProps extends Omit<InputGroupProps, 'onChange'> {
   actionOnBlur?: () => void;
   inputRef?: LegacyRef<HTMLInputElement>;
 }
-// import { useCallback, useEffect, useRef, useState } from 'react';
 
 const Autocomplete = ({
   label,

@@ -14,7 +14,7 @@ const AddToAddressBook = ({ visible = true, onAdd }: AddToAddressBookProps) => {
 
   return (
     <Box mt={2}>
-      <Text color="grey.200" fontSize={12}>
+      <Text color="grey.425" fontSize={12}>
         Do you wanna{' '}
         <Link color="brand.500" onClick={onAdd}>
           add this
