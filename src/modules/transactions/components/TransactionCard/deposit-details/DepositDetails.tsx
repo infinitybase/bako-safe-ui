@@ -27,8 +27,14 @@ type DepositDetailsProps = {
 };
 
 const DepositDetails = ({ transaction }: DepositDetailsProps) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { operationAssets, sentBy, hasNoDefaultAssets } =
     useGetAssetsByOperations(transaction);
+  const {
+    screenSizes: { isMobile, isLowerThanFourHundredAndThirty },
+  } = useWorkspaceContext();
+
+  const { isFuelFriday } = useVerifyTransactionInformations(transaction);
 
   const predicate = transaction.predicate?.predicateAddress;
 
@@ -44,12 +50,6 @@ const DepositDetails = ({ transaction }: DepositDetailsProps) => {
         amount: asset.amount.toString(),
         to: predicate,
       })) ?? [];
-
-  const {
-    screenSizes: { isMobile, isLowerThanFourHundredAndThirty },
-  } = useWorkspaceContext();
-
-  const { isFuelFriday } = useVerifyTransactionInformations(transaction);
 
   const handleViewInExplorer = () => {
     const { hash, network } = transaction;

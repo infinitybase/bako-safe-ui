@@ -292,18 +292,21 @@ const VaultDetailsPage = () => {
         h={!vault.isLoading && !isLoading ? 'unset' : '100px'}
       >
         {hasTransactions
-          ? transactions?.map((grouped) => (
-              <Box key={grouped.monthYear} w="full">
-                <TransactionCard.GroupMonth monthYear={grouped.monthYear} />
-                <TransactionCard.List
-                  mt={5}
-                  pb={!isLarge ? 10 : 0}
-                  w="full"
-                  maxH={{ base: undefined, sm: 'calc(100% - 72px)' }}
-                  spacing={0}
-                >
-                  {grouped?.transactions?.map((transaction) => {
-                    return (
+          ? transactions?.map((grouped, index) => {
+              const isLastGroup = index === transactions.length - 1;
+              return (
+                <Box key={grouped.monthYear} w="full">
+                  <TransactionCard.GroupMonth
+                    monthYear={grouped.monthYear}
+                    mb={!isMobile ? 3 : 0}
+                    mt={!isMobile ? 0 : 3}
+                  />
+                  <TransactionCard.List
+                    w="full"
+                    maxH={{ base: undefined, sm: 'calc(100% - 72px)' }}
+                    spacing={0}
+                  >
+                    {grouped?.transactions?.map((transaction) => (
                       <TransactionCard.Item
                         w="full"
                         key={transaction.id}
@@ -312,22 +315,21 @@ const VaultDetailsPage = () => {
                         transaction={transaction}
                         userInfos={userInfos}
                       />
-                    );
-                  })}
+                    ))}
 
-                  {grouped.transactions.length >= 5 && isFetching && (
-                    <Spinner alignSelf={'center'} mt={4} color="brand.500" />
-                  )}
-                </TransactionCard.List>
-              </Box>
-            ))
-          : !hasTransactions &&
-            !!transactions && (
+                    {isLastGroup &&
+                      grouped.transactions.length >= 5 &&
+                      isFetching && (
+                        <Spinner alignSelf="center" mt={4} color="brand.500" />
+                      )}
+                  </TransactionCard.List>
+                </Box>
+              );
+            })
+          : !!transactions && (
               <EmptyState
-                title={'No Data available'}
-                subTitle={
-                  'Currently, there is no available data to display in this section.'
-                }
+                title="No Data available"
+                subTitle="Currently, there is no available data to display in this section."
                 showAction={false}
                 mb={10}
               />

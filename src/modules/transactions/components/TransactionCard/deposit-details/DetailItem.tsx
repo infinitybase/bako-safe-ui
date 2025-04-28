@@ -10,16 +10,17 @@ import {
 } from '@chakra-ui/react';
 import type { ITransferAsset } from 'bakosafe';
 import { bn } from 'fuels';
+import { useMemo } from 'react';
 
 import { Address, DoubleArrowIcon, Handle } from '@/components';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
 import { useAddressNicknameResolver } from '@/modules/core/hooks/useAddressNicknameResolver';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { isHex } from '@/utils';
 
 import { AddressActions } from '../transfer-details/address-actions';
 import AmountsInfo from './AmountsInfo';
 import TokenInfos from './TokenInfos';
-import { isHex } from '@/utils';
 
 interface DetailItemProps {
   asset: ITransferAsset;
@@ -32,6 +33,7 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
     tokensUSD,
     screenSizes: { isMobile, isExtraSmall, isLitteSmall },
     assetsMap,
+    nftList,
   } = useWorkspaceContext();
   const txUSDAmount = useTxAmountToUSD(
     [
@@ -59,6 +61,14 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
   const from = sentBy ? resolveAddressContactHandle(sentBy) : undefined;
   const to = asset?.to ? resolveAddressContactHandle(asset.to) : undefined;
 
+  const isNFT = useMemo(() => {
+    if (!asset?.assetId) return false;
+    return (
+      nftList.some((nft) => nft.assetId === asset.assetId) ||
+      bn(asset?.amount).eq(bn(1))
+    );
+  }, [asset?.amount, asset?.assetId, nftList]);
+
   return (
     <Grid
       gridTemplateColumns={`repeat(${gridColumnsNumber}, 1fr)`}
@@ -72,8 +82,12 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
       {isMobile ? (
         <VStack w="full" spacing="7px">
           <HStack w="100%" justifyContent="space-between" pr="2px">
-            <TokenInfos asset={asset} />
-            <AmountsInfo txUSDAmount={txUSDAmount} asset={asset} />
+            <TokenInfos asset={asset} isNFT={isNFT} />
+            <AmountsInfo
+              txUSDAmount={txUSDAmount}
+              asset={asset}
+              isNFT={isNFT}
+            />
           </HStack>
           <Flex justifyContent="space-between" w="full" alignItems="center">
             <HStack
@@ -207,8 +221,8 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
         </VStack>
       ) : (
         <>
-          <TokenInfos asset={asset} />
-          <AmountsInfo txUSDAmount={txUSDAmount} asset={asset} />
+          <TokenInfos asset={asset} isNFT={isNFT} />
+          <AmountsInfo txUSDAmount={txUSDAmount} asset={asset} isNFT={isNFT} />
 
           <HStack
             alignItems="center"
