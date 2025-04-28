@@ -18,6 +18,7 @@ const VaultListComponent = ({
     <VaultItemBox
       key={vault.id}
       mt={4}
+      id={vault.id}
       name={vault.name}
       address={vault.predicateAddress}
       root={vault.root}
