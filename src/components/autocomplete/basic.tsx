@@ -82,7 +82,9 @@ const Autocomplete = ({
   const [isFocused, setIsFocused] = useState<boolean>(false);
 
   const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
-
+  const [isDebouncing, setIsDebouncing] = useState(false);
+  const [isCleared, setIsCleared] = useState(false);
+  
   const displayedOptions =
     filterSelectedOption && options
       ? options.filter((o) => o.value !== value)
@@ -93,39 +95,49 @@ const Autocomplete = ({
 
   const showClearIcon = clearable && inputValue;
 
+  const inputAtDebounceStart = useRef('');
+
   const handleInputChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value;
-      setInputValue(value);
-
+      const val = e.target.value;
+      setInputValue(val);
+  
       if (debounceTimeout.current) {
         clearTimeout(debounceTimeout.current);
       }
-
+  
+      inputAtDebounceStart.current = val;
+      setIsDebouncing(true);
+  
       debounceTimeout.current = setTimeout(() => {
-        const replacedValue = value;
-
         if (!onInputChange) {
-          setInputValue(replacedValue);
-          onChange(replacedValue);
+          onChange(val);
+          setIsDebouncing(false);
           return;
         }
-
-        const result = onInputChange(replacedValue);
-
+  
+        const result = onInputChange(val);
+  
         if (result instanceof Promise) {
           result.then((resolvedResult) => {
-            setInputValue(resolvedResult.label);
+            if (inputAtDebounceStart.current === val) {
+              setInputValue(resolvedResult.label);
+            }
             onChange(resolvedResult.value);
+            setIsDebouncing(false);
           });
         } else {
-          setInputValue(result.label);
+          if (inputAtDebounceStart.current === val) {
+            setInputValue(result.label);
+          }
           onChange(result.value);
+          setIsDebouncing(false);
         }
-      }, 1500); // 1.5s debounce delay
+      }, 1500);
     },
-    [inputValue],
+    [onInputChange, onChange]
   );
+  
 
   const handleSelect = (selectedOption: AutocompleteOption) => {
     actionOnSelect();
@@ -143,28 +155,38 @@ const Autocomplete = ({
   };
 
   const handleClear = () => {
-    setInputValue('');
-    onChange('');
+    setIsCleared(true); 
+    setInputValue('');   
+    onChange('');      
   };
 
   const handleOnBlur = () => {
+    if (isDebouncing) return;
     actionOnBlur();
     setIsFocused(false);
   };
 
-  useEffect(() => {
-    if (!value) {
-      setInputValue('');
-      return;
-    }
+  const handlePaste = () => {
+    setIsFocused(false);  
+  };
 
+  useEffect(() => {  
     if (options && options.length > 0) {
       const selectedOption = options.find((option) => option.value === value);
       if (selectedOption) {
-        setInputValue(selectedOption.label);
+        setInputValue(selectedOption.label); 
       }
     }
   }, [value, options]);
+
+
+  useEffect(() => {  
+    if (!value) {
+      setInputValue(''); 
+      setIsCleared(false);
+      return;
+    }
+  }, [value, isCleared]);
 
   useEffect(() => {
     return () => {
@@ -178,13 +200,14 @@ const Autocomplete = ({
     <>
       <InputGroup {...rest}>
         <Input
-          aria-label={ariaLabel ? ariaLabel : 'Autocomplete Input'}
+          aria-label={ariaLabel ?? 'Autocomplete Input'}
           value={inputValue}
           placeholder=" "
           disabled={disabled}
           autoComplete="off"
           onChange={handleInputChange}
           onBlur={handleOnBlur}
+          onPaste={handlePaste}
           onFocus={handleFocus}
           style={inputStyle}
           ref={inputRef}
@@ -255,29 +278,27 @@ const Autocomplete = ({
                 scrollbarWidth: 'none',
               }}
             >
-              {displayedOptions
-                .filter((option) => option.value !== value)
-                .map((option) => (
-                  <Box
-                    ref={optionsRef}
-                    key={option.value}
+              {displayedOptions.map((option) => (
+                <Box
+                  ref={optionsRef}
+                  key={option.value}
+                  w="full"
+                  p={2}
+                  borderRadius={10}
+                  cursor="pointer"
+                  _hover={{ background: 'dark.150' }}
+                  onMouseDown={() => handleSelect(option)}
+                >
+                  <Text
+                    whiteSpace="nowrap"
+                    overflow="hidden"
+                    textOverflow="ellipsis"
                     w="full"
-                    p={2}
-                    borderRadius={10}
-                    cursor="pointer"
-                    _hover={{ background: 'dark.150' }}
-                    onMouseDown={() => handleSelect(option)}
                   >
-                    <Text
-                      whiteSpace="nowrap"
-                      overflow="hidden"
-                      textOverflow="ellipsis"
-                      w="full"
-                    >
-                      {option.label}
-                    </Text>
-                  </Box>
-                ))}
+                    {option.label}
+                  </Text>
+                </Box>
+              ))}
               <Box ref={inView?.ref} />
             </VStack>
           </Flex>

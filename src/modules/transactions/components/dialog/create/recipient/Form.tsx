@@ -15,7 +15,7 @@ import { Address, bn, isB256 } from 'fuels';
 import { memo, useMemo } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
-import { AmountInput, Autocomplete } from '@/components';
+import { AmountInput, Autocomplete, AutocompleteOption } from '@/components';
 import {
   AddToAddressBook,
   CreateContactDialog,
@@ -132,10 +132,15 @@ const RecipientFormField = (props: RecipientFormFieldProps) => {
           name={`transactions.${index}.value`}
           control={control}
           render={({ field, fieldState }) => {
-
+            const valuePath = `transactions.${index}.value` as const;
+            const labelPath = `transactions.${index}.resolvedLabel` as const;
+        
+            const inputValue = watch(labelPath) || field.value || '';
+        
             const appliedOptions = optionsRequests[index].options.filter(
               (a) => Address.fromString(a.value).toString() !== field.value,
             );
+        
             const showAddToAddressBook =
               canAddMember &&
               !fieldState.invalid &&
@@ -149,60 +154,49 @@ const RecipientFormField = (props: RecipientFormFieldProps) => {
                     ? Address.fromString(field.value).toString()
                     : field.value,
                 );
+        
+            const handleClear = () => {
+              field.onChange('');
+              setValue(labelPath, '');
+            };
 
+            const handleInputChange = async (input: string): Promise<AutocompleteOption> => {
+              let label = input;
+              let value = input;
+            
+              if (input.startsWith('@')) {
+                const address = await fetchResolveAddress.handler(input.split(' - ').at(0)!);
+                if (address) {
+                  value = address;
+                  label = AddressBookUtils.formatForAutocomplete(input, address);
+                }
+              } else if (isB256(input)) {
+                const name = await fetchResolverName.handler(input);
+                if (name) {
+                  label = AddressBookUtils.formatForAutocomplete(name, input);
+                }
+                value = new Address(input).toB256();
+              }
+            
+              setValue(valuePath, value);
+              setValue(labelPath, label);
+            
+              return { value, label };
+            };
+        
             return (
-              <HStack
-                align="start"
-                spacing={2}
-                position="relative"
-                width="100%"
-              >
+              <HStack align="start" spacing={2} position="relative" width="100%">
                 <FormControl isInvalid={fieldState.invalid} flex="1">
                   <Box position="relative">
                     <Autocomplete
-                      value={
-                        watch(`transactions.${index}.resolvedLabel`) ||
-                        field.value ||
-                        ''
-                      }
                       label={`Recipient ${index + 1} address`}
                       ariaLabel={`Autocomplete Recipient Address ${index + 1}`}
-                      onChange={field.onChange}
-                      onInputChange={async (value: string) => {
-                        const result = { value, label: value };
-
-                        if (value.startsWith('@')) {
-                          const address = await fetchResolveAddress.handler(
-                            value.split(' - ').at(0)!,
-                          );
-
-                          if (address) {
-                            result.value = address;
-                            result.label =
-                              AddressBookUtils.formatForAutocomplete(
-                                value,
-                                address,
-                              );
-                          }
-                        } else if (isB256(value)) {
-                          const name = await fetchResolverName.handler(value);
-                          if (name) {
-                            result.label =
-                              AddressBookUtils.formatForAutocomplete(
-                                name,
-                                value,
-                              );
-                          }
-                          result.value = new Address(value).toB256();
-                        }
-
-                        field.onChange(result.value);
-                        setValue(
-                          `transactions.${index}.resolvedLabel`,
-                          result.label,
-                        );
-                        return result;
+                      value={inputValue}
+                      onChange={(val) => {
+                        field.onChange(val);
+                        setValue(labelPath, val);
                       }}
+                      onInputChange={handleInputChange}
                       isLoading={
                         !optionsRequests[index].isSuccess ||
                         fetchResolveAddress.isLoading ||
@@ -210,7 +204,7 @@ const RecipientFormField = (props: RecipientFormFieldProps) => {
                       }
                       options={appliedOptions}
                       inView={inView}
-                      clearable={false}
+                      clearable
                       optionsRef={optionRef}
                       variant="dark"
                     />
@@ -232,9 +226,7 @@ const RecipientFormField = (props: RecipientFormFieldProps) => {
                         color={'white'}
                         transform="translateY(-50%)"
                         zIndex={1}
-                        onClick={() => {
-                          field.onChange(null);
-                        }}
+                        onClick={handleClear}
                       />
                     )}
                   </Box>
@@ -250,6 +242,7 @@ const RecipientFormField = (props: RecipientFormFieldProps) => {
             );
           }}
         />
+
 
         <Controller
           name={`transactions.${index}.asset`}
