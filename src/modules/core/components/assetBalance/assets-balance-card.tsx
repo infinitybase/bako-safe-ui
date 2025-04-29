@@ -1,16 +1,14 @@
 import { Image, Text, VStack } from '@chakra-ui/react';
+import { forwardRef } from 'react';
 import { Asset } from '@/modules/core/utils';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { useGetTokenInfos } from '../../hooks';
 import { Card } from '@/components';
 
-const AssetsBalanceCard = ({
-  asset,
-  usdAmount,
-}: {
-  asset: Asset;
-  usdAmount: number;
-}) => {
+const AssetsBalanceCard = forwardRef<
+  HTMLDivElement,
+  { asset: Asset; usdAmount: number }
+>(({ asset, usdAmount }, ref) => {
   const { assetsMap } = useWorkspaceContext();
   const { assetAmount, assetsInfo } = useGetTokenInfos({ ...asset, assetsMap });
 
@@ -29,6 +27,7 @@ const AssetsBalanceCard = ({
       backgroundColor="dark.50"
       backdropFilter="blur(6px)"
       boxShadow="lg"
+      ref={ref}
     >
       <VStack alignItems="flex-start" gap={4}>
         <Image
@@ -56,6 +55,8 @@ const AssetsBalanceCard = ({
       </VStack>
     </Card>
   );
-};
+});
+
+AssetsBalanceCard.displayName = 'AssetsBalanceCard';
 
 export { AssetsBalanceCard };
