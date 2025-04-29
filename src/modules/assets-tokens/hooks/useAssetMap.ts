@@ -28,6 +28,7 @@ export const useMappedAssetStore = create(
       getAssetByAssetId: (assetId) => get().mappedTokens[assetId],
       fetchAssets: async (assetIds, chainId) => {
         const idsToFetch = assetIds.filter((id) => !get().mappedNfts[id]);
+        const tokenMap: AssetMap = {};
 
         await withConcurrencyLimit(idsToFetch, 50, async (assetId) => {
           const asset = await WorkspaceService.getTokenFuelApi(
@@ -36,13 +37,15 @@ export const useMappedAssetStore = create(
           );
 
           if (asset) {
-            set((prev) => ({
-              mappedTokens: {
-                ...prev.mappedTokens,
-                [assetId]: asset,
-              },
-            }));
+            tokenMap[assetId] = asset;
           }
+
+          set((prev) => ({
+            mappedTokens: {
+              ...prev.mappedTokens,
+              ...tokenMap,
+            },
+          }));
         });
       },
       fetchNfts: async (assetIds, chainId) => {
@@ -80,22 +83,33 @@ export const useMappedAssetStore = create(
   ),
 );
 
+const cacheClear = () => {
+  useMappedAssetStore.persist.clearStorage(); // Limpa o localStorage
+  useMappedAssetStore.setState({
+    mappedTokens: {},
+    mappedNfts: {},
+  });
+};
+
 export const useAssetMap = (chainId: number) => {
-  const { mappedTokens, mappedNfts } = useMappedAssetStore();
+  const mappedTokens = useMappedAssetStore((state) => state.mappedTokens);
+  const mappedNfts = useMappedAssetStore((state) => state.mappedNfts);
+
+  const dynamicTokens = useMemo(
+    () => Object.values(mappedTokens),
+    [mappedTokens],
+  );
+  const staticAssets = useMemo(() => assets, []);
 
   const assetList = useMemo(() => {
-    const tokenList = [...Object.values(mappedTokens), ...assets];
-    return tokenList;
-  }, [mappedTokens]);
+    return [...dynamicTokens, ...staticAssets];
+  }, [dynamicTokens, staticAssets]);
 
   const nftList = useMemo(() => {
-    const tokenList = [
-      ...Object.values(mappedNfts).map((nft) => ({
-        ...nft,
-        metadata: nft.metadata,
-      })),
-    ];
-    return tokenList;
+    return Object.values(mappedNfts).map((nft) => ({
+      ...nft,
+      metadata: nft.metadata,
+    }));
   }, [mappedNfts]);
 
   const assetsMap = useMemo(() => {
