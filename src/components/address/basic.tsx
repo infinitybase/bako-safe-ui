@@ -10,10 +10,18 @@ export interface AddressProps extends TextProps {
   customValue?: string;
   isDeposit?: boolean;
   isSidebarAddress?: boolean;
+  isDetailDialog?: boolean;
 }
 
 const Address = (props: AddressProps) => {
-  const { value, isDeposit, isSidebarAddress, customValue, ...rest } = props;
+  const {
+    value,
+    isDeposit,
+    isSidebarAddress,
+    customValue,
+    isDetailDialog,
+    ...rest
+  } = props;
 
   const {
     vaultPageParams: { vaultId },
@@ -36,7 +44,7 @@ const Address = (props: AddressProps) => {
 
   return (
     <Text
-      color="grey.75"
+      color={isDetailDialog ? 'white' : 'grey.75'}
       textOverflow="ellipsis"
       isTruncated
       textAlign={isExtraSmall ? 'start' : 'end'}
