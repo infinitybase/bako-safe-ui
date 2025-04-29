@@ -83,8 +83,8 @@ export const useMappedAssetStore = create(
   ),
 );
 
-const cacheClear = () => {
-  useMappedAssetStore.persist.clearStorage(); // Limpa o localStorage
+const cacheClear = async () => {
+  await useMappedAssetStore.persist.clearStorage();
   useMappedAssetStore.setState({
     mappedTokens: {},
     mappedNfts: {},
