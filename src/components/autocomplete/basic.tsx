@@ -266,27 +266,29 @@ const Autocomplete = ({
                 scrollbarWidth: 'none',
               }}
             >
-              {displayedOptions.map((option) => (
-                <Box
-                  ref={optionsRef}
-                  key={option.value}
-                  w="full"
-                  p={2}
-                  borderRadius={10}
-                  cursor="pointer"
-                  _hover={{ background: 'dark.150' }}
-                  onMouseDown={() => handleSelect(option)}
-                >
-                  <Text
-                    whiteSpace="nowrap"
-                    overflow="hidden"
-                    textOverflow="ellipsis"
+              {displayedOptions
+                .filter((option) => option.value !== value)
+                .map((option) => (
+                  <Box
+                    ref={optionsRef}
+                    key={option.value}
                     w="full"
+                    p={2}
+                    borderRadius={10}
+                    cursor="pointer"
+                    _hover={{ background: 'dark.150' }}
+                    onMouseDown={() => handleSelect(option)}
                   >
-                    {option.label}
-                  </Text>
-                </Box>
-              ))}
+                    <Text
+                      whiteSpace="nowrap"
+                      overflow="hidden"
+                      textOverflow="ellipsis"
+                      w="full"
+                    >
+                      {option.label}
+                    </Text>
+                  </Box>
+                ))}
               <Box ref={inView?.ref} />
             </VStack>
           </Flex>
