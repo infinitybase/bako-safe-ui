@@ -82,7 +82,6 @@ const Autocomplete = ({
   const [isFocused, setIsFocused] = useState<boolean>(false);
 
   const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
-  const [isDebouncing, setIsDebouncing] = useState(false);
   const [isCleared, setIsCleared] = useState(false);
   
   const displayedOptions =
@@ -95,49 +94,39 @@ const Autocomplete = ({
 
   const showClearIcon = clearable && inputValue;
 
-  const inputAtDebounceStart = useRef('');
-
   const handleInputChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      const val = e.target.value;
-      setInputValue(val);
-  
+      const value = e.target.value;
+      setInputValue(value);
+
       if (debounceTimeout.current) {
         clearTimeout(debounceTimeout.current);
       }
-  
-      inputAtDebounceStart.current = val;
-      setIsDebouncing(true);
-  
+
       debounceTimeout.current = setTimeout(() => {
+        const replacedValue = value;
+
         if (!onInputChange) {
-          onChange(val);
-          setIsDebouncing(false);
+          setInputValue(replacedValue);
+          onChange(replacedValue);
           return;
         }
-  
-        const result = onInputChange(val);
-  
+
+        const result = onInputChange(replacedValue);
+
         if (result instanceof Promise) {
           result.then((resolvedResult) => {
-            if (inputAtDebounceStart.current === val) {
-              setInputValue(resolvedResult.label);
-            }
+            setInputValue(resolvedResult.label);
             onChange(resolvedResult.value);
-            setIsDebouncing(false);
           });
         } else {
-          if (inputAtDebounceStart.current === val) {
-            setInputValue(result.label);
-          }
+          setInputValue(result.label);
           onChange(result.value);
-          setIsDebouncing(false);
         }
-      }, 1500);
+      }, 1500); // 1.5s debounce delay
     },
-    [onInputChange, onChange]
+    [inputValue],
   );
-  
 
   const handleSelect = (selectedOption: AutocompleteOption) => {
     actionOnSelect();
@@ -161,7 +150,6 @@ const Autocomplete = ({
   };
 
   const handleOnBlur = () => {
-    if (isDebouncing) return;
     actionOnBlur();
     setIsFocused(false);
   };
