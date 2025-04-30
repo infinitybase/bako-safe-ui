@@ -7,7 +7,7 @@ import { useGetNftsInfos } from '../../hooks';
 import { NftImage } from './nft-image';
 import { NftDialog } from './nft-dialog';
 
-const FALLBACK_IMAGE = '/nft-empty.svg';
+const NFT_EMPTY = '/nft-empty.svg';
 
 const NftBalanceCard = ({ nft }: { nft: NFT }) => {
   const {
@@ -20,45 +20,7 @@ const NftBalanceCard = ({ nft }: { nft: NFT }) => {
     nftList,
   });
 
-  const [imageSrc, setImageSrc] = useState<string>(
-    nftImageUrl || FALLBACK_IMAGE,
-  );
-  const [imageLoaded, setImageLoaded] = useState(false);
-  const [modalImageLoaded, setModalImageLoaded] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
-
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-
-  const loadImage = (src: string, fallback: string) => {
-    setImageLoaded(false);
-    const img = new window.Image();
-    const onLoad = () => {
-      clearTimeout(timeoutRef.current!);
-      setImageLoaded(true);
-      setImageSrc(src);
-    };
-    const onError = () => {
-      clearTimeout(timeoutRef.current!);
-      setImageLoaded(true);
-      setImageSrc(fallback);
-    };
-    timeoutRef.current = setTimeout(onError, 6000);
-    img.onload = onLoad;
-    img.onerror = onError;
-    img.src = src;
-    if (img.complete) onLoad();
-  };
-
-  useEffect(() => {
-    if (nftImageUrl) loadImage(nftImageUrl, FALLBACK_IMAGE);
-    else {
-      setImageSrc(FALLBACK_IMAGE);
-      setImageLoaded(true);
-    }
-    return () => {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    };
-  }, [nftImageUrl]);
 
   if (!nftsInfo) return null;
 
@@ -75,8 +37,6 @@ const NftBalanceCard = ({ nft }: { nft: NFT }) => {
         boxShadow="lg"
         onClick={() => {
           setDialogOpen(true);
-          loadImage(nftImageUrl || '', FALLBACK_IMAGE);
-          setModalImageLoaded(false);
         }}
         cursor="pointer"
       >
@@ -88,13 +48,7 @@ const NftBalanceCard = ({ nft }: { nft: NFT }) => {
             position="relative"
             overflow="hidden"
           >
-            <NftImage
-              loaded={imageLoaded}
-              src={imageSrc}
-              fallback={FALLBACK_IMAGE}
-              setLoaded={setImageLoaded}
-              setSrc={setImageSrc}
-            />
+            <NftImage src={nftImageUrl ?? undefined} />
           </Box>
           <Text
             fontSize={isLitteSmall ? 'xs' : 'sm'}
@@ -113,11 +67,7 @@ const NftBalanceCard = ({ nft }: { nft: NFT }) => {
         isOpen={dialogOpen}
         onClose={() => setDialogOpen(false)}
         nftsInfo={nftsInfo}
-        modalImageLoaded={modalImageLoaded}
-        setModalImageLoaded={setModalImageLoaded}
-        imageSrc={imageSrc}
-        setImageSrc={setImageSrc}
-        fallback={FALLBACK_IMAGE}
+        imageSrc={nftImageUrl ?? undefined}
       />
     </>
   );

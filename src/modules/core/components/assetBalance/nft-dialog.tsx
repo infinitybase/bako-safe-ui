@@ -17,22 +17,14 @@ type NftDialogProps = {
   isOpen: boolean;
   onClose: () => void;
   nftsInfo: NFT;
-  modalImageLoaded: boolean;
-  setModalImageLoaded: (v: boolean) => void;
-  imageSrc: string;
-  setImageSrc: (v: string) => void;
-  fallback: string;
+  imageSrc?: string;
 };
 
 export const NftDialog = ({
   isOpen,
   onClose,
   nftsInfo,
-  modalImageLoaded,
-  setModalImageLoaded,
   imageSrc,
-  setImageSrc,
-  fallback,
 }: NftDialogProps) => (
   <Dialog.Modal
     size={{ base: '5xl', md: '4xl' }}
@@ -58,13 +50,7 @@ export const NftDialog = ({
         overflow="hidden"
       >
         <Box w="full" aspectRatio={1} position="relative">
-          <NftImage
-            src={imageSrc}
-            fallback={fallback}
-            loaded={modalImageLoaded}
-            setLoaded={setModalImageLoaded}
-            setSrc={setImageSrc}
-          />
+          <NftImage src={imageSrc} />
         </Box>
 
         <Flex

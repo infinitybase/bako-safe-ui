@@ -1,23 +1,72 @@
 import { Center, Image, Spinner } from '@chakra-ui/react';
+import { useEffect, useRef, useState } from 'react';
 import { CustomSkeleton } from '@/components';
 
+const DEFAULT_TIMEOUT = 6000;
+
 type NftImageProps = {
-  loaded: boolean;
-  src: string;
-  fallback: string;
-  setLoaded: (v: boolean) => void;
-  setSrc: (v: string) => void;
+  src?: string;
+  fallback?: string;
+  timeout?: number;
 };
 
 export const NftImage = ({
-  loaded,
   src,
-  fallback,
-  setLoaded,
-  setSrc,
-}: NftImageProps) => (
-  <>
-    {!loaded && (
+  fallback = '/nft-empty.svg',
+  timeout = DEFAULT_TIMEOUT,
+}: NftImageProps) => {
+  const [state, setState] = useState({
+    isLoading: true,
+    isError: false,
+  });
+
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    setState({ isLoading: true, isError: false });
+
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+
+    if (!src?.trim()) {
+      setState({ isLoading: false, isError: true });
+      return;
+    }
+
+    const img = new window.Image();
+
+    const handleLoad = () => {
+      clearTimeout(timeoutRef.current!);
+      setState({ isLoading: false, isError: false });
+    };
+
+    const handleError = () => {
+      clearTimeout(timeoutRef.current!);
+      setState({ isLoading: false, isError: true });
+    };
+
+    img.onload = handleLoad;
+    img.onerror = handleError;
+
+    timeoutRef.current = setTimeout(() => {
+      handleError();
+    }, timeout);
+
+    img.src = src;
+
+    if (img.complete) {
+      clearTimeout(timeoutRef.current);
+      handleLoad();
+    }
+
+    return () => {
+      img.onload = null;
+      img.onerror = null;
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, [src, timeout]);
+
+  if (state.isLoading) {
+    return (
       <>
         <CustomSkeleton
           startColor="dark.200"
@@ -40,24 +89,22 @@ export const NftImage = ({
           <Spinner thickness="3px" speed="0.5s" color="grey.400" size="md" />
         </Center>
       </>
-    )}
+    );
+  }
+
+  return (
     <Image
       w="full"
       h="full"
-      src={src}
+      src={state.isError ? fallback : src}
       alt="NFT"
       borderRadius={5}
       objectFit="cover"
-      opacity={loaded ? 1 : 0}
+      opacity={state.isLoading ? 0 : 1}
       transition="opacity 0.3s ease"
       position="absolute"
       top={0}
       left={0}
-      onLoad={() => setLoaded(true)}
-      onError={() => {
-        setLoaded(true);
-        setSrc(fallback);
-      }}
     />
-  </>
-);
+  );
+};
