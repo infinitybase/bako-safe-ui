@@ -43,7 +43,8 @@ export const NftDialog = ({
       pr={3}
     >
       <Box
-        w="432px"
+        w="full"
+        maxW="432px"
         flexShrink={0}
         position="relative"
         borderRadius="xl"
@@ -66,7 +67,7 @@ export const NftDialog = ({
             isCopy
             icon={<BTCIcon />}
             flex="1"
-            minW="200px"
+            minW="180px"
           />
           <NFTText
             value={nftsInfo.contractId ?? ''}
@@ -74,7 +75,7 @@ export const NftDialog = ({
             isCopy
             icon={<ContractIcon />}
             flex="1"
-            minW="200px"
+            minW="180px"
           />
         </Flex>
       </Box>
