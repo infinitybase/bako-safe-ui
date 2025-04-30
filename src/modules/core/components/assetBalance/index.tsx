@@ -69,7 +69,7 @@ const NFTText = ({ value, title, icon, isCopy, ...rest }: NFTTextProps) => {
   );
 };
 
-const FALLBACK_TIMEOUT = 5000;
+const FALLBACK_TIMEOUT = 6000;
 const NftEmpty = '/nft-empty.svg';
 
 export const NftBalanceCard = ({ nft }: { nft: NFT }) => {
@@ -473,7 +473,6 @@ const NftsBalanceList = ({ nfts }: NftsBalanceProps) => {
       return acc;
     }, {});
   }, [nfts]);
-
 
   return (
     <>
