@@ -84,6 +84,7 @@ export const NftDialog = ({
         flex={1}
         justifyContent="space-between"
         alignItems="flex-start"
+        w="full"
         h="full"
       >
         <Flex w="full" alignItems="center" justifyContent="space-between">
