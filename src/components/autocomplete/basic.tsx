@@ -82,8 +82,7 @@ const Autocomplete = ({
   const [isFocused, setIsFocused] = useState<boolean>(false);
 
   const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
-  const [isCleared, setIsCleared] = useState(false);
-  
+
   const displayedOptions =
     filterSelectedOption && options
       ? options.filter((o) => o.value !== value)
@@ -144,8 +143,6 @@ const Autocomplete = ({
   };
 
   const handleClear = () => {
-    setIsCleared(true); 
-    setInputValue('');   
     onChange('');      
   };
 
@@ -171,10 +168,9 @@ const Autocomplete = ({
   useEffect(() => {  
     if (!value) {
       setInputValue(''); 
-      setIsCleared(false);
       return;
     }
-  }, [value, isCleared]);
+  }, [value]);
 
   useEffect(() => {
     return () => {

@@ -160,29 +160,6 @@ const RecipientFormField = (props: RecipientFormFieldProps) => {
               setValue(labelPath, '');
             };
 
-            const handleInputChange = async (input: string): Promise<AutocompleteOption> => {
-              let label = input;
-              let value = input;
-            
-              if (input.startsWith('@')) {
-                const address = await fetchResolveAddress.handler(input.split(' - ').at(0)!);
-                if (address) {
-                  value = address;
-                  label = AddressBookUtils.formatForAutocomplete(input, address);
-                }
-              } else if (isB256(input)) {
-                const name = await fetchResolverName.handler(input);
-                if (name) {
-                  label = AddressBookUtils.formatForAutocomplete(name, input);
-                }
-                value = new Address(input).toB256();
-              }
-            
-              setValue(valuePath, value);
-              setValue(labelPath, label);
-            
-              return { value, label };
-            };
         
             return (
               <HStack align="start" spacing={2} position="relative" width="100%">
@@ -192,11 +169,42 @@ const RecipientFormField = (props: RecipientFormFieldProps) => {
                       label={`Recipient ${index + 1} address`}
                       ariaLabel={`Autocomplete Recipient Address ${index + 1}`}
                       value={inputValue}
-                      onChange={(val) => {
-                        field.onChange(val);
-                        setValue(labelPath, val);
+                      onChange={field.onChange}
+                      onInputChange={async (value: string) => {
+                        const result = { value, label: value };
+
+                        if (value.startsWith('@')) {
+                          const address = await fetchResolveAddress.handler(
+                            value.split(' - ').at(0)!,
+                          );
+
+                          if (address) {
+                            result.value = address;
+                            result.label =
+                              AddressBookUtils.formatForAutocomplete(
+                                value,
+                                address,
+                              );
+                          }
+                        } else if (isB256(value)) {
+                          const name = await fetchResolverName.handler(value);
+                          if (name) {
+                            result.label =
+                              AddressBookUtils.formatForAutocomplete(
+                                name,
+                                value,
+                              );
+                          }
+                          result.value = new Address(value).toB256();
+                        }
+
+                        field.onChange(result.value);
+                        setValue(
+                          `transactions.${index}.resolvedLabel`,
+                          result.label,
+                        );
+                        return result;
                       }}
-                      onInputChange={handleInputChange}
                       isLoading={
                         !optionsRequests[index].isSuccess ||
                         fetchResolveAddress.isLoading ||
