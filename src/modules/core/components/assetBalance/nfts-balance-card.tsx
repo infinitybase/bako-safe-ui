@@ -1,13 +1,11 @@
 import { Box, Text, VStack } from '@chakra-ui/react';
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { Card } from '@/components';
 import { AddressUtils, NFT } from '@/modules/core/utils';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { useGetNftsInfos } from '../../hooks';
 import { NftImage } from './nft-image';
 import { NftDialog } from './nft-dialog';
-
-const NFT_EMPTY = '/nft-empty.svg';
 
 const NftBalanceCard = ({ nft }: { nft: NFT }) => {
   const {
