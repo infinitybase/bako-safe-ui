@@ -143,8 +143,7 @@ const Autocomplete = ({
   };
 
   const handleClear = () => {
-    setInputValue('');
-    onChange('');
+    onChange('');      
   };
 
   const handleOnBlur = () => {
@@ -152,19 +151,26 @@ const Autocomplete = ({
     setIsFocused(false);
   };
 
-  useEffect(() => {
-    if (!value) {
-      setInputValue('');
-      return;
-    }
+  const handlePaste = () => {
+    setIsFocused(false);  
+  };
 
+  useEffect(() => {  
     if (options && options.length > 0) {
       const selectedOption = options.find((option) => option.value === value);
       if (selectedOption) {
-        setInputValue(selectedOption.label);
+        setInputValue(selectedOption.label); 
       }
     }
   }, [value, options]);
+
+
+  useEffect(() => {  
+    if (!value) {
+      setInputValue(''); 
+      return;
+    }
+  }, [value]);
 
   useEffect(() => {
     return () => {
@@ -178,13 +184,14 @@ const Autocomplete = ({
     <>
       <InputGroup {...rest}>
         <Input
-          aria-label={ariaLabel ? ariaLabel : 'Autocomplete Input'}
+          aria-label={ariaLabel ?? 'Autocomplete Input'}
           value={inputValue}
           placeholder=" "
           disabled={disabled}
           autoComplete="off"
           onChange={handleInputChange}
           onBlur={handleOnBlur}
+          onPaste={handlePaste}
           onFocus={handleFocus}
           style={inputStyle}
           ref={inputRef}
