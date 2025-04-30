@@ -69,7 +69,8 @@ const NFTText = ({ value, title, icon, isCopy, ...rest }: NFTTextProps) => {
   );
 };
 
-const FallbackTimeout = 5000;
+const FALLBACK_TIMEOUT = 5000;
+const NftEmpty = '/nft-empty.svg';
 
 export const NftBalanceCard = ({ nft }: { nft: NFT }) => {
   const {
@@ -82,34 +83,60 @@ export const NftBalanceCard = ({ nft }: { nft: NFT }) => {
     nftList,
   });
 
-  const NftEmpty = `/nft-empty.svg`;
-
-  const [imageSrc, setImageSrc] = useState(nftImageUrl || NftEmpty);
+  const [imageSrc, setImageSrc] = useState<string>(nftImageUrl || NftEmpty);
   const [imageLoaded, setImageLoaded] = useState(false);
-  const imageLoadedRef = useRef(false);
-
   const [modalImageLoaded, setModalImageLoaded] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
 
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const loadImage = (src: string, fallback: string, setSrc: (v: string) => void, setLoaded: (v: boolean) => void) => {
+    setLoaded(false);
+
+    const img = new window.Image();
+
+    const handleLoad = () => {
+      clearTimeout(timeoutRef.current!);
+      setLoaded(true);
+      setSrc(src);
+    };
+
+    const handleError = () => {
+      clearTimeout(timeoutRef.current!);
+      setLoaded(true);
+      setSrc(fallback);
+    };
+
+    timeoutRef.current = setTimeout(() => {
+      handleError();
+    }, FALLBACK_TIMEOUT);
+
+    img.onload = handleLoad;
+    img.onerror = handleError;
+    img.src = src;
+
+    if (img.complete) {
+      clearTimeout(timeoutRef.current!);
+      handleLoad();
+    }
+  };
+
   useEffect(() => {
-    setImageSrc(nftImageUrl || NftEmpty);
-    setImageLoaded(false);
-    imageLoadedRef.current = false;
+    if (nftImageUrl) {
+      loadImage(nftImageUrl, NftEmpty, setImageSrc, setImageLoaded);
+    } else {
+      setImageSrc(NftEmpty);
+      setImageLoaded(true);
+    }
 
-    const timeout = setTimeout(() => {
-      if (!imageLoadedRef.current) {
-        setImageSrc(NftEmpty);
-        setImageLoaded(true);
-        imageLoadedRef.current = true;
-      }
-    }, FallbackTimeout);
-
-    return () => clearTimeout(timeout);
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
   }, [nftImageUrl]);
 
   if (!nftsInfo) return null;
 
-  const renderImage = (loaded: boolean, setLoaded: (v: boolean) => void) => (
+  const renderImage = (loaded: boolean, setLoaded: (v: boolean) => void, src: string) => (
     <>
       {!loaded && (
         <>
@@ -138,27 +165,20 @@ export const NftBalanceCard = ({ nft }: { nft: NFT }) => {
       <Image
         w="full"
         h="full"
-        src={imageSrc}
+        src={src}
         borderRadius={5}
         alt="NFT Image"
         objectFit="cover"
-        onLoad={() => {
-          setLoaded(true);
-          if (!dialogOpen) {
-            imageLoadedRef.current = true;
-          }
-        }}
-        onError={() => {
-          setLoaded(true);
-          if (!dialogOpen) {
-            imageLoadedRef.current = true;
-          }
-        }}
         opacity={loaded ? 1 : 0}
         transition="opacity 0.3s ease"
         position="absolute"
         top={0}
         left={0}
+        onLoad={() => setLoaded(true)}
+        onError={() => {
+          setLoaded(true);
+          setImageSrc(NftEmpty);
+        }}
       />
     </>
   );
@@ -174,7 +194,10 @@ export const NftBalanceCard = ({ nft }: { nft: NFT }) => {
         backgroundImage="gradients.transaction-card"
         backdropFilter="blur(6px)"
         boxShadow="lg"
-        onClick={() => setDialogOpen(true)}
+        onClick={() => {
+          setDialogOpen(true);
+          loadImage(nftImageUrl || '', NftEmpty, setImageSrc, setModalImageLoaded);
+        }}
         cursor="pointer"
       >
         <VStack alignItems="flex-start" gap={isLitteSmall ? 1 : 2}>
@@ -185,7 +208,7 @@ export const NftBalanceCard = ({ nft }: { nft: NFT }) => {
             position="relative"
             overflow="hidden"
           >
-            {renderImage(imageLoaded, setImageLoaded)}
+            {renderImage(imageLoaded, setImageLoaded, imageSrc)}
           </Box>
           <Text
             fontSize={isLitteSmall ? 'xs' : 'sm'}
@@ -224,7 +247,7 @@ export const NftBalanceCard = ({ nft }: { nft: NFT }) => {
             overflow="hidden"
           >
             <Box w="full" aspectRatio={1} position="relative">
-              {renderImage(modalImageLoaded, setModalImageLoaded)}
+              {renderImage(modalImageLoaded, setModalImageLoaded, imageSrc)}
             </Box>
 
             <Flex
@@ -450,6 +473,7 @@ const NftsBalanceList = ({ nfts }: NftsBalanceProps) => {
       return acc;
     }, {});
   }, [nfts]);
+
 
   return (
     <>
