@@ -211,7 +211,6 @@ const RecipientFormField = (props: RecipientFormFieldProps) => {
                           `transactions.${index}.resolvedLabel`,
                           result.label,
                         );
-
                         return result;
                       }}
                       isLoading={
@@ -259,7 +258,6 @@ const RecipientFormField = (props: RecipientFormFieldProps) => {
             );
           }}
         />
-
         <Controller
           name={`transactions.${index}.asset`}
           control={control}
