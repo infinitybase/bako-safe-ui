@@ -55,19 +55,22 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
   return (
     <Box
       w="100%"
-      maxW={isLargerThan1210 ? '300px' : 'full'}
+      maxW={isLargerThan1210 ? '274px' : 'full'}
       bgColor={onDrawer ? 'transparent' : 'dark.950'}
       boxShadow={onDrawer ? 'none' : '8px 0px 6px 0px rgba(0, 0, 0, 0.15)'}
       p="24px 16px 16px 16px"
       {...rest}
     >
       <VStack
+        transform="scale(0.9)"
+        transformOrigin="top left"
         position="fixed"
         width={isLargerThan1210 ? '269px' : 'full'}
         pr={isLargerThan1210 ? 'unset' : 8}
         pb={4}
         pt={isLargerThan1210 ? 6 : 0}
         top={isLargerThan1210 ? '72px' : 14}
+        h={'full'}
         bottom={0}
         overflowY="scroll"
         __css={{

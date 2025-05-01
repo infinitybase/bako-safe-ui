@@ -38,10 +38,11 @@ const DialogModal = (props: DialogModalProps) => {
       <ModalContent
         rounded="3xl"
         bg="dark.950"
-        py={{ base: 2, xs: props.xsBreakPointPy ?? 8 }}
+        py={{ base: 2, xs: props.xsBreakPointPy ?? 0 }}
         {...props.modalContentProps}
       >
         <ModalBody
+          transform="scale(0.9)"
           overflowY="auto"
           zIndex={400}
           sx={{
