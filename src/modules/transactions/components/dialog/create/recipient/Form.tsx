@@ -132,15 +132,19 @@ const RecipientFormField = (props: RecipientFormFieldProps) => {
           name={`transactions.${index}.value`}
           control={control}
           render={({ field, fieldState }) => {
-            const valuePath = `transactions.${index}.value` as const;
             const labelPath = `transactions.${index}.resolvedLabel` as const;
-        
-            const inputValue = watch(labelPath) || field.value || '';
-        
+            let inputValue = '';
+
+            if (watch(labelPath)?.startsWith('@')) {
+              inputValue = watch(labelPath) ?? '';
+            } else {
+              inputValue = field.value;
+            }
+
             const appliedOptions = optionsRequests[index].options.filter(
               (a) => Address.fromString(a.value).toString() !== field.value,
             );
-        
+
             const showAddToAddressBook =
               canAddMember &&
               !fieldState.invalid &&
@@ -154,15 +158,19 @@ const RecipientFormField = (props: RecipientFormFieldProps) => {
                     ? Address.fromString(field.value).toString()
                     : field.value,
                 );
-        
+
             const handleClear = () => {
               field.onChange('');
               setValue(labelPath, '');
             };
 
-        
             return (
-              <HStack align="start" spacing={2} position="relative" width="100%">
+              <HStack
+                align="start"
+                spacing={2}
+                position="relative"
+                width="100%"
+              >
                 <FormControl isInvalid={fieldState.invalid} flex="1">
                   <Box position="relative">
                     <Autocomplete
@@ -203,6 +211,7 @@ const RecipientFormField = (props: RecipientFormFieldProps) => {
                           `transactions.${index}.resolvedLabel`,
                           result.label,
                         );
+
                         return result;
                       }}
                       isLoading={
@@ -250,7 +259,6 @@ const RecipientFormField = (props: RecipientFormFieldProps) => {
             );
           }}
         />
-
 
         <Controller
           name={`transactions.${index}.asset`}
