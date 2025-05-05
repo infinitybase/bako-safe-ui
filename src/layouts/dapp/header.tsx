@@ -1,5 +1,4 @@
 import { Box, Heading, StackProps, Text, VStack } from '@chakra-ui/react';
-import React from 'react';
 
 interface HeaderProps extends StackProps {
   title: string;

@@ -622,7 +622,7 @@ const Header = () => {
         sm: '72px',
       }}
       zIndex={100}
-      width="110vw"
+      width="111vw"
       bgColor="dark.950"
       px={{ base: 0, sm: 4 }}
       alignItems="center"
