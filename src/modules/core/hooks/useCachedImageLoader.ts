@@ -2,9 +2,10 @@ import { useEffect, useRef, useState } from 'react';
 
 const IMAGE_CACHE_KEY = 'nftImageCache';
 const DEFAULT_TIMEOUT = 6000;
+const RETRY_DELAY = 3000;
+const MAX_RETRIES = 3;
 
 const memoryImageCache = new Set<string>();
-const pendingRequests = new Map<string, Promise<boolean>>();
 
 (() => {
   try {
@@ -23,45 +24,17 @@ const saveToLocalStorage = () => {
   } catch {}
 };
 
-const loadImage = (
-  url: string,
-  timeout: number = DEFAULT_TIMEOUT,
-): Promise<boolean> => {
-  if (pendingRequests.has(url)) return pendingRequests.get(url)!;
-
-  const promise = new Promise<boolean>((resolve) => {
-    const img = new Image();
-    let timer = setTimeout(() => {
-      img.src = '';
-      resolve(false);
-    }, timeout);
-
-    img.onload = () => {
-      clearTimeout(timer);
-      resolve(true);
-    };
-
-    img.onerror = () => {
-      clearTimeout(timer);
-      resolve(false);
-    };
-
-    img.src = url;
-  });
-
-  pendingRequests.set(url, promise);
-  return promise;
-};
-
 export const useCachedImageLoader = (
   src?: string,
   fallback?: string,
-  timeout?: number,
+  timeout: number = DEFAULT_TIMEOUT,
 ) => {
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>(
     'loading',
   );
-  const retryRef = useRef<number>(0);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const retryTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const retryCountRef = useRef(0);
 
   useEffect(() => {
     if (!src) {
@@ -76,17 +49,52 @@ export const useCachedImageLoader = (
 
     setStatus('loading');
 
-    loadImage(src, timeout).then((success) => {
-      if (success) {
-        memoryImageCache.add(src);
-        saveToLocalStorage();
-        setStatus('success');
+    const img = new Image();
+
+    const handleLoad = () => {
+      clearAllTimeouts();
+      memoryImageCache.add(src);
+      saveToLocalStorage();
+      setStatus('success');
+    };
+
+    const handleError = () => {
+      clearAllTimeouts();
+
+      if (retryCountRef.current < MAX_RETRIES) {
+        retryCountRef.current += 1;
+        setStatus('loading');
+        retryTimeoutRef.current = setTimeout(() => {
+          setStatus('loading');
+        }, RETRY_DELAY);
       } else {
         setStatus('error');
-        setTimeout(() => retryRef.current++, 5000);
       }
-    });
-  }, [src, timeout, retryRef.current]);
+    };
+
+    timeoutRef.current = setTimeout(() => {
+      handleError();
+    }, timeout);
+
+    img.onload = handleLoad;
+    img.onerror = handleError;
+    img.src = src;
+
+    if (img.complete) {
+      handleLoad();
+    }
+
+    return () => {
+      img.onload = null;
+      img.onerror = null;
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, [src, timeout]);
+
+  const clearAllTimeouts = () => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    if (retryTimeoutRef.current) clearTimeout(retryTimeoutRef.current);
+  };
 
   return {
     isLoading: status === 'loading',
