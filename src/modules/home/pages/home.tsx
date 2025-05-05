@@ -144,7 +144,7 @@ const HomePage = () => {
         minH={latestPredicates.isLoading ? '$100vh' : 'fit-content'}
         mt={latestPredicates.isLoading ? 6 : 4}
       >
-        {recentVaults?.length && (
+        {!!recentVaults?.length && (
           <RecentVaultsList
             predicates={recentVaults}
             isLoading={latestPredicates.isLoading}

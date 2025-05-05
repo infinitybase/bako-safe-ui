@@ -261,48 +261,18 @@ const UserVaultsPage = () => {
         </HStack>
       </HStack>
 
-      {showHiddenMessage && (
-        <CustomSkeleton isLoaded={!isLoading}>
-          <VStack
-            w="full"
-            h="full"
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            flexDirection="column"
-            spacing={2}
-            borderWidth="1px"
-            borderRadius="md"
-            borderColor="rgba(64, 58, 57, 0.5)"
-            p={8}
-            bg="linear-gradient(180deg, rgba(21, 20, 19, 0.15), rgba(21, 20, 19, 0.25), rgba(21, 20, 19, 0.5))"
-            fontWeight="semibold"
-            boxShadow="0px 8px 16px rgba(0, 0, 0, 0.15)"
-            backdropFilter="blur(16px)"
-          >
-            <Text fontSize="20px" fontWeight="semibold">
-              No vaults visible
-            </Text>
-            <Text fontSize="sm" color="gray.400" textAlign="center">
-              You&apos;ve hidden all your vaults. <br />
-              Update your visibility settings to see them again.
-            </Text>
-          </VStack>
-        </CustomSkeleton>
-      )}
-
-      {showEmptyState && (
-        <CustomSkeleton isLoaded={!isLoading}>
-          <EmptyState
-            bg="red"
-            showAction={hasPermission([OWNER, MANAGER, ADMIN])}
-            title="Let's Begin!"
-            subTitle="Your vaults are entirely free on Fuel. Let's create your very first one?"
-            buttonActionTitle="Create my first vault"
-            buttonAction={onOpen}
-          />
-        </CustomSkeleton>
-      )}
+      {showEmptyState ||
+        (showHiddenMessage && (
+          <CustomSkeleton isLoaded={!isLoading}>
+            <EmptyState
+              showAction={hasPermission([OWNER, MANAGER, ADMIN])}
+              title="Let's Begin!"
+              subTitle="Your vaults are entirely free on Fuel. Let's create your very first one?"
+              buttonActionTitle="Create my first vault"
+              buttonAction={onOpen}
+            />
+          </CustomSkeleton>
+        ))}
 
       {showVaultGrid && (
         <Box
