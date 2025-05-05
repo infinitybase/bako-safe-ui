@@ -35,10 +35,21 @@ const DialogModal = (props: DialogModalProps) => {
       {...rest}
     >
       <ModalOverlay {...props.overlayProps} />
+
       <ModalContent
         rounded="3xl"
         bg="dark.950"
         py={{ base: 2, xs: props.xsBreakPointPy ?? 8 }}
+        motionProps={
+          isMobile
+            ? undefined
+            : {
+                initial: { opacity: 0, scale: 0.8 },
+                animate: { opacity: 1, scale: 0.9 },
+                exit: { opacity: 0, scale: 0.8 },
+                transition: { duration: 0.3 },
+              }
+        }
         {...props.modalContentProps}
       >
         <ModalBody
