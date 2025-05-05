@@ -622,7 +622,7 @@ const Header = () => {
         sm: '72px',
       }}
       zIndex={100}
-      w="100%"
+      width="110vw"
       bgColor="dark.950"
       px={{ base: 0, sm: 4 }}
       alignItems="center"
@@ -630,6 +630,8 @@ const Header = () => {
       top="0"
       justifyContent="space-between"
       boxShadow="0px 8px 12px 0px rgba(0, 0, 0, 0.2)"
+      transform="scale(0.9)"
+      transformOrigin="top left"
     >
       <NotificationsDrawer
         isOpen={notificationDrawerState.isOpen}

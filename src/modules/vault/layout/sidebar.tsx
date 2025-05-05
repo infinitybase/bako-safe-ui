@@ -58,16 +58,16 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
       maxW={isLargerThan1210 ? '274px' : 'full'}
       bgColor={onDrawer ? 'transparent' : 'dark.950'}
       boxShadow={onDrawer ? 'none' : '8px 0px 6px 0px rgba(0, 0, 0, 0.15)'}
-      p="24px 16px 16px 16px"
+      p={isLargerThan1210 ? '24px 16px 16px 16px' : '0'}
       {...rest}
     >
       <VStack
         transform="scale(0.9)"
-        transformOrigin="top left"
+        transformOrigin={isLargerThan1210 ? 'top left' : 'top center'}
         position="fixed"
         width={isLargerThan1210 ? '269px' : 'full'}
-        pr={isLargerThan1210 ? 'unset' : 8}
-        pb={4}
+        pr={isLargerThan1210 ? 'unset' : 0}
+        pb={0}
         pt={isLargerThan1210 ? 6 : 0}
         top={isLargerThan1210 ? '72px' : 14}
         h={'full'}

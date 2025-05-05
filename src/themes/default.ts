@@ -47,20 +47,9 @@ const defaultTheme = extendTheme({
   },
   styles: {
     global: () => ({
-      html: {
-        bg: 'transparent',
-        height: '100%',
-        width: '100%',
-        overflow: 'hidden',
-      },
       body: {
-        transform: 'scale(0.9)',
-        transformOrigin: 'top left',
-        width: '111.11vw', // Compensa o scale(0.9)
-        height: '111.11vh',
-        overflowX: 'hidden',
-        overflowY: 'auto',
         bg: 'dark.950',
+        mx: 'auto',
         backgroundImage: `url(${NewHomeBackgroundHd})`,
         backgroundSize: 'cover',
         backgroundRepeat: 'no-repeat',
@@ -71,6 +60,9 @@ const defaultTheme = extendTheme({
           base: 'sm',
           sm: 'md',
         },
+      },
+      html: {
+        bg: 'transparent',
       },
       '#chakra-toast-manager-top-right': {
         mt: 20,
