@@ -98,16 +98,17 @@ const NftsBalanceList = ({ nfts }: NftsBalanceProps) => {
 
   const enrichedNfts = useEnrichAssetOnVisible();
 
-  // Load more nfts on intersection
   useEffect(() => {
     if (!hasMore) return;
 
     const lastEntry = visibleEntries[visibleEntries.length - 1];
 
+    // Load more nfts on intersection
     if (lastEntry?.isIntersecting) {
       loadMore();
     }
 
+    // Load more nfts metadata on intersection last item
     if (flatVisibleItem.length) {
       enrichedNfts({
         visibleAssetIds: flatVisibleItem.map((item) => item.assetId),
