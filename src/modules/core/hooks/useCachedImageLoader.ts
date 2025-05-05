@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { resolveIpfsUrl } from '../utils/ipfsUrlResolver';
 
 const IMAGE_CACHE_KEY = 'nftImageCache';
 const DEFAULT_TIMEOUT = 6000;
@@ -37,56 +38,60 @@ export const useCachedImageLoader = (
   const retryCountRef = useRef(0);
 
   useEffect(() => {
-    if (!src) {
-      setStatus('error');
-      return;
-    }
-
-    if (memoryImageCache.has(src)) {
-      setStatus('success');
-      return;
-    }
-
-    setStatus('loading');
-
-    const img = new Image();
-
-    const handleLoad = () => {
-      clearAllTimeouts();
-      memoryImageCache.add(src);
-      saveToLocalStorage();
-      setStatus('success');
-    };
-
-    const handleError = () => {
-      clearAllTimeouts();
-
-      if (retryCountRef.current < MAX_RETRIES) {
-        retryCountRef.current += 1;
-        setStatus('loading');
-        retryTimeoutRef.current = setTimeout(() => {
-          setStatus('loading');
-        }, RETRY_DELAY);
-      } else {
+    const processSrc = async () => {
+      if (!src) {
         setStatus('error');
+        return;
+      }
+
+      const resolvedSrc = await resolveIpfsUrl(src);
+
+      if (memoryImageCache.has(src)) {
+        setStatus('success');
+        return;
+      }
+
+      setStatus('loading');
+
+      const img = new Image();
+
+      const handleLoad = () => {
+        clearAllTimeouts();
+        memoryImageCache.add(src);
+        saveToLocalStorage();
+        setStatus('success');
+      };
+
+      const handleError = () => {
+        clearAllTimeouts();
+
+        if (retryCountRef.current < MAX_RETRIES) {
+          retryCountRef.current += 1;
+          setStatus('loading');
+          retryTimeoutRef.current = setTimeout(() => {
+            setStatus('loading');
+          }, RETRY_DELAY);
+        } else {
+          setStatus('error');
+        }
+      };
+
+      timeoutRef.current = setTimeout(() => {
+        handleError();
+      }, timeout);
+
+      img.onload = handleLoad;
+      img.onerror = handleError;
+      img.src = src;
+
+      if (img.complete) {
+        handleLoad();
       }
     };
 
-    timeoutRef.current = setTimeout(() => {
-      handleError();
-    }, timeout);
-
-    img.onload = handleLoad;
-    img.onerror = handleError;
-    img.src = src;
-
-    if (img.complete) {
-      handleLoad();
-    }
+    processSrc();
 
     return () => {
-      img.onload = null;
-      img.onerror = null;
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
   }, [src, timeout]);
