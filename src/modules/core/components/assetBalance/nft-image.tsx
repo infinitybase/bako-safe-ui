@@ -49,18 +49,22 @@ export const NftImage = ({
   }
 
   return (
-    <Image
-      w="full"
-      h="full"
-      src={srcToRender}
-      alt="NFT"
-      borderRadius={5}
-      objectFit="cover"
-      opacity={isLoading ? 0 : 1}
-      transition="opacity 0.3s ease"
-      position="absolute"
-      top={0}
-      left={0}
-    />
+    <>
+      {!isLoading && srcToRender && (
+        <Image
+          w="full"
+          h="full"
+          src={srcToRender}
+          alt="NFT"
+          borderRadius={5}
+          objectFit="cover"
+          opacity={isLoading ? 0 : 1}
+          transition="opacity 0.3s ease"
+          position="absolute"
+          top={0}
+          left={0}
+        />
+      )}
+    </>
   );
 };
