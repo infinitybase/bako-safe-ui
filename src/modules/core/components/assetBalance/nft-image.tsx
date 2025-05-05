@@ -18,6 +18,7 @@ export const NftImage = ({
   const { isLoading, isError, srcToRender } = useCachedImageLoader(
     src,
     fallback,
+    timeout,
   );
 
   if (isLoading) {
