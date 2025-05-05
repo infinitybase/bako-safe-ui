@@ -36,6 +36,7 @@ export const useCachedImageLoader = (
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const retryTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const retryCountRef = useRef(0);
+  const resolvedSrcRef = useRef<string | null>(null);
 
   useEffect(() => {
     const processSrc = async () => {
@@ -45,8 +46,14 @@ export const useCachedImageLoader = (
       }
 
       const resolvedSrc = await resolveIpfsUrl(src);
+      if (!resolvedSrc) {
+        setStatus('error');
+        return;
+      }
 
-      if (memoryImageCache.has(src)) {
+      resolvedSrcRef.current = resolvedSrc;
+
+      if (memoryImageCache.has(resolvedSrc)) {
         setStatus('success');
         return;
       }
@@ -57,7 +64,7 @@ export const useCachedImageLoader = (
 
       const handleLoad = () => {
         clearAllTimeouts();
-        memoryImageCache.add(src);
+        memoryImageCache.add(resolvedSrc);
         saveToLocalStorage();
         setStatus('success');
       };
@@ -82,7 +89,7 @@ export const useCachedImageLoader = (
 
       img.onload = handleLoad;
       img.onerror = handleError;
-      img.src = src;
+      img.src = resolvedSrc;
 
       if (img.complete) {
         handleLoad();
@@ -104,6 +111,6 @@ export const useCachedImageLoader = (
   return {
     isLoading: status === 'loading',
     isError: status === 'error',
-    srcToRender: status === 'error' ? fallback : src,
+    srcToRender: status === 'error' ? fallback : resolvedSrcRef.current,
   };
 };

@@ -7,8 +7,16 @@ const gateways = [
 export const resolveIpfsUrl = async (
   ipfsPath: string,
 ): Promise<string | null> => {
+  if (ipfsPath.startsWith('http://') || ipfsPath.startsWith('https://')) {
+    return ipfsPath;
+  }
+
+  const cleanHash = ipfsPath
+    .replace(/^ipfs:\/\//, '')
+    .replace(/^\/?ipfs\//, '');
+
   for (const gateway of gateways) {
-    const url = `${gateway}${ipfsPath}`;
+    const url = `${gateway}${cleanHash}`;
     try {
       const res = await fetch(url, { method: 'HEAD' });
       if (res.ok) return url;
@@ -16,5 +24,6 @@ export const resolveIpfsUrl = async (
       continue;
     }
   }
+
   return null;
 };
