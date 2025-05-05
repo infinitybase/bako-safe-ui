@@ -1,8 +1,6 @@
 import { QueryState, useQuery } from '@tanstack/react-query';
 
 import { queryClient } from '@/config/query-client';
-import { useMappedAssetStore } from '@/modules/assets-tokens/hooks/useAssetMap';
-import { localStorageKeys } from '@/modules/auth/services';
 
 import { HasReservedCoins, VaultService } from '../../services';
 import { vaultInfinityQueryKey } from '../list/useVaultTransactionsRequest';
@@ -35,38 +33,12 @@ export const useHasReservedCoins = (
     queryFn: async () => {
       // todo: return on api call the
       const response = await VaultService.hasReservedCoins(predicateId);
-      const chainId =
-        Number(
-          window.localStorage.getItem(localStorageKeys.SELECTED_CHAIN_ID),
-        ) ?? 0;
+
       if (response?.currentBalanceUSD !== cachedData?.data?.currentBalanceUSD) {
         queryClient.invalidateQueries({ queryKey: vaultTxListRequestQueryKey });
       }
 
-      const assetStore = useMappedAssetStore.getState();
-
-      await assetStore.fetchAssets(
-        response.currentBalance.map((item) => item.assetId),
-        chainId,
-      );
-      await assetStore.fetchNfts(
-        response.nfts.map((item) => item.assetId),
-        chainId,
-      );
-
-      const enrichedNfts = response.nfts.map((nft) => {
-        const mappedNft = assetStore.mappedNfts[nft.assetId];
-        return {
-          ...nft,
-          collection: mappedNft?.collection ?? null,
-          symbol: mappedNft?.symbol ?? null,
-        };
-      });
-
-      return {
-        ...response,
-        nfts: enrichedNfts,
-      };
+      return response;
     },
     refetchInterval,
     refetchOnWindowFocus: true,

@@ -1,7 +1,9 @@
 import { Box, BoxProps } from '@chakra-ui/react';
+import { forwardRef, RefObject } from 'react';
 
 export interface CardProps extends BoxProps {
   type?: string;
+  ref?: RefObject<HTMLDivElement>;
 }
 
 const variants = {
@@ -22,10 +24,11 @@ const variants = {
   default: {},
 } as const;
 
-const Card = (props: CardProps) => {
+const Card = forwardRef<HTMLDivElement, CardProps>((props, ref) => {
   const { children, type, ...rest } = props;
 
-  const variantStyle = variants[type || 'default'];
+  const variantStyle =
+    variants[type as keyof typeof variants] || variants.default;
 
   return (
     <Box
@@ -35,11 +38,14 @@ const Card = (props: CardProps) => {
       borderRadius={10}
       padding={6}
       sx={variantStyle}
+      ref={ref}
       {...rest}
     >
       {children}
     </Box>
   );
-};
+});
+
+Card.displayName = 'Card';
 
 export { Card };
