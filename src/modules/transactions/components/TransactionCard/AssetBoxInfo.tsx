@@ -32,6 +32,7 @@ interface AssetBoxInfoProps extends StackProps {
 
 const AssetBoxInfo = ({
   asset,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   isDeposit,
   isDeploy,
   isContract,
@@ -48,6 +49,7 @@ const AssetBoxInfo = ({
       isLitteSmall,
     },
     assetsMap,
+    nftList,
   } = useWorkspaceContext();
 
   const { resolveAddressContactHandle } = useAddressNicknameResolver([
@@ -84,7 +86,19 @@ const AssetBoxInfo = ({
     tokensUSD?.data,
     tokensUSD?.isUnknownToken,
   );
+  const formattedAmount = bn(asset?.amount)?.format({
+    units: assetsMap?.[asset?.assetId ?? '']?.units ?? assetsMap.UNKNOWN.units,
+  });
 
+  const isNFT = useMemo(() => {
+    if (!asset?.assetId) return false;
+    return (
+      nftList.some((nft) => nft.assetId === asset.assetId) ||
+      bn(asset?.amount).eq(bn(1))
+    );
+  }, [asset?.amount, asset?.assetId, nftList]);
+
+  const displayAmount = isNFT ? '1' : formattedAmount;
   return (
     <HStack
       py={2}
@@ -105,7 +119,7 @@ const AssetBoxInfo = ({
           />
 
           <Text fontSize="sm" color="grey.500">
-            {assetInfo.slug}
+            {isNFT ? 'NFT' : assetInfo?.slug}
           </Text>
         </VStack>
       )}
@@ -117,12 +131,7 @@ const AssetBoxInfo = ({
           color="grey.75"
           fontSize={isLowerThanFourHundredAndThirty ? 'xs' : 'sm'}
         >
-          {isDeposit ? null : '-'}
-          {bn(asset?.amount)?.format({
-            units:
-              assetsMap?.[asset?.assetId ?? '']?.units ??
-              assetsMap.UNKNOWN.units,
-          })}
+          {displayAmount}
         </Text>
         <Text
           textAlign="center"
@@ -130,7 +139,7 @@ const AssetBoxInfo = ({
           fontSize="xs"
           color="grey.500"
         >
-          <AmountUSD amount={txUSDAmount} />
+          <AmountUSD amount={txUSDAmount} isNFT={isNFT} />
         </Text>
       </VStack>
 

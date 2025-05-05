@@ -10,6 +10,7 @@ import {
   PopoverBody,
   PopoverContent,
   PopoverTrigger,
+  Spacer,
   Spinner,
   Text,
   useDisclosure,
@@ -17,7 +18,7 @@ import {
 } from '@chakra-ui/react';
 import { useFuel } from '@fuels/react';
 import { Address, Network } from 'fuels';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaChevronDown } from 'react-icons/fa';
 
 import logo from '@/assets/bakoLogoWhite.svg';
@@ -113,8 +114,9 @@ const UserBox = () => {
   const isWebAuthn = authDetails.userInfos?.type?.type === TypeUser.WEB_AUTHN;
 
   const isMainnet = (url: string) => url?.includes(NetworkType.MAINNET);
-
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const logout = async () => {
+    setIsLoggingOut(true);
     try {
       authDetails.userInfos?.type.type === TypeUser.FUEL &&
         authDetails.userInfos?.type.name !== EConnectors.FULLET &&
@@ -562,15 +564,27 @@ const UserBox = () => {
               mb={0}
             >
               <HStack
-                cursor={'pointer'}
+                cursor="pointer"
                 onClick={logout}
                 spacing={4}
-                aria-label={'Disconnect'}
+                aria-label="Disconnect"
+                w="full"
               >
                 <Icon color="grey.75" fontSize="xl" as={DisconnectIcon} />
                 <Text color="grey.75" fontWeight={500}>
                   Disconnect
                 </Text>
+                <Spacer />
+                {isLoggingOut && (
+                  <Spinner
+                    thickness="3px"
+                    speed="0.5s"
+                    emptyColor="gray.200"
+                    color="brand.500"
+                    w="20px"
+                    h="20px"
+                  />
+                )}
               </HStack>
             </VStack>
           </PopoverBody>

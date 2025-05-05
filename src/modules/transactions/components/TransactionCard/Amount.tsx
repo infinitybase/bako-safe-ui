@@ -1,9 +1,9 @@
 import {
-  type BoxProps,
   Flex,
   HStack,
   Text,
   useMediaQuery,
+  type BoxProps,
 } from '@chakra-ui/react';
 import type { ITransferAsset } from 'bakosafe';
 import { bn } from 'fuels';
@@ -37,6 +37,7 @@ const Amount = ({
     tokensUSD,
     screenSizes: { isMobile, isExtraSmall },
     assetsMap,
+    nftList,
   } = useWorkspaceContext();
 
   const totalAmoutSent = useMemo(
@@ -64,16 +65,17 @@ const Amount = ({
     [oneAssetOfEach.length],
   );
 
-  const formattedAssets = useMemo(
-    () =>
-      transaction?.assets.map((a) => ({
-        ...a,
-        amount: bn(a?.amount)?.format({
-          units: assetsMap[a?.assetId]?.units ?? assetsMap.UNKNOWN.units,
-        }),
-      })),
-    [transaction?.assets, assetsMap],
-  );
+  const formattedAssets = useMemo(() => {
+    const nftAssetIds = new Set(nftList.map((nft) => nft.assetId));
+
+    return transaction?.assets.map((a) => ({
+      ...a,
+      amount: bn(a?.amount)?.format({
+        units: assetsMap[a?.assetId]?.units ?? assetsMap.UNKNOWN.units,
+      }),
+      isNFT: nftAssetIds.has(a?.assetId) || bn(a?.amount).eq(bn(1)),
+    }));
+  }, [transaction?.assets, assetsMap, nftList]);
 
   const txUSDAmount = useTxAmountToUSD(
     formattedAssets,
@@ -86,11 +88,13 @@ const Amount = ({
     () =>
       transaction?.assets.length === 1
         ? bn(transaction.assets[0].amount).format({
-            units: assetsMap[transaction.assets[0].assetId]?.units ?? 15,
+            units: assetsMap[transaction.assets[0].assetId]?.units ?? 9,
           })
         : totalAmoutSent,
     [transaction?.assets, assetsMap, totalAmoutSent],
   );
+  const isNFT =
+    formattedAssets.length === 1 && formattedAssets[0].isNFT === true;
 
   return (
     <HStack
@@ -106,6 +110,7 @@ const Amount = ({
             isMobile={isMobile}
             showOnlyOneAsset={showOnlyOneAsset}
             assetsMap={assetsMap}
+            isNFT={isNFT}
           />
           <Flex
             flexDir={isMultiToken ? 'column-reverse' : 'column'}
@@ -119,7 +124,7 @@ const Amount = ({
               </Text>
             ) : (
               <Text color="grey.75" fontSize="sm">
-                {formattedAmount}
+                {isNFT ? '1' : formattedAmount}
               </Text>
             )}
             <Text
@@ -128,7 +133,7 @@ const Amount = ({
               color={isMultiToken ? ' grey.75' : 'grey.425'}
             >
               <CustomSkeleton isLoaded={!tokensUSD?.isLoading}>
-                <AmountUSD amount={txUSDAmount} />
+                <AmountUSD amount={txUSDAmount} isNFT={isNFT} />
               </CustomSkeleton>
             </Text>
           </Flex>

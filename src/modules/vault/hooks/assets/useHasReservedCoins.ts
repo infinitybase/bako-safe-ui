@@ -54,7 +54,19 @@ export const useHasReservedCoins = (
         chainId,
       );
 
-      return response;
+      const enrichedNfts = response.nfts.map((nft) => {
+        const mappedNft = assetStore.mappedNfts[nft.assetId];
+        return {
+          ...nft,
+          collection: mappedNft?.collection ?? null,
+          symbol: mappedNft?.symbol ?? null,
+        };
+      });
+
+      return {
+        ...response,
+        nfts: enrichedNfts,
+      };
     },
     refetchInterval,
     refetchOnWindowFocus: true,

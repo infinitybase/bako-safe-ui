@@ -1,33 +1,10 @@
-import {
-  Box,
-  Card,
-  Center,
-  Grid,
-  HStack,
-  Icon,
-  IconButton,
-  Image,
-  Skeleton,
-  Spinner,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
-import { css } from '@emotion/react';
-import { useState } from 'react';
-
-import NftEmpty from '@/assets/nft-empty.svg';
-import { UpRightArrow } from '@/components';
-import {
-  AddressUtils,
-  Asset,
-  NFT,
-  shakeAnimationY,
-} from '@/modules/core/utils';
-import { NetworkService } from '@/modules/network/services';
-import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
+import { Grid } from '@chakra-ui/react';
+import { useMemo } from 'react';
+import { Asset, NFT } from '@/modules/core/utils';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
-
-import { useGetNftsInfos, useGetTokenInfos, useScreenSize } from '../../hooks';
+import { useScreenSize } from '../../hooks';
+import { AssetsBalanceCard } from './assets-balance-card';
+import { NftBalanceCard } from './nfts-balance-card';
 
 interface AssetsBalanceProps {
   assets: Asset[];
@@ -37,227 +14,77 @@ interface NftsBalanceProps {
   nfts?: NFT[];
 }
 
-const NftBalanceCard = ({ nft }: { nft: NFT }) => {
-  const { vault } = useVaultInfosContext();
-  const {
-    authDetails: {
-      userInfos: { network },
-    },
-    nftList,
-    screenSizes: { isLitteSmall, isSmall },
-  } = useWorkspaceContext();
-
-  const { nftsInfo, nftImageUrl } = useGetNftsInfos({
-    assetId: nft.assetId,
-    nftList,
-  });
-
-  const [imageLoaded, setImageLoaded] = useState(false);
-
-  const redirectToNetwork = () =>
-    window.open(
-      `${NetworkService.getExplorer(network.url)}/account/${vault.data.predicateAddress}/assets`,
-      '_BLANK',
-    );
-
-  if (!nftsInfo) {
-    return null;
-  }
-
+const AssetsBalanceList = ({ assets }: AssetsBalanceProps) => {
+  const { tokensUSD } = useWorkspaceContext();
   return (
-    <Card
-      p={isLitteSmall ? 1 : 2}
-      borderRadius={isLitteSmall ? 5 : 8}
-      borderWidth="1px"
-      borderColor="grey.950"
-      backgroundColor="dark.50"
-      backdropFilter="blur(6px)"
-      boxShadow="lg"
+    <Grid
+      gap={4}
+      templateColumns={{
+        base: 'repeat(1, 1fr)',
+        xs: 'repeat(2, 1fr)',
+        sm: 'repeat(3, 1fr)',
+        md: 'repeat(4, 1fr)',
+        xl: 'repeat(5, 1fr)',
+        '2xl': 'repeat(6, 1fr)',
+      }}
     >
-      <VStack alignItems="flex-start" gap={isLitteSmall ? 1 : 2}>
-        <Box
-          w="full"
-          aspectRatio={1}
-          borderRadius={5}
-          position="relative"
-          overflow="hidden"
-        >
-          {!imageLoaded && (
-            <>
-              <Skeleton
-                startColor="dark.200"
-                endColor="dark.500"
-                w="full"
-                h="full"
-                position="absolute"
-                top={0}
-                left={0}
-                zIndex={0}
-              />
-              <Center
-                w="full"
-                h="full"
-                position="absolute"
-                top={0}
-                left={0}
-                zIndex={1}
-              >
-                <Spinner
-                  thickness="3px"
-                  speed="0.5s"
-                  color="grey.400"
-                  size="md"
-                />
-              </Center>
-            </>
-          )}
-
-          <Image
-            w="full"
-            h="full"
-            src={nftImageUrl || NftEmpty}
-            borderRadius={5}
-            alt="NFT Image"
-            objectFit="cover"
-            onLoad={() => setImageLoaded(true)}
-            opacity={imageLoaded ? 1 : 0}
-            transition="opacity 0.3s ease"
+      {assets?.map((asset) => {
+        const usdData = tokensUSD.data[asset.assetId.toLowerCase()];
+        const usdAmount = usdData?.usdAmount ?? null;
+        return (
+          <AssetsBalanceCard
+            key={asset.assetId}
+            asset={asset}
+            usdAmount={usdAmount}
           />
-        </Box>
-        <VStack alignItems="flex-start" gap={0} maxW="full">
-          <HStack width="full" spacing={isLitteSmall ? 1 : 2} align="center">
-            <Text
-              flex={1}
-              fontSize={isSmall ? '11px' : 'sm'}
-              color="grey.50"
-              noOfLines={1}
-              textOverflow="ellipsis"
-              overflow="hidden"
-              whiteSpace="nowrap"
-              minWidth={0}
-            >
-              {AddressUtils.format(
-                nft.assetId ?? '',
-                isLitteSmall ? 10 : isSmall ? 6 : 10,
-              )}
-            </Text>
-            <IconButton
-              icon={
-                <Icon
-                  className="nft-icon-1"
-                  as={UpRightArrow}
-                  fontSize={isLitteSmall ? 'xs' : 'md'}
-                  color="grey.75"
-                />
-              }
-              aria-label="Explorer"
-              size={isLitteSmall ? 'xxs' : 'xs'}
-              minW="auto"
-              bg="none"
-              h="auto"
-              _hover={{ bg: 'none' }}
-              css={css`
-                &:hover .nft-icon-1 {
-                  animation: ${shakeAnimationY} 0.5s ease-in-out;
-                }
-              `}
-              onClick={redirectToNetwork}
-              flexShrink={0}
-            />
-          </HStack>
-        </VStack>
-        <Text
-          fontSize={isLitteSmall ? 'xs' : 'sm'}
-          color="grey.50"
-          maxW="full"
-          isTruncated
-        >
-          {nftsInfo?.name || 'NFT'}
-        </Text>
-      </VStack>
-    </Card>
+        );
+      })}
+    </Grid>
   );
 };
-
-const AssetsBalanceCard = ({ asset }: { asset: Asset }) => {
-  const { assetsMap } = useWorkspaceContext();
-  const { assetAmount, assetsInfo } = useGetTokenInfos({ ...asset, assetsMap });
-  return (
-    <Card
-      p={4}
-      borderRadius={8}
-      borderWidth="1px"
-      borderColor="grey.950"
-      backgroundColor="dark.50"
-      backdropFilter="blur(6px)"
-      boxShadow="lg"
-    >
-      <VStack alignItems="flex-start" gap={2}>
-        <Image
-          w={{ base: 8, sm: 10 }}
-          h={{ base: 8, sm: 10 }}
-          src={assetsInfo?.icon}
-          borderRadius={100}
-          alt="Asset Icon"
-          objectFit="cover"
-        />
-        <VStack alignItems="flex-start" gap={0} maxW="full">
-          <HStack>
-            <Text fontSize="sm" color="grey.50" maxW="full" isTruncated>
-              {assetsInfo?.name}
-            </Text>
-          </HStack>
-          <Text fontSize="xs" color="grey.250">
-            {assetsInfo?.slug}
-          </Text>
-        </VStack>
-        <Text fontSize="sm" color="grey.50" maxW="full" isTruncated>
-          {assetAmount}
-        </Text>
-      </VStack>
-    </Card>
-  );
-};
-
-const AssetsBalanceList = ({ assets }: AssetsBalanceProps) => (
-  <Grid
-    gap={4}
-    templateColumns={{
-      base: 'repeat(1, 1fr)',
-      xs: 'repeat(2, 1fr)',
-      sm: 'repeat(3, 1fr)',
-      md: 'repeat(4, 1fr)',
-      xl: 'repeat(5, 1fr)',
-      '2xl': 'repeat(6, 1fr)',
-    }}
-  >
-    {assets?.map((asset) => (
-      <AssetsBalanceCard key={asset.assetId} asset={asset} />
-    ))}
-  </Grid>
-);
 
 const NftsBalanceList = ({ nfts }: NftsBalanceProps) => {
   const { isLitteSmall } = useScreenSize();
 
+  const grouped = useMemo(() => {
+    if (!nfts) return {};
+    return nfts.reduce<Record<string, typeof nfts>>((acc, nft) => {
+      const isBakoId = nft.symbol === 'BID' || nft.collection === 'Bako ID';
+      const key = isBakoId ? 'Bako ID' : (nft.collection ?? 'Other');
+      (acc[key] ??= []).push(nft);
+      return acc;
+    }, {});
+  }, [nfts]);
+
   return (
-    <Grid
-      gap={4}
-      templateColumns={
-        isLitteSmall
-          ? 'repeat(2, 1fr)'
-          : {
-              base: 'repeat(3, 1fr)',
-              xs: 'repeat(3, 1fr)',
-              sm: 'repeat(3, 1fr)',
-              md: 'repeat(4, 1fr)',
-              xl: 'repeat(5, 1fr)',
-              '2xl': 'repeat(6, 1fr)',
+    <>
+      {Object.entries(grouped).map(([group, groupNfts]) => (
+        <div key={group}>
+          <h2 style={{ margin: '1rem 0' }}>
+            {group === 'BID' ? 'Bako ID' : group}
+          </h2>
+          <Grid
+            gap={4}
+            templateColumns={
+              isLitteSmall
+                ? 'repeat(2, 1fr)'
+                : {
+                    base: 'repeat(3, 1fr)',
+                    xs: 'repeat(3, 1fr)',
+                    sm: 'repeat(4, 1fr)',
+                    md: 'repeat(5, 1fr)',
+                    xl: 'repeat(5, 1fr)',
+                    '2xl': 'repeat(6, 1fr)',
+                  }
             }
-      }
-    >
-      {nfts?.map((nft) => <NftBalanceCard key={nft.assetId} nft={nft} />)}
-    </Grid>
+          >
+            {groupNfts.map((nft) => (
+              <NftBalanceCard key={nft.assetId} nft={nft} />
+            ))}
+          </Grid>
+        </div>
+      ))}
+    </>
   );
 };
 

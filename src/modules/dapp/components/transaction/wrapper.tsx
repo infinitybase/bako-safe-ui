@@ -3,7 +3,6 @@ import { ReactNode, useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 
 import {
-  BakoLoading,
   CustomSkeleton,
   Dialog,
   LineCloseIcon,
@@ -65,10 +64,6 @@ const DappTransactionWrapper = (props: DappTransactionWrapperProps) => {
     setClosePopover(inView.inView);
   }, [inView.inView]);
 
-  if (!transactionSummary) {
-    return <BakoLoading />;
-  }
-
   return (
     <Container>
       <Box position="fixed" top={0} w="full" zIndex={100} left={0}>
@@ -126,6 +121,7 @@ const DappTransactionWrapper = (props: DappTransactionWrapperProps) => {
                   Vault:
                 </Text>
                 <VaultItemBox
+                  id={vault?.id}
                   name={vault?.name}
                   address={vault?.address}
                   isSingleWorkspace

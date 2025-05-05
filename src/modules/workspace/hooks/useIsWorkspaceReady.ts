@@ -1,5 +1,5 @@
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
-import { currentPath } from '@/utils';
+import { useCurrentPath } from '@/utils';
 
 import { useIsFilteringInProgress } from './useIsFilteringInProgress';
 
@@ -27,7 +27,7 @@ export const useIsWorkspaceReady = ({
   isTokenExpired,
   isFuelTokensLoading,
 }: IUseIsWorkspaceReady) => {
-  const { isSignInpage, isFromDapp } = currentPath();
+  const { isSignInpage, isFromDapp } = useCurrentPath();
 
   const {
     homeTransactions: {

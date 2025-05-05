@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
 import { useFuel } from '@fuels/react';
 import { Provider } from 'fuels';
 import { useState } from 'react';
@@ -32,8 +33,6 @@ export type WorkspaceAuthentication = {
   workspace: string;
 };
 
-//coment
-//coment
 const useAuth = (): IUseAuthReturn => {
   const { infos, isLoading, isFetching, refetch } = useUserInfoRequest();
   const [invalidAccount, setInvalidAccount] = useState(false);
@@ -47,11 +46,13 @@ const useAuth = (): IUseAuthReturn => {
 
   const authenticate = (params: AuthenticateParams) => {
     localStorage.setItem(BAKO_SUPPORT_SEARCH, 'true');
+    window.dispatchEvent(new Event('bako-storage-change'));
     setAuthCookies(params);
   };
 
   const logout = async (removeTokenFromDb = true, callback?: () => void) => {
     localStorage.setItem(BAKO_SUPPORT_SEARCH, 'false');
+    window.dispatchEvent(new Event('bako-storage-change'));
     if (accessToken && removeTokenFromDb) {
       await signOutRequest.mutateAsync();
       callback?.();
@@ -74,6 +75,7 @@ const useAuth = (): IUseAuthReturn => {
 
   const logoutWhenExpired = async () => {
     localStorage.setItem(BAKO_SUPPORT_SEARCH, 'false');
+    window.dispatchEvent(new Event('bako-storage-change'));
     clearAuthCookies();
     queryClient.clear();
     navigate('/?expired=true');
@@ -117,6 +119,7 @@ const useAuth = (): IUseAuthReturn => {
       id: infos?.id!,
       name: infos?.name!,
       onSingleWorkspace: infos?.onSingleWorkspace ?? false,
+      settings: infos?.settings!,
       type: userType(),
       webauthn: infos?.webauthn!,
       workspace: infos?.workspace!,

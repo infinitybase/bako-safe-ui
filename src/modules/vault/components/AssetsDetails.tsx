@@ -7,12 +7,19 @@ import { Asset, NFT } from '@/modules/core/utils';
 
 import { useVaultAssetsList } from '../hooks';
 
+interface TokensUSD {
+  [assetId: string]: {
+    usdAmount: number;
+  };
+}
+
 interface AssetsDetailsProps {
   containerRef: MutableRefObject<HTMLDivElement | null>;
   assets: Asset[];
   nfts?: NFT[];
   visibleBalance?: boolean;
   viewAllRedirect: To;
+  tokensUSD: TokensUSD;
 }
 
 const AssetsDetails = ({
@@ -21,25 +28,31 @@ const AssetsDetails = ({
   nfts,
   visibleBalance,
   viewAllRedirect,
+  tokensUSD,
 }: AssetsDetailsProps) => {
   const navigate = useNavigate();
   const { visibleItems, showViewAll, countViewAll, itemWidth } =
     useVaultAssetsList(containerRef, assets, nfts);
-
   return (
     <>
-      {assets.map((asset, index) => (
-        <Fragment key={`${asset.assetId}-${index}`}>
-          {index < visibleItems && (
-            <AssetCard
-              flex={2}
-              maxW={itemWidth}
-              asset={asset}
-              visibleBalance={visibleBalance}
-            />
-          )}
-        </Fragment>
-      ))}
+      {assets.map((asset, index) => {
+        const usdData = tokensUSD[asset.assetId.toLowerCase()];
+        const usdAmount = usdData?.usdAmount ?? null;
+
+        return (
+          <Fragment key={`${asset.assetId}-${index}`}>
+            {index < visibleItems && (
+              <AssetCard
+                flex={2}
+                maxW={itemWidth}
+                asset={asset}
+                visibleBalance={visibleBalance}
+                usdAmount={usdAmount}
+              />
+            )}
+          </Fragment>
+        );
+      })}
 
       {nfts?.map((nft, index) => (
         <Fragment key={`${nft.assetId}-${index}`}>

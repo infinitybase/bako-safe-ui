@@ -1,5 +1,7 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 
+import { DEFAULT_INITIAL_PAGE_PARAM } from '@/utils/constants';
+
 import { GetAllPredicatesPayload, VaultService } from '../services';
 
 const USER_VAULTS_QUERY_KEY = 'predicate/by-user-address';
@@ -14,9 +16,9 @@ const useUserVaultRequest = (
       VaultService.getAllWithPagination({
         ...filter,
         perPage: filter.perPage || 8,
-        page: pageParam || 0,
+        page: pageParam || DEFAULT_INITIAL_PAGE_PARAM,
       }),
-    initialPageParam: 0,
+    initialPageParam: DEFAULT_INITIAL_PAGE_PARAM,
     getNextPageParam: (lastPage) =>
       lastPage.currentPage !== lastPage.totalPages
         ? lastPage.nextPage
