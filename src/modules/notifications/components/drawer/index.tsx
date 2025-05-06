@@ -12,8 +12,10 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
+import { useEffect } from 'react';
 
 import { CustomSkeleton, LineCloseIcon } from '@/components';
+import { createGTMCustomEvent } from '@/utils';
 
 import { useAppNotifications } from '../../hooks';
 import { NotificationsEmptyState } from '../emptyState';
@@ -21,7 +23,10 @@ import { NotificationCard } from '../notificationCard';
 
 interface NotificationsDrawerProps extends Omit<DrawerProps, 'children'> {}
 
-const NotificationsDrawer = ({ ...props }: NotificationsDrawerProps) => {
+const NotificationsDrawer = ({
+  isOpen,
+  ...props
+}: NotificationsDrawerProps) => {
   const {
     unreadCounter,
     inView,
@@ -30,14 +35,24 @@ const NotificationsDrawer = ({ ...props }: NotificationsDrawerProps) => {
     drawer,
   } = useAppNotifications({
     onClose: props.onClose,
-    isOpen: props.isOpen,
+    isOpen: isOpen,
   });
 
   const hasNotifications = notifications.length >= 1;
 
+  useEffect(() => {
+    if (isOpen) {
+      createGTMCustomEvent({
+        eventName: 'open notifications drawer',
+        buttonId: 'Home Vault: Open Notifications Header',
+      });
+    }
+  }, [isOpen]);
+
   return (
     <Drawer
       {...props}
+      isOpen={isOpen}
       size="sm"
       variant="solid-dark"
       placement="right"

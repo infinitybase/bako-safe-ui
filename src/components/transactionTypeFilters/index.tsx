@@ -3,9 +3,10 @@ import { css } from '@emotion/react';
 import { TransactionType } from 'bakosafe';
 
 import { shakeAnimationY } from '@/modules';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { createGTMCustomEvent } from '@/utils';
 
 import { DownLeftArrow, UpRightArrow } from '../icons';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface ITransactionTypeFiltersProps extends BoxProps {
   incomingAction: () => void;
@@ -35,7 +36,13 @@ const TransactionTypeFilters = ({
     >
       <Button
         color="grey.75"
-        onClick={incomingAction}
+        onClick={() => {
+          createGTMCustomEvent({
+            eventName: 'incoming button click',
+            buttonId: 'Home Vault: Incoming',
+          });
+          incomingAction();
+        }}
         alignSelf={{ base: 'stretch', sm: 'flex-end' }}
         css={css`
           &:hover .btn-icon-1 {
@@ -58,7 +65,13 @@ const TransactionTypeFilters = ({
       </Button>
       <Button
         color="grey.75"
-        onClick={outgoingAction}
+        onClick={() => {
+          createGTMCustomEvent({
+            eventName: 'outgoing button click',
+            buttonId: 'Home Vault: Outgoing',
+          });
+          outgoingAction();
+        }}
         alignSelf={{ base: 'stretch', sm: 'flex-end' }}
         css={css`
           &:hover .btn-icon-2 {

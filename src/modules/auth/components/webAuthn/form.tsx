@@ -2,6 +2,7 @@ import { FormControl, FormHelperText, Text, VStack } from '@chakra-ui/react';
 import { Controller } from 'react-hook-form';
 
 import { AutocompleteBadge } from '@/components';
+import { createGTMCustomEvent } from '@/utils';
 
 import { UseWebAuthnSignIn } from '../../hooks';
 
@@ -55,10 +56,27 @@ const WebAuthnForm = (props: WebAuthnFormProps) => {
                 aria-label="Username"
                 value={field.value}
                 onChange={(e) => {
-                  accountSeachHandler(e.toLowerCase());
-                  field.onChange(e.toLowerCase());
+                  const username = e.toLowerCase();
+                  accountSeachHandler(username);
+                  field.onChange(username);
+
+                  createGTMCustomEvent({
+                    eventName: 'input username change',
+                    buttonId: 'Login-Screen: input username change',
+                    username,
+                  });
                 }}
-                onKeyDown={(e) => onSubmitUsingEnterKey?.(e.key)}
+                onKeyDown={(e) => {
+                  onSubmitUsingEnterKey?.(e.key);
+
+                  if (e.key === 'Enter') {
+                    createGTMCustomEvent({
+                      eventName: 'input username submit',
+                      buttonId: 'Login-Screen: input username submit',
+                      username: field.value,
+                    });
+                  }
+                }}
                 options={accountsOptions}
                 showOptions={showAccountsOptions}
                 isDisabled={!window.navigator.credentials || isDisabled}

@@ -23,6 +23,7 @@ import {
 } from '@/components';
 import { NetworkService } from '@/modules/network/services';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { createGTMCustomEvent } from '@/utils';
 
 interface VaultBoxPropx {
   name: string;
@@ -93,11 +94,32 @@ const VaultBox = (props: VaultBoxPropx) => {
     <Box w="100%">
       {/* Headers BTNS */}
       <HStack>
-        <Button w="full" variant="secondaryV2" onClick={() => goHome()}>
+        <Button
+          w="full"
+          variant="secondaryV2"
+          onClick={() => {
+            createGTMCustomEvent({
+              eventName: 'home button click',
+              buttonId: 'Home Vault: Home',
+            });
+            goHome();
+          }}
+        >
           <Icon as={HomeIcon} fontSize="lg" mr="auto" />
           <Text mr="auto">Home</Text>
         </Button>
-        <Button w="full" variant="secondaryV2" onClick={() => onChangeVault()}>
+
+        <Button
+          w="full"
+          variant="secondaryV2"
+          onClick={() => {
+            createGTMCustomEvent({
+              eventName: 'vault button click',
+              buttonId: 'Home Vault: Vault',
+            });
+            onChangeVault();
+          }}
+        >
           <Icon as={LeftAndRightArrow} fontSize="lg" mr="auto" />
           <Text mr="auto">Vault</Text>
         </Button>
@@ -144,7 +166,13 @@ const VaultBox = (props: VaultBoxPropx) => {
               bg="none"
               h={3}
               _hover={{ bg: 'none' }}
-              onClick={redirectToNetwork}
+              onClick={() => {
+                createGTMCustomEvent({
+                  eventName: 'redirect to explorer button click',
+                  buttonId: 'Home Vault: redirect to explorer',
+                });
+                redirectToNetwork();
+              }}
             />
           </HStack>
         </VStack>
@@ -157,7 +185,13 @@ const VaultBox = (props: VaultBoxPropx) => {
             w="100%"
             variant="primary"
             fontWeight="bold"
-            onClick={onCreateTransaction}
+            onClick={() => {
+              createGTMCustomEvent({
+                eventName: 'create transaction button click',
+                buttonId: 'Home Vault: create transaction',
+              });
+              onCreateTransaction();
+            }}
             isDisabled={
               !hasBalance ||
               isPending ||
