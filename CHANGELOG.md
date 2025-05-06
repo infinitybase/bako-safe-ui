@@ -1,3 +1,28 @@
+## [1.1.0](https://github.com/infinitybase/bako-safe-ui/compare/v1.0.0...v1.1.0) (2025-03-19)
+
+### Features
+
+* **components:** update floating card to show only when logged in, managing localStorage ([36612b4](https://github.com/infinitybase/bako-safe-ui/commit/36612b4425e60794bbdcd0d6793991186a39ddf1))
+* **env:** add environment configuration for API URL ([d3256dc](https://github.com/infinitybase/bako-safe-ui/commit/d3256dca79347eb7efbeb1b2dcfc96791180c113))
+* **env:** validate BASE_API_URL using yup schema ([9bd69a5](https://github.com/infinitybase/bako-safe-ui/commit/9bd69a59779501975beff9a04f640cc982354dbc))
+* **icons:** add FileCodeIcon component ([b8fd34b](https://github.com/infinitybase/bako-safe-ui/commit/b8fd34b4a3b6d5abba029f9c6a78a75e38eb3b9d))
+* **icons:** export FileCodeIcon from icons index ([6c44418](https://github.com/infinitybase/bako-safe-ui/commit/6c44418df63389b8262018bfb8010b4849edbf50))
+* **transaction:** add link to advanced transaction details and update button styles ([978dcd6](https://github.com/infinitybase/bako-safe-ui/commit/978dcd6d55f5e6dff8720aca79531fe81b36c466))
+* **transaction:** add link to advanced transaction details in DepositDetails component ([1c67706](https://github.com/infinitybase/bako-safe-ui/commit/1c677068f27a8647373842497838cb3602a224c7))
+* **transaction:** add link to advanced transaction details in DetailsDialog ([df339f1](https://github.com/infinitybase/bako-safe-ui/commit/df339f1dbb880cc958dcc66b4009c86a9715cb7f))
+* **transaction:** add styled button with hover animation in TransactionCard ([8ff8256](https://github.com/infinitybase/bako-safe-ui/commit/8ff82563fdfa6c18960aad9a1a55c8d249e43370))
+* **transaction:** prevent consumed tokens from being reused, add thousand separators in amount ([78fa465](https://github.com/infinitybase/bako-safe-ui/commit/78fa46568f9ec5bf6d3ce4224a50d40b5ee3eea0))
+
+### Bug Fixes
+
+* **components:** add value to default input value ([cb2997a](https://github.com/infinitybase/bako-safe-ui/commit/cb2997a8df684e583905785d7eb61a59a5763110))
+* **components:** remove integer limit, new logic to handle with dot ([dcd9250](https://github.com/infinitybase/bako-safe-ui/commit/dcd9250562425ad1bb5e05300a116839135a0b2e))
+* **review:** prevent duplicate constant values ([5c65bf4](https://github.com/infinitybase/bako-safe-ui/commit/5c65bf40a28545f25ff983900b47349f4575da54))
+* **transaction:** add .00 to integer values in amount ([2e7bcda](https://github.com/infinitybase/bako-safe-ui/commit/2e7bcda782f90e7128984948db4a8cac104d8ea8))
+* **transaction:** ensure estimation use correct max fee ([3586c35](https://github.com/infinitybase/bako-safe-ui/commit/3586c354c16c760d0c8c475078a4d9ff727115fa))
+* **transaction:** update button text and reposition advanced details link in DetailsDialog ([22c8f93](https://github.com/infinitybase/bako-safe-ui/commit/22c8f93afde27fb633cf6cdfa12c909b164181c3))
+* **tx-form:** prevent refetching validated addresses ([2ac6028](https://github.com/infinitybase/bako-safe-ui/commit/2ac60281bb0fa4827380615f26e199f01ea71d82))
+
 ## 1.0.0 (2025-03-05)
 
 ### Features

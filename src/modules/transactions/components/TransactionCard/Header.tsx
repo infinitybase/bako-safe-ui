@@ -49,7 +49,12 @@ export const Header = memo(
               h={'59px'}
               justifyContent={'center'}
               vault={transaction.predicate}
-              transactionName={isFuelFriday ? 'Fuel Friday' : transaction.name}
+              transactionName={
+                isFuelFriday
+                  ? 'Fuel Friday'
+                    : (transaction.name
+                      ?? `${transaction.type.slice(0, 1).toUpperCase()}${transaction.type.slice(1).toLowerCase()}`)
+              }
             />
           )}
 
