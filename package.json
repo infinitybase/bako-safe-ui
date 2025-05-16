@@ -4,7 +4,8 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build --mode $VITE_BUILD_MODE",
+    "build": "tsc && vite build --mode production",
+    "build:preview": "tsc && vite build --mode preview",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "prepare": "husky install"
