@@ -30,7 +30,7 @@ const BasicInfos = ({
         {...nameSxProps}
         mb={spacingBetweenNameAndDesc ? 2 : 0}
       >
-        {limitCharacters(transactionName, 28)}
+        {transactionName ? limitCharacters(transactionName, 28) : ''}
       </Text>
       <Text
         color="grey.425"
