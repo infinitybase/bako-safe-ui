@@ -1,6 +1,6 @@
 import { Center, Image, Spinner } from '@chakra-ui/react';
-import { useEffect, useRef, useState } from 'react';
 import { CustomSkeleton } from '@/components';
+import { useCachedImageLoader } from '../../hooks/useCachedImageLoader';
 
 const DEFAULT_TIMEOUT = 6000;
 
@@ -15,57 +15,13 @@ export const NftImage = ({
   fallback = '/nft-empty.svg',
   timeout = DEFAULT_TIMEOUT,
 }: NftImageProps) => {
-  const [state, setState] = useState({
-    isLoading: true,
-    isError: false,
-  });
+  const { isLoading, isError, srcToRender } = useCachedImageLoader(
+    src,
+    fallback,
+    timeout,
+  );
 
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-
-  useEffect(() => {
-    setState({ isLoading: true, isError: false });
-
-    if (timeoutRef.current) clearTimeout(timeoutRef.current);
-
-    if (!src?.trim()) {
-      setState({ isLoading: false, isError: true });
-      return;
-    }
-
-    const img = new window.Image();
-
-    const handleLoad = () => {
-      clearTimeout(timeoutRef.current!);
-      setState({ isLoading: false, isError: false });
-    };
-
-    const handleError = () => {
-      clearTimeout(timeoutRef.current!);
-      setState({ isLoading: false, isError: true });
-    };
-
-    img.onload = handleLoad;
-    img.onerror = handleError;
-
-    timeoutRef.current = setTimeout(() => {
-      handleError();
-    }, timeout);
-
-    img.src = src;
-
-    if (img.complete) {
-      clearTimeout(timeoutRef.current);
-      handleLoad();
-    }
-
-    return () => {
-      img.onload = null;
-      img.onerror = null;
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    };
-  }, [src, timeout]);
-
-  if (state.isLoading) {
+  if (isLoading) {
     return (
       <>
         <CustomSkeleton
@@ -93,18 +49,22 @@ export const NftImage = ({
   }
 
   return (
-    <Image
-      w="full"
-      h="full"
-      src={state.isError ? fallback : src}
-      alt="NFT"
-      borderRadius={5}
-      objectFit="cover"
-      opacity={state.isLoading ? 0 : 1}
-      transition="opacity 0.3s ease"
-      position="absolute"
-      top={0}
-      left={0}
-    />
+    <>
+      {!isLoading && srcToRender && (
+        <Image
+          w="full"
+          h="full"
+          src={srcToRender}
+          alt="NFT"
+          borderRadius={5}
+          objectFit="cover"
+          opacity={isLoading ? 0 : 1}
+          transition="opacity 0.3s ease"
+          position="absolute"
+          top={0}
+          left={0}
+        />
+      )}
+    </>
   );
 };
