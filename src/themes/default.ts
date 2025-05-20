@@ -64,7 +64,6 @@ const defaultTheme = extendTheme({
       html: {
         bg: 'transparent',
       },
-
       '#chakra-toast-manager-top-right': {
         mt: 20,
       },

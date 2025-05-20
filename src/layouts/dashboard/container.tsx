@@ -14,6 +14,7 @@ const Container = ({ children, ...props }: ContainerProps) => {
       display="flex"
       flexDirection="column"
       p={0}
+      overflowX={'hidden'}
       {...props}
     >
       <Box>{children}</Box>
