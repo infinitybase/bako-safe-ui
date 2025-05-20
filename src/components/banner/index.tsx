@@ -19,7 +19,7 @@ const Banner = (props: BannerProps) => {
       display="flex"
       alignItems="center"
       justifyContent="center"
-      h="auto"
+      h="full"
       p={4}
       gap={2}
       _hover={{
