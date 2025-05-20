@@ -32,6 +32,7 @@ import { Pages, PermissionRoles } from '@/modules/core';
 import { useNetworks } from '@/modules/network/hooks';
 import { NetworkType } from '@/modules/network/services';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { createGTMCustomEvent } from '@/utils';
 
 import { UseVaultDetailsReturn } from '../hooks/details';
 import { openFaucet } from '../utils';
@@ -198,7 +199,13 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                     {isMobile && (
                       <Update
                         isLoading={isUpdating}
-                        onClick={handleManualRefetch}
+                        onClick={() => {
+                          createGTMCustomEvent({
+                            eventName: 'update button click',
+                            buttonId: 'Home Vault: Update',
+                          });
+                          handleManualRefetch();
+                        }}
                       />
                     )}
                   </HStack>
@@ -290,7 +297,13 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                     {!isMobile && (
                       <Update
                         isLoading={isUpdating}
-                        onClick={handleManualRefetch}
+                        onClick={() => {
+                          createGTMCustomEvent({
+                            eventName: 'update button click',
+                            buttonId: 'Home Vault: Update',
+                          });
+                          handleManualRefetch();
+                        }}
                       />
                     )}
                   </HStack>
@@ -322,14 +335,18 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                   >
                     <Button
                       alignSelf="end"
-                      onClick={() =>
+                      onClick={() => {
+                        createGTMCustomEvent({
+                          eventName: 'send button click',
+                          buttonId: 'Home Vault: Send',
+                        });
                         navigate(
                           Pages.createTransaction({
                             vaultId: vault.data?.id,
                             workspaceId,
                           }),
-                        )
-                      }
+                        );
+                      }}
                       isDisabled={
                         !hasBalance ||
                         !makeTransactionsPerm ||

@@ -16,6 +16,7 @@ import { useTransactionsContext } from '@/modules/transactions/providers/Transac
 import { VaultBox, VaultListModal } from '@/modules/vault/components';
 import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { createGTMCustomEvent } from '@/utils';
 import { getBakoIDURL } from '@/utils/enviroment';
 
 interface SidebarProps extends BoxProps {
@@ -124,7 +125,11 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
         <SidebarMenu.List w="100%" mb={4}>
           <SidebarMenu.Container
             isActive={menuItems.overview}
-            onClick={() =>
+            onClick={() => {
+              createGTMCustomEvent({
+                eventName: 'overview menu click',
+                buttonId: 'Home Vault: Overview',
+              });
               handleClick(
                 route.navigate(
                   Pages.detailsVault({
@@ -132,8 +137,8 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
                     vaultId: route.params.vaultId!,
                   }),
                 ),
-              )
-            }
+              );
+            }}
           >
             <SidebarMenu.Icon as={OverviewIcon} isActive={menuItems.overview} />
             <SidebarMenu.Title isActive={menuItems.overview}>
@@ -143,7 +148,11 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
 
           <SidebarMenu.Container
             isActive={menuItems.balance}
-            onClick={() =>
+            onClick={() => {
+              createGTMCustomEvent({
+                eventName: 'balance menu click',
+                buttonId: 'Home Vault: Balance',
+              });
               handleClick(
                 route.navigate(
                   Pages.vaultBalance({
@@ -151,8 +160,8 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
                     vaultId: route.params.vaultId!,
                   }),
                 ),
-              )
-            }
+              );
+            }}
           >
             <SidebarMenu.Icon as={CoinsIcon} isActive={menuItems.balance} />
             <SidebarMenu.Title isActive={menuItems.balance}>
@@ -164,7 +173,11 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
             isActive={menuItems.transactions}
             id={'transactions_tab_sidebar'}
             cursor={'pointer'}
-            onClick={() =>
+            onClick={() => {
+              createGTMCustomEvent({
+                eventName: 'transactions menu click',
+                buttonId: 'Home Vault: Transactions',
+              });
               handleClick(
                 route.navigate(
                   Pages.transactions({
@@ -172,8 +185,8 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
                     vaultId: route.params.vaultId!,
                   }),
                 ),
-              )
-            }
+              );
+            }}
           >
             <SidebarMenu.Icon
               as={ExchangeIcon}
@@ -191,7 +204,11 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
           <SidebarMenu.Container
             isActive={menuItems.settings}
             id={'settings_tab_sidebar'}
-            onClick={() =>
+            onClick={() => {
+              createGTMCustomEvent({
+                eventName: 'settings menu click',
+                buttonId: 'Home Vault: Settings',
+              });
               handleClick(
                 route.navigate(
                   Pages.vaultSettings({
@@ -199,8 +216,8 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
                     vaultId: route.params.vaultId!,
                   }),
                 ),
-              )
-            }
+              );
+            }}
           >
             <SidebarMenu.Icon as={SettingsIcon} isActive={menuItems.settings} />
             <SidebarMenu.Title isActive={menuItems.settings}>
@@ -213,7 +230,13 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
           mt="auto"
           icon={<Icon as={BakoIdIcon} h={10} w={102.5} />}
           title="Register your Handles"
-          onClick={() => window.open(getBakoIDURL(), '_blank')}
+          onClick={() => {
+            createGTMCustomEvent({
+              eventName: 'try now bako id click',
+              buttonId: 'Home Vault: Try now - Bako ID',
+            });
+            window.open(getBakoIDURL(), '_blank');
+          }}
         />
       </VStack>
     </Box>
