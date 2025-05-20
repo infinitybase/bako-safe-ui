@@ -31,9 +31,9 @@ export const BakoMarketplaceBanner = ({ ...rest }: BoxProps) => {
       <Image
         src={MarketplaceBanner}
         alt="Bako Marketplace Banner"
-        objectFit="cover"
-        aspectRatio="21/9"
         borderRadius="lg"
+        width="full"
+        height="101px"
       />
     </Box>
   );
