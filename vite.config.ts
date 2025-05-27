@@ -4,11 +4,19 @@ import { defineConfig } from 'vite';
 import { createHtmlPlugin } from 'vite-plugin-html';
 import tsconfigPaths from 'vite-tsconfig-paths';
 
-const mode = process.env.VERCEL_ENV || 'development';
+let mode = process.env.VERCEL_ENV || 'development';
 
-if (mode !== 'development') {
-  console.log('[BUILD] Env:', mode);
+if (process.env.AWS_BRANCH) {
+  console.log('[BUILD] with AWS_BRANCH', process.env.AWS_BRANCH);
+  const branchMap = {
+    main: 'production',
+    '*': 'staging',
+  };
+
+  mode = branchMap[process.env.AWS_BRANCH] || branchMap['*'];
 }
+
+console.log('[BUILD] Using mode:', mode);
 
 // https://vitejs.dev/config/
 export default defineConfig({
