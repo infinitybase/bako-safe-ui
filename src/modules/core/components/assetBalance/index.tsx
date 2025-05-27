@@ -1,8 +1,9 @@
 import { Grid } from '@chakra-ui/react';
 import { useMemo } from 'react';
+
 import { Asset, NFT } from '@/modules/core/utils';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
-import { useScreenSize } from '../../hooks';
+
 import { AssetsBalanceCard } from './assets-balance-card';
 import { NftBalanceCard } from './nfts-balance-card';
 
@@ -44,8 +45,6 @@ const AssetsBalanceList = ({ assets }: AssetsBalanceProps) => {
 };
 
 const NftsBalanceList = ({ nfts }: NftsBalanceProps) => {
-  const { isLitteSmall } = useScreenSize();
-
   const grouped = useMemo(() => {
     if (!nfts) return {};
     return nfts.reduce<Record<string, typeof nfts>>((acc, nft) => {
@@ -65,18 +64,14 @@ const NftsBalanceList = ({ nfts }: NftsBalanceProps) => {
           </h2>
           <Grid
             gap={4}
-            templateColumns={
-              isLitteSmall
-                ? 'repeat(2, 1fr)'
-                : {
-                    base: 'repeat(3, 1fr)',
-                    xs: 'repeat(3, 1fr)',
-                    sm: 'repeat(4, 1fr)',
-                    md: 'repeat(5, 1fr)',
-                    xl: 'repeat(5, 1fr)',
-                    '2xl': 'repeat(6, 1fr)',
-                  }
-            }
+            templateColumns={{
+              base: 'repeat(2, 1fr)',
+              xs: 'repeat(3, 1fr)',
+              sm: 'repeat(4, 1fr)',
+              md: 'repeat(5, 1fr)',
+              xl: 'repeat(5, 1fr)',
+              '2xl': 'repeat(6, 1fr)',
+            }}
           >
             {groupNfts.map((nft) => (
               <NftBalanceCard key={nft.assetId} nft={nft} />

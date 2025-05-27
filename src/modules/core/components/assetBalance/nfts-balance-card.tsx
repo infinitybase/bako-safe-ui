@@ -1,11 +1,13 @@
 import { Box, Text, VStack } from '@chakra-ui/react';
 import { useState } from 'react';
+
 import { Card } from '@/components';
 import { AddressUtils, NFT } from '@/modules/core/utils';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+
 import { useGetNftsInfos } from '../../hooks';
-import { NftImage } from './nft-image';
 import { NftDialog } from './nft-dialog';
+import { NftImage } from './nft-image';
 
 const NftBalanceCard = ({ nft }: { nft: NFT }) => {
   const {
@@ -42,6 +44,11 @@ const NftBalanceCard = ({ nft }: { nft: NFT }) => {
           <Box
             w="full"
             aspectRatio={1}
+            minW={{
+              base: '100px',
+              sm: '120px',
+              md: '150px',
+            }}
             borderRadius={5}
             position="relative"
             overflow="hidden"
