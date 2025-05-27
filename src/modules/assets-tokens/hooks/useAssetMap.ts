@@ -52,8 +52,13 @@ export const useMappedAssetStore = create(
               asset?.totalSupply === '1' ||
               asset?.totalSupply === null
             ) {
-              const metadata: Record<string, string> = asset.metadata.uri
-                ? await fetch(parseURI(asset.metadata.uri)).then((res) =>
+              const fetchFromIpfs =
+                Object.values(asset.metadata).filter(
+                  (metadata) => !['uri', 'image'].includes(metadata),
+                ).length > 0 && asset.metadata.uri;
+
+              const metadata: Record<string, string> = fetchFromIpfs
+                ? await fetch(parseURI(asset.metadata.uri!)).then((res) =>
                     res.json(),
                   )
                 : {};
