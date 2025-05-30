@@ -8,6 +8,10 @@ import {
   AssetMap,
   assetsMapFromFormattedFn,
 } from '@/modules/core/utils/assets';
+import {
+  formatMetadataFromIpfs,
+  parseURI,
+} from '@/modules/core/utils/formatter';
 import { WorkspaceService } from '@/modules/workspace/services';
 
 type Store = {
@@ -48,7 +52,18 @@ export const useMappedAssetStore = create(
               asset?.totalSupply === '1' ||
               asset?.totalSupply === null
             ) {
-              assets[assetId] = asset;
+              const fetchFromIpfs =
+                Object.values(asset.metadata).filter(
+                  (metadata) => !['uri', 'image'].includes(metadata),
+                ).length > 0 && asset.metadata.uri;
+
+              const metadata: Record<string, string> = fetchFromIpfs
+                ? await fetch(parseURI(asset.metadata.uri!)).then((res) =>
+                    res.json(),
+                  )
+                : {};
+              const formattedMetadata = formatMetadataFromIpfs(metadata);
+              assets[assetId] = { ...asset, metadata: formattedMetadata };
             }
           }
         }
