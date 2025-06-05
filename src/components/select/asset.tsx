@@ -36,9 +36,12 @@ const AssetSelect = ({
   style,
   needShowOptionsAbove,
   maxOptionsHeight,
+  name,
 }: AssetSelectProps) => {
   const selectRef = useRef<HTMLDivElement>(null);
+  const hiddenInputRef = useRef<HTMLInputElement>(null);
   const [showOptions, setShowOptions] = useState<boolean>(false);
+  const [focusedOptionIndex, setFocusedOptionIndex] = useState<number>(-1);
   const [optionsCoords, setOptionsCoords] = useState<{
     top: number;
     left: number;
@@ -55,6 +58,74 @@ const AssetSelect = ({
   const handleSelectOption = (selectedValue: string) => {
     onChange(selectedValue);
     setShowOptions(false);
+    setFocusedOptionIndex(-1);
+    selectRef.current?.focus();
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (isDisabled || isLoading) return;
+
+    const availableOptions = options || [];
+
+    switch (event.key) {
+      case 'Enter':
+      case ' ':
+        event.preventDefault();
+        if (!showOptions) {
+          setShowOptions(true);
+          calculateOptionsCoords();
+        } else if (
+          focusedOptionIndex >= 0 &&
+          availableOptions[focusedOptionIndex]
+        ) {
+          handleSelectOption(availableOptions[focusedOptionIndex].value);
+        }
+        break;
+
+      case 'Escape':
+        event.preventDefault();
+        if (showOptions) {
+          setShowOptions(false);
+          setFocusedOptionIndex(-1);
+        }
+        break;
+
+      case 'ArrowDown':
+        event.preventDefault();
+        if (!showOptions) {
+          setShowOptions(true);
+          calculateOptionsCoords();
+          setFocusedOptionIndex(0);
+        } else {
+          setFocusedOptionIndex((prev) =>
+            prev < availableOptions.length - 1 ? prev + 1 : 0,
+          );
+        }
+        break;
+
+      case 'ArrowUp':
+        event.preventDefault();
+        if (!showOptions) {
+          setShowOptions(true);
+          calculateOptionsCoords();
+          setFocusedOptionIndex(availableOptions.length - 1);
+        } else {
+          setFocusedOptionIndex((prev) =>
+            prev > 0 ? prev - 1 : availableOptions.length - 1,
+          );
+        }
+        break;
+
+      case 'Tab':
+        if (showOptions) {
+          setShowOptions(false);
+          setFocusedOptionIndex(-1);
+        }
+        break;
+
+      default:
+        break;
+    }
   };
 
   const calculateOptionsCoords = useCallback(() => {
@@ -81,15 +152,26 @@ const AssetSelect = ({
 
   const handleToggleOptions = () => {
     if (isDisabled || isLoading) return;
-    setShowOptions(!showOptions);
-    calculateOptionsCoords();
+    if (!showOptions) {
+      setShowOptions(true);
+      setFocusedOptionIndex(-1);
+      calculateOptionsCoords();
+    } else {
+      setShowOptions(false);
+      setFocusedOptionIndex(-1);
+    }
   };
 
   const handleClickOutside = (event: MouseEvent) => {
     if (!selectRef.current?.contains(event.target as Node)) {
       setShowOptions(false);
+      setFocusedOptionIndex(-1);
     }
   };
+
+  useEffect(() => {
+    setFocusedOptionIndex(-1);
+  }, [options]);
 
   useEffect(() => {
     if (showOptions) {
@@ -105,6 +187,15 @@ const AssetSelect = ({
 
   return (
     <Box w="full">
+      <input
+        ref={hiddenInputRef}
+        type="hidden"
+        name={name}
+        value={value || ''}
+        tabIndex={-1}
+        aria-hidden="true"
+      />
+
       <Box
         ref={selectRef}
         position="relative"
@@ -118,9 +209,23 @@ const AssetSelect = ({
         borderRadius={10}
         cursor={isDisabled ? 'not-allowed' : 'pointer'}
         onClick={handleToggleOptions}
+        onKeyDown={handleKeyDown}
         opacity={isDisabled ? 0.4 : 1}
         _hover={!isDisabled ? { borderColor: 'grey.400' } : {}}
+        _focus={{
+          outline: 'none',
+          borderColor: 'grey.200',
+          boxShadow:
+            '0 0 0 1px color-mix(in srgb, var(--chakra-colors-brand-500) 100%, transparent)',
+        }}
         style={style}
+        tabIndex={isDisabled ? -1 : 0}
+        role="combobox"
+        aria-expanded={showOptions}
+        aria-haspopup="listbox"
+        aria-label={label || 'Select an asset'}
+        aria-invalid={isInvalid}
+        aria-describedby={isInvalid ? `${name}-error` : undefined}
       >
         {label && (
           <Text
@@ -163,27 +268,9 @@ const AssetSelect = ({
                 {selectedOption.name}
               </Text>
             </Flex>
-
-            {/* <Box ml={2} flexShrink={0}>
-              {isLoading ? (
-                <CircularProgress
-                  trackColor="dark.100"
-                  size={18}
-                  isIndeterminate
-                  color="brand.500"
-                />
-              ) : (
-                <Icon
-                  as={ArrowDownIcon}
-                  fontSize={10}
-                  color="grey.200"
-                  transform={showOptions ? 'rotate(180deg)' : 'rotate(0deg)'}
-                  transition="transform 0.2s"
-                />
-              )}
-            </Box> */}
           </Flex>
         )}
+
         {!selectedOption && !isLoading && (
           <Icon
             as={ArrowDownIcon}
@@ -205,6 +292,8 @@ const AssetSelect = ({
       {isReadyToShowOptions && optionsCoords && (
         <Box
           position="fixed"
+          aria-expanded={showOptions}
+          role="listbox"
           top={optionsCoords.top}
           left={optionsCoords.left}
           w={optionsCoords.width}
@@ -233,50 +322,57 @@ const AssetSelect = ({
             }}
             p={1}
           >
-            {options.map(({ value: optionValue, image, name, symbol }) => (
-              <Box
-                key={optionValue}
-                w="full"
-                px={3}
-                py={2}
-                borderRadius={8}
-                cursor="pointer"
-                _hover={{ background: 'dark.150' }}
-                onMouseDown={() => handleSelectOption(optionValue)}
-                display="flex"
-                alignItems="center"
-                gap={3}
-                transition="background 0.15s"
-              >
-                <Image
-                  src={image ?? '/nft-empty.svg'}
-                  boxSize={8}
-                  rounded="lg"
-                  flexShrink={0}
-                />
-                <Stack gap={0} flex={1} minW={0}>
-                  <Text
-                    whiteSpace="nowrap"
-                    overflow="hidden"
-                    textOverflow="ellipsis"
-                    fontSize="md"
-                  >
-                    {name}
-                  </Text>
-                  {symbol && (
+            {options.map(
+              ({ value: optionValue, image, name, symbol }, index) => (
+                <Box
+                  key={optionValue}
+                  w="full"
+                  px={3}
+                  py={2}
+                  borderRadius={8}
+                  cursor="pointer"
+                  bg={focusedOptionIndex === index ? 'dark.150' : 'transparent'}
+                  _hover={{ background: 'dark.150' }}
+                  onMouseDown={() => handleSelectOption(optionValue)}
+                  onMouseEnter={() => setFocusedOptionIndex(index)}
+                  display="flex"
+                  alignItems="center"
+                  gap={3}
+                  transition="background 0.15s"
+                  role="option"
+                  aria-selected={value === optionValue}
+                  id={`option-${index}`}
+                >
+                  <Image
+                    src={image ?? '/nft-empty.svg'}
+                    boxSize={8}
+                    rounded="lg"
+                    flexShrink={0}
+                  />
+                  <Stack gap={0} flex={1} minW={0}>
                     <Text
-                      fontSize="sm"
-                      color="grey.400"
                       whiteSpace="nowrap"
                       overflow="hidden"
                       textOverflow="ellipsis"
+                      fontSize="md"
                     >
-                      {symbol}
+                      {name}
                     </Text>
-                  )}
-                </Stack>
-              </Box>
-            ))}
+                    {symbol && (
+                      <Text
+                        fontSize="sm"
+                        color="grey.400"
+                        whiteSpace="nowrap"
+                        overflow="hidden"
+                        textOverflow="ellipsis"
+                      >
+                        {symbol}
+                      </Text>
+                    )}
+                  </Stack>
+                </Box>
+              ),
+            )}
           </VStack>
         </Box>
       )}
