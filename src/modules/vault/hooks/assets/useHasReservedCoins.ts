@@ -49,13 +49,13 @@ export const useHasReservedCoins = (
         response.currentBalance.map((item) => item.assetId),
         chainId,
       );
-      await assetStore.fetchNfts(
+      const refreshedNfts = await assetStore.fetchNfts(
         response.nfts.map((item) => item.assetId),
         chainId,
       );
 
       const enrichedNfts = response.nfts.map((nft) => {
-        const mappedNft = assetStore.mappedNfts[nft.assetId];
+        const mappedNft = refreshedNfts[nft.assetId];
         return {
           ...nft,
           name: mappedNft?.name ?? null,

@@ -20,7 +20,7 @@ type Store = {
   setAssetMap: (assetMap: AssetMap) => void;
   getAssetByAssetId: (assetId: string) => AssetMap[keyof AssetMap] | undefined;
   fetchAssets: (assetIds: string[], chainId: number) => Promise<void>;
-  fetchNfts: (assetIds: string[], chainId: number) => Promise<void>;
+  fetchNfts: (assetIds: string[], chainId: number) => Promise<AssetMap>;
 };
 
 export const useMappedAssetStore = create(
@@ -67,7 +67,9 @@ export const useMappedAssetStore = create(
             }
           }
         }
-        set({ mappedNfts: { ...get().mappedNfts, ...assets } });
+        const storeAssets = { ...assets, ...get().mappedNfts };
+        set({ mappedNfts: storeAssets });
+        return storeAssets;
       },
     }),
     {
