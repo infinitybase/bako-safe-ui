@@ -12,6 +12,7 @@ export type DefaultMetadata = {
   compiler?: string;
   attributes?: Attribute[];
   description?: string;
+  uri?: string;
   [key: string]: any;
 };
 

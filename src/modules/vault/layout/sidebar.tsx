@@ -1,15 +1,19 @@
 import { Box, BoxProps, Divider, Icon, VStack } from '@chakra-ui/react';
+import AutoPlay from 'embla-carousel-autoplay';
+import useEmblaCarousel from 'embla-carousel-react';
 import { useCallback } from 'react';
 
 import {
   BakoIdIcon,
   Banner,
+  Carousel,
   CoinsIcon,
   ExchangeIcon,
   OverviewIcon,
   PendingIcon,
   SettingsIcon,
 } from '@/components';
+import { BakoMarketplaceBanner } from '@/components/bakoMarketplaceBanner';
 import { SidebarMenu } from '@/layouts/dashboard/menu';
 import { Pages, PermissionRoles } from '@/modules/core';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
@@ -30,6 +34,9 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
     },
     screenSizes: { isLargerThan1210 },
   } = useWorkspaceContext();
+  const [emblaRef] = useEmblaCarousel({ loop: true }, [
+    AutoPlay({ delay: 4000, playOnInit: true }),
+  ]);
 
   const {
     assets: { isLoading, hasBalance, isEthBalanceLowerThanReservedAmount },
@@ -209,12 +216,25 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
           </SidebarMenu.Container>
         </SidebarMenu.List>
 
-        <Banner
-          mt="auto"
-          icon={<Icon as={BakoIdIcon} h={10} w={102.5} />}
-          title="Register your Handles"
-          onClick={() => window.open(getBakoIDURL(), '_blank')}
-        />
+        <Carousel.Root emblaRef={emblaRef} mt="auto">
+          <Carousel.Slide>
+            <Carousel.SlideItem>
+              <Banner
+                icon={<Icon as={BakoIdIcon} h={10} w={102.5} />}
+                title="Register your Handles"
+                onClick={() => window.open(getBakoIDURL(), '_blank')}
+              />
+            </Carousel.SlideItem>
+            <Carousel.SlideItem>
+              <BakoMarketplaceBanner
+                cursor="pointer"
+                onClick={() =>
+                  window.open(getBakoIDURL() + 'marketplace', '_blank')
+                }
+              />
+            </Carousel.SlideItem>
+          </Carousel.Slide>
+        </Carousel.Root>
       </VStack>
     </Box>
   );
