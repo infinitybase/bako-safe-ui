@@ -228,7 +228,9 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
             <Carousel.SlideItem>
               <BakoMarketplaceBanner
                 cursor="pointer"
-                onClick={() => window.open(getBakoIDURL(), '_blank')}
+                onClick={() =>
+                  window.open(getBakoIDURL() + 'marketplace', '_blank')
+                }
               />
             </Carousel.SlideItem>
           </Carousel.Slide>

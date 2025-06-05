@@ -35,8 +35,7 @@ export const getBakoIDURL = (): string => {
 
   switch (environment) {
     case 'staging':
-      baseUrl =
-        'https://bako-id-ui-git-gr-featoffchain-sync-infinity-base.vercel.app/';
+      baseUrl = 'https://preview.bako.id/';
       break;
     case 'production':
       baseUrl = 'https://app.bako.id/';
