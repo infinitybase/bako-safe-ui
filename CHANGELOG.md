@@ -1,3 +1,18 @@
+## [1.5.0](https://github.com/infinitybase/bako-safe-ui/compare/v1.4.0...v1.5.0) (2025-06-05)
+
+### Features
+
+* **asset:** enhance asset metadata handling with IPFS formatting ([22a19ae](https://github.com/infinitybase/bako-safe-ui/commit/22a19aed3a0f48935ca90a6ac1e59880ada24bd5))
+* **asset:** enhance metadata fetching from IPFS for NFTs ([4100ef8](https://github.com/infinitybase/bako-safe-ui/commit/4100ef8dbfa181a30eb22069ef06831607f494e6))
+* **components:** implement carousel component with root, slide, and slide item ([ac97912](https://github.com/infinitybase/bako-safe-ui/commit/ac97912d904bc97ffb1d381a3654924a9c66388f))
+* **sidebar:** add BakoMarketplaceBanner component and integrate into sidebar carousel ([a521c6e](https://github.com/infinitybase/bako-safe-ui/commit/a521c6eb0e2553f9c7eaa4d3d02da160979d5dc5))
+
+### Bug Fixes
+
+* **bakoMarketplaceBanner:** adjust image properties for better display ([7457da1](https://github.com/infinitybase/bako-safe-ui/commit/7457da14c8a18094557bc663b534251a95382824))
+* **enviroment:** update staging BakoID URL to point to the correct preview link ([3a83f49](https://github.com/infinitybase/bako-safe-ui/commit/3a83f4901af056f77807082052bbf175eab88f53))
+* **sidebar:** update BakoMarketplaceBanner link to include 'marketplace' path ([fe6b3e2](https://github.com/infinitybase/bako-safe-ui/commit/fe6b3e256200c7619b409276ce13b8f7474d50f7))
+
 ## [1.4.0](https://github.com/infinitybase/bako-safe-ui/compare/v1.3.0...v1.4.0) (2025-05-05)
 
 ### Features
