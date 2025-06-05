@@ -58,8 +58,10 @@ export const useHasReservedCoins = (
         const mappedNft = assetStore.mappedNfts[nft.assetId];
         return {
           ...nft,
+          name: mappedNft?.name ?? null,
           collection: mappedNft?.collection ?? null,
           symbol: mappedNft?.symbol ?? null,
+          image: mappedNft?.metadata?.image ?? null,
         };
       });
 
