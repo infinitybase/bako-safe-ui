@@ -16,6 +16,7 @@ import { DeployIcon } from '@/components/icons/tx-deploy';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
 import type { AssetModel } from '@/modules/core';
 import { useAddressNicknameResolver } from '@/modules/core/hooks/useAddressNicknameResolver';
+import { parseURI } from '@/modules/core/utils/formatter';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { AmountUSD } from './transfer-details';
@@ -98,6 +99,11 @@ const AssetBoxInfo = ({
     );
   }, [asset?.amount, asset?.assetId, nftList]);
 
+  const image = useMemo(
+    () => (isNFT ? assetInfo?.metadata?.image : assetInfo?.icon),
+    [assetInfo?.icon, assetInfo.metadata, isNFT],
+  );
+
   const displayAmount = isNFT ? '1' : formattedAmount;
   return (
     <HStack
@@ -110,16 +116,16 @@ const AssetBoxInfo = ({
       {assetInfo && (
         <VStack alignItems="start" minW="40px">
           <Image
-            w={6}
-            h={6}
-            src={assetInfo?.icon ?? ''}
-            borderRadius={100}
+            w={7}
+            h={7}
+            src={parseURI(image || '')}
+            borderRadius="md"
             alt="Asset Icon"
             objectFit="cover"
           />
 
           <Text fontSize="sm" color="grey.500">
-            {isNFT ? 'NFT' : assetInfo?.slug}
+            {assetInfo?.slug}
           </Text>
         </VStack>
       )}

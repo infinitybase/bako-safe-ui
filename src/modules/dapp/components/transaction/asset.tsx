@@ -11,6 +11,7 @@ interface AssetInfo {
   assetId: string;
   name: string;
   slug: string;
+  image?: string | null;
 }
 
 export interface AssetInfoProps {
@@ -21,7 +22,7 @@ export interface AssetInfoProps {
 const FUEL_ASSET = {
   name: 'Fuel',
   slug: 'FUEL',
-  icon: 'https://verified-assets.fuel.network/images/fuel.svg',
+  image: 'https://verified-assets.fuel.network/images/fuel.svg',
   assetId: '0x1d5d97005e41cae2187a895fd8eab0506111e0e2f3331cd3912c15c24e3c1d82',
 };
 
@@ -51,10 +52,10 @@ const DappTransactionAssetInfo = ({ asset }: AssetInfoProps) => {
     >
       <HStack maxW="190px">
         <Image
-          w={6}
-          h={6}
-          src={assetInfo?.icon ?? ''}
-          borderRadius={100}
+          w={7}
+          h={7}
+          src={assetInfo?.image ?? ''}
+          borderRadius="md"
           alt="Asset Icon"
           objectFit="cover"
         />
