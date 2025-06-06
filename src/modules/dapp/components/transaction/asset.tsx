@@ -11,7 +11,7 @@ interface AssetInfo {
   assetId: string;
   name: string;
   slug: string;
-  image?: string;
+  image?: string | null;
 }
 
 export interface AssetInfoProps {
