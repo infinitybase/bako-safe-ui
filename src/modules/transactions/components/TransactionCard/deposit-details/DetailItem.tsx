@@ -221,7 +221,7 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
         </VStack>
       ) : (
         <>
-          <TokenInfos asset={asset} isNFT={isNFT} />
+          <TokenInfos asset={asset} />
           <AmountsInfo txUSDAmount={txUSDAmount} asset={asset} isNFT={isNFT} />
 
           <HStack
