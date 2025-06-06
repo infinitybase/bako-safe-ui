@@ -116,10 +116,10 @@ const AssetBoxInfo = ({
       {assetInfo && (
         <VStack alignItems="start" minW="40px">
           <Image
-            w={6}
-            h={6}
+            w={7}
+            h={7}
             src={parseURI(image || '')}
-            borderRadius="full"
+            borderRadius="md"
             alt="Asset Icon"
             objectFit="cover"
           />

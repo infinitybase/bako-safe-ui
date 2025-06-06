@@ -36,7 +36,8 @@ export const AssetsIcon = memo(
     return (
       <AvatarGroup
         max={showOnlyOneAsset ? 1 : 2}
-        w={isMobile ? 'unset' : 56}
+        size="md"
+        borderRadius="md"
         justifyContent={isMobile ? 'start' : 'end'}
         position="relative"
       >
@@ -44,15 +45,15 @@ export const AssetsIcon = memo(
           <Skeleton
             key={asset.assetId}
             isLoaded={!isLoading}
-            borderRadius="full"
-            w={{ base: '30.5px', sm: 6 }}
-            h={{ base: 'full', sm: 6 }}
+            borderRadius="md"
+            w={{ base: '30.5px', sm: 7 }}
+            h={{ base: 'full', sm: 7 }}
           >
             <Image
-              w={{ base: '30.5px', sm: 6 }}
-              h={{ base: 'full', sm: 6 }}
+              w={{ base: '30.5px', sm: 7 }}
+              h={{ base: 'full', sm: 7 }}
               src={asset.image}
-              borderRadius={100}
+              borderRadius="md"
               alt="Asset Icon"
               objectFit="cover"
             />

@@ -82,7 +82,7 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
       {isMobile ? (
         <VStack w="full" spacing="7px">
           <HStack w="100%" justifyContent="space-between" pr="2px">
-            <TokenInfos asset={asset} isNFT={isNFT} />
+            <TokenInfos asset={asset} />
             <AmountsInfo
               txUSDAmount={txUSDAmount}
               asset={asset}
