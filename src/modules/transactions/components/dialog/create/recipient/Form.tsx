@@ -15,7 +15,7 @@ import { Address, bn, isB256 } from 'fuels';
 import { memo, useMemo } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
-import { AmountInput, Autocomplete, AutocompleteOption } from '@/components';
+import { AmountInput, Autocomplete } from '@/components';
 import {
   AddToAddressBook,
   CreateContactDialog,
