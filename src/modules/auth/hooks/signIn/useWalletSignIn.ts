@@ -5,9 +5,12 @@ import { useContactToast } from '@/modules/addressBook';
 import { useNetworks } from '@/modules/network/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { ENetworks } from '@/utils/constants';
+import { EConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
 
 import { localStorageKeys, TypeUser } from '../../services';
 import { useCreateUserRequest, useSignInRequest } from '../useUserRequest';
+import { WalletConnector } from '@/utils';
+import { createWagmiConfig } from '@/config/web3Modal';
 
 export type UseWalletSignIn = ReturnType<typeof useWalletSignIn>;
 
@@ -64,10 +67,27 @@ const useWalletSignIn = (
     },
   });
 
-  const handleSelectWallet = async (connector: string) => {
+  const fuelWalletConnect = async (connector: string) => {
     const isWalletConnectorOpen = await fuel.selectConnector(connector);
     setIsAnyWalletConnectorOpen(isWalletConnectorOpen);
     await connect();
+  };
+
+  const evmWalletConnect = async (connector: string) => {
+    const web3Modal = new WalletConnector(createWagmiConfig());
+    await web3Modal.connect();
+  };
+
+  const handler: Record<string, (connector: string) => Promise<void>> = {
+    [EConnectors.FUEL]: fuelWalletConnect,
+    [EConnectors.FULLET]: fuelWalletConnect,
+    [EConnectors.EVM]: evmWalletConnect,
+  };
+
+  const handleSelectWallet = async (connector: string) => {
+    if (handler[connector]) {
+      handler[connector](connector);
+    }
   };
 
   const connect = async () => {
