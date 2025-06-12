@@ -23,7 +23,12 @@ const useWalletSignIn = (
   const { authDetails, invalidateGifAnimationRequest } = useWorkspaceContext();
   const { errorToast } = useContactToast();
   const { fromConnector } = useNetworks();
-  const { connect: evmConnect } = useEvm();
+  const {
+    connect: evmConnect,
+    isConnected: evmIsConnected,
+    addresses: evmAddresses,
+    requestSignatures: evmRequestSignatures,
+  } = useEvm();
 
   const signInRequest = useSignInRequest({
     onSuccess: ({
@@ -134,6 +139,11 @@ const useWalletSignIn = (
       fuel.off(fuel.events.connection, fueletConnectionStatus);
     };
   }, [fuel]);
+
+  useEffect(() => {
+    if (!evmIsConnected || evmAddresses?.length === 0) return;
+    evmRequestSignatures();
+  }, [evmIsConnected, evmAddresses]);
 
   return {
     handleSelectWallet,

@@ -19,6 +19,7 @@
     "@chakra-ui/react": "2.8.0",
     "@emotion/react": "11.11.1",
     "@emotion/styled": "11.11.0",
+    "@ethereumjs/util": "9.0.3",
     "@fuels/connectors": "0.39.0",
     "@fuels/react": "0.39.0",
     "@hookform/resolvers": "^3.3.1",
@@ -31,7 +32,6 @@
     "@wagmi/core": "2.13.4",
     "@web3modal/core": "^5.1.11",
     "@web3modal/wagmi": "5.0.0",
-    "@ethereumjs/util": "9.0.3",
     "axios": "^1.5.0",
     "bakosafe": "0.1.9-beta.3",
     "bech32": "^2.0.0",
@@ -58,9 +58,9 @@
     "react-text-mask": "^5.5.0",
     "socket.io-client": "^4.7.2",
     "text-mask-addons": "^3.8.0",
+    "viem": "2.20.1",
     "yup": "^1.2.0",
-    "zustand": "^4.4.1",
-    "viem": "2.20.1"
+    "zustand": "^4.4.1"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.7.2",
