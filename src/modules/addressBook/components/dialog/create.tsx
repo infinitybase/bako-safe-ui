@@ -40,7 +40,10 @@ const CreateContactDialog = ({
       </Dialog.Body>
 
       <Dialog.Actions mt="auto" maxW={420}>
-        <Dialog.SecondaryAction onClick={dialog.onClose}>
+        <Dialog.SecondaryAction
+          aria-label="Cancel adb"
+          onClick={dialog.onClose}
+        >
           Cancel
         </Dialog.SecondaryAction>
 
