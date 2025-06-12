@@ -5,9 +5,11 @@ import { useContactToast } from '@/modules/addressBook';
 import { useNetworks } from '@/modules/network/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { ENetworks } from '@/utils/constants';
+import { EConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
 
 import { localStorageKeys, TypeUser } from '../../services';
 import { useCreateUserRequest, useSignInRequest } from '../useUserRequest';
+import { useEvm } from '@/modules';
 
 export type UseWalletSignIn = ReturnType<typeof useWalletSignIn>;
 
@@ -21,6 +23,12 @@ const useWalletSignIn = (
   const { authDetails, invalidateGifAnimationRequest } = useWorkspaceContext();
   const { errorToast } = useContactToast();
   const { fromConnector } = useNetworks();
+  const {
+    connect: evmConnect,
+    isConnected: evmIsConnected,
+    addresses: evmAddresses,
+    requestSignatures: evmRequestSignatures,
+  } = useEvm();
 
   const signInRequest = useSignInRequest({
     onSuccess: ({
@@ -64,10 +72,26 @@ const useWalletSignIn = (
     },
   });
 
-  const handleSelectWallet = async (connector: string) => {
+  const fuelWalletConnect = async (connector: string) => {
     const isWalletConnectorOpen = await fuel.selectConnector(connector);
     setIsAnyWalletConnectorOpen(isWalletConnectorOpen);
     await connect();
+  };
+
+  const evmWalletConnect = async (_connector: string) => {
+    await evmConnect();
+  };
+
+  const handler: Record<string, (connector: string) => Promise<void>> = {
+    [EConnectors.FUEL]: fuelWalletConnect,
+    [EConnectors.FULLET]: fuelWalletConnect,
+    [EConnectors.EVM]: evmWalletConnect,
+  };
+
+  const handleSelectWallet = async (connector: string) => {
+    if (handler[connector]) {
+      handler[connector](connector);
+    }
   };
 
   const connect = async () => {
@@ -97,10 +121,10 @@ const useWalletSignIn = (
           },
         },
       );
-      setIsAnyWalletConnectorOpen(false);
     } catch (e) {
-      setIsAnyWalletConnectorOpen(false);
       authDetails.handlers.setInvalidAccount?.(true);
+    } finally {
+      setIsAnyWalletConnectorOpen(false);
     }
   };
 
@@ -115,6 +139,11 @@ const useWalletSignIn = (
       fuel.off(fuel.events.connection, fueletConnectionStatus);
     };
   }, [fuel]);
+
+  useEffect(() => {
+    if (!evmIsConnected || evmAddresses?.length === 0) return;
+    evmRequestSignatures();
+  }, [evmIsConnected, evmAddresses]);
 
   return {
     handleSelectWallet,
