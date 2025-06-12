@@ -9,8 +9,7 @@ import { EConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
 
 import { localStorageKeys, TypeUser } from '../../services';
 import { useCreateUserRequest, useSignInRequest } from '../useUserRequest';
-import { WalletConnector } from '@/utils';
-import { createWagmiConfig } from '@/config/web3Modal';
+import { useEvm } from '@/modules';
 
 export type UseWalletSignIn = ReturnType<typeof useWalletSignIn>;
 
@@ -24,6 +23,7 @@ const useWalletSignIn = (
   const { authDetails, invalidateGifAnimationRequest } = useWorkspaceContext();
   const { errorToast } = useContactToast();
   const { fromConnector } = useNetworks();
+  const { connect: evmConnect } = useEvm();
 
   const signInRequest = useSignInRequest({
     onSuccess: ({
@@ -73,9 +73,8 @@ const useWalletSignIn = (
     await connect();
   };
 
-  const evmWalletConnect = async (connector: string) => {
-    const web3Modal = new WalletConnector(createWagmiConfig());
-    await web3Modal.connect();
+  const evmWalletConnect = async (_connector: string) => {
+    await evmConnect();
   };
 
   const handler: Record<string, (connector: string) => Promise<void>> = {
@@ -117,10 +116,10 @@ const useWalletSignIn = (
           },
         },
       );
-      setIsAnyWalletConnectorOpen(false);
     } catch (e) {
-      setIsAnyWalletConnectorOpen(false);
       authDetails.handlers.setInvalidAccount?.(true);
+    } finally {
+      setIsAnyWalletConnectorOpen(false);
     }
   };
 

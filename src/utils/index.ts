@@ -8,4 +8,3 @@ export * from './is-numeric-string';
 export * from './limit-characters';
 export * from './limit-name';
 export * from './verify-hex';
-export * from './wallet-connector';
