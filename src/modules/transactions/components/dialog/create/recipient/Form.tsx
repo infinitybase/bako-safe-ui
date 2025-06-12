@@ -268,6 +268,7 @@ const RecipientFormField = (props: RecipientFormFieldProps) => {
                 spacing={2}
                 position="relative"
                 width="100%"
+                id="transaction_asset"
               >
                 <AssetSelect
                   isInvalid={fieldState.invalid}
@@ -276,7 +277,6 @@ const RecipientFormField = (props: RecipientFormFieldProps) => {
                   value={field.value}
                   onChange={(e) => {
                     field.onChange(e);
-
                     if (isNFTAsset(e)) {
                       setValue(`transactions.${index}.amount`, bn(1).format());
                       return;
@@ -378,7 +378,7 @@ const RecipientFormField = (props: RecipientFormFieldProps) => {
                       isInvalid={fieldState.invalid}
                       isDisabled={isNFT}
                     />
-                    <FormLabel>Amount</FormLabel>
+                    <FormLabel id="transaction_amount"> Amount</FormLabel>
 
                     <FormHelperText
                       pl={4}

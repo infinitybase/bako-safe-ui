@@ -2,7 +2,7 @@ import { Accordion, Button, Center, Text, Tooltip } from '@chakra-ui/react';
 import { memo } from 'react';
 
 import { UserAddIcon } from '@/components';
-import { delay, NativeAssetId } from '@/modules/core';
+import { delay } from '@/modules/core';
 import { UseCreateTransaction } from '@/modules/transactions/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
@@ -11,7 +11,7 @@ interface RecipientListProps {
   transactions: UseCreateTransaction['transactionsFields'];
   children: React.ReactNode;
   allAssetsUsed: boolean;
-  hasEthForFee:boolean;
+  hasEthForFee: boolean;
   ethAssetId: string | undefined;
 }
 
@@ -21,7 +21,7 @@ export const RecipientList = ({
   children,
   allAssetsUsed,
   hasEthForFee,
-  ethAssetId
+  ethAssetId,
 }: RecipientListProps) => {
   const {
     screenSizes: { isMobile },
@@ -35,7 +35,7 @@ export const RecipientList = ({
     });
     delay(() => accordion.open(transactions.fields.length), 100);
   };
-  
+
   return (
     <Accordion
       index={accordion.index}
@@ -76,6 +76,7 @@ export const RecipientList = ({
             placement="top"
           >
             <Button
+              id="add_more_recipient"
               w="full"
               leftIcon={<UserAddIcon />}
               variant="primary"
