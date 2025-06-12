@@ -35,7 +35,7 @@ export class VaultTestService {
     if (await hasClose.isVisible()) {
       await hasClose.click();
     }
-    await page.waitForTimeout(500);
+    await page.waitForTimeout(1000);
     await getByAriaLabel(page, 'Sidebar Vault Address').click();
     await page.waitForTimeout(500);
     const handleAddress = await page.evaluateHandle(() =>
@@ -90,7 +90,7 @@ export class VaultTestService {
     if (await hasClose.isVisible()) {
       await hasClose.click();
     }
-    await page.waitForTimeout(500);
+    await page.waitForTimeout(1000);
     await getByAriaLabel(page, 'Sidebar Vault Address').click();
     await page.waitForTimeout(500);
     const handleAddress = await page.evaluateHandle(() =>
