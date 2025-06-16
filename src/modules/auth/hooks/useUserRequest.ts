@@ -29,13 +29,17 @@ const useSignInRequest = (
   return useMutation({
     mutationKey: ['auth/sign-in'],
     mutationFn: async (params: UseSignInRequestParams) => {
-      const account = await fuel.currentAccount();
-
+      const account: string | null | undefined = params.account || await fuel.currentAccount();
+      
       const payload = {
-        encoder: Encoder.FUEL,
+        encoder: params.encoder || Encoder.FUEL,
         digest: params.code,
-        signature: await fuel.signMessage(account!, params.code),
-        userAddress: Address.fromString(account!).toB256(),
+        signature:
+          params.signature || (await fuel.signMessage(account!, params.code)),
+        userAddress:
+          params.encoder === Encoder.FUEL
+            ? Address.fromString(account!).toB256()
+            : account,
       };
 
       return UserService.signIn(payload);

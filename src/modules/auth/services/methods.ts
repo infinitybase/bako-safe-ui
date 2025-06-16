@@ -11,6 +11,7 @@ export enum Encoder {
   FUEL = 'FUEL',
   METAMASK = 'METAMASK',
   WEB_AUTHN = 'WEB_AUTHN',
+  EVM = 'EVM',
 }
 
 export enum TypeUser {
@@ -42,6 +43,9 @@ export type CreateUserResponse = {
 export type UseSignInRequestParams = {
   code: string;
   type: TypeUser;
+  encoder?: Encoder;
+  account?: string;
+  signature?: string;
 };
 
 export type CreateUserPayload = {
@@ -59,7 +63,7 @@ export type SignInPayload = {
   encoder: Encoder;
   signature: string;
   digest: string;
-  userAddress?: string;
+  userAddress?: string | null;
   name?: string;
 };
 

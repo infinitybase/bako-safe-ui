@@ -28,7 +28,7 @@ const useWalletSignIn = (
     isConnected: evmIsConnected,
     addresses: evmAddresses,
     requestSignatures: evmRequestSignatures,
-  } = useEvm();
+  } = useEvm(callback);
 
   const signInRequest = useSignInRequest({
     onSuccess: ({
