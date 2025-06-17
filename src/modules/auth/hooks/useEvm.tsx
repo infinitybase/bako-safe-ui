@@ -5,7 +5,6 @@ import {
   hashPersonalMessage,
   pubToAddress,
 } from '@ethereumjs/util';
-import { useFuel } from '@fuels/react';
 import { LocalStorage } from 'fuels';
 import { useState } from 'react';
 import type EventEmitter from 'node:events';
@@ -33,14 +32,16 @@ const getSignatureValidationKey = (address: string) =>
   `SIGNATURE_VALIDATION_${address}`;
 
 export const useEvm = (
-  callback: (vaultId?: string, workspaceId?: string) => void,
+  callback: (vaultId?: string, workspaceId?: string) => void = (
+    _vaultId?: string,
+    _workspaceId?: string,
+  ) => null,
 ) => {
   const storage = new LocalStorage(window.localStorage as Storage);
   const modal = createWeb3ModalInstance({
     wagmiConfig,
   });
 
-  const { fuel } = useFuel();
   const { errorToast } = useContactToast();
   const { authDetails, invalidateGifAnimationRequest } = useWorkspaceContext();
 
@@ -84,11 +85,6 @@ export const useEvm = (
     }
   };
 
-  const handleDisconnectSuccess = () => {
-    setIsConnected(false);
-    setAddresses([]);
-  };
-
   const unsub = modal.subscribeEvents(async (event) => {
     if (isConnected) {
       return true;
@@ -101,7 +97,7 @@ export const useEvm = (
         break;
       }
       case 'DISCONNECT_SUCCESS': {
-        handleDisconnectSuccess();
+        disconnect();
         unsub();
         break;
       }
@@ -309,18 +305,40 @@ export const useEvm = (
   };
 
   const disconnect = async (): Promise<boolean> => {
-    if (!wagmiConfig) throw new Error('Wagmi config not found');
+    const ethProvider = await getProviders();
+    if (!ethProvider) {
+      throw new Error('No Ethereum provider found');
+    }
 
-    const { connector, isConnected } = getAccount(wagmiConfig);
-    await wagmiDisconnect(wagmiConfig, {
-      connector,
+    await ethProvider.request({
+      method: 'wallet_revokePermissions',
+      params: [
+        {
+          eth_accounts: {},
+        },
+      ],
     });
+
+    for (const address of addresses) {
+      await storage.removeItem(getSignatureValidationKey(address as string));
+    }
 
     // reset wagmi session
     wagmiConfig = createWagmiConfig();
+    const { isConnected } = getAccount(wagmiConfig);
+
+    setIsConnected(false);
+    setAddresses([]);
 
     return isConnected || false;
   };
 
-  return { wagmiConfig, connect, isConnected, addresses, requestSignatures };
+  return {
+    wagmiConfig,
+    connect,
+    isConnected,
+    addresses,
+    requestSignatures,
+    disconnect,
+  };
 };

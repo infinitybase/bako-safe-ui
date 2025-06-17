@@ -37,6 +37,7 @@ import { queryClient } from '@/config';
 import {
   IDefaultMessage,
   SocketEvents,
+  useEvm,
   useUserWorkspacesRequest,
 } from '@/modules';
 import { TypeUser } from '@/modules/auth/services';
@@ -98,6 +99,7 @@ const UserBox = () => {
   const networkDialogState = useDisclosure();
 
   const { fuel } = useFuel();
+  const { disconnect: evmDisconnect } = useEvm();
   const settingsDrawer = useDisclosure();
   const notificationDrawerState = useDisclosure();
   const { unreadCounter, setUnreadCounter } = useAppNotifications();
@@ -121,6 +123,8 @@ const UserBox = () => {
       authDetails.userInfos?.type.type === TypeUser.FUEL &&
         authDetails.userInfos?.type.name !== EConnectors.FULLET &&
         (await fuel.disconnect());
+
+      authDetails.userInfos?.type.type === TypeUser.EVM && (await evmDisconnect());
       // TODO: Disconnect Fuelet, `fuel.disconnect()` should do that but it doesn't work for fuelet
     } catch (error) {
       // eslint-disable-next-line no-empty

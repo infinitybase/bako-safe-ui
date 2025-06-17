@@ -159,6 +159,7 @@ export type IGetUserInfosResponse = {
   onSingleWorkspace: boolean;
   type: UserType;
   webauthn: SignWebAuthnPayload;
+  evm?: Record<string, unknown>;
   first_login?: boolean;
   settings: UserSettings;
   workspace: {
