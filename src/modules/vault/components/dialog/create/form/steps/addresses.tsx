@@ -118,13 +118,6 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
           sx={{
             '&::-webkit-scrollbar': {
               display: 'none',
-              width: '5px',
-              maxHeight: '330px',
-            },
-            '&::-webkit-scrollbar-thumb': {
-              backgroundColor: '#2C2C2C',
-              borderRadius: '30px',
-              height: '10px',
             },
           }}
           onWheel={(e) => {
