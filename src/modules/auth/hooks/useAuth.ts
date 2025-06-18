@@ -100,7 +100,8 @@ const useAuth = (): IUseAuthReturn => {
       return { type: TypeUser.WEB_AUTHN, name: EConnectors.WEB_AUTHN };
     }
 
-    if (infos?.evm) {
+    const isEvm = infos?.type as unknown as TypeUser == TypeUser.EVM;
+    if (isEvm) {
       return { type: TypeUser.EVM, name: EConnectors.EVM };
     }
 
