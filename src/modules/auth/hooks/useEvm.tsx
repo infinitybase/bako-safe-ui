@@ -1,4 +1,4 @@
-import { disconnect as wagmiDisconnect, getAccount, Config } from '@wagmi/core';
+import { getAccount, Config } from '@wagmi/core';
 import {
   ecrecover,
   fromRpcSig,
@@ -27,9 +27,12 @@ export interface EIP1193Provider extends EventEmitter {
 const SIGNATURE_VALIDATION_TIMEOUT = 1000 * 60;
 
 let wagmiConfig: Config = createWagmiConfig();
+let modal = createWeb3ModalInstance({
+  wagmiConfig,
+});
 
-const getSignatureValidationKey = (address: string) =>
-  `SIGNATURE_VALIDATION_${address}`;
+const getSignatureValidationKey = (_address: string) =>
+  `SIGNATURE_VALIDATION_${_address}`;
 
 export const useEvm = (
   callback: (vaultId?: string, workspaceId?: string) => void = (
@@ -38,9 +41,6 @@ export const useEvm = (
   ) => null,
 ) => {
   const storage = new LocalStorage(window.localStorage as Storage);
-  const modal = createWeb3ModalInstance({
-    wagmiConfig,
-  });
 
   const { errorToast } = useContactToast();
   const { authDetails, invalidateGifAnimationRequest } = useWorkspaceContext();
@@ -49,39 +49,35 @@ export const useEvm = (
     getAccount(wagmiConfig);
 
   const [isConnected, setIsConnected] = useState<boolean>(wagmiConnected);
-  const [addresses, setAddresses] = useState<string[]>(
-    wagmiAddresses?.map((a) => a) || [],
+  const [address, setAddress] = useState<string>(
+    wagmiAddresses ? wagmiAddresses[0] : '',
   );
 
-  const accountHasValidation = async (address: string | undefined) => {
-    if (!address) return false;
-    const [hasValidate] = await getAccountValidations([address]);
+  const accountHasValidation = async (_address: string | undefined) => {
+    if (!_address) return false;
+    const hasValidate = await getAccountValidations(_address);
     return hasValidate;
   };
 
   const getAccountValidations = async (
-    accounts: `0x${string}`[] | string[],
-  ): Promise<boolean[]> => {
-    return Promise.all(
-      accounts.map(async (a) => {
-        const isValidated = await storage.getItem(getSignatureValidationKey(a));
-        return isValidated === 'true';
-      }),
+    _address: `0x${string}` | string,
+  ): Promise<boolean> => {
+    const isValidated = await storage.getItem(
+      getSignatureValidationKey(_address),
     );
+    return isValidated === 'true';
   };
 
   const handleConnectSuccess = async () => {
     setIsConnected(true);
     const { addresses = [] } = getAccount(wagmiConfig);
 
-    setAddresses(addresses as string[]);
+    const _address = addresses[0];
+    setAddress(_address);
 
-    for (const address of addresses) {
-      if (await accountHasValidation(address)) {
-        continue;
-      }
-
-      storage.setItem(getSignatureValidationKey(address as string), 'pending');
+    const isValidAccount = await accountHasValidation(_address);
+    if (!isValidAccount) {
+      storage.setItem(getSignatureValidationKey(_address as string), 'pending');
     }
   };
 
@@ -123,12 +119,12 @@ export const useEvm = (
   });
 
   const requestCreateUserRequest = (
-    account: string,
+    _address: string,
   ): Promise<{ code: string; type: TypeUser }> =>
     new Promise(async (resolve, reject) => {
       createUserRequest.mutate(
         {
-          address: account,
+          address: _address,
           provider: import.meta.env.VITE_NETWORK,
           type: TypeUser.EVM,
         },
@@ -147,18 +143,15 @@ export const useEvm = (
     const account = getAccount(wagmiConfig!);
 
     const { isConnected } = account;
-    for (const address of addresses) {
-      try {
-        await requestSignature(address);
-      } catch (err) {
-        disconnect();
-        throw err;
-      }
+    try {
+      await requestSignature(address);
+    } catch (err) {
+      disconnect();
+      throw err;
     }
 
     if (isConnected) {
       try {
-        // await this.handleConnect(account);
         return 'validated';
       } catch (err) {
         disconnect();
@@ -169,9 +162,9 @@ export const useEvm = (
     return 'pending';
   };
 
-  const requestSignature = async (address?: string) => {
+  const requestSignature = async (_address?: string) => {
     return new Promise(async (resolve, reject) => {
-      const hasSignature = await accountHasValidation(address);
+      const hasSignature = await accountHasValidation(_address);
       if (hasSignature) return resolve(true);
 
       const validationTimeout = setTimeout(() => {
@@ -180,22 +173,26 @@ export const useEvm = (
         );
       }, SIGNATURE_VALIDATION_TIMEOUT);
 
-      const ethProvider = await getProviders();
-      if (!ethProvider) {
-        return;
-      }
+      const result = await requestCreateUserRequest(_address as string);
 
-      const result = await requestCreateUserRequest(address as string);
-
-      signAndValidate(ethProvider, result.code, address)
-        .then(() => {
+      signAndValidate(result.code, _address)
+        .then(async (signature: string) => {
           clearTimeout(validationTimeout);
-          storage.setItem(getSignatureValidationKey(address as string), 'true');
+          storage.setItem(getSignatureValidationKey(_address as string), 'true');
+
+          await signInRequest.mutateAsync({
+            signature,
+            code: result.code,
+            type: TypeUser.EVM,
+            encoder: Encoder.EVM,
+            account: _address,
+          });
+
           resolve(true);
         })
         .catch((err) => {
           clearTimeout(validationTimeout);
-          storage.removeItem(getSignatureValidationKey(address as string));
+          storage.removeItem(getSignatureValidationKey(_address as string));
 
           reject(err);
         });
@@ -208,6 +205,7 @@ export const useEvm = (
           wagmiConfig,
         ).connector?.getProvider?.()) as EIP1193Provider)
       : undefined;
+
     if (!ethProvider) {
       throw new Error('No Ethereum provider found');
     }
@@ -251,39 +249,32 @@ export const useEvm = (
     )[0];
   };
 
-  const signAndValidate = async (
-    ethProvider: EIP1193Provider,
-    message: string,
-    account?: string,
-  ) => {
+  const signAndValidate = async (message: string, _address?: string) => {
     try {
-      if (account && !account.startsWith('0x')) {
+      const ethProvider = await getProviders();
+      if (!ethProvider) {
+        throw new Error('Invalid eth provider');
+      }
+
+      if (_address && !_address.startsWith('0x')) {
         throw new Error('Invalid account address');
       }
-      const currentAccount = account || (await getCurrentAccount());
+      const currentAddress = _address || (await getCurrentAccount());
 
-      if (!currentAccount) {
+      if (!currentAddress) {
         throw new Error('No Ethereum account selected');
       }
 
       const signature = (await ethProvider.request({
         method: 'personal_sign',
-        params: [stringToHex(message), currentAccount],
+        params: [stringToHex(message), currentAddress],
       })) as string;
 
-      if (!validateSignature(currentAccount, message, signature)) {
+      if (!validateSignature(currentAddress, message, signature)) {
         throw new Error('Signature address validation failed');
       }
 
-      await signInRequest.mutateAsync({
-        signature,
-        code: message,
-        type: TypeUser.EVM,
-        encoder: Encoder.EVM,
-        account: currentAccount,
-      });
-
-      return true;
+      return signature;
     } catch (error) {
       disconnect();
       throw error;
@@ -291,7 +282,7 @@ export const useEvm = (
   };
 
   const validateSignature = (
-    account: string,
+    _address: string,
     message: string,
     signature: string,
   ) => {
@@ -301,7 +292,7 @@ export const useEvm = (
     const pubKey = ecrecover(msgHash, v, r, s);
     const recoveredAddress = Buffer.from(pubToAddress(pubKey)).toString('hex');
 
-    return recoveredAddress.toLowerCase() === account.toLowerCase().slice(2);
+    return recoveredAddress.toLowerCase() === _address.toLowerCase().slice(2);
   };
 
   const disconnect = async (): Promise<boolean> => {
@@ -319,16 +310,19 @@ export const useEvm = (
       ],
     });
 
-    for (const address of addresses) {
-      await storage.removeItem(getSignatureValidationKey(address as string));
-    }
+    await storage.removeItem(getSignatureValidationKey(address));
 
     // reset wagmi session
     wagmiConfig = createWagmiConfig();
+
+    modal = createWeb3ModalInstance({
+      wagmiConfig,
+    });
+
     const { isConnected } = getAccount(wagmiConfig);
 
     setIsConnected(false);
-    setAddresses([]);
+    setAddress('');
 
     return isConnected || false;
   };
@@ -337,8 +331,9 @@ export const useEvm = (
     wagmiConfig,
     connect,
     isConnected,
-    addresses,
+    address,
     requestSignatures,
     disconnect,
+    signAndValidate,
   };
 };
