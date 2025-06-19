@@ -1,4 +1,5 @@
 import { getAccount, Config } from '@wagmi/core';
+import { Web3Modal as WagmiWeb3Modal } from '@web3modal/wagmi';
 import {
   ecrecover,
   fromRpcSig,
@@ -6,7 +7,7 @@ import {
   pubToAddress,
 } from '@ethereumjs/util';
 import { LocalStorage } from 'fuels';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type EventEmitter from 'node:events';
 import { stringToHex } from 'viem';
 
@@ -26,10 +27,7 @@ export interface EIP1193Provider extends EventEmitter {
 
 const SIGNATURE_VALIDATION_TIMEOUT = 1000 * 60;
 
-let wagmiConfig: Config = createWagmiConfig();
-let modal = createWeb3ModalInstance({
-  wagmiConfig,
-});
+const wagmiConfig: Config = createWagmiConfig();
 
 const getSignatureValidationKey = (_address: string) =>
   `SIGNATURE_VALIDATION_${_address}`;
@@ -48,6 +46,11 @@ export const useEvm = (
   const { isConnected: wagmiConnected, addresses: wagmiAddresses } =
     getAccount(wagmiConfig);
 
+  const modal = useRef<WagmiWeb3Modal>(
+    createWeb3ModalInstance({
+      wagmiConfig,
+    }),
+  );
   const [isConnected, setIsConnected] = useState<boolean>(wagmiConnected);
   const [address, setAddress] = useState<string>(
     wagmiAddresses ? wagmiAddresses[0] : '',
@@ -69,44 +72,25 @@ export const useEvm = (
   };
 
   const handleConnectSuccess = async () => {
-    setIsConnected(true);
-    const { addresses = [] } = getAccount(wagmiConfig);
+    const { addresses } = getAccount(wagmiConfig);
 
-    const _address = addresses[0];
-    setAddress(_address);
+    if (addresses && addresses?.length > 0) {
+      setIsConnected(true);
+      const _address = addresses[0];
+      setAddress(_address);
 
-    const isValidAccount = await accountHasValidation(_address);
-    if (!isValidAccount) {
-      storage.setItem(getSignatureValidationKey(_address as string), 'pending');
+      const isValidAccount = await accountHasValidation(_address);
+      if (!isValidAccount) {
+        storage.setItem(
+          getSignatureValidationKey(_address as string),
+          'pending',
+        );
+      }
     }
   };
 
-  const unsub = modal.subscribeEvents(async (event) => {
-    if (isConnected) {
-      return true;
-    }
-
-    switch (event.data.event) {
-      case 'CONNECT_SUCCESS': {
-        await handleConnectSuccess();
-        unsub();
-        break;
-      }
-      case 'DISCONNECT_SUCCESS': {
-        disconnect();
-        unsub();
-        break;
-      }
-      case 'MODAL_CLOSE':
-      case 'CONNECT_ERROR': {
-        unsub();
-        break;
-      }
-    }
-  });
-
   const connect = async () => {
-    await modal.open();
+    await modal.current.open();
   };
 
   const createUserRequest = useCreateUserRequest({
@@ -178,7 +162,10 @@ export const useEvm = (
       signAndValidate(result.code, _address)
         .then(async (signature: string) => {
           clearTimeout(validationTimeout);
-          storage.setItem(getSignatureValidationKey(_address as string), 'true');
+          storage.setItem(
+            getSignatureValidationKey(_address as string),
+            'true',
+          );
 
           await signInRequest.mutateAsync({
             signature,
@@ -295,7 +282,7 @@ export const useEvm = (
     return recoveredAddress.toLowerCase() === _address.toLowerCase().slice(2);
   };
 
-  const disconnect = async (): Promise<boolean> => {
+  const disconnect = async (): Promise<void> => {
     const ethProvider = await getProviders();
     if (!ethProvider) {
       throw new Error('No Ethereum provider found');
@@ -313,19 +300,42 @@ export const useEvm = (
     await storage.removeItem(getSignatureValidationKey(address));
 
     // reset wagmi session
-    wagmiConfig = createWagmiConfig();
-
-    modal = createWeb3ModalInstance({
-      wagmiConfig,
-    });
-
-    const { isConnected } = getAccount(wagmiConfig);
+    // wagmiConfig = createWagmiConfig();
 
     setIsConnected(false);
     setAddress('');
-
-    return isConnected || false;
   };
+
+  useEffect(() => {
+    const unsub = modal.current.subscribeEvents(
+      async (event: { data: { event: string } }) => {
+        switch (event.data.event) {
+          case 'CONNECT_SUCCESS': {
+            await handleConnectSuccess();
+            break;
+          }
+          case 'DISCONNECT_SUCCESS': {
+            await disconnect();
+            break;
+          }
+          case 'CONNECT_ERROR': {
+            errorToast({
+              title: 'Invalid Account',
+              description: 'You need to use the evm wallet to connect.',
+            });
+            break;
+          }
+          default:
+            console.log('event.data.event', event.data.event);
+            break;
+        }
+      },
+    );
+
+    return () => {
+      unsub();
+    };
+  }, [modal]);
 
   return {
     wagmiConfig,
