@@ -6,10 +6,14 @@ import { useNetworks } from '@/modules/network/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { ENetworks } from '@/utils/constants';
 import { EConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
-
-import { localStorageKeys, TypeUser } from '../../services';
-import { useCreateUserRequest, useSignInRequest } from '../useUserRequest';
 import { useEvm } from '@/modules';
+
+import {
+  Encoder,
+  localStorageKeys,
+  TypeUser,
+} from '../../services';
+import { useCreateUserRequest, useSignInRequest } from '../useUserRequest';
 
 export type UseWalletSignIn = ReturnType<typeof useWalletSignIn>;
 
@@ -26,51 +30,13 @@ const useWalletSignIn = (
   const {
     connect: evmConnect,
     isConnected: evmIsConnected,
-    addresses: evmAddresses,
-    requestSignatures: evmRequestSignatures,
-  } = useEvm(callback);
+    address: evmAddress,
+    signAndValidate: evmSignAndValidate,
+  } = useEvm();
 
-  const signInRequest = useSignInRequest({
-    onSuccess: ({
-      accessToken,
-      avatar,
-      user_id,
-      workspace,
-      address,
-      rootWallet,
-      provider,
-      first_login,
-    }) => {
-      authDetails.handlers.authenticate({
-        userId: user_id,
-        avatar: avatar!,
-        account: address,
-        accountType: TypeUser.FUEL,
-        accessToken: accessToken,
-        singleWorkspace: workspace.id,
-        permissions: workspace.permissions,
-        provider_url: provider,
-        first_login,
-      });
-      invalidateGifAnimationRequest();
-      callback(rootWallet, workspace.id);
-    },
-  });
+  const signInRequest = useSignInRequest();
 
-  const createUserRequest = useCreateUserRequest({
-    onSuccess: ({ code, type }) => {
-      signInRequest.mutate({
-        code,
-        type,
-      });
-    },
-    onError: (message) => {
-      errorToast({
-        title: 'Login error',
-        description: (message as { message: string }).message,
-      });
-    },
-  });
+  const createUserRequest = useCreateUserRequest();
 
   const fuelWalletConnect = async (connector: string) => {
     const isWalletConnectorOpen = await fuel.selectConnector(connector);
@@ -80,6 +46,50 @@ const useWalletSignIn = (
 
   const evmWalletConnect = async (_connector: string) => {
     await evmConnect();
+  };
+
+  const handleSelectEvmWallet = async () => {
+    try {
+      const { code } = await createUserRequest.mutateAsync({
+        address: evmAddress,
+        provider: import.meta.env.VITE_NETWORK,
+        type: TypeUser.EVM,
+      });
+
+      const signature = await evmSignAndValidate(code, evmAddress);
+
+      const result = await signInRequest.mutateAsync({
+        code,
+        type: TypeUser.EVM,
+        encoder: Encoder.EVM,
+        account: evmAddress,
+        signature,
+      });
+
+      authDetails.handlers.authenticate({
+        userId: result.user_id,
+        avatar: result.avatar!,
+        account: result.address,
+        accountType: TypeUser.EVM,
+        accessToken: result.accessToken,
+        singleWorkspace: result.workspace.id,
+        permissions: result.workspace.permissions,
+        provider_url: result.provider,
+        first_login: result.first_login,
+      });
+      invalidateGifAnimationRequest();
+      callback(result.rootWallet, result.workspace.id);
+    } catch (e) {
+      console.error(e);
+      errorToast({
+        title: 'Login error',
+        description: (e as { message: string }).message,
+      });
+
+      authDetails.handlers.setInvalidAccount?.(true);
+    } finally {
+      setIsAnyWalletConnectorOpen(false);
+    }
   };
 
   const handler: Record<string, (connector: string) => Promise<void>> = {
@@ -107,20 +117,35 @@ const useWalletSignIn = (
         throw Error;
       }
 
-      createUserRequest.mutate(
-        {
-          address: account!,
-          provider: network!.url,
-          type: TypeUser.FUEL,
-        },
-        {
-          onSuccess: () => {
-            if (fromConnector) {
-              localStorage.removeItem(localStorageKeys.SELECTED_NETWORK);
-            }
-          },
-        },
-      );
+      const { code, type } = await createUserRequest.mutateAsync({
+        address: account!,
+        provider: network!.url,
+        type: TypeUser.FUEL,
+      });
+
+      if (fromConnector) {
+        localStorage.removeItem(localStorageKeys.SELECTED_NETWORK);
+      }
+
+      const result = await signInRequest.mutateAsync({
+        code,
+        type,
+      });
+
+      authDetails.handlers.authenticate({
+        userId: result.user_id,
+        avatar: result.avatar!,
+        account: result.address,
+        accountType: TypeUser.FUEL,
+        accessToken: result.accessToken,
+        singleWorkspace: result.workspace.id,
+        permissions: result.workspace.permissions,
+        provider_url: result.provider,
+        first_login: result.first_login,
+      });
+
+      invalidateGifAnimationRequest();
+      callback(result.rootWallet, result.workspace.id);
     } catch (e) {
       authDetails.handlers.setInvalidAccount?.(true);
     } finally {
@@ -141,9 +166,9 @@ const useWalletSignIn = (
   }, [fuel]);
 
   useEffect(() => {
-    if (!evmIsConnected || evmAddresses?.length === 0) return;
-    evmRequestSignatures();
-  }, [evmIsConnected, evmAddresses]);
+    if (!evmIsConnected || evmAddress === '') return;
+    handleSelectEvmWallet();
+  }, [evmIsConnected, evmAddress]);
 
   return {
     handleSelectWallet,
