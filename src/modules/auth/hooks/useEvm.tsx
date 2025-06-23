@@ -1,11 +1,11 @@
-import { getAccount, Config } from '@wagmi/core';
+import { getAccount, Config, reconnect, watchAccount } from '@wagmi/core';
 import {
   ecrecover,
   fromRpcSig,
   hashPersonalMessage,
   pubToAddress,
 } from '@ethereumjs/util';
-import { useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type EventEmitter from 'node:events';
 import { stringToHex } from 'viem';
 
@@ -20,39 +20,54 @@ export interface EIP1193Provider extends EventEmitter {
 
 const wagmiConfig: Config = createWagmiConfig();
 
-let _modal = createWeb3ModalInstance({
+let modal = createWeb3ModalInstance({
   wagmiConfig,
 });
 
 export const useEvm = () => {
   const [isConnected, setIsConnected] = useState<boolean>(false);
-  const [address, _setAddress] = useState<string>('');
+  const [address, setAddress] = useState<string>('');
+  const [isReconnecting, setIsReconnecting] = useState<boolean>(true);
+  const unwatchRef = useRef<(() => void) | null>(null);
 
   const connect = async () => {
-    await _modal.open();
+    try {
+      await modal.open();
+    } catch (error) {
+      console.error('Connection failed:', error);
+      throw error;
+    }
   };
 
-  const getProviders = async (): Promise<EIP1193Provider> => {
-    const ethProvider = wagmiConfig
-      ? ((await getAccount(
-          wagmiConfig,
-        ).connector?.getProvider?.()) as EIP1193Provider)
-      : undefined;
+  const getProviders = useCallback(async (): Promise<EIP1193Provider> => {
+    const account = getAccount(wagmiConfig);
+
+    if (!account.isConnected || !account.connector) {
+      throw new Error('Wallet not connected');
+    }
+
+    const ethProvider =
+      (await account.connector.getProvider?.()) as EIP1193Provider;
 
     if (!ethProvider) {
       throw new Error('No Ethereum provider found');
     }
 
     return ethProvider;
-  };
+  }, []);
 
   const getCurrentAccount = async (): Promise<string> => {
+    const account = getAccount(wagmiConfig);
+    if (account.address) {
+      return account.address;
+    }
+
     const ethProvider = await getProviders();
-    return (
-      (await ethProvider.request({
-        method: 'eth_requestAccounts',
-      })) as string[]
-    )[0];
+    const accounts = (await ethProvider.request({
+      method: 'eth_requestAccounts',
+    })) as string[];
+
+    return accounts[0];
   };
 
   const signAndValidate = async (message: string, _address?: string) => {
@@ -101,33 +116,77 @@ export const useEvm = () => {
   };
 
   const disconnect = async (): Promise<void> => {
-    const ethProvider = await getProviders();
-    if (!ethProvider) {
-      throw new Error('No Ethereum provider found');
+    try {
+      const account = getAccount(wagmiConfig);
+      if (account.connector?.disconnect) {
+        await account.connector.disconnect();
+      } else {
+        const ethProvider = await getProviders();
+        await ethProvider.request({
+          method: 'wallet_revokePermissions',
+          params: [
+            {
+              eth_accounts: {},
+            },
+          ],
+        });
+      }
+    } catch (error) {
+      console.error('Disconnect failed:', error);
+      throw error;
     }
-
-    await ethProvider.request({
-      method: 'wallet_revokePermissions',
-      params: [
-        {
-          eth_accounts: {},
-        },
-      ],
-    });
   };
 
+  useEffect(() => {
+    const initializeConnection = async () => {
+      try {
+        await reconnect(wagmiConfig);
+
+        const account = getAccount(wagmiConfig);
+        setIsConnected(account.isConnected);
+        setAddress(account.address || '');
+
+        console.log('Reconnection attempt completed:', {
+          isConnected: account.isConnected,
+          address: account.address,
+        });
+      } catch (error) {
+        console.error('Failed to reconnect:', error);
+      } finally {
+        setIsReconnecting(false);
+      }
+    };
+
+    initializeConnection();
+  }, []);
+
+  useEffect(() => {
+    if (unwatchRef.current) {
+      unwatchRef.current();
+    }
+
+    // Set up account watcher
+    unwatchRef.current = watchAccount(wagmiConfig, {
+      onChange(account) {
+        console.log('Account changed:', account);
+        setIsConnected(account.isConnected);
+        setAddress(account.address || '');
+      },
+    });
+
+    return () => {
+      if (unwatchRef.current) {
+        unwatchRef.current();
+      }
+    };
+  }, []);
+
   return {
-    modal: _modal,
-    wagmiConfig,
+    modal,
     connect,
     isConnected,
-    address,
     disconnect,
     signAndValidate,
-    getAccount,
-    setAddress: (address: string) => {
-      _setAddress(address);
-      setIsConnected(true);
-    },
+    address,
   };
 };

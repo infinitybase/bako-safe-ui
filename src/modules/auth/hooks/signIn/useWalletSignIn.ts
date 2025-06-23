@@ -26,13 +26,12 @@ const useWalletSignIn = (
   const {
     connect: evmConnect,
     isConnected: evmIsConnected,
-    address: evmAddress,
     signAndValidate: evmSignAndValidate,
     modal: evmModal,
-    getAccount: getEvmAccount,
-    setAddress: setEvmAddress,
-    wagmiConfig,
+    address: evmAddress,
   } = useEvm();
+
+  const [evmModalIsOpen, setEvmModalIsOpen] = useState<boolean>(false);
 
   const signInRequest = useSignInRequest();
 
@@ -45,7 +44,10 @@ const useWalletSignIn = (
   };
 
   const evmWalletConnect = async (_connector: string) => {
-    await evmConnect();
+    if (!evmModalIsOpen) {
+      setEvmModalIsOpen(true);
+      await evmConnect();
+    }
   };
 
   const handleSelectEvmWallet = async () => {
@@ -168,13 +170,13 @@ const useWalletSignIn = (
       async (event: { data: { event: string } }) => {
         console.log('event.data.event', event.data.event);
         switch (event.data.event) {
-          case 'CONNECT_SUCCESS': {
-            const { addresses } = getEvmAccount(wagmiConfig);
-            if (addresses && addresses.length > 0) {
-              setEvmAddress(addresses[0] as string);
-            }
+          case 'MODAL_OPEN':
+            setEvmModalIsOpen(true);
             break;
-          }
+          case 'MODAL_CLOSE':
+          case 'CONNECT_SUCCESS':
+            setEvmModalIsOpen(false);
+            break;
           case 'CONNECT_ERROR': {
             errorToast({
               title: 'Invalid Account',
@@ -194,10 +196,9 @@ const useWalletSignIn = (
   }, [evmModal]);
 
   useEffect(() => {
-    console.log({ evmIsConnected, evmAddress });
-    if (!evmIsConnected || evmAddress === '') return;
+    if (!evmIsConnected) return;
     handleSelectEvmWallet();
-  }, [evmIsConnected, evmAddress]);
+  }, [evmIsConnected]);
 
   return {
     handleSelectWallet,
