@@ -145,11 +145,6 @@ export const useEvm = () => {
         const account = getAccount(wagmiConfig);
         setIsConnected(account.isConnected);
         setAddress(account.address || '');
-
-        console.log('Reconnection attempt completed:', {
-          isConnected: account.isConnected,
-          address: account.address,
-        });
       } catch (error) {
         console.error('Failed to reconnect:', error);
       } finally {
@@ -168,7 +163,6 @@ export const useEvm = () => {
     // Set up account watcher
     unwatchRef.current = watchAccount(wagmiConfig, {
       onChange(account) {
-        console.log('Account changed:', account);
         setIsConnected(account.isConnected);
         setAddress(account.address || '');
       },
