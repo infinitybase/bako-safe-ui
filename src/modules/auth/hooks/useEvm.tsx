@@ -1,17 +1,15 @@
 import { getAccount, Config } from '@wagmi/core';
-import { Web3Modal as WagmiWeb3Modal } from '@web3modal/wagmi';
 import {
   ecrecover,
   fromRpcSig,
   hashPersonalMessage,
   pubToAddress,
 } from '@ethereumjs/util';
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import type EventEmitter from 'node:events';
 import { stringToHex } from 'viem';
 
 import { createWagmiConfig, createWeb3ModalInstance } from '@/config/web3Modal';
-import { useContactToast } from '@/modules/addressBook';
 
 export interface EIP1193Provider extends EventEmitter {
   request(args: {
@@ -22,29 +20,16 @@ export interface EIP1193Provider extends EventEmitter {
 
 const wagmiConfig: Config = createWagmiConfig();
 
+let _modal = createWeb3ModalInstance({
+  wagmiConfig,
+});
+
 export const useEvm = () => {
-  const { errorToast } = useContactToast();
-
-  const modal = useRef<WagmiWeb3Modal>(
-    createWeb3ModalInstance({
-      wagmiConfig,
-    }),
-  );
   const [isConnected, setIsConnected] = useState<boolean>(false);
-  const [address, setAddress] = useState<string>('');
-
-  const handleConnectSuccess = async () => {
-    const { addresses } = getAccount(wagmiConfig);
-
-    if (addresses && addresses?.length > 0) {
-      setIsConnected(true);
-      const _address = addresses[0];
-      setAddress(_address);
-    }
-  };
+  const [address, _setAddress] = useState<string>('');
 
   const connect = async () => {
-    await modal.current.open();
+    await _modal.open();
   };
 
   const getProviders = async (): Promise<EIP1193Provider> => {
@@ -129,46 +114,20 @@ export const useEvm = () => {
         },
       ],
     });
-
-    setIsConnected(false);
-    setAddress('');
-
-    console.log('disconnect', { isConnected, address });
   };
 
-  useEffect(() => {
-    const unsub = modal.current.subscribeEvents(
-      async (event: { data: { event: string } }) => {
-        switch (event.data.event) {
-          case 'CONNECT_SUCCESS': {
-            await handleConnectSuccess();
-            break;
-          }
-          case 'CONNECT_ERROR': {
-            errorToast({
-              title: 'Invalid Account',
-              description: 'You need to use the evm wallet to connect.',
-            });
-            break;
-          }
-          default:
-            console.log('event.data.event', event.data.event);
-            break;
-        }
-      },
-    );
-
-    return () => {
-      unsub();
-    };
-  }, [modal]);
-
   return {
+    modal: _modal,
     wagmiConfig,
     connect,
     isConnected,
     address,
     disconnect,
     signAndValidate,
+    getAccount,
+    setAddress: (address: string) => {
+      _setAddress(address);
+      setIsConnected(true);
+    },
   };
 };

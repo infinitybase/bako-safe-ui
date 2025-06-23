@@ -8,11 +8,7 @@ import { ENetworks } from '@/utils/constants';
 import { EConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
 import { useEvm } from '@/modules';
 
-import {
-  Encoder,
-  localStorageKeys,
-  TypeUser,
-} from '../../services';
+import { Encoder, localStorageKeys, TypeUser } from '../../services';
 import { useCreateUserRequest, useSignInRequest } from '../useUserRequest';
 
 export type UseWalletSignIn = ReturnType<typeof useWalletSignIn>;
@@ -32,6 +28,10 @@ const useWalletSignIn = (
     isConnected: evmIsConnected,
     address: evmAddress,
     signAndValidate: evmSignAndValidate,
+    modal: evmModal,
+    getAccount: getEvmAccount,
+    setAddress: setEvmAddress,
+    wagmiConfig,
   } = useEvm();
 
   const signInRequest = useSignInRequest();
@@ -86,9 +86,7 @@ const useWalletSignIn = (
         description: (e as { message: string }).message,
       });
 
-      authDetails.handlers.setInvalidAccount?.(true);
-    } finally {
-      setIsAnyWalletConnectorOpen(false);
+      // authDetails.handlers.setInvalidAccount?.(true);
     }
   };
 
@@ -166,6 +164,37 @@ const useWalletSignIn = (
   }, [fuel]);
 
   useEffect(() => {
+    const unsub = evmModal.subscribeEvents(
+      async (event: { data: { event: string } }) => {
+        console.log('event.data.event', event.data.event);
+        switch (event.data.event) {
+          case 'CONNECT_SUCCESS': {
+            const { addresses } = getEvmAccount(wagmiConfig);
+            if (addresses && addresses.length > 0) {
+              setEvmAddress(addresses[0] as string);
+            }
+            break;
+          }
+          case 'CONNECT_ERROR': {
+            errorToast({
+              title: 'Invalid Account',
+              description: 'You need to use the evm wallet to connect.',
+            });
+            break;
+          }
+          default:
+            break;
+        }
+      },
+    );
+
+    return () => {
+      unsub();
+    };
+  }, [evmModal]);
+
+  useEffect(() => {
+    console.log({ evmIsConnected, evmAddress });
     if (!evmIsConnected || evmAddress === '') return;
     handleSelectEvmWallet();
   }, [evmIsConnected, evmAddress]);
