@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { Pages } from '@/modules/core/routes';
+import { queryClient } from '@/config';
+import { generateRedirectQueryParams, Pages } from '@/modules';
 import {
   ActionKeys,
   handleActionUsingKeys,
@@ -18,9 +19,29 @@ const useDappSignIn = () => {
   const isMounted = useRef(false);
 
   const navigate = useNavigate();
-  const { location, sessionId, byConnector, username } = useQueryParams();
+  const { location, sessionId, byConnector, username, name, request_id } =
+    useQueryParams();
+
+  const handleForceSameLoginConnector = async () => {
+    const queryParams = generateRedirectQueryParams({
+      sessionId,
+      origin,
+      name,
+      request_id,
+      byConnector: byConnector ? String(byConnector) : undefined,
+    });
+    sessionStorage.removeItem('forceLoginSameAccDapp');
+
+    window.location.href = `${Pages.dappTransaction()}${queryParams}`;
+    queryClient.invalidateQueries({ queryKey: ['dapp/transaction-summary'] });
+  };
 
   const redirect = useCallback(() => {
+    const isForceLoginConnector =
+      sessionStorage.getItem('forceLoginSameAccDapp') === 'true';
+
+    if (isForceLoginConnector) return handleForceSameLoginConnector();
+
     const isRedirectToPrevious = !!location.state?.from;
 
     if (isRedirectToPrevious) {
