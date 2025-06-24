@@ -146,9 +146,9 @@ const UserBox = () => {
     },
   ]);
 
-  const b256UserAddress =
-    authDetails.userInfos?.address &&
-    Address.fromString(authDetails.userInfos?.address).toB256();
+  const b256UserAddress = authDetails.userInfos?.address?.length
+    ? new Address(authDetails.userInfos?.address).toB256()
+    : '';
 
   return (
     <>
@@ -434,8 +434,9 @@ const UserBox = () => {
               )}
               <AddressWithCopyBtn
                 value={
-                  authDetails.userInfos?.type.type === TypeUser.WEB_AUTHN
-                    ? AddressUtils.toBech32(authDetails.userInfos?.address)
+                  authDetails.userInfos?.type.type === TypeUser.WEB_AUTHN &&
+                  !!authDetails.userInfos?.address?.length
+                    ? AddressUtils.toBech32(authDetails.userInfos.address)
                     : (authDetails.userInfos?.address ?? '')
                 }
                 justifyContent="start"
