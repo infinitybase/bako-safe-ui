@@ -5,7 +5,7 @@ import {
   useQuery,
 } from '@tanstack/react-query';
 import { bakoCoder, SignatureType } from 'bakosafe';
-import { Account, Address, arrayify, isEvmAddress } from 'fuels';
+import { Account, arrayify } from 'fuels';
 import { stringToHex } from 'viem';
 
 import { CookieName, CookiesConfig } from '@/config/cookies';
@@ -70,11 +70,6 @@ const signAccountFuel = async (account: Account, message: string) => {
   });
 };
 
-const encodeTxIdUtf8 = (txId: string): string => {
-  const txIdNo0x = txId.slice(2);
-  return stringToHex(txIdNo0x);
-};
-
 const useWalletSignMessage = (
   options?: UseMutationOptions<string, unknown, string>,
 ) => {
@@ -85,7 +80,7 @@ const useWalletSignMessage = (
   } = useAuth();
 
   const signAccountEvm = async (message: string) => {
-    const signature = await signAndValidate(encodeTxIdUtf8(message));
+    const signature = await signAndValidate(message);
     return bakoCoder.encode({
       type: SignatureType.Evm,
       signature,
