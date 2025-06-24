@@ -2,6 +2,7 @@ import { Box, HStack, VStack } from '@chakra-ui/react';
 import { Operation } from 'fuels';
 
 import { CustomSkeleton } from '@/components';
+import { parseURI } from '@/modules/core/utils/formatter';
 import { DappTransactionAsset } from '@/modules/dapp/components/transaction/asset';
 import { DappTransactionFromTo } from '@/modules/dapp/components/transaction/from-to';
 import { RecipientCard } from '@/modules/dapp/components/transaction/recipient';
@@ -68,6 +69,10 @@ const DappTransactionOperation = ({ vault, operation }: OperationProps) => {
       assetId: data?.assetId,
       name: data?.name,
       slug: data?.slug,
+      image:
+        data.icon || data.metadata.image
+          ? parseURI(data.metadata.image!)
+          : null,
     };
   });
 
