@@ -5,9 +5,9 @@ import { useFieldArray, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
 import { CookieName, CookiesConfig } from '@/config/cookies';
+import { TypeUser } from '@/modules/auth';
 import { AddressUtils, Batch32 } from '@/modules/core/utils';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
-import { TypeUser } from '@/modules/auth';
 
 const schema = (
   providerInstance: Promise<BakoProvider>,
@@ -121,7 +121,7 @@ const useCreateVaultForm = (account?: string) => {
   const vaultSchema = schema(providerInstance, fuelsTokens);
 
   const user_address =
-    authDetails?.userInfos?.type?.type === TypeUser.WEB_AUTHN
+    authDetails?.userInfos?.type?.type === TypeUser.WEB_AUTHN && account
       ? (AddressUtils.toBech32(account as Batch32) as string)
       : (account as string);
 

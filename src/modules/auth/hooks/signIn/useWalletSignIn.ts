@@ -1,7 +1,9 @@
 import { useFuel } from '@fuels/react';
 import { useEffect, useState } from 'react';
 
+import { useQueryParams } from '@/modules';
 import { useContactToast } from '@/modules/addressBook';
+import { useGetCurrentDappNetworkRequest } from '@/modules/dapp/hooks';
 import { useNetworks } from '@/modules/network/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { ENetworks } from '@/utils/constants';
@@ -21,6 +23,8 @@ const useWalletSignIn = (
   const { authDetails, invalidateGifAnimationRequest } = useWorkspaceContext();
   const { errorToast } = useContactToast();
   const { fromConnector } = useNetworks();
+  const getNetDappRequest = useGetCurrentDappNetworkRequest();
+  const { sessionId } = useQueryParams();
 
   const signInRequest = useSignInRequest({
     onSuccess: ({
@@ -76,8 +80,14 @@ const useWalletSignIn = (
 
       if (!connected) return;
 
-      const network = await fuel.currentNetwork();
       const account = await fuel.currentAccount();
+
+      const isForcedSameNetDapp =
+        sessionStorage.getItem('forceLoginSameNetworkDapp') === 'true';
+
+      const network = isForcedSameNetDapp
+        ? { url: await getNetDappRequest.mutateAsync(sessionId ?? '') }
+        : await fuel.currentNetwork();
 
       if (network.url === ENetworks.BETA_5) {
         throw Error;
@@ -93,6 +103,7 @@ const useWalletSignIn = (
           onSuccess: () => {
             if (fromConnector) {
               localStorage.removeItem(localStorageKeys.SELECTED_NETWORK);
+              sessionStorage.removeItem('forceLoginSameNetworkDapp');
             }
           },
         },
