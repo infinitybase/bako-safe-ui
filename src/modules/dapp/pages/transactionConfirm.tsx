@@ -1,5 +1,5 @@
 import { TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Dialog } from '@/components/dialog';
 import { useMyWallet } from '@/modules/core/hooks/fuel';
@@ -10,7 +10,7 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { DappTransactionSuccess } from '../components/transaction/success';
 import { DappTransactionWrapper } from '../components/transaction/wrapper';
-import { useTransactionSocket } from '../hooks';
+import { useTransactionSocket, useVerifyConnections } from '../hooks';
 
 const TransactionConfirm = () => {
   const [createTxMethod, setCreateTxMethod] =
@@ -38,8 +38,26 @@ const TransactionConfirm = () => {
     authDetails: {
       userInfos: { type, webauthn },
     },
+    userVaults,
   } = useWorkspaceContext();
   const { data: wallet } = useMyWallet();
+
+  const { verifyisSameConnections } = useVerifyConnections();
+
+  useEffect(() => {
+    const isForcedLogin =
+      sessionStorage.getItem('forceLoginSameAccDapp') === 'true';
+    const vaults = userVaults.request.vaults;
+
+    if (!vaults.length || isForcedLogin) return;
+
+    const callVerifyConnections = async () => {
+      await verifyisSameConnections(vaults);
+      sessionStorage.setItem('forceLoginSameAccDapp', 'true');
+      sessionStorage.setItem('forceLoginSameNetworkDapp', 'true');
+    };
+    callVerifyConnections();
+  }, [userVaults.request.vaults, verifyisSameConnections]);
 
   return (
     <Tabs isLazy index={tabs.tab}>
