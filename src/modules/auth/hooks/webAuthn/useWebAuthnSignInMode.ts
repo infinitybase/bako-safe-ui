@@ -1,6 +1,8 @@
 import { useState } from 'react';
 
+import { useQueryParams } from '@/modules';
 import { useContactToast } from '@/modules/addressBook/hooks';
+import { useGetCurrentDappNetworkRequest } from '@/modules/dapp/hooks';
 import { useNetworks } from '@/modules/network/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
@@ -40,6 +42,8 @@ const useWebAuthnSignInMode = (params: UseWebAuthnSignInParams) => {
   const signMesageWebAuthn = useSignMessageWebAuthn();
   const { setLastLoginUsername } = useWebAuthnLastLogin();
   const { fromConnector } = useNetworks();
+  const getNetDappRequest = useGetCurrentDappNetworkRequest();
+  const { sessionId } = useQueryParams();
 
   const handleLogin = form.handleSubmit(async ({ username }) => {
     setIsSigningIn(true);
@@ -55,12 +59,18 @@ const useWebAuthnSignInMode = (params: UseWebAuthnSignInParams) => {
 
     setSignInProgress(33);
 
-    const { code } = await generateSignInCode(
-      username,
-      fromConnector
+    const isForcedSameNetDapp =
+      sessionStorage.getItem('forceLoginSameNetworkDapp') === 'true';
+
+    const network = isForcedSameNetDapp
+      ? await getNetDappRequest.mutateAsync(sessionId ?? '')
+      : fromConnector
         ? localStorage.getItem(localStorageKeys.SELECTED_NETWORK)!
-        : import.meta.env.VITE_MAINNET_NETWORK,
-    );
+        : import.meta.env.VITE_MAINNET_NETWORK;
+
+    const { code } = await generateSignInCode(username, network);
+
+    sessionStorage.removeItem('forceLoginSameNetworkDapp');
 
     setSignInProgress(66);
 

@@ -2,7 +2,6 @@ import { Network, TransactionRequestLike } from 'fuels';
 
 import { api } from '@/config/api';
 
-interface GetCurrentVaultResponse {}
 export interface IDAppCreatePayload {
   sessionId: string;
   name: string;
@@ -27,8 +26,13 @@ export interface IDAPPChangeNetwork {
 
 export class DAppService {
   static async findCurrentBySessionId(sessionId: string) {
-    const { data } = await api.get<GetCurrentVaultResponse>(
-      `/connections/${sessionId}`,
+    const { data } = await api.get<string>(`/connections/${sessionId}`);
+    return data;
+  }
+
+  static async findNetworkBySessionId(sessionId: string) {
+    const { data } = await api.get<string>(
+      `/connections/${sessionId}/currentNetwork`,
     );
     return data;
   }
