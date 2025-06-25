@@ -497,7 +497,7 @@ test.describe('Create transactions', () => {
     await page.getByLabel('Name or Label').fill('addr1');
     await page.getByLabel('Address', { exact: true }).fill(addr1);
 
-    await getByAriaLabel(page, 'Create adb').click();
+    await getByAriaLabel(page, 'Create address book').click();
     await page.waitForTimeout(500);
 
     // add addrs book 2
@@ -510,7 +510,7 @@ test.describe('Create transactions', () => {
     await page.getByLabel('Name or Label').fill('addr2');
     await page.getByLabel('Address', { exact: true }).fill(vault2);
 
-    await getByAriaLabel(page, 'Create adb').click();
+    await getByAriaLabel(page, 'Create address book').click();
     await page.waitForTimeout(2000);
     await expect(page.getByText('addr1')).toBeVisible();
     await expect(page.getByText('addr2')).toBeVisible();

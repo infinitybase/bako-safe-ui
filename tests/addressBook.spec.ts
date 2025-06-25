@@ -45,7 +45,7 @@ test.describe('AddressBook', () => {
         '0x03aAb6b3c770E134908ba0CDE7BFAD7F22b80138e90f2C0d3948aB3Ebd0659C8',
       );
 
-    await getByAriaLabel(page, 'Create adb').click();
+    await getByAriaLabel(page, 'Create address book').click();
     await page.waitForLoadState('networkidle', { timeout: 2000 });
     await page.waitForTimeout(2000);
     await expect(page.getByText(addressTitle)).toBeVisible();
@@ -56,7 +56,7 @@ test.describe('AddressBook', () => {
 
     await page.getByLabel('Name or Label').clear();
     await page.getByLabel('Name or Label').fill(addressTitleEdited);
-    await getByAriaLabel(page, 'Edit adb').click();
+    await getByAriaLabel(page, 'Edit address book').click();
 
     await page.waitForLoadState('networkidle', { timeout: 2000 });
     await page.waitForTimeout(2000);
@@ -92,12 +92,12 @@ test.describe('AddressBook', () => {
         '0x03aAb6b3c770E134908ba0CDE7BFAD7F22b80138e90f2C0d3948aB3Ebd0659C8',
       );
 
-    await getByAriaLabel(page, 'Create adb').click();
+    await getByAriaLabel(page, 'Create address book').click();
     await page.waitForLoadState('networkidle', { timeout: 2000 });
     await page.waitForTimeout(2000);
     await expect(page.getByText('Duplicated label')).toBeVisible();
     await page.getByLabel('Name or Label').fill('duplicated test');
-    await getByAriaLabel(page, 'Create adb').click();
+    await getByAriaLabel(page, 'Create address book').click();
     await page.waitForLoadState('networkidle', { timeout: 2000 });
     await page.waitForTimeout(2000);
     await expect(
@@ -111,7 +111,7 @@ test.describe('AddressBook', () => {
       page.getByText('This address can not receive assets from Bako.'),
     ).toBeVisible();
 
-    await getByAriaLabel(page, 'Cancel adb').click();
+    await getByAriaLabel(page, 'Cancel address book').click();
 
     // delete adb
     // await page.getByText('Address book', { exact: true }).click();

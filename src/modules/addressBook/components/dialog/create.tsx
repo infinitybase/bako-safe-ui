@@ -41,7 +41,7 @@ const CreateContactDialog = ({
 
       <Dialog.Actions mt="auto" maxW={420}>
         <Dialog.SecondaryAction
-          aria-label="Cancel adb"
+          aria-label="Cancel address book"
           onClick={dialog.onClose}
         >
           Cancel
@@ -53,7 +53,7 @@ const CreateContactDialog = ({
           onClick={isEdit ? form.handleUpdateContact : form.handleCreateContact}
           isDisabled={isLoading || !form.formState.isValid}
           isLoading={isLoading}
-          aria-label={isEdit ? 'Edit adb' : 'Create adb'}
+          aria-label={isEdit ? 'Edit address book' : 'Create address book'}
         >
           {isEdit ? 'Edit' : 'Add it'}
         </Dialog.PrimaryAction>
