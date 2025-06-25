@@ -430,7 +430,7 @@ const RecipientFormField = (props: RecipientFormFieldProps) => {
                           borderRadius="md"
                           color={'white'}
                           fontWeight="bold"
-                          pt={1}
+                          lineHeight="1"
                           _hover={{
                             bg: 'grey.900',
                           }}
