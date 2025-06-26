@@ -6,6 +6,7 @@ import {
   Button,
   HStack,
   Icon,
+  Spinner,
   Stack,
   Text,
   useDisclosure,
@@ -37,7 +38,7 @@ const UserTransactionsPage = () => {
   const {
     transactionsPageList: {
       transactionsRef,
-      request: { isLoading, isFetching },
+      request: { isLoading, isFetching, hasNextPage },
       filter,
       handlers: { navigate },
       lists: { transactions },
@@ -331,6 +332,9 @@ const UserTransactionsPage = () => {
                       userInfos={userInfos}
                     />
                   ))}
+                  {hasNextPage && (
+                    <Spinner alignSelf="center" mt={4} color="brand.500" />
+                  )}
                 </TransactionCard.List>
               </Box>
             ))}
