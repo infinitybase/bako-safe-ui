@@ -34,6 +34,9 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
     screenSizes: { isMobile, isExtraSmall, isLitteSmall },
     assetsMap,
     nftList,
+    vaultDetails: {
+      assets: { isNFTAsset },
+    },
   } = useWorkspaceContext();
   const txUSDAmount = useTxAmountToUSD(
     [
@@ -63,10 +66,7 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
 
   const isNFT = useMemo(() => {
     if (!asset?.assetId) return false;
-    return (
-      nftList.some((nft) => nft.assetId === asset.assetId) ||
-      bn(asset?.amount).eq(bn(1))
-    );
+    return isNFTAsset(asset.assetId);
   }, [asset?.amount, asset?.assetId, nftList]);
 
   return (

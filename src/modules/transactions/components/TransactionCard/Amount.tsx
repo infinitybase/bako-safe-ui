@@ -1,9 +1,9 @@
 import {
+  type BoxProps,
   Flex,
   HStack,
   Text,
   useMediaQuery,
-  type BoxProps,
 } from '@chakra-ui/react';
 import type { ITransferAsset } from 'bakosafe';
 import { bn } from 'fuels';
@@ -37,7 +37,9 @@ const Amount = ({
     tokensUSD,
     screenSizes: { isMobile, isExtraSmall },
     assetsMap,
-    nftList,
+    vaultDetails: {
+      assets: { isNFTAsset },
+    },
   } = useWorkspaceContext();
 
   const totalAmoutSent = useMemo(
@@ -66,16 +68,14 @@ const Amount = ({
   );
 
   const formattedAssets = useMemo(() => {
-    const nftAssetIds = new Set(nftList.map((nft) => nft.assetId));
-
     return transaction?.assets.map((a) => ({
       ...a,
       amount: bn(a?.amount)?.format({
         units: assetsMap[a?.assetId]?.units ?? assetsMap.UNKNOWN.units,
       }),
-      isNFT: nftAssetIds.has(a?.assetId) || bn(a?.amount).eq(bn(1)),
+      isNFT: isNFTAsset(a.assetId),
     }));
-  }, [transaction?.assets, assetsMap, nftList]);
+  }, [transaction?.assets, assetsMap, isNFTAsset]);
 
   const txUSDAmount = useTxAmountToUSD(
     formattedAssets,
@@ -93,8 +93,7 @@ const Amount = ({
         : totalAmoutSent,
     [transaction?.assets, assetsMap, totalAmoutSent],
   );
-  const isNFT =
-    formattedAssets.length === 1 && formattedAssets[0].isNFT === true;
+  const isNFT = formattedAssets[0].isNFT === true;
 
   return (
     <HStack
