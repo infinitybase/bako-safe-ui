@@ -41,5 +41,6 @@ export function createWeb3ModalInstance({
     enableAnalytics: false,
     allowUnsupportedChain: true,
     projectId: projectId,
+    enableWalletConnect: true,
   });
 }
