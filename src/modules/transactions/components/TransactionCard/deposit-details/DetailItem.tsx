@@ -33,7 +33,6 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
     tokensUSD,
     screenSizes: { isMobile, isExtraSmall, isLitteSmall },
     assetsMap,
-    nftList,
     vaultDetails: {
       assets: { isNFTAsset },
     },
@@ -67,7 +66,7 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
   const isNFT = useMemo(() => {
     if (!asset?.assetId) return false;
     return isNFTAsset(asset.assetId);
-  }, [asset?.amount, asset?.assetId, nftList]);
+  }, [asset?.assetId, isNFTAsset]);
 
   return (
     <Grid
