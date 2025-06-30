@@ -5,8 +5,7 @@ import {
   useQuery,
 } from '@tanstack/react-query';
 import { bakoCoder, SignatureType } from 'bakosafe';
-import { Account, arrayify } from 'fuels';
-import { stringToHex } from 'viem';
+import { Account } from 'fuels';
 
 import { CookieName, CookiesConfig } from '@/config/cookies';
 import { useAuth, useEvm } from '@/modules/auth';
@@ -53,13 +52,11 @@ const signAccountWebAuthn = async (sign: SignWebAuthnPayload) => {
     throw new Error('Invalid signature');
   }
 
-  const result = bakoCoder.encode({
+  //todo: validate signature if is valid
+  return bakoCoder.encode({
     type: SignatureType.WebAuthn,
     ...(signature as Required<typeof signature>),
   });
-
-  //todo: validate signature if is valid
-  return result;
 };
 
 const signAccountFuel = async (account: Account, message: string) => {

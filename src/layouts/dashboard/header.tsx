@@ -1,3 +1,4 @@
+import { WarningTwoIcon } from '@chakra-ui/icons';
 import {
   Avatar,
   Box,
@@ -17,6 +18,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { useFuel } from '@fuels/react';
+import { AddressUtils as BakoAddressUtils } from 'bakosafe';
 import { Address, Network } from 'fuels';
 import React, { useEffect, useState } from 'react';
 import { FaChevronDown } from 'react-icons/fa';
@@ -48,6 +50,7 @@ import { NetworkDialog } from '@/modules/network/components/dialog';
 import { NetworkDrawer } from '@/modules/network/components/drawer';
 import { useNetworks } from '@/modules/network/hooks';
 import { NetworkService, NetworkType } from '@/modules/network/services';
+import { useNotification } from '@/modules/notification';
 import { NotificationsDrawer } from '@/modules/notifications/components';
 import { useAppNotifications } from '@/modules/notifications/hooks';
 import { SettingsDrawer } from '@/modules/settings/components/drawer';
@@ -97,6 +100,7 @@ const UserBox = () => {
   const networkPopoverState = useDisclosure();
   const networkDrawerState = useDisclosure();
   const networkDialogState = useDisclosure();
+  const toast = useNotification();
 
   const { fuel } = useFuel();
   const { disconnect: evmDisconnect } = useEvm();
@@ -113,7 +117,9 @@ const UserBox = () => {
   const name = mySettingsRequest.data?.name ?? '';
   const hasNickName = name && !AddressUtils.isValid(name);
 
-  const isWebAuthn = authDetails.userInfos?.type?.type === TypeUser.WEB_AUTHN;
+  const isWebAuthn =
+    authDetails.userInfos?.type?.type === TypeUser.WEB_AUTHN ||
+    authDetails.userInfos?.type?.type === TypeUser.EVM;
 
   const isMainnet = (url: string) => url?.includes(NetworkType.MAINNET);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
@@ -124,7 +130,8 @@ const UserBox = () => {
         authDetails.userInfos?.type.name !== EConnectors.FULLET &&
         (await fuel.disconnect());
 
-      authDetails.userInfos?.type.type === TypeUser.EVM && (await evmDisconnect());
+      authDetails.userInfos?.type.type === TypeUser.EVM &&
+        (await evmDisconnect());
       // TODO: Disconnect Fuelet, `fuel.disconnect()` should do that but it doesn't work for fuelet
     } catch (error) {
       // eslint-disable-next-line no-empty
@@ -150,9 +157,20 @@ const UserBox = () => {
     },
   ]);
 
-  const b256UserAddress =
-    authDetails.userInfos?.address &&
-    Address.fromString(authDetails.userInfos?.address).toB256();
+  const getUserAddress = () => {
+    if (authDetails.userInfos?.type.type === TypeUser.EVM) {
+      return BakoAddressUtils.parseFuelAddressToEth(
+        authDetails.userInfos?.address,
+      );
+    }
+
+    return (
+      authDetails.userInfos?.address &&
+      Address.fromString(authDetails.userInfos?.address).toB256()
+    );
+  };
+
+  const b256UserAddress = getUserAddress();
 
   return (
     <>
@@ -448,6 +466,26 @@ const UserBox = () => {
                 flexDir="row-reverse"
                 textProps={{ color: '#AAA6A1' }}
                 onClick={() => {
+                  if (authDetails.userInfos.type.type === TypeUser.EVM) {
+                    toast({
+                      position: 'top-right',
+                      duration: 3000,
+                      isClosable: false,
+                      title: 'Copied!',
+                      status: 'warning',
+                      description:
+                        'This is your User Account address attached to the login, not your MetaMask wallet.',
+                      icon: (
+                        <Icon
+                          fontSize="2xl"
+                          color="brand.500"
+                          as={WarningTwoIcon}
+                        />
+                      ),
+                    });
+                    return;
+                  }
+
                   authDetails.userInfos.type.type === TypeUser.WEB_AUTHN &&
                     setOpenAlert(true);
                 }}

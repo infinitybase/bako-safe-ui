@@ -1,23 +1,14 @@
 import { useConnectors } from '@fuels/react';
-// import { TypeUser } from 'bakosafe';
+import { TypeUser } from 'bakosafe';
 import { useCallback } from 'react';
-// import { useConnect as wagmiUseConnect } from 'wagmi';
 
-import { FueletIcon, FuelIcon } from '@/components/icons/connectors';
+import { EvmIcon, FueletIcon, FuelIcon } from '@/components/icons/connectors';
 
 export enum EConnectors {
   FUEL = 'Fuel Wallet',
   FULLET = 'Fuelet Wallet',
   WEB_AUTHN = 'Webauthn',
   EVM = 'EVM Wallet',
-}
-
-// TODO: Update TypeUser on bakosafe library to include EVM
-// and remove this enum when done.
-enum TypeUser {
-  FUEL = 'FUEL',
-  WEB_AUTHN = 'WEB_AUTHN',
-  EVM = 'EVM',
 }
 
 export const EConnectorsInverse: Record<EConnectors, keyof typeof TypeUser> = {
@@ -47,7 +38,7 @@ const DEFAULT_CONNECTORS = [
   {
     name: EConnectors.EVM,
     label: EConnectorsLabels.EVM,
-    icon: FueletIcon,
+    icon: EvmIcon,
   },
 ];
 
