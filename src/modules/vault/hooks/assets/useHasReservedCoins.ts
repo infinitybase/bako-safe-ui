@@ -54,14 +54,20 @@ export const useHasReservedCoins = (
         chainId,
       );
 
+      const getImgNftHandle = (assetId: string) =>
+        assetStore.mappedTokens[assetId]?.metadata?.['image:png'] ?? null;
+
       const enrichedNfts = response.nfts.map((nft) => {
         const mappedNft = refreshedNfts[nft.assetId];
+        const imgNftHandle = getImgNftHandle(mappedNft?.assetId);
+
         return {
           ...nft,
           name: mappedNft?.name ?? null,
           collection: mappedNft?.collection ?? null,
           symbol: mappedNft?.symbol ?? null,
-          image: mappedNft?.metadata?.image ?? null,
+          image: mappedNft?.metadata?.image ?? imgNftHandle ?? null,
+          isNFTHandle: !!imgNftHandle,
         };
       });
 

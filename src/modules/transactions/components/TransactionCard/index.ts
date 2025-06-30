@@ -11,6 +11,7 @@ import { Icon } from './Icon';
 import { Item } from './Item';
 import { List } from './List';
 import { Name } from './Name';
+import { NFTHandler } from './NFTHandler';
 import { Status } from './Status';
 import { TransactionStepper } from './TransactionStepper';
 import { BasicInfos } from './VaultInfo';
@@ -33,6 +34,7 @@ const TransactionCard = {
   GroupMonth,
   Icon,
   Header,
+  NFTHandler,
 };
 
 export { TransactionCard };

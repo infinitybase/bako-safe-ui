@@ -37,9 +37,7 @@ const Amount = ({
     tokensUSD,
     screenSizes: { isMobile, isExtraSmall },
     assetsMap,
-    vaultDetails: {
-      assets: { isNFTAsset },
-    },
+    nftList,
   } = useWorkspaceContext();
 
   const totalAmoutSent = useMemo(
@@ -68,14 +66,20 @@ const Amount = ({
   );
 
   const formattedAssets = useMemo(() => {
-    return transaction?.assets.map((a) => ({
-      ...a,
-      amount: bn(a?.amount)?.format({
-        units: assetsMap[a?.assetId]?.units ?? assetsMap.UNKNOWN.units,
-      }),
-      isNFT: isNFTAsset(a.assetId),
-    }));
-  }, [transaction?.assets, assetsMap, isNFTAsset]);
+    const nftAssetIds = new Set(nftList.map((nft) => nft.assetId));
+
+    return transaction?.assets.map((a) => {
+      return {
+        ...a,
+        amount: bn(a?.amount)?.format({
+          units: assetsMap[a?.assetId]?.units ?? assetsMap.UNKNOWN.units,
+        }),
+        isNFT: a?.assetId
+          ? nftAssetIds.has(a.assetId)
+          : bn(a?.amount).eq(bn(1)),
+      };
+    });
+  }, [transaction?.assets, nftList, assetsMap]);
 
   const txUSDAmount = useTxAmountToUSD(
     formattedAssets,
