@@ -474,7 +474,7 @@ const UserBox = () => {
                       title: 'Copied!',
                       status: 'warning',
                       description:
-                        'This is your User Account address attached to the login, not your MetaMask wallet.',
+                        'This is your login account, DO NOT send assets to this address.',
                       icon: (
                         <Icon
                           fontSize="2xl"
