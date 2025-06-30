@@ -2,6 +2,7 @@ import { AvatarGroup, Image, Skeleton } from '@chakra-ui/react';
 import { ITransferAsset } from 'bakosafe';
 import { memo, useMemo } from 'react';
 
+import { TransactionCard } from '@/modules';
 import { AssetMap } from '@/modules/core';
 import { parseURI } from '@/modules/core/utils/formatter';
 
@@ -32,10 +33,13 @@ export const AssetsIcon = memo(
           ...asset,
           image: parseURI(
             metadataAssets?.[asset.assetId]?.metadata?.image ||
+              metadataAssets?.[asset.assetId]?.metadata?.['image:png'] ||
               metadataAssets?.[asset.assetId]?.icon ||
               (isNFT && '/nft-empty.svg') ||
               assetsMap.UNKNOWN.icon!,
           ),
+          isNFTHandle:
+            !!metadataAssets?.[asset.assetId]?.metadata?.['image:png'],
         })),
       [assets, metadataAssets, assetsMap, isNFT],
     );
@@ -56,14 +60,18 @@ export const AssetsIcon = memo(
             w={{ base: '30.5px', sm: 7 }}
             h={{ base: 'full', sm: 7 }}
           >
-            <Image
-              w={{ base: '30.5px', sm: 7 }}
-              h={{ base: 'full', sm: 7 }}
-              src={asset.image}
-              borderRadius="md"
-              alt="Asset Icon"
-              objectFit="cover"
-            />
+            {asset.isNFTHandle ? (
+              <TransactionCard.NFTHandler boxSize={7} image={asset.image} />
+            ) : (
+              <Image
+                w={{ base: '30.5px', sm: 7 }}
+                h={{ base: 'full', sm: 7 }}
+                src={asset.image}
+                borderRadius="md"
+                alt="Asset Icon"
+                objectFit="cover"
+              />
+            )}
           </Skeleton>
         ))}
       </AvatarGroup>

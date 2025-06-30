@@ -19,6 +19,7 @@ import { useAddressNicknameResolver } from '@/modules/core/hooks/useAddressNickn
 import { parseURI } from '@/modules/core/utils/formatter';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
+import { TransactionCard } from '.';
 import { AmountUSD } from './transfer-details';
 import { AddressActions } from './transfer-details/address-actions';
 
@@ -49,10 +50,8 @@ const AssetBoxInfo = ({
       isExtraSmall,
       isLitteSmall,
     },
+    nftList,
     assetsMap,
-    vaultDetails: {
-      assets: { isNFTAsset },
-    },
   } = useWorkspaceContext();
 
   const { resolveAddressContactHandle } = useAddressNicknameResolver([
@@ -94,12 +93,18 @@ const AssetBoxInfo = ({
   });
 
   const isNFT = useMemo(() => {
-    if (!asset?.assetId) return false;
-    return isNFTAsset(asset.assetId);
-  }, [asset?.assetId, isNFTAsset]);
+    if (!asset?.assetId) return bn(asset?.amount).eq(bn(1));
+
+    const nftAssetIds = new Set(nftList.map((nft) => nft.assetId));
+
+    return nftAssetIds.has(asset.assetId);
+  }, [asset?.assetId, asset?.amount, nftList]);
 
   const image = useMemo(
-    () => (isNFT ? assetInfo?.metadata?.image : assetInfo?.icon),
+    () =>
+      isNFT
+        ? assetInfo?.metadata?.image || assetInfo?.metadata?.['image:png']
+        : assetInfo?.icon,
     [assetInfo?.icon, assetInfo.metadata, isNFT],
   );
 
@@ -107,6 +112,8 @@ const AssetBoxInfo = ({
 
   const imgUrl =
     image ?? (isNFT ? '/nft-empty.svg' : assetsMap?.UNKNOWN?.icon || '');
+
+  const isNFTHandle = !!assetInfo?.metadata?.['image:png'];
 
   return (
     <HStack
@@ -118,14 +125,18 @@ const AssetBoxInfo = ({
     >
       {assetInfo && (
         <VStack alignItems="start" minW="40px">
-          <Image
-            w={7}
-            h={7}
-            src={parseURI(imgUrl)}
-            borderRadius="md"
-            alt="Asset Icon"
-            objectFit="cover"
-          />
+          {isNFTHandle ? (
+            <TransactionCard.NFTHandler boxSize={7} image={imgUrl} />
+          ) : (
+            <Image
+              w={7}
+              h={7}
+              src={parseURI(imgUrl)}
+              borderRadius="md"
+              alt="Asset Icon"
+              objectFit="cover"
+            />
+          )}
 
           <Text fontSize="sm" color="grey.500">
             {assetInfo?.slug}
