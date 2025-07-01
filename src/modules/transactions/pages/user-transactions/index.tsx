@@ -294,29 +294,7 @@ const UserTransactionsPage = () => {
         )}
         {/* LIST */}
         {!emptyTransactions && (
-          <VStack
-            minH="55vh"
-            maxH="74vh"
-            mt={-3}
-            overflowY="scroll"
-            overflowX="hidden"
-            scrollBehavior="smooth"
-            w="full"
-            sx={{
-              '&::-webkit-scrollbar': {
-                display: 'none',
-                width: '5px',
-                maxHeight: '330px',
-                backgroundColor: 'grey.200',
-                borderRadius: '30px',
-              },
-              '&::-webkit-scrollbar-thumb': {
-                backgroundColor: '#2C2C2C',
-                borderRadius: '30px',
-                height: '10px',
-              },
-            }}
-          >
+          <VStack h="35vh" mt={-3} w="full">
             {transactions?.map((grouped) => (
               <Box key={grouped.monthYear} w="full">
                 <TransactionCard.GroupMonth monthYear={grouped.monthYear} />
@@ -336,7 +314,7 @@ const UserTransactionsPage = () => {
               </Box>
             ))}
             {hasNextPage && (
-              <Box w="full" display={'flex'} justifyContent={'center'}>
+              <Box w="full" display={'flex'} justifyContent={'center'} pb={5}>
                 <Spinner alignSelf="center" mt={2} color="brand.500" />
               </Box>
             )}
