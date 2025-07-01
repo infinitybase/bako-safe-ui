@@ -332,12 +332,14 @@ const UserTransactionsPage = () => {
                       userInfos={userInfos}
                     />
                   ))}
-                  {hasNextPage && (
-                    <Spinner alignSelf="center" mt={4} color="brand.500" />
-                  )}
                 </TransactionCard.List>
               </Box>
             ))}
+            {hasNextPage && (
+              <Box w="full" display={'flex'} justifyContent={'center'}>
+                <Spinner alignSelf="center" mt={2} color="brand.500" />
+              </Box>
+            )}
           </VStack>
         )}
       </CustomSkeleton>
