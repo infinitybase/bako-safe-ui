@@ -36,6 +36,7 @@ import { CardDetails } from '../../components/CardDetails';
 import { SignersDetails } from '../../components/SignersDetails';
 import { vaultInfinityQueryKey } from '../../hooks/list/useVaultTransactionsRequest';
 import { useVaultInfosContext } from '../../VaultInfosProvider';
+import { CardLiquidStake } from '@/modules';
 
 const VaultDetailsPage = () => {
   const [welcomeDialogState, setWelcomeDialogState] = useState(true);
@@ -236,6 +237,8 @@ const VaultDetailsPage = () => {
           </Button>
         )}
       </HStack>
+
+      <CardLiquidStake />
 
       <HStack
         mb={{ base: 10, sm: 14 }}

@@ -57,3 +57,4 @@ export * from './users';
 export * from './vault';
 export * from './vault-success';
 export * from './warning';
+export * from './assets/rigIcon';
