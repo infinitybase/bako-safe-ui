@@ -127,6 +127,9 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
               height: '10px',
             },
           }}
+          onWheel={(e) => {
+            e.stopPropagation();
+          }}
           h={{ base: '60vh', xs: 500 }}
         >
           <CreateVaultWarning
