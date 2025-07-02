@@ -97,7 +97,8 @@ const Amount = ({
         : totalAmoutSent,
     [transaction?.assets, assetsMap, totalAmoutSent],
   );
-  const isNFT = formattedAssets[0].isNFT === true;
+  const isNFT =
+    formattedAssets.length === 1 && formattedAssets[0]?.isNFT === true;
 
   return (
     <HStack
