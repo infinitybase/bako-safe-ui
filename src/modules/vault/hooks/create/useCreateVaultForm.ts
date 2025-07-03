@@ -1,13 +1,13 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { BakoProvider } from 'bakosafe';
+import { AddressUtils as BakoAddressUtils, BakoProvider } from 'bakosafe';
 import { Assets } from 'fuels';
 import { useFieldArray, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
 import { CookieName, CookiesConfig } from '@/config/cookies';
+import { TypeUser } from '@/modules/auth';
 import { AddressUtils, Batch32 } from '@/modules/core/utils';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
-import { TypeUser } from '@/modules/auth';
 
 const schema = (
   providerInstance: Promise<BakoProvider>,
@@ -28,7 +28,6 @@ const schema = (
             .string()
             .required('Empty address')
             .test('is-valid-address', 'Invalid address', (address) =>
-              // AddressUtils.isValid(address),
               AddressUtils.isPasskey(address)
                 ? AddressUtils.isValid(
                     AddressUtils.fromBech32(address as Batch32),
@@ -61,7 +60,6 @@ const schema = (
                     );
                   },
                 );
-
                 return !hasAddress;
               },
             )
@@ -116,14 +114,26 @@ const schema = (
     );
 };
 
+const getUserAddress = (type?: TypeUser, account?: string): string => {
+  if (BakoAddressUtils.isEvm(account as string)) {
+    return BakoAddressUtils.parseFuelAddressToEth(account as string);
+  }
+
+  if (type === TypeUser.WEB_AUTHN) {
+    return AddressUtils.toBech32(account as Batch32) as string;
+  }
+
+  return account as string;
+};
+
 const useCreateVaultForm = (account?: string) => {
   const { providerInstance, fuelsTokens, authDetails } = useWorkspaceContext();
   const vaultSchema = schema(providerInstance, fuelsTokens);
 
-  const user_address =
-    authDetails?.userInfos?.type?.type === TypeUser.WEB_AUTHN
-      ? (AddressUtils.toBech32(account as Batch32) as string)
-      : (account as string);
+  const user_address = getUserAddress(
+    authDetails?.userInfos?.type?.type,
+    account,
+  );
 
   const form = useForm({
     mode: 'onChange',

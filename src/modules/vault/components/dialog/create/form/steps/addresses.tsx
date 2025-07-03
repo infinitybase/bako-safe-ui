@@ -240,9 +240,15 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
                                 }
                               }
 
-                              if (isEvmAddress(value)) {
-                                result.value = new Address(value).toB256();
-                                result.label = `EVM - ${value.toLowerCase()}`;
+                              if (
+                                value.startsWith('eth:') ||
+                                isEvmAddress(value)
+                              ) {
+                                const address = value.replaceAll('eth:', '');
+                                if (isEvmAddress(address)) {
+                                  result.value = new Address(address).toB256();
+                                  result.label = address.toLowerCase();
+                                }
                               }
 
                               if (isB256(value)) {
