@@ -88,6 +88,9 @@ const colors = {
     'transaction-card-hover': 'rgba(84, 76, 76, 0.25)',
     'transaction-border': '#35302F',
   },
+  blue: {
+    50: '#008EF426',
+  },
   overlay: '#151413A6',
 };
 

@@ -22,7 +22,6 @@ interface AssetSelectProps {
   onChange: (value: string) => void;
   needShowOptionsAbove?: boolean;
   maxOptionsHeight?: number;
-  style?: React.CSSProperties;
 }
 
 const AssetSelect = ({
@@ -33,7 +32,6 @@ const AssetSelect = ({
   isDisabled,
   onChange,
   isInvalid,
-  style,
   needShowOptionsAbove,
   maxOptionsHeight,
   name,
@@ -218,7 +216,6 @@ const AssetSelect = ({
           boxShadow:
             '0 0 0 1px color-mix(in srgb, var(--chakra-colors-brand-500) 100%, transparent)',
         }}
-        style={style}
         tabIndex={isDisabled ? -1 : 0}
         role="combobox"
         aria-expanded={showOptions}
@@ -250,7 +247,7 @@ const AssetSelect = ({
 
         {selectedOption && (
           <Flex align="center" justify="space-between">
-            <Flex align="center" gap={2} flex={1} pt={2}>
+            <Flex align="center" gap={2} flex={1} pt={label ? 2 : 0}>
               <Image
                 src={selectedOption.image ?? '/nft-empty.svg'}
                 boxSize={6}

@@ -67,6 +67,38 @@ const darkStyle = defineStyle({
   },
 });
 
+const filled = defineStyle({
+  ...baseStyle,
+  field: {
+    ...baseStyle.field,
+    background: 'transparent',
+    borderColor: `grey.950`,
+    color: 'section.200',
+    minW: 0,
+    lineHeight: 'normal',
+    border: 'none',
+    borderWidth: 0,
+    borderStyle: 'solid',
+    borderBottomWidth: 1,
+    borderRadius: 0,
+    _hover: {
+      background: 'transparent',
+      borderColor: `grey.200`,
+    },
+    _blur: {
+      background: 'transparent',
+    },
+    _focus: {
+      boxShadow: 'none',
+      borderColor: `grey.200`,
+    },
+    _focusVisible: {
+      boxShadow: 'none',
+      borderColor: `grey.200`,
+    },
+  },
+});
+
 const Input = defineStyleConfig({
   baseStyle,
   defaultProps: {
@@ -76,6 +108,7 @@ const Input = defineStyleConfig({
   variants: {
     default: defaultStyle,
     dark: darkStyle,
+    filled,
   },
 });
 

@@ -31,9 +31,9 @@ const info = defineStyle({
 });
 
 const blue = defineStyle({
-  bgColor: 'rgba(50,200,217,0.1)',
-  color: '#32C8D9',
-  borderColor: 'rgba(50,200,217,0.25)',
+  bgColor: 'transparent',
+  color: '#008EF4',
+  borderColor: '#008EF426',
 });
 
 const yellow = defineStyle({
