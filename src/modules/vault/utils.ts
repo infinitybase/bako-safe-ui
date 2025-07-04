@@ -21,3 +21,17 @@ export const ordinateMembers = (
     }))
     .sort((a, b) => (a.isOwner === b.isOwner ? 0 : a.isOwner ? -1 : 1));
 };
+
+export const parseToNumber = (value: string): number => {
+  const parsedValue = Number(value.replace(/,/g, '.'));
+  return isNaN(parsedValue) ? 0 : parsedValue;
+};
+
+export const removeRightZeroes = (value: string): string => {
+  if (!value) return value;
+  const parts = value.split('.');
+  if (parts.length < 2) return value;
+  const integerPart = parts[0];
+  const decimalPart = parts[1].replace(/0+$/, ''); // Remove trailing zeroes
+  return decimalPart ? `${integerPart}.${decimalPart}` : integerPart;
+};

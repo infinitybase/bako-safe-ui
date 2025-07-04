@@ -8,6 +8,7 @@ import {
   Banner,
   Carousel,
   CoinsIcon,
+  Exchange2Icon,
   ExchangeIcon,
   OverviewIcon,
   PendingIcon,
@@ -193,6 +194,26 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
               <Icon as={PendingIcon} />{' '}
               {isPendingSigner && pendingSignerTransactionsLength}
             </SidebarMenu.Badge>
+          </SidebarMenu.Container>
+
+          <SidebarMenu.Container
+            isActive={menuItems.buySell}
+            id={'buy-sell_tab_sidebar'}
+            onClick={() =>
+              handleClick(
+                route.navigate(
+                  Pages.vaultBuySell({
+                    workspaceId: route.params.workspaceId!,
+                    vaultId: route.params.vaultId!,
+                  }),
+                ),
+              )
+            }
+          >
+            <SidebarMenu.Icon as={Exchange2Icon} isActive={menuItems.buySell} />
+            <SidebarMenu.Title isActive={menuItems.buySell}>
+              Buy & Sell
+            </SidebarMenu.Title>
           </SidebarMenu.Container>
 
           <SidebarMenu.Container
