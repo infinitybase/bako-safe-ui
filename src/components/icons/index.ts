@@ -23,6 +23,7 @@ export * from './empty-box-outline';
 export * from './error';
 export * from './error-tooltip';
 export * from './exchange';
+export * from './exchange-2';
 export * from './exit';
 export * from './file-code';
 export * from './forward-icon';
