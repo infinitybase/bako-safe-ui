@@ -15,34 +15,34 @@ interface CurrencyConfig {
   decimalSeparator: string;
 }
 
-const CRYPTO_CONFIG: CurrencyConfig = {
+const CRYPTO_CONFIG: CurrencyConfig = Object.freeze({
   locale: 'en-US',
   decimalScale: 9,
   decimalSeparator: '.',
   thousandsSeparator: undefined,
-};
+});
 
-const CURRENCY_CONFIGS: Record<Currency, CurrencyConfig> = {
-  BRL: {
+const CURRENCY_CONFIGS: Record<Currency, CurrencyConfig> = Object.freeze({
+  BRL: Object.freeze({
     locale: 'pt-BR',
     decimalScale: 2,
     thousandsSeparator: '.',
     decimalSeparator: ',',
-  },
-  USD: {
+  }),
+  USD: Object.freeze({
     locale: 'en-US',
     decimalScale: 2,
     thousandsSeparator: ',',
     decimalSeparator: '.',
-  },
-  EUR: {
+  }),
+  EUR: Object.freeze({
     locale: 'de-DE',
     decimalScale: 2,
     thousandsSeparator: '.',
     decimalSeparator: ',',
-  },
+  }),
   ETH_FUEL: CRYPTO_CONFIG,
-};
+});
 
 export interface CurrencyFieldProps
   extends Omit<InputProps, 'value' | 'onChange'> {
@@ -59,27 +59,28 @@ const CurrencyField = forwardRef<HTMLInputElement, CurrencyFieldProps>(
       [currency],
     );
     const config = useMemo(() => CURRENCY_CONFIGS[currency], [currency]);
+    const regexCache = useMemo(() => {
+      const decimalEscaped = config.decimalSeparator.replace(
+        /[.*+?^${}()|[\]\\]/g,
+        '\\$&',
+      );
+      const thousandsEscaped = config.thousandsSeparator?.replace(
+        /[.*+?^${}()|[\]\\]/g,
+        '\\$&',
+      );
+
+      return {
+        crypto: new RegExp(`[^0-9\\${decimalEscaped}]`, 'g'),
+        currency: new RegExp(
+          `[^0-9\\${decimalEscaped}${thousandsEscaped ? `\\${thousandsEscaped}` : ''}]`,
+          'g',
+        ),
+      };
+    }, [config.decimalSeparator, config.thousandsSeparator]);
 
     const getAllowedPattern = useCallback(() => {
-      return isCrypto
-        ? new RegExp(`[^0-9\\${config.decimalSeparator}]`, 'g')
-        : new RegExp(
-            `[^0-9\\${config.decimalSeparator}${config.thousandsSeparator ? `\\${config.thousandsSeparator}` : ''}]`,
-            'g',
-          );
-    }, [config, isCrypto]);
-
-    const cleanValue = useCallback((inputValue: string) => {
-      return inputValue
-        .replace(/[^0-9.,]/g, '')
-        .replace(/[,.]/g, (_, offset, string) => {
-          const lastSeparatorIndex = Math.max(
-            string.lastIndexOf(','),
-            string.lastIndexOf('.'),
-          );
-          return offset === lastSeparatorIndex ? '.' : '';
-        });
-    }, []);
+      return isCrypto ? regexCache.crypto : regexCache.currency;
+    }, [regexCache, isCrypto]);
 
     const currencyMask = useMemo(
       () =>
@@ -100,7 +101,6 @@ const CurrencyField = forwardRef<HTMLInputElement, CurrencyFieldProps>(
     const normalizedValue = useMemo(() => {
       if (!value) return '';
 
-      // Primeira validação: se está no formato correto, retorna sem alterar
       const hasCorrectSeparator = value.includes(config.decimalSeparator);
       const hasWrongSeparator =
         config.decimalSeparator === ','
@@ -111,84 +111,19 @@ const CurrencyField = forwardRef<HTMLInputElement, CurrencyFieldProps>(
         return value;
       }
 
-      // Se tem separador errado, limpa e normaliza
-      const cleanedValue = cleanValue(value);
-      if (!cleanedValue) return value;
-
-      const numericValue = parseFloat(cleanedValue);
-      if (isNaN(numericValue) || numericValue <= 0) return value;
-
-      const newValue = isCrypto
-        ? numericValue.toString().replace('.', config.decimalSeparator)
-        : numericValue
-            .toFixed(config.decimalScale)
-            .replace('.', config.decimalSeparator);
-
-      // Notifica mudança se valor foi reformatado
-      if (newValue !== value && onChange) {
-        setTimeout(() => onChange(newValue), 0);
-      }
-
-      return newValue;
-    }, [value, isCrypto, config, onChange, cleanValue]);
+      return value;
+    }, [value, config.decimalSeparator]);
 
     const handleInputChange = useCallback(
       (event: React.ChangeEvent<HTMLInputElement>) => {
         const inputValue = event.target.value;
-        const nativeEvent = event.nativeEvent as InputEvent;
-
-        const isDecimalInput =
-          nativeEvent.data === ',' || nativeEvent.data === '.';
-
-        if (isDecimalInput) {
-          if (config.decimalSeparator === ',' && nativeEvent.data === '.') {
-            event.preventDefault();
-            return;
-          }
-
-          if (config.decimalSeparator === '.' && nativeEvent.data === ',') {
-            event.preventDefault();
-            return;
-          }
-
-          if (inputValue.endsWith(config.decimalSeparator)) {
-            return;
-          }
-
-          const caretPosition = event.target.selectionStart ?? 0;
-          const isEmpty = inputValue.length === 0;
-
-          let newValue;
-          if (isEmpty) {
-            newValue = `0${config.decimalSeparator}`;
-          } else {
-            const beforeCaret = inputValue.slice(0, caretPosition - 1);
-            const afterCaret = inputValue.slice(caretPosition);
-            newValue = beforeCaret + config.decimalSeparator + afterCaret;
-          }
-
-          const allowedPattern = getAllowedPattern();
-
-          const cleanedNewValue = newValue.replace(allowedPattern, '');
-          event.target.value = cleanedNewValue;
-
-          setTimeout(() => {
-            const newCaretPosition = caretPosition + (isEmpty ? 1 : 0);
-            event.target.setSelectionRange(newCaretPosition, newCaretPosition);
-          }, 0);
-
-          onChange?.(cleanedNewValue);
-          return;
-        }
-
         const allowedPattern = getAllowedPattern();
-
         const cleanedValue = inputValue.replace(allowedPattern, '');
-        event.target.value = cleanedValue;
 
+        event.target.value = cleanedValue;
         onChange?.(cleanedValue);
       },
-      [config, onChange, getAllowedPattern],
+      [getAllowedPattern, onChange],
     );
 
     const handleBlur = useCallback(
@@ -219,8 +154,9 @@ const CurrencyField = forwardRef<HTMLInputElement, CurrencyFieldProps>(
 
         event.target.value = inputValue;
         props.onBlur?.(event);
+        onChange?.(inputValue);
       },
-      [config, props, isCrypto],
+      [config, props, isCrypto, onChange],
     );
 
     return (
