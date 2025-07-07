@@ -89,7 +89,8 @@ const colors = {
     'transaction-border': '#35302F',
   },
   blue: {
-    50: '#008EF426',
+    '500Alpha26': '#008EF426',
+    500: '#008EF4',
   },
   overlay: '#151413A6',
 };
