@@ -85,9 +85,6 @@ const filled = defineStyle({
       background: 'transparent',
       borderColor: `grey.200`,
     },
-    _blur: {
-      background: 'transparent',
-    },
     _focus: {
       boxShadow: 'none',
       borderColor: `grey.200`,
