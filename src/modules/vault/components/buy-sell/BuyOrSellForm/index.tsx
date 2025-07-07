@@ -128,6 +128,13 @@ export const BuyOrSellForm = ({
 
   const isOnRamp = useMemo(() => type === 'BUY', [type]);
 
+  const currentQuoteRate = useMemo(
+    () =>
+      quotes?.quotes?.find((quote) => quote.serviceProvider === provider)
+        ?.exchangeRate,
+    [quotes?.quotes, provider],
+  );
+
   return (
     <FormProvider {...methods}>
       <Stack as="form" onSubmit={handleSubmit(onSubmit)} spacing={2}>
@@ -140,6 +147,7 @@ export const BuyOrSellForm = ({
           quoteDestinationAmount={quoteDestinationAmount}
           isLoadingQuotes={isLoadingQuotes}
           isOnRamp={isOnRamp}
+          quoteRate={currentQuoteRate}
         />
         {quotes?.quotes && quotes?.quotes?.length > 0 && (
           <SelectQuote

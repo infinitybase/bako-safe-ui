@@ -25,10 +25,12 @@ export const DestinationCurrency = ({
   quoteDestinationAmount,
   isLoadingQuotes = false,
   isOnRamp,
+  quoteRate,
 }: {
   quoteDestinationAmount?: number;
   isLoadingQuotes?: boolean;
   isOnRamp: boolean;
+  quoteRate?: number;
 }) => {
   const { cryptoCurrencies, isLoading: isLoadingCurrencies } =
     useListCryptoCurrencies();
@@ -43,6 +45,8 @@ export const DestinationCurrency = ({
     setValue('destinationCurrencyCode', currencyCode);
     currencyModal.onClose();
   };
+
+  const handleChangeSourceAmount = (amount: string) => {};
 
   const currencyOptions = isOnRamp ? cryptoCurrencies : fiatCurrencies;
 
@@ -97,6 +101,12 @@ export const DestinationCurrency = ({
             currentCurrencyCode={currentCurrencyCode}
             currencies={options}
             isLoading={isLoading}
+            title={isOnRamp ? 'Buy crypto' : 'Select asset'}
+            description={
+              isOnRamp
+                ? 'Purchase digital assets through a secure on-ramp service.'
+                : 'Select the asset you want to sell'
+            }
           />
         </Flex>
       </Flex>
