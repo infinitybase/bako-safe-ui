@@ -14,8 +14,9 @@ import {
 } from '@chakra-ui/react';
 import React, { useState } from 'react';
 
-import { useScreenSize } from '@/modules/core';
 import { FuelIcon, RigIcon } from '@/components';
+import { useScreenSize } from '@/modules/core';
+import { ModalLiquidStake, ModalWithdrawalsLiquidStake } from '@/modules/vault/components';
 
 export interface ItemLiquidStakeProps {
   label: string;
@@ -32,8 +33,6 @@ const ItemLiquidStake = ({ label, value, children }: ItemLiquidStakeProps) => {
       alignItems="center"
       background={'var(--chakra-colors-dark-950)'}
       width="full"
-      // borderColor={'var(--chakra-colors-gradients-transaction-border)'}
-      // borderWidth={1}
     >
       <HStack
         flex={1}
@@ -128,7 +127,10 @@ export function CardLiquidStake() {
         borderRadius={9}
         height={{ base: 16, md: 36 }}
         padding={{ base: 3, md: 4 }}
-        backgroundImage={'/bg_card-liquid-stake.jpg'}
+        backgroundImage={{
+          base: '/bg-stake-mobile.png',
+          md: '/bg-stake-desktop.png',
+        }}
         backgroundSize="cover"
         alignContent={{ base: 'center', md: 'flex-start' }}
       >
@@ -176,6 +178,8 @@ export function CardLiquidStake() {
       >
         {createItems()}
       </MobileItemLiquidStake>
+      <ModalWithdrawalsLiquidStake />
+      <ModalLiquidStake />
     </>
   );
 }
