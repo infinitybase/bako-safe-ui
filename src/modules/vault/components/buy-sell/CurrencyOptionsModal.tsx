@@ -1,5 +1,6 @@
 import { SearchIcon } from '@chakra-ui/icons';
 import {
+  Box,
   Divider,
   Flex,
   FormControl,
@@ -16,6 +17,7 @@ import debounce from 'lodash.debounce';
 import { useMemo, useState } from 'react';
 
 import { Dialog } from '@/components';
+import { Header } from '@/layouts/dashboard/header';
 import { CurrencyList } from '@/modules/core/components/currencyList';
 
 interface CurrencyOptionsModalProps {
@@ -29,6 +31,8 @@ interface CurrencyOptionsModalProps {
     imageUrl?: string;
   }[];
   isLoading?: boolean;
+  title: string;
+  description: string;
 }
 
 export const CurrencyOptionsModal = ({
@@ -38,6 +42,8 @@ export const CurrencyOptionsModal = ({
   currentCurrencyCode,
   currencies,
   isLoading = false,
+  title,
+  description,
 }: CurrencyOptionsModalProps) => {
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -56,17 +62,27 @@ export const CurrencyOptionsModal = ({
   }, 400);
 
   return (
-    <Dialog.Modal isOpen={open} onClose={onClose}>
+    <Dialog.Modal
+      isOpen={open}
+      onClose={onClose}
+      modalContentProps={{
+        padding: 0,
+      }}
+    >
+      <Box display={{ base: 'block', xs: 'none' }} w="full">
+        <Header />
+      </Box>
       <Dialog.Header
-        title="Select your currency"
-        description="Set the currency you want to withdraw to."
+        title={title}
+        description={description}
         mt={3}
         mb={3}
         onClose={onClose}
+        px={4}
       />
-      <Dialog.Body py={2}>
+      <Dialog.Body py={{ base: 0, xs: 2 }}>
         <Stack gap={4}>
-          <FormControl>
+          <FormControl px={4}>
             <InputGroup position="relative">
               <InputRightElement
                 position="absolute"
@@ -76,14 +92,18 @@ export const CurrencyOptionsModal = ({
               >
                 <Icon as={SearchIcon} color="grey.500" />
               </InputRightElement>
-              <Input onChange={(e) => debouncedSearch(e)} placeholder=" " />
+              <Input
+                bg="dark.950"
+                onChange={(e) => debouncedSearch(e)}
+                placeholder=" "
+              />
               <FormLabel>Search asset</FormLabel>
             </InputGroup>
           </FormControl>
 
-          <Divider />
+          <Divider borderColor="grey.950" />
 
-          <CurrencyList.Root>
+          <CurrencyList.Root px={4}>
             {isLoading && <CurrencyList.Loading />}
 
             {!isLoading && filteredCurrencies.length === 0 && (

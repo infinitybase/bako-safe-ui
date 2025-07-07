@@ -1,6 +1,7 @@
 import { SearchIcon } from '@chakra-ui/icons';
 import {
   Badge,
+  Box,
   Divider,
   Flex,
   FormControl,
@@ -19,6 +20,7 @@ import debounce from 'lodash.debounce';
 import { useState } from 'react';
 
 import { Dialog } from '@/components';
+import { Header } from '@/layouts/dashboard/header';
 import { IQuote } from '@/modules/core/models/meld';
 
 interface SelectQuoteModalProps {
@@ -51,17 +53,27 @@ export const SelectQuoteModal = ({
   );
 
   return (
-    <Dialog.Modal isOpen={open} onClose={onClose}>
+    <Dialog.Modal
+      isOpen={open}
+      onClose={onClose}
+      modalContentProps={{
+        padding: 0,
+      }}
+    >
+      <Box display={{ base: 'block', xs: 'none' }} w="full">
+        <Header />
+      </Box>
       <Dialog.Header
         title="Suppliers"
         description="Select the supplier you want to use."
         mt={3}
         mb={3}
+        px={4}
         onClose={onClose}
       />
-      <Dialog.Body py={2}>
+      <Dialog.Body py={{ base: 0, xs: 2 }}>
         <Stack gap={4}>
-          <FormControl>
+          <FormControl px={4}>
             <InputGroup position="relative">
               <InputRightElement
                 position="absolute"
@@ -71,12 +83,16 @@ export const SelectQuoteModal = ({
               >
                 <Icon as={SearchIcon} color="grey.500" />
               </InputRightElement>
-              <Input onChange={(e) => debouncedSearch(e)} placeholder=" " />
+              <Input
+                bg="dark.950"
+                onChange={(e) => debouncedSearch(e)}
+                placeholder=" "
+              />
               <FormLabel>Search supplier</FormLabel>
             </InputGroup>
           </FormControl>
 
-          <Divider />
+          <Divider borderColor="grey.950" />
 
           <List
             maxH={{
@@ -88,7 +104,7 @@ export const SelectQuoteModal = ({
               sm: 'scroll',
             }}
             spacing={2}
-            pr={1}
+            px={4}
             sx={{
               '&::-webkit-scrollbar': {
                 width: '8px',
