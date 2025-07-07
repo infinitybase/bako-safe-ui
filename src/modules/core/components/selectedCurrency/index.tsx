@@ -26,7 +26,7 @@ export const SelectedCurrency = ({
       >
         <Image
           src={imageUrl || '/nft-empty.svg'}
-          alt={name}
+          alt={name || ''}
           boxSize="16px"
           rounded="lg"
         />

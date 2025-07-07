@@ -32,8 +32,8 @@ const info = defineStyle({
 
 const blue = defineStyle({
   bgColor: 'transparent',
-  color: '#008EF4',
-  borderColor: '#008EF426',
+  color: 'blue.500',
+  borderColor: 'blue.500Alpha26',
 });
 
 const yellow = defineStyle({
