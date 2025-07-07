@@ -24,7 +24,7 @@ export const SelectPaymentMethod = () => {
         value: method.paymentMethod,
         name: method.name,
         image: method.logos.dark,
-        symbol: method.paymentMethod,
+        symbol: null,
       })),
     [paymentMethods],
   );
