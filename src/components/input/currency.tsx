@@ -17,7 +17,7 @@ interface CurrencyConfig {
 
 const CRYPTO_CONFIG: CurrencyConfig = {
   locale: 'en-US',
-  decimalScale: 18,
+  decimalScale: 9,
   decimalSeparator: '.',
   thousandsSeparator: undefined,
 };
