@@ -9,7 +9,7 @@ import {
   TabPanel,
   VStack,
 } from '@chakra-ui/react';
-import { Address, isB256 } from 'fuels';
+import { Address, isB256, isEvmAddress } from 'fuels';
 import { useRef, useState } from 'react';
 import { Controller } from 'react-hook-form';
 
@@ -237,6 +237,17 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
                                       value,
                                       address,
                                     );
+                                }
+                              }
+
+                              if (
+                                value.startsWith('eth:') ||
+                                isEvmAddress(value)
+                              ) {
+                                const address = value.replaceAll('eth:', '');
+                                if (isEvmAddress(address)) {
+                                  result.value = new Address(address).toB256();
+                                  result.label = address.toLowerCase();
                                 }
                               }
 

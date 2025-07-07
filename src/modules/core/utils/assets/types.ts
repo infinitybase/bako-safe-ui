@@ -24,6 +24,7 @@ export type AssetMap = {
     name: string;
     slug: string;
     units: number;
+    decimals?: number;
     icon?: string;
     assetId: string;
     isNFT?: boolean;

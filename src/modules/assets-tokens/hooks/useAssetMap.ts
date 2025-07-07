@@ -80,6 +80,11 @@ export const useMappedAssetStore = create(
   ),
 );
 
+export const getAssetInfo = (assetId: string) => {
+  const state = useMappedAssetStore.getState();
+  return state.mappedTokens[assetId] || state.mappedNfts[assetId];
+};
+
 export const useAssetMap = (chainId: number) => {
   const { mappedTokens, mappedNfts } = useMappedAssetStore();
 
