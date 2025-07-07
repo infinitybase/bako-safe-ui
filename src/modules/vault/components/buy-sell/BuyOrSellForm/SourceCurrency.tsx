@@ -45,6 +45,7 @@ export const SourceCurrency = ({
     control,
     watch,
     setValue,
+    setFocus,
     formState: { errors },
   } = useFormContext<ICreateWidgetPayload>();
   const currencyModal = useDisclosure();
@@ -88,6 +89,7 @@ export const SourceCurrency = ({
   const handleSetCurrencyAmount = (percentage: number) => {
     const amount = parseToNumber(ethAmount) * (percentage / 100);
     setValue('sourceAmount', amount.toString());
+    setFocus('sourceAmount');
   };
 
   return (
@@ -123,6 +125,8 @@ export const SourceCurrency = ({
             currentCurrencyCode={currentCurrencyCode}
             currencies={currencies}
             isLoading={isLoading}
+            title="Select your currency"
+            description="Set the currency you want to withdraw to."
           />
         </Flex>
       </Flex>
