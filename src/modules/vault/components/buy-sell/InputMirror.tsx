@@ -1,5 +1,5 @@
 import { Box } from '@chakra-ui/react';
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 
 interface InputMirrorProps<T extends string | number = string> {
   inputRef: React.RefObject<HTMLInputElement>;
@@ -20,6 +20,8 @@ export const InputMirror = <T extends string | number = string>({
     }
   }, [value]);
 
+  const isEmptyValue = useMemo(() => value === '0' || !value, [value]);
+
   return (
     <Box
       ref={mirrorRef}
@@ -28,7 +30,7 @@ export const InputMirror = <T extends string | number = string>({
       fontSize="3xl"
       whiteSpace="pre"
       // prevent decimals from breaking the layout
-      px={6}
+      px={isEmptyValue ? 6 : 2}
     >
       {value}
     </Box>
