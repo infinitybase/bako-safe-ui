@@ -19,11 +19,11 @@ const request = async <T = unknown>(
       },
     });
 
-    const data = await fetchResponse.json();
-
     if (!fetchResponse.ok) {
       return null;
     }
+
+    const data = await fetchResponse.json();
     return data as T;
   } catch {
     return null;
