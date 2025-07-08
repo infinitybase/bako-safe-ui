@@ -4,11 +4,13 @@ import { useEffect, useMemo, useRef } from 'react';
 interface InputMirrorProps<T extends string | number = string> {
   inputRef: React.RefObject<HTMLInputElement>;
   value?: T;
+  isValueWithDecimals?: boolean;
 }
 
 export const InputMirror = <T extends string | number = string>({
   inputRef,
   value,
+  isValueWithDecimals = false,
 }: InputMirrorProps<T>) => {
   const mirrorRef = useRef<HTMLDivElement>(null);
 
@@ -30,7 +32,7 @@ export const InputMirror = <T extends string | number = string>({
       fontSize="3xl"
       whiteSpace="pre"
       // prevent decimals from breaking the layout
-      px={isEmptyValue ? 6 : 2}
+      px={isEmptyValue || isValueWithDecimals ? 7 : 2}
     >
       {value}
     </Box>

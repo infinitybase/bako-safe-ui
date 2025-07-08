@@ -208,7 +208,11 @@ export const SourceCurrency = ({
                   value={value}
                   onChange={onChange}
                 />
-                <InputMirror inputRef={inputRef} value={value} />
+                <InputMirror
+                  inputRef={inputRef}
+                  value={value}
+                  isValueWithDecimals={isOnRamp}
+                />
                 <InputRightAddon alignSelf="end" color="section.200">
                   {currentCurrency?.currencyCode === 'ETH_FUEL'
                     ? 'ETH'
