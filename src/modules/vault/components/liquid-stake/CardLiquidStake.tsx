@@ -16,7 +16,10 @@ import React, { useState } from 'react';
 
 import { FuelIcon, RigIcon } from '@/components';
 import { useScreenSize } from '@/modules/core';
-import { ModalLiquidStake, ModalWithdrawalsLiquidStake } from '@/modules/vault/components';
+import {
+  ModalLiquidStake,
+  ModalWithdrawalsLiquidStake,
+} from '@/modules/vault/components';
 
 export interface ItemLiquidStakeProps {
   label: string;
@@ -95,6 +98,7 @@ export function CardLiquidStake() {
   const { isMobile } = useScreenSize();
 
   const [isOpenMobileItem, setIsOpenMobileItem] = useState<boolean>(false);
+  const [modal, setModal] = useState<'STAKE' | 'REDEEM' | ''>('');
 
   const handleOpenMobileItem = () => {
     if (isMobile) {
@@ -102,15 +106,39 @@ export function CardLiquidStake() {
     }
   };
 
+  const handleOpenModal =
+    (modal: 'STAKE' | 'REDEEM' | '' = '') =>
+    () => {
+      setModal(modal);
+
+      if (isMobile) {
+        setIsOpenMobileItem(false);
+      }
+    };
+
+  const handleCloseModal = () => {
+    setModal('');
+  };
+
   const createItems = () => (
     <>
       <ItemLiquidStake label="FUEL Balance" value="1,587.56124">
-        <Button variant="primary" size="sm" fontSize={12}>
+        <Button
+          variant="primary"
+          size="sm"
+          fontSize={12}
+          onClick={handleOpenModal('STAKE')}
+        >
           Stake
         </Button>
       </ItemLiquidStake>
       <ItemLiquidStake label="FUEL in staking" value="114,565.49783">
-        <Button variant={'secondary'} size="sm" fontSize={12}>
+        <Button
+          variant={'secondary'}
+          size="sm"
+          fontSize={12}
+          onClick={handleOpenModal('REDEEM')}
+        >
           Redeem
         </Button>
       </ItemLiquidStake>
@@ -178,8 +206,11 @@ export function CardLiquidStake() {
       >
         {createItems()}
       </MobileItemLiquidStake>
-      <ModalWithdrawalsLiquidStake />
-      <ModalLiquidStake />
+      <ModalWithdrawalsLiquidStake
+        isOpen={modal === 'REDEEM'}
+        onClose={handleCloseModal}
+      />
+      <ModalLiquidStake isOpen={modal === 'STAKE'} onClose={handleCloseModal} />
     </>
   );
 }

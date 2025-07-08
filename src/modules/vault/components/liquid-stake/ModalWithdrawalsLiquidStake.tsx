@@ -60,7 +60,7 @@ const WithdrawalsLiquidStakeItem = ({
       maxWidth={{ base: '48px', md: '80px' }}
       alt={title}
       borderRadius={8}
-      marginBottom={{base: 0, md: 12}}
+      marginBottom={{ base: 0, md: 12 }}
     />
     <Box display={{ base: 'row' }} marginLeft={{ base: 4, md: 0 }}>
       <Text
@@ -83,12 +83,20 @@ const WithdrawalsLiquidStakeItem = ({
   </Box>
 );
 
-export function ModalWithdrawalsLiquidStake() {
+interface ModalWithdrawalsLiquidStakeProps {
+  isOpen?: boolean;
+  onClose: () => void;
+}
+
+export function ModalWithdrawalsLiquidStake({
+  isOpen = false,
+  onClose,
+}: ModalWithdrawalsLiquidStakeProps) {
   const { isMobile } = useScreenSize();
 
   if (isMobile) {
     return (
-      <Drawer placement="bottom" onClose={() => ({})} isOpen={false}>
+      <Drawer placement="bottom" onClose={onClose} isOpen={isOpen}>
         <DrawerOverlay />
         <DrawerContent padding={4}>
           <DrawerHeader>
@@ -127,8 +135,8 @@ export function ModalWithdrawalsLiquidStake() {
 
   return (
     <Dialog.Modal
-      isOpen={false}
-      onClose={() => ({})}
+      isOpen={isOpen}
+      onClose={onClose}
       closeOnOverlayClick={false}
       modalContentProps={{
         width: '798px',
@@ -142,7 +150,8 @@ export function ModalWithdrawalsLiquidStake() {
           title={TITLE}
           description={DESCRIPTION}
           mt={0}
-          titleSxProps={{fontSize: 16}}
+          titleSxProps={{ fontSize: 16 }}
+          onClose={onClose}
         />
         <HStack marginY={{ base: 10 }}>
           {ITENS.map(({ image, title, description }, i) => (
