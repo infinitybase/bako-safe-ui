@@ -167,7 +167,7 @@ export const SourceCurrency = ({
             },
           }}
           defaultValue="0"
-          render={({ field }) => (
+          render={({ field: { value, onChange, ref, ...rest } }) => (
             <Stack
               w="fit-content"
               alignItems="center"
@@ -197,14 +197,12 @@ export const SourceCurrency = ({
                   minW={0}
                   px={0}
                   fontSize="3xl"
-                  {...field}
-                  ref={mergeRefs(field.ref, inputRef)}
-                  value={field.value}
-                  onChange={(value) => {
-                    field.onChange(value);
-                  }}
+                  {...rest}
+                  ref={mergeRefs(ref, inputRef)}
+                  value={value}
+                  onChange={onChange}
                 />
-                <InputMirror inputRef={inputRef} value={field.value} />
+                <InputMirror inputRef={inputRef} value={value} />
                 <InputRightAddon alignSelf="end" color="section.200">
                   {currentCurrency?.currencyCode === 'ETH_FUEL'
                     ? 'ETH'
