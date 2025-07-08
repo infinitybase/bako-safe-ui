@@ -74,7 +74,6 @@ export const BuyOrSellForm = ({
   const sourceAmount = watch('sourceAmount');
   const provider = watch('serviceProvider');
   const debouncedAmount = useDebounce(parseToNumber(sourceAmount || '0'), 600);
-  console.log('sourceAmount', sourceAmount, debouncedAmount);
 
   const {
     quotes,
