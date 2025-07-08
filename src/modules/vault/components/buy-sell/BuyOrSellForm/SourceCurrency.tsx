@@ -19,7 +19,7 @@ import {
   useListCryptoCurrencies,
   useListFiatCurrencies,
 } from '@/modules/vault/hooks';
-import { parseToNumber } from '@/modules/vault/utils';
+import { parseToBN } from '@/modules/vault/utils';
 import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
 import { FUEL_ETH_ID } from '@/utils/constants';
 import mergeRefs from '@/utils/merge-refs';
@@ -140,29 +140,35 @@ export const SourceCurrency = ({
           rules={{
             required: 'Source amount is required',
             validate: {
-              positive: (value) =>
-                parseToNumber(value) > 0 ||
-                'Source amount must be greater than 0',
+              positive: (value) => {
+                if (value && parseToBN(value).lte(0)) {
+                  return 'Source amount must be greater than 0';
+                }
+              },
               min: (value) => {
-                if (minAmount && parseToNumber(value) < minAmount) {
+                if (
+                  minAmount &&
+                  parseToBN(value).lt(parseToBN(minAmount.toString()))
+                ) {
                   return `Source amount must be greater than ${minAmount}`;
                 }
-                return true;
               },
               max: (value) => {
-                if (maxAmount && parseToNumber(value) > maxAmount) {
+                if (
+                  maxAmount &&
+                  parseToBN(value).gt(parseToBN(maxAmount.toString()))
+                ) {
                   return `Source amount must be less than ${Intl.NumberFormat(
-                    currentCurrency?.currencyCode,
+                    currentCurrency?.currencyCode || 'USD',
                     {
                       style: 'currency',
-                      currency: currentCurrency?.currencyCode,
+                      currency: currentCurrency?.currencyCode || 'USD',
                     },
                   ).format(maxAmount)}`;
                 }
                 if (!isOnRamp && ethAmount.lt(bn.parseUnits(value, 9))) {
                   return `You don't have enough ETH to sell`;
                 }
-                return true;
               },
             },
           }}
