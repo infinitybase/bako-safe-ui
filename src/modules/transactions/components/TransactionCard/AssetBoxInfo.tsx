@@ -50,9 +50,7 @@ const AssetBoxInfo = ({
       isLitteSmall,
     },
     assetsMap,
-    vaultDetails: {
-      assets: { isNFTAsset },
-    },
+    nftList,
   } = useWorkspaceContext();
 
   const { resolveAddressContactHandle } = useAddressNicknameResolver([
@@ -94,9 +92,12 @@ const AssetBoxInfo = ({
   });
 
   const isNFT = useMemo(() => {
-    if (!asset?.assetId) return false;
-    return isNFTAsset(asset.assetId);
-  }, [asset?.assetId, isNFTAsset]);
+    if (!asset?.assetId) return bn(asset?.amount).eq(bn(1));
+
+    const nftAssetIds = new Set(nftList.map((nft) => nft.assetId));
+
+    return nftAssetIds.has(asset.assetId);
+  }, [asset?.assetId, asset?.amount, nftList]);
 
   const image = useMemo(
     () => (isNFT ? assetInfo?.metadata?.image : assetInfo?.icon),
@@ -105,8 +106,7 @@ const AssetBoxInfo = ({
 
   const displayAmount = isNFT ? '1' : formattedAmount;
 
-  const imgUrl =
-    image ?? (isNFT ? '/nft-empty.svg' : assetsMap?.UNKNOWN?.icon || '');
+  const imgUrl = image ?? (assetsMap?.UNKNOWN?.icon || '');
 
   return (
     <HStack
