@@ -2,8 +2,6 @@ import { Icon } from '@chakra-ui/icons';
 import { Box, Flex, Image, Stack, Text, VStack } from '@chakra-ui/react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-import { TransactionCard } from '@/modules';
-
 import { ArrowDownIcon } from '../icons';
 
 interface AssetSelectOption {
@@ -11,7 +9,6 @@ interface AssetSelectOption {
   image: string | null;
   name: string;
   symbol: string | null;
-  isNFTHandle?: boolean | null;
 }
 
 interface AssetSelectProps {
@@ -326,10 +323,7 @@ const AssetSelect = ({
             p={1}
           >
             {options.map(
-              (
-                { value: optionValue, image, name, symbol, isNFTHandle },
-                index,
-              ) => (
+              ({ value: optionValue, image, name, symbol }, index) => (
                 <Box
                   key={optionValue}
                   w="full"
@@ -349,18 +343,12 @@ const AssetSelect = ({
                   aria-selected={value === optionValue}
                   id={`option-${index}`}
                 >
-                  {isNFTHandle ? (
-                    <TransactionCard.NFTHandler
-                      image={image ?? '/nft-empty.svg'}
-                    />
-                  ) : (
-                    <Image
-                      src={image ?? '/nft-empty.svg'}
-                      boxSize={8}
-                      rounded={'lg'}
-                      flexShrink={0}
-                    />
-                  )}
+                  <Image
+                    src={image ?? '/nft-empty.svg'}
+                    boxSize={8}
+                    rounded={'lg'}
+                    flexShrink={0}
+                  />
                   <Stack gap={0} flex={1} minW={0}>
                     <Text
                       whiteSpace="nowrap"

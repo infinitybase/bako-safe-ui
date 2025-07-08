@@ -5,8 +5,6 @@ import { AssetModel } from '@/modules/core';
 import { parseURI } from '@/modules/core/utils/formatter';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
-import { TransactionCard } from '..';
-
 interface TokenInfosProps {
   asset: AssetModel;
 }
@@ -29,22 +27,16 @@ const TokenInfos = ({ asset }: TokenInfosProps) => {
     [assetInfo],
   );
 
-  const isNFTHandle = !!assetInfo?.metadata?.['image:png'];
-
   return (
     <VStack minW="76px" alignItems="start">
-      {isNFTHandle ? (
-        <TransactionCard.NFTHandler boxSize={7} image={assetImage} />
-      ) : (
-        <Image
-          w={7}
-          h={7}
-          src={parseURI(assetImage || assetsMap?.UNKNOWN?.icon || '')}
-          borderRadius="md"
-          alt="Asset Icon"
-          objectFit="cover"
-        />
-      )}
+      <Image
+        w={7}
+        h={7}
+        src={parseURI(assetImage || assetsMap?.UNKNOWN?.icon || '')}
+        borderRadius="md"
+        alt="Asset Icon"
+        objectFit="cover"
+      />
       <Text fontSize="sm" color="grey.500">
         {assetInfo?.slug}
       </Text>

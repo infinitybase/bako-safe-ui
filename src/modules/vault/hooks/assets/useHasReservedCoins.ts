@@ -67,7 +67,6 @@ export const useHasReservedCoins = (
           collection: mappedNft?.collection ?? null,
           symbol: mappedNft?.symbol ?? null,
           image: mappedNft?.metadata?.image ?? imgNftHandle ?? null,
-          isNFTHandle: !!imgNftHandle,
         };
       });
 

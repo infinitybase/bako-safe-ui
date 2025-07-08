@@ -53,5 +53,4 @@ export type NFT = {
   collection?: string | undefined | null;
   contractId?: string;
   metadata?: DefaultMetadata;
-  isNFTHandle?: boolean;
 };

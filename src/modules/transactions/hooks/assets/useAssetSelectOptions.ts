@@ -31,7 +31,6 @@ const formatNFT = (nft: NFT) => ({
   image: nft.image ? parseURI(nft.image) : null,
   name: nft.name,
   symbol: nft.symbol ?? null,
-  isNFTHandle: nft.isNFTHandle ?? null,
 });
 
 const filterNFTs = (

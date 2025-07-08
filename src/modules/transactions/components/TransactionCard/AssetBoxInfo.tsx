@@ -19,7 +19,6 @@ import { useAddressNicknameResolver } from '@/modules/core/hooks/useAddressNickn
 import { parseURI } from '@/modules/core/utils/formatter';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
-import { TransactionCard } from '.';
 import { AmountUSD } from './transfer-details';
 import { AddressActions } from './transfer-details/address-actions';
 
@@ -113,8 +112,6 @@ const AssetBoxInfo = ({
   const imgUrl =
     image ?? (isNFT ? '/nft-empty.svg' : assetsMap?.UNKNOWN?.icon || '');
 
-  const isNFTHandle = !!assetInfo?.metadata?.['image:png'];
-
   return (
     <HStack
       py={2}
@@ -125,18 +122,14 @@ const AssetBoxInfo = ({
     >
       {assetInfo && (
         <VStack alignItems="start" minW="40px">
-          {isNFTHandle ? (
-            <TransactionCard.NFTHandler boxSize={7} image={imgUrl} />
-          ) : (
-            <Image
-              w={7}
-              h={7}
-              src={parseURI(imgUrl)}
-              borderRadius="md"
-              alt="Asset Icon"
-              objectFit="cover"
-            />
-          )}
+          <Image
+            w={7}
+            h={7}
+            src={parseURI(imgUrl)}
+            borderRadius="md"
+            alt="Asset Icon"
+            objectFit="cover"
+          />
 
           <Text fontSize="sm" color="grey.500">
             {assetInfo?.slug}
