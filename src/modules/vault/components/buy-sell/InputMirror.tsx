@@ -27,7 +27,8 @@ export const InputMirror = <T extends string | number = string>({
       visibility="hidden"
       fontSize="3xl"
       whiteSpace="pre"
-      p={2}
+      // prevent decimals from breaking the layout
+      px={6}
     >
       {value}
     </Box>
