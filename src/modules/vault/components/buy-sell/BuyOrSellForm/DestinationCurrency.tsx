@@ -131,10 +131,10 @@ export const DestinationCurrency = ({
               variant="filled"
               fontSize="3xl"
               ref={inputRef}
-              value={destinationAmount}
+              value={destinationAmount || '0'}
               disabled
             />
-            <InputMirror inputRef={inputRef} value={destinationAmount} />
+            <InputMirror inputRef={inputRef} value={destinationAmount || '0'} />
             <InputRightAddon alignSelf="end" color="section.200">
               {currentCurrency?.currencyCode === 'ETH_FUEL'
                 ? 'ETH'
