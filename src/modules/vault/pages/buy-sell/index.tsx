@@ -120,6 +120,7 @@ export const VaultBuySellPage = () => {
           variant="solid"
           index={currentTabIndex}
           onChange={handleTabChange}
+          isLazy
         >
           <TabList>
             <Tab w="full">Buy</Tab>
