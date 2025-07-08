@@ -19,7 +19,7 @@ import {
   useListCryptoCurrencies,
   useListFiatCurrencies,
 } from '@/modules/vault/hooks';
-import { parseToNumber, removeRightZeroes } from '@/modules/vault/utils';
+import { parseToNumber } from '@/modules/vault/utils';
 import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
 import { FUEL_ETH_ID } from '@/utils/constants';
 import mergeRefs from '@/utils/merge-refs';
@@ -85,13 +85,12 @@ export const SourceCurrency = ({
   );
 
   const ethAmount = useMemo(
-    () => bn(fuelEthAsset?.amount ?? 0).formatUnits(9),
+    () => bn(fuelEthAsset?.amount ?? 0),
     [fuelEthAsset],
   );
-
   const handleSetCurrencyAmount = (percentage: number) => {
-    const amount = parseToNumber(ethAmount) * (percentage / 100);
-    setValue('sourceAmount', amount.toString());
+    const percentageAmount = ethAmount.mul(percentage).div(100);
+    setValue('sourceAmount', percentageAmount.format({ precision: 9 }));
     setFocus('sourceAmount');
   };
 
@@ -118,7 +117,7 @@ export const SourceCurrency = ({
           />
           {!isOnRamp && fuelEthAsset && (
             <Text color="section.500" fontSize="sm">
-              Balance: {removeRightZeroes(ethAmount)} ETH
+              Balance: {ethAmount.format({ precision: 9 })} ETH
             </Text>
           )}
           <CurrencyOptionsModal
@@ -160,10 +159,7 @@ export const SourceCurrency = ({
                     },
                   ).format(maxAmount)}`;
                 }
-                if (
-                  !isOnRamp &&
-                  bn.parseUnits(ethAmount).lt(bn.parseUnits(value))
-                ) {
+                if (!isOnRamp && ethAmount.lt(bn.parseUnits(value, 9))) {
                   return `You don't have enough ETH to sell`;
                 }
                 return true;
