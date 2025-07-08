@@ -1,6 +1,6 @@
 import { Button, Stack } from '@chakra-ui/react';
 import { useEffect, useMemo } from 'react';
-import { FormProvider, useForm } from 'react-hook-form';
+import { FormProvider, useForm, useWatch } from 'react-hook-form';
 
 import { useDebounce } from '@/modules/core/hooks';
 import {
@@ -8,7 +8,7 @@ import {
   IPurchaseLimitsResponse,
 } from '@/modules/core/models/meld';
 import { useListCryptoQuote } from '@/modules/vault/hooks';
-import { parseToNumber } from '@/modules/vault/utils';
+import { valueWithoutCommas } from '@/modules/vault/utils';
 
 import { QuoteError } from '../QuoteError';
 import { SelectPaymentMethod } from '../SelectPaymentMethod';
@@ -62,18 +62,23 @@ export const BuyOrSellForm = ({
   });
   const {
     handleSubmit,
-    watch,
+    control,
     setValue,
     formState: { isValid },
   } = methods;
-  const destinationCurrencyCode = watch('destinationCurrencyCode');
-  const sourceCurrencyCode = watch('sourceCurrencyCode');
-  const paymentMethodType = watch('paymentMethodType');
-  const walletAddress = watch('walletAddress');
-  const countryCode = watch('countryCode');
-  const sourceAmount = watch('sourceAmount');
-  const provider = watch('serviceProvider');
-  const debouncedAmount = useDebounce(parseToNumber(sourceAmount || '0'), 600);
+  const {
+    destinationCurrencyCode,
+    sourceCurrencyCode,
+    countryCode,
+    sourceAmount,
+    serviceProvider: provider,
+    walletAddress,
+    paymentMethodType,
+  } = useWatch({ control });
+  const debouncedAmount = useDebounce(
+    Number(valueWithoutCommas(sourceAmount || '0')),
+    600,
+  );
 
   const {
     quotes,
@@ -81,11 +86,11 @@ export const BuyOrSellForm = ({
     error: errorQuote,
   } = useListCryptoQuote({
     params: {
-      sourceCurrencyCode,
-      destinationCurrencyCode,
-      countryCode,
-      paymentMethodType,
-      walletAddress,
+      sourceCurrencyCode: sourceCurrencyCode!,
+      destinationCurrencyCode: destinationCurrencyCode!,
+      countryCode: countryCode!,
+      paymentMethodType: paymentMethodType!,
+      walletAddress: walletAddress!,
       sourceAmount: debouncedAmount,
     },
     enabled:
@@ -113,9 +118,12 @@ export const BuyOrSellForm = ({
     }
   }, [bestQuote, provider, setValue]);
 
-  const destinationAmount = quotes?.quotes?.find(
-    (quote) => quote.serviceProvider === provider,
-  )?.destinationAmount;
+  const destinationAmount = useMemo(
+    () =>
+      quotes?.quotes?.find((quote) => quote.serviceProvider === provider)
+        ?.destinationAmount,
+    [quotes?.quotes, provider],
+  );
 
   const limits = useMemo(
     () =>
