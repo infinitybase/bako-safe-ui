@@ -8,7 +8,7 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
-import { useMemo } from 'react';
+import { useMemo, useRef } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
 import { SelectedCurrency } from '@/modules/core/components';
@@ -20,6 +20,7 @@ import {
 
 import { CardRoot } from '../CardRoot';
 import { CurrencyOptionsModal } from '../CurrencyOptionsModal';
+import { InputMirror } from '../InputMirror';
 
 export const DestinationCurrency = ({
   quoteDestinationAmount,
@@ -30,6 +31,7 @@ export const DestinationCurrency = ({
   isLoadingQuotes?: boolean;
   isOnRamp: boolean;
 }) => {
+  const inputRef = useRef<HTMLInputElement>(null);
   const { cryptoCurrencies, isLoading: isLoadingCurrencies } =
     useListCryptoCurrencies();
   const { fiatCurrencies, isLoading: isLoadingFiatCurrencies } =
@@ -108,7 +110,7 @@ export const DestinationCurrency = ({
       </Flex>
 
       <Stack justifyContent="center" alignItems="center" w="full">
-        <Stack w="fit-content" alignItems="center" pb={16} pt={5}>
+        <Stack alignItems="center" pb={16} pt={5}>
           <InputGroup
             alignItems="center"
             justifyContent="center"
@@ -128,10 +130,12 @@ export const DestinationCurrency = ({
               px={0}
               variant="filled"
               fontSize="3xl"
+              ref={inputRef}
               value={quoteDestinationAmount}
               disabled
               // disabled={!quoteDestinationAmount}
             />
+            <InputMirror inputRef={inputRef} value={quoteDestinationAmount} />
             <InputRightAddon alignSelf="end" color="section.200">
               {currentCurrency?.currencyCode === 'ETH_FUEL'
                 ? 'ETH'

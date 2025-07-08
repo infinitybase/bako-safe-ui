@@ -9,7 +9,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { bn } from 'fuels';
-import { useMemo } from 'react';
+import { useMemo, useRef } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
 import { CurrencyCode, CurrencyField } from '@/components';
@@ -22,9 +22,11 @@ import {
 import { parseToNumber, removeRightZeroes } from '@/modules/vault/utils';
 import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
 import { FUEL_ETH_ID } from '@/utils/constants';
+import mergeRefs from '@/utils/merge-refs';
 
 import { CardRoot } from '../CardRoot';
 import { CurrencyOptionsModal } from '../CurrencyOptionsModal';
+import { InputMirror } from '../InputMirror';
 
 export const SourceCurrency = ({
   maxAmount,
@@ -35,6 +37,7 @@ export const SourceCurrency = ({
   maxAmount?: number;
   isOnRamp: boolean;
 }) => {
+  const inputRef = useRef<HTMLInputElement>(null);
   const { fiatCurrencies, isLoading: isLoadingCurrencies } =
     useListFiatCurrencies();
   const { assets } = useVaultInfosContext();
@@ -180,6 +183,9 @@ export const SourceCurrency = ({
                 justifyContent="center"
                 borderBottom="1px solid"
                 borderColor={errors.sourceAmount ? 'red.500' : 'grey.950'}
+                _focusWithin={{
+                  borderColor: errors.sourceAmount ? 'red.500' : 'grey.200',
+                }}
                 _hover={{
                   borderColor: errors.sourceAmount ? 'red.500' : 'grey.200',
                 }}
@@ -196,11 +202,13 @@ export const SourceCurrency = ({
                   px={0}
                   fontSize="3xl"
                   {...field}
+                  ref={mergeRefs(field.ref, inputRef)}
                   value={field.value}
                   onChange={(value) => {
                     field.onChange(value);
                   }}
                 />
+                <InputMirror inputRef={inputRef} value={field.value} />
                 <InputRightAddon alignSelf="end" color="section.200">
                   {currentCurrency?.currencyCode === 'ETH_FUEL'
                     ? 'ETH'
