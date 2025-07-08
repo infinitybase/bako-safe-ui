@@ -113,7 +113,7 @@ export const BuyOrSellForm = ({
     }
   }, [bestQuote, provider, setValue]);
 
-  const quoteDestinationAmount = quotes?.quotes?.find(
+  const destinationAmount = quotes?.quotes?.find(
     (quote) => quote.serviceProvider === provider,
   )?.destinationAmount;
 
@@ -136,7 +136,7 @@ export const BuyOrSellForm = ({
           isOnRamp={isOnRamp}
         />
         <DestinationCurrency
-          quoteDestinationAmount={quoteDestinationAmount}
+          destinationAmount={destinationAmount}
           isLoadingQuotes={isLoadingQuotes}
           isOnRamp={isOnRamp}
         />

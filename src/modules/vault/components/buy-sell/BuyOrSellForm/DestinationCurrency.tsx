@@ -23,11 +23,11 @@ import { CurrencyOptionsModal } from '../CurrencyOptionsModal';
 import { InputMirror } from '../InputMirror';
 
 export const DestinationCurrency = ({
-  quoteDestinationAmount,
+  destinationAmount,
   isLoadingQuotes = false,
   isOnRamp,
 }: {
-  quoteDestinationAmount?: number;
+  destinationAmount?: number;
   isLoadingQuotes?: boolean;
   isOnRamp: boolean;
 }) => {
@@ -131,11 +131,10 @@ export const DestinationCurrency = ({
               variant="filled"
               fontSize="3xl"
               ref={inputRef}
-              value={quoteDestinationAmount}
+              value={destinationAmount}
               disabled
-              // disabled={!quoteDestinationAmount}
             />
-            <InputMirror inputRef={inputRef} value={quoteDestinationAmount} />
+            <InputMirror inputRef={inputRef} value={destinationAmount} />
             <InputRightAddon alignSelf="end" color="section.200">
               {currentCurrency?.currencyCode === 'ETH_FUEL'
                 ? 'ETH'
