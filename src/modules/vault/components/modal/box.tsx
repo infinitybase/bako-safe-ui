@@ -50,7 +50,7 @@ const VaultItemBoxComponent = ({
     [members],
   );
 
-  const RenderStatusBadge = useMemo(() => {
+  const StatusBadge = useMemo(() => {
     if (!showPending && !needSignature) return null;
 
     return (
@@ -62,8 +62,8 @@ const VaultItemBoxComponent = ({
     );
   }, [isPending.data?.ofUser, isPending.isLoading, needSignature, showPending]);
 
-  const renderRoot = () => {
-    return (
+  const RootBadge = useMemo(
+    () => (
       <Badge
         variant="gray"
         fontSize="2xs"
@@ -74,19 +74,22 @@ const VaultItemBoxComponent = ({
       >
         Personal
       </Badge>
-    );
-  };
+    ),
+    [],
+  );
 
-  const renderMembers = (members: number) => {
-    return (
-      <HStack spacing={1} align="center">
-        <Text fontSize="sm" color="grey.75" lineHeight="20px">
-          {members}
-        </Text>
-        <Icon as={userIcon} boxSize={5} color="grey.75" />
-      </HStack>
-    );
-  };
+  const MembersBadge = useMemo(
+    () =>
+      members !== undefined ? (
+        <HStack spacing={1} align="center">
+          <Text fontSize="sm" color="grey.75" lineHeight="20px">
+            {members}
+          </Text>
+          <Icon as={userIcon} boxSize={5} color="grey.75" />
+        </HStack>
+      ) : null,
+    [members, userIcon],
+  );
 
   return (
     <Card
@@ -144,17 +147,17 @@ const VaultItemBoxComponent = ({
           {isRootAndPending ? (
             <>
               <HStack spacing={3}>
-                {renderRoot()}
-                {members !== undefined && renderMembers(members)}
+                {RootBadge}
+                {MembersBadge}
               </HStack>
-              {RenderStatusBadge}
+              {StatusBadge}
             </>
           ) : (
             <>
-              {members !== undefined && renderMembers(members)}
+              {MembersBadge}
               <HStack spacing={2}>
-                {root && renderRoot()}
-                {RenderStatusBadge}
+                {root && RootBadge}
+                {StatusBadge}
               </HStack>
             </>
           )}
