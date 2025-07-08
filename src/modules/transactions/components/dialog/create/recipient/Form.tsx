@@ -268,7 +268,7 @@ const RecipientFormField = (props: RecipientFormFieldProps) => {
                 spacing={2}
                 position="relative"
                 width="100%"
-                id="transaction_asset"
+                data-testid="transaction_asset"
               >
                 <AssetSelect
                   isInvalid={fieldState.invalid}
@@ -378,7 +378,9 @@ const RecipientFormField = (props: RecipientFormFieldProps) => {
                       isInvalid={fieldState.invalid}
                       isDisabled={isNFT}
                     />
-                    <FormLabel id="transaction_amount"> Amount</FormLabel>
+                    <FormLabel data-testid="transaction_amount">
+                      Amount
+                    </FormLabel>
 
                     <FormHelperText
                       pl={4}

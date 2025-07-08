@@ -18,7 +18,7 @@ export class TransactionTestService {
     await getByAriaLabel(page, 'Autocomplete Recipient Address 1').fill(
       recipientAddr,
     );
-    await page.locator('#transaction_amount').fill(amount);
+    await page.locator('[data-testid="transaction_amount"]').fill(amount);
     await page.waitForTimeout(500);
 
     return { transactionName, recipientAddr, amount };
@@ -42,7 +42,7 @@ export class TransactionTestService {
     );
     await expect(page.getByText('Invalid address.')).toBeVisible();
 
-    await page.locator('#transaction_amount').fill(amountTxFee);
+    await page.locator('[data-testid="transaction_amount"]').fill(amountTxFee);
     await page.waitForTimeout(500);
     await expect(page.getByText('Insufficient funds for gas')).toBeVisible();
     //await expect(page.getByText('Not enough balance.')).toBeVisible();
@@ -72,11 +72,11 @@ export class TransactionTestService {
     await getByAriaLabel(page, `Autocomplete Recipient Address ${index}`).fill(
       addr,
     );
-    await page.locator('#transaction_asset').click();
+    await page.locator('[data-testid="transaction_asset"]').click();
     await page.waitForTimeout(500);
     await page.locator(`#option-${option}`).click();
     await page.waitForTimeout(2000);
-    await page.locator('#transaction_amount').fill(amount);
+    await page.locator('[data-testid="transaction_amount"]').fill(amount);
     await page.waitForTimeout(500);
 
     return { transactionName, recipientAddr: addr, amount };
