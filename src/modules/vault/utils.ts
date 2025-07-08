@@ -23,7 +23,7 @@ export const ordinateMembers = (
 };
 
 export const parseToNumber = (value: string): number => {
-  const parsedValue = Number(value.replace(/,/g, '.'));
+  const parsedValue = Number(value.replace('.', '').replace(/,/g, '.'));
   return isNaN(parsedValue) ? 0 : parsedValue;
 };
 
