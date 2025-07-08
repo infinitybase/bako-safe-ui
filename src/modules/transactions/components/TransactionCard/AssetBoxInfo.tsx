@@ -109,8 +109,7 @@ const AssetBoxInfo = ({
 
   const displayAmount = isNFT ? '1' : formattedAmount;
 
-  const imgUrl =
-    image ?? (isNFT ? '/nft-empty.svg' : assetsMap?.UNKNOWN?.icon || '');
+  const imgUrl = image ?? (assetsMap?.UNKNOWN?.icon || '');
 
   return (
     <HStack

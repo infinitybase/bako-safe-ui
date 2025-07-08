@@ -252,7 +252,7 @@ const AssetSelect = ({
           <Flex align="center" justify="space-between">
             <Flex align="center" gap={2} flex={1} pt={2}>
               <Image
-                src={selectedOption.image ?? '/nft-empty.svg'}
+                src={selectedOption.image ?? ''}
                 boxSize={6}
                 rounded="md"
                 flexShrink={0}
@@ -344,7 +344,7 @@ const AssetSelect = ({
                   id={`option-${index}`}
                 >
                   <Image
-                    src={image ?? '/nft-empty.svg'}
+                    src={image ?? ''}
                     boxSize={8}
                     rounded={'lg'}
                     flexShrink={0}

@@ -15,13 +15,7 @@ interface AssetsIconProps {
 }
 
 export const AssetsIcon = memo(
-  ({
-    assets,
-    isMobile,
-    showOnlyOneAsset,
-    assetsMap,
-    isNFT,
-  }: AssetsIconProps) => {
+  ({ assets, isMobile, showOnlyOneAsset, assetsMap }: AssetsIconProps) => {
     const { assets: metadataAssets, isLoading } = useGetAssetsMetadata(
       assets.map((asset) => asset.assetId),
     );
@@ -34,11 +28,10 @@ export const AssetsIcon = memo(
             metadataAssets?.[asset.assetId]?.metadata?.image ||
               metadataAssets?.[asset.assetId]?.metadata?.['image:png'] ||
               metadataAssets?.[asset.assetId]?.icon ||
-              (isNFT && '/nft-empty.svg') ||
               assetsMap.UNKNOWN.icon!,
           ),
         })),
-      [assets, metadataAssets, assetsMap, isNFT],
+      [assets, metadataAssets, assetsMap],
     );
 
     return (
