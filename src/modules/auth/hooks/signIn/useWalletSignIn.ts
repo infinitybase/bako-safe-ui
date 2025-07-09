@@ -196,9 +196,9 @@ const useWalletSignIn = (
   }, [evmModal]);
 
   useEffect(() => {
-    if (!evmIsConnected || evmAddress === '') return;
+    if (evmModalIsOpen || !evmIsConnected || evmAddress === '') return;
     handleSelectEvmWallet();
-  }, [evmIsConnected, evmAddress]);
+  }, [evmIsConnected, evmAddress, evmModalIsOpen]);
 
   return {
     handleSelectWallet,
