@@ -25,10 +25,9 @@ const useWalletSignIn = (
   const { fromConnector } = useNetworks();
   const {
     connect: evmConnect,
-    isConnected: evmIsConnected,
     signAndValidate: evmSignAndValidate,
     modal: evmModal,
-    address: evmAddress,
+    getCurrentAccount: evmGetCurrentAccount
   } = useEvm();
 
   const [evmModalIsOpen, setEvmModalIsOpen] = useState<boolean>(false);
@@ -52,19 +51,20 @@ const useWalletSignIn = (
 
   const handleSelectEvmWallet = async () => {
     try {
+      const address = await evmGetCurrentAccount();
       const { code } = await createUserRequest.mutateAsync({
-        address: evmAddress,
+        address: address,
         provider: import.meta.env.VITE_NETWORK,
         type: TypeUser.EVM,
       });
 
-      const signature = await evmSignAndValidate(code, evmAddress);
+      const signature = await evmSignAndValidate(code, address);
 
       const result = await signInRequest.mutateAsync({
         code,
         type: TypeUser.EVM,
         encoder: Encoder.EVM,
-        account: evmAddress,
+        account: address,
         signature,
       });
 
@@ -176,6 +176,7 @@ const useWalletSignIn = (
           case 'MODAL_CLOSE':
           case 'CONNECT_SUCCESS':
             setEvmModalIsOpen(false);
+            handleSelectEvmWallet();
             break;
           case 'CONNECT_ERROR': {
             errorToast({
@@ -194,11 +195,6 @@ const useWalletSignIn = (
       unsub();
     };
   }, [evmModal]);
-
-  useEffect(() => {
-    if (evmModalIsOpen || !evmIsConnected || evmAddress === '') return;
-    handleSelectEvmWallet();
-  }, [evmIsConnected, evmAddress, evmModalIsOpen]);
 
   return {
     handleSelectWallet,
