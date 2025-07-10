@@ -106,7 +106,7 @@ const AssetDetails = ({
       </HStack>
 
       {visibleBalance ? (
-        <VStack spacing={0} align="start" mt={0}>
+        <VStack spacing={0} align="start" mt={0} minH={45}>
           <Text color="white" fontWeight="bold" fontSize="sm" noOfLines={1}>
             {isNFT ? (
               '1'
@@ -132,9 +132,18 @@ const AssetDetails = ({
           }
         </VStack>
       ) : (
-        <Text color="white" fontSize="md" mt={1}>
-          ------
-        </Text>
+        <VStack
+          spacing={0}
+          display={'flex'}
+          align={'start'}
+          justify={'center'}
+          mt={0}
+          minH={45}
+        >
+          <Text color="white" fontSize="md">
+            ------
+          </Text>
+        </VStack>
       )}
     </Box>
   );

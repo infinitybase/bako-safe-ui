@@ -142,7 +142,6 @@ const HomePage = () => {
         h="full"
         isLoaded={!latestPredicates.isLoading}
         minH={latestPredicates.isLoading ? '$100vh' : 'fit-content'}
-        mt={latestPredicates.isLoading ? 6 : 4}
       >
         {!!recentVaults?.length && (
           <RecentVaultsList

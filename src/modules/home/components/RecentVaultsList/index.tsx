@@ -23,7 +23,7 @@ const RecentVaultsList = memo(
 
     return (
       <Fragment>
-        <Box pb={6} alignSelf="flex-start">
+        <Box pb={9} alignSelf="flex-start">
           <Text
             color="grey.400"
             variant="subtitle"
