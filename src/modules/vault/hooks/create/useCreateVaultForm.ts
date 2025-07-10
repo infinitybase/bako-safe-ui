@@ -51,7 +51,9 @@ const schema = (
                     }
 
                     if (BakoAddressUtils.isEvm(_address.value)) {
-                      _a = BakoAddressUtils.parseFuelAddressToEth(_address.value);
+                      _a = BakoAddressUtils.parseFuelAddressToEth(
+                        _address.value,
+                      );
                     }
 
                     return _a;
@@ -60,9 +62,14 @@ const schema = (
                 const addressIndex = context.path.replace(/\D/g, '');
                 const hasAddress = addresses.some(
                   (value: string, _index: number) => {
+                    let a = _address;
+                    if (BakoAddressUtils.isEvm(_address)) {
+                      a = BakoAddressUtils.parseFuelAddressToEth(_address);
+                    }
+
                     return (
                       Number(addressIndex) !== _index &&
-                      value.toLowerCase() === _address.toLowerCase()
+                      value.toLowerCase() === a.toLowerCase()
                     );
                   },
                 );
