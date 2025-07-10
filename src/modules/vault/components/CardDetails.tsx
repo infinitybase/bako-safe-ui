@@ -278,6 +278,10 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                           cursor: 'pointer',
                           opacity: 0.8,
                         }}
+                        minH={7}
+                        display="flex"
+                        alignItems="center"
+                        justifyContent={'center'}
                         onClick={() => setVisibleBalance(!visibleBalance)}
                       >
                         {visibleBalance ? (

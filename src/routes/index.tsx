@@ -1,13 +1,12 @@
 import { Routes } from 'react-router-dom';
 
-import { signinRoutes } from '@/modules/auth';
-import { homeRoutes } from '@/modules/home';
-import { workspaceRoutes } from '@/modules/workspace';
 import { addressBookRoutes } from '@/modules/addressBook';
+import { signinRoutes } from '@/modules/auth';
 import { ScrollTop } from '@/modules/core';
 import { dappRoutes } from '@/modules/dapp';
+import { homeRoutes } from '@/modules/home';
 import { VaultRoutes } from '@/modules/vault';
-import FloatingCard from '@/components/floatingCard';
+import { workspaceRoutes } from '@/modules/workspace';
 
 const routes = (
   <>
@@ -22,7 +21,7 @@ const routes = (
 const AppRoutes = () => {
   return (
     <>
-      <FloatingCard />
+      {/* <FloatingCard /> */}
       <ScrollTop />
       <VaultRoutes />
       <Routes>{routes}</Routes>

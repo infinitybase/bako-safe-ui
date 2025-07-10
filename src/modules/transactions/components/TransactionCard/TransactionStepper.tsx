@@ -14,6 +14,7 @@ import { parseISO } from 'date-fns';
 import { enUS } from 'date-fns/locale';
 import { formatInTimeZone } from 'date-fns-tz';
 import { memo, useEffect, useMemo } from 'react';
+import { AddressUtils as BakoAddressUtils } from 'bakosafe';
 
 import { AddressUtils } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
@@ -197,7 +198,17 @@ const TransactionStepper = memo(({ steps }: TransactionStepperProps) => {
                       )}
                     {!nickname &&
                       step.type !== TransactionHistoryType.SEND &&
-                      step.owner.type !== 'WEB_AUTHN' && (
+                      step.owner.type === 'EVM' && (
+                        <Text variant="subtitle" color="grey.425">
+                          {step.owner.address !== userInfos.address
+                            ? AddressUtils.format(`(eth:${BakoAddressUtils.parseFuelAddressToEth(step.owner.address)})`)
+                            : null}
+                        </Text>
+                      )}
+
+                      {!nickname &&
+                      step.type !== TransactionHistoryType.SEND &&
+                      step.owner.type !== 'WEB_AUTHN' && step.owner.type !== 'EVM' && (
                         <Text variant="subtitle" color="grey.425">
                           {step.owner.address !== userInfos.address
                             ? AddressUtils.format(`(${step.owner.address})`)

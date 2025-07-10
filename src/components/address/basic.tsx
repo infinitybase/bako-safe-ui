@@ -1,4 +1,5 @@
 import { Text, TextProps } from '@chakra-ui/react';
+import { AddressUtils as BakoAddressUtils } from 'bakosafe';
 import { Address as FuelsAddress } from 'fuels';
 
 import { useGetParams } from '@/modules/core/hooks';
@@ -37,10 +38,18 @@ const Address = (props: AddressProps) => {
   } = useWorkspaceContext();
 
   const isPasskey = AddressUtils.isPasskey(value);
-  const b256Address =
-    value && !isPasskey
+  const isEvm = BakoAddressUtils.isEvm(value);
+  const getB256Address = () => {
+    if (isEvm) {
+      return 'eth:' + value;
+    }
+
+    return value && !isPasskey
       ? FuelsAddress.fromString(value).toString()
       : (value ?? '');
+  };
+
+  const b256Address = getB256Address();
 
   return (
     <Text

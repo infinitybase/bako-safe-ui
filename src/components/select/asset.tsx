@@ -346,7 +346,7 @@ const AssetSelect = ({
                   <Image
                     src={image ?? ''}
                     boxSize={8}
-                    rounded="lg"
+                    rounded={'lg'}
                     flexShrink={0}
                   />
                   <Stack gap={0} flex={1} minW={0}>
