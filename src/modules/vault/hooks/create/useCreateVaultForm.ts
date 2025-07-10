@@ -44,9 +44,17 @@ const schema = (
                   : address;
                 const addresses = schema?.value.addresses.map(
                   (_address: { value: string }) => {
-                    const _a = AddressUtils.isPasskey(_address.value)
-                      ? AddressUtils.fromBech32(_address.value as Batch32)
-                      : _address.value;
+                    let _a = _address.value;
+
+                    if (AddressUtils.isPasskey(_address.value)) {
+                      _a = AddressUtils.fromBech32(_address.value as Batch32);
+                    }
+
+                    if (BakoAddressUtils.isEvm(_address.value)) {
+                      _a = BakoAddressUtils.parseFuelAddressToEth(
+                        _address.value,
+                      );
+                    }
 
                     return _a;
                   },
@@ -54,9 +62,14 @@ const schema = (
                 const addressIndex = context.path.replace(/\D/g, '');
                 const hasAddress = addresses.some(
                   (value: string, _index: number) => {
+                    let a = _address;
+                    if (BakoAddressUtils.isEvm(_address)) {
+                      a = BakoAddressUtils.parseFuelAddressToEth(_address);
+                    }
+
                     return (
                       Number(addressIndex) !== _index &&
-                      value.toLowerCase() === _address.toLowerCase()
+                      value.toLowerCase() === a.toLowerCase()
                     );
                   },
                 );

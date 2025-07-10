@@ -16,9 +16,9 @@ import {
 import { useFuel } from '@fuels/react';
 import { useEffect, useState } from 'react';
 import { RiLogoutBoxRLine } from 'react-icons/ri';
+import { AddressUtils as BakoAddressUtils } from 'bakosafe';
 
 import { CustomSkeleton, EmptyBox, LineCloseIcon } from '@/components';
-import { Container } from '@/layouts/dapp/container';
 import { useQueryParams } from '@/modules/auth';
 import { TypeUser } from '@/modules/auth/services';
 import { AddressUtils } from '@/modules/core';
@@ -104,6 +104,16 @@ const VaultConnector = () => {
     }
   };
 
+  const getUserAddress = () => {
+    if (BakoAddressUtils.isEvm(userInfos?.address)) {
+      return AddressUtils.format(BakoAddressUtils.parseFuelAddressToEth(userInfos?.address), 15);
+    }
+
+    return isWebAuthn
+      ? userInfos?.name
+      : AddressUtils.format(userInfos?.address, 15);
+  };
+
   return (
     <VStack
       w="full"
@@ -114,10 +124,7 @@ const VaultConnector = () => {
         scrollbarWidth: 'none',
       }}
     >
-      <VStack
-        h="full"
-        maxWidth={404}
-      >
+      <VStack h="full" maxWidth={404}>
         <Box
           w="full"
           overflowY="auto"
@@ -127,7 +134,6 @@ const VaultConnector = () => {
             scrollbarWidth: 'none',
           }}
         >
-        
           <CreateVaultDialog isOpen={isOpen} onClose={onClose} />
 
           <HStack gap={3} paddingX={6} paddingTop={5} w="full">
@@ -148,9 +154,7 @@ const VaultConnector = () => {
                 fontWeight={500}
                 lineHeight={4}
               >
-                {isWebAuthn
-                  ? userInfos?.name
-                  : AddressUtils.format(userInfos?.address, 15)}
+                {getUserAddress()}
               </Text>
 
               {isWebAuthn && (
@@ -236,8 +240,14 @@ const VaultConnector = () => {
                 {vaults?.map((vault) => {
                   if (!vault) return null;
 
-                  const { id, name, predicateAddress, workspace, members, root } =
-                    vault;
+                  const {
+                    id,
+                    name,
+                    predicateAddress,
+                    workspace,
+                    members,
+                    root,
+                  } = vault;
 
                   if (id === currentVault && !selectedVaultId)
                     setSelectedVaultId(id);

@@ -182,5 +182,6 @@ export const useEvm = () => {
     disconnect,
     signAndValidate,
     address,
+    getCurrentAccount,
   };
 };

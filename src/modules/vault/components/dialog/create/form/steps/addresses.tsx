@@ -12,6 +12,7 @@ import {
 import { Address, isB256, isEvmAddress } from 'fuels';
 import { useRef, useState } from 'react';
 import { Controller } from 'react-hook-form';
+import { AddressUtils as BakoAddressUtils } from 'bakosafe';
 
 import { Autocomplete, Dialog, RemoveIcon, Select } from '@/components';
 import {
@@ -300,8 +301,17 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
                           <AddToAddressBook
                             visible={showAddToAddressBook}
                             onAdd={() => {
+                              let _address = field.value;
+
+                              if (BakoAddressUtils.isEvm(_address)) {
+                                _address =
+                                  'eth:' + BakoAddressUtils.parseFuelAddressToEth(
+                                    _address,
+                                  );
+                              }
+
                               handleOpenDialog?.({
-                                address: field.value,
+                                address: _address,
                               });
                             }}
                           />
