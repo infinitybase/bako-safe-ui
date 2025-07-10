@@ -102,11 +102,20 @@ export const useAssetMap = (chainId: number) => {
     return nfts;
   }, [mappedNfts]);
 
+  const getAssetInfo = (assetId: string) => {
+    return (
+      assetsMap[assetId] ||
+      mappedTokens[assetId] ||
+      mappedNfts[assetId] ||
+      assetsMap?.UNKNOWN
+    );
+  };
+
   const assetsMap = useMemo(() => {
     return assetsMapFromFormattedFn(assetList as unknown as Assets, chainId);
   }, [assetList, chainId]);
 
-  return { assetList, nftList, assetsMap };
+  return { assetList, nftList, assetsMap, getAssetInfo };
 };
 
 export type UseAssetMap = ReturnType<typeof useAssetMap>;
