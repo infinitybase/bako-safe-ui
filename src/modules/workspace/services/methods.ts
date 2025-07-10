@@ -4,6 +4,7 @@ import { Assets, assets, BN } from 'fuels';
 import { api } from '@/config';
 import { useMappedAssetStore } from '@/modules/assets-tokens/hooks/useAssetMap';
 import {
+  AssetMap,
   IPagination,
   IPermission,
   IPermissions,
@@ -12,6 +13,7 @@ import {
   Workspace,
 } from '@/modules/core';
 import { ITransaction } from '@/modules/core/hooks/bakosafe/utils/types';
+import request from '@/utils/request';
 
 export interface IWitnesses {
   account: string;
@@ -177,13 +179,7 @@ export class WorkspaceService {
 
     const url = `${_chainId[chainId]}/assets/${assetId}`;
 
-    const response = await fetch(url)
-      .then(async (res) => {
-        return await res.json();
-      })
-      .catch(() => {
-        return undefined;
-      });
+    const response = await request<AssetMap['']>(url);
 
     return response;
   }
