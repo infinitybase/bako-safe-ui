@@ -8,6 +8,7 @@ export type DefaultMetadata = {
   date?: number;
   name?: string;
   image?: string;
+  'image:png'?: string;
   edition?: number;
   compiler?: string;
   attributes?: Attribute[];

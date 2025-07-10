@@ -8,6 +8,7 @@ import {
   AssetMap,
   assetsMapFromFormattedFn,
 } from '@/modules/core/utils/assets';
+import { tokensIDS } from '@/modules/core/utils/assets/address';
 import {
   formatMetadataFromIpfs,
   parseURI,
@@ -94,20 +95,32 @@ export const useAssetMap = (chainId: number) => {
   }, [mappedTokens]);
 
   const nftList = useMemo(() => {
-    const tokenList = [
-      ...Object.values(mappedNfts).map((nft) => ({
+    const tokens = new Set(Object.values(tokensIDS));
+
+    const nfts = Object.values(mappedNfts)
+      .filter((nft) => !tokens.has(nft.assetId))
+      .map((nft) => ({
         ...nft,
         metadata: nft.metadata,
-      })),
-    ];
-    return tokenList;
+      }));
+
+    return nfts;
   }, [mappedNfts]);
+
+  const getAssetInfo = (assetId: string) => {
+    return (
+      assetsMap[assetId] ||
+      mappedTokens[assetId] ||
+      mappedNfts[assetId] ||
+      assetsMap?.UNKNOWN
+    );
+  };
 
   const assetsMap = useMemo(() => {
     return assetsMapFromFormattedFn(assetList as unknown as Assets, chainId);
   }, [assetList, chainId]);
 
-  return { assetList, nftList, assetsMap };
+  return { assetList, nftList, assetsMap, getAssetInfo };
 };
 
 export type UseAssetMap = ReturnType<typeof useAssetMap>;
