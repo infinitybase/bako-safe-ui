@@ -72,15 +72,6 @@ const UserTransactionsPage = () => {
 
   useTransactionSocketListener(transactionQueryKey ?? []);
 
-  const hasLoadedEnoughTransactions = (() => {
-    let count = 0;
-    for (const item of transactions) {
-      count += item.transactions.length;
-      if (count > 3) return true;
-    }
-    return !isFetching && !pendingSignerTransactions.isFetching;
-  })();
-
   return (
     <VStack
       w="full"
@@ -285,7 +276,7 @@ const UserTransactionsPage = () => {
         }
       </VStack>
 
-      <CustomSkeleton h="full" isLoaded={hasLoadedEnoughTransactions}>
+      <CustomSkeleton h="full" isLoaded={!isLoading}>
         {emptyTransactions && (
           <EmptyState
             h="full"
