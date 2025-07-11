@@ -73,9 +73,9 @@ const Amount = ({
       amount: bn(a?.amount)?.format({
         units: assetsMap[a?.assetId]?.units ?? assetsMap.UNKNOWN.units,
       }),
-      isNFT: nftAssetIds.has(a?.assetId) || bn(a?.amount).eq(bn(1)),
+      isNFT: a?.assetId ? nftAssetIds.has(a.assetId) : bn(a?.amount).eq(bn(1)),
     }));
-  }, [transaction?.assets, assetsMap, nftList]);
+  }, [transaction?.assets, nftList, assetsMap]);
 
   const txUSDAmount = useTxAmountToUSD(
     formattedAssets,
@@ -93,8 +93,9 @@ const Amount = ({
         : totalAmoutSent,
     [transaction?.assets, assetsMap, totalAmoutSent],
   );
+
   const isNFT =
-    formattedAssets.length === 1 && formattedAssets[0].isNFT === true;
+    formattedAssets.length === 1 && formattedAssets[0]?.isNFT === true;
 
   return (
     <HStack

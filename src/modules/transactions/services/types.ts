@@ -44,6 +44,7 @@ export type ITransactionStatusFilter = TransactionStatus[] | string[] | string;
 export enum TypeUser {
   FUEL = 'FUEL',
   WEB_AUTHN = 'WEB_AUTHN',
+  EVM = 'EVM',
 }
 
 export interface ITransactionHistory {
