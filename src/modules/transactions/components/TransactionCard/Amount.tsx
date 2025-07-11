@@ -1,9 +1,9 @@
 import {
+  type BoxProps,
   Flex,
   HStack,
   Text,
   useMediaQuery,
-  type BoxProps,
 } from '@chakra-ui/react';
 import type { ITransferAsset } from 'bakosafe';
 import { bn } from 'fuels';
@@ -14,7 +14,7 @@ import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useGetAssetsByOperations } from '../../hooks';
-import type { TransactionWithVault } from '../../services';
+import { type TransactionWithVault } from '../../services';
 import { AssetsIcon } from './AssetsIcon';
 import { AmountUSD } from './transfer-details';
 
