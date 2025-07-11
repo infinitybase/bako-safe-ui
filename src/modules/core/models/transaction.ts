@@ -14,6 +14,10 @@ export enum TransactionStatus {
   ERROR = 'ERROR',
 }
 
+export enum TransactionStatusWithOnOffRamp {
+  PENDING_PROVIDER = 'pending_provider',
+}
+
 export interface TransactionState {
   isCompleted: boolean;
   isDeclined: boolean;
@@ -22,6 +26,7 @@ export interface TransactionState {
   isReproved: boolean;
   isError: boolean;
   isCanceled: boolean;
+  isPendingProvider: boolean;
 }
 
 export interface Transaction {
@@ -31,11 +36,18 @@ export interface Transaction {
   name: string;
   txData: string;
   hash: string;
-  status: BakoSafeTransactionStatus;
+  status: BakoSafeTransactionStatus | TransactionStatusWithOnOffRamp;
   sendTime: string;
   gasUsed: string;
   resume: ITransactionResume;
   assets: IAsset[];
   predicate: Predicate;
   createdAt: Date;
+  rampTransaction?: {
+    provider: string;
+    sourceAmount?: string;
+    sourceCurrency?: string;
+    destinationAmount?: string;
+    destinationCurrency?: string;
+  };
 }
