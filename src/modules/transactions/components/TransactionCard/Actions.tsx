@@ -82,8 +82,14 @@ const Actions = memo(
       },
     } = useTransactionsContext();
 
-    const { isSigned, isDeclined, isCompleted, isReproved, isCanceled } =
-      status;
+    const {
+      isSigned,
+      isDeclined,
+      isCompleted,
+      isReproved,
+      isCanceled,
+      isPendingProvider,
+    } = status;
 
     const awaitingAnswer = useMemo(
       () =>
@@ -91,8 +97,16 @@ const Actions = memo(
         !isDeclined &&
         !isCompleted &&
         !isReproved &&
+        !isPendingProvider &&
         !!transaction,
-      [isSigned, isDeclined, isCompleted, isReproved, transaction],
+      [
+        isSigned,
+        isDeclined,
+        isCompleted,
+        isReproved,
+        transaction,
+        isPendingProvider,
+      ],
     );
 
     const notAnswered = useMemo(
