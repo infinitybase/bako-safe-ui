@@ -8,6 +8,12 @@ export const FIAT_CURRENCIES_ASSET_IDS = Object.freeze({
   BRL: hashMessage('BRL'),
 });
 
+export const FIAT_CURRENCIES = new Set([
+  FIAT_CURRENCIES_ASSET_IDS.USD,
+  FIAT_CURRENCIES_ASSET_IDS.EUR,
+  FIAT_CURRENCIES_ASSET_IDS.BRL,
+]);
+
 export const FIAT_CURRENCIES_ASSET_MAP: AssetMap = {
   [FIAT_CURRENCIES_ASSET_IDS.USD]: Object.freeze({
     name: 'USD',
