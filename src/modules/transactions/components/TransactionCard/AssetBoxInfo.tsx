@@ -3,6 +3,7 @@ import {
   Center,
   HStack,
   Image,
+  Stack,
   type StackProps,
   Text,
   VStack,
@@ -15,11 +16,12 @@ import { Address, DoubleArrowIcon, Handle } from '@/components';
 import { DeployIcon } from '@/components/icons/tx-deploy';
 import { useAssetMap } from '@/modules/assets-tokens/hooks/useAssetMap';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
-import type { AssetModel } from '@/modules/core';
+import type { AssetModel, IRampTransaction } from '@/modules/core';
 import { useAddressNicknameResolver } from '@/modules/core/hooks/useAddressNicknameResolver';
 import { parseURI } from '@/modules/core/utils/formatter';
 import { useNetworks } from '@/modules/network/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { moneyFormat } from '@/utils/money-format';
 
 import { AmountUSD } from './transfer-details';
 import { AddressActions } from './transfer-details/address-actions';
@@ -31,6 +33,8 @@ interface AssetBoxInfoProps extends StackProps {
   isContract?: boolean;
   handle?: string;
   resolver?: string;
+  rampTransaction?: IRampTransaction;
+  isFiatCurrency?: boolean;
 }
 
 const AssetBoxInfo = ({
@@ -41,6 +45,8 @@ const AssetBoxInfo = ({
   isContract,
   handle,
   resolver,
+  rampTransaction,
+  isFiatCurrency = false,
   ...props
 }: AssetBoxInfoProps) => {
   const {
@@ -106,131 +112,221 @@ const AssetBoxInfo = ({
         : assetInfo?.icon,
     [assetInfo?.icon, assetInfo.metadata, isNFT],
   );
-
-  const displayAmount = isNFT ? '1' : formattedAmount;
+  const onRampAmount = useMemo(
+    () =>
+      rampTransaction?.sourceAmount && isFiatCurrency
+        ? moneyFormat(
+            rampTransaction.sourceAmount,
+            rampTransaction.sourceCurrency,
+          )
+        : null,
+    [rampTransaction, isFiatCurrency],
+  );
+  const displayAmount = isNFT ? '1' : onRampAmount || formattedAmount;
 
   const imgUrl = image ?? (assetsMap?.UNKNOWN?.icon || '');
 
+  const amount = useMemo(
+    () =>
+      isFiatCurrency && rampTransaction?.fiatAmountInUsd
+        ? moneyFormat(rampTransaction?.fiatAmountInUsd?.toString())
+        : txUSDAmount,
+    [isFiatCurrency, rampTransaction?.fiatAmountInUsd, txUSDAmount],
+  );
+
+  const contactOrProvider = useMemo(
+    () =>
+      isFiatCurrency
+        ? rampTransaction?.providerTransaction
+        : assetAddressInfo?.contact,
+    [
+      isFiatCurrency,
+      rampTransaction?.providerTransaction,
+      assetAddressInfo?.contact,
+    ],
+  );
+
+  const paymentMethodOrProvider = useMemo(
+    () =>
+      isFiatCurrency
+        ? rampTransaction?.paymentMethod
+        : rampTransaction?.providerTransaction,
+    [
+      isFiatCurrency,
+      rampTransaction?.paymentMethod,
+      rampTransaction?.providerTransaction,
+    ],
+  );
+
   return (
-    <HStack
+    <Stack
       py={2}
       justifyContent={{ base: 'space-between' }}
       w="full"
       borderTopWidth={1}
+      direction={{
+        base: !rampTransaction ? 'row' : 'column',
+        xs: 'row',
+      }}
       {...props}
     >
-      {assetInfo && (
-        <VStack alignItems="start" minW="40px">
-          <Image
-            w={7}
-            h={7}
-            src={parseURI(imgUrl)}
-            borderRadius="md"
-            alt="Asset Icon"
-            objectFit="cover"
-          />
-
-          <Text fontSize="sm" color="grey.500">
-            {assetInfo?.slug}
-          </Text>
-        </VStack>
-      )}
-
-      <VStack mt={0.5} minW={isLitteSmall ? '75px' : '105px'}>
-        <Text
-          textAlign="center"
-          variant={isMobile ? 'title-sm' : 'title-md'}
-          color="grey.75"
-          fontSize={isLowerThanFourHundredAndThirty ? 'xs' : 'sm'}
-        >
-          {displayAmount}
-        </Text>
-        <Text
-          textAlign="center"
-          variant="description"
-          fontSize="xs"
-          color="grey.500"
-        >
-          <AmountUSD amount={txUSDAmount} isNFT={isNFT} />
-        </Text>
-      </VStack>
-
-      <Center
-        p={{ base: 1.5, sm: 3 }}
-        borderRadius={5}
-        bgColor="grey.825"
-        borderWidth={1}
-        borderColor="grey.925"
-        boxSize="30px"
+      <HStack
+        justifyContent={{ base: 'space-between', xs: 'flex-start' }}
+        w="full"
       >
-        <Icon
-          color="grey.250"
-          fontSize={isDeploy ? '12.8px' : !isContract ? '18px' : '12.8px'}
-          as={isDeploy ? DeployIcon : !isContract ? DoubleArrowIcon : FaPlay}
-        />
-      </Center>
+        {assetInfo && (
+          <VStack alignItems="start" minW="40px">
+            <Image
+              w={7}
+              h={7}
+              src={parseURI(imgUrl)}
+              borderRadius="md"
+              alt="Asset Icon"
+              objectFit="cover"
+            />
 
-      {asset?.to && (
-        <HStack
-          alignItems="center"
-          justifyContent="flex-end"
-          spacing={{ base: isLitteSmall ? 0.5 : 1, xs: 2 }}
-          minW={{
-            base: isExtraSmall ? '100px' : isLitteSmall ? '125px' : '135px',
-            xs: '160px',
-            md: '170px',
-          }}
-        >
-          <VStack alignItems="end" spacing={1}>
-            {assetAddressInfo?.contact && (
-              <Text
-                isTruncated
-                textOverflow="ellipsis"
-                maxW={{
-                  base: isExtraSmall
-                    ? '75px'
-                    : isLitteSmall
-                      ? '100px'
-                      : '110px',
-                  xs: '130px',
-                  lg: '130px',
-                }}
-                color="grey.75"
-                fontSize={isLowerThanFourHundredAndThirty ? 'xs' : 'sm'}
-              >
-                {assetAddressInfo?.contact}
-              </Text>
-            )}
-
-            {!assetAddressInfo?.contact && !assetAddressInfo?.handle && (
-              <Address
-                value={asset?.to}
-                color={assetAddressInfo?.contact ? 'grey.500' : 'grey.75'}
-              />
-            )}
-
-            {assetAddressInfo?.handle && (
-              <Handle
-                value={assetAddressInfo.handle}
-                isTruncated
-                textOverflow="ellipsis"
-                maxW={{
-                  base: isExtraSmall ? '50px' : isLitteSmall ? '75px' : '85px',
-                  xs: '105px',
-                  lg: '105px',
-                }}
-              />
-            )}
+            <Text fontSize="sm" color="grey.500">
+              {assetInfo?.slug}
+            </Text>
           </VStack>
+        )}
 
-          <AddressActions
-            address={asset.to}
-            handle={assetAddressInfo?.handle}
-            hasContact={!!assetAddressInfo?.contact}
+        <VStack mt={0.5} minW={isLitteSmall ? '75px' : '105px'}>
+          <Text
+            textAlign="center"
+            variant={isMobile ? 'title-sm' : 'title-md'}
+            color="grey.75"
+            fontSize={isLowerThanFourHundredAndThirty ? 'xs' : 'sm'}
+          >
+            {displayAmount}
+          </Text>
+          {rampTransaction?.sourceCurrency !== 'USD' && (
+            <Text
+              textAlign="center"
+              variant="description"
+              fontSize="xs"
+              color="grey.500"
+            >
+              <AmountUSD amount={amount} isNFT={isNFT} />
+            </Text>
+          )}
+        </VStack>
+      </HStack>
+
+      <HStack justifyContent="space-between" w="full">
+        {paymentMethodOrProvider && (
+          <Stack
+            gap={0}
+            minW={{
+              base: 'auto',
+              xs: '200px',
+            }}
+            alignItems={{
+              base: 'start',
+              xs: 'end',
+            }}
+          >
+            <Text color="grey.75" fontSize="xs">
+              {paymentMethodOrProvider}
+            </Text>
+            <Text color="grey.500" fontSize="2xs">
+              {isFiatCurrency ? 'Founds via' : 'Quote By'}
+            </Text>
+          </Stack>
+        )}
+
+        <Center
+          p={{ base: 1.5, sm: 3 }}
+          borderRadius={5}
+          bgColor="grey.825"
+          borderWidth={1}
+          borderColor="grey.925"
+          boxSize="30px"
+        >
+          <Icon
+            color="grey.250"
+            fontSize={isDeploy ? '12.8px' : !isContract ? '18px' : '12.8px'}
+            as={isDeploy ? DeployIcon : !isContract ? DoubleArrowIcon : FaPlay}
           />
-        </HStack>
-      )}
-    </HStack>
+        </Center>
+
+        {(asset?.to || isFiatCurrency) && (
+          <HStack
+            alignItems="center"
+            justifyContent="flex-end"
+            spacing={{ base: isLitteSmall ? 0.5 : 1, xs: 2 }}
+            minW={{
+              base: isExtraSmall ? '100px' : isLitteSmall ? '125px' : '135px',
+              xs: '160px',
+              md: '170px',
+            }}
+          >
+            <VStack alignItems="end" spacing={1}>
+              {contactOrProvider && (
+                <Stack gap={0} alignItems="end">
+                  <Text
+                    isTruncated
+                    textOverflow="ellipsis"
+                    maxW={{
+                      base: isExtraSmall
+                        ? '75px'
+                        : isLitteSmall
+                          ? '100px'
+                          : '110px',
+                      xs: '130px',
+                      lg: '130px',
+                    }}
+                    color="grey.75"
+                    fontSize={isLowerThanFourHundredAndThirty ? 'xs' : 'sm'}
+                  >
+                    {contactOrProvider}
+                  </Text>
+                  {isFiatCurrency && (
+                    <Text color="grey.500" as="span" fontSize="2xs">
+                      Quote By
+                    </Text>
+                  )}
+                </Stack>
+              )}
+
+              {!assetAddressInfo?.contact &&
+                !assetAddressInfo?.handle &&
+                asset?.to && (
+                  <Address
+                    value={asset?.to}
+                    color={assetAddressInfo?.contact ? 'grey.500' : 'grey.75'}
+                  />
+                )}
+
+              {assetAddressInfo?.handle && (
+                <Handle
+                  value={assetAddressInfo.handle}
+                  isTruncated
+                  textOverflow="ellipsis"
+                  maxW={{
+                    base: isExtraSmall
+                      ? '50px'
+                      : isLitteSmall
+                        ? '75px'
+                        : '85px',
+                    xs: '105px',
+                    lg: '105px',
+                  }}
+                />
+              )}
+            </VStack>
+
+            {asset?.to && (
+              <AddressActions
+                address={asset.to}
+                handle={assetAddressInfo?.handle}
+                hasContact={!!assetAddressInfo?.contact}
+              />
+            )}
+          </HStack>
+        )}
+      </HStack>
+    </Stack>
   );
 };
 
