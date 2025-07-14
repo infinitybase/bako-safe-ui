@@ -23,7 +23,7 @@ import { useTransactionsContext } from '../../providers/TransactionsProvider';
 import { ITransactionWithType } from '../../services';
 
 interface ActionsMobileProps {
-  awaitingAnswer?: boolean | ITransactionWithType;
+  isPossibleToSign: boolean;
 }
 
 interface TransactionActionsProps extends BoxProps {
@@ -34,16 +34,17 @@ interface TransactionActionsProps extends BoxProps {
   callBack?: () => void;
 }
 
-const ActionsMobile = ({ awaitingAnswer }: ActionsMobileProps) => {
+const ActionsMobile = ({ isPossibleToSign }: ActionsMobileProps) => {
   const {
     screenSizes: { isSmall, isExtraSmall },
   } = useWorkspaceContext();
+
   return (
     <HStack justifyContent="end" spacing={1}>
       <Button
-        color={awaitingAnswer ? 'black' : 'grey.75'}
-        bgColor={awaitingAnswer ? 'brand.500' : '#F5F5F50D'}
-        fontWeight={awaitingAnswer ? 'bold' : 'normal'}
+        color={isPossibleToSign ? 'black' : 'grey.75'}
+        bgColor={isPossibleToSign ? 'brand.500' : '#F5F5F50D'}
+        fontWeight={isPossibleToSign ? 'bold' : 'normal'}
         border="none"
         fontSize="xs"
         letterSpacing=".5px"
@@ -54,7 +55,7 @@ const ActionsMobile = ({ awaitingAnswer }: ActionsMobileProps) => {
         }
         px={isExtraSmall ? 3 : 4}
       >
-        {awaitingAnswer ? 'Sign' : isSmall ? 'Details' : 'View Details'}
+        {isPossibleToSign ? 'Sign' : isSmall ? 'Details' : 'View Details'}
       </Button>
     </HStack>
   );
@@ -89,6 +90,7 @@ const Actions = memo(
       isReproved,
       isCanceled,
       isPendingProvider,
+      isError,
     } = status;
 
     const awaitingAnswer = useMemo(
@@ -120,6 +122,11 @@ const Actions = memo(
       [isLoading, selectedTransaction?.id, transaction?.id],
     );
 
+    const showActionsButtons = useMemo(
+      () => !isError && !isCanceled && awaitingAnswer && isSigner,
+      [isError, isCanceled, awaitingAnswer, isSigner],
+    );
+
     const disableActionButtons =
       isSuccess && !awaitingAnswer
         ? false
@@ -148,7 +155,7 @@ const Actions = memo(
     );
 
     if (isMobile) {
-      return <ActionsMobile awaitingAnswer={awaitingAnswer} />;
+      return <ActionsMobile isPossibleToSign={showActionsButtons} />;
     }
 
     return (
@@ -178,7 +185,7 @@ const Actions = memo(
           </Badge>
         )}
 
-        {!isCanceled && awaitingAnswer && isSigner ? (
+        {showActionsButtons ? (
           <HStack minW={{ base: 140, sm: 100, xl: 140 }}>
             <Button
               h={9}
