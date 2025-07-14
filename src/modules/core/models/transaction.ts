@@ -29,6 +29,17 @@ export interface TransactionState {
   isPendingProvider: boolean;
 }
 
+export interface IRampTransaction {
+  provider: string;
+  sourceAmount?: string;
+  sourceCurrency?: string;
+  destinationAmount?: string;
+  destinationCurrency?: string;
+  fiatAmountInUsd?: number;
+  paymentMethod?: string;
+  providerTransaction?: string;
+}
+
 export interface Transaction {
   id: string;
   predicateAdress: string;
@@ -43,11 +54,5 @@ export interface Transaction {
   assets: IAsset[];
   predicate: Predicate;
   createdAt: Date;
-  rampTransaction?: {
-    provider: string;
-    sourceAmount?: string;
-    sourceCurrency?: string;
-    destinationAmount?: string;
-    destinationCurrency?: string;
-  };
+  rampTransaction?: IRampTransaction;
 }

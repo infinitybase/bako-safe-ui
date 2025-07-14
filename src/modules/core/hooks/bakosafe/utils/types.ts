@@ -13,6 +13,7 @@ import {
 } from 'bakosafe';
 import { Network, TransactionRequest } from 'fuels';
 
+import { IRampTransaction } from '@/modules/core/models';
 import { TransactionTypeWithRamp } from '@/modules/transactions/services';
 
 export interface BakoSafeAuthParams {
@@ -66,6 +67,7 @@ export interface ITransaction extends ICreateTransactionPayload {
   resume: ITransactionResume; // RESULT
   assets: ITransferAsset[];
   summary?: ITransactionSummary;
+  rampTransaction?: IRampTransaction;
 }
 
 export enum SortOptionTx {
