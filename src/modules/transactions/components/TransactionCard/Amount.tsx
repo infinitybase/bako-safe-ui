@@ -11,10 +11,14 @@ import { useMemo } from 'react';
 
 import { CustomSkeleton } from '@/components';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
+import { FIAT_CURRENCIES } from '@/modules/core/utils/fiat-currencies';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useGetAssetsByOperations } from '../../hooks';
-import { type TransactionWithVault } from '../../services';
+import {
+  ON_OFF_RAMP_TRANSACTION_TYPES,
+  type TransactionWithVault,
+} from '../../services';
 import { AssetsIcon } from './AssetsIcon';
 import { AmountUSD } from './transfer-details';
 
@@ -39,10 +43,16 @@ const Amount = ({
     assetsMap,
     nftList,
   } = useWorkspaceContext();
+  const isOnOffRamp = useMemo(
+    () => ON_OFF_RAMP_TRANSACTION_TYPES.includes(transaction.type),
+    [transaction.type],
+  );
 
   const totalAmoutSent = useMemo(
     () =>
       transaction.assets
+        // remove fiat currencies from the total amount
+        .filter((asset) => !FIAT_CURRENCIES.has(asset.assetId))
         .reduce((total, asset) => total.add(asset.amount), bn(0))
         .format(),
     [transaction.assets],
@@ -61,8 +71,8 @@ const Amount = ({
   );
 
   const isMultiToken = useMemo(
-    () => oneAssetOfEach.length >= 2,
-    [oneAssetOfEach.length],
+    () => oneAssetOfEach.length >= 2 && !isOnOffRamp,
+    [oneAssetOfEach.length, isOnOffRamp],
   );
 
   const formattedAssets = useMemo(() => {
