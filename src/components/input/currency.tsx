@@ -52,6 +52,29 @@ export interface CurrencyFieldProps
   isInvalid?: boolean;
 }
 
+const formatValue = (
+  value: string,
+  config: CurrencyConfig,
+  includeLeadingZero: boolean,
+) => {
+  const [integerPart, decimalPart] = value.split(config.decimalSeparator);
+  let decimal = decimalPart || '';
+  let integer = integerPart || '';
+
+  if (config.thousandsSeparator) {
+    integer = integer.replace(
+      /\B(?=(\d{3})+(?!\d))/g,
+      config.thousandsSeparator,
+    );
+  }
+
+  if (includeLeadingZero) {
+    decimal = decimal.padEnd(config.decimalScale, '0');
+  }
+
+  return `${integer}${config.decimalSeparator}${decimal}`;
+};
+
 const CurrencyField = forwardRef<HTMLInputElement, CurrencyFieldProps>(
   ({ value = '', currency, onChange, isInvalid, ...props }, ref) => {
     const isCrypto = useMemo(
@@ -59,27 +82,26 @@ const CurrencyField = forwardRef<HTMLInputElement, CurrencyFieldProps>(
       [currency],
     );
     const config = useMemo(() => CURRENCY_CONFIGS[currency], [currency]);
-
+    const regexCache = useMemo(() => {
+      const decimalEscaped = config.decimalSeparator.replace(
+        /[.*+?^${}()|[\]\\]/g,
+        '\\$&',
+      );
+      const thousandsEscaped = config.thousandsSeparator?.replace(
+        /[.*+?^${}()|[\]\\]/g,
+        '\\$&',
+      );
+      return {
+        crypto: new RegExp(`[^0-9\\${decimalEscaped}]`, 'g'),
+        currency: new RegExp(
+          `[^0-9\\${decimalEscaped}${thousandsEscaped ? `\\${thousandsEscaped}` : ''}]`,
+          'g',
+        ),
+      };
+    }, [config.decimalSeparator, config.thousandsSeparator]);
     const getAllowedPattern = useCallback(() => {
-      return isCrypto
-        ? new RegExp(`[^0-9\\${config.decimalSeparator}]`, 'g')
-        : new RegExp(
-            `[^0-9\\${config.decimalSeparator}${config.thousandsSeparator ? `\\${config.thousandsSeparator}` : ''}]`,
-            'g',
-          );
-    }, [config, isCrypto]);
-
-    const cleanValue = useCallback((inputValue: string) => {
-      return inputValue
-        .replace(/[^0-9.,]/g, '')
-        .replace(/[,.]/g, (_, offset, string) => {
-          const lastSeparatorIndex = Math.max(
-            string.lastIndexOf(','),
-            string.lastIndexOf('.'),
-          );
-          return offset === lastSeparatorIndex ? '.' : '';
-        });
-    }, []);
+      return isCrypto ? regexCache.crypto : regexCache.currency;
+    }, [regexCache, isCrypto]);
 
     const currencyMask = useMemo(
       () =>
@@ -100,42 +122,16 @@ const CurrencyField = forwardRef<HTMLInputElement, CurrencyFieldProps>(
     const normalizedValue = useMemo(() => {
       if (!value) return '';
 
-      // Primeira validação: se está no formato correto, retorna sem alterar
-      const hasCorrectSeparator = value.includes(config.decimalSeparator);
-      const hasWrongSeparator =
-        config.decimalSeparator === ','
-          ? value.includes('.')
-          : value.includes(',');
-
-      if (hasCorrectSeparator && !hasWrongSeparator) {
-        return value;
-      }
-
-      // Se tem separador errado, limpa e normaliza
-      const cleanedValue = cleanValue(value);
-      if (!cleanedValue) return value;
-
-      const numericValue = parseFloat(cleanedValue);
-      if (isNaN(numericValue) || numericValue <= 0) return value;
-
-      const newValue = isCrypto
-        ? numericValue.toString().replace('.', config.decimalSeparator)
-        : numericValue
-            .toFixed(config.decimalScale)
-            .replace('.', config.decimalSeparator);
-
-      // Notifica mudança se valor foi reformatado
-      if (newValue !== value && onChange) {
-        setTimeout(() => onChange(newValue), 0);
-      }
-
-      return newValue;
-    }, [value, isCrypto, config, onChange, cleanValue]);
+      const allowedValue = value.replace(getAllowedPattern(), '');
+      return formatValue(allowedValue, config, !isCrypto);
+    }, [value, getAllowedPattern, config, isCrypto]);
 
     const handleInputChange = useCallback(
       (event: React.ChangeEvent<HTMLInputElement>) => {
         const inputValue = event.target.value;
+        console.log('>>> INPUT value ON CHANGE', inputValue);
         const nativeEvent = event.nativeEvent as InputEvent;
+        console.log('>>> NATIVE EVENT', nativeEvent);
 
         const isDecimalInput =
           nativeEvent.data === ',' || nativeEvent.data === '.';
@@ -156,6 +152,8 @@ const CurrencyField = forwardRef<HTMLInputElement, CurrencyFieldProps>(
           }
 
           const caretPosition = event.target.selectionStart ?? 0;
+
+          console.log('>>>> CARET POSITION', caretPosition);
           const isEmpty = inputValue.length === 0;
 
           let newValue;
@@ -184,43 +182,11 @@ const CurrencyField = forwardRef<HTMLInputElement, CurrencyFieldProps>(
         const allowedPattern = getAllowedPattern();
 
         const cleanedValue = inputValue.replace(allowedPattern, '');
-        event.target.value = cleanedValue;
+        //event.target.value = cleanedValue;
 
         onChange?.(cleanedValue);
       },
       [config, onChange, getAllowedPattern],
-    );
-
-    const handleBlur = useCallback(
-      (event: React.FocusEvent<HTMLInputElement>) => {
-        let inputValue = event.target.value;
-
-        if (!inputValue) return;
-
-        if (isCrypto) {
-          props.onBlur?.(event);
-          return;
-        }
-
-        if (!inputValue.includes(config.decimalSeparator)) {
-          inputValue = `${inputValue}${config.decimalSeparator}${'0'.repeat(
-            config.decimalScale,
-          )}`;
-        } else {
-          const [integerPart, decimalPart] = inputValue.split(
-            config.decimalSeparator,
-          );
-          const paddedDecimalPart = decimalPart.padEnd(
-            config.decimalScale,
-            '0',
-          );
-          inputValue = `${integerPart}${config.decimalSeparator}${paddedDecimalPart}`;
-        }
-
-        event.target.value = inputValue;
-        props.onBlur?.(event);
-      },
-      [config, props, isCrypto],
     );
 
     return (
@@ -228,7 +194,7 @@ const CurrencyField = forwardRef<HTMLInputElement, CurrencyFieldProps>(
         mask={currencyMask}
         value={normalizedValue}
         onChange={handleInputChange}
-        onBlur={handleBlur}
+        onBlur={props.onBlur}
         render={(maskedInputRef, maskedInputProps) => (
           <Input
             {...props}

@@ -1,15 +1,15 @@
 import {
   Box,
   Button,
-  HStack,
-  Text,
   Drawer,
   DrawerBody,
   DrawerContent,
   DrawerHeader,
   DrawerOverlay,
-  VStack,
+  HStack,
   Image,
+  Text,
+  VStack,
 } from '@chakra-ui/react';
 
 import { Dialog } from '@/components';
