@@ -6,12 +6,14 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
+
 import { Dialog } from '@/components';
 import { BTCIcon } from '@/components/icons/btc-icon';
 import { ContractIcon } from '@/components/icons/contract-icon';
 import { NFT } from '@/modules/core/utils';
-import { NFTText } from './nft-text';
+
 import { NftImage } from './nft-image';
+import { NFTText } from './nft-text';
 
 type NftDialogProps = {
   isOpen: boolean;
@@ -30,6 +32,10 @@ export const NftDialog = ({
     size={{ base: '5xl', md: '4xl' }}
     onClose={onClose}
     isOpen={isOpen}
+    modalContentProps={{
+      borderWidth: '1px',
+      borderColor: 'gradients.transaction-border',
+    }}
   >
     <Dialog.Body
       h="full"

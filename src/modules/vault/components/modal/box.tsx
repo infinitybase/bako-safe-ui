@@ -43,13 +43,14 @@ const VaultItemBoxComponent = ({
   const isPending = useTransactionsSignaturePending([id!]);
   const showPending = isPending.data?.transactionsBlocked;
   const needSignature = isPending.data?.pendingSignature;
+  const isRootAndPending = showPending && root;
 
   const userIcon = useMemo(
     () => (members === 1 ? LuUser2 : LuUsers2),
     [members],
   );
 
-  const RenderStatusBadge = useMemo(() => {
+  const StatusBadge = useMemo(() => {
     if (!showPending && !needSignature) return null;
 
     return (
@@ -60,6 +61,35 @@ const VaultItemBoxComponent = ({
       />
     );
   }, [isPending.data?.ofUser, isPending.isLoading, needSignature, showPending]);
+
+  const RootBadge = useMemo(
+    () => (
+      <Badge
+        variant="gray"
+        fontSize="2xs"
+        color="grey.75"
+        h="20px"
+        px={3}
+        borderRadius="full"
+      >
+        Personal
+      </Badge>
+    ),
+    [],
+  );
+
+  const MembersBadge = useMemo(
+    () =>
+      members !== undefined ? (
+        <HStack spacing={1} align="center">
+          <Text fontSize="sm" color="grey.75" lineHeight="20px">
+            {members}
+          </Text>
+          <Icon as={userIcon} boxSize={5} color="grey.75" />
+        </HStack>
+      ) : null,
+    [members, userIcon],
+  );
 
   return (
     <Card
@@ -114,31 +144,22 @@ const VaultItemBoxComponent = ({
         </HStack>
 
         <VStack spacing={2} align="flex-end">
-          {members !== undefined && (
-            <HStack spacing={1} align="center">
-              <Text fontSize="sm" color="grey.75" lineHeight="20px">
-                {members}
-              </Text>
-              <Icon as={userIcon} boxSize={5} color="grey.75" />
-            </HStack>
-          )}
-
-          {(showPending || root) && (
-            <HStack spacing={2}>
-              {RenderStatusBadge}
-              {root && (
-                <Badge
-                  variant="gray"
-                  fontSize="2xs"
-                  color="grey.75"
-                  h="20px"
-                  px={3}
-                  borderRadius="full"
-                >
-                  Personal
-                </Badge>
-              )}
-            </HStack>
+          {isRootAndPending ? (
+            <>
+              <HStack spacing={3}>
+                {RootBadge}
+                {MembersBadge}
+              </HStack>
+              {StatusBadge}
+            </>
+          ) : (
+            <>
+              {MembersBadge}
+              <HStack spacing={2}>
+                {root && RootBadge}
+                {StatusBadge}
+              </HStack>
+            </>
           )}
         </VStack>
       </Flex>

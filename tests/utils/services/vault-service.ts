@@ -2,6 +2,7 @@ import { getByAriaLabel } from '@fuels/playwright-utils';
 import { Page } from '@playwright/test';
 import { WalletUnlocked } from 'fuels';
 
+import { TestAssets } from '../helpers';
 import { E2ETestUtils } from '../setup';
 
 interface VaultTestResponse {
@@ -27,12 +28,14 @@ export class VaultTestService {
     await getByAriaLabel(page, 'Create Vault Primary Action').click();
 
     await getByAriaLabel(page, 'Create Vault Secundary Action').click();
-    await page.waitForTimeout(300);
+    await page.waitForTimeout(500);
 
     const hasClose = page.locator('[aria-label="Close window"]');
+    await page.waitForTimeout(500);
     if (await hasClose.isVisible()) {
       await hasClose.click();
     }
+    await page.waitForTimeout(1000);
     await getByAriaLabel(page, 'Sidebar Vault Address').click();
     await page.waitForTimeout(500);
     const handleAddress = await page.evaluateHandle(() =>
@@ -87,6 +90,7 @@ export class VaultTestService {
     if (await hasClose.isVisible()) {
       await hasClose.click();
     }
+    await page.waitForTimeout(1000);
     await getByAriaLabel(page, 'Sidebar Vault Address').click();
     await page.waitForTimeout(500);
     const handleAddress = await page.evaluateHandle(() =>
@@ -102,12 +106,16 @@ export class VaultTestService {
     page: Page,
     vaultAddress: string,
     wallet: WalletUnlocked,
+    reload: boolean = true,
+    assetId: TestAssets = TestAssets.ETH,
   ) {
     await E2ETestUtils.fundVault({
       genesisWallet: wallet,
       vaultAddress,
       amount: '1.001',
+      assetId,
     });
-    await page.reload();
+    await page.waitForTimeout(1000);
+    if (reload) await page.reload();
   }
 }

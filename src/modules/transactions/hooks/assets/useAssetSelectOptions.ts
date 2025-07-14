@@ -72,7 +72,12 @@ const useAssetSelectOptions = (
     return balanceAvailableForAsset > 0;
   });
 
-  const assetsOptions = [...filteredAssets, ...formattedNFTs];
+  const options = [...filteredAssets, ...formattedNFTs];
+
+  const assetsOptions = options.map((option) => ({
+    ...option,
+    image: option.image ?? (assetsMap?.UNKNOWN?.icon || ''),
+  }));
 
   return { assetsOptions };
 };
