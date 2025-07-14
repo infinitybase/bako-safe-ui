@@ -67,6 +67,7 @@ export interface ICreateWidgetPayload {
   serviceProvider: string;
   walletAddress?: string;
   paymentMethodType: string;
+  destinationAmount?: string;
 }
 
 export interface ICreateWidgetResponse {
