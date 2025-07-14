@@ -17,7 +17,7 @@ import {
   Text,
 } from '@chakra-ui/react';
 import debounce from 'lodash.debounce';
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { Dialog } from '@/components';
 import { Header } from '@/layouts/dashboard/header';
@@ -44,9 +44,19 @@ export const SelectQuoteModal = ({
 }: SelectQuoteModalProps) => {
   const [searchQuery, setSearchQuery] = useState('');
 
-  const debouncedSearch = debounce((e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value);
-  }, 400);
+  const debouncedSearch = useCallback(
+    // eslint-disable-next-line react-compiler/react-compiler
+    debounce((e: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchQuery(e.target.value);
+    }, 400),
+    [],
+  );
+
+  useEffect(() => {
+    return () => {
+      debouncedSearch.cancel();
+    };
+  }, [debouncedSearch]);
 
   const filteredQuotes = quotes.filter((quote) =>
     quote.serviceProvider.toLowerCase().includes(searchQuery.toLowerCase()),
