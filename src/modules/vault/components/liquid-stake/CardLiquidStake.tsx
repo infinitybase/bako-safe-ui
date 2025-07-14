@@ -12,14 +12,22 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 
 import { FuelIcon, RigIcon } from '@/components';
-import { useScreenSize } from '@/modules/core';
+import { useGetTokenInfos, useScreenSize } from '@/modules/core';
+import { tokensIDS } from '@/modules/core/utils/assets/address';
 import {
   ModalLiquidStake,
   ModalWithdrawalsLiquidStake,
 } from '@/modules/vault/components';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+
+import { UseVaultDetailsReturn } from '../../hooks';
+
+export interface CardLiquidStakeProps {
+  assets: UseVaultDetailsReturn['assets'];
+}
 
 export interface ItemLiquidStakeProps {
   label: string;
@@ -74,7 +82,12 @@ const MobileItemLiquidStake = ({
         <DrawerHeader>
           <HStack marginBottom={4} fontWeight="normal">
             <Icon as={FuelIcon} fontSize={24} />
-            <Text fontSize={14}>Liquid Stake FUEL</Text>
+            <VStack alignItems="flex-start" gap={0}>
+              <Text fontSize={12}>Auto Stake $FUEL</Text>
+              <Text fontSize={10} color={'gray.400'}>
+                Earn Up to 18% More than Manual Staking
+              </Text>
+            </VStack>
             <HStack
               flex={1}
               justifyContent="flex-end"
@@ -94,8 +107,9 @@ const MobileItemLiquidStake = ({
   );
 };
 
-export function CardLiquidStake() {
+export function CardLiquidStake({ assets }: CardLiquidStakeProps) {
   const { isMobile } = useScreenSize();
+  const { assetsMap } = useWorkspaceContext();
 
   const [isOpenMobileItem, setIsOpenMobileItem] = useState<boolean>(false);
   const [modal, setModal] = useState<'STAKE' | 'REDEEM' | ''>('');
@@ -105,6 +119,25 @@ export function CardLiquidStake() {
       setIsOpenMobileItem(true);
     }
   };
+
+  const assetFuel = useMemo(() => {
+    return assets.assets?.find((a) => a.assetId === tokensIDS.FUEL);
+  }, [assets]);
+
+  const assetStFuel = useMemo(() => {
+    return assets.assets?.find((a) => a.assetId === tokensIDS.stFUEL);
+  }, [assets]);
+
+  const { assetAmount: fuelTokens } = useGetTokenInfos({
+    assetId: assetFuel?.assetId ?? '',
+    amount: assetFuel?.amount,
+    assetsMap,
+  });
+  const { assetAmount: stFuelTokens } = useGetTokenInfos({
+    assetId: assetStFuel?.assetId ?? '',
+    amount: assetStFuel?.amount,
+    assetsMap,
+  });
 
   const handleOpenModal =
     (modal: 'STAKE' | 'REDEEM' | '' = '') =>
@@ -122,28 +155,34 @@ export function CardLiquidStake() {
 
   const createItems = () => (
     <>
-      <ItemLiquidStake label="FUEL Balance" value="1,587.56124">
+      <ItemLiquidStake label="FUEL Balance" value={fuelTokens}>
         <Button
-          variant="primary"
+          variant="secondaryV2"
+          color="grey.75"
           size="sm"
+          padding={'6px 8px 6px 8px'}
+          borderRadius={'6px'}
           fontSize={12}
           onClick={handleOpenModal('STAKE')}
         >
           Stake
         </Button>
       </ItemLiquidStake>
-      <ItemLiquidStake label="FUEL in staking" value="114,565.49783">
+      <ItemLiquidStake label="stFuel Balance" value={stFuelTokens}>
         <Button
-          variant={'secondary'}
+          variant="secondaryV2"
+          color="grey.75"
           size="sm"
+          padding={'6px 8px 6px 8px'}
+          borderRadius={'6px'}
           fontSize={12}
           onClick={handleOpenModal('REDEEM')}
         >
           Redeem
         </Button>
       </ItemLiquidStake>
-      <ItemLiquidStake label="Total FUEL earned" value="2,159.45" />
-      <ItemLiquidStake label="Total value staked" value="0.0000" />
+      <ItemLiquidStake label="Total Fuel" value="245 Mi" />
+      <ItemLiquidStake label="APY%" value="24.07%" />
     </>
   );
 
@@ -167,7 +206,12 @@ export function CardLiquidStake() {
           onClick={handleOpenMobileItem}
         >
           <Icon as={FuelIcon} fontSize={{ base: 32, md: 33 }} />
-          <Text fontSize={14}>Liquid Stake FUEL</Text>
+          <VStack alignItems="flex-start" gap={0}>
+            <Text fontSize={14}>Auto Stake $FUEL</Text>
+            <Text fontSize={12} color={'gray.400'}>
+              Earn Up to 18% More than Manual Staking
+            </Text>
+          </VStack>
           <HStack
             flex={1}
             justifyContent="flex-end"
@@ -183,7 +227,7 @@ export function CardLiquidStake() {
             fontSize={14}
             display={{ base: 'block', md: 'none' }}
           >
-            114,565.49783
+            {stFuelTokens}
             <br />
             <Text as="span" fontSize={12}>
               in staking
@@ -210,7 +254,11 @@ export function CardLiquidStake() {
         isOpen={modal === 'REDEEM'}
         onClose={handleCloseModal}
       />
-      <ModalLiquidStake isOpen={modal === 'STAKE'} onClose={handleCloseModal} />
+      <ModalLiquidStake
+        isOpen={modal === 'STAKE'}
+        balance={fuelTokens}
+        onClose={handleCloseModal}
+      />
     </>
   );
 }

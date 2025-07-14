@@ -22,6 +22,7 @@ import { EmptyState } from '@/components/emptyState';
 import { MenuIcon } from '@/components/icons/menu';
 import WelcomeDialog from '@/components/welcomeDialog';
 import { Drawer } from '@/layouts/dashboard/drawer';
+import { CardLiquidStake } from '@/modules';
 import { PermissionRoles } from '@/modules/core';
 import { useGetParams } from '@/modules/core/hooks';
 import { Pages } from '@/modules/core/routes';
@@ -36,7 +37,6 @@ import { CardDetails } from '../../components/CardDetails';
 import { SignersDetails } from '../../components/SignersDetails';
 import { vaultInfinityQueryKey } from '../../hooks/list/useVaultTransactionsRequest';
 import { useVaultInfosContext } from '../../VaultInfosProvider';
-import { CardLiquidStake } from '@/modules';
 
 const VaultDetailsPage = () => {
   const [welcomeDialogState, setWelcomeDialogState] = useState(true);
@@ -238,7 +238,7 @@ const VaultDetailsPage = () => {
         )}
       </HStack>
 
-      <CardLiquidStake />
+      <CardLiquidStake assets={assets} />
 
       <HStack
         mb={{ base: 10, sm: 14 }}
