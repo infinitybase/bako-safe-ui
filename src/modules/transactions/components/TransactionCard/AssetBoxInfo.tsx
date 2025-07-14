@@ -18,6 +18,7 @@ import { useAssetMap } from '@/modules/assets-tokens/hooks/useAssetMap';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
 import type { AssetModel, IRampTransaction } from '@/modules/core';
 import { useAddressNicknameResolver } from '@/modules/core/hooks/useAddressNicknameResolver';
+import { FIAT_CURRENCIES_ASSET_IDS } from '@/modules/core/utils/fiat-currencies';
 import { parseURI } from '@/modules/core/utils/formatter';
 import { useNetworks } from '@/modules/network/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
@@ -200,7 +201,7 @@ const AssetBoxInfo = ({
           >
             {displayAmount}
           </Text>
-          {rampTransaction?.sourceCurrency !== 'USD' && (
+          {FIAT_CURRENCIES_ASSET_IDS.USD !== asset?.assetId && (
             <Text
               textAlign="center"
               variant="description"
