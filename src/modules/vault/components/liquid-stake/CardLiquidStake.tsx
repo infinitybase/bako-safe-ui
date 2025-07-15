@@ -168,8 +168,6 @@ export function CardLiquidStake({ assets }: CardLiquidStakeProps) {
         isOpen={modal === 'STAKE'}
         balance={fuelTokens}
         onClose={handleCloseModal}
-        asset={assetStFuel}
-        assetsMap={assetsMap}
       />
     </>
   );

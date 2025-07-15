@@ -10,7 +10,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { useMemo, useRef } from 'react';
+import { useRef } from 'react';
 
 import {
   CurrencyField,
@@ -18,7 +18,8 @@ import {
   FuelIcon,
   LeftAndRightArrow,
 } from '@/components';
-import { Asset, AssetMap } from '@/modules/core';
+import { DoubtIcon } from '@/components/icons/doubt';
+import { tokensIDS } from '@/modules/core/utils/assets/address';
 
 import { useOperationLiquidStakeModal } from '../../hooks';
 
@@ -26,15 +27,11 @@ interface ModalLiquidStakeProps {
   isOpen?: boolean;
   balance: string;
   onClose: () => void;
-  asset: Required<Asset> | undefined;
-  assetsMap: AssetMap;
 }
 
 export function ModalLiquidStake({
   isOpen = false,
   balance,
-  asset,
-  assetsMap,
   onClose,
 }: ModalLiquidStakeProps) {
   const inputSourceRef = useRef<HTMLInputElement>(null);
@@ -49,18 +46,13 @@ export function ModalLiquidStake({
     handleSetCurrencyAmount,
   } = useOperationLiquidStakeModal({ balance, onClose });
 
-  const assetInfo = useMemo(
-    () =>
-      asset?.assetId && assetsMap?.[asset?.assetId]
-        ? assetsMap[asset?.assetId]
-        : assetsMap?.['UNKNOWN'],
-    [asset?.assetId, assetsMap],
-  );
-
-  const assetImage = useMemo(
-    () => assetInfo?.metadata?.image || assetInfo?.icon,
-    [assetInfo],
-  );
+  // TODO: Remove this mock data and get the real data from the API
+  const StFUEL_ASSET = {
+    name: 'stFuel',
+    slug: 'stFUEL',
+    image: 'https://verified-assets.fuel.network/images/stFUEL.png',
+    assetId: tokensIDS.stFUEL,
+  };
 
   const InputField = ({
     symbol,
@@ -188,7 +180,11 @@ export function ModalLiquidStake({
                 You receive
               </Text>
               <HStack flex={1} justifyContent="flex-end" marginBottom={2}>
-                <Image src={assetImage} boxSize="16px" alt="stFUEL Icon" />
+                <Image
+                  src={StFUEL_ASSET.image}
+                  boxSize="16px"
+                  alt="stFUEL Icon"
+                />
                 <Text color="white" fontSize={12}>
                   stFUEL
                 </Text>
@@ -207,9 +203,12 @@ export function ModalLiquidStake({
             </Text>
             <VStack>
               <HStack width="full" marginBottom={1}>
-                <Text color="#868079" fontSize={12} flex={1}>
-                  Conversion Ratio
-                </Text>
+                <HStack gap={2} align={'center'}>
+                  <Text color="#868079" fontSize={12} flex={1}>
+                    Conversion Ratio
+                  </Text>
+                  <DoubtIcon fontSize={16} />
+                </HStack>
                 <Text color="#868079" fontSize={12} flex={1} align="right">
                   1 FUEL ~ 0.99985458 stFUEL
                 </Text>
