@@ -20,7 +20,10 @@ const TokenInfos = ({ asset }: TokenInfosProps) => {
   );
 
   const assetImage = useMemo(
-    () => assetInfo?.metadata?.image || assetInfo?.icon,
+    () =>
+      assetInfo?.metadata?.image ||
+      assetInfo?.metadata?.['image:png'] ||
+      assetInfo?.icon,
     [assetInfo],
   );
 

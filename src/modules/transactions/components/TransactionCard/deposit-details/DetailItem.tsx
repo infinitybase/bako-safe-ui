@@ -62,12 +62,12 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
   const to = asset?.to ? resolveAddressContactHandle(asset.to) : undefined;
 
   const isNFT = useMemo(() => {
-    if (!asset?.assetId) return false;
-    return (
-      nftList.some((nft) => nft.assetId === asset.assetId) ||
-      bn(asset?.amount).eq(bn(1))
-    );
-  }, [asset?.amount, asset?.assetId, nftList]);
+    if (!asset?.assetId) return bn(asset?.amount).eq(bn(1));
+
+    const nftAssetIds = new Set(nftList.map((nft) => nft.assetId));
+
+    return nftAssetIds.has(asset.assetId);
+  }, [asset?.assetId, asset?.amount, nftList]);
 
   return (
     <Grid

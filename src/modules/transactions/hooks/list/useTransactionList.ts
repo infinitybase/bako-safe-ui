@@ -94,7 +94,7 @@ const useTransactionList = ({
 
   return {
     request: {
-      isLoading: !transactions && isLoading && !isFetching,
+      isLoading,
       isFetching,
       hasNextPage,
       fetchNextPage,

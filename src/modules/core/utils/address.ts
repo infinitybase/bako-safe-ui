@@ -10,7 +10,11 @@ export type Batch32 = `${Batch32Prefix}.${string}`;
 export class AddressUtils {
   static isValid(address: string) {
     try {
-      return BakoAddressUtils.isPasskey(address) || isB256(address);
+      return (
+        BakoAddressUtils.isEvm(address) ||
+        BakoAddressUtils.isPasskey(address) ||
+        isB256(address)
+      );
     } catch (e) {
       return false;
     }

@@ -1,4 +1,5 @@
 import { BoxProps, Flex, TextProps } from '@chakra-ui/react';
+import { AddressUtils as BakoAddressUtils } from 'bakosafe';
 import { Address as FuelsAddress, isB256 } from 'fuels';
 import { useMemo } from 'react';
 
@@ -39,12 +40,24 @@ const AddressWithCopyBtn = ({
   const ariaLabel = rest['aria-label'] || 'Copy';
 
   const address = useMemo(() => {
+    if (BakoAddressUtils.isEvm(value)) {
+      return BakoAddressUtils.parseFuelAddressToEth(value);
+    }
+
     if (isB256(value)) {
       return FuelsAddress.fromB256(value).toString();
     }
 
     return value;
   }, [value]);
+
+  const addressToCopy = () => {
+    if (BakoAddressUtils.isEvm(value)) {
+      return 'eth:' + BakoAddressUtils.parseFuelAddressToEth(value);
+    }
+
+    return address;
+  };
 
   return (
     <Flex
@@ -73,7 +86,7 @@ const AddressWithCopyBtn = ({
         size="xs"
         minW={2}
         aria-label={ariaLabel}
-        addressToCopy={address}
+        addressToCopy={addressToCopy()}
         {...copyBtnProps}
       />
     </Flex>

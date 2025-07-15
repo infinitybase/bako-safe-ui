@@ -9,9 +9,10 @@ import {
   TabPanel,
   VStack,
 } from '@chakra-ui/react';
-import { Address, isB256 } from 'fuels';
+import { Address, isB256, isEvmAddress } from 'fuels';
 import { useRef, useState } from 'react';
 import { Controller } from 'react-hook-form';
+import { AddressUtils as BakoAddressUtils } from 'bakosafe';
 
 import { Autocomplete, Dialog, RemoveIcon, Select } from '@/components';
 import {
@@ -240,6 +241,17 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
                                 }
                               }
 
+                              if (
+                                value.startsWith('eth:') ||
+                                isEvmAddress(value)
+                              ) {
+                                const address = value.replaceAll('eth:', '');
+                                if (isEvmAddress(address)) {
+                                  result.value = new Address(address).toB256();
+                                  result.label = address.toLowerCase();
+                                }
+                              }
+
                               if (isB256(value)) {
                                 const name =
                                   await fetchResolverName.handler(value);
@@ -289,8 +301,17 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
                           <AddToAddressBook
                             visible={showAddToAddressBook}
                             onAdd={() => {
+                              let _address = field.value;
+
+                              if (BakoAddressUtils.isEvm(_address)) {
+                                _address =
+                                  'eth:' + BakoAddressUtils.parseFuelAddressToEth(
+                                    _address,
+                                  );
+                              }
+
                               handleOpenDialog?.({
-                                address: field.value,
+                                address: _address,
                               });
                             }}
                           />
