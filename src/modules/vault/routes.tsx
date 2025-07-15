@@ -1,17 +1,20 @@
 import { Route, Routes } from 'react-router-dom';
 
-import { Pages } from '@/modules/core/routes';
 import { AuthRoute } from '@/modules/core/components/route/auth';
+import { Pages } from '@/modules/core/routes';
 import { CreateTemplatePage } from '@/modules/template/hooks/useTemplatePage';
 import { CreateTransactionPage } from '@/modules/transactions/pages';
+
+import { VaultDashboardLayoutRouter } from './layout/VaultDashBoard';
 import {
+  TransactionsVaultPage,
   VaultBalancePage,
+  VaultBuySellPage,
   VaultDetailsPage,
   VaultSettingsPage,
-  TransactionsVaultPage,
 } from './pages';
+import { VaultBuySellSessionPage } from './pages/buy-sell/session';
 import { VaultInfosProvider } from './VaultInfosProvider';
-import { VaultDashboardLayoutRouter } from './layout/VaultDashBoard';
 
 const VaultRoutes = () => {
   return (
@@ -63,6 +66,22 @@ const VaultRoutes = () => {
             element={
               <AuthRoute>
                 <VaultBalancePage />
+              </AuthRoute>
+            }
+          />
+          <Route
+            path={Pages.vaultBuySell()}
+            element={
+              <AuthRoute>
+                <VaultBuySellPage />
+              </AuthRoute>
+            }
+          />
+          <Route
+            path={Pages.vaultBuySellSession()}
+            element={
+              <AuthRoute>
+                <VaultBuySellSessionPage />
               </AuthRoute>
             }
           />

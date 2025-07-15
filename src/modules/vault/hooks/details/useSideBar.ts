@@ -45,6 +45,12 @@ const useSidebar = ({ params }: UseSidebarProps) => {
         workspaceId: workspace?.id ?? '',
       }),
     ),
+    buySell: checkPathname(
+      Pages.vaultBuySell({
+        vaultId: params?.vaultId ?? '',
+        workspaceId: workspace?.id ?? '',
+      }),
+    ),
   };
 
   return {

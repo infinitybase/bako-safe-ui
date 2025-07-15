@@ -4,6 +4,18 @@ import { api } from '@/config';
 import { Asset, NFT } from '@/modules/core';
 import { IPredicate } from '@/modules/core/hooks/bakosafe/utils/types';
 import { Predicate, Workspace } from '@/modules/core/models';
+import {
+  ICreateWidgetPayload,
+  ICreateWidgetResponse,
+  ICryptoCurrency,
+  IFiatCurrency,
+  IPaymentMethod,
+  IPurchaseLimitsParams,
+  IPurchaseLimitsResponse,
+  IQuotePayload,
+  IQuoteResponse,
+  IServiceProviderResponse,
+} from '@/modules/core/models/meld';
 import { IPagination, PaginationParams } from '@/modules/core/utils/pagination';
 import { SortOption } from '@/modules/transactions/services';
 
@@ -117,5 +129,77 @@ export class VaultService {
         amount: new BN(reservedCoin.amount),
       })),
     };
+  }
+
+  static async getFiatCurrencies(): Promise<IFiatCurrency[]> {
+    const { data } = await api.get<IFiatCurrency[]>(
+      `/ramp-transactions/meld/fiat-currencies`,
+    );
+    return data;
+  }
+
+  static async getCryptoCurrencies(): Promise<ICryptoCurrency[]> {
+    const { data } = await api.get<ICryptoCurrency[]>(
+      `/ramp-transactions/meld/crypto-currencies`,
+    );
+    return data;
+  }
+
+  static async getPaymentMethods(): Promise<IPaymentMethod[]> {
+    const { data } = await api.get<IPaymentMethod[]>(
+      `/ramp-transactions/meld/payment-methods`,
+    );
+    return data;
+  }
+
+  static async getServiceProviders(): Promise<IServiceProviderResponse[]> {
+    const { data } = await api.get<IServiceProviderResponse[]>(
+      `/ramp-transactions/meld/providers`,
+    );
+    return data;
+  }
+
+  static async getOnRampPurchaseLimits(
+    params?: IPurchaseLimitsParams,
+  ): Promise<IPurchaseLimitsResponse[]> {
+    const { data } = await api.get<IPurchaseLimitsResponse[]>(
+      `/ramp-transactions/meld/buy-purchase-limits`,
+      { params },
+    );
+    return data;
+  }
+
+  static async getOffRampPurchaseLimits(
+    params?: IPurchaseLimitsParams,
+  ): Promise<IPurchaseLimitsResponse[]> {
+    const { data } = await api.get<IPurchaseLimitsResponse[]>(
+      `/ramp-transactions/meld/sell-purchase-limits`,
+      { params },
+    );
+    return data;
+  }
+
+  static async getCryptoQuote(payload: IQuotePayload): Promise<IQuoteResponse> {
+    const { data } = await api.post<IQuoteResponse>(
+      `/ramp-transactions/meld/quotes`,
+      payload,
+    );
+    return data;
+  }
+
+  static async createWidget(data: ICreateWidgetPayload) {
+    const { data: response } = await api.post<ICreateWidgetResponse>(
+      '/ramp-transactions/meld/widget',
+      data,
+    );
+
+    return response;
+  }
+
+  static async getWidgetUrl(id: string): Promise<{ widgetUrl: string }> {
+    const { data } = await api.get<{ widgetUrl: string }>(
+      `/ramp-transactions/${id}`,
+    );
+    return data;
   }
 }
