@@ -1,17 +1,4 @@
-import {
-  Box,
-  Button,
-  Card,
-  Drawer,
-  DrawerBody,
-  DrawerContent,
-  DrawerHeader,
-  DrawerOverlay,
-  HStack,
-  Icon,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { Box, Button, HStack, Icon, Text, VStack } from '@chakra-ui/react';
 import React, { useMemo, useState } from 'react';
 
 import { FuelIcon, RigIcon } from '@/components';
@@ -24,88 +11,11 @@ import {
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { UseVaultDetailsReturn } from '../../hooks';
-
+import { ItemLiquidStake } from './ItemLiquidStake';
+import { MobileDropdownLiquidStake } from './MobileDropdownLiquidStake';
 export interface CardLiquidStakeProps {
   assets: UseVaultDetailsReturn['assets'];
 }
-
-export interface ItemLiquidStakeProps {
-  label: string;
-  value: string;
-  children?: React.ReactNode;
-}
-
-const ItemLiquidStake = ({ label, value, children }: ItemLiquidStakeProps) => {
-  return (
-    <Card
-      flexDirection="row"
-      borderRadius={9}
-      flex={1}
-      alignItems="center"
-      background={'var(--chakra-colors-dark-950)'}
-      width="full"
-    >
-      <HStack
-        flex={1}
-        padding={3}
-        background={'var(--chakra-colors-gradients-transaction-card)'}
-      >
-        <VStack flex={1} alignItems="flex-start" gap={0}>
-          <Text fontSize={12} color={'gray'}>
-            {label}
-          </Text>
-          <Text fontSize={16} fontWeight={700} color="white">
-            {value}
-          </Text>
-        </VStack>
-        {children}
-      </HStack>
-    </Card>
-  );
-};
-
-interface MobileItemLiquidStakeProps {
-  isOpen: boolean;
-  onClose: () => void;
-  children?: React.ReactNode;
-}
-
-const MobileItemLiquidStake = ({
-  isOpen,
-  onClose,
-  children,
-}: MobileItemLiquidStakeProps) => {
-  return (
-    <Drawer placement="bottom" onClose={onClose} isOpen={isOpen}>
-      <DrawerOverlay />
-      <DrawerContent padding={4}>
-        <DrawerHeader>
-          <HStack marginBottom={4} fontWeight="normal">
-            <Icon as={FuelIcon} fontSize={24} />
-            <VStack alignItems="flex-start" gap={0}>
-              <Text fontSize={12}>Auto Stake $FUEL</Text>
-              <Text fontSize={10} color={'gray.400'}>
-                Earn Up to 18% More than Manual Staking
-              </Text>
-            </VStack>
-            <HStack
-              flex={1}
-              justifyContent="flex-end"
-              alignItems="center"
-              display={{ base: 'flex', md: 'none' }}
-            >
-              <Text fontSize={10}>powered by</Text>
-              <RigIcon fontSize={32} />
-            </HStack>
-          </HStack>
-        </DrawerHeader>
-        <DrawerBody>
-          <VStack alignItems="flex-start">{children}</VStack>
-        </DrawerBody>
-      </DrawerContent>
-    </Drawer>
-  );
-};
 
 export function CardLiquidStake({ assets }: CardLiquidStakeProps) {
   const { isMobile } = useScreenSize();
@@ -207,8 +117,8 @@ export function CardLiquidStake({ assets }: CardLiquidStakeProps) {
         >
           <Icon as={FuelIcon} fontSize={{ base: 32, md: 33 }} />
           <VStack alignItems="flex-start" gap={0}>
-            <Text fontSize={14}>Auto Stake $FUEL</Text>
-            <Text fontSize={12} color={'gray.400'}>
+            <Text fontSize={isMobile ? 12 : 14}>Auto Stake $FUEL</Text>
+            <Text fontSize={isMobile ? 10 : 12} color={'gray.400'}>
               Earn Up to 18% More than Manual Staking
             </Text>
           </VStack>
@@ -242,14 +152,14 @@ export function CardLiquidStake({ assets }: CardLiquidStakeProps) {
           {createItems()}
         </HStack>
       </Box>
-      <MobileItemLiquidStake
+      <MobileDropdownLiquidStake
         onClose={() => {
           setIsOpenMobileItem(false);
         }}
         isOpen={isOpenMobileItem}
       >
         {createItems()}
-      </MobileItemLiquidStake>
+      </MobileDropdownLiquidStake>
       <ModalWithdrawalsLiquidStake
         isOpen={modal === 'REDEEM'}
         onClose={handleCloseModal}
@@ -258,6 +168,8 @@ export function CardLiquidStake({ assets }: CardLiquidStakeProps) {
         isOpen={modal === 'STAKE'}
         balance={fuelTokens}
         onClose={handleCloseModal}
+        asset={assetStFuel}
+        assetsMap={assetsMap}
       />
     </>
   );
