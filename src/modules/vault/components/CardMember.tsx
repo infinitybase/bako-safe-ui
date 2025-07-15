@@ -3,10 +3,11 @@ import {
   Badge,
   chakra,
   Flex,
-  HStack,
+  HStack, Icon,
   Text,
-  VStack,
+  VStack
 } from '@chakra-ui/react';
+import { useNotification } from '@/modules/notification';
 
 import { AddAddressBook, AddressWithCopyBtn, Handle } from '@/components';
 import { Card } from '@/components/card';
@@ -14,6 +15,8 @@ import { TypeUser } from '@/modules/auth';
 import { AddressUtils } from '@/modules/core';
 import { useScreenSize } from '@/modules/core/hooks';
 import { HandleUtils } from '@/utils/handle';
+import { WarningTwoIcon } from '@chakra-ui/icons';
+import React from 'react';
 
 const { VITE_BAKO_ID_URL } = import.meta.env;
 
@@ -61,6 +64,7 @@ const CardMember = ({
 }: CardMemberProps) => {
   const { isLitteSmall, isLargerThan680, isLargerThan1700, isExtraLarge } =
     useScreenSize();
+  const toast = useNotification();
 
   const hasNickname = member?.nickname;
   const address =
@@ -145,7 +149,6 @@ const CardMember = ({
                   }}
                 />
               )}
-
               <AddressWithCopyBtn
                 value={address}
                 isSidebarAddress
@@ -154,6 +157,26 @@ const CardMember = ({
                 textProps={{
                   fontSize: 'xs',
                   color: 'grey.250',
+                }}
+                onClick={() => {
+                  if (member?.type === TypeUser.EVM) {
+                    toast({
+                      position: 'top-right',
+                      duration: 3000,
+                      isClosable: false,
+                      title: 'Copied!',
+                      status: 'warning',
+                      description:
+                        'This is your login account, DO NOT send assets to this address.',
+                      icon: (
+                        <Icon
+                          fontSize="2xl"
+                          color="brand.500"
+                          as={WarningTwoIcon}
+                        />
+                      ),
+                    });
+                  }
                 }}
                 copyBtnProps={{
                   iconProps: {
