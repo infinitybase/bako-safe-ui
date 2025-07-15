@@ -1,6 +1,7 @@
 export * from './address-book';
 export * from './current-path';
 export * from './format-asset-amount';
+export * from './format-min-decimals';
 export * from './gtm-custom-event';
 export * from './handle';
 export * from './handle-action-using-keys';

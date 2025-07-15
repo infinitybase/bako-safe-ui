@@ -129,9 +129,7 @@ const CurrencyField = forwardRef<HTMLInputElement, CurrencyFieldProps>(
     const handleInputChange = useCallback(
       (event: React.ChangeEvent<HTMLInputElement>) => {
         const inputValue = event.target.value;
-        console.log('>>> INPUT value ON CHANGE', inputValue);
         const nativeEvent = event.nativeEvent as InputEvent;
-        console.log('>>> NATIVE EVENT', nativeEvent);
 
         const isDecimalInput =
           nativeEvent.data === ',' || nativeEvent.data === '.';
@@ -153,7 +151,6 @@ const CurrencyField = forwardRef<HTMLInputElement, CurrencyFieldProps>(
 
           const caretPosition = event.target.selectionStart ?? 0;
 
-          console.log('>>>> CARET POSITION', caretPosition);
           const isEmpty = inputValue.length === 0;
 
           let newValue;
