@@ -1,5 +1,6 @@
 import { Center, Image, Spinner } from '@chakra-ui/react';
 import { useEffect, useRef, useState } from 'react';
+
 import { CustomSkeleton } from '@/components';
 
 const DEFAULT_TIMEOUT = 6000;
@@ -102,9 +103,6 @@ export const NftImage = ({
       objectFit="cover"
       opacity={state.isLoading ? 0 : 1}
       transition="opacity 0.3s ease"
-      position="absolute"
-      top={0}
-      left={0}
     />
   );
 };
