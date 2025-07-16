@@ -93,7 +93,6 @@ export const useMappedAssetStore = create(
             }
           }
         }
-        console.log(assets);
         set({ mappedNfts: { ...get().mappedNfts, ...assets } });
       },
     }),
