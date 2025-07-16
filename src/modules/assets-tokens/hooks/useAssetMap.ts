@@ -13,6 +13,7 @@ import {
   parseURI,
 } from '@/modules/core/utils/formatter';
 import { WorkspaceService } from '@/modules/workspace/services';
+import { requestWithTimeout } from '@/utils/request';
 
 type Store = {
   mappedTokens: AssetMap;
@@ -35,7 +36,13 @@ export const useMappedAssetStore = create(
         for (const assetId of assetIds) {
           let asset = get().mappedTokens[assetId];
           if (!asset) {
-            asset = await WorkspaceService.getTokenFuelApi(assetId, chainId);
+            const apiResponse = await WorkspaceService.getTokenFuelApi(
+              assetId,
+              chainId,
+            );
+            if (apiResponse) {
+              asset = apiResponse;
+            }
           }
           assets[assetId] = asset;
         }
@@ -46,24 +53,43 @@ export const useMappedAssetStore = create(
         for (const assetId of assetIds) {
           let asset = get().mappedNfts[assetId];
           if (!asset) {
-            asset = await WorkspaceService.getTokenFuelApi(assetId, chainId);
-            if (
-              asset.isNFT ||
-              asset?.totalSupply === '1' ||
-              asset?.totalSupply === null
-            ) {
-              const fetchFromIpfs =
-                Object.values(asset.metadata).filter(
-                  (metadata) => !['uri', 'image'].includes(metadata),
-                ).length > 0 && asset.metadata.uri;
+            const apiResponse = await WorkspaceService.getTokenFuelApi(
+              assetId,
+              chainId,
+            );
+            if (apiResponse) {
+              asset = apiResponse;
+              if (
+                asset.isNFT ||
+                asset?.totalSupply === '1' ||
+                asset?.totalSupply === null
+              ) {
+                const withNativeMetadata =
+                  Object.keys(asset.metadata).filter(
+                    (metadata) => !['uri', 'image'].includes(metadata),
+                  ).length > 0;
 
-              const metadata: Record<string, string> = fetchFromIpfs
-                ? await fetch(parseURI(asset.metadata.uri!)).then((res) =>
-                    res.json(),
-                  )
-                : {};
-              const formattedMetadata = formatMetadataFromIpfs(metadata);
-              assets[assetId] = { ...asset, metadata: formattedMetadata };
+                if (!withNativeMetadata && asset.metadata.uri) {
+                  const data = await requestWithTimeout<Record<string, string>>(
+                    parseURI(asset.metadata.uri),
+                    3000, // 3 seconds timeout
+                  );
+                  if (data) {
+                    const formattedMetadata = formatMetadataFromIpfs(data);
+                    assets[assetId] = { ...asset, metadata: formattedMetadata };
+                  } else {
+                    assets[assetId] = {
+                      ...asset,
+                      metadata: {},
+                    };
+                  }
+                } else {
+                  assets[assetId] = {
+                    ...asset,
+                    metadata: formatMetadataFromIpfs(asset.metadata ?? {}),
+                  };
+                }
+              }
             }
           }
         }
