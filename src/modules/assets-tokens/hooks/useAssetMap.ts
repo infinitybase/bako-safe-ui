@@ -13,7 +13,7 @@ import {
   parseURI,
 } from '@/modules/core/utils/formatter';
 import { WorkspaceService } from '@/modules/workspace/services';
-import request from '@/utils/request';
+import { requestWithTimeout } from '@/utils/request';
 
 type Store = {
   mappedTokens: AssetMap;
@@ -70,12 +70,18 @@ export const useMappedAssetStore = create(
                   ).length > 0;
 
                 if (!withNativeMetadata && asset.metadata.uri) {
-                  const data = await request<Record<string, string>>(
+                  const data = await requestWithTimeout<Record<string, string>>(
                     parseURI(asset.metadata.uri),
+                    3000, // 3 seconds timeout
                   );
                   if (data) {
                     const formattedMetadata = formatMetadataFromIpfs(data);
                     assets[assetId] = { ...asset, metadata: formattedMetadata };
+                  } else {
+                    assets[assetId] = {
+                      ...asset,
+                      metadata: {},
+                    };
                   }
                 } else {
                   assets[assetId] = {
@@ -87,6 +93,7 @@ export const useMappedAssetStore = create(
             }
           }
         }
+        console.log(assets);
         set({ mappedNfts: { ...get().mappedNfts, ...assets } });
       },
     }),
