@@ -28,10 +28,10 @@ export const AssetsIcon = memo(
             metadataAssets?.[asset.assetId]?.metadata?.image ||
               metadataAssets?.[asset.assetId]?.metadata?.['image:png'] ||
               metadataAssets?.[asset.assetId]?.icon ||
-              assetsMap.UNKNOWN.icon!,
+              '',
           ),
         })),
-      [assets, metadataAssets, assetsMap],
+      [assets, metadataAssets],
     );
 
     return (
@@ -57,6 +57,8 @@ export const AssetsIcon = memo(
               borderRadius="md"
               alt="Asset Icon"
               objectFit="cover"
+              fallbackSrc={assetsMap.UNKNOWN.icon!}
+              fallbackStrategy="onError"
             />
           </Skeleton>
         ))}

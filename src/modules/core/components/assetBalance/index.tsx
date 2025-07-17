@@ -55,9 +55,17 @@ const NftsBalanceList = ({ nfts }: NftsBalanceProps) => {
     }, {});
   }, [nfts]);
 
+  const orderedGrouped = Object.entries(grouped).sort(([groupA], [groupB]) => {
+    if (groupA === 'Bako ID') return 1;
+    if (groupB === 'Bako ID') return -1;
+    if (groupA === 'Other') return 1;
+    if (groupB === 'Other') return -1;
+    return groupA.localeCompare(groupB);
+  });
+
   return (
     <>
-      {Object.entries(grouped).map(([group, groupNfts]) => (
+      {orderedGrouped.map(([group, groupNfts]) => (
         <div key={group}>
           <h2 style={{ margin: '1rem 0' }}>
             {group === 'BID' ? 'Bako ID' : group}
