@@ -1,6 +1,8 @@
+import { randomBytes } from 'ethers';
 import { bn } from 'fuels';
 import { useEffect, useState } from 'react';
 
+import { useTransactionToast } from '@/modules/transactions/providers/toast';
 import { formatMinDecimals } from '@/utils';
 
 import { useDepositLiquidStake } from './useDepositLiquidStake';
@@ -15,12 +17,14 @@ const useOperationLiquidStakeModal = ({
   balance,
   onClose,
 }: UseOperationLiquidStakeModalProps) => {
-  const [errorNoBalance, setErrorNoBalance] = useState('');
+  const [errorAmount, setErrorAmount] = useState('');
   const [valueSource, setValueSource] = useState('0.000');
   const [valueDestination, setValueDestination] = useState('0.000');
   const [isDepositing, setIsDepositing] = useState(false);
   const [maxFee, setMaxFee] = useState<number>(0);
   const { price, depositWithVault, getMaxFee } = useDepositLiquidStake();
+  const toast = useTransactionToast();
+  const MINIMUM_VALUE = '1';
 
   const handleSetCurrencyAmount = (percentage: number, balance: string) => {
     const valuePercent = (Number(balance) * percentage) / 100;
@@ -35,6 +39,7 @@ const useOperationLiquidStakeModal = ({
   const handleClose = () => {
     setValueDestination('0.00');
     setValueSource('0.00');
+    setErrorAmount('');
     setIsDepositing(false);
     onClose();
   };
@@ -48,10 +53,12 @@ const useOperationLiquidStakeModal = ({
     const formattedDestination = formatMinDecimals(destinationValue, 3);
     setValueDestination(formattedDestination);
 
-    setErrorNoBalance(
+    setErrorAmount(
       newValue > balance
         ? 'Your current Fuel tokens balance is insufficient for this operation.'
-        : '',
+        : newValue < MINIMUM_VALUE
+          ? 'Amount must be at least 1.'
+          : '',
     );
   };
 
@@ -63,16 +70,18 @@ const useOperationLiquidStakeModal = ({
 
     const formattedSource = formatMinDecimals(sourceValue, 3);
     setValueSource(formattedSource);
-    setErrorNoBalance(
+    setErrorAmount(
       formattedSource > balance
         ? 'Your current Fuel tokens balance is insufficient for this operation.'
-        : '',
+        : formattedSource < MINIMUM_VALUE
+          ? 'Amount must be at least 1.'
+          : '',
     );
   };
 
   useEffect(() => {
     async function getFee() {
-      const maxFee = await getMaxFee(bn(1000));
+      const maxFee = await getMaxFee(bn(1000000));
       if (maxFee) setMaxFee(maxFee);
     }
 
@@ -90,13 +99,17 @@ const useOperationLiquidStakeModal = ({
       await handleClose();
     } catch (error) {
       console.error('error createTxLiquidStake', error);
+      toast.generalError(
+        randomBytes.toString(),
+        'Error on try transaction Liquid Stake',
+      );
     } finally {
       setIsDepositing(false);
     }
   };
 
   return {
-    errorNoBalance,
+    errorAmount,
     valueSource,
     valueDestination,
     isDepositing,

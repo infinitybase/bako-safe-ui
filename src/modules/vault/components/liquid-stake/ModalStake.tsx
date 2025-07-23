@@ -10,7 +10,6 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { useRef } from 'react';
 
 import {
   CurrencyField,
@@ -26,27 +25,33 @@ import { useOperationLiquidStakeModal } from '../../hooks';
 interface ModalLiquidStakeProps {
   isOpen?: boolean;
   balance: string;
+  apyValue: string;
+  price: number;
+  notEnoughBalanceETH: boolean;
   onClose: () => void;
 }
 
 export function ModalLiquidStake({
   isOpen = false,
   balance,
+  apyValue,
+  price,
+  notEnoughBalanceETH,
   onClose,
 }: ModalLiquidStakeProps) {
-  const inputSourceRef = useRef<HTMLInputElement>(null);
-  const inputDestinationRef = useRef<HTMLInputElement>(null);
   const {
-    errorNoBalance,
+    errorAmount,
     valueSource,
     valueDestination,
+    isDepositing,
+    maxFee,
     handleClose,
     handleSourceChange,
     handleDestinationChange,
     handleSetCurrencyAmount,
+    createTxLiquidStake,
   } = useOperationLiquidStakeModal({ balance, onClose });
 
-  // TODO: Remove this mock data and get the real data from the API
   const StFUEL_ASSET = {
     name: 'stFuel',
     slug: 'stFUEL',
@@ -59,10 +64,9 @@ export function ModalLiquidStake({
     ref,
     value,
     onChange,
-    autoFocus = false,
   }: {
     symbol: string;
-    ref: React.RefObject<HTMLInputElement>;
+    ref?: React.RefObject<HTMLInputElement>;
     value: string;
     onChange?: (value: string) => void;
     autoFocus?: boolean;
@@ -91,7 +95,6 @@ export function ModalLiquidStake({
           ref={ref}
           value={value}
           onChange={(e) => onChange?.(e)}
-          autoFocus={autoFocus}
         />
         <InputRightAddon alignSelf="end" color="section.200">
           {symbol}
@@ -136,7 +139,6 @@ export function ModalLiquidStake({
             </HStack>
             <InputField
               symbol="FUEL"
-              ref={inputSourceRef}
               value={valueSource}
               onChange={handleSourceChange}
             />
@@ -166,11 +168,9 @@ export function ModalLiquidStake({
                 <Text color="white">Stake Max</Text>
               </Button>
             </HStack>
-            {errorNoBalance && (
+            {!!errorAmount && (
               <Text color="red.500" fontSize="xs" mt={2}>
-                {
-                  'Your current Fuel tokens balance is insufficient for this operation.'
-                }
+                {errorAmount}
               </Text>
             )}
           </Card>
@@ -192,7 +192,6 @@ export function ModalLiquidStake({
             </HStack>
             <InputField
               symbol="stFUEL"
-              ref={inputDestinationRef}
               value={valueDestination}
               onChange={handleDestinationChange}
             />
@@ -210,7 +209,7 @@ export function ModalLiquidStake({
                   <DoubtIcon fontSize={16} />
                 </HStack>
                 <Text color="#868079" fontSize={12} flex={1} align="right">
-                  1 FUEL ~ 0.99985458 stFUEL
+                  1 FUEL ~ {price} stFUEL
                 </Text>
               </HStack>
               <HStack width="full" marginBottom={1}>
@@ -218,7 +217,7 @@ export function ModalLiquidStake({
                   Reference APY
                 </Text>
                 <Text color="#868079" fontSize={12} flex={1} align="right">
-                  2.47%
+                  {`${apyValue}%`}
                 </Text>
               </HStack>
               <HStack width="full" marginBottom={1}>
@@ -226,14 +225,24 @@ export function ModalLiquidStake({
                   Max Transaction cost
                 </Text>
                 <Text color="#868079" fontSize={12} flex={1} align="right">
-                  $2.89
+                  {`${maxFee} ETH`}
                 </Text>
               </HStack>
             </VStack>
           </Card>
         </VStack>
-        <Dialog.Actions hideDivider={true}>
-          <Button variant="primary" width="full">
+        <Dialog.Actions hideDivider={true} onClick={createTxLiquidStake}>
+          <Button
+            variant="primary"
+            width="full"
+            isLoading={isDepositing}
+            isDisabled={
+              isDepositing ||
+              !!errorAmount ||
+              Number(valueSource) <= 0 ||
+              notEnoughBalanceETH
+            }
+          >
             Stake
           </Button>
         </Dialog.Actions>
