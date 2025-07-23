@@ -1,15 +1,19 @@
 import { Card, HStack, Text, VStack } from '@chakra-ui/react';
 
+import { CustomSkeleton } from '@/components';
+
 export interface ItemLiquidStakeProps {
   label: string;
   value: string;
   children?: React.ReactNode;
+  isLoading?: boolean;
 }
 
 export function ItemLiquidStake({
   label,
   value,
   children,
+  isLoading = false,
 }: ItemLiquidStakeProps) {
   return (
     <Card
@@ -29,9 +33,11 @@ export function ItemLiquidStake({
           <Text fontSize={12} color={'gray'}>
             {label}
           </Text>
-          <Text fontSize={16} fontWeight={700} color="white">
-            {value}
-          </Text>
+          <CustomSkeleton isLoaded={!isLoading}>
+            <Text fontSize={16} fontWeight={700} color="white">
+              {value}
+            </Text>
+          </CustomSkeleton>
         </VStack>
         {children}
       </HStack>
