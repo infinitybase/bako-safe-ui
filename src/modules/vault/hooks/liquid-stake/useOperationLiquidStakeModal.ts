@@ -99,6 +99,9 @@ const useOperationLiquidStakeModal = ({
       await handleClose();
     } catch (error) {
       console.error('error createTxLiquidStake', error);
+      if (error instanceof Error && error.message === 'Rejected request!')
+        return;
+
       toast.generalError(
         randomBytes.toString(),
         'Error on try transaction Liquid Stake',
