@@ -47,8 +47,11 @@ const CURRENCY_CONFIGS: Record<Currency, CurrencyConfig> = Object.freeze({
 const formatValue = (
   value: string,
   config: CurrencyConfig,
-  includeLeadingZero: boolean,
+  isCrypto: boolean = false,
 ) => {
+  if (isCrypto) {
+    return value.replace(/[^0-9.]/g, '');
+  }
   const [integerPart, decimalPart] = value.split(config.decimalSeparator);
   let decimal = decimalPart || '';
   let integer = integerPart || '';
@@ -60,9 +63,7 @@ const formatValue = (
     );
   }
 
-  if (includeLeadingZero) {
-    decimal = decimal.padEnd(config.decimalScale, '0');
-  }
+  decimal = decimal.padEnd(config.decimalScale, '0');
 
   return `${integer}${config.decimalSeparator}${decimal}`;
 };
@@ -125,7 +126,7 @@ const CurrencyField = forwardRef<HTMLInputElement, CurrencyFieldProps>(
       if (!value) return '';
 
       const allowedValue = value.replace(getAllowedPattern(), '');
-      return formatValue(allowedValue, config, !isCrypto);
+      return formatValue(allowedValue, config, isCrypto);
     }, [value, getAllowedPattern, config, isCrypto]);
 
     const handleInputChange = useCallback(
