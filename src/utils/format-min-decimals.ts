@@ -1,4 +1,3 @@
-// Função que mantém o valor original, mas garante mínimo de casas decimais (.000)
 export const formatMinDecimals = (value: string, minDecimals: number) => {
   if (!value.includes('.')) {
     return `${value}.${'0'.repeat(minDecimals)}`;
