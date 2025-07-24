@@ -48,7 +48,7 @@ export const SwapCost = memo(function SwapCost({
             Estimated fees:
           </Text>
           <Text color="grey.75" fontSize="xs">
-            {swapState.fee?.formatUnits(9)} {'ETH'}
+            {swapState.fee?.formatUnits(9)} {swapState.to.slug}
           </Text>
         </Flex>
 
