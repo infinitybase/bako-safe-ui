@@ -12,6 +12,7 @@ import {
   OverviewIcon,
   PendingIcon,
   SettingsIcon,
+  SwapIcon,
 } from '@/components';
 import { BakoMarketplaceBanner } from '@/components/bakoMarketplaceBanner';
 import { SidebarMenu } from '@/layouts/dashboard/menu';
@@ -193,6 +194,26 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
               <Icon as={PendingIcon} />{' '}
               {isPendingSigner && pendingSignerTransactionsLength}
             </SidebarMenu.Badge>
+          </SidebarMenu.Container>
+
+          <SidebarMenu.Container
+            isActive={menuItems.swap}
+            id={'swap_tab_sidebar'}
+            onClick={() =>
+              handleClick(
+                route.navigate(
+                  Pages.vaultSwap({
+                    workspaceId: route.params.workspaceId!,
+                    vaultId: route.params.vaultId!,
+                  }),
+                ),
+              )
+            }
+          >
+            <SidebarMenu.Icon as={SwapIcon} isActive={menuItems.swap} />
+            <SidebarMenu.Title isActive={menuItems.swap}>
+              Swap
+            </SidebarMenu.Title>
           </SidebarMenu.Container>
 
           <SidebarMenu.Container
