@@ -74,6 +74,7 @@ const useAssetSelectOptions = (
   });
 
   const options = [...filteredAssets, ...formattedNFTs];
+  console.log('>>> OPTIONS', options);
 
   const assetsOptions = options.map((option) => ({
     ...option,
