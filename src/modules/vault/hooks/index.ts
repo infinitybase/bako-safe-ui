@@ -1,6 +1,7 @@
 export * from './assets';
 export * from './create';
 export * from './details';
+export * from './liquid-stake';
 export * from './useCheckVaultByAddressRequest';
 export * from './useHomeVaultsRequest';
 export * from './user-vaults';
