@@ -31,7 +31,7 @@ export const AssetsIcon = memo(
               assetsMap.UNKNOWN.icon!,
           ),
         })),
-      [assets, metadataAssets, assetsMap],
+      [assets, metadataAssets, assetsMap.UNKNOWN.icon],
     );
 
     return (
@@ -57,6 +57,8 @@ export const AssetsIcon = memo(
               borderRadius="md"
               alt="Asset Icon"
               objectFit="cover"
+              fallbackSrc={assetsMap.UNKNOWN.icon!}
+              fallbackStrategy="onError"
             />
           </Skeleton>
         ))}
