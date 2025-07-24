@@ -28,10 +28,10 @@ export const AssetsIcon = memo(
             metadataAssets?.[asset.assetId]?.metadata?.image ||
               metadataAssets?.[asset.assetId]?.metadata?.['image:png'] ||
               metadataAssets?.[asset.assetId]?.icon ||
-              '',
+              assetsMap.UNKNOWN.icon!,
           ),
         })),
-      [assets, metadataAssets],
+      [assets, metadataAssets, assetsMap.UNKNOWN.icon],
     );
 
     return (
