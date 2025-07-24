@@ -36,16 +36,22 @@ async function constructSwapTransaction(
 
     const minAmountOut = bn
       .parseUnits(state.to.amount || '0', state.to.units)
-      .mul(bn(100 - Math.floor(slippage & 100)))
+      .mul(bn(100 - Math.floor(slippage * 100)))
       .div(bn(100));
     const bakoFee = minAmountOut.mul(swapFee).div(bn(100));
     const minAmountOutAfterFee = minAmountOut.sub(bakoFee);
+    console.log(
+      '####FEE: ',
+      minAmountOut.toString(),
+      bakoFee.toString(),
+      minAmountOutAfterFee.toString(),
+    );
     const amountIn = bn.parseUnits(state.from.amount || '0', state.from.units);
 
     const request = await amm.swapExactInput(
       amountIn,
       { bits: assetIn },
-      minAmountOutAfterFee,
+      minAmountOut,
       [poolId],
       await futureDeadline(provider),
       {
@@ -53,13 +59,13 @@ async function constructSwapTransaction(
       },
     );
 
-    return { request: addBakoFee(bakoFee, request, assetIn), bakoFee };
+    return { request: addBakoFee(bakoFee, request, to.assetId), bakoFee };
   }
   const poolId = buildPoolId(to.assetId, from.assetId, false);
   const assetOut = to.assetId;
   const maxAmountIn = bn
     .parseUnits(state.from.amount || '0', state.from.units)
-    .mul(bn(100 + Math.floor(slippage & 100)))
+    .mul(bn(100 + Math.floor(slippage * 100)))
     .div(bn(100));
   const bakoFee = maxAmountIn.mul(swapFee).div(bn(100));
   const amountOut = bn.parseUnits(state.to.amount || '0', state.to.units);
@@ -76,7 +82,7 @@ async function constructSwapTransaction(
     },
   );
 
-  return { request: addBakoFee(bakoFee, request, assetOut), bakoFee };
+  return { request: addBakoFee(bakoFee, request, from.assetId), bakoFee };
 }
 
 export const useSwapData = ({

@@ -30,16 +30,17 @@ export const useSwapRouter = (
     [assetIn, assetOut, amount],
   );
 
-  const { routes, isLoading: routesLoading } = useRoutablePools(
-    assetIn,
-    assetOut,
-    shouldFetch,
-  );
+  const {
+    routes,
+    isLoading: routesLoading,
+    isFetching,
+  } = useRoutablePools(assetIn, assetOut, shouldFetch);
 
   const {
     data: quotes = [],
     isLoading: quotesLoading,
     isFetched,
+    isFetching: isFetchingQuotes,
   } = useQuery({
     queryKey: [
       'swap-quotes',
@@ -64,7 +65,7 @@ export const useSwapRouter = (
   });
 
   return useMemo(() => {
-    if (routesLoading || quotesLoading) {
+    if (routesLoading || quotesLoading || isFetching || isFetchingQuotes) {
       return {
         trade: {
           state: State.LOADING,
@@ -109,5 +110,13 @@ export const useSwapRouter = (
         amountOut: best.amountOut,
       },
     };
-  }, [quotes, routesLoading, quotesLoading, mode, isFetched]);
+  }, [
+    quotes,
+    routesLoading,
+    quotesLoading,
+    mode,
+    isFetched,
+    isFetching,
+    isFetchingQuotes,
+  ]);
 };
