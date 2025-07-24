@@ -101,7 +101,7 @@
     "prettier": "^3.0.3",
     "semantic-release": "^24.2.3",
     "typescript": "~5.4.5",
-    "vite": "^4.4.5",
+    "vite": "^7.0.5",
     "vite-plugin-html": "^3.2.2",
     "vite-tsconfig-paths": "^4.2.0"
   },
