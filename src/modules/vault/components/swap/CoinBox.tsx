@@ -111,7 +111,12 @@ export const CoinBox = memo(
             >
               {coin.amount || '0'}
             </Box>
-            <InputRightAddon alignSelf="end">
+            <InputRightAddon
+              onClick={() => {
+                coinInputRef.current?.focus();
+              }}
+              alignSelf="end"
+            >
               <Text
                 color="grey.500"
                 _groupFocusWithin={{
