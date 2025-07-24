@@ -1,5 +1,3 @@
-export * from './useGetAmountIn';
-export * from './useGetAmountOut';
 export * from './useMira';
 export * from './useMiraReadonly';
 export * from './usePoolsWithReserve';

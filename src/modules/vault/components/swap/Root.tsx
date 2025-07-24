@@ -1,19 +1,18 @@
-import { Button, Flex, Stack } from '@chakra-ui/react';
+import { InfoIcon } from '@chakra-ui/icons';
+import { Button, Card, Flex, Stack, Text } from '@chakra-ui/react';
 import { Vault } from 'bakosafe';
 import { BN, bn } from 'fuels';
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 
-import { BAKO_FEE_PERCENTAGE } from '@/config/swap';
-import { Asset, FUEL_ASSET_ID, NativeAssetId, useToast } from '@/modules';
+import {
+  Asset,
+  FUEL_ASSET_ID,
+  NativeAssetId,
+  useContactToast,
+} from '@/modules';
 import { DEFAULT_SLIPPAGE, SwapButtonTitle } from '@/modules/core/utils/swap';
 
-import {
-  useGetAmountIn,
-  useGetAmountOut,
-  useSwap,
-  useSwapData,
-  useSwapPreview,
-} from '../../hooks/swap';
+import { useSwap, useSwapData, useSwapPreview } from '../../hooks/swap';
 import { useMira } from '../../hooks/swap/useMira';
 import { State } from '../../hooks/swap/useSwapRouter';
 import { CoinBox } from './CoinBox';
@@ -48,7 +47,7 @@ export const RootSwap = memo(({ assets, vault }: RootSwapProps) => {
   const [swapButtonTitle, setSwapButtonTitle] = useState<SwapButtonTitle>(
     SwapButtonTitle.PREVIEW,
   );
-  const { success, error } = useToast();
+  const { successToast, errorToast } = useContactToast();
   const amm = useMira({ vault });
 
   const defaultFromAsset = useMemo(
@@ -74,8 +73,8 @@ export const RootSwap = memo(({ assets, vault }: RootSwapProps) => {
 
   const isLoading = trade.state === State.LOADING;
 
-  console.log('Swap pools:', pools);
-  console.log('Swap trade:', trade);
+  // console.log('Swap pools:', pools);
+  // console.log('Swap trade:', trade);
 
   const {
     swapData,
@@ -87,7 +86,7 @@ export const RootSwap = memo(({ assets, vault }: RootSwapProps) => {
 
   const handleSubmitSwap = useCallback(async () => {
     if (swapState.status === 'idle') {
-      await getSwapPreview({
+      const preview = await getSwapPreview({
         state: swapState,
         mode: swapMode,
         slippage: DEFAULT_SLIPPAGE,
@@ -95,6 +94,7 @@ export const RootSwap = memo(({ assets, vault }: RootSwapProps) => {
       setSwapState((prevState) => ({
         ...prevState,
         status: 'preview',
+        fee: preview.bakoFee,
       }));
       setSwapButtonTitle(SwapButtonTitle.SWAP);
     }
@@ -104,7 +104,7 @@ export const RootSwap = memo(({ assets, vault }: RootSwapProps) => {
         tx: swapData.request,
       })
         .then(() => {
-          success('Swap transaction sent successfully');
+          successToast({ description: 'Swap transaction sent successfully' });
           setSwapState((prevState) => ({
             ...prevState,
             status: 'idle',
@@ -112,8 +112,11 @@ export const RootSwap = memo(({ assets, vault }: RootSwapProps) => {
           setSwapButtonTitle(SwapButtonTitle.PREVIEW);
         })
         .catch((err) => {
-          console.log('Swap transaction error:', err);
-          error('Swap transaction failed, try again later');
+          console.error('Swap transaction errorToast:', err);
+          errorToast({
+            title: 'Swap Error',
+            description: 'Swap failed, try again later',
+          });
           setSwapState((prevState) => ({
             ...prevState,
             status: 'error',
@@ -127,8 +130,8 @@ export const RootSwap = memo(({ assets, vault }: RootSwapProps) => {
     swapData,
     sendTx,
     vault,
-    success,
-    error,
+    successToast,
+    errorToast,
   ]);
 
   const handleResetAmounts = useCallback(() => {
@@ -194,10 +197,8 @@ export const RootSwap = memo(({ assets, vault }: RootSwapProps) => {
   );
 
   const handleCheckBalance = useCallback(
-    (amount: string) => {
-      const asset = assets.find(
-        (asset) => asset.assetId === swapState.from.assetId,
-      );
+    (amount: string, assetId: string) => {
+      const asset = assets.find((asset) => asset.assetId === assetId);
       if (asset && asset.balance) {
         const balance = asset.balance.formatUnits(asset.units);
         const isBalanceSufficient = bn
@@ -212,7 +213,7 @@ export const RootSwap = memo(({ assets, vault }: RootSwapProps) => {
         setSwapButtonTitle(SwapButtonTitle.INSUFFICIENT_BALANCE);
       }
     },
-    [assets, swapState.from.assetId, setSwapButtonTitle, swapButtonTitle],
+    [assets, setSwapButtonTitle, swapButtonTitle],
   );
 
   const handleChangeAssetAmount = useCallback(
@@ -224,7 +225,7 @@ export const RootSwap = memo(({ assets, vault }: RootSwapProps) => {
         const otherAsset = prevState[stateMode === 'from' ? 'to' : 'from'];
         handleSwapModeChange(mode);
         if (mode === 'sell') {
-          handleCheckBalance(value);
+          handleCheckBalance(value, updatedAsset.assetId);
         }
         return {
           ...prevState,
@@ -244,94 +245,74 @@ export const RootSwap = memo(({ assets, vault }: RootSwapProps) => {
   );
 
   const handleSwapAssets = useCallback(() => {
+    if (swapState.to.amount && swapState.to.amount !== '0') {
+      console.log('checked balance for to asset amount', swapState.to);
+      handleCheckBalance(swapState.to.amount, swapState.to.assetId);
+    }
     setSwapState((prevState) => ({
       ...prevState,
       from: prevState.to,
       to: prevState.from,
     }));
-    if (swapState.from.amount && swapState.from.amount !== '0') {
-      handleCheckBalance(swapState.from.amount);
-    }
-  }, [handleCheckBalance, swapState.from.amount]);
+  }, [handleCheckBalance, swapState.to]);
 
-  const { amountOut, isLoading: isLoadingAmountOut } = useGetAmountOut({
-    state: swapState,
-    mode: swapMode,
-    pools,
-  });
+  const handleUpdateAmountOut = useCallback(
+    (amount: string) => {
+      if (swapState.to.amount === amount) {
+        console.log('prevent duplicate update');
+        return;
+      }
+      setSwapState((prevState) => ({
+        ...prevState,
+        to: {
+          ...prevState.to,
+          amount,
+        },
+      }));
+    },
+    [swapState.to.amount],
+  );
 
-  const { amountIn, isLoading: isLoadingAmountIn } = useGetAmountIn({
-    state: swapState,
-    mode: swapMode,
-    pools,
-  });
+  const handleUpdateAmountIn = useCallback(
+    (amount: string) => {
+      if (swapState.from.amount === amount) {
+        console.log('prevent duplicate update');
+        return;
+      }
+      setSwapState((prevState) => ({
+        ...prevState,
+        from: {
+          ...prevState.from,
+          amount,
+        },
+      }));
+    },
+    [swapState.from.amount],
+  );
 
-  const handleUpdateAmountOut = useCallback((amount: string, fee?: BN) => {
-    setSwapState((prevState) => ({
-      ...prevState,
-      to: {
-        ...prevState.to,
-        amount,
-      },
-      fee,
-    }));
-  }, []);
-
-  const handleUpdateAmountIn = useCallback((amount: string, fee?: BN) => {
-    setSwapState((prevState) => ({
-      ...prevState,
-      from: {
-        ...prevState.from,
-        amount,
-      },
-      fee,
-    }));
-  }, []);
-
-  console.log('####AMOUNT_OUT: ', amountOut);
   useEffect(() => {
-    if (amountOut && !isLoadingAmountOut && swapMode === 'sell') {
-      const _amountOut = amountOut?.[1]?.[1];
-      const FEE_PERCENT = BAKO_FEE_PERCENTAGE;
-      const fee = _amountOut.mul(FEE_PERCENT);
-      console.log(fee.formatUnits(), _amountOut.formatUnits()); // this is 0.000000000 195.447936595 why ?
-
-      const amountAfterFee = _amountOut.sub(fee);
-      const amount = amountAfterFee.formatUnits(swapState.to.units);
-
-      if (amount && swapState.to.amount !== amount) {
-        handleUpdateAmountOut(amount, fee);
+    if (
+      trade &&
+      trade.state === State.VALID &&
+      (trade.amountIn || trade.amountOut)
+    ) {
+      const amount = swapMode === 'sell' ? trade.amountOut : trade.amountIn;
+      const units =
+        swapMode === 'sell' ? swapState.to.units : swapState.from.units;
+      const formattedAmount = amount.formatUnits(units);
+      if (swapMode === 'sell') {
+        handleUpdateAmountOut(formattedAmount);
+      } else {
+        handleUpdateAmountIn(formattedAmount);
       }
     }
   }, [
-    amountOut,
-    isLoadingAmountOut,
-    swapMode,
-    handleUpdateAmountOut,
-    swapState.to.units,
-    swapState.to.amount,
-  ]);
-
-  useEffect(() => {
-    if (amountIn && !isLoadingAmountIn && swapMode === 'buy') {
-      const _amountIn = amountIn?.[1]?.[1];
-      const FEE_PERCENT = BAKO_FEE_PERCENTAGE;
-      const fee = _amountIn.mul(FEE_PERCENT);
-      console.log(fee.formatUnits());
-      const amountAfterFee = _amountIn.sub(fee);
-      const amount = amountAfterFee.formatUnits(swapState.from.units);
-
-      if (amount && swapState.from.amount !== amount) {
-        handleUpdateAmountIn(amount, fee);
-      }
-    }
-  }, [
-    amountIn,
-    isLoadingAmountIn,
+    trade,
     swapMode,
     handleUpdateAmountIn,
+    handleUpdateAmountOut,
     swapState.from.units,
-    swapState.from.amount,
+    swapState.to.units,
   ]);
 
   const isEmptyAmounts = useMemo(
@@ -354,8 +335,6 @@ export const RootSwap = memo(({ assets, vault }: RootSwapProps) => {
     [swapButtonTitle],
   );
 
-  console.log(swapState);
-
   return (
     <Stack spacing={1}>
       <CoinBox
@@ -364,7 +343,7 @@ export const RootSwap = memo(({ assets, vault }: RootSwapProps) => {
         onChangeAsset={handleFromAssetSelect}
         assets={assets}
         onChangeAmount={(value) => handleChangeAssetAmount('sell', value)}
-        isLoadingAmount={isLoadingAmountIn || (isLoading && swapMode === 'buy')}
+        isLoadingAmount={isLoading && swapMode === 'buy'}
       />
 
       <SwapDivider onSwap={handleSwapAssets} />
@@ -375,10 +354,23 @@ export const RootSwap = memo(({ assets, vault }: RootSwapProps) => {
         onChangeAsset={handleToAssetSelect}
         assets={assets}
         onChangeAmount={(value) => handleChangeAssetAmount('buy', value)}
-        isLoadingAmount={
-          isLoadingAmountOut || (isLoading && swapMode === 'sell')
-        }
+        isLoadingAmount={isLoading && swapMode === 'sell'}
       />
+
+      {trade.error && (
+        <Card
+          variant="outline"
+          p={3}
+          gap={2}
+          alignItems="center"
+          flexDirection="row"
+        >
+          <InfoIcon color="error.500" />
+          <Text color="error.500" fontSize="xs">
+            {trade.error}
+          </Text>
+        </Card>
+      )}
 
       {swapButtonTitle === SwapButtonTitle.SWAP && (
         <SwapCost
