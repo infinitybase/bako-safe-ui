@@ -4,13 +4,13 @@ import { Vault } from 'bakosafe';
 import { BN, bn } from 'fuels';
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 
+import { DEFAULT_SLIPPAGE, SwapButtonTitle } from '@/config/swap';
 import {
   Asset,
   FUEL_ASSET_ID,
   NativeAssetId,
   useContactToast,
 } from '@/modules';
-import { DEFAULT_SLIPPAGE, SwapButtonTitle } from '@/modules/core/utils/swap';
 
 import { useSwap, useSwapData, useSwapPreview } from '../../hooks/swap';
 import { useMira } from '../../hooks/swap/useMira';
@@ -72,9 +72,6 @@ export const RootSwap = memo(({ assets, vault }: RootSwapProps) => {
   );
 
   const isLoading = trade.state === State.LOADING;
-
-  // console.log('Swap pools:', pools);
-  // console.log('Swap trade:', trade);
 
   const {
     swapData,
@@ -246,7 +243,6 @@ export const RootSwap = memo(({ assets, vault }: RootSwapProps) => {
 
   const handleSwapAssets = useCallback(() => {
     if (swapState.to.amount && swapState.to.amount !== '0') {
-      console.log('checked balance for to asset amount', swapState.to);
       handleCheckBalance(swapState.to.amount, swapState.to.assetId);
     }
     setSwapState((prevState) => ({
@@ -258,10 +254,7 @@ export const RootSwap = memo(({ assets, vault }: RootSwapProps) => {
 
   const handleUpdateAmountOut = useCallback(
     (amount: string) => {
-      if (swapState.to.amount === amount) {
-        console.log('prevent duplicate update');
-        return;
-      }
+      if (swapState.to.amount === amount) return;
       setSwapState((prevState) => ({
         ...prevState,
         to: {
@@ -275,10 +268,8 @@ export const RootSwap = memo(({ assets, vault }: RootSwapProps) => {
 
   const handleUpdateAmountIn = useCallback(
     (amount: string) => {
-      if (swapState.from.amount === amount) {
-        console.log('prevent duplicate update');
-        return;
-      }
+      if (swapState.from.amount === amount) return;
+
       setSwapState((prevState) => ({
         ...prevState,
         from: {
