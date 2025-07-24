@@ -109,7 +109,7 @@ const RecipientFormField = (props: RecipientFormFieldProps) => {
   const formatUsdEstimate = (amount: string, assetId: string) => {
     if (!amount || !assetId) return '$0.00';
     const price = getAssetPrice(assetId);
-    const estimated = parseFloat(amount) * price;
+    const estimated = parseFloat(amount.replace(/,/g, '')) * price;
 
     return estimated.toLocaleString('en-US', {
       style: 'currency',
