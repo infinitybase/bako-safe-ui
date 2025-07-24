@@ -27,7 +27,6 @@ export const useAllAssetsCombination = (assetA: Asset, assetB: Asset) => {
     };
 
     addPair(assetA, assetB);
-    addPair(assetB, assetA);
 
     // combinations with base assets
     BASE_ASSETS.forEach((base) => {

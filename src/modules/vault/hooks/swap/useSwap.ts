@@ -15,7 +15,7 @@ export const useSwap = () => {
       if (!vault) {
         throw new Error('Vault is not available');
       }
-      return vault.sendTransaction(tx);
+      return vault.BakoTransfer(tx, { name: `Swap ETH to FUEL` });
     },
   });
 

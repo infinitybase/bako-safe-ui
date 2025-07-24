@@ -14,6 +14,7 @@ export enum State {
   LOADING = 'Loading',
   VALID = 'Valid routes found',
   ERROR = 'Error fetching routes',
+  IDLE = 'Idle',
 }
 
 export const useSwapRouter = (
@@ -49,17 +50,33 @@ export const useSwapRouter = (
       routes,
     ],
 
-    queryFn: () => getSwapQuotesBatch(amount, mode, routes, amm!),
-    enabled: shouldFetch && routes.length > 0 && !!amm,
+    queryFn: () =>
+      getSwapQuotesBatch(
+        amount,
+        mode,
+        routes,
+        amm!,
+        assetIn?.assetId,
+        assetOut?.assetId,
+      ),
+    enabled: shouldFetch && routes.length > 0 && !!amm && !routesLoading,
     initialData: shouldFetch ? undefined : [],
   });
-  console.log('Swap quotes fetched:', isFetched);
 
   return useMemo(() => {
     if (routesLoading || quotesLoading) {
       return {
         trade: {
           state: State.LOADING,
+          bestRoute: null,
+        },
+      };
+    }
+
+    if (!isFetched) {
+      return {
+        trade: {
+          state: State.IDLE,
           bestRoute: null,
         },
       };
@@ -75,8 +92,11 @@ export const useSwapRouter = (
       };
     }
 
-    const best = quotes.reduce((prev, current) => {
-      return prev.amountOut.gt(current.amountOut) ? prev : current;
+    const best = quotes.reduce((best, current) => {
+      if (mode === 'sell') {
+        return best.amountOut.gt(current.amountOut) ? best : current;
+      }
+      return best.amountIn.lt(current.amountIn) ? best : current;
     }, quotes[0]);
 
     return {
@@ -86,7 +106,8 @@ export const useSwapRouter = (
         assetIn: best.assetIdIn,
         assetOut: best.assetIdOut,
         amountIn: best.amountIn,
+        amountOut: best.amountOut,
       },
     };
-  }, [quotes, routesLoading, quotesLoading]);
+  }, [quotes, routesLoading, quotesLoading, mode, isFetched]);
 };

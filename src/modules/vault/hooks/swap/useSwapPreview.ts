@@ -13,7 +13,7 @@ export const useSwapPreview = (swapState: SwapState, mode: SwapMode) => {
   const isBuy = mode === 'buy';
 
   const rawUserInputAmount = useMemo(() => {
-    const amountString = isBuy ? swapState.to.amount : swapState.from.amount;
+    const amountString = isBuy ? buyAsset.amount : sellAsset.amount;
     const amount = parseFloat(amountString || '0');
     const amountValid = !isNaN(amount);
     if (!sellAsset || !buyAsset) return bn(0);
@@ -25,7 +25,7 @@ export const useSwapPreview = (swapState: SwapState, mode: SwapMode) => {
       console.error('Error parsing units:', error);
       return bn(0);
     }
-  }, [sellAsset, buyAsset, swapState.to.amount, swapState.from.amount, isBuy]);
+  }, [sellAsset, buyAsset, isBuy]);
 
   // passing as bn causes infinite render
   const debouncedValue = useDebounce(rawUserInputAmount.toString(), 500);
