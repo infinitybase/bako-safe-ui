@@ -38,9 +38,18 @@ export const SwapCost = memo(function SwapCost({
           <Text color="section.500" fontSize="xs">
             Routing:
           </Text>
-          {pools.map((pool) => (
-            <SwapRouteItem key={String(pool)} pool={pool} />
-          ))}
+          <Flex alignItems="center" gap={1}>
+            {pools.map((pool, i) => (
+              <Flex alignItems="center" gap={0} key={String(pool) + i}>
+                <SwapRouteItem pool={pool} />
+                {i !== pools.length - 1 && (
+                  <Text as="span" fontSize="xs" color="grey.75">
+                    +
+                  </Text>
+                )}
+              </Flex>
+            ))}
+          </Flex>
         </Flex>
 
         <Flex alignItems="center" justifyContent="space-between">
