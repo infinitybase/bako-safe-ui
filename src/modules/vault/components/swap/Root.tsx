@@ -84,6 +84,21 @@ export const RootSwap = memo(({ assets, vault }: RootSwapProps) => {
 
   const { sendTx, isPending: isSendingTx } = useSwap();
 
+  const handleResetAmounts = useCallback(() => {
+    setSwapMode('idle');
+    setSwapState((prevState) => ({
+      ...prevState,
+      from: {
+        ...prevState.from,
+        amount: '0',
+      },
+      to: {
+        ...prevState.to,
+        amount: '0',
+      },
+    }));
+  }, []);
+
   const handleSubmitSwap = useCallback(async () => {
     if (swapState.status === 'idle') {
       const preview = await getSwapPreview({
@@ -102,14 +117,13 @@ export const RootSwap = memo(({ assets, vault }: RootSwapProps) => {
       await sendTx({
         vault,
         tx: swapData.request,
+        assetIn: swapState.from.slug,
+        assetOut: swapState.to.slug,
       })
         .then(() => {
           successToast({ description: 'Swap transaction sent successfully' });
-          setSwapState((prevState) => ({
-            ...prevState,
-            status: 'idle',
-          }));
           setSwapButtonTitle(SwapButtonTitle.PREVIEW);
+          handleResetAmounts();
         })
         .catch((err) => {
           console.error('Swap transaction errorToast:', err);
@@ -132,22 +146,8 @@ export const RootSwap = memo(({ assets, vault }: RootSwapProps) => {
     vault,
     successToast,
     errorToast,
+    handleResetAmounts,
   ]);
-
-  const handleResetAmounts = useCallback(() => {
-    setSwapMode('idle');
-    setSwapState((prevState) => ({
-      ...prevState,
-      from: {
-        ...prevState.from,
-        amount: '0',
-      },
-      to: {
-        ...prevState.to,
-        amount: '0',
-      },
-    }));
-  }, []);
 
   const handleSwapModeChange = useCallback(
     (mode: SwapMode) => {
