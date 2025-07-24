@@ -1,5 +1,10 @@
 import { AssetId, BN } from 'fuels';
-import { buildPoolId, PoolId, ReadonlyMiraAmm } from 'mira-dex-ts';
+import {
+  Asset as AssetMira,
+  buildPoolId,
+  PoolId,
+  ReadonlyMiraAmm,
+} from 'mira-dex-ts';
 
 import { Asset, PredicateMember } from '..';
 import { IPredicate } from '../core/hooks/bakosafe/utils/types';
@@ -140,60 +145,73 @@ export type SwapQuote = {
   mode: SwapMode;
 };
 
+const formatSwapBatchResponse = (
+  response: AssetMira[],
+  mode: SwapMode,
+  routes: Route[],
+  isSell: boolean,
+  amount: BN,
+) => {
+  return response
+    .map((asset, i) =>
+      asset
+        ? {
+            mode,
+            route: routes[i],
+            assetIdIn: { bits: routes[i].assetIn.assetId },
+            assetIdOut: { bits: routes[i].assetOut.assetId },
+            amountIn: isSell ? amount : asset[1],
+            amountOut: isSell ? asset[1] : amount,
+          }
+        : null,
+    )
+    .filter((quote): quote is SwapQuote => quote !== null);
+};
+
 export const getSwapQuotesBatch = async (
   amount: BN,
   mode: SwapMode,
   routes: Route[],
   amm: ReadonlyMiraAmm,
+  assetIn: string,
+  assetOut: string,
 ): Promise<SwapQuote[]> => {
-  console.log('routes', routes.length);
   if (!routes.length) return [];
 
   const isSell = mode === 'sell';
-  const assetKey = isSell
-    ? routes[0].assetIn.assetId
-    : routes[0].assetOut.assetId;
   const poolPaths = routes.map((r) => r.pools.map((p) => p.poolId));
-  console.log('fetch quotes batch', {
-    assetKey,
-    poolPaths,
-  });
+  // console.log('fetch quotes batch', {
+  //   assetKey,
+  //   poolPaths,
+  //   amount: amount.toString(),
+  // });
 
-  const previewSwapBatch = async (amm: ReadonlyMiraAmm, isSell: boolean) => {
-    if (isSell) {
-      return await Promise.all(
-        poolPaths.map((pool) =>
-          amm.previewSwapExactInput({ bits: assetKey }, amount, pool),
-        ),
-      );
-    }
-    return await Promise.all(
-      poolPaths.map((pool) =>
-        amm.previewSwapExactOutput({ bits: assetKey }, amount, pool),
-      ),
-    );
-  };
+  // console.log('POOL PATHS:', poolPaths);
+  if (isSell) {
+    const response = await Promise.all(
+      poolPaths.map(async (pool) => {
+        return amm
+          .previewSwapExactInput({ bits: assetIn }, amount, pool)
+          .catch((e) => {
+            console.error('Error fetching swap quote:', e);
+            return null; // Handle error gracefully
+          });
+      }),
+    ).then((res) => res.filter((r): r is AssetMira => r !== null));
 
-  try {
-    const results = await previewSwapBatch(amm, isSell);
-    console.log('#####Swap quotes results:', results);
-
-    return results
-      .map((asset, i) =>
-        asset
-          ? {
-              mode,
-              route: routes[i],
-              assetIdIn: { bits: routes[i].assetIn.assetId },
-              assetIdOut: { bits: routes[i].assetOut.assetId },
-              amountIn: isSell ? amount : asset[1],
-              amountOut: isSell ? asset[1] : amount,
-            }
-          : null,
-      )
-      .filter((quote): quote is SwapQuote => quote !== null);
-  } catch (error) {
-    console.log('Error fetching swap quotes:', error);
-    throw new Error('Error');
+    return formatSwapBatchResponse(response, mode, routes, isSell, amount);
   }
+
+  const response = await Promise.all(
+    poolPaths.map(async (pool) => {
+      return amm
+        .previewSwapExactOutput({ bits: assetOut }, amount, pool)
+        .catch((e) => {
+          console.error('Error fetching swap quote:', e);
+          return null; // Handle error gracefully
+        });
+    }),
+  ).then((res) => res.filter((r): r is AssetMira => r !== null));
+
+  return formatSwapBatchResponse(response, mode, routes, isSell, amount);
 };
