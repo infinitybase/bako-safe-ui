@@ -77,7 +77,7 @@ export const RootSwap = memo(({ assets, vault }: RootSwapProps) => {
     swapData,
     getSwapPreview,
     isPending: isLoadingPreview,
-  } = useSwapData({ amm, vault });
+  } = useSwapData({ amm, vault, pools });
 
   const { sendTx, isPending: isSendingTx } = useSwap();
 
