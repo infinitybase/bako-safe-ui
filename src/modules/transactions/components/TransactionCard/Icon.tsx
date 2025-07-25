@@ -7,7 +7,7 @@ import { getTransactionIconComponent } from '../../utils';
 
 export const Icon = memo(
   ({ transaction }: { transaction: TransactionWithVault }) => {
-    const { isFromConnector, isFromCLI, isDeploy, isDeposit } =
+    const { isFromConnector, isFromCLI, isDeploy, isDeposit, isSwap } =
       useVerifyTransactionInformations(transaction);
 
     const IconComponent = useMemo(
@@ -17,8 +17,14 @@ export const Icon = memo(
           isFromConnector,
           isFromCLI,
           isDeposit,
+          isSwap,
         }),
-      [isDeploy, isFromConnector, isFromCLI, isDeposit],
+      [isDeploy, isFromConnector, isFromCLI, isDeposit, isSwap],
+    );
+
+    const size = useMemo(
+      () => (isDeploy || isFromConnector || isSwap ? 'inherit' : '12px'),
+      [isDeploy, isFromConnector, isSwap],
     );
 
     return (
@@ -31,11 +37,7 @@ export const Icon = memo(
         borderRadius="10px 0 0 10px"
         h="auto"
       >
-        <ChackraIcon
-          as={IconComponent}
-          mt={8}
-          fontSize={isDeploy || isFromConnector ? 'inherit' : '12px'}
-        />
+        <ChackraIcon as={IconComponent} mt={8} fontSize={size} />
       </Flex>
     );
   },

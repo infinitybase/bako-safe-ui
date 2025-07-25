@@ -1,7 +1,7 @@
 import { ITransactionResume, TransactionStatus } from 'bakosafe';
 import { bn } from 'fuels';
 
-import { DownLeftArrowGreen, UpRightArrowYellow } from '@/components';
+import { DownLeftArrowGreen, SwapIcon, UpRightArrowYellow } from '@/components';
 import { ContractIcon } from '@/components/icons/tx-contract';
 import { DeployIcon } from '@/components/icons/tx-deploy';
 
@@ -91,12 +91,15 @@ export const getTransactionIconComponent = ({
   isFromConnector,
   isFromCLI,
   isDeposit,
+  isSwap,
 }: {
   isDeploy: boolean;
   isFromConnector: boolean;
   isFromCLI: boolean;
   isDeposit: boolean;
+  isSwap: boolean;
 }) => {
+  if (isSwap) return SwapIcon;
   if (isDeploy) return DeployIcon;
   if (isFromConnector || isFromCLI) return ContractIcon;
   if (isDeposit) return DownLeftArrowGreen;
