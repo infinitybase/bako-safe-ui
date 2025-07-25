@@ -1,5 +1,6 @@
 import { SearchIcon } from '@chakra-ui/icons';
 import {
+  Box,
   Divider,
   FormControl,
   FormLabel,
@@ -16,6 +17,7 @@ import debounce from 'lodash.debounce';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { Dialog } from '@/components';
+import { Header } from '@/layouts/dashboard/header';
 import { Asset, CurrencyList } from '@/modules/core';
 
 interface AssetsModalProps {
@@ -77,6 +79,9 @@ export const AssetsModal = ({
       isOpen={isOpen}
       onClose={onClose}
     >
+      <Box display={{ base: 'block', xs: 'none' }} w="full">
+        <Header />
+      </Box>
       <Dialog.Header
         mt={3}
         mb={3}
@@ -84,7 +89,7 @@ export const AssetsModal = ({
         title="Select Asset"
         onClose={onClose}
       />
-      <Dialog.Body>
+      <Dialog.Body py={{ base: 0, xs: 2 }}>
         <Stack spacing={4}>
           <FormControl px={4}>
             <InputGroup position="relative">
