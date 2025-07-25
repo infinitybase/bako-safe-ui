@@ -222,7 +222,9 @@ export function CardLiquidStake({ assets }: CardLiquidStakeProps) {
               <Text fontSize={isMobile ? 10 : 12} color={'gray.400'}>
                 Earn Up to 18% More than Manual Staking
               </Text>
-              <Icon color="grey.400" boxSize="14px" as={TooltipIcon} />
+              {!isMobile && (
+                <Icon color="grey.400" boxSize="14px" as={TooltipIcon} />
+              )}
             </HStack>
           </VStack>
           <HStack

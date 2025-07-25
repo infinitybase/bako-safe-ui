@@ -9,14 +9,10 @@ import {
 } from '@chakra-ui/react';
 import { useMemo } from 'react';
 
-import { DownLeftArrowGreen, UpRightArrowYellow } from '@/components';
-import { ContractIcon } from '@/components/icons/tx-contract';
-import { DeployIcon } from '@/components/icons/tx-deploy';
-
 import { useDetailsDialog } from '../../hooks/details';
 import { useVerifyTransactionInformations } from '../../hooks/details/useVerifyTransactionInformations';
 import { TransactionWithVault } from '../../services/types';
-import { transactionStatus } from '../../utils';
+import { getTransactionIconComponent, transactionStatus } from '../../utils';
 import { TransactionCard } from '../TransactionCard';
 import { DetailsDialog } from '../TransactionCard/DetailsDialog';
 
@@ -36,9 +32,23 @@ const TransactionCardMobile = (props: TransactionCardMobileProps) => {
     isDeposit,
     isContract,
     isFuelFriday,
+    isLiquidStake,
+    isFromCLI,
     showAmountInformations,
     isMint,
   } = useVerifyTransactionInformations(transaction);
+
+  const IconComponent = useMemo(
+    () =>
+      getTransactionIconComponent({
+        isDeploy,
+        isFromConnector,
+        isDeposit,
+        isLiquidStake,
+        isFromCLI,
+      }),
+    [isDeploy, isFromConnector, isDeposit, isFromCLI, isLiquidStake],
+  );
 
   const status = useMemo(
     () =>
@@ -99,15 +109,7 @@ const TransactionCardMobile = (props: TransactionCardMobileProps) => {
             minH="140px"
           >
             <Icon
-              as={
-                isDeploy
-                  ? DeployIcon
-                  : isFromConnector
-                    ? ContractIcon
-                    : isDeposit
-                      ? DownLeftArrowGreen
-                      : UpRightArrowYellow
-              }
+              as={IconComponent}
               fontSize={isDeploy || isFromConnector ? 'inherit' : '12px'}
             />
           </Flex>
