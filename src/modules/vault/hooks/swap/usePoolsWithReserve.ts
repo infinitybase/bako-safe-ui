@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { PoolIdCombination } from '../../utils';
+import { PoolIdCombination, PoolsWithReserve } from '../../utils';
 import { useMiraReadonly } from './useMiraReadonly';
 
 export const usePoolsWithReserve = (
@@ -21,6 +21,11 @@ export const usePoolsWithReserve = (
         poolsCombination.map(async (pool) => {
           const [a, b, poolId] = pool;
           const metadata = await amm.poolMetadata(poolId);
+
+          if (!metadata) {
+            return null;
+          }
+
           return {
             assetA: a,
             assetB: b,
@@ -30,7 +35,7 @@ export const usePoolsWithReserve = (
           };
         }),
       );
-      return response;
+      return response.filter((pool) => pool !== null) as PoolsWithReserve[];
     },
     enabled: shouldFetch && !!amm,
   });

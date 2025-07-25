@@ -1,9 +1,10 @@
 import { useMutation } from '@tanstack/react-query';
 import { Vault } from 'bakosafe';
 import { Address, BN, bn, Provider, ScriptTransactionRequest } from 'fuels';
-import { buildPoolId, MiraAmm } from 'mira-dex-ts';
+import { MiraAmm, PoolId } from 'mira-dex-ts';
 
 import { BAKO_FEE_ADDRESS, BAKO_FEE_PERCENTAGE } from '@/config/swap';
+import { useContactToast } from '@/modules/addressBook';
 
 import { SwapMode, SwapState } from '../../components/swap/Root';
 import { useProvider } from '../useProvider';
@@ -27,11 +28,11 @@ async function constructSwapTransaction(
   amm: MiraAmm,
   slippage: number,
   provider: Provider,
+  pools: PoolId[],
 ) {
   const { to, from } = state;
   const swapFee = bn(BAKO_FEE_PERCENTAGE);
   if (mode === 'sell') {
-    const poolId = buildPoolId(from.assetId, to.assetId, false);
     const assetIn = from.assetId;
 
     const minAmountOut = bn
@@ -45,6 +46,7 @@ async function constructSwapTransaction(
       minAmountOut.toString(),
       bakoFee.toString(),
       minAmountOutAfterFee.toString(),
+      pools,
     );
     const amountIn = bn.parseUnits(state.from.amount || '0', state.from.units);
 
@@ -52,16 +54,15 @@ async function constructSwapTransaction(
       amountIn,
       { bits: assetIn },
       minAmountOut,
-      [poolId],
+      pools,
       await futureDeadline(provider),
       {
-        maxFee: bn(100000),
+        maxFee: bn(1000000),
       },
     );
 
-    return { request: addBakoFee(bakoFee, request, to.assetId), bakoFee };
+    return { request, bakoFee };
   }
-  const poolId = buildPoolId(to.assetId, from.assetId, false);
   const assetOut = to.assetId;
   const maxAmountIn = bn
     .parseUnits(state.from.amount || '0', state.from.units)
@@ -75,10 +76,10 @@ async function constructSwapTransaction(
     amountOut,
     { bits: assetOut },
     minAmountInAfterFee,
-    [poolId],
+    pools,
     await futureDeadline(provider),
     {
-      maxFee: bn(100000),
+      maxFee: bn(1000000),
     },
   );
 
@@ -88,11 +89,14 @@ async function constructSwapTransaction(
 export const useSwapData = ({
   amm,
   vault,
+  pools,
 }: {
   amm?: MiraAmm;
   vault?: Vault;
+  pools: PoolId[];
 }) => {
   const provider = useProvider();
+  const { errorToast } = useContactToast();
 
   const {
     data: swapData,
@@ -120,11 +124,19 @@ export const useSwapData = ({
         amm,
         slippage,
         provider!,
+        pools,
       );
 
       const tx = await vault.getTransactionCost(request);
 
       return { tx, request, bakoFee };
+    },
+    onError: (e) => {
+      console.error('Error fetching swap preview:', e);
+      errorToast({
+        title: 'Error fetching swap preview',
+        description: 'Please try again later.',
+      });
     },
   });
 

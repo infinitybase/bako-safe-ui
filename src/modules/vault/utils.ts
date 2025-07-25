@@ -88,7 +88,7 @@ function poolEquals(a: PoolsWithReserve, b: PoolsWithReserve): boolean {
   return JSON.stringify(a.poolId) === JSON.stringify(b.poolId);
 }
 
-interface PoolsWithReserve {
+export interface PoolsWithReserve {
   poolId: PoolId;
   reserve0?: BN;
   reserve1?: BN;
