@@ -4,10 +4,12 @@ import { To, useNavigate } from 'react-router-dom';
 
 import { AssetCard } from '@/modules/core/components';
 import { Asset, NFT } from '@/modules/core/utils';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { orderAssetsByUSD } from '@/utils';
 
 import { useVaultAssetsList } from '../hooks';
 
-interface TokensUSD {
+export interface TokensUSD {
   [assetId: string]: {
     usdAmount: number;
   };
@@ -33,9 +35,15 @@ const AssetsDetails = ({
   const navigate = useNavigate();
   const { visibleItems, showViewAll, countViewAll, itemWidth } =
     useVaultAssetsList(containerRef, assets, nfts);
+
+  const { assetsMap } = useWorkspaceContext();
+
+  const assetsOrdered = orderAssetsByUSD({ assets, tokensUSD, assetsMap });
+
   return (
     <>
-      {assets.map((asset, index) => {
+      {assetsOrdered.map((assetOrdered, index) => {
+        const asset = assetOrdered.asset;
         const usdData = tokensUSD[asset.assetId.toLowerCase()];
         const usdAmount = usdData?.usdAmount ?? null;
 

@@ -1,8 +1,10 @@
 import { Image, Text, VStack } from '@chakra-ui/react';
+
+import { Card } from '@/components';
 import { Asset } from '@/modules/core/utils';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+
 import { useGetTokenInfos } from '../../hooks';
-import { Card } from '@/components';
 
 const AssetsBalanceCard = ({
   asset,

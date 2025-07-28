@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 
 import { Asset, NFT } from '@/modules/core/utils';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { orderAssetsByUSD } from '@/utils';
 
 import { AssetsBalanceCard } from './assets-balance-card';
 import { NftBalanceCard } from './nfts-balance-card';
@@ -16,7 +17,13 @@ interface NftsBalanceProps {
 }
 
 const AssetsBalanceList = ({ assets }: AssetsBalanceProps) => {
-  const { tokensUSD } = useWorkspaceContext();
+  const { tokensUSD, assetsMap } = useWorkspaceContext();
+  const orderedAssets = orderAssetsByUSD({
+    assets,
+    tokensUSD: tokensUSD.data,
+    assetsMap,
+  });
+
   return (
     <Grid
       gap={4}
@@ -29,7 +36,8 @@ const AssetsBalanceList = ({ assets }: AssetsBalanceProps) => {
         '2xl': 'repeat(6, 1fr)',
       }}
     >
-      {assets?.map((asset) => {
+      {orderedAssets?.map((assetOrdered) => {
+        const asset = assetOrdered.asset;
         const usdData = tokensUSD.data[asset.assetId.toLowerCase()];
         const usdAmount = usdData?.usdAmount ?? null;
         return (
