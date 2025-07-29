@@ -181,9 +181,10 @@ const useCreateTransactionForm = (params: UseCreateTransactionFormParams) => {
       value: yup
         .string()
         .required('Address is required.')
-        .test('valid-address', 'Invalid address.', (address) =>
-          AddressUtils.isValid(address),
-        )
+        .test('valid-address', 'Invalid address.', (address) => {
+          const allowEvm = true;
+          return AddressUtils.isValid(address, !allowEvm);
+        })
         .test(
           'valid-account',
           'This address can not receive assets from Bako.',
