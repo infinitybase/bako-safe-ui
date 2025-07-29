@@ -2,6 +2,7 @@ import { FuelWalletTestHelper, getByAriaLabel } from '@fuels/playwright-utils';
 import { Page } from '@playwright/test';
 import { WalletUnlocked } from 'fuels';
 
+import { disconnect } from '../helpers';
 import { E2ETestUtils } from '../setup';
 
 interface LoginAuthTestResponse {
@@ -78,7 +79,7 @@ export class AuthTestService {
   ) {
     await getByAriaLabel(page, 'Connect Fuel Wallet').click();
 
-    // Approve the connection in the Fuel Wallet
+    //Approve the connection in the Fuel Wallet
     await fuelWalletTestHelper.walletConnect();
 
     // Sign a message in the Fuel Wallet
@@ -86,6 +87,32 @@ export class AuthTestService {
       page,
       fuelWalletTestHelper,
     });
+  }
+
+  static async reloginWalletConnection(
+    page: Page,
+    fuelWalletTestHelper: FuelWalletTestHelper,
+    accountName: string = 'Account 1',
+  ) {
+    await disconnect(page);
+
+    await page.goto(
+      'chrome-extension://gkoblaakkldmbbfnfhijgegmjahojbee/popup.html#/wallet',
+    );
+    await page.bringToFront();
+    await page.waitForTimeout(1200);
+
+    await page.getByRole('button', { name: 'Accounts' }).click();
+    await page.waitForTimeout(200);
+
+    await page.getByRole('heading', { name: accountName, exact: true }).click();
+
+    await page.waitForTimeout(2000);
+    await page.goto('/');
+    await page.bringToFront();
+    await page.waitForTimeout(9000);
+
+    await AuthTestService.loginWalletConnection(page, fuelWalletTestHelper);
   }
 
   static async loginPassKeyInTwoAccounts(page: Page) {

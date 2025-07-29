@@ -17,6 +17,8 @@ test.describe('API Token', () => {
   let genesisWallet: WalletUnlocked;
 
   test.beforeEach(async ({ extensionId, context, page }) => {
+    await mockRouteAssets(page);
+
     const E2EUtils = await E2ETestUtils.setupFuelWallet({
       page,
       context,
@@ -31,7 +33,6 @@ test.describe('API Token', () => {
     const apiTokenName = 'key1';
     const txNameApiToken = 'tx1';
     const txName = 'Deposit by apy token';
-    await mockRouteAssets(page);
 
     await AuthTestService.loginWalletConnection(page, fuelWalletTestHelper);
 

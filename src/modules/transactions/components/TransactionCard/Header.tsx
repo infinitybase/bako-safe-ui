@@ -38,6 +38,7 @@ export const Header = memo(
         _hover={{ bgColor: 'transparent' }}
         px={{ base: 2, sm: 4 }}
         py={2}
+        aria-label="Transaction Card Header"
       >
         <Grid
           w="full"

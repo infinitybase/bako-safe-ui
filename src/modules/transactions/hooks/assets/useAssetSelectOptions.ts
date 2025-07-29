@@ -1,3 +1,4 @@
+import { AssetSelectOption } from '@/components';
 import {
   AddressUtils,
   Asset,
@@ -6,6 +7,7 @@ import {
   useGetTokenInfosArray,
   useSortTokenInfosArray,
 } from '@/modules/core';
+import { parseURI } from '@/modules/core/utils/formatter';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { ITransactionField } from '../create/useCreateTransactionForm';
@@ -19,13 +21,17 @@ interface UseAssetSelectOptionsProps {
 }
 
 const formatAsset = (asset: Asset) => ({
-  label: `${asset.slug} - ${asset.name}`,
+  name: asset.name,
+  symbol: asset.slug,
   value: asset.assetId,
+  image: asset.icon || null,
 });
 
 const formatNFT = (nft: NFT) => ({
-  label: `NFT - ${AddressUtils.format(nft.assetId ?? '', 20)}`,
   value: nft.assetId,
+  image: nft.image ? parseURI(nft.image) : null,
+  name: nft.name ?? AddressUtils.format(nft.assetId, 10),
+  symbol: nft.symbol ?? null,
 });
 
 const filterNFTs = (
@@ -45,7 +51,9 @@ const filterNFTs = (
 
 const useAssetSelectOptions = (
   props: UseAssetSelectOptionsProps,
-): { assetsOptions: { label: string; value: string }[] } => {
+): {
+  assetsOptions: AssetSelectOption[];
+} => {
   const { currentAsset, recipients, assets, nfts, getBalanceAvailable } = props;
 
   const { assetsMap } = useWorkspaceContext();
@@ -65,7 +73,12 @@ const useAssetSelectOptions = (
     return balanceAvailableForAsset > 0;
   });
 
-  const assetsOptions = [...filteredAssets, ...formattedNFTs];
+  const options = [...filteredAssets, ...formattedNFTs];
+
+  const assetsOptions = options.map((option) => ({
+    ...option,
+    image: option.image ?? (assetsMap?.UNKNOWN?.icon || ''),
+  }));
 
   return { assetsOptions };
 };

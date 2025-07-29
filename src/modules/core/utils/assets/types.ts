@@ -8,6 +8,7 @@ export type DefaultMetadata = {
   date?: number;
   name?: string;
   image?: string;
+  'image:png'?: string;
   edition?: number;
   compiler?: string;
   attributes?: Attribute[];
@@ -24,6 +25,7 @@ export type AssetMap = {
     name: string;
     slug: string;
     units: number;
+    decimals?: number;
     icon?: string;
     assetId: string;
     isNFT?: boolean;
@@ -47,6 +49,7 @@ export type NFT = {
   name: string;
   assetId: string;
   description?: string;
+  image?: string | null;
   symbol?: string | undefined | null;
   collection?: string | undefined | null;
   contractId?: string;

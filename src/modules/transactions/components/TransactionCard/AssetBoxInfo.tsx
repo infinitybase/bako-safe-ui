@@ -13,9 +13,12 @@ import { FaPlay } from 'react-icons/fa';
 
 import { Address, DoubleArrowIcon, Handle } from '@/components';
 import { DeployIcon } from '@/components/icons/tx-deploy';
+import { useAssetMap } from '@/modules/assets-tokens/hooks/useAssetMap';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
 import type { AssetModel } from '@/modules/core';
 import { useAddressNicknameResolver } from '@/modules/core/hooks/useAddressNicknameResolver';
+import { parseURI } from '@/modules/core/utils/formatter';
+import { useNetworks } from '@/modules/network/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { AmountUSD } from './transfer-details';
@@ -48,9 +51,11 @@ const AssetBoxInfo = ({
       isExtraSmall,
       isLitteSmall,
     },
-    assetsMap,
     nftList,
+    assetsMap,
   } = useWorkspaceContext();
+  const { currentNetwork } = useNetworks();
+  const { getAssetInfo } = useAssetMap(currentNetwork.chainId);
 
   const { resolveAddressContactHandle } = useAddressNicknameResolver([
     asset?.to ?? '',
@@ -59,13 +64,9 @@ const AssetBoxInfo = ({
     ? resolveAddressContactHandle(asset?.to, handle, resolver)
     : undefined;
 
-  const assetInfo = useMemo(
-    () =>
-      asset?.assetId && assetsMap?.[asset?.assetId]
-        ? assetsMap?.[asset?.assetId]
-        : assetsMap?.['UNKNOWN'],
-    [asset?.assetId],
-  );
+  const assetInfo = useMemo(() => {
+    return getAssetInfo(asset?.assetId ?? '');
+  }, [asset?.assetId, getAssetInfo]);
 
   const txUSDAmount = useTxAmountToUSD(
     [
@@ -91,14 +92,25 @@ const AssetBoxInfo = ({
   });
 
   const isNFT = useMemo(() => {
-    if (!asset?.assetId) return false;
-    return (
-      nftList.some((nft) => nft.assetId === asset.assetId) ||
-      bn(asset?.amount).eq(bn(1))
-    );
-  }, [asset?.amount, asset?.assetId, nftList]);
+    if (!asset?.assetId) return bn(asset?.amount).eq(bn(1));
+
+    const nftAssetIds = new Set(nftList.map((nft) => nft.assetId));
+
+    return nftAssetIds.has(asset.assetId);
+  }, [asset?.assetId, asset?.amount, nftList]);
+
+  const image = useMemo(
+    () =>
+      isNFT
+        ? assetInfo?.metadata?.image || assetInfo?.metadata?.['image:png']
+        : assetInfo?.icon,
+    [assetInfo?.icon, assetInfo.metadata, isNFT],
+  );
 
   const displayAmount = isNFT ? '1' : formattedAmount;
+
+  const imgUrl = image ?? (assetsMap?.UNKNOWN?.icon || '');
+
   return (
     <HStack
       py={2}
@@ -110,16 +122,16 @@ const AssetBoxInfo = ({
       {assetInfo && (
         <VStack alignItems="start" minW="40px">
           <Image
-            w={6}
-            h={6}
-            src={assetInfo?.icon ?? ''}
-            borderRadius={100}
+            w={7}
+            h={7}
+            src={parseURI(imgUrl)}
+            borderRadius="md"
             alt="Asset Icon"
             objectFit="cover"
           />
 
           <Text fontSize="sm" color="grey.500">
-            {isNFT ? 'NFT' : assetInfo?.slug}
+            {assetInfo?.slug}
           </Text>
         </VStack>
       )}

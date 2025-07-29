@@ -82,7 +82,9 @@ const useAuth = (): IUseAuthReturn => {
   };
 
   const userProvider = async () => {
-    const _userProvider = infos?.type?.type != TypeUser.WEB_AUTHN;
+    const _userProvider =
+      infos?.type?.type === TypeUser.FUEL ||
+      infos?.type?.type === TypeUser.FULLET;
 
     return {
       provider: new Provider(
@@ -94,8 +96,14 @@ const useAuth = (): IUseAuthReturn => {
   };
 
   const userType = (): UserType => {
-    if (infos?.webauthn)
+    if (infos?.webauthn) {
       return { type: TypeUser.WEB_AUTHN, name: EConnectors.WEB_AUTHN };
+    }
+
+    const isEvm = infos?.type as unknown as TypeUser == TypeUser.EVM;
+    if (isEvm) {
+      return { type: TypeUser.EVM, name: EConnectors.EVM };
+    }
 
     const currentConnector = fuel.currentConnector()?.name as EConnectors;
 

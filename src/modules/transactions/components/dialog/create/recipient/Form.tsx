@@ -15,7 +15,7 @@ import { Address, bn, isB256 } from 'fuels';
 import { memo, useMemo } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
-import { AmountInput, Autocomplete, AutocompleteOption } from '@/components';
+import { AmountInput, Autocomplete } from '@/components';
 import {
   AddToAddressBook,
   CreateContactDialog,
@@ -268,6 +268,7 @@ const RecipientFormField = (props: RecipientFormFieldProps) => {
                 spacing={2}
                 position="relative"
                 width="100%"
+                data-testid="transaction_asset"
               >
                 <AssetSelect
                   isInvalid={fieldState.invalid}
@@ -276,7 +277,6 @@ const RecipientFormField = (props: RecipientFormFieldProps) => {
                   value={field.value}
                   onChange={(e) => {
                     field.onChange(e);
-
                     if (isNFTAsset(e)) {
                       setValue(`transactions.${index}.amount`, bn(1).format());
                       return;
@@ -378,7 +378,9 @@ const RecipientFormField = (props: RecipientFormFieldProps) => {
                       isInvalid={fieldState.invalid}
                       isDisabled={isNFT}
                     />
-                    <FormLabel>Amount</FormLabel>
+                    <FormLabel data-testid="transaction_amount">
+                      Amount
+                    </FormLabel>
 
                     <FormHelperText
                       pl={4}
@@ -430,7 +432,7 @@ const RecipientFormField = (props: RecipientFormFieldProps) => {
                           borderRadius="md"
                           color={'white'}
                           fontWeight="bold"
-                          pt={1}
+                          lineHeight="1"
                           _hover={{
                             bg: 'grey.900',
                           }}

@@ -57,7 +57,7 @@ const useAddressBookMutations = ({
     onError: (error) => {
       const errorDescription = (
         (error as AxiosError)?.response?.data as IApiError
-      )?.detail;
+      )?.title;
 
       if (errorDescription?.includes('nickname')) {
         errorToast({

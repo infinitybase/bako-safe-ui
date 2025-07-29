@@ -35,34 +35,37 @@ export const NftDialog = ({
       : [];
   }, [nftsInfo.metadata?.attributes]);
 
-  return (
-    <Dialog.Modal
-      size={{ base: '5xl', md: '4xl' }}
-      onClose={onClose}
-      isOpen={isOpen}
+  return (<Dialog.Modal
+    size={{ base: '5xl', md: '4xl' }}
+    onClose={onClose}
+    isOpen={isOpen}
+    modalContentProps={{
+      borderWidth: '1px',
+      borderColor: 'gradients.transaction-border',
+    }}
+  >
+    <Dialog.Body
+      h="full"
+      display="flex"
+      flexDirection={{ base: 'column-reverse', md: 'row' }}
+      alignItems={{ base: 'center', md: 'stretch' }}
+      justifyContent="space-between"
+      gap={6}
+      pt={3}
+      pl={3}
+      pr={3}
     >
-      <Dialog.Body
-        h="full"
-        display="flex"
-        flexDirection={{ base: 'column-reverse', md: 'row' }}
-        alignItems={{ base: 'center', md: 'stretch' }}
-        justifyContent="space-between"
-        gap={6}
-        pt={3}
-        pl={3}
-        pr={3}
+      <Box
+        w="full"
+        maxW="432px"
+        flexShrink={0}
+        position="relative"
+        borderRadius="xl"
+        overflow="hidden"
       >
-        <Box
-          w="full"
-          maxW="432px"
-          flexShrink={0}
-          position="relative"
-          borderRadius="xl"
-          overflow="hidden"
-        >
-          <Box w="full" aspectRatio={1} position="relative">
-            <NftImage src={imageSrc} />
-          </Box>
+        <Box w="full" aspectRatio={1} position="relative">
+          <NftImage src={imageSrc} />
+        </Box>
 
           <Flex
             wrap="wrap"

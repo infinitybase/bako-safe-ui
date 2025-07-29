@@ -8,17 +8,16 @@ import {
   Heading,
   Input,
 } from '@chakra-ui/react';
+import { bn } from 'fuels';
+import { useEffect, useMemo, useState } from 'react';
 import { Controller, FormProvider } from 'react-hook-form';
 
 import { Dialog } from '@/components';
 import { UseCreateTransaction } from '@/modules/transactions/hooks';
 import { UseVaultDetailsReturn } from '@/modules/vault';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { Recipient } from './recipient';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
-import { useBakoIDClient } from '@/modules/core/hooks/bako-id';
-import { useEffect, useMemo, useState } from 'react';
-import { bn } from 'fuels';
 
 export interface CreateTransactionFormProps extends BoxProps {
   form: UseCreateTransaction['form'];
@@ -41,9 +40,7 @@ const CreateTransactionForm = (props: CreateTransactionFormProps) => {
     getBalanceAvailable,
   } = props;
 
-  const {
-    providerInstance,
-  } = useWorkspaceContext();
+  const { providerInstance } = useWorkspaceContext();
 
   const [ethAssetId, setEthAssetId] = useState<string | undefined>();
 
@@ -105,7 +102,7 @@ const CreateTransactionForm = (props: CreateTransactionFormProps) => {
                 placeholder=" "
                 variant="dark"
               />
-              <FormLabel>Transaction name</FormLabel>
+              <FormLabel id="transaction_name">Transaction name</FormLabel>
               <FormHelperText color="error.500">
                 {fieldState.error?.message}
               </FormHelperText>

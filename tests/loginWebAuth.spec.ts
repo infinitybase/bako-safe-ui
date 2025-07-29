@@ -1,7 +1,6 @@
 import { getByAriaLabel, hasText, test } from '@fuels/playwright-utils';
 import { expect } from '@playwright/test';
 
-import { mockRouteAssets } from './utils/helpers';
 import { AuthTestService } from './utils/services/auth-service';
 import { E2ETestUtils } from './utils/setup';
 
@@ -9,9 +8,6 @@ await E2ETestUtils.downloadFuelExtension({ test });
 
 test.describe('loginWebAuth', () => {
   test('create acc and login', async ({ page }) => {
-    //await AuthService.loginWalletConnection(page, context, extensionId);
-    await mockRouteAssets(page);
-
     const { username } = await AuthTestService.loginAuth(page);
 
     await hasText(page, /Welcome to Bako Safe!/);
