@@ -1,5 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { BakoProvider } from 'bakosafe';
+import { AddressUtils as BakoAddressUtils, BakoProvider } from 'bakosafe';
 import { Assets } from 'fuels';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
@@ -39,6 +39,9 @@ const useCreateContactForm = (
             const isValid =
               AddressUtils.isValid(address) && !isAssetIdOrAssetAddress;
             if (!isValid) return false;
+
+            const isEvm = BakoAddressUtils.isEvm(address);
+            if (isEvm) return false;
 
             const provider = await providerInstance;
 
