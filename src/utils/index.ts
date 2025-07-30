@@ -9,5 +9,4 @@ export * from './handle-action-using-keys';
 export * from './is-numeric-string';
 export * from './limit-characters';
 export * from './limit-name';
-export * from './oder-assets-by-usd';
 export * from './verify-hex';
