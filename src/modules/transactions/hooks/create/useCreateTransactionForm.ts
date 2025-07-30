@@ -36,7 +36,7 @@ export type UseCreateTransactionFormParams = {
 };
 
 const useCreateTransactionForm = (params: UseCreateTransactionFormParams) => {
-  const { providerInstance, fuelsTokens } = useWorkspaceContext();
+  const { providerInstance, fuelsTokens, assetsMap } = useWorkspaceContext();
 
   const addressValidator = useMemo(
     () => new AddressValidator(providerInstance),
@@ -84,7 +84,8 @@ const useCreateTransactionForm = (params: UseCreateTransactionFormParams) => {
                 .find((n) => (n as NetworkFuel)?.assetId === parent.asset) ||
               null;
 
-            const maxDecimals = selectedToken?.decimals;
+            const maxDecimals =
+              selectedToken?.decimals ?? assetsMap?.[parent.asset]?.units;
 
             return !(maxDecimals && decimalsCounter > maxDecimals);
           },
