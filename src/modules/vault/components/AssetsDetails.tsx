@@ -1,11 +1,11 @@
 import { Text, VStack } from '@chakra-ui/react';
-import { Fragment, MutableRefObject } from 'react';
+import { Fragment, MutableRefObject, useMemo } from 'react';
 import { To, useNavigate } from 'react-router-dom';
 
+import { useOrderAssetsByUSD } from '@/modules/core';
 import { AssetCard } from '@/modules/core/components';
 import { Asset, NFT } from '@/modules/core/utils';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
-import { orderAssetsByUSD } from '@/utils';
 
 import { useVaultAssetsList } from '../hooks';
 
@@ -38,7 +38,15 @@ const AssetsDetails = ({
 
   const { assetsMap } = useWorkspaceContext();
 
-  const assetsOrdered = orderAssetsByUSD({ assets, tokensUSD, assetsMap });
+  const stableAssets = useMemo(() => assets, [assets]);
+  const stableTokensUSD = useMemo(() => tokensUSD, [tokensUSD]);
+  const stableAssetsMap = useMemo(() => assetsMap, [assetsMap]);
+
+  const assetsOrdered = useOrderAssetsByUSD({
+    assets: stableAssets,
+    tokensUSD: stableTokensUSD,
+    assetsMap: stableAssetsMap,
+  });
 
   return (
     <>

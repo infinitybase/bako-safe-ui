@@ -3,8 +3,8 @@ import { useMemo } from 'react';
 
 import { Asset, NFT } from '@/modules/core/utils';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
-import { orderAssetsByUSD } from '@/utils';
 
+import { useOrderAssetsByUSD } from '../../hooks';
 import { AssetsBalanceCard } from './assets-balance-card';
 import { NftBalanceCard } from './nfts-balance-card';
 
@@ -18,10 +18,15 @@ interface NftsBalanceProps {
 
 const AssetsBalanceList = ({ assets }: AssetsBalanceProps) => {
   const { tokensUSD, assetsMap } = useWorkspaceContext();
-  const orderedAssets = orderAssetsByUSD({
-    assets,
-    tokensUSD: tokensUSD.data,
-    assetsMap,
+
+  const stableAssets = useMemo(() => assets, [assets]);
+  const stableTokensUSD = useMemo(() => tokensUSD, [tokensUSD]);
+  const stableAssetsMap = useMemo(() => assetsMap, [assetsMap]);
+
+  const assetsOrdered = useOrderAssetsByUSD({
+    assets: stableAssets,
+    tokensUSD: stableTokensUSD.data,
+    assetsMap: stableAssetsMap,
   });
 
   return (
@@ -36,7 +41,7 @@ const AssetsBalanceList = ({ assets }: AssetsBalanceProps) => {
         '2xl': 'repeat(6, 1fr)',
       }}
     >
-      {orderedAssets?.map((assetOrdered) => {
+      {assetsOrdered?.map((assetOrdered) => {
         const asset = assetOrdered.asset;
         const usdData = tokensUSD.data[asset.assetId.toLowerCase()];
         const usdAmount = usdData?.usdAmount ?? null;
