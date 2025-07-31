@@ -8,11 +8,13 @@ import {
   AssetMap,
   assetsMapFromFormattedFn,
 } from '@/modules/core/utils/assets';
+import { tokensIDS } from '@/modules/core/utils/assets/address';
 import {
   formatMetadataFromIpfs,
   parseURI,
 } from '@/modules/core/utils/formatter';
 import { WorkspaceService } from '@/modules/workspace/services';
+import { requestWithTimeout } from '@/utils/request';
 
 type Store = {
   mappedTokens: AssetMap;
@@ -35,7 +37,13 @@ export const useMappedAssetStore = create(
         for (const assetId of assetIds) {
           let asset = get().mappedTokens[assetId];
           if (!asset) {
-            asset = await WorkspaceService.getTokenFuelApi(assetId, chainId);
+            const apiResponse = await WorkspaceService.getTokenFuelApi(
+              assetId,
+              chainId,
+            );
+            if (apiResponse) {
+              asset = apiResponse;
+            }
           }
           assets[assetId] = asset;
         }
@@ -47,24 +55,43 @@ export const useMappedAssetStore = create(
         for (const assetId of assetIds) {
           let asset = get().mappedNfts[assetId];
           if (!asset) {
-            asset = await WorkspaceService.getTokenFuelApi(assetId, chainId);
-            if (
-              asset.isNFT ||
-              asset?.totalSupply === '1' ||
-              asset?.totalSupply === null
-            ) {
-              const fetchFromIpfs =
-                Object.values(asset.metadata).filter(
-                  (metadata) => !['uri', 'image'].includes(metadata),
-                ).length > 0 && asset.metadata.uri;
+            const apiResponse = await WorkspaceService.getTokenFuelApi(
+              assetId,
+              chainId,
+            );
+            if (apiResponse) {
+              asset = apiResponse;
+              if (
+                asset.isNFT ||
+                asset?.totalSupply === '1' ||
+                asset?.totalSupply === null
+              ) {
+                const withNativeMetadata =
+                  Object.keys(asset.metadata).filter(
+                    (metadata) => !['uri', 'image'].includes(metadata),
+                  ).length > 0;
 
-              const metadata: Record<string, string> = fetchFromIpfs
-                ? await fetch(parseURI(asset.metadata.uri!)).then((res) =>
-                    res.json(),
-                  )
-                : {};
-              const formattedMetadata = formatMetadataFromIpfs(metadata);
-              assets[assetId] = { ...asset, metadata: formattedMetadata };
+                if (!withNativeMetadata && asset.metadata.uri) {
+                  const data = await requestWithTimeout<Record<string, string>>(
+                    parseURI(asset.metadata.uri),
+                    3000, // 3 seconds timeout
+                  );
+                  if (data) {
+                    const formattedMetadata = formatMetadataFromIpfs(data);
+                    assets[assetId] = { ...asset, metadata: formattedMetadata };
+                  } else {
+                    assets[assetId] = {
+                      ...asset,
+                      metadata: {},
+                    };
+                  }
+                } else {
+                  assets[assetId] = {
+                    ...asset,
+                    metadata: formatMetadataFromIpfs(asset.metadata ?? {}),
+                  };
+                }
+              }
             }
           }
         }
@@ -80,6 +107,11 @@ export const useMappedAssetStore = create(
   ),
 );
 
+export const getAssetInfo = (assetId: string) => {
+  const state = useMappedAssetStore.getState();
+  return state.mappedTokens[assetId] || state.mappedNfts[assetId];
+};
+
 export const useAssetMap = (chainId: number) => {
   const { mappedTokens, mappedNfts } = useMappedAssetStore();
 
@@ -89,20 +121,32 @@ export const useAssetMap = (chainId: number) => {
   }, [mappedTokens]);
 
   const nftList = useMemo(() => {
-    const tokenList = [
-      ...Object.values(mappedNfts).map((nft) => ({
+    const tokens = new Set(Object.values(tokensIDS));
+
+    const nfts = Object.values(mappedNfts)
+      .filter((nft) => !tokens.has(nft.assetId))
+      .map((nft) => ({
         ...nft,
         metadata: nft.metadata,
-      })),
-    ];
-    return tokenList;
+      }));
+
+    return nfts;
   }, [mappedNfts]);
+
+  const getAssetInfo = (assetId: string) => {
+    return (
+      assetsMap[assetId] ||
+      mappedTokens[assetId] ||
+      mappedNfts[assetId] ||
+      assetsMap?.UNKNOWN
+    );
+  };
 
   const assetsMap = useMemo(() => {
     return assetsMapFromFormattedFn(assetList as unknown as Assets, chainId);
   }, [assetList, chainId]);
 
-  return { assetList, nftList, assetsMap };
+  return { assetList, nftList, assetsMap, getAssetInfo };
 };
 
 export type UseAssetMap = ReturnType<typeof useAssetMap>;

@@ -1,7 +1,12 @@
 import { ITransactionResume, TransactionType, Vault } from 'bakosafe';
 import { Operation } from 'fuels';
 
-import { AssetModel, IPagination, TransactionStatus } from '@/modules/core';
+import {
+  AssetMap,
+  AssetModel,
+  IPagination,
+  TransactionStatus,
+} from '@/modules/core';
 import {
   ITransaction,
   SortOptionTx,
@@ -34,6 +39,7 @@ export type ITransactionStatusFilter = TransactionStatus[] | string[] | string;
 export enum TypeUser {
   FUEL = 'FUEL',
   WEB_AUTHN = 'WEB_AUTHN',
+  EVM = 'EVM',
 }
 
 export interface ITransactionHistory {
@@ -160,6 +166,7 @@ export interface ResolveTransactionCostInput {
     assetId: string;
   }[];
   vault: Vault;
+  assetsMap: AssetMap;
 }
 
 export enum TransactionOrderBy {

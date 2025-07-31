@@ -8,6 +8,8 @@ import {
 import type { BrowserContext, Page } from '@playwright/test';
 import { Account, bn, Mnemonic, Provider, Wallet } from 'fuels';
 
+import { TestAssets } from './helpers';
+
 export class E2ETestUtils {
   static FUEL_WALLET_VERSION = '0.46.1';
 
@@ -78,20 +80,26 @@ export class E2ETestUtils {
     page: Page;
   }) {
     const { fuelWalletTestHelper, page } = config;
+
     await page.waitForTimeout(2000);
     const popupPage = await fuelWalletTestHelper.getWalletPopupPage();
     await getByAriaLabel(popupPage, 'Sign').click();
+    await page.waitForTimeout(500);
   }
 
   static async fundVault(config: {
     genesisWallet: Account;
     vaultAddress: string;
     amount: string;
+    assetId?: TestAssets;
   }) {
-    const { genesisWallet, vaultAddress, amount } = config;
+    const { genesisWallet, vaultAddress, amount, assetId } = config;
+    const asset = assetId ? assetId : TestAssets.ETH;
+
     const transactionResponse = await genesisWallet.transfer(
       vaultAddress,
       bn.parseUnits(amount),
+      asset,
     );
     await transactionResponse.waitForResult();
   }

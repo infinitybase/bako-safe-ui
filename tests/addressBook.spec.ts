@@ -45,7 +45,7 @@ test.describe('AddressBook', () => {
         '0x03aAb6b3c770E134908ba0CDE7BFAD7F22b80138e90f2C0d3948aB3Ebd0659C8',
       );
 
-    await getByAriaLabel(page, 'Create adb').click();
+    await getByAriaLabel(page, 'Create address book').click();
     await page.waitForLoadState('networkidle', { timeout: 2000 });
     await page.waitForTimeout(2000);
     await expect(page.getByText(addressTitle)).toBeVisible();
@@ -56,7 +56,7 @@ test.describe('AddressBook', () => {
 
     await page.getByLabel('Name or Label').clear();
     await page.getByLabel('Name or Label').fill(addressTitleEdited);
-    await getByAriaLabel(page, 'Edit adb').click();
+    await getByAriaLabel(page, 'Edit address book').click();
 
     await page.waitForLoadState('networkidle', { timeout: 2000 });
     await page.waitForTimeout(2000);
@@ -77,11 +77,48 @@ test.describe('AddressBook', () => {
     await expect(page.getByText(addressTitleEdited)).toBeVisible();
     await page.locator('[aria-label="Close window"]').click();
 
-    // delete adb
+    // trying create duplicate adb
     await page.getByText('Address book', { exact: true }).click();
     await expect(page).toHaveURL(/address-book/);
+    const adrFormDuplicated = page.getByRole('button', {
+      name: 'Add new favorite',
+    });
+    await adresbookForm.click();
+    await modalCloseTest(page, adrFormDuplicated);
+    await page.getByLabel('Name or Label').fill(addressTitleEdited);
+    await page
+      .getByLabel('Address', { exact: true })
+      .fill(
+        '0x03aAb6b3c770E134908ba0CDE7BFAD7F22b80138e90f2C0d3948aB3Ebd0659C8',
+      );
+
+    await getByAriaLabel(page, 'Create address book').click();
+    await page.waitForLoadState('networkidle', { timeout: 2000 });
+    await page.waitForTimeout(2000);
+    await expect(page.getByText('Duplicated label')).toBeVisible();
+    await page.getByLabel('Name or Label').fill('duplicated test');
+    await getByAriaLabel(page, 'Create address book').click();
+    await page.waitForLoadState('networkidle', { timeout: 2000 });
+    await page.waitForTimeout(2000);
+    await expect(
+      page.locator('.chakra-form__helper-text').getByText('Duplicated address'),
+    ).toBeVisible();
+
+    // add a adb with invalid address
+    await page.getByLabel('Name or Label').fill('duplicated test');
+    await page.getByLabel('Address', { exact: true }).fill('invalid address');
+    await expect(
+      page.getByText('This address can not receive assets from Bako.'),
+    ).toBeVisible();
+
+    await getByAriaLabel(page, 'Cancel address book').click();
+
+    // delete adb
+    // await page.getByText('Address book', { exact: true }).click();
+    //await expect(page).toHaveURL(/address-book/);
     await page.getByRole('button', { name: 'Delete' }).click();
     await getByAriaLabel(page, 'Delete adb').click();
+    await page.waitForTimeout(2000);
     await expect(page.getByText(addressTitleEdited)).not.toBeVisible();
   });
 });

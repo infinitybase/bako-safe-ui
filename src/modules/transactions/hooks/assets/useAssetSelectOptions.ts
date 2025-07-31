@@ -1,5 +1,6 @@
 import { AssetSelectOption } from '@/components';
 import {
+  AddressUtils,
   Asset,
   assetsList,
   NFT,
@@ -29,7 +30,7 @@ const formatAsset = (asset: Asset) => ({
 const formatNFT = (nft: NFT) => ({
   value: nft.assetId,
   image: nft.image ? parseURI(nft.image) : null,
-  name: nft.name,
+  name: nft.name ?? AddressUtils.format(nft.assetId, 10),
   symbol: nft.symbol ?? null,
 });
 
@@ -72,7 +73,12 @@ const useAssetSelectOptions = (
     return balanceAvailableForAsset > 0;
   });
 
-  const assetsOptions = [...filteredAssets, ...formattedNFTs];
+  const options = [...filteredAssets, ...formattedNFTs];
+
+  const assetsOptions = options.map((option) => ({
+    ...option,
+    image: option.image ?? (assetsMap?.UNKNOWN?.icon || ''),
+  }));
 
   return { assetsOptions };
 };
