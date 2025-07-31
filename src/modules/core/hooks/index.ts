@@ -7,6 +7,7 @@ export * from './useGetTokenInfos';
 export * from './useGetTokenInfosArray';
 export * from './useIsMount';
 export * from './useLoadImage';
+export * from './useOrderAssetsByUSD';
 export * from './usePermissions';
 export * from './useScreenSize';
 export * from './useSortTokenInfosArray';
