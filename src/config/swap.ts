@@ -1,3 +1,5 @@
+import { MiraIcon } from '@/components';
+
 const FEE = import.meta.env.VITE_BAKO_SWAP_FEE;
 const ADDRESS = import.meta.env.VITE_BAKO_SWAP_ADDRESS;
 
@@ -32,3 +34,9 @@ export enum SwapButtonTitle {
   INSUFFICIENT_BALANCE = 'Insufficient Balance',
   SWAP = 'Swap',
 }
+
+export const miraData = {
+  name: 'Mira on Microchain',
+  origin: 'https://mira.ly',
+  icon: MiraIcon,
+};

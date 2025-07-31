@@ -1,10 +1,12 @@
 import { Box, Divider, HStack, Text } from '@chakra-ui/react';
 import { TransactionStatus } from 'bakosafe';
 
+import { miraData } from '@/config/swap';
 import { AddressUtils, type TransactionState } from '@/modules/core';
 import { useVerifyTransactionInformations } from '@/modules/transactions/hooks/details/useVerifyTransactionInformations';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
+import { TransactionCard } from '..';
 import { AssetBoxInfo, type TransactionUI } from '../Details';
 import { ConnectorInfos } from './ConnectorInfos';
 import { ContractAddresses } from './contract-call/ContractAddresses';
@@ -19,7 +21,7 @@ const TransactionBreakdown = ({
   transaction,
   status,
 }: ITransactionBreakdown) => {
-  const { isFromConnector, isContract, isPending, isDeploy, isMint } =
+  const { isFromConnector, isContract, isPending, isDeploy, isMint, isSwap } =
     useVerifyTransactionInformations(transaction);
 
   const {
@@ -98,6 +100,15 @@ const TransactionBreakdown = ({
           transaction={transaction}
           isNotSigned={isNotSigned}
           isPending={isPending}
+        />
+      )}
+
+      {isSwap && (
+        <TransactionCard.TransactionRequestFrom
+          name={miraData.name}
+          origin={miraData.origin}
+          icon={miraData.icon}
+          mt={4}
         />
       )}
 
