@@ -63,7 +63,7 @@ const AssetDetails = ({
 }: AssetDetailsProps) => {
   const amount = assetAmount ?? defaultAsset.amount;
   const slug = assetSlug ?? defaultAsset.slug;
-  const transactionAmount = Number(amount) * (usdAmount ?? 0);
+  const transactionAmount = Number(amount.replace(/,/g, '')) * (usdAmount ?? 0);
 
   const formattedAmount = new Intl.NumberFormat('en-US', {
     style: 'currency',
