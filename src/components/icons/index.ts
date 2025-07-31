@@ -31,6 +31,7 @@ export * from './home';
 export * from './left-and-right-arrow';
 export * from './line-close-icon';
 export * from './minimal-alert';
+export * from './mira-icon';
 export * from './more-less';
 export * from './not-found';
 export * from './notification';
