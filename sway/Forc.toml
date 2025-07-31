@@ -1,0 +1,8 @@
+[workspace]
+members = [
+    "./libraries/interfaces",
+    "./libraries/math",
+    "./libraries/utils",
+    "./scripts/swap_exact_input_script",
+    "./scripts/swap_exact_output_script",
+]
