@@ -28,7 +28,7 @@
     },
     "outDir": "./dist"
   },
-  "include": ["src"],
+  "include": ["src", "sway/artifacts/index.ts"],
   "exclude": ["**/dist", "**/build", "node_modules", "**/node_modules"],
   "references": [
     {
