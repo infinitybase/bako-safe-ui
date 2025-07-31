@@ -11,6 +11,7 @@ import {
   NativeAssetId,
   useContactToast,
 } from '@/modules';
+import BakoAMM from '@/modules/core/utils/bako-amm';
 
 import { useSwap, useSwapData, useSwapPreview } from '../../hooks/swap';
 import { useMira } from '../../hooks/swap/useMira';
@@ -72,12 +73,17 @@ export const RootSwap = memo(({ assets, vault }: RootSwapProps) => {
   );
 
   const isLoading = trade.state === State.LOADING;
+  const bakoAmm = useMemo(() => {
+    if (vault) {
+      return new BakoAMM(vault);
+    }
+  }, [vault]);
 
   const {
     swapData,
     getSwapPreview,
     isPending: isLoadingPreview,
-  } = useSwapData({ amm, vault, pools });
+  } = useSwapData({ amm, vault, pools, bakoAmm });
 
   const { sendTx, isPending: isSendingTx } = useSwap();
 
@@ -94,6 +100,7 @@ export const RootSwap = memo(({ assets, vault }: RootSwapProps) => {
         amount: '0',
       },
     }));
+    setSwapButtonTitle(SwapButtonTitle.PREVIEW);
   }, []);
 
   const handleSubmitSwap = useCallback(async () => {
@@ -365,7 +372,7 @@ export const RootSwap = memo(({ assets, vault }: RootSwapProps) => {
 
       {swapButtonTitle === SwapButtonTitle.SWAP && (
         <SwapCost
-          isLoadingCost={isLoadingPreview}
+          isLoadingCost={isLoadingPreview || isLoading}
           pools={pools}
           txCost={swapData?.tx}
           swapState={swapState}

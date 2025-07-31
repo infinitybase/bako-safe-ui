@@ -1,54 +1,44 @@
 import { useMutation } from '@tanstack/react-query';
 import { Vault } from 'bakosafe';
-import { Address, BN, bn, Provider, ScriptTransactionRequest } from 'fuels';
+import { bn, Provider } from 'fuels';
 import { MiraAmm, PoolId } from 'mira-dex-ts';
 
-import { BAKO_FEE_ADDRESS, BAKO_FEE_PERCENTAGE } from '@/config/swap';
+import { BAKO_FEE_PERCENTAGE } from '@/config/swap';
 import { useContactToast } from '@/modules/addressBook';
+import BakoAMM from '@/modules/core/utils/bako-amm';
 
 import { SwapMode, SwapState } from '../../components/swap/Root';
 import { useProvider } from '../useProvider';
 
 async function futureDeadline(provider: Provider) {
   const block = await provider.getBlock('latest');
-  return block?.height.add(1000) ?? 1000000000;
+  return block?.height.add(1000) ?? bn(1000000000);
 }
-
-const addBakoFee = (
-  bakoFee: BN,
-  request: ScriptTransactionRequest,
-  asset: string,
-) => {
-  return request.addCoinOutput(new Address(BAKO_FEE_ADDRESS), bakoFee, asset);
-};
 
 async function constructSwapTransaction(
   mode: SwapMode,
   state: SwapState,
-  amm: MiraAmm,
+  amm: BakoAMM,
   slippage: number,
   provider: Provider,
   pools: PoolId[],
 ) {
   const { to, from } = state;
   const swapFee = bn(BAKO_FEE_PERCENTAGE);
+  const amountIn = bn.parseUnits(from.amount || '0', from.units);
+  const amountOut = bn.parseUnits(to.amount || '0', to.units);
   if (mode === 'sell') {
     const assetIn = from.assetId;
 
+    if (!to.amount) {
+      throw new Error('Amount out is required');
+    }
+
     const minAmountOut = bn
-      .parseUnits(state.to.amount || '0', state.to.units)
+      .parseUnits(to.amount, to.units)
       .mul(bn(100 - Math.floor(slippage * 100)))
       .div(bn(100));
-    const bakoFee = minAmountOut.mul(swapFee).div(bn(100));
-    const minAmountOutAfterFee = minAmountOut.sub(bakoFee);
-    console.log(
-      '####FEE: ',
-      minAmountOut.toString(),
-      bakoFee.toString(),
-      minAmountOutAfterFee.toString(),
-      pools,
-    );
-    const amountIn = bn.parseUnits(state.from.amount || '0', state.from.units);
+    const bakoFee = amountIn.mul(swapFee).div(bn(100));
 
     const request = await amm.swapExactInput(
       amountIn,
@@ -57,41 +47,42 @@ async function constructSwapTransaction(
       pools,
       await futureDeadline(provider),
       {
-        maxFee: bn(1000000),
+        maxFee: bn(100000),
+        variableOutputs: 2,
       },
     );
 
     return { request, bakoFee };
   }
   const assetOut = to.assetId;
-  const maxAmountIn = bn
-    .parseUnits(state.from.amount || '0', state.from.units)
+  const maxAmountIn = amountIn
     .mul(bn(100 + Math.floor(slippage * 100)))
     .div(bn(100));
-  const bakoFee = maxAmountIn.mul(swapFee).div(bn(100));
-  const amountOut = bn.parseUnits(state.to.amount || '0', state.to.units);
-  const minAmountInAfterFee = maxAmountIn.add(bakoFee);
+  const bakoFee = amountIn.mul(swapFee).div(bn(100));
 
   const request = await amm.swapExactOutput(
     amountOut,
     { bits: assetOut },
-    minAmountInAfterFee,
+    maxAmountIn,
     pools,
     await futureDeadline(provider),
     {
       maxFee: bn(1000000),
+      variableOutputs: 2,
     },
   );
 
-  return { request: addBakoFee(bakoFee, request, from.assetId), bakoFee };
+  return { request, bakoFee };
 }
 
 export const useSwapData = ({
   amm,
   vault,
   pools,
+  bakoAmm,
 }: {
   amm?: MiraAmm;
+  bakoAmm?: BakoAMM;
   vault?: Vault;
   pools: PoolId[];
 }) => {
@@ -113,7 +104,7 @@ export const useSwapData = ({
       mode: SwapMode;
       slippage: number;
     }) => {
-      if (!amm || !provider) {
+      if (!amm || !provider || !bakoAmm) {
         throw new Error('Mira AMM or provider is not available');
       }
       if (!vault) throw new Error('Vault is not available');
@@ -121,7 +112,7 @@ export const useSwapData = ({
       const { request, bakoFee } = await constructSwapTransaction(
         mode,
         state,
-        amm,
+        bakoAmm,
         slippage,
         provider!,
         pools,

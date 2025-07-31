@@ -180,21 +180,14 @@ export const getSwapQuotesBatch = async (
 
   const isSell = mode === 'sell';
   const poolPaths = routes.map((r) => r.pools.map((p) => p.poolId));
-  // console.log('fetch quotes batch', {
-  //   assetKey,
-  //   poolPaths,
-  //   amount: amount.toString(),
-  // });
 
-  // console.log('POOL PATHS:', poolPaths);
   if (isSell) {
     const response = await Promise.all(
       poolPaths.map(async (pool) => {
         return amm
           .previewSwapExactInput({ bits: assetIn }, amount, pool)
-          .catch((e) => {
-            console.error('Error fetching swap quote:', e);
-            return null; // Handle error gracefully
+          .catch(() => {
+            return null;
           });
       }),
     ).then((res) => res.filter((r): r is AssetMira => r !== null));
@@ -206,9 +199,8 @@ export const getSwapQuotesBatch = async (
     poolPaths.map(async (pool) => {
       return amm
         .previewSwapExactOutput({ bits: assetOut }, amount, pool)
-        .catch((e) => {
-          console.error('Error fetching swap quote:', e);
-          return null; // Handle error gracefully
+        .catch(() => {
+          return null;
         });
     }),
   ).then((res) => res.filter((r): r is AssetMira => r !== null));

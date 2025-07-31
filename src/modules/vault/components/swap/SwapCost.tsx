@@ -39,16 +39,20 @@ export const SwapCost = memo(function SwapCost({
             Routing:
           </Text>
           <Flex alignItems="center" gap={1}>
-            {pools.map((pool, i) => (
-              <Flex alignItems="center" gap={0} key={String(pool) + i}>
-                <SwapRouteItem pool={pool} />
-                {i !== pools.length - 1 && (
-                  <Text as="span" fontSize="xs" color="grey.75">
-                    +
-                  </Text>
-                )}
-              </Flex>
-            ))}
+            {isLoadingCost && (
+              <Spinner size="xs" ml="auto" color="section.500" />
+            )}
+            {!isLoadingCost &&
+              pools.map((pool, i) => (
+                <Flex alignItems="center" gap={0} key={String(pool) + i}>
+                  <SwapRouteItem pool={pool} />
+                  {i !== pools.length - 1 && (
+                    <Text as="span" fontSize="xs" color="grey.75">
+                      +
+                    </Text>
+                  )}
+                </Flex>
+              ))}
           </Flex>
         </Flex>
 
@@ -57,7 +61,11 @@ export const SwapCost = memo(function SwapCost({
             Estimated fees:
           </Text>
           <Text color="grey.75" fontSize="xs">
-            {swapState.fee?.formatUnits(9)} {swapState.to.slug}
+            {isLoadingCost && (
+              <Spinner size="xs" ml="auto" color="section.500" />
+            )}
+            {!isLoadingCost && swapState.fee?.formatUnits(9)}{' '}
+            {!isLoadingCost && swapState.from.slug}
           </Text>
         </Flex>
 

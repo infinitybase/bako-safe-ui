@@ -62,6 +62,8 @@ export const useSwapRouter = (
       ),
     enabled: shouldFetch && routes.length > 0 && !!amm && !routesLoading,
     initialData: shouldFetch ? undefined : [],
+    refetchOnWindowFocus: true,
+    refetchOnReconnect: true,
   });
 
   return useMemo(() => {
