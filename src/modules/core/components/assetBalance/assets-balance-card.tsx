@@ -1,8 +1,10 @@
 import { Image, Text, VStack } from '@chakra-ui/react';
+
+import { Card } from '@/components';
 import { Asset } from '@/modules/core/utils';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+
 import { useGetTokenInfos } from '../../hooks';
-import { Card } from '@/components';
 
 const AssetsBalanceCard = ({
   asset,
@@ -14,7 +16,9 @@ const AssetsBalanceCard = ({
   const { assetsMap } = useWorkspaceContext();
   const { assetAmount, assetsInfo } = useGetTokenInfos({ ...asset, assetsMap });
 
-  const transactionAmount = Number(assetAmount) * (usdAmount ?? 0);
+  const transactionAmount =
+    Number(assetAmount.replace(/,/g, '')) * (usdAmount ?? 0);
+
   const formattedAmount = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
