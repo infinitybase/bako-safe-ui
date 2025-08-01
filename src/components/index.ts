@@ -20,6 +20,7 @@ export * from './select';
 export * from './select/asset';
 export * from './skeleton';
 export * from './tooltip';
+export * from './tooltipNotEnoughBalance';
 export * from './transactionExpire';
 export * from './transactionTypeFilters';
 export * from './welcomeDialog';

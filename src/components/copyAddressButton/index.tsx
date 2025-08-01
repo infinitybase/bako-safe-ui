@@ -30,7 +30,7 @@ const CopyAddressButton = ({
         <Icon
           as={clipboard.hasCopied ? CheckIcon : CopyTopMenuIcon}
           color={clipboard.hasCopied ? 'success.700' : 'grey.200'}
-          fontSize={20}
+          fontSize={rest.fontSize || 20}
           {...iconProps}
         />
       }
