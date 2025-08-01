@@ -5,12 +5,18 @@ import {
   Icon,
   IconButton,
   Text,
+  Tooltip,
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
 import React, { useMemo, useState } from 'react';
 
-import { ErrorTooltip, FuelIcon, RigIcon } from '@/components';
+import {
+  ErrorTooltip,
+  FuelIcon,
+  RigIcon,
+  TooltipNotEnoughBalance,
+} from '@/components';
 import { TooltipIcon } from '@/components/icons/tooltip';
 import { useGetTokenInfos, useScreenSize } from '@/modules/core';
 import { tokensIDS } from '@/modules/core/utils/assets/address';
@@ -101,6 +107,24 @@ export function CardLiquidStake({ assets }: CardLiquidStakeProps) {
     onOpen,
   } = useDisclosure();
 
+  const buttonStake = (
+    <Button
+      variant="secondaryV2"
+      color="grey.75"
+      size="sm"
+      opacity={isMainnet ? 1 : 0.3}
+      padding={'6px 8px 6px 8px'}
+      borderRadius={'6px'}
+      fontSize={12}
+      onClick={() => handleOpenModal('STAKE')}
+      isDisabled={
+        !isMainnet || !assets.assets || isPendingSigner || notEnoughBalanceETH
+      }
+    >
+      Stake
+    </Button>
+  );
+
   const createItems = () => (
     <>
       <ItemLiquidStake
@@ -109,25 +133,23 @@ export function CardLiquidStake({ assets }: CardLiquidStakeProps) {
         isLoading={!assets.assets}
       >
         <VStack alignItems={'flex-end'} gap={0}>
-          <Button
-            variant="secondaryV2"
-            color="grey.75"
-            size="sm"
-            opacity={isMainnet ? 1 : 0.3}
-            padding={'6px 8px 6px 8px'}
-            borderRadius={'6px'}
-            fontSize={12}
-            onClick={() => handleOpenModal('STAKE')}
-            isDisabled={
-              !isMainnet ||
-              !assets.assets ||
-              isPendingSigner ||
-              notEnoughBalanceETH
-            }
-          >
-            Stake
-          </Button>
-          {notEnoughBalanceETH && !!assets.assets && (
+          {notEnoughBalanceETH ? (
+            <Tooltip
+              label={TooltipNotEnoughBalance()}
+              hasArrow
+              placement="top"
+              bg="dark.700"
+              color="white"
+            >
+              <Box display="inline-block" cursor="not-allowed">
+                {buttonStake}
+              </Box>
+            </Tooltip>
+          ) : (
+            buttonStake
+          )}
+          ;
+          {isMobile && notEnoughBalanceETH && !!assets.assets && (
             <Text
               variant="description"
               textAlign={{ base: 'end', sm: 'left' }}
