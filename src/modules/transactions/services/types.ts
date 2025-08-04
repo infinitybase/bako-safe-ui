@@ -1,7 +1,12 @@
 import { ITransactionResume, TransactionType, Vault } from 'bakosafe';
 import { Operation } from 'fuels';
 
-import { AssetModel, IPagination, TransactionStatus } from '@/modules/core';
+import {
+  AssetMap,
+  AssetModel,
+  IPagination,
+  TransactionStatus,
+} from '@/modules/core';
 import {
   ITransaction,
   SortOptionTx,
@@ -161,6 +166,7 @@ export interface ResolveTransactionCostInput {
     assetId: string;
   }[];
   vault: Vault;
+  assetsMap: AssetMap;
 }
 
 export enum TransactionOrderBy {

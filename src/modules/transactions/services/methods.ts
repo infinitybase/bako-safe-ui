@@ -147,7 +147,7 @@ export class TransactionService {
   }
 
   static async resolveTransactionCosts(input: ResolveTransactionCostInput) {
-    const { vault, assets: assetsToSpend } = input;
+    const { vault, assets: assetsToSpend, assetsMap } = input;
 
     const predicateGasUsed = await vault.maxGasUsed();
     let transactionRequest = new ScriptTransactionRequest();
@@ -182,10 +182,19 @@ export class TransactionService {
       coins[baseAssetId] = bn(0);
     }
 
-    const transactionCoins = Object.entries(coins).map(([assetId, amount]) => ({
-      assetId,
-      amount,
-    }));
+    const transactionCoins = Object.entries(coins).map(([assetId, amount]) => {
+      const assetUnits = assetsMap?.[assetId]?.units;
+      const asset = assets.find((a) => a.assetId === assetId);
+
+      if (assetUnits !== 9 && asset?.amount) {
+        amount = bn.parseUnits(asset.amount, assetUnits);
+      }
+
+      return {
+        assetId,
+        amount,
+      };
+    });
 
     const _coins = await vault.getResourcesToSpend(transactionCoins);
 
@@ -197,11 +206,15 @@ export class TransactionService {
     );
 
     Object.entries(outputs).forEach(([, value]) => {
-      transactionRequest.addCoinOutput(
-        vault.address,
-        value.amount,
-        value.assetId,
-      );
+      const assetId = value.assetId;
+      const assetUnits = assetsMap?.[assetId]?.units;
+      const asset = assets.find((a) => a.assetId === assetId);
+
+      if (assetUnits !== 9 && asset?.amount) {
+        value.amount = bn.parseUnits(asset.amount, assetUnits);
+      }
+
+      transactionRequest.addCoinOutput(vault.address, value.amount, assetId);
     });
 
     transactionRequest.addResources(fakeCoins);
