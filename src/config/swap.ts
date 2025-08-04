@@ -27,7 +27,7 @@ export const BAKO_FEE_PERCENTAGE = parseInt(FEE);
  */
 export const BAKO_FEE_ADDRESS: string = ADDRESS;
 
-export const DEFAULT_SLIPPAGE = 0.01; // 1%
+export const DEFAULT_SLIPPAGE = 0.1; // 10%
 
 export enum SwapButtonTitle {
   PREVIEW = 'Preview',
