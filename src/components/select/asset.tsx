@@ -3,6 +3,7 @@ import { Box, Flex, Image, Stack, Text, VStack } from '@chakra-ui/react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { ArrowDownIcon } from '../icons';
+import { UNKNOWN_ASSET } from '@/modules';
 
 interface AssetSelectOption {
   value: string;
@@ -348,6 +349,8 @@ const AssetSelect = ({
                 >
                   <Image
                     src={image ?? ''}
+                    fallbackSrc={UNKNOWN_ASSET.icon}
+                    fallbackStrategy="onError"
                     boxSize={8}
                     rounded={'lg'}
                     flexShrink={0}
