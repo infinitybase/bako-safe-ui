@@ -4,6 +4,7 @@ import useEmblaCarousel from 'embla-carousel-react';
 import { useCallback } from 'react';
 
 import {
+  BakoGarageBanner,
   BakoIdIcon,
   Banner,
   Carousel,
@@ -13,7 +14,6 @@ import {
   PendingIcon,
   SettingsIcon,
 } from '@/components';
-import { BakoMarketplaceBanner } from '@/components/bakoMarketplaceBanner';
 import { SidebarMenu } from '@/layouts/dashboard/menu';
 import { Pages, PermissionRoles } from '@/modules/core';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
@@ -226,10 +226,10 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
               />
             </Carousel.SlideItem>
             <Carousel.SlideItem>
-              <BakoMarketplaceBanner
+              <BakoGarageBanner
                 cursor="pointer"
                 onClick={() =>
-                  window.open(getBakoIDURL() + 'marketplace', '_blank')
+                  window.open('https://preview.garage.zone/', '_blank')
                 }
               />
             </Carousel.SlideItem>
