@@ -1,3 +1,19 @@
+## [1.7.0](https://github.com/infinitybase/bako-safe-ui/compare/v1.6.0...v1.7.0) (2025-08-04)
+
+### Features
+
+* **validation:** add validation isEvm to addrs books form ([b9c686a](https://github.com/infinitybase/bako-safe-ui/commit/b9c686af5a9efbdecb36d879957833d5f7c7d51b))
+* **validation:** add validation to not allow addr evm in create tx ([a0a0d90](https://github.com/infinitybase/bako-safe-ui/commit/a0a0d904bc70adde3fe381ced055e91302e3fc56))
+* **validation:** add validation to not show option add evm address in address book ([0b95553](https://github.com/infinitybase/bako-safe-ui/commit/0b95553dad7a3fbb4d24dfe92d7a855d4bfa8a7e))
+
+### Bug Fixes
+
+* **assets:** add fallback image on error to load the image of asset ([5471308](https://github.com/infinitybase/bako-safe-ui/commit/54713080d57c4c3a3ca10066129488355ff62263))
+* **error amount tx:** getting units coins before send amount in tx ([ee6dfcb](https://github.com/infinitybase/bako-safe-ui/commit/ee6dfcb9e2972dd261b3fdb5e9cfe8f3aa2395a4))
+* **estimate dollar:** removing the comma before do the calc ([24478a9](https://github.com/infinitybase/bako-safe-ui/commit/24478a95d1d89027594fe46753f5aac95524a2d5))
+* evm provider url ([26b854c](https://github.com/infinitybase/bako-safe-ui/commit/26b854ca78d7aa3aa2477c10249b6d316e4579fc))
+* **limit decimals:** getting units to show error after limit coin decimals ([9cf7029](https://github.com/infinitybase/bako-safe-ui/commit/9cf7029fbdd26d7b44ad5754dc7b325c5f9c705a))
+
 ## [1.6.0](https://github.com/infinitybase/bako-safe-ui/compare/v1.5.0...v1.6.0) (2025-07-29)
 
 ### Features
