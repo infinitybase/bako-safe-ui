@@ -304,6 +304,9 @@ const AssetSelect = ({
           boxShadow="lg"
         >
           <VStack
+            onMouseDown={(e) => {
+              e.stopPropagation();
+            }}
             w="full"
             maxH={maxOptionsHeight ?? 207}
             gap={0}

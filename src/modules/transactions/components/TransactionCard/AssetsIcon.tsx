@@ -27,6 +27,7 @@ export const AssetsIcon = memo(
           image: parseURI(
             metadataAssets?.[asset.assetId]?.metadata?.image ||
               metadataAssets?.[asset.assetId]?.metadata?.['image:png'] ||
+              metadataAssets?.[asset.assetId]?.metadata?.['URI'] ||
               metadataAssets?.[asset.assetId]?.icon ||
               assetsMap.UNKNOWN.icon!,
           ),
