@@ -124,6 +124,8 @@ const AssetBoxInfo = ({
           <Image
             w={7}
             h={7}
+            fallbackStrategy="onError"
+            fallbackSrc={assetsMap.UNKNOWN.icon}
             src={parseURI(imgUrl)}
             borderRadius="md"
             alt="Asset Icon"

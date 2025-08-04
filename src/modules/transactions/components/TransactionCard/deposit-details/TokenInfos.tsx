@@ -32,6 +32,8 @@ const TokenInfos = ({ asset }: TokenInfosProps) => {
       <Image
         w={7}
         h={7}
+        fallbackStrategy="onError"
+        fallbackSrc={assetsMap?.UNKNOWN?.icon}
         src={parseURI(assetImage || assetsMap?.UNKNOWN?.icon || '')}
         borderRadius="md"
         alt="Asset Icon"
