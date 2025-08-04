@@ -175,8 +175,10 @@ export const RootSwap = memo(({ assets, vault }: RootSwapProps) => {
             ...selectedAsset,
             amount: prevState.from.amount || '0',
           },
+          status: 'idle',
         }));
       }
+      setSwapButtonTitle(SwapButtonTitle.PREVIEW);
     },
     [assets, swapState, handleSwapModeChange],
   );
@@ -194,8 +196,10 @@ export const RootSwap = memo(({ assets, vault }: RootSwapProps) => {
             ...selectedAsset,
             amount: prevState.to.amount || '0',
           },
+          status: 'idle',
         }));
       }
+      setSwapButtonTitle(SwapButtonTitle.PREVIEW);
     },
     [assets, swapState, handleSwapModeChange],
   );
