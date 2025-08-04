@@ -49,7 +49,12 @@ const NftsBalanceList = ({ nfts }: NftsBalanceProps) => {
     if (!nfts) return {};
     return nfts.reduce<Record<string, typeof nfts>>((acc, nft) => {
       const isBakoId = nft.symbol === 'BID' || nft.collection === 'Bako ID';
-      const key = isBakoId ? 'Bako ID' : (nft.collection ?? 'Other');
+      const isBKT = nft.symbol === 'BKT';
+      const key = isBakoId
+        ? 'Bako ID'
+        : isBKT
+          ? 'Bakteria'
+          : (nft.collection ?? 'Other');
       (acc[key] ??= []).push(nft);
       return acc;
     }, {});
