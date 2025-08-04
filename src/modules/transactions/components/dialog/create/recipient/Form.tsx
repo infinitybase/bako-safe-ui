@@ -11,7 +11,6 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { AddressUtils as BakoSafeUtils } from 'bakosafe';
 import { Address, bn, isB256 } from 'fuels';
 import { memo, useMemo } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
@@ -110,7 +109,7 @@ const RecipientFormField = (props: RecipientFormFieldProps) => {
   const formatUsdEstimate = (amount: string, assetId: string) => {
     if (!amount || !assetId) return '$0.00';
     const price = getAssetPrice(assetId);
-    const estimated = parseFloat(amount.replace(/,/g, '')) * price;
+    const estimated = parseFloat(amount) * price;
 
     return estimated.toLocaleString('en-US', {
       style: 'currency',
@@ -150,7 +149,6 @@ const RecipientFormField = (props: RecipientFormFieldProps) => {
               canAddMember &&
               !fieldState.invalid &&
               AddressUtils.isValid(field.value) &&
-              !BakoSafeUtils.isEvm(field.value) &&
               optionsRequests[index].isSuccess &&
               listContactsRequest.data &&
               !listContactsRequest.data

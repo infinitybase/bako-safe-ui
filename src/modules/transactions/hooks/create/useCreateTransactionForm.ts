@@ -36,7 +36,7 @@ export type UseCreateTransactionFormParams = {
 };
 
 const useCreateTransactionForm = (params: UseCreateTransactionFormParams) => {
-  const { providerInstance, fuelsTokens, assetsMap } = useWorkspaceContext();
+  const { providerInstance, fuelsTokens } = useWorkspaceContext();
 
   const addressValidator = useMemo(
     () => new AddressValidator(providerInstance),
@@ -84,8 +84,7 @@ const useCreateTransactionForm = (params: UseCreateTransactionFormParams) => {
                 .find((n) => (n as NetworkFuel)?.assetId === parent.asset) ||
               null;
 
-            const maxDecimals =
-              selectedToken?.decimals ?? assetsMap?.[parent.asset]?.units;
+            const maxDecimals = selectedToken?.decimals;
 
             return !(maxDecimals && decimalsCounter > maxDecimals);
           },
@@ -182,10 +181,9 @@ const useCreateTransactionForm = (params: UseCreateTransactionFormParams) => {
       value: yup
         .string()
         .required('Address is required.')
-        .test('valid-address', 'Invalid address.', (address) => {
-          const allowEvm = true;
-          return AddressUtils.isValid(address, !allowEvm);
-        })
+        .test('valid-address', 'Invalid address.', (address) =>
+          AddressUtils.isValid(address),
+        )
         .test(
           'valid-account',
           'This address can not receive assets from Bako.',

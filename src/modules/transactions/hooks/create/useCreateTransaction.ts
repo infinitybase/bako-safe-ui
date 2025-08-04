@@ -344,7 +344,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
 
   const debouncedResolveTransactionCosts = useCallback(
     debounce(async (assets, vault) => {
-      await resolveTransactionCosts.mutateAsync({ assets, vault, assetsMap });
+      await resolveTransactionCosts.mutateAsync({ assets, vault });
     }, 300),
     [],
   );
@@ -360,7 +360,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
 
     const startsWithZeroDecimal = (amount: string) => /^0\.\d+$/.test(amount);
 
-    const formatAmount = (amount: string, units: number) => {
+    const formatAmount = (amount: string) => {
       try {
         const sanitizedAmount = amount.replace(/(?<=\d),(?=\d{3})/g, '');
 
@@ -373,7 +373,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
           floatAmount = Math.floor(floatAmount);
         }
 
-        return bn(floatAmount.toString()).formatUnits(units).replace(/,/g, '');
+        return bn(floatAmount.toString()).formatUnits().replace(/,/g, '');
       } catch (error) {
         return amount;
       }
@@ -382,9 +382,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     const processTransactions = (transactions: any[]) =>
       transactions
         .map(({ amount, value, asset }) => {
-          const decimals = assetsMap?.[asset]?.units ?? 9;
-          const formattedAmount = formatAmount(amount, decimals);
-
+          const formattedAmount = formatAmount(amount);
           return {
             to: value || recipientMock,
             amount: formattedAmount,
