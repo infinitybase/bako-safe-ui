@@ -47,4 +47,22 @@ export const getBakoIDURL = (): string => {
   return baseUrl;
 };
 
+export const getGarageURL = (): string => {
+  const environment = getEnvironment();
+  let baseUrl = '';
+
+  switch (environment) {
+    case 'staging':
+      baseUrl = 'https://preview.garage.zone/';
+      break;
+    case 'production':
+      baseUrl = 'https://preview.garage.zone/';
+      break;
+    default:
+      baseUrl = 'http://127.0.0.1:5174';
+  }
+
+  return baseUrl;
+};
+
 export { getEnvironment };

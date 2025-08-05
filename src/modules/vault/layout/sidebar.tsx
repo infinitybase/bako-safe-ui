@@ -20,7 +20,7 @@ import { useTransactionsContext } from '@/modules/transactions/providers/Transac
 import { VaultBox, VaultListModal } from '@/modules/vault/components';
 import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
-import { getBakoIDURL } from '@/utils/enviroment';
+import { getBakoIDURL, getGarageURL } from '@/utils/enviroment';
 
 interface SidebarProps extends BoxProps {
   onDrawer?: boolean;
@@ -228,9 +228,7 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
             <Carousel.SlideItem>
               <BakoGarageBanner
                 cursor="pointer"
-                onClick={() =>
-                  window.open('https://preview.garage.zone/', '_blank')
-                }
+                onClick={() => window.open(getGarageURL(), '_blank')}
               />
             </Carousel.SlideItem>
           </Carousel.Slide>
