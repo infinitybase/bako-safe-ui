@@ -52,6 +52,9 @@ export const getGarageURL = (): string => {
   let baseUrl = '';
 
   switch (environment) {
+    case 'preview':
+      baseUrl = 'https://preview.garage.zone/';
+      break;
     case 'staging':
       baseUrl = 'https://preview.garage.zone/';
       break;
