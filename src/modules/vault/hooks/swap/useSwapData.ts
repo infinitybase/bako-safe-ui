@@ -64,7 +64,7 @@ async function constructSwapTransaction(
   const request = await amm.swapExactOutput(
     amountOut,
     { bits: assetOut },
-    maxAmountIn,
+    maxAmountIn.add(bakoFee),
     pools,
     await futureDeadline(provider),
     {
