@@ -9,37 +9,23 @@ import { PoolId } from 'mira-dex-ts';
 import {
   addressInput,
   assetInput,
-  contractIdInput,
   poolIdInput,
 } from 'mira-dex-ts/dist/sdk/utils';
-import { SwapExactInputScript, SwapExactOutputScript } from 'sway/artifacts';
-
-import { BAKO_FEE_ADDRESS, BAKO_FEE_PERCENTAGE } from '@/config/swap';
+import { Swap } from 'sway/artifacts';
 
 export const DEFAULT_AMM_CONTRACT_ID =
   '0x2e40f2b244b98ed6b8204b3de0156c6961f98525c8162f80162fcf53eebd90e7';
+const DEFAULT_BAKO_SWAP_CONTRACT_ID =
+  '0x06ecda792477f3e9632621ca4a6fe6af7e81093bc843d43b562771285b7d8c37';
 
 export default class BakoAMM {
   private readonly account: Account;
-  private readonly swapExactInputScriptLoader: SwapExactInputScript;
-  private readonly swapExactOutputScriptLoader: SwapExactOutputScript;
+  private readonly bakoAmm: Swap;
 
   constructor(account: Account, contractIdOpt?: string) {
-    const contractId = contractIdOpt ?? DEFAULT_AMM_CONTRACT_ID;
-    const contractIdConfigurables = {
-      AMM_CONTRACT_ID: contractIdInput(contractId),
-      BAKO_FEE: BAKO_FEE_PERCENTAGE,
-      BAKO_FEE_RECEIVER: {
-        Address: { bits: BAKO_FEE_ADDRESS },
-      },
-    };
+    const contractId = contractIdOpt ?? DEFAULT_BAKO_SWAP_CONTRACT_ID;
     this.account = account;
-    this.swapExactInputScriptLoader = new SwapExactInputScript(
-      account,
-    ).setConfigurableConstants(contractIdConfigurables);
-    this.swapExactOutputScriptLoader = new SwapExactOutputScript(
-      account,
-    ).setConfigurableConstants(contractIdConfigurables);
+    this.bakoAmm = new Swap(contractId, account);
   }
 
   async swapExactInput(
@@ -50,8 +36,8 @@ export default class BakoAMM {
     deadline: BN,
     txParams?: TxParams,
   ): Promise<ScriptTransactionRequest> {
-    const request = await this.swapExactInputScriptLoader.functions
-      .main(
+    const request = await this.bakoAmm.functions
+      .swap_exact_input(
         amountIn,
         assetInput(assetIn),
         amountOutMin,
@@ -59,6 +45,12 @@ export default class BakoAMM {
         addressInput(this.account.address),
         deadline,
       )
+      .callParams({
+        forward: {
+          amount: amountIn,
+          assetId: assetIn.bits,
+        },
+      })
       .txParams(txParams ?? {})
       .getTransactionRequest();
 
@@ -85,8 +77,8 @@ export default class BakoAMM {
     deadline: BN,
     txParams?: TxParams,
   ): Promise<ScriptTransactionRequest> {
-    const request = await this.swapExactOutputScriptLoader.functions
-      .main(
+    const request = await this.bakoAmm.functions
+      .swap_exact_output(
         amountOut,
         assetInput(assetOut),
         amountInMax,
@@ -94,6 +86,12 @@ export default class BakoAMM {
         addressInput(this.account.address),
         deadline,
       )
+      .callParams({
+        forward: {
+          amount: amountInMax,
+          assetId: assetOut.bits,
+        },
+      })
       .txParams(txParams ?? {})
       .getTransactionRequest();
 
@@ -112,7 +110,6 @@ export default class BakoAMM {
         amount: amountInMax,
       },
     ];
-    console.log('inputAssets', inputAssets);
 
     request.addResources(await this.account.getResourcesToSpend(inputAssets));
 

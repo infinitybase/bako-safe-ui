@@ -13,26 +13,33 @@ dependencies = [
 ]
 
 [[package]]
+name = "ownership"
+version = "0.26.0"
+source = "registry+ownership?0.26.0#QmbVoNUrvCTyQTdE8ZP83XxTQQVzhrevfMqk1rAJAkMFVo!"
+dependencies = [
+    "src5",
+    "std",
+]
+
+[[package]]
+name = "src5"
+version = "0.8.0"
+source = "registry+src5?0.8.0#QmNRPZrPHFBiEAyWPU8gesdPsD2zb3cMKwEgxJwV1ZEjyD!"
+dependencies = ["std"]
+
+[[package]]
 name = "std"
 version = "0.68.9"
 source = "registry+std?0.68.9#QmUaBxMs2JvY1bXgRCdeCsG3o6TN82ftRgv4Tq7ytqUGUT!"
 
 [[package]]
-name = "swap_exact_input_script"
+name = "swap"
 source = "member"
 dependencies = [
     "interfaces",
     "math",
-    "std",
-    "utils",
-]
-
-[[package]]
-name = "swap_exact_output_script"
-source = "member"
-dependencies = [
-    "interfaces",
-    "math",
+    "ownership",
+    "src5",
     "std",
     "utils",
 ]
