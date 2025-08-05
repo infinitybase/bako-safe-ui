@@ -4,7 +4,7 @@ import { PoolId } from 'mira-dex-ts';
 import { memo } from 'react';
 
 import { useSwapRate } from '../../hooks/swap/useSwapRate';
-import { SwapState } from './Root';
+import { SwapMode, SwapState } from './Root';
 import { SwapRouteItem } from './SwapRouteItem';
 
 interface SwapCostProps {
@@ -12,6 +12,7 @@ interface SwapCostProps {
   isLoadingCost: boolean;
   swapState: SwapState;
   pools: PoolId[];
+  mode: SwapMode;
 }
 
 export const SwapCost = memo(function SwapCost({
@@ -19,6 +20,7 @@ export const SwapCost = memo(function SwapCost({
   isLoadingCost,
   swapState,
   pools,
+  mode,
 }: SwapCostProps) {
   const rate = useSwapRate({ swapState });
 
@@ -65,7 +67,9 @@ export const SwapCost = memo(function SwapCost({
               <Spinner size="xs" ml="auto" color="section.500" />
             )}
             {!isLoadingCost && swapState.fee?.formatUnits(9)}{' '}
-            {!isLoadingCost && swapState.to.slug}
+            {!isLoadingCost && mode === 'buy'
+              ? swapState.from.slug
+              : swapState.to.slug}
           </Text>
         </Flex>
 
