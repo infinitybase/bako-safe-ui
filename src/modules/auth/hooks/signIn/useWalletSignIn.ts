@@ -1,12 +1,12 @@
 import { useFuel } from '@fuels/react';
 import { useEffect, useState } from 'react';
 
+import { useEvm } from '@/modules';
 import { useContactToast } from '@/modules/addressBook';
+import { EConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
 import { useNetworks } from '@/modules/network/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { ENetworks } from '@/utils/constants';
-import { EConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
-import { useEvm } from '@/modules';
 
 import { Encoder, localStorageKeys, TypeUser } from '../../services';
 import { useCreateUserRequest, useSignInRequest } from '../useUserRequest';
@@ -27,7 +27,7 @@ const useWalletSignIn = (
     connect: evmConnect,
     signAndValidate: evmSignAndValidate,
     modal: evmModal,
-    getCurrentAccount: evmGetCurrentAccount
+    getCurrentAccount: evmGetCurrentAccount,
   } = useEvm();
 
   const [evmModalIsOpen, setEvmModalIsOpen] = useState<boolean>(false);
@@ -54,7 +54,10 @@ const useWalletSignIn = (
       const address = await evmGetCurrentAccount();
       const { code } = await createUserRequest.mutateAsync({
         address: address,
-        provider: import.meta.env.VITE_NETWORK,
+        provider: fromConnector
+          ? (localStorage.getItem(localStorageKeys.SELECTED_NETWORK) ??
+            import.meta.env.VITE_MAINNET_NETWORK)
+          : import.meta.env.VITE_MAINNET_NETWORK,
         type: TypeUser.EVM,
       });
 

@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
-    "build:preview": "tsc && vite build --mode preview",
+    "build": "vite build",
+    "build:preview": "vite build --mode preview",
     "test:e2e": "playwright test",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
@@ -33,7 +33,7 @@
     "@web3modal/core": "^5.1.11",
     "@web3modal/wagmi": "5.0.0",
     "axios": "^1.5.0",
-    "bakosafe": "0.1.10-beta.7",
+    "bakosafe": "0.2.0",
     "bech32": "^2.0.0",
     "crypto-js": "4.2.0",
     "date-fns": "^4.1.0",
@@ -100,7 +100,7 @@
     "prettier": "^3.0.3",
     "semantic-release": "^24.2.3",
     "typescript": "~5.4.5",
-    "vite": "^4.4.5",
+    "vite": "7.0.6",
     "vite-plugin-html": "^3.2.2",
     "vite-tsconfig-paths": "^4.2.0"
   },

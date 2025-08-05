@@ -27,6 +27,7 @@ export const AssetsIcon = memo(
           image: parseURI(
             metadataAssets?.[asset.assetId]?.metadata?.image ||
               metadataAssets?.[asset.assetId]?.metadata?.['image:png'] ||
+              metadataAssets?.[asset.assetId]?.metadata?.['URI'] ||
               metadataAssets?.[asset.assetId]?.icon ||
               assetsMap.UNKNOWN.icon!,
           ),
@@ -53,6 +54,8 @@ export const AssetsIcon = memo(
             <Image
               w={{ base: '30.5px', sm: 7 }}
               h={{ base: 'full', sm: 7 }}
+              fallbackSrc={assetsMap?.['UNKNOWN'].icon}
+              fallbackStrategy="onError"
               src={asset.image}
               borderRadius="md"
               alt="Asset Icon"

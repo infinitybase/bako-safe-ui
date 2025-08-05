@@ -8,10 +8,10 @@ export enum Batch32Prefix {
 export type Batch32 = `${Batch32Prefix}.${string}`;
 
 export class AddressUtils {
-  static isValid(address: string) {
+  static isValid(address: string, allowEvm = true) {
     try {
       return (
-        BakoAddressUtils.isEvm(address) ||
+        (allowEvm && BakoAddressUtils.isEvm(address)) ||
         BakoAddressUtils.isPasskey(address) ||
         isB256(address)
       );
