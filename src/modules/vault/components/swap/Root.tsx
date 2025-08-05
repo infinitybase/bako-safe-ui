@@ -71,7 +71,6 @@ export const RootSwap = memo(({ assets, vault }: RootSwapProps) => {
   const bakoAmm = useBakoAmm(vault);
 
   const { trade } = useSwapPreview(swapState, swapMode);
-  console.log('Trade:', trade);
 
   const pools = useMemo(
     () => trade?.bestRoute?.pools.map((pool) => pool.poolId) || [],
