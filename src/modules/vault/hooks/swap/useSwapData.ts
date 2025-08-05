@@ -54,6 +54,7 @@ async function constructSwapTransaction(
 
     return { request, bakoFee };
   }
+  // mode === 'buy'
   const assetOut = to.assetId;
   const maxAmountIn = amountIn
     .mul(bn(100 + Math.floor(slippage * 100)))
@@ -122,8 +123,7 @@ export const useSwapData = ({
 
       return { tx, request, bakoFee };
     },
-    onError: (e) => {
-      console.error('Error fetching swap preview:', e);
+    onError: () => {
       errorToast({
         title: 'Error fetching swap preview',
         description: 'Please try again later.',
