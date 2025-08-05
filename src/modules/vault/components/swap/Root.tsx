@@ -11,9 +11,13 @@ import {
   NativeAssetId,
   useContactToast,
 } from '@/modules';
-import BakoAMM from '@/modules/core/utils/bako-amm';
 
-import { useSwap, useSwapData, useSwapPreview } from '../../hooks/swap';
+import {
+  useBakoAmm,
+  useSwap,
+  useSwapData,
+  useSwapPreview,
+} from '../../hooks/swap';
 import { useMira } from '../../hooks/swap/useMira';
 import { State } from '../../hooks/swap/useSwapRouter';
 import { CoinBox } from './CoinBox';
@@ -64,6 +68,7 @@ export const RootSwap = memo(({ assets, vault }: RootSwapProps) => {
     to: defaultToAsset || EMPTY_SWAP_SLOT,
     status: 'idle',
   });
+  const bakoAmm = useBakoAmm(vault);
 
   const { trade } = useSwapPreview(swapState, swapMode);
 
@@ -73,11 +78,6 @@ export const RootSwap = memo(({ assets, vault }: RootSwapProps) => {
   );
 
   const isLoading = trade.state === State.LOADING;
-  const bakoAmm = useMemo(() => {
-    if (vault) {
-      return new BakoAMM(vault);
-    }
-  }, [vault]);
 
   const {
     swapData,
@@ -162,6 +162,25 @@ export const RootSwap = memo(({ assets, vault }: RootSwapProps) => {
     [swapMode],
   );
 
+  const handleCheckBalance = useCallback(
+    (amount: string, assetId: string) => {
+      const asset = assets.find((asset) => asset.assetId === assetId);
+      if (asset && asset.balance) {
+        const isBalanceSufficient = bn
+          .parseUnits(amount, asset.units)
+          .lte(asset.balance);
+
+        if (isBalanceSufficient) {
+          return setSwapButtonTitle(SwapButtonTitle.PREVIEW);
+        }
+      }
+      if (swapButtonTitle !== SwapButtonTitle.INSUFFICIENT_BALANCE) {
+        setSwapButtonTitle(SwapButtonTitle.INSUFFICIENT_BALANCE);
+      }
+    },
+    [assets, setSwapButtonTitle, swapButtonTitle],
+  );
+
   const handleFromAssetSelect = useCallback(
     (assetId: string) => {
       const selectedAsset = assets.find((asset) => asset.assetId === assetId);
@@ -179,8 +198,9 @@ export const RootSwap = memo(({ assets, vault }: RootSwapProps) => {
         }));
       }
       setSwapButtonTitle(SwapButtonTitle.PREVIEW);
+      handleCheckBalance(swapState.from.amount || '0', assetId);
     },
-    [assets, swapState, handleSwapModeChange],
+    [assets, swapState, handleSwapModeChange, handleCheckBalance],
   );
 
   const handleToAssetSelect = useCallback(
@@ -200,28 +220,9 @@ export const RootSwap = memo(({ assets, vault }: RootSwapProps) => {
         }));
       }
       setSwapButtonTitle(SwapButtonTitle.PREVIEW);
+      handleCheckBalance(swapState.to.amount || '0', assetId);
     },
-    [assets, swapState, handleSwapModeChange],
-  );
-
-  const handleCheckBalance = useCallback(
-    (amount: string, assetId: string) => {
-      const asset = assets.find((asset) => asset.assetId === assetId);
-      if (asset && asset.balance) {
-        const balance = asset.balance.formatUnits(asset.units);
-        const isBalanceSufficient = bn
-          .parseUnits(amount, asset.units)
-          .lte(bn.parseUnits(balance));
-
-        if (isBalanceSufficient) {
-          return setSwapButtonTitle(SwapButtonTitle.PREVIEW);
-        }
-      }
-      if (swapButtonTitle !== SwapButtonTitle.INSUFFICIENT_BALANCE) {
-        setSwapButtonTitle(SwapButtonTitle.INSUFFICIENT_BALANCE);
-      }
-    },
-    [assets, setSwapButtonTitle, swapButtonTitle],
+    [assets, swapState, handleSwapModeChange, handleCheckBalance],
   );
 
   const handleChangeAssetAmount = useCallback(
