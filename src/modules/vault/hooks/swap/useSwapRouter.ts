@@ -76,7 +76,7 @@ export const useSwapRouter = (
       };
     }
 
-    if (!isFetched) {
+    if (!isFetched && !shouldFetch) {
       return {
         trade: {
           state: State.IDLE,
@@ -85,7 +85,7 @@ export const useSwapRouter = (
       };
     }
 
-    if (!quotes.length) {
+    if (!quotes.length || !routes.length) {
       return {
         trade: {
           state: State.NO_ROUTES,
@@ -120,5 +120,7 @@ export const useSwapRouter = (
     isFetched,
     isFetching,
     isFetchingQuotes,
+    shouldFetch,
+    routes.length,
   ]);
 };

@@ -71,6 +71,7 @@ export const RootSwap = memo(({ assets, vault }: RootSwapProps) => {
   const bakoAmm = useBakoAmm(vault);
 
   const { trade } = useSwapPreview(swapState, swapMode);
+  console.log('Trade:', trade);
 
   const pools = useMemo(
     () => trade?.bestRoute?.pools.map((pool) => pool.poolId) || [],
@@ -117,7 +118,7 @@ export const RootSwap = memo(({ assets, vault }: RootSwapProps) => {
       }));
       setSwapButtonTitle(SwapButtonTitle.SWAP);
     }
-    if (swapState.status === 'preview' && swapData?.request) {
+    if (swapState.status !== 'idle' && swapData?.request) {
       await sendTx({
         vault,
         tx: swapData.request,
@@ -133,7 +134,7 @@ export const RootSwap = memo(({ assets, vault }: RootSwapProps) => {
           console.error('Swap transaction errorToast:', err);
           errorToast({
             title: 'Swap Error',
-            description: 'Swap failed, try again later',
+            description: 'Error on try to send transaction, try again later',
           });
           setSwapState((prevState) => ({
             ...prevState,
@@ -267,6 +268,9 @@ export const RootSwap = memo(({ assets, vault }: RootSwapProps) => {
   const handleUpdateAmountOut = useCallback(
     (amount: string) => {
       if (swapState.to.amount === amount) return;
+      if (swapMode === 'buy') {
+        handleCheckBalance(amount, swapState.to.assetId);
+      }
       setSwapState((prevState) => ({
         ...prevState,
         to: {
@@ -275,13 +279,15 @@ export const RootSwap = memo(({ assets, vault }: RootSwapProps) => {
         },
       }));
     },
-    [swapState.to.amount],
+    [swapState.to.amount, handleCheckBalance, swapState.to.assetId, swapMode],
   );
 
   const handleUpdateAmountIn = useCallback(
     (amount: string) => {
       if (swapState.from.amount === amount) return;
-
+      if (swapMode === 'buy') {
+        handleCheckBalance(amount, swapState.from.assetId);
+      }
       setSwapState((prevState) => ({
         ...prevState,
         from: {
@@ -290,7 +296,12 @@ export const RootSwap = memo(({ assets, vault }: RootSwapProps) => {
         },
       }));
     },
-    [swapState.from.amount],
+    [
+      swapState.from.amount,
+      handleCheckBalance,
+      swapState.from.assetId,
+      swapMode,
+    ],
   );
 
   useEffect(() => {
@@ -299,11 +310,11 @@ export const RootSwap = memo(({ assets, vault }: RootSwapProps) => {
       trade.state === State.VALID &&
       (trade.amountIn || trade.amountOut)
     ) {
-      const amount = swapMode === 'sell' ? trade.amountOut : trade.amountIn;
-      const units =
-        swapMode === 'sell' ? swapState.to.units : swapState.from.units;
+      const isSellMode = swapMode === 'sell';
+      const amount = isSellMode ? trade.amountOut : trade.amountIn;
+      const units = isSellMode ? swapState.to.units : swapState.from.units;
       const formattedAmount = amount.formatUnits(units);
-      if (swapMode === 'sell') {
+      if (isSellMode) {
         handleUpdateAmountOut(formattedAmount);
       } else {
         handleUpdateAmountIn(formattedAmount);
@@ -381,6 +392,7 @@ export const RootSwap = memo(({ assets, vault }: RootSwapProps) => {
           pools={pools}
           txCost={swapData?.tx}
           swapState={swapState}
+          mode={swapMode}
         />
       )}
 
