@@ -77,6 +77,13 @@ export default class BakoAMM {
     deadline: BN,
     txParams?: TxParams,
   ): Promise<ScriptTransactionRequest> {
+    let assetIn = assetOut;
+    const lastPool = pools[pools.length - 1];
+    if (lastPool[0].bits === assetOut.bits) {
+      assetIn = lastPool[1];
+    } else {
+      assetIn = lastPool[0];
+    }
     const request = await this.bakoAmm.functions
       .swap_exact_output(
         amountOut,
@@ -89,20 +96,11 @@ export default class BakoAMM {
       .callParams({
         forward: {
           amount: amountInMax,
-          assetId: assetOut.bits,
+          assetId: assetIn.bits,
         },
       })
       .txParams(txParams ?? {})
       .getTransactionRequest();
-
-    let assetIn = assetOut;
-    for (const pool of pools.reverse()) {
-      if (pool[0].bits === assetIn.bits) {
-        assetIn = pool[1];
-      } else {
-        assetIn = pool[0];
-      }
-    }
 
     const inputAssets = [
       {
