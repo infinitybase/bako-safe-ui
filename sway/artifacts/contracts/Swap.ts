@@ -31,6 +31,8 @@ export type IdentityInput = Enum<{ Address: AddressInput, ContractId: ContractId
 export type IdentityOutput = Enum<{ Address: AddressOutput, ContractId: ContractIdOutput }>;
 export enum InitializationErrorInput { CannotReinitialized = 'CannotReinitialized' };
 export enum InitializationErrorOutput { CannotReinitialized = 'CannotReinitialized' };
+export enum ReentrancyErrorInput { NonReentrant = 'NonReentrant' };
+export enum ReentrancyErrorOutput { NonReentrant = 'NonReentrant' };
 export type StateInput = Enum<{ Uninitialized: undefined, Initialized: IdentityInput, Revoked: undefined }>;
 export type StateOutput = Enum<{ Uninitialized: void, Initialized: IdentityOutput, Revoked: void }>;
 
@@ -74,19 +76,24 @@ const abi = {
       "metadataTypeId": 4
     },
     {
+      "type": "enum reentrancy::errors::ReentrancyError",
+      "concreteTypeId": "e52e660ff9a330c417b6493bb8d3d0049bafaa6c4a771b32b205d71bc2bc5ace",
+      "metadataTypeId": 5
+    },
+    {
       "type": "enum src5::AccessError",
       "concreteTypeId": "f1247475d0d1466599267010f088190f8664dd31663a40c5d5e525d8e64b995d",
-      "metadataTypeId": 5
+      "metadataTypeId": 6
     },
     {
       "type": "enum src5::State",
       "concreteTypeId": "287a382c1e0b1f11d12a422e77a248d27761327cd17515cc6e6369d528cf31ca",
-      "metadataTypeId": 6
+      "metadataTypeId": 7
     },
     {
       "type": "enum std::identity::Identity",
       "concreteTypeId": "ab7cd04e05be58e3fc15d424c2c4a57f824a2a2d97d67252440a3925ebdc1335",
-      "metadataTypeId": 7
+      "metadataTypeId": 8
     },
     {
       "type": "str",
@@ -95,22 +102,22 @@ const abi = {
     {
       "type": "struct ownership::events::OwnershipSet",
       "concreteTypeId": "8c0d2488561c35a28ef795bb8bcc4c43999cdd1e3ecbd10c226e0a68660c54d4",
-      "metadataTypeId": 10
+      "metadataTypeId": 11
     },
     {
       "type": "struct std::asset_id::AssetId",
       "concreteTypeId": "c0710b6731b1dd59799cf6bef33eee3b3b04a2e40e80a0724090215bbf2ca974",
-      "metadataTypeId": 12
+      "metadataTypeId": 13
     },
     {
       "type": "struct std::contract_id::ContractId",
       "concreteTypeId": "29c10735d33b5159f0c71ee1dbd17b36a3e69e41f00fab0d42e1bd9f428d8a54",
-      "metadataTypeId": 13
+      "metadataTypeId": 14
     },
     {
       "type": "struct std::vec::Vec<(struct std::asset_id::AssetId, struct std::asset_id::AssetId, bool)>",
       "concreteTypeId": "a5cbfec6a05585025be4180a09c2bd7944724d54ac729c9bebe421d061ee5378",
-      "metadataTypeId": 15,
+      "metadataTypeId": 16,
       "typeArguments": [
         "a95e1fcceb1451b8a76471f593f66c4a52ca04bde3c227c746ad7aaf988de5c6"
       ]
@@ -118,7 +125,7 @@ const abi = {
     {
       "type": "struct std::vec::Vec<(u64, struct std::asset_id::AssetId)>",
       "concreteTypeId": "6f03bcbe6f8a1e01b5dcb5701ab21443606d1b323a888ead4e9a2ecda650ae2e",
-      "metadataTypeId": 15,
+      "metadataTypeId": 16,
       "typeArguments": [
         "e10d8bfc338a29565debd72645b365f9b0481e462fd7d591848de4a73223d58d"
       ]
@@ -143,7 +150,7 @@ const abi = {
         },
         {
           "name": "__tuple_element",
-          "typeId": 12
+          "typeId": 13
         }
       ]
     },
@@ -153,11 +160,11 @@ const abi = {
       "components": [
         {
           "name": "__tuple_element",
-          "typeId": 12
+          "typeId": 13
         },
         {
           "name": "__tuple_element",
-          "typeId": 12
+          "typeId": 13
         },
         {
           "name": "__tuple_element",
@@ -184,8 +191,18 @@ const abi = {
       ]
     },
     {
-      "type": "enum src5::AccessError",
+      "type": "enum reentrancy::errors::ReentrancyError",
       "metadataTypeId": 5,
+      "components": [
+        {
+          "name": "NonReentrant",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        }
+      ]
+    },
+    {
+      "type": "enum src5::AccessError",
+      "metadataTypeId": 6,
       "components": [
         {
           "name": "NotOwner",
@@ -195,7 +212,7 @@ const abi = {
     },
     {
       "type": "enum src5::State",
-      "metadataTypeId": 6,
+      "metadataTypeId": 7,
       "components": [
         {
           "name": "Uninitialized",
@@ -203,7 +220,7 @@ const abi = {
         },
         {
           "name": "Initialized",
-          "typeId": 7
+          "typeId": 8
         },
         {
           "name": "Revoked",
@@ -213,48 +230,38 @@ const abi = {
     },
     {
       "type": "enum std::identity::Identity",
-      "metadataTypeId": 7,
+      "metadataTypeId": 8,
       "components": [
         {
           "name": "Address",
-          "typeId": 11
+          "typeId": 12
         },
         {
           "name": "ContractId",
-          "typeId": 13
+          "typeId": 14
         }
       ]
     },
     {
       "type": "generic T",
-      "metadataTypeId": 8
-    },
-    {
-      "type": "raw untyped ptr",
       "metadataTypeId": 9
     },
     {
+      "type": "raw untyped ptr",
+      "metadataTypeId": 10
+    },
+    {
       "type": "struct ownership::events::OwnershipSet",
-      "metadataTypeId": 10,
+      "metadataTypeId": 11,
       "components": [
         {
           "name": "new_owner",
-          "typeId": 7
+          "typeId": 8
         }
       ]
     },
     {
       "type": "struct std::address::Address",
-      "metadataTypeId": 11,
-      "components": [
-        {
-          "name": "bits",
-          "typeId": 2
-        }
-      ]
-    },
-    {
-      "type": "struct std::asset_id::AssetId",
       "metadataTypeId": 12,
       "components": [
         {
@@ -264,7 +271,7 @@ const abi = {
       ]
     },
     {
-      "type": "struct std::contract_id::ContractId",
+      "type": "struct std::asset_id::AssetId",
       "metadataTypeId": 13,
       "components": [
         {
@@ -274,12 +281,22 @@ const abi = {
       ]
     },
     {
-      "type": "struct std::vec::RawVec",
+      "type": "struct std::contract_id::ContractId",
       "metadataTypeId": 14,
       "components": [
         {
+          "name": "bits",
+          "typeId": 2
+        }
+      ]
+    },
+    {
+      "type": "struct std::vec::RawVec",
+      "metadataTypeId": 15,
+      "components": [
+        {
           "name": "ptr",
-          "typeId": 9
+          "typeId": 10
         },
         {
           "name": "cap",
@@ -287,20 +304,20 @@ const abi = {
         }
       ],
       "typeParameters": [
-        8
+        9
       ]
     },
     {
       "type": "struct std::vec::Vec",
-      "metadataTypeId": 15,
+      "metadataTypeId": 16,
       "components": [
         {
           "name": "buf",
-          "typeId": 14,
+          "typeId": 15,
           "typeArguments": [
             {
               "name": "",
-              "typeId": 8
+              "typeId": 9
             }
           ]
         },
@@ -310,7 +327,7 @@ const abi = {
         }
       ],
       "typeParameters": [
-        8
+        9
       ]
     }
   ],
@@ -461,16 +478,12 @@ const abi = {
       "concreteTypeId": "8c0d2488561c35a28ef795bb8bcc4c43999cdd1e3ecbd10c226e0a68660c54d4"
     },
     {
+      "logId": "16514249102412951748",
+      "concreteTypeId": "e52e660ff9a330c417b6493bb8d3d0049bafaa6c4a771b32b205d71bc2bc5ace"
+    },
+    {
       "logId": "10098701174489624218",
       "concreteTypeId": "8c25cb3686462e9a86d2883c5688a22fe738b0bbc85f458d2d2b5f3f667c6d5a"
-    },
-    {
-      "logId": "1515152261580153489",
-      "concreteTypeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
-    },
-    {
-      "logId": "13866877265493744985",
-      "concreteTypeId": "c0710b6731b1dd59799cf6bef33eee3b3b04a2e40e80a0724090215bbf2ca974"
     },
     {
       "logId": "17376141311665587813",
@@ -482,19 +495,19 @@ const abi = {
     {
       "name": "BAKO_FEE",
       "concreteTypeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0",
-      "offset": 47648,
+      "offset": 48240,
       "indirect": false
     },
     {
       "name": "INITIAL_OWNER",
       "concreteTypeId": "ab7cd04e05be58e3fc15d424c2c4a57f824a2a2d97d67252440a3925ebdc1335",
-      "offset": 47656,
+      "offset": 48248,
       "indirect": false
     },
     {
       "name": "AMM_CONTRACT_ID",
       "concreteTypeId": "29c10735d33b5159f0c71ee1dbd17b36a3e69e41f00fab0d42e1bd9f428d8a54",
-      "offset": 47616,
+      "offset": 48208,
       "indirect": false
     }
   ],

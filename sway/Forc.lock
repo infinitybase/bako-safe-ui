@@ -22,6 +22,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "reentrancy"
+version = "0.26.0"
+source = "registry+reentrancy?0.26.0#QmP25Uux1SYjT97JiBJGw15NQtKHzbYczhHkwcoh3Bqh4C!"
+dependencies = ["std"]
+
+[[package]]
 name = "src5"
 version = "0.8.0"
 source = "registry+src5?0.8.0#QmNRPZrPHFBiEAyWPU8gesdPsD2zb3cMKwEgxJwV1ZEjyD!"
@@ -39,6 +45,7 @@ dependencies = [
     "interfaces",
     "math",
     "ownership",
+    "reentrancy",
     "src5",
     "std",
     "utils",

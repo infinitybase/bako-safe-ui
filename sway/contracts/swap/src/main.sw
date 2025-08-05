@@ -1,5 +1,6 @@
 contract;
 
+use reentrancy::*;
 use ownership::*;
 use src5::{SRC5, State};
 use interfaces::{data_structures::PoolId, mira_amm::MiraAMM};
@@ -90,10 +91,18 @@ impl BakoSwap for Contract {
         recipient: Identity,
         deadline: u32,
     ) -> Vec<(u64, AssetId)> {
+        reentrancy_guard();
         check_deadline(deadline);
 
         require(msg_asset_id() == asset_in, "Wrong asset sent");
         require(msg_amount() >= amount_in, "Insufficient amount sent");
+        let last_pool = pools.get(pools.len() - 1).unwrap();
+        let asset_out = if asset_in == last_pool.0 {
+            last_pool.1
+        } else {
+            last_pool.0
+        };
+        let current_balance = this_balance(asset_out);
 
         let amounts_out = get_amounts_out(AMM_CONTRACT_ID, amount_in, asset_in, pools);
         let last_amount_out = amounts_out.get(amounts_out.len() - 1).unwrap();
@@ -125,19 +134,9 @@ impl BakoSwap for Contract {
             i += 1;
         }
 
-        let last_pool = pools.get(pools.len() - 1).unwrap();
-        let asset_out = if asset_in == last_pool.0 {
-            last_pool.1
-        } else {
-            last_pool.0
-        };
-        let current_balance = this_balance(asset_out);
-        log("Current balance after swap");
-        log(current_balance);
-        log("Last amount out");
-        log(asset_out);
-        let fee = collect_swap_fee(asset_out, current_balance);
-        let amount_after_fee = current_balance - fee;
+        let swap_amount = this_balance(asset_out) - current_balance;
+        let fee = collect_swap_fee(asset_out, swap_amount);
+        let amount_after_fee = swap_amount - fee;
 
         transfer(recipient, asset_out, amount_after_fee);
 
@@ -153,25 +152,37 @@ impl BakoSwap for Contract {
         recipient: Identity,
         deadline: u32,
     ) -> Vec<(u64, AssetId)> {
+        reentrancy_guard();
         check_deadline(deadline);
 
         let amounts_in = get_amounts_in(AMM_CONTRACT_ID, amount_out, asset_out, pools);
         let (first_amount_in, first_asset) = amounts_in.get(amounts_in.len() - 1).unwrap();
+
+        require(msg_asset_id() == first_asset, "Wrong asset sent");
+
+        let amount = msg_amount();
         let fee = (first_amount_in * BAKO_FEE) / 100;
-        let first_amount_in_with_bako_fee = first_amount_in + fee;
+
+        let first_amount_in_with_fee = first_amount_in + fee;
+
         require(
-            first_amount_in_with_bako_fee <= amount_in_max,
+            amount >= first_amount_in_with_fee,
+            "Insufficient amount sent",
+        );
+        require(
+            first_amount_in_with_fee <= amount_in_max,
             "Exceeding input amount",
         );
-
         transfer(
             Identity::ContractId(AMM_CONTRACT_ID),
             first_asset,
             first_amount_in,
         );
+
         let this_contract = ContractId::this();
         let contract_identity = Identity::ContractId(this_contract);
-        transfer(contract_identity, first_asset, fee);
+        collect_swap_fee(first_asset, first_amount_in);
+
         let amm = abi(MiraAMM, AMM_CONTRACT_ID.into());
 
         let mut i = 0;

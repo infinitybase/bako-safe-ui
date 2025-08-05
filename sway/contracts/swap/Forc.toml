@@ -10,5 +10,6 @@ math = { path = "../../libraries/math" }
 utils = { path = "../../libraries/utils" }
 ownership = "0.26.0"
 src5 = "0.8.0"
+reentrancy = "0.26.0"
 
 
