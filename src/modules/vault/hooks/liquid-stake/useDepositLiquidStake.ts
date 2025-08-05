@@ -101,9 +101,15 @@ const useDepositLiquidStake = () => {
         },
       })
       .addContracts([rig])
-      .call();
+      .fundWithRequiredCoins();
 
-    const transaction = await TransactionService.getByHash(tx.transactionId, [
+    if (!vaultSafe) return;
+
+    const { hashTxId } = await vaultSafe.BakoTransfer(tx, {
+      name: 'Liquid Stake',
+    });
+
+    const transaction = await TransactionService.getByHash(hashTxId, [
       TransactionStatus.AWAIT_REQUIREMENTS,
     ]);
 
@@ -113,7 +119,7 @@ const useDepositLiquidStake = () => {
 
     await confirmTransaction(transaction.id, undefined, transaction);
 
-    return await tx.waitForResult();
+    return transaction;
   };
 
   const getMaxFee = useCallback(
