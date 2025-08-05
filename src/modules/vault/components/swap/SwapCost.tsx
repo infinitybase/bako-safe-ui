@@ -65,7 +65,7 @@ export const SwapCost = memo(function SwapCost({
               <Spinner size="xs" ml="auto" color="section.500" />
             )}
             {!isLoadingCost && swapState.fee?.formatUnits(9)}{' '}
-            {!isLoadingCost && swapState.from.slug}
+            {!isLoadingCost && swapState.to.slug}
           </Text>
         </Flex>
 

@@ -38,7 +38,7 @@ async function constructSwapTransaction(
       .parseUnits(to.amount, to.units)
       .mul(bn(100 - Math.floor(slippage * 100)))
       .div(bn(100));
-    const bakoFee = amountIn.mul(swapFee).div(bn(100));
+    const bakoFee = minAmountOut.mul(swapFee).div(bn(100));
 
     const request = await amm.swapExactInput(
       amountIn,
@@ -58,7 +58,7 @@ async function constructSwapTransaction(
   const maxAmountIn = amountIn
     .mul(bn(100 + Math.floor(slippage * 100)))
     .div(bn(100));
-  const bakoFee = amountIn.mul(swapFee).div(bn(100));
+  const bakoFee = maxAmountIn.mul(swapFee).div(bn(100));
 
   const request = await amm.swapExactOutput(
     amountOut,
