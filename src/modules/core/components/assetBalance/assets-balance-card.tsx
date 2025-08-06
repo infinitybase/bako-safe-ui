@@ -16,7 +16,9 @@ const AssetsBalanceCard = ({
   const { assetsMap } = useWorkspaceContext();
   const { assetAmount, assetsInfo } = useGetTokenInfos({ ...asset, assetsMap });
 
-  const transactionAmount = Number(assetAmount) * (usdAmount ?? 0);
+  const transactionAmount =
+    Number(assetAmount.replace(/,/g, '')) * (usdAmount ?? 0);
+
   const formattedAmount = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
