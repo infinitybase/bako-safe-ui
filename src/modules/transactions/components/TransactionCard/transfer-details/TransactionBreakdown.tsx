@@ -1,8 +1,10 @@
 import { Box, Divider, HStack, Text } from '@chakra-ui/react';
 import { TransactionStatus } from 'bakosafe';
 
+import { RigContractIcon } from '@/components';
 import { miraData } from '@/config/swap';
 import { AddressUtils, type TransactionState } from '@/modules/core';
+import { tokensIDS } from '@/modules/core/utils/assets/address';
 import { useVerifyTransactionInformations } from '@/modules/transactions/hooks/details/useVerifyTransactionInformations';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
@@ -31,6 +33,10 @@ const TransactionBreakdown = ({
   const isNotSigned = !status?.isDeclined && !status?.isSigned;
 
   const showContractAddresses = (isDeploy || isContract) && !isMint;
+
+  const isLiquidStake =
+    transaction.name === 'Liquid Stake' &&
+    transaction.assets[0].assetId === tokensIDS.FUEL;
 
   return (
     <Box
@@ -110,6 +116,16 @@ const TransactionBreakdown = ({
           icon={miraData.icon}
           mt={4}
         />
+      )}
+
+      {isLiquidStake && (
+        <Box mt={4} w={'full'}>
+          <TransactionCard.TransactionRequestFrom
+            name={'Liquid stake via RIG'}
+            origin={'https://rig.st/'}
+            icon={RigContractIcon}
+          />
+        </Box>
       )}
 
       <Box

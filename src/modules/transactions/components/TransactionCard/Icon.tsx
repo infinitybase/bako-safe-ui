@@ -7,8 +7,14 @@ import { getTransactionIconComponent } from '../../utils';
 
 export const Icon = memo(
   ({ transaction }: { transaction: TransactionWithVault }) => {
-    const { isFromConnector, isFromCLI, isDeploy, isDeposit, isSwap } =
-      useVerifyTransactionInformations(transaction);
+    const {
+      isFromConnector,
+      isFromCLI,
+      isDeploy,
+      isDeposit,
+      isSwap,
+      isLiquidStake,
+    } = useVerifyTransactionInformations(transaction);
 
     const IconComponent = useMemo(
       () =>
@@ -18,13 +24,17 @@ export const Icon = memo(
           isFromCLI,
           isDeposit,
           isSwap,
+          isLiquidStake,
         }),
-      [isDeploy, isFromConnector, isFromCLI, isDeposit, isSwap],
+      [isDeploy, isFromConnector, isFromCLI, isDeposit, isSwap, isLiquidStake],
     );
 
     const size = useMemo(
-      () => (isDeploy || isFromConnector || isSwap ? 'inherit' : '12px'),
-      [isDeploy, isFromConnector, isSwap],
+      () =>
+        isDeploy || isFromConnector || isSwap || isLiquidStake
+          ? 'inherit'
+          : '12px',
+      [isDeploy, isFromConnector, isSwap, isLiquidStake],
     );
 
     return (

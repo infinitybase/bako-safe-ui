@@ -2,6 +2,8 @@ import { TransactionStatus, TransactionType } from 'bakosafe';
 import { Address, OperationName } from 'fuels';
 import { useMemo } from 'react';
 
+import { tokensIDS } from '@/modules/core/utils/assets/address';
+
 import { TransactionWithVault } from '../../services';
 
 const useVerifyTransactionInformations = (
@@ -11,6 +13,9 @@ const useVerifyTransactionInformations = (
   const isFromConnector = transaction.summary?.type === 'connector';
   const isDeploy = transaction.type === TransactionType.TRANSACTION_CREATE;
   const isDeposit = transaction.type === TransactionType.DEPOSIT;
+  const isLiquidStake =
+    transaction.name === 'Liquid Stake' &&
+    transaction.assets[0].assetId === tokensIDS.FUEL;
 
   const isContract = useMemo(
     () =>
@@ -101,6 +106,7 @@ const useVerifyTransactionInformations = (
     isFuelFriday,
     isReceivingAssets,
     isFromCLI,
+    isLiquidStake,
     showAmountInformations,
     isSwap,
   };
