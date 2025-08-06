@@ -1,5 +1,4 @@
-import { InfoIcon } from '@chakra-ui/icons';
-import { Button, Card, Flex, Stack, Text } from '@chakra-ui/react';
+import { Button, Flex, Stack } from '@chakra-ui/react';
 import { Vault } from 'bakosafe';
 import { BN, bn } from 'fuels';
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
@@ -22,11 +21,14 @@ import {
   useSwapData,
   useSwapPreview,
 } from '../../hooks/swap';
+import { useAvailableEthBalance } from '../../hooks/swap/useAvailableEthBalance';
 import { useMira } from '../../hooks/swap/useMira';
 import { State } from '../../hooks/swap/useSwapRouter';
 import { CoinBox } from './CoinBox';
+import { GasAlert } from './GasAlert';
 import { SwapCost } from './SwapCost';
 import { SwapDivider } from './SwapDivider';
+import { SwapError } from './SwapError';
 
 export type SwapState = {
   from: Asset;
@@ -72,6 +74,7 @@ export const RootSwap = memo(({ assets, vault }: RootSwapProps) => {
     to: defaultToAsset || EMPTY_SWAP_SLOT,
     status: 'idle',
   });
+  const availableEthBalance = useAvailableEthBalance(swapState.from, assets);
   const bakoAmm = useBakoAmm(vault);
 
   const { trade } = useSwapPreview(swapState, swapMode);
@@ -373,20 +376,9 @@ export const RootSwap = memo(({ assets, vault }: RootSwapProps) => {
         isLoadingAmount={isLoading && swapMode === 'sell'}
       />
 
-      {trade.error && (
-        <Card
-          variant="outline"
-          p={3}
-          gap={2}
-          alignItems="center"
-          flexDirection="row"
-        >
-          <InfoIcon color="error.500" />
-          <Text color="error.500" fontSize="xs">
-            {trade.error}
-          </Text>
-        </Card>
-      )}
+      {trade.error && <SwapError error={trade.error} />}
+
+      {!availableEthBalance && <GasAlert />}
 
       {swapButtonTitle === SwapButtonTitle.SWAP && (
         <SwapCost
