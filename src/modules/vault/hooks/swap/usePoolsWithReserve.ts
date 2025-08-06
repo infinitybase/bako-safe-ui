@@ -1,7 +1,13 @@
 import { useQuery } from '@tanstack/react-query';
+import { useMemo } from 'react';
 
 import { PoolIdCombination, PoolsWithReserve } from '../../utils';
 import { useMiraReadonly } from './useMiraReadonly';
+
+const constructPoolKey = (combination: PoolIdCombination): string => {
+  const pool = combination[2];
+  return `${pool[0].bits}-${pool[1].bits}-${pool[2].valueOf()}`;
+};
 
 export const usePoolsWithReserve = (
   poolsCombination: PoolIdCombination[],
@@ -9,7 +15,10 @@ export const usePoolsWithReserve = (
 ) => {
   const amm = useMiraReadonly();
 
-  const poolsKeys = poolsCombination.map((pool) => pool.join('-'));
+  const poolsKeys = useMemo(
+    () => poolsCombination.map(constructPoolKey),
+    [poolsCombination],
+  );
 
   const { data: pools, ...rest } = useQuery({
     queryKey: ['amm-pools-reserve', poolsKeys],

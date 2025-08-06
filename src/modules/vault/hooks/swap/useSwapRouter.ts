@@ -97,9 +97,9 @@ export const useSwapRouter = (
 
     const best = quotes.reduce((best, current) => {
       if (mode === 'sell') {
-        return best.amountOut.gt(current.amountOut) ? best : current;
+        return current.amountOut.gt(best.amountOut) ? current : best;
       }
-      return best.amountIn.lt(current.amountIn) ? best : current;
+      return current.amountIn.lt(best.amountIn) ? current : best;
     }, quotes[0]);
 
     return {

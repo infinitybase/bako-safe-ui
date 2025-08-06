@@ -56,9 +56,9 @@ async function constructSwapTransaction(
   }
   // mode === 'buy'
   const assetOut = to.assetId;
-  const maxAmountIn = amountIn
-    .mul(bn(100 + Math.floor(slippage * 100)))
-    .div(bn(100));
+  const maxAmountIn = amountIn;
+  // .mul(bn(100 + Math.floor(slippage * 100)))
+  // .div(bn(100));
   const bakoFee = maxAmountIn.mul(swapFee).div(bn(100));
 
   const request = await amm.swapExactOutput(
@@ -68,7 +68,7 @@ async function constructSwapTransaction(
     pools,
     await futureDeadline(provider),
     {
-      maxFee: bn(1000000),
+      maxFee: bn(100000),
       variableOutputs: 2,
     },
   );
