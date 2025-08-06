@@ -78,11 +78,12 @@ export default class BakoAMM {
     txParams?: TxParams,
   ): Promise<ScriptTransactionRequest> {
     let assetIn = assetOut;
-    const lastPool = pools[pools.length - 1];
-    if (lastPool[0].bits === assetOut.bits) {
-      assetIn = lastPool[1];
-    } else {
-      assetIn = lastPool[0];
+    for (const pool of pools.reverse()) {
+      if (pool[0].bits === assetIn.bits) {
+        assetIn = pool[1];
+      } else {
+        assetIn = pool[0];
+      }
     }
     const request = await this.bakoAmm.functions
       .swap_exact_output(
