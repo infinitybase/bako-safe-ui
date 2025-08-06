@@ -4,7 +4,11 @@ import { Vault } from 'bakosafe';
 import { BN, bn } from 'fuels';
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 
-import { DEFAULT_SLIPPAGE, SwapButtonTitle } from '@/config/swap';
+import {
+  DEFAULT_SLIPPAGE,
+  MinEthValueBN,
+  SwapButtonTitle,
+} from '@/config/swap';
 import {
   Asset,
   FUEL_ASSET_ID,
@@ -166,9 +170,11 @@ export const RootSwap = memo(({ assets, vault }: RootSwapProps) => {
     (amount: string, assetId: string) => {
       const asset = assets.find((asset) => asset.assetId === assetId);
       if (asset && asset.balance) {
-        const isBalanceSufficient = bn
-          .parseUnits(amount, asset.units)
-          .lte(asset.balance);
+        const isEth = asset.slug === 'ETH';
+        const assetAmount = isEth
+          ? bn.parseUnits(amount, asset.units).add(MinEthValueBN)
+          : bn.parseUnits(amount, asset.units);
+        const isBalanceSufficient = asset.balance.gte(assetAmount);
 
         if (isBalanceSufficient) {
           return setSwapButtonTitle(SwapButtonTitle.PREVIEW);
@@ -267,9 +273,6 @@ export const RootSwap = memo(({ assets, vault }: RootSwapProps) => {
   const handleUpdateAmountOut = useCallback(
     (amount: string) => {
       if (swapState.to.amount === amount) return;
-      if (swapMode === 'buy') {
-        handleCheckBalance(amount, swapState.to.assetId);
-      }
       setSwapState((prevState) => ({
         ...prevState,
         to: {
@@ -278,7 +281,7 @@ export const RootSwap = memo(({ assets, vault }: RootSwapProps) => {
         },
       }));
     },
-    [swapState.to.amount, handleCheckBalance, swapState.to.assetId, swapMode],
+    [swapState.to.amount],
   );
 
   const handleUpdateAmountIn = useCallback(

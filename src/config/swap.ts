@@ -40,3 +40,7 @@ export const miraData = {
   origin: 'https://mira.ly',
   icon: MiraIcon,
 };
+
+export const EthDecimals = 9 as const;
+export const MinEthValue = 0.0001 as const;
+export const MinEthValueBN = MinEthValue * 10 ** EthDecimals;
