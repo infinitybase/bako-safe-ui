@@ -143,7 +143,7 @@ const Autocomplete = ({
   };
 
   const handleClear = () => {
-    onChange('');      
+    onChange('');
   };
 
   const handleOnBlur = () => {
@@ -152,22 +152,21 @@ const Autocomplete = ({
   };
 
   const handlePaste = () => {
-    setIsFocused(false);  
+    setIsFocused(false);
   };
 
-  useEffect(() => {  
+  useEffect(() => {
     if (options && options.length > 0) {
       const selectedOption = options.find((option) => option.value === value);
       if (selectedOption) {
-        setInputValue(selectedOption.label); 
+        setInputValue(selectedOption.label);
       }
     }
   }, [value, options]);
 
-
-  useEffect(() => {  
+  useEffect(() => {
     if (!value) {
-      setInputValue(''); 
+      setInputValue('');
       return;
     }
   }, [value]);
@@ -195,8 +194,7 @@ const Autocomplete = ({
           onFocus={handleFocus}
           style={inputStyle}
           ref={inputRef}
-          pr={10}
-          sx={{ pr: !disabled && rightElement ? '55px !important' : 'initial' }}
+          paddingInlineEnd={'2.2rem !important'}
         />
 
         <FormLabel color="grey.500">{label}</FormLabel>
