@@ -9,7 +9,10 @@ import {
 import { contractIdInput } from 'mira-dex-ts/dist/sdk/utils';
 import path from 'path';
 
-import { DEFAULT_AMM_CONTRACT_ID } from '@/modules/core/utils/bako-amm';
+import {
+  DEFAULT_AMM_CONTRACT_ID,
+  TESTNET_AMM_CONTRACT_ID,
+} from '@/modules/core/utils/bako-amm';
 
 import { SwapFactory } from '../../sway/artifacts';
 import contracts from '../../sway/artifacts/contract-ids.json';
@@ -71,12 +74,15 @@ export const deployProxy = async ({ account, provider }: Config) => {
   return contract;
 };
 
-export const deployBakoSwap = async ({ account }: Config) => {
+export const deployBakoSwap = async ({ account, provider }: Config) => {
+  const chainId = await provider.getChainId();
+  const ammId =
+    chainId === 0 ? TESTNET_AMM_CONTRACT_ID : DEFAULT_AMM_CONTRACT_ID;
   const bakoSwapDeployed = await SwapFactory.deploy(account, {
     configurableConstants: {
       BAKO_FEE: 1, // 1% fee
       INITIAL_OWNER: { Address: { bits: account.address.toB256() } },
-      AMM_CONTRACT_ID: contractIdInput(DEFAULT_AMM_CONTRACT_ID),
+      AMM_CONTRACT_ID: contractIdInput(ammId),
     },
   });
 
