@@ -31,7 +31,7 @@ const useOrderAssetsByUSD = ({
 
       return {
         asset,
-        assetAmount: Number(assetAmount) * usdAmount,
+        assetAmount: Number(assetAmount?.replace(/,/g, '')) * usdAmount,
       };
     });
 
