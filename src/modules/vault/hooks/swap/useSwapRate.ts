@@ -14,7 +14,6 @@ export const useSwapRate = ({ swapState }: { swapState: SwapState }) => {
       return null;
     }
 
-    // const rate = amountOut.div(amountIn).toNumber();
     const rate = parseFloat(amountOut) / parseFloat(amountIn);
     const priceString = rate.toLocaleString('en-US', {
       minimumFractionDigits: assetIn.units || 0,
@@ -24,7 +23,6 @@ export const useSwapRate = ({ swapState }: { swapState: SwapState }) => {
     assetIn.amount,
     assetIn.units,
     assetOut.amount,
-    // assetOut.units,
     assetIn.slug,
     assetOut.slug,
   ]);
