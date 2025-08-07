@@ -1,4 +1,4 @@
-import { HStack, Icon, Text, VStack } from '@chakra-ui/react';
+import { HStack, Icon, Text, useDisclosure, VStack } from '@chakra-ui/react';
 
 import { PlusIcon } from '@/components';
 import { CreateContactDialog } from '@/modules/addressBook/components/dialog';
@@ -9,20 +9,30 @@ interface AddToAddressBookProps {
 }
 
 const AddToAddressBook = ({ address }: AddToAddressBookProps) => {
+  const contactDialog = useDisclosure();
+
   const {
     addressBookInfos: {
-      dialog: { contactDialog },
       handlers: { handleOpenDialog },
       requests: { createContactRequest },
       form: contactForm,
     },
   } = useWorkspaceContext();
 
+  const dialog = {
+    ...contactDialog,
+    onClose: () => {
+      contactDialog.onClose();
+      contactForm.setValue('address', '');
+      contactForm.setValue('nickname', '');
+    },
+  };
+
   return (
     <>
       <CreateContactDialog
         form={contactForm}
-        dialog={contactDialog}
+        dialog={dialog}
         isLoading={createContactRequest.isPending}
         isEdit={false}
       />
