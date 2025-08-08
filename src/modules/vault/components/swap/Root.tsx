@@ -398,7 +398,7 @@ export const RootSwap = memo(({ assets, vault }: RootSwapProps) => {
           w="full"
           variant="primary"
           isDisabled={isEmptyAmounts || isEmptyAssets || isInsufficientBalance}
-          isLoading={isLoadingPreview || isSendingTx}
+          isLoading={isLoadingPreview || isSendingTx || isLoading}
           onClick={handleSubmitSwap}
         >
           {swapButtonTitle}

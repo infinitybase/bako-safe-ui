@@ -33,6 +33,7 @@ export default class BakoAMM {
   async swapExactInput(
     amountIn: BN,
     assetIn: AssetId,
+    assetOut: AssetId,
     amountOutMin: BN,
     pools: PoolId[],
     deadline: BN,
@@ -42,6 +43,7 @@ export default class BakoAMM {
       .swap_exact_input(
         amountIn,
         assetInput(assetIn),
+        assetInput(assetOut),
         amountOutMin,
         pools.map(poolIdInput),
         addressInput(this.account.address),
@@ -74,19 +76,12 @@ export default class BakoAMM {
   async swapExactOutput(
     amountOut: BN,
     assetOut: AssetId,
+    assetIn: AssetId,
     amountInMax: BN,
     pools: PoolId[],
     deadline: BN,
     txParams?: TxParams,
   ): Promise<ScriptTransactionRequest> {
-    let assetIn = assetOut;
-    for (const pool of pools.reverse()) {
-      if (pool[0].bits === assetIn.bits) {
-        assetIn = pool[1];
-      } else {
-        assetIn = pool[0];
-      }
-    }
     const request = await this.bakoAmm.functions
       .swap_exact_output(
         amountOut,
