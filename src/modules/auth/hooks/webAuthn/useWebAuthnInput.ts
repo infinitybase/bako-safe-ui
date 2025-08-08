@@ -2,8 +2,9 @@ import debounce from 'lodash.debounce';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { AutocompleteBadgeStatus } from '@/components/autocomplete';
+import { LocalStorageConfig } from '@/config';
 
-import { TypeUser } from '../../services/methods';
+import { localStorageKeys, TypeUser } from '../../services/methods';
 import {
   useCheckNickname,
   useGetAccountsByHardwareId,
@@ -41,18 +42,30 @@ const useWebAuthnInput = (validUsername?: boolean, userId?: string) => {
     userId,
   );
 
+  const mergedAccounts = useMemo(() => {
+    const localAccounts = LocalStorageConfig.getItem<string[]>(
+      localStorageKeys.USERNAMES,
+    );
+    return [
+      ...(localAccounts || []),
+      ...(accountsRequest.data?.map((name) => name.name) || []),
+    ].filter(
+      (account, index, self) => self.findIndex((a) => a === account) === index,
+    );
+  }, [accountsRequest.data]);
+
   const accountsOptions = useMemo(() => {
-    const filteredAccounts = accountsRequest.data?.filter((account) =>
-      account.name.toLowerCase().includes(accountFilter.toLowerCase()),
+    const filteredAccounts = mergedAccounts?.filter((account) =>
+      account.toLowerCase().includes(accountFilter.toLowerCase()),
     );
 
     const mappedOptions = filteredAccounts?.map((account) => ({
-      label: account.name,
-      value: account.name,
+      label: account,
+      value: account,
     }));
 
     return mappedOptions;
-  }, [accountsRequest.data, accountFilter]);
+  }, [mergedAccounts, accountFilter]);
 
   const debouncedAccountFilter = useCallback(
     debounce((value: string) => {

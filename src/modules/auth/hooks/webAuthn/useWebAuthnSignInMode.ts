@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { LocalStorageConfig } from '@/config';
 import { useContactToast } from '@/modules/addressBook/hooks';
 import { useNetworks } from '@/modules/network/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
@@ -116,6 +117,18 @@ const useWebAuthnSignInMode = (params: UseWebAuthnSignInParams) => {
         },
       },
     );
+
+    const storageUsernames = LocalStorageConfig.getItem<string[]>(
+      localStorageKeys.USERNAMES,
+    );
+
+    const alreadySaveUsername = storageUsernames?.find(
+      (name) => name === username,
+    );
+
+    if (!alreadySaveUsername) {
+      LocalStorageConfig.pushItem(localStorageKeys.USERNAMES, username);
+    }
   });
 
   return { isSigningIn, signInProgress, handleLogin };
