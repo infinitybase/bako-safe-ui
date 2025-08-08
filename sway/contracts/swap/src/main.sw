@@ -208,7 +208,8 @@ impl BakoSwap for Contract {
     fn withdraw_fee(asset: AssetId, recipient: Identity) -> u64 {
         only_owner();
 
-        let fee_collected = storage.collected_fees.get(asset).try_read().unwrap_or(0);
+        // let fee_collected = storage.collected_fees.get(asset).try_read().unwrap_or(0);
+        let fee_collected = this_balance(asset);
         require(fee_collected > 0, "No fees collected for this asset");
 
         // Reset the fee collected for this asset

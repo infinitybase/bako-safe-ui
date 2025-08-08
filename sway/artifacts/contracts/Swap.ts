@@ -499,19 +499,19 @@ const abi = {
     {
       "name": "BAKO_FEE",
       "concreteTypeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0",
-      "offset": 48536,
+      "offset": 48160,
       "indirect": false
     },
     {
       "name": "INITIAL_OWNER",
       "concreteTypeId": "ab7cd04e05be58e3fc15d424c2c4a57f824a2a2d97d67252440a3925ebdc1335",
-      "offset": 48544,
+      "offset": 48168,
       "indirect": false
     },
     {
       "name": "AMM_CONTRACT_ID",
       "concreteTypeId": "29c10735d33b5159f0c71ee1dbd17b36a3e69e41f00fab0d42e1bd9f428d8a54",
-      "offset": 48504,
+      "offset": 48128,
       "indirect": false
     }
   ],
