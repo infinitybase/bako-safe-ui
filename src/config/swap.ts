@@ -24,7 +24,7 @@ export enum SwapButtonTitle {
 
 export const miraData = {
   name: 'Mira on Microchain',
-  origin: 'https://microchain.systems/',
+  origin: 'https://microchain.systems',
   icon: MiraIcon,
 };
 
