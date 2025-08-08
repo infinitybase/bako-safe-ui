@@ -1,6 +1,6 @@
 import { MiraIcon } from '@/components';
 
-const FEE = import.meta.env.VITE_BAKO_SWAP_FEE;
+const FEE = import.meta.env.VITE_BAKO_SWAP_FEE || 1;
 
 if (!FEE) {
   throw new Error(
@@ -24,7 +24,7 @@ export enum SwapButtonTitle {
 
 export const miraData = {
   name: 'Mira on Microchain',
-  origin: 'https://mira.ly',
+  origin: 'https://microchain.systems/',
   icon: MiraIcon,
 };
 
