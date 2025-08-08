@@ -119,8 +119,6 @@ export const useSwapData = ({
         pools,
       );
 
-      console.log('SWAP REQUEST', request);
-
       const tx = await vault.getTransactionCost(request);
 
       return { tx, request, bakoFee };
