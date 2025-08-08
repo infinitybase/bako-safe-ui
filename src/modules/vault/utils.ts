@@ -146,7 +146,7 @@ export type SwapQuote = {
 };
 
 const formatSwapBatchResponse = (
-  response: AssetMira[],
+  response: (AssetMira | null)[],
   mode: SwapMode,
   routes: Route[],
   isSell: boolean,
@@ -190,7 +190,7 @@ export const getSwapQuotesBatch = async (
             return null;
           });
       }),
-    ).then((res) => res.filter((r): r is AssetMira => r !== null));
+    );
 
     return formatSwapBatchResponse(response, mode, routes, isSell, amount);
   }
@@ -203,7 +203,7 @@ export const getSwapQuotesBatch = async (
           return null;
         });
     }),
-  ).then((res) => res.filter((r): r is AssetMira => r !== null));
+  );
 
   return formatSwapBatchResponse(response, mode, routes, isSell, amount);
 };
