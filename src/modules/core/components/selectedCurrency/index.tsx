@@ -22,18 +22,23 @@ export const SelectedCurrency = ({
         justifyContent="space-between"
         gap={2}
         cursor="pointer"
+        align="center"
         onClick={onClick}
       >
-        <Image
-          src={imageUrl || '/nft-empty.svg'}
-          alt={name || ''}
-          boxSize="16px"
-          rounded="lg"
-        />
+        {!imageUrl && !name && (
+          <Text color="section.200" fontSize="sm">
+            Choose Asset
+          </Text>
+        )}
+        {imageUrl && name && (
+          <>
+            <Image src={imageUrl} alt={name} boxSize="16px" rounded="lg" />
 
-        <Text color="section.200" fontSize="sm">
-          {name}
-        </Text>
+            <Text color="section.200" fontSize="sm">
+              {name}
+            </Text>
+          </>
+        )}
 
         <Icon as={LeftAndRightArrow} color="grey.75" />
       </Flex>
