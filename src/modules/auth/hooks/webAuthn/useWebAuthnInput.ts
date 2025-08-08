@@ -42,22 +42,17 @@ const useWebAuthnInput = (validUsername?: boolean, userId?: string) => {
     userId,
   );
 
-  const localAccounts = useMemo(
-    () => LocalStorageConfig.getItem<string[]>(localStorageKeys.USERNAMES),
-    [],
-  );
-
-  const mergedAccounts = useMemo(
-    () =>
-      [
-        ...(localAccounts || []),
-        ...(accountsRequest.data?.map((name) => name.name) || []),
-      ].filter(
-        (account, index, self) =>
-          self.findIndex((a) => a === account) === index,
-      ),
-    [accountsRequest.data, localAccounts],
-  );
+  const mergedAccounts = useMemo(() => {
+    const localAccounts = LocalStorageConfig.getItem<string[]>(
+      localStorageKeys.USERNAMES,
+    );
+    return [
+      ...(localAccounts || []),
+      ...(accountsRequest.data?.map((name) => name.name) || []),
+    ].filter(
+      (account, index, self) => self.findIndex((a) => a === account) === index,
+    );
+  }, [accountsRequest.data]);
 
   const accountsOptions = useMemo(() => {
     const filteredAccounts = mergedAccounts?.filter((account) =>
