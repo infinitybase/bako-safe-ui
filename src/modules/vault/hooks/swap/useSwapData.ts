@@ -29,20 +29,21 @@ async function constructSwapTransaction(
   const amountOut = bn.parseUnits(to.amount || '0', to.units);
   if (mode === 'sell') {
     const assetIn = from.assetId;
+    const assetOut = to.assetId;
 
     if (!to.amount) {
       throw new Error('Amount out is required');
     }
 
-    const minAmountOut = bn
-      .parseUnits(to.amount, to.units)
-      .mul(bn(100 - Math.floor(slippage * 100)))
-      .div(bn(100));
+    const minAmountOut = amountOut
+      .mul(bn(10_000).sub(bn(slippage)))
+      .div(bn(10_000));
     const bakoFee = minAmountOut.mul(swapFee).div(bn(100));
 
     const request = await amm.swapExactInput(
       amountIn,
       { bits: assetIn },
+      { bits: assetOut },
       minAmountOut,
       pools,
       await futureDeadline(provider),
@@ -56,15 +57,14 @@ async function constructSwapTransaction(
   }
   // mode === 'buy'
   const assetOut = to.assetId;
-  const maxAmountIn = amountIn;
-  // .mul(bn(100 + Math.floor(slippage * 100)))
-  // .div(bn(100));
-  const bakoFee = maxAmountIn.mul(swapFee).div(bn(100));
+  const amountInMax = amountIn;
+  const bakoFee = amountInMax.mul(swapFee).div(bn(100));
 
   const request = await amm.swapExactOutput(
     amountOut,
     { bits: assetOut },
-    maxAmountIn.add(bakoFee),
+    { bits: from.assetId },
+    amountInMax.add(bakoFee),
     pools,
     await futureDeadline(provider),
     {
@@ -119,14 +119,21 @@ export const useSwapData = ({
         pools,
       );
 
+      console.log('SWAP REQUEST', request);
+
       const tx = await vault.getTransactionCost(request);
 
       return { tx, request, bakoFee };
     },
-    onError: () => {
+    onError: (e) => {
+      const amountOutputError = e.message.includes(
+        'Insufficient output amount',
+      );
       errorToast({
         title: 'Error fetching swap preview',
-        description: 'Please try again later.',
+        description: amountOutputError
+          ? 'Insufficient output amount.'
+          : 'Please try again later.',
       });
     },
   });

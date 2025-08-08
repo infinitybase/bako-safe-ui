@@ -45,6 +45,7 @@ abi BakoSwap {
     fn swap_exact_input(
         amount_in: u64,
         asset_in: AssetId,
+        asset_out: AssetId,
         amount_out_min: u64,
         pools: Vec<PoolId>,
         recipient: Identity,
@@ -86,6 +87,7 @@ impl BakoSwap for Contract {
     fn swap_exact_input(
         amount_in: u64,
         asset_in: AssetId,
+        asset_out: AssetId,
         amount_out_min: u64,
         pools: Vec<PoolId>,
         recipient: Identity,
@@ -96,12 +98,6 @@ impl BakoSwap for Contract {
 
         require(msg_asset_id() == asset_in, "Wrong asset sent");
         require(msg_amount() >= amount_in, "Insufficient amount sent");
-        let last_pool = pools.get(pools.len() - 1).unwrap();
-        let asset_out = if asset_in == last_pool.0 {
-            last_pool.1
-        } else {
-            last_pool.0
-        };
         let current_balance = this_balance(asset_out);
 
         let amounts_out = get_amounts_out(AMM_CONTRACT_ID, amount_in, asset_in, pools);
@@ -160,7 +156,10 @@ impl BakoSwap for Contract {
 
         require(msg_asset_id() == first_asset, "Wrong asset sent");
 
+        let this_contract = ContractId::this();
+        let contract_identity = Identity::ContractId(this_contract);
         let amount = msg_amount();
+
         let fee = (first_amount_in * BAKO_FEE) / 100;
 
         let first_amount_in_with_fee = first_amount_in + fee;
@@ -179,8 +178,7 @@ impl BakoSwap for Contract {
             first_amount_in,
         );
 
-        let this_contract = ContractId::this();
-        let contract_identity = Identity::ContractId(this_contract);
+        // Collect the swap fee
         collect_swap_fee(first_asset, first_amount_in);
 
         let amm = abi(MiraAMM, AMM_CONTRACT_ID.into());
