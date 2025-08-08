@@ -120,7 +120,7 @@ const AssetBoxInfo = ({
       {...props}
     >
       {assetInfo && (
-        <VStack alignItems="start" minW="40px">
+        <VStack alignItems="start" w="50px">
           <Image
             w={7}
             h={7}
@@ -132,7 +132,7 @@ const AssetBoxInfo = ({
             objectFit="cover"
           />
 
-          <Text fontSize="sm" color="grey.500">
+          <Text fontSize="sm" color="grey.500" sx={{ textWrap: 'wrap' }}>
             {assetInfo?.slug}
           </Text>
         </VStack>
