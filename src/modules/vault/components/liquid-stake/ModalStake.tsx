@@ -12,7 +12,7 @@ import {
 } from '@chakra-ui/react';
 
 import {
-  CurrencyField,
+  CurrencyStakeField,
   Dialog,
   FuelIcon,
   LeftAndRightArrow,
@@ -39,6 +39,7 @@ export function ModalLiquidStake({
   notEnoughBalanceETH,
   onClose,
 }: ModalLiquidStakeProps) {
+  const balanceTreated = Number(balance.replace(/,/g, ''));
   const {
     errorAmount,
     valueSource,
@@ -50,7 +51,7 @@ export function ModalLiquidStake({
     handleDestinationChange,
     handleSetCurrencyAmount,
     createTxLiquidStake,
-  } = useOperationLiquidStakeModal({ balance, onClose });
+  } = useOperationLiquidStakeModal({ balance: balanceTreated, onClose });
 
   const StFUEL_ASSET = {
     name: 'stFuel',
@@ -63,6 +64,7 @@ export function ModalLiquidStake({
     symbol,
     ref,
     value,
+    disabled,
     onChange,
   }: {
     symbol: string;
@@ -70,6 +72,7 @@ export function ModalLiquidStake({
     value: string;
     onChange?: (value: string) => void;
     autoFocus?: boolean;
+    disabled?: boolean;
   }) => (
     <Box marginY={6} display="flex" justifyContent="center" alignItems="center">
       <InputGroup
@@ -84,7 +87,7 @@ export function ModalLiquidStake({
         minW="150px"
         w="fit-content"
       >
-        <CurrencyField
+        <CurrencyStakeField
           width="80%"
           currency="ETH_FUEL"
           textAlign="center"
@@ -95,8 +98,14 @@ export function ModalLiquidStake({
           ref={ref}
           value={value}
           onChange={(e) => onChange?.(e)}
+          disabled={disabled}
         />
-        <InputRightAddon alignSelf="end" color="section.200">
+
+        <InputRightAddon
+          alignSelf="end"
+          color={`${disabled ? 'grey.75' : 'section.200'}`}
+          opacity={disabled ? 0.5 : 1}
+        >
           {symbol}
         </InputRightAddon>
       </InputGroup>
@@ -141,27 +150,32 @@ export function ModalLiquidStake({
               symbol="FUEL"
               value={valueSource}
               onChange={handleSourceChange}
+              disabled={maxFee === 0 || maxFee == undefined}
             />
             <HStack justifyContent="center">
               <Button
+                isDisabled={maxFee === 0 || maxFee == undefined}
                 variant="secondary"
                 onClick={() => handleSetCurrencyAmount(25, balance)}
               >
                 <Text color="white">25%</Text>
               </Button>
               <Button
+                isDisabled={maxFee === 0 || maxFee == undefined}
                 variant="secondary"
                 onClick={() => handleSetCurrencyAmount(50, balance)}
               >
                 <Text color="white">50%</Text>
               </Button>
               <Button
+                isDisabled={maxFee === 0 || maxFee == undefined}
                 variant="secondary"
                 onClick={() => handleSetCurrencyAmount(75, balance)}
               >
                 <Text color="white">75%</Text>
               </Button>
               <Button
+                isDisabled={maxFee === 0 || maxFee == undefined}
                 variant="secondary"
                 onClick={() => handleSetCurrencyAmount(100, balance)}
               >
@@ -194,6 +208,7 @@ export function ModalLiquidStake({
               symbol="stFUEL"
               value={valueDestination}
               onChange={handleDestinationChange}
+              disabled={maxFee === 0 || maxFee == undefined}
             />
           </Card>
           <Card variant="outline" padding={3}>

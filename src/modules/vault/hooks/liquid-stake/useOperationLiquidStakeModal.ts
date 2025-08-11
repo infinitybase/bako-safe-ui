@@ -9,7 +9,7 @@ import { useDepositLiquidStake } from './useDepositLiquidStake';
 import { DECIMALS } from './useGetInfosCardLiquidStake';
 
 interface UseOperationLiquidStakeModalProps {
-  balance: string;
+  balance: number;
   onClose: () => void;
 }
 
@@ -18,8 +18,8 @@ const useOperationLiquidStakeModal = ({
   onClose,
 }: UseOperationLiquidStakeModalProps) => {
   const [errorAmount, setErrorAmount] = useState('');
-  const [valueSource, setValueSource] = useState('0.000');
-  const [valueDestination, setValueDestination] = useState('0.000');
+  const [valueSource, setValueSource] = useState('0.00');
+  const [valueDestination, setValueDestination] = useState('0.00');
   const [isDepositing, setIsDepositing] = useState(false);
   const [maxFee, setMaxFee] = useState<number>(0);
   const { price, depositWithVault, getMaxFee } = useDepositLiquidStake();
@@ -27,7 +27,8 @@ const useOperationLiquidStakeModal = ({
   const MINIMUM_VALUE = '1';
 
   const handleSetCurrencyAmount = (percentage: number, balance: string) => {
-    const valuePercent = (Number(balance) * percentage) / 100;
+    const balanceTreated = Number(balance.replace(/,/g, ''));
+    const valuePercent = (balanceTreated * percentage) / 100;
 
     const rawValue = valuePercent.toFixed(9);
     const formattedValue = formatMinDecimals(rawValue, 3);
@@ -47,16 +48,18 @@ const useOperationLiquidStakeModal = ({
   const handleSourceChange = (newValue: string) => {
     setValueSource(newValue);
 
-    const sourceNumber = parseFloat(newValue) || 0;
+    const value = parseFloat(newValue);
+
+    const sourceNumber = value || 0;
     const destinationValue = (sourceNumber * price).toString();
 
     const formattedDestination = formatMinDecimals(destinationValue, 3);
     setValueDestination(formattedDestination);
 
     setErrorAmount(
-      newValue > balance
+      value > balance
         ? 'Your current Fuel tokens balance is insufficient for this operation.'
-        : newValue < MINIMUM_VALUE
+        : value < Number(MINIMUM_VALUE)
           ? 'Amount must be at least 1.'
           : '',
     );
@@ -71,9 +74,9 @@ const useOperationLiquidStakeModal = ({
     const formattedSource = formatMinDecimals(sourceValue, 3);
     setValueSource(formattedSource);
     setErrorAmount(
-      formattedSource > balance
+      Number(formattedSource) > balance
         ? 'Your current Fuel tokens balance is insufficient for this operation.'
-        : formattedSource < MINIMUM_VALUE
+        : Number(formattedSource) < Number(MINIMUM_VALUE)
           ? 'Amount must be at least 1.'
           : '',
     );
