@@ -1,30 +1,11 @@
-import { Input, InputProps } from '@chakra-ui/react';
+import { Input } from '@chakra-ui/react';
 import { forwardRef, useCallback, useMemo } from 'react';
 import MaskedInput from 'react-text-mask';
 import { createNumberMask } from 'text-mask-addons';
 
 import { CRYPTO_CODES, CURRENCY_CONFIGS } from '@/utils';
 
-export type CurrencyCode = 'BRL' | 'USD' | 'EUR';
-export type CryptoCode = 'ETH_FUEL';
-
-export type Currency = CryptoCode | CurrencyCode;
-
-export interface CurrencyConfig {
-  locale: string;
-  decimalScale: number;
-  thousandsSeparator: string | undefined;
-  decimalSeparator: string;
-}
-
-export interface CurrencyFieldProps
-  extends Omit<InputProps, 'value' | 'onChange'> {
-  value?: string;
-  currency: Currency;
-  onChange?: (value: string) => void;
-  isInvalid?: boolean;
-  disabled?: boolean;
-}
+import { CryptoCode, CurrencyConfig, CurrencyFieldProps } from './currency';
 
 const formatValue = (
   value: string,
@@ -42,20 +23,23 @@ const formatValue = (
     );
   }
 
-  if (includeLeadingZero) {
+  if (includeLeadingZero && decimal) {
     decimal = decimal.padEnd(config.decimalScale, '0');
   }
 
-  return `${integer}${config.decimalSeparator}${decimal}`;
+  return decimal || value.endsWith(config.decimalSeparator)
+    ? `${integer}${config.decimalSeparator}${decimal}`
+    : integer;
 };
 
-const CurrencyField = forwardRef<HTMLInputElement, CurrencyFieldProps>(
+const CurrencyStakeField = forwardRef<HTMLInputElement, CurrencyFieldProps>(
   ({ value = '', currency, onChange, isInvalid, ...props }, ref) => {
     const isCrypto = useMemo(
       () => CRYPTO_CODES.includes(currency as CryptoCode),
       [currency],
     );
     const config = useMemo(() => CURRENCY_CONFIGS[currency], [currency]);
+
     const regexCache = useMemo(() => {
       const decimalEscaped = config.decimalSeparator.replace(
         /[.*+?^${}()|[\]\\]/g,
@@ -73,29 +57,26 @@ const CurrencyField = forwardRef<HTMLInputElement, CurrencyFieldProps>(
         ),
       };
     }, [config.decimalSeparator, config.thousandsSeparator]);
+
     const getAllowedPattern = useCallback(() => {
       return isCrypto ? regexCache.crypto : regexCache.currency;
     }, [regexCache, isCrypto]);
 
-    const currencyMask = useMemo(
-      () =>
-        createNumberMask({
-          prefix: '',
-          suffix: '',
-          includeThousandsSeparator: !isCrypto,
-          thousandsSeparatorSymbol: config.thousandsSeparator,
-          allowDecimal: true,
-          decimalSymbol: config.decimalSeparator,
-          decimalLimit: config.decimalScale,
-          allowNegative: false,
-          allowLeadingZeroes: false,
-        }),
-      [config, isCrypto],
-    );
+    const currencyMask = createNumberMask({
+      prefix: '',
+      suffix: '',
+      includeThousandsSeparator: true,
+      thousandsSeparatorSymbol: ',',
+      allowDecimal: true,
+      decimalSymbol: '.',
+      decimalLimit: 9,
+      allowNegative: false,
+      allowLeadingZeroes: false,
+    });
 
     const normalizedValue = useMemo(() => {
       if (!value) return '';
-
+      value.replace(/,/g, '.');
       const allowedValue = value.replace(getAllowedPattern(), '');
       return formatValue(allowedValue, config, !isCrypto);
     }, [value, getAllowedPattern, config, isCrypto]);
@@ -104,60 +85,70 @@ const CurrencyField = forwardRef<HTMLInputElement, CurrencyFieldProps>(
       (event: React.ChangeEvent<HTMLInputElement>) => {
         const inputValue = event.target.value;
         const nativeEvent = event.nativeEvent as InputEvent;
-
-        const isDecimalInput =
-          nativeEvent.data === ',' || nativeEvent.data === '.';
-
-        if (isDecimalInput) {
-          if (config.decimalSeparator === ',' && nativeEvent.data === '.') {
-            event.preventDefault();
-            return;
-          }
-
-          if (config.decimalSeparator === '.' && nativeEvent.data === ',') {
-            event.preventDefault();
-            return;
-          }
-
-          if (inputValue.endsWith(config.decimalSeparator)) {
-            return;
-          }
-
-          const caretPosition = event.target.selectionStart ?? 0;
-
-          const isEmpty = inputValue.length === 0;
-
-          let newValue;
-          if (isEmpty) {
-            newValue = `0${config.decimalSeparator}`;
-          } else {
-            const beforeCaret = inputValue.slice(0, caretPosition - 1);
-            const afterCaret = inputValue.slice(caretPosition);
-            newValue = beforeCaret + config.decimalSeparator + afterCaret;
-          }
-
-          const allowedPattern = getAllowedPattern();
-
-          const cleanedNewValue = newValue.replace(allowedPattern, '');
-          event.target.value = cleanedNewValue;
-
-          setTimeout(() => {
-            const newCaretPosition = caretPosition + (isEmpty ? 1 : 0);
-            event.target.setSelectionRange(newCaretPosition, newCaretPosition);
-          }, 0);
-
-          onChange?.(cleanedNewValue);
-          return;
-        }
+        const typed = nativeEvent.data;
 
         const allowedPattern = getAllowedPattern();
 
-        const cleanedValue = inputValue.replace(allowedPattern, '');
-        //event.target.value = cleanedValue;
+        if (typed === ',' || typed === '.') {
+          if (typed === config.decimalSeparator) {
+            if (inputValue.endsWith(config.decimalSeparator)) {
+              const cleaned = inputValue.replace(allowedPattern, '');
+              onChange?.(cleaned);
+              return;
+            }
 
+            const cleaned = inputValue.replace(allowedPattern, '');
+            onChange?.(cleaned);
+            return;
+          }
+
+          const isComma = typed === ',';
+
+          if (isComma && !inputValue.endsWith('.')) {
+            const caretPosition = event.target.selectionStart ?? 0;
+
+            const isFirstChar = inputValue.length === 0;
+            const complement = isFirstChar ? '0.' : '.';
+
+            const newValue = isFirstChar
+              ? complement
+              : inputValue.slice(0, caretPosition) +
+                complement +
+                inputValue.slice(caretPosition);
+
+            event.target.value = newValue;
+
+            const newCaretPosition = caretPosition + (isFirstChar ? 2 : 1);
+            setTimeout(() => {
+              event.target.setSelectionRange(
+                newCaretPosition,
+                newCaretPosition,
+              );
+            }, 0);
+
+            const cleaned = inputValue.replace(allowedPattern, '');
+            onChange?.(cleaned);
+            return;
+          }
+        }
+
+        const cleanedValue = inputValue.replace(allowedPattern, '');
         onChange?.(cleanedValue);
       },
-      [config, onChange, getAllowedPattern],
+      [config, getAllowedPattern, onChange],
+    );
+
+    const handleOnFocus = useCallback(
+      (event: React.ChangeEvent<HTMLInputElement>) => {
+        const initialValues = ['0', '0.00', '0.000'];
+
+        if (initialValues.includes(event.target.value)) {
+          setTimeout(() => {
+            onChange?.('');
+          }, 0);
+        }
+      },
+      [onChange],
     );
 
     return (
@@ -166,6 +157,7 @@ const CurrencyField = forwardRef<HTMLInputElement, CurrencyFieldProps>(
         value={normalizedValue}
         onChange={handleInputChange}
         onBlur={props.onBlur}
+        onFocus={handleOnFocus}
         render={(maskedInputRef, maskedInputProps) => (
           <Input
             {...props}
@@ -186,6 +178,7 @@ const CurrencyField = forwardRef<HTMLInputElement, CurrencyFieldProps>(
               borderColor: isInvalid ? 'error' : undefined,
             }}
             _hover={{}}
+            disabled={props.disabled}
           />
         )}
       />
@@ -193,6 +186,6 @@ const CurrencyField = forwardRef<HTMLInputElement, CurrencyFieldProps>(
   },
 );
 
-CurrencyField.displayName = 'CurrencyField';
+CurrencyStakeField.displayName = 'CurrencyStakeField';
 
-export { CurrencyField };
+export { CurrencyStakeField };
