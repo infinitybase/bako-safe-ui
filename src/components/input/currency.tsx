@@ -1,12 +1,35 @@
 import { Input, InputProps } from '@chakra-ui/react';
-import { forwardRef, useCallback, useMemo } from 'react';
+import { forwardRef, memo, useCallback, useMemo } from 'react';
 import MaskedInput from 'react-text-mask';
 import { createNumberMask } from 'text-mask-addons';
 
-import { CRYPTO_CODES, CURRENCY_CONFIGS } from '@/utils';
+import { CRYPTO_CONFIG, CURRENCY_CONFIGS } from '@/utils';
 
 export type CurrencyCode = 'BRL' | 'USD' | 'EUR';
-export type CryptoCode = 'ETH_FUEL';
+export type CryptoCode = 'ETH_FUEL' | 'ETH';
+
+type CurrencyFieldType = 'fiat' | 'crypto';
+
+type FiatFieldProps = {
+  type: 'fiat';
+  currency: CurrencyCode;
+};
+
+type CryptoFieldProps = {
+  type: 'crypto';
+  currency?: never;
+};
+
+type CommonFieldProps = Omit<InputProps, 'value' | 'onChange'> & {
+  value?: string;
+  onChange?: (value: string) => void;
+  isInvalid?: boolean;
+  disabled?: boolean;
+  type: CurrencyFieldType;
+};
+
+export type CurrencyFieldProps = (FiatFieldProps | CryptoFieldProps) &
+  CommonFieldProps;
 
 export type Currency = CryptoCode | CurrencyCode;
 
@@ -37,25 +60,30 @@ const formatValue = (
     decimal = decimal.padEnd(config.decimalScale, '0');
   }
 
+  if (!includeLeadingZero) {
+    const endsWithDecimal = value.endsWith(config.decimalSeparator);
+    if (decimal.length === 0) {
+      if (endsWithDecimal) {
+        return `${integer}${config.decimalSeparator}`;
+      }
+      return integer; // no decimal typed
+    }
+    return `${integer}${config.decimalSeparator}${decimal}`;
+  }
+
   return `${integer}${config.decimalSeparator}${decimal}`;
 };
 
-export interface CurrencyFieldProps
-  extends Omit<InputProps, 'value' | 'onChange'> {
-  value?: string;
-  currency: Currency;
-  onChange?: (value: string) => void;
-  isInvalid?: boolean;
-  disabled?: boolean;
-}
+const Field = forwardRef<HTMLInputElement, CurrencyFieldProps>(
+  ({ value = '', currency, type, onChange, isInvalid, ...props }, ref) => {
+    const isCrypto = useMemo(() => type === 'crypto', [type]);
+    const resolvedCurrency: Currency =
+      type === 'crypto' ? (currency ?? 'ETH') : currency;
 
-const CurrencyField = forwardRef<HTMLInputElement, CurrencyFieldProps>(
-  ({ value = '', currency, onChange, isInvalid, ...props }, ref) => {
-    const isCrypto = useMemo(
-      () => CRYPTO_CODES.includes(currency as CryptoCode),
-      [currency],
+    const config = useMemo(
+      () => (isCrypto ? CRYPTO_CONFIG : CURRENCY_CONFIGS[resolvedCurrency]),
+      [resolvedCurrency, isCrypto],
     );
-    const config = useMemo(() => CURRENCY_CONFIGS[currency], [currency]);
     const regexCache = useMemo(() => {
       const decimalEscaped = config.decimalSeparator.replace(
         /[.*+?^${}()|[\]\\]/g,
@@ -144,6 +172,7 @@ const CurrencyField = forwardRef<HTMLInputElement, CurrencyFieldProps>(
   },
 );
 
-CurrencyField.displayName = 'CurrencyField';
+Field.displayName = 'CurrencyField';
+const CurrencyField = memo(Field);
 
 export { CurrencyField };
