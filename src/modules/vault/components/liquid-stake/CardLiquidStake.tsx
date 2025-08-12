@@ -9,7 +9,8 @@ import {
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
-import React, { useMemo, useState } from 'react';
+import { Vault } from 'bakosafe';
+import { useMemo, useState } from 'react';
 
 import {
   ErrorTooltip,
@@ -29,8 +30,10 @@ import {
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import {
+  useAPY,
   useDepositLiquidStake,
-  useGetInfosCardLiquidStake,
+  useRig,
+  useTotalFuelTokens,
   UseVaultDetailsReturn,
 } from '../../hooks';
 import BalanceHelperDrawer from '../BalanceHelperDrawer';
@@ -39,18 +42,19 @@ import { ItemLiquidStake } from './ItemLiquidStake';
 import { MobileDropdownLiquidStake } from './MobileDropdownLiquidStake';
 export interface CardLiquidStakeProps {
   assets: UseVaultDetailsReturn['assets'];
+  vault: Vault | undefined;
 }
 
-export function CardLiquidStake({ assets }: CardLiquidStakeProps) {
+export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
   const { isMobile } = useScreenSize();
+  const rigContract = useRig(vault);
   const { assetsMap } = useWorkspaceContext();
 
   const { currentNetwork } = useNetworks();
-  const { rigContract, price, isPendingSigner } = useDepositLiquidStake();
-  const { apyValue, isLoadingApy, totalFuelTokens, isLoadingFuelTokens } =
-    useGetInfosCardLiquidStake({
-      rigContract,
-    });
+  const { price, isPendingSigner } = useDepositLiquidStake();
+  const { apyValue, isLoadingApy } = useAPY();
+  const { totalFuelTokens, isLoadingFuelTokens } =
+    useTotalFuelTokens(rigContract);
 
   const [isOpenMobileItem, setIsOpenMobileItem] = useState<boolean>(false);
   const [modal, setModal] = useState<'STAKE' | 'REDEEM' | ''>('');
