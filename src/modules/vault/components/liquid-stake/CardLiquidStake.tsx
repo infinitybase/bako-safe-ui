@@ -175,7 +175,7 @@ export function CardLiquidStake({ assets }: CardLiquidStakeProps) {
       </ItemLiquidStake>
 
       <ItemLiquidStake
-        label="stFuel Balance"
+        label="stFUEL Balance"
         value={stFuelTokens}
         isLoading={!assets.assets}
       >
@@ -194,7 +194,7 @@ export function CardLiquidStake({ assets }: CardLiquidStakeProps) {
         </Button>
       </ItemLiquidStake>
       <ItemLiquidStake
-        label="Total Fuel"
+        label="Total FUEL"
         value={totalFuelTokens}
         isLoading={isLoadingFuelTokens}
       />

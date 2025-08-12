@@ -3,7 +3,6 @@ import {
   Button,
   Card,
   HStack,
-  Icon,
   Image,
   InputGroup,
   InputRightAddon,
@@ -11,12 +10,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 
-import {
-  CurrencyStakeField,
-  Dialog,
-  FuelIcon,
-  LeftAndRightArrow,
-} from '@/components';
+import { CurrencyStakeField, Dialog, FuelIcon } from '@/components';
 import { DoubtIcon } from '@/components/icons/doubt';
 import { tokensIDS } from '@/modules/core/utils/assets/address';
 
@@ -138,7 +132,6 @@ export function ModalLiquidStake({
                 <Text color="white" fontSize={12}>
                   FUEL
                 </Text>
-                <Icon as={LeftAndRightArrow} color="grey.75" />
               </HStack>
             </HStack>
             <HStack justifyContent="flex-end">
