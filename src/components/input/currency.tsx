@@ -77,13 +77,15 @@ const formatValue = (
 const Field = forwardRef<HTMLInputElement, CurrencyFieldProps>(
   ({ value = '', currency, type, onChange, isInvalid, ...props }, ref) => {
     const isCrypto = useMemo(() => type === 'crypto', [type]);
-    const resolvedCurrency: Currency =
-      type === 'crypto' ? (currency ?? 'ETH') : currency;
+    const resolvedCurrency = type === 'crypto' ? null : currency;
 
-    const config = useMemo(
-      () => (isCrypto ? CRYPTO_CONFIG : CURRENCY_CONFIGS[resolvedCurrency]),
-      [resolvedCurrency, isCrypto],
-    );
+    const config = useMemo(() => {
+      if (!resolvedCurrency) {
+        return CRYPTO_CONFIG;
+      }
+      return CURRENCY_CONFIGS[resolvedCurrency];
+    }, [resolvedCurrency]);
+
     const regexCache = useMemo(() => {
       const decimalEscaped = config.decimalSeparator.replace(
         /[.*+?^${}()|[\]\\]/g,
@@ -93,12 +95,12 @@ const Field = forwardRef<HTMLInputElement, CurrencyFieldProps>(
         /[.*+?^${}()|[\]\\]/g,
         '\\$&',
       );
+      const basePattern = `[^0-9\\${decimalEscaped}${
+        thousandsEscaped ? `\\${thousandsEscaped}` : ''
+      }]`;
       return {
-        crypto: new RegExp(`[^0-9\\${decimalEscaped}]`, 'g'),
-        currency: new RegExp(
-          `[^0-9\\${decimalEscaped}${thousandsEscaped ? `\\${thousandsEscaped}` : ''}]`,
-          'g',
-        ),
+        crypto: new RegExp(basePattern, 'g'),
+        currency: new RegExp(basePattern, 'g'),
       };
     }, [config.decimalSeparator, config.thousandsSeparator]);
     const getAllowedPattern = useCallback(() => {
@@ -110,7 +112,7 @@ const Field = forwardRef<HTMLInputElement, CurrencyFieldProps>(
         createNumberMask({
           prefix: '',
           suffix: '',
-          includeThousandsSeparator: !isCrypto,
+          includeThousandsSeparator: !!config.thousandsSeparator,
           thousandsSeparatorSymbol: config.thousandsSeparator,
           allowDecimal: true,
           decimalSymbol: config.decimalSeparator,
@@ -118,7 +120,7 @@ const Field = forwardRef<HTMLInputElement, CurrencyFieldProps>(
           allowNegative: false,
           allowLeadingZeroes: false,
         }),
-      [config, isCrypto],
+      [config],
     );
 
     const normalizedValue = useMemo(() => {

@@ -6,7 +6,7 @@ export const CRYPTO_CONFIG: CurrencyConfig = {
   locale: 'en-US',
   decimalScale: 9,
   decimalSeparator: '.',
-  thousandsSeparator: undefined,
+  thousandsSeparator: ',',
 };
 
 export const CURRENCY_CONFIGS: Record<Currency, CurrencyConfig> = {
@@ -29,4 +29,5 @@ export const CURRENCY_CONFIGS: Record<Currency, CurrencyConfig> = {
     decimalSeparator: ',',
   },
   ETH_FUEL: CRYPTO_CONFIG,
+  ETH: CRYPTO_CONFIG,
 };
