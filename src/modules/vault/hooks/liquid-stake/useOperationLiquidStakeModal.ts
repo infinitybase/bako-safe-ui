@@ -6,7 +6,6 @@ import { useTransactionToast } from '@/modules/transactions/providers/toast';
 import { formatMinDecimals } from '@/utils';
 
 import { useDepositLiquidStake } from './useDepositLiquidStake';
-import { DECIMALS } from './useTotalFuelTokens';
 
 interface UseOperationLiquidStakeModalProps {
   balance: number;
@@ -95,11 +94,9 @@ const useOperationLiquidStakeModal = ({
     setIsDepositing(true);
 
     try {
-      const COIN_QUANTITY = bn(
-        Math.floor(Number(valueSource.replace(/,/g, '')) * DECIMALS).toString(),
-      );
+      const COIN_QUANTITY = bn.parseUnits(valueSource.replace(/,/g, ''), 9);
       await depositWithVault(COIN_QUANTITY);
-      await handleClose();
+      handleClose();
     } catch (error) {
       console.error('error createTxLiquidStake', error);
       if (error instanceof Error && error.message === 'Rejected request!')
