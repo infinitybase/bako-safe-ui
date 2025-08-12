@@ -5,7 +5,6 @@ import { createHtmlPlugin } from 'vite-plugin-html';
 import tsconfigPaths from 'vite-tsconfig-paths';
 
 let mode = process.env.VERCEL_ENV || 'development';
-console.log('[ENV]:', process.env.VITE_SEQUENCER_URL);
 
 if (process.env.AWS_BRANCH) {
   console.log('[BUILD] with AWS_BRANCH', process.env.AWS_BRANCH);
@@ -31,7 +30,6 @@ export default defineConfig(({ mode }) => {
   }
 
   console.log('[MODE]:', resolvedMode);
-  console.log('[VITE_SEQUENCER_URL]:', env.VITE_SEQUENCER_URL);
 
   return {
     mode: resolvedMode,
