@@ -12,7 +12,7 @@ import {
 } from '@chakra-ui/react';
 
 import {
-  CurrencyStakeField,
+  CurrencyField,
   Dialog,
   FuelIcon,
   LeftAndRightArrow,
@@ -87,9 +87,9 @@ export function ModalLiquidStake({
         minW="150px"
         w="fit-content"
       >
-        <CurrencyStakeField
+        <CurrencyField
           width="80%"
-          currency="ETH_FUEL"
+          type="crypto"
           textAlign="center"
           borderBottomWidth="0"
           minW={0}
@@ -128,7 +128,7 @@ export function ModalLiquidStake({
           onClose={handleClose}
         />
         <VStack marginY={{ base: 10 }}>
-          <Card variant="outline" padding={3}>
+          <Card variant="outline" padding={3} mb={1}>
             <HStack>
               <Text color="#868079" fontSize={12}>
                 Stake amount
@@ -182,11 +182,19 @@ export function ModalLiquidStake({
                 <Text color="white">Stake Max</Text>
               </Button>
             </HStack>
-            {!!errorAmount && (
-              <Text color="red.500" fontSize="xs" mt={2}>
-                {errorAmount}
-              </Text>
-            )}
+            <HStack
+              h={{
+                base: 8,
+                sm: 6,
+              }}
+              pt={2}
+            >
+              {!!errorAmount && (
+                <Text color="red.500" fontSize="xs">
+                  {errorAmount}
+                </Text>
+              )}
+            </HStack>
           </Card>
           <Card variant="outline" padding={3}>
             <HStack>
