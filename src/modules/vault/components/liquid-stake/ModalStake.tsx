@@ -118,13 +118,13 @@ export function ModalLiquidStake({
           title="Stake to validator"
           mb={0}
           mt={0}
-          titleSxProps={{ fontSize: 16, marginTop: { base: 6, md: 0 } }}
+          titleSxProps={{ fontSize: 16, marginTop: { base: 5, md: 0 } }}
           onClose={handleClose}
         />
-        <VStack marginY={{ base: 10 }}>
+        <VStack marginTop={{ base: 5 }} marginBottom={{ base: 10 }}>
           <Card variant="outline" padding={3}>
             <HStack>
-              <Text color="#868079" fontSize={12}>
+              <Text color="#AAA6A1" fontSize={12}>
                 Stake amount
               </Text>
               <HStack flex={1} justifyContent="flex-end" marginBottom={2}>
@@ -183,7 +183,7 @@ export function ModalLiquidStake({
           </Card>
           <Card variant="outline" padding={3}>
             <HStack>
-              <Text color="#868079" fontSize={12}>
+              <Text color="#AAA6A1" fontSize={12}>
                 You receive
               </Text>
               <HStack flex={1} justifyContent="flex-end" marginBottom={2}>
@@ -205,34 +205,34 @@ export function ModalLiquidStake({
             />
           </Card>
           <Card variant="outline" padding={3}>
-            <Text color="#868079" fontSize={12} marginBottom={6}>
+            <Text color="#AAA6A1" fontSize={12} marginBottom={6}>
               Summary
             </Text>
-            <VStack>
-              <HStack width="full" marginBottom={1}>
+            <VStack p={0} gap={1}>
+              <HStack width="full">
                 <HStack gap={2} align={'center'}>
-                  <Text color="#868079" fontSize={12} flex={1}>
+                  <Text color="#AAA6A1" fontSize={12} flex={1}>
                     Conversion Ratio
                   </Text>
                   <DoubtIcon fontSize={16} />
                 </HStack>
-                <Text color="#868079" fontSize={12} flex={1} align="right">
+                <Text color="#AAA6A1" fontSize={12} flex={1} align="right">
                   1 FUEL ~ {price} stFUEL
                 </Text>
               </HStack>
-              <HStack width="full" marginBottom={1}>
-                <Text color="#868079" fontSize={12} flex={1}>
+              <HStack width="full">
+                <Text color="#AAA6A1" fontSize={12} flex={1}>
                   Reference APY
                 </Text>
-                <Text color="#868079" fontSize={12} flex={1} align="right">
+                <Text color="#AAA6A1" fontSize={12} flex={1} align="right">
                   {`${apyValue}%`}
                 </Text>
               </HStack>
-              <HStack width="full" marginBottom={1}>
-                <Text color="#868079" fontSize={12} flex={1}>
+              <HStack width="full">
+                <Text color="#AAA6A1" fontSize={12} flex={1}>
                   Max Transaction cost
                 </Text>
-                <Text color="#868079" fontSize={12} flex={1} align="right">
+                <Text color="#AAA6A1" fontSize={12} flex={1} align="right">
                   {`${maxFee} ETH`}
                 </Text>
               </HStack>
