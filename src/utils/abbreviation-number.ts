@@ -13,5 +13,11 @@ export const abbreviationNumber = (value: number | string): string => {
     return `${Math.floor(num / BILLION)} bi`;
   }
 
-  return `${Math.floor(num / MILLION)} mi`;
+  if (num >= MILLION) {
+    return `${Math.floor(num / MILLION)} mi`;
+  } else if (num >= 1_000) {
+    return `${Math.floor(num / 1_000)}k`;
+  } else {
+    return `${num}`;
+  }
 };
