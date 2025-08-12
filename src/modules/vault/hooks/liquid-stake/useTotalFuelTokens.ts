@@ -34,7 +34,7 @@ export const useTotalFuelTokens = (rig?: Rig) => {
     return abbreviationNumber(totalFuelTokens);
   }, [data]);
 
-  const isLoadingFuelTokens = isLoading || !isFetched;
+  const isLoadingFuelTokens = isLoading && !isFetched;
 
   return { data, totalFuelTokens, isLoadingFuelTokens, ...rest };
 };
