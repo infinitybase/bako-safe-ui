@@ -13,6 +13,7 @@ import {
 import { CurrencyStakeField, Dialog, FuelIcon } from '@/components';
 import { DoubtIcon } from '@/components/icons/doubt';
 import { tokensIDS } from '@/modules/core/utils/assets/address';
+import { formatMaxDecimals } from '@/utils';
 
 import { useOperationLiquidStakeModal } from '../../hooks';
 
@@ -67,44 +68,51 @@ export function ModalLiquidStake({
     onChange?: (value: string) => void;
     autoFocus?: boolean;
     disabled?: boolean;
-  }) => (
-    <Box marginY={6} display="flex" justifyContent="center" alignItems="center">
-      <InputGroup
-        alignItems="center"
+  }) => {
+    return (
+      <Box
+        marginY={6}
+        display="flex"
         justifyContent="center"
-        borderBottom="1px solid"
-        borderColor="grey.950"
-        _hover={{
-          borderColor: 'grey.200',
-        }}
-        px={0}
-        minW="150px"
-        w="fit-content"
+        alignItems="center"
       >
-        <CurrencyStakeField
-          width="80%"
-          currency="ETH_FUEL"
-          textAlign="center"
-          borderBottomWidth="0"
-          minW={0}
+        <InputGroup
+          alignItems="center"
+          justifyContent="center"
+          borderBottom="1px solid"
+          borderColor="grey.950"
+          _hover={{
+            borderColor: 'grey.200',
+          }}
           px={0}
-          fontSize="3xl"
-          ref={ref}
-          value={value}
-          onChange={(e) => onChange?.(e)}
-          disabled={disabled}
-        />
-
-        <InputRightAddon
-          alignSelf="end"
-          color={`${disabled ? 'grey.75' : 'section.200'}`}
-          opacity={disabled ? 0.5 : 1}
+          minW="150px"
+          w="fit-content"
         >
-          {symbol}
-        </InputRightAddon>
-      </InputGroup>
-    </Box>
-  );
+          <CurrencyStakeField
+            width={`${value.length > 5 ? formatMaxDecimals(Number(value), 9).length + 1 : 5}ch`}
+            currency="ETH_FUEL"
+            textAlign="center"
+            borderBottomWidth="0"
+            minW={0}
+            px={0}
+            fontSize="3xl"
+            ref={ref}
+            value={value}
+            onChange={(e) => onChange?.(e)}
+            disabled={disabled}
+          />
+
+          <InputRightAddon
+            alignSelf="end"
+            color={`${disabled ? 'grey.75' : 'section.200'}`}
+            opacity={disabled ? 0.5 : 1}
+          >
+            {symbol}
+          </InputRightAddon>
+        </InputGroup>
+      </Box>
+    );
+  };
 
   return (
     <Dialog.Modal
