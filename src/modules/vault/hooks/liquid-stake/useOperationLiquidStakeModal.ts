@@ -6,7 +6,7 @@ import { useTransactionToast } from '@/modules/transactions/providers/toast';
 import { formatMinDecimals } from '@/utils';
 
 import { useDepositLiquidStake } from './useDepositLiquidStake';
-import { DECIMALS } from './useGetInfosCardLiquidStake';
+import { DECIMALS } from './useTotalFuelTokens';
 
 interface UseOperationLiquidStakeModalProps {
   balance: number;
@@ -48,7 +48,7 @@ const useOperationLiquidStakeModal = ({
   const handleSourceChange = (newValue: string) => {
     setValueSource(newValue);
 
-    const value = parseFloat(newValue);
+    const value = parseFloat(newValue.replace(/,/g, ''));
 
     const sourceNumber = value || 0;
     const destinationValue = (sourceNumber * price).toString();
@@ -96,7 +96,7 @@ const useOperationLiquidStakeModal = ({
 
     try {
       const COIN_QUANTITY = bn(
-        Math.floor(Number(valueSource) * DECIMALS).toString(),
+        Math.floor(Number(valueSource.replace(/,/g, '')) * DECIMALS).toString(),
       );
       await depositWithVault(COIN_QUANTITY);
       await handleClose();
