@@ -9,7 +9,7 @@ export const DECIMALS = 10 ** 9;
 
 export const useTotalFuelTokens = (rig?: Rig) => {
   const { data, isLoading, isFetched, ...rest } = useQuery({
-    queryKey: ['rig-total-fuel-tokens', rig],
+    queryKey: ['rig-total-fuel-tokens', rig?.id.b256Address],
     queryFn: async () => {
       if (rig) {
         const result = await rig?.functions
@@ -34,7 +34,7 @@ export const useTotalFuelTokens = (rig?: Rig) => {
     return abbreviationNumber(totalFuelTokens);
   }, [data]);
 
-  const isLoadingFuelTokens = isLoading && !isFetched;
+  const isLoadingFuelTokens = isLoading || !isFetched;
 
   return { data, totalFuelTokens, isLoadingFuelTokens, ...rest };
 };
