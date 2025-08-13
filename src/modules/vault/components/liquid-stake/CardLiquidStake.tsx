@@ -3,7 +3,6 @@ import {
   Button,
   HStack,
   Icon,
-  IconButton,
   Text,
   Tooltip,
   useDisclosure,
@@ -12,12 +11,7 @@ import {
 import { Vault } from 'bakosafe';
 import { useMemo, useState } from 'react';
 
-import {
-  ErrorTooltip,
-  FuelIcon,
-  RigIcon,
-  TooltipNotEnoughBalance,
-} from '@/components';
+import { FuelIcon, RigIcon, TooltipNotEnoughBalance } from '@/components';
 import { TooltipIcon } from '@/components/icons/tooltip';
 import { useGetTokenInfos, useScreenSize } from '@/modules/core';
 import { tokensIDS } from '@/modules/core/utils/assets/address';
@@ -105,11 +99,8 @@ export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
     setModal('');
   };
 
-  const {
-    isOpen: isOpenErrorBalance,
-    onClose: onCloseErrorBalance,
-    onOpen,
-  } = useDisclosure();
+  const { isOpen: isOpenErrorBalance, onClose: onCloseErrorBalance } =
+    useDisclosure();
 
   const buttonStake = (
     <Button
@@ -122,7 +113,11 @@ export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
       fontSize={12}
       onClick={() => handleOpenModal('STAKE')}
       isDisabled={
-        !isMainnet || !assets.assets || isPendingSigner || notEnoughBalanceETH
+        !isMainnet ||
+        !assets.assets ||
+        isPendingSigner ||
+        notEnoughBalanceETH ||
+        Number(fuelTokens) === 0
       }
     >
       Stake
@@ -137,9 +132,11 @@ export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
         isLoading={!assets.assets}
       >
         <VStack alignItems={'flex-end'} gap={0}>
-          {notEnoughBalanceETH ? (
+          {notEnoughBalanceETH || Number(fuelTokens) === 0 ? (
             <Tooltip
-              label={TooltipNotEnoughBalance()}
+              label={TooltipNotEnoughBalance({
+                asset: Number(fuelTokens) === 0 ? 'FUEL' : 'ETH',
+              })}
               hasArrow
               placement="top"
               bg="dark.700"
@@ -151,29 +148,6 @@ export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
             </Tooltip>
           ) : (
             buttonStake
-          )}
-          ;
-          {isMobile && notEnoughBalanceETH && !!assets.assets && (
-            <Text
-              variant="description"
-              textAlign={{ base: 'end', sm: 'left' }}
-              fontWeight={400}
-              fontSize={8}
-              color="error.650"
-              onClick={onOpen}
-              cursor="pointer"
-            >
-              Not enough balance{' '}
-              <IconButton
-                bg="none"
-                _hover={{ bg: 'none' }}
-                aria-label="Open helper modal"
-                size={'sm'}
-                minW={2}
-                maxH={2}
-                icon={<Icon as={ErrorTooltip} fontSize={8} />}
-              />
-            </Text>
           )}
         </VStack>
       </ItemLiquidStake>
