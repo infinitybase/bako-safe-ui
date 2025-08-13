@@ -141,11 +141,25 @@ const Field = forwardRef<HTMLInputElement, CurrencyFieldProps>(
       [getAllowedPattern, onChange],
     );
 
+    const handleOnFocus = useCallback(
+      (event: React.ChangeEvent<HTMLInputElement>) => {
+        const initialValues = ['0', '0.00', '0.000'];
+
+        if (initialValues.includes(event.target.value)) {
+          setTimeout(() => {
+            onChange?.('');
+          }, 0);
+        }
+      },
+      [onChange],
+    );
+
     return (
       <MaskedInput
         mask={currencyMask}
         value={normalizedValue}
         onChange={handleInputChange}
+        onFocus={handleOnFocus}
         onBlur={props.onBlur}
         render={(maskedInputRef, maskedInputProps) => (
           <Input
