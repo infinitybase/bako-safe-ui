@@ -41,10 +41,10 @@ export function ModalLiquidStake({
   } = useOperationLiquidStakeModal({ balance: balanceTreated, onClose });
 
   useEffect(() => {
-    if (maxFee === 0 && Number(balance) > 0) {
+    if (maxFee === 0 && balanceTreated > 0) {
       calculateFee();
     }
-  }, [calculateFee, maxFee, balance]);
+  }, [calculateFee, maxFee, balanceTreated]);
 
   const StFUEL_ASSET = {
     name: 'stFuel',
