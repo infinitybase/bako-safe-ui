@@ -23,6 +23,7 @@ export function ItemLiquidStake({
       alignItems="center"
       background={'var(--chakra-colors-dark-950)'}
       width="full"
+      minW={value.length > 9 ? '225px' : '150px'}
     >
       <HStack
         flex={1}

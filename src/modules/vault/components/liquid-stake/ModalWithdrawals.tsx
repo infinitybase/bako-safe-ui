@@ -15,8 +15,15 @@ import { useScreenSize } from '@/modules/core';
 
 import { ItemWithdrawals } from './ItemWithdrawals';
 
-const TITLE = 'Withdrawals';
-const DESCRIPTION = `Rig hasn’t enabled direct stFUEL withdrawals yet. Until that option is live, you can swap stFUEL for FUEL through MIRA.`;
+const TITLE = 'Withdrawal';
+const DESCRIPTION = (
+  <>
+    Rig hasn’t enabled direct stFUEL withdrawals yet.
+    <br />
+    Until that option is live, you can swap stFUEL for FUEL through MIRA.
+  </>
+);
+
 const ITENS = [
   {
     image: '/stake-withdrawals-1.png',
@@ -105,6 +112,7 @@ export function ModalWithdrawalsLiquidStake({
           mb={0}
           title={TITLE}
           description={DESCRIPTION}
+          descriptionColor={'#868079'}
           mt={0}
           titleSxProps={{ fontSize: 16 }}
           onClose={onClose}

@@ -1,6 +1,12 @@
 import { Box, Divider, Heading, Text } from '@chakra-ui/react';
 
-const TooltipNotEnoughBalance = () => {
+interface TooltipNotEnoughBalanceProps {
+  asset?: 'ETH' | 'FUEL';
+}
+
+const TooltipNotEnoughBalance = ({
+  asset = 'ETH',
+}: TooltipNotEnoughBalanceProps) => {
   return (
     <Box
       maxW="260px"
@@ -16,9 +22,9 @@ const TooltipNotEnoughBalance = () => {
       </Heading>
       <Divider borderColor="gray.300" my={4} />
       <Text color="grey.425" fontWeight={400} fontSize="xs" lineHeight="16.8px">
-        Your current ETH balance is insufficient to cover the transaction fees
-        required for this operation. To proceed with the transaction, please add
-        more ETH to your vault.
+        {asset === 'ETH'
+          ? 'Your current ETH balance is insufficient to cover the transaction fees required for this operation. To proceed with the transaction, please add more ETH to your vault.'
+          : 'Your current Fuel tokens balance is insufficient to cover any stake.'}
       </Text>
     </Box>
   );
