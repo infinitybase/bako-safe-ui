@@ -1,6 +1,6 @@
 import { randomBytes } from 'ethers';
 import { bn } from 'fuels';
-import { useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import { useTransactionToast } from '@/modules/transactions/providers/toast';
 import { formatMinDecimals } from '@/utils';
@@ -81,13 +81,9 @@ const useOperationLiquidStakeModal = ({
     );
   };
 
-  useEffect(() => {
-    async function getFee() {
-      const maxFee = await getMaxFee(bn(1000000));
-      if (maxFee) setMaxFee(maxFee);
-    }
-
-    getFee();
+  const calculateFee = useCallback(async () => {
+    const maxFee = await getMaxFee(bn(1000000));
+    if (maxFee) setMaxFee(maxFee);
   }, [getMaxFee]);
 
   const createTxLiquidStake = async () => {
@@ -122,6 +118,7 @@ const useOperationLiquidStakeModal = ({
     handleSourceChange,
     handleDestinationChange,
     createTxLiquidStake,
+    calculateFee,
   };
 };
 
