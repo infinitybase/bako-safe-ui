@@ -179,7 +179,7 @@ export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
       </ItemLiquidStake>
 
       <ItemLiquidStake
-        label="stFuel Balance"
+        label="stFUEL Balance"
         value={stFuelTokens}
         isLoading={!assets.assets}
       >
@@ -198,7 +198,7 @@ export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
         </Button>
       </ItemLiquidStake>
       <ItemLiquidStake
-        label="Total Fuel"
+        label="Total FUEL"
         value={totalFuelTokens}
         isLoading={isLoadingFuelTokens}
       />
@@ -216,7 +216,7 @@ export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
         maxW="full"
         marginBottom={9}
         borderRadius={9}
-        height={{ base: 16, md: 36 }}
+        height={{ base: '70px', sm: 16, md: 36 }}
         padding={{ base: 3, md: 4 }}
         backgroundImage={{
           base: '/bg-stake-mobile.png',
@@ -239,6 +239,7 @@ export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
 
         <HStack
           marginBottom={{ base: 0, md: 4 }}
+          height={{ base: 'none', md: 'flex' }}
           onClick={handleOpenMobileItem}
         >
           <Icon as={FuelIcon} fontSize={{ base: 32, md: 33 }} />
@@ -262,18 +263,46 @@ export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
             <Text fontSize={10}>powered by</Text>
             <RigIcon fontSize={32} />
           </HStack>
-          <Text
-            flex={1}
-            textAlign="right"
-            fontSize={14}
-            display={{ base: 'block', md: 'none' }}
-          >
-            {stFuelTokens}
-            <br />
-            <Text as="span" fontSize={12}>
-              in staking
+
+          {Number(stFuelTokens) > 0 ? (
+            <Text
+              flex={1}
+              textAlign="right"
+              fontSize={14}
+              display={{ base: 'block', md: 'none' }}
+            >
+              {stFuelTokens}
+              <br />
+              <Text as="span" fontSize={12}>
+                in staking
+              </Text>
             </Text>
-          </Text>
+          ) : (
+            <Box
+              flex={1}
+              display={{ base: 'flex', md: 'none' }}
+              justifyContent="flex-end"
+            >
+              <Button
+                variant="outline"
+                color="grey.75"
+                borderColor="grey.75"
+                fontSize={'12px'}
+                px="8px"
+                py="4px"
+                _hover={{ bg: '#f5f5f513' }}
+                onClick={() => handleOpenModal('STAKE')}
+                isDisabled={
+                  !isMainnet ||
+                  !assets.assets ||
+                  isPendingSigner ||
+                  notEnoughBalanceETH
+                }
+              >
+                {'Start staking'}
+              </Button>
+            </Box>
+          )}
         </HStack>
         <HStack
           justifyContent="space-between"

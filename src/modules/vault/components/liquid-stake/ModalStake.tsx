@@ -3,7 +3,6 @@ import {
   Button,
   Card,
   HStack,
-  Icon,
   Image,
   InputGroup,
   InputRightAddon,
@@ -11,14 +10,10 @@ import {
   VStack,
 } from '@chakra-ui/react';
 
-import {
-  CurrencyField,
-  Dialog,
-  FuelIcon,
-  LeftAndRightArrow,
-} from '@/components';
+import { CurrencyField, Dialog, FuelIcon } from '@/components';
 import { DoubtIcon } from '@/components/icons/doubt';
 import { tokensIDS } from '@/modules/core/utils/assets/address';
+import { formatMaxDecimals } from '@/utils';
 
 import { useOperationLiquidStakeModal } from '../../hooks';
 
@@ -73,44 +68,51 @@ export function ModalLiquidStake({
     onChange?: (value: string) => void;
     autoFocus?: boolean;
     disabled?: boolean;
-  }) => (
-    <Box marginY={6} display="flex" justifyContent="center" alignItems="center">
-      <InputGroup
-        alignItems="center"
+  }) => {
+    return (
+      <Box
+        marginY={6}
+        display="flex"
         justifyContent="center"
-        borderBottom="1px solid"
-        borderColor="grey.950"
-        _hover={{
-          borderColor: 'grey.200',
-        }}
-        px={0}
-        minW="150px"
-        w="fit-content"
+        alignItems="center"
       >
-        <CurrencyField
-          width="80%"
-          type="crypto"
-          textAlign="center"
-          borderBottomWidth="0"
-          minW={0}
+        <InputGroup
+          alignItems="center"
+          justifyContent="center"
+          borderBottom="1px solid"
+          borderColor="grey.950"
+          _hover={{
+            borderColor: 'grey.200',
+          }}
           px={0}
-          fontSize="3xl"
-          ref={ref}
-          value={value}
-          onChange={(e) => onChange?.(e)}
-          disabled={disabled}
-        />
-
-        <InputRightAddon
-          alignSelf="end"
-          color={`${disabled ? 'grey.75' : 'section.200'}`}
-          opacity={disabled ? 0.5 : 1}
+          minW="150px"
+          w="fit-content"
         >
-          {symbol}
-        </InputRightAddon>
-      </InputGroup>
-    </Box>
-  );
+          <CurrencyField
+            width={`${value.length > 5 ? formatMaxDecimals(Number(value), 9).length + 1 : 5}ch`}
+            type="crypto"
+            textAlign="center"
+            borderBottomWidth="0"
+            minW={0}
+            px={0}
+            fontSize="3xl"
+            ref={ref}
+            value={value}
+            onChange={(e) => onChange?.(e)}
+            disabled={disabled}
+          />
+
+          <InputRightAddon
+            alignSelf="end"
+            color={`${disabled ? 'grey.75' : 'section.200'}`}
+            opacity={disabled ? 0.5 : 1}
+          >
+            {symbol}
+          </InputRightAddon>
+        </InputGroup>
+      </Box>
+    );
+  };
 
   return (
     <Dialog.Modal
@@ -124,13 +126,13 @@ export function ModalLiquidStake({
           title="Stake to validator"
           mb={0}
           mt={0}
-          titleSxProps={{ fontSize: 16, marginTop: { base: 6, md: 0 } }}
+          titleSxProps={{ fontSize: 16, marginTop: { base: 5, md: 0 } }}
           onClose={handleClose}
         />
-        <VStack marginY={{ base: 10 }}>
-          <Card variant="outline" padding={3} mb={1}>
+        <VStack marginTop={{ base: 5 }} marginBottom={{ base: 10 }}>
+          <Card variant="outline" padding={3}>
             <HStack>
-              <Text color="#868079" fontSize={12}>
+              <Text color="#AAA6A1" fontSize={12}>
                 Stake amount
               </Text>
               <HStack flex={1} justifyContent="flex-end" marginBottom={2}>
@@ -138,7 +140,6 @@ export function ModalLiquidStake({
                 <Text color="white" fontSize={12}>
                   FUEL
                 </Text>
-                <Icon as={LeftAndRightArrow} color="grey.75" />
               </HStack>
             </HStack>
             <HStack justifyContent="flex-end">
@@ -198,7 +199,7 @@ export function ModalLiquidStake({
           </Card>
           <Card variant="outline" padding={3}>
             <HStack>
-              <Text color="#868079" fontSize={12}>
+              <Text color="#AAA6A1" fontSize={12}>
                 You receive
               </Text>
               <HStack flex={1} justifyContent="flex-end" marginBottom={2}>
@@ -220,34 +221,34 @@ export function ModalLiquidStake({
             />
           </Card>
           <Card variant="outline" padding={3}>
-            <Text color="#868079" fontSize={12} marginBottom={6}>
+            <Text color="#AAA6A1" fontSize={12} marginBottom={6}>
               Summary
             </Text>
-            <VStack>
-              <HStack width="full" marginBottom={1}>
+            <VStack p={0} gap={1}>
+              <HStack width="full">
                 <HStack gap={2} align={'center'}>
-                  <Text color="#868079" fontSize={12} flex={1}>
+                  <Text color="#AAA6A1" fontSize={12} flex={1}>
                     Conversion Ratio
                   </Text>
                   <DoubtIcon fontSize={16} />
                 </HStack>
-                <Text color="#868079" fontSize={12} flex={1} align="right">
+                <Text color="#AAA6A1" fontSize={12} flex={1} align="right">
                   1 FUEL ~ {price} stFUEL
                 </Text>
               </HStack>
-              <HStack width="full" marginBottom={1}>
-                <Text color="#868079" fontSize={12} flex={1}>
+              <HStack width="full">
+                <Text color="#AAA6A1" fontSize={12} flex={1}>
                   Reference APY
                 </Text>
-                <Text color="#868079" fontSize={12} flex={1} align="right">
+                <Text color="#AAA6A1" fontSize={12} flex={1} align="right">
                   {`${apyValue}%`}
                 </Text>
               </HStack>
-              <HStack width="full" marginBottom={1}>
-                <Text color="#868079" fontSize={12} flex={1}>
+              <HStack width="full">
+                <Text color="#AAA6A1" fontSize={12} flex={1}>
                   Max Transaction cost
                 </Text>
-                <Text color="#868079" fontSize={12} flex={1} align="right">
+                <Text color="#AAA6A1" fontSize={12} flex={1} align="right">
                   {`${maxFee} ETH`}
                 </Text>
               </HStack>

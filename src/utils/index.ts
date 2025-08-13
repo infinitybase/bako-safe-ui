@@ -3,7 +3,7 @@ export * from './currency-configs';
 export * from './current-path';
 export * from './format-amount';
 export * from './format-asset-amount';
-export * from './format-min-decimals';
+export * from './format-decimals';
 export * from './get-asset-img-url';
 export * from './gtm-custom-event';
 export * from './handle';
