@@ -1,4 +1,5 @@
 import { Button, Card, HStack, Image, Text, VStack } from '@chakra-ui/react';
+import { useEffect } from 'react';
 
 import { Dialog, FuelIcon } from '@/components';
 import { DoubtIcon } from '@/components/icons/doubt';
@@ -36,7 +37,14 @@ export function ModalLiquidStake({
     handleDestinationChange,
     handleSetCurrencyAmount,
     createTxLiquidStake,
+    calculateFee,
   } = useOperationLiquidStakeModal({ balance: balanceTreated, onClose });
+
+  useEffect(() => {
+    if (maxFee === 0 && Number(balance) > 0) {
+      calculateFee();
+    }
+  }, [calculateFee, maxFee, balance]);
 
   const StFUEL_ASSET = {
     name: 'stFuel',
