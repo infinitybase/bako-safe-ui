@@ -10,3 +10,12 @@ export const formatMinDecimals = (value: string, minDecimals: number) => {
 
   return `${integerPart}.${finalDecimal}`;
 };
+
+export const formatMaxDecimals = (num: number, maxDecimals: number) => {
+  if (isNaN(num)) return '';
+
+  return num.toLocaleString('en-US', {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: maxDecimals,
+  });
+};
