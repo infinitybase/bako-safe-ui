@@ -10,7 +10,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 
-import { CurrencyStakeField, Dialog, FuelIcon } from '@/components';
+import { CurrencyField, Dialog, FuelIcon } from '@/components';
 import { DoubtIcon } from '@/components/icons/doubt';
 import { tokensIDS } from '@/modules/core/utils/assets/address';
 import { formatMaxDecimals } from '@/utils';
@@ -88,9 +88,9 @@ export function ModalLiquidStake({
           minW="150px"
           w="fit-content"
         >
-          <CurrencyStakeField
+          <CurrencyField
             width={`${value.length > 5 ? formatMaxDecimals(Number(value), 9).length + 1 : 5}ch`}
-            currency="ETH_FUEL"
+            type="crypto"
             textAlign="center"
             borderBottomWidth="0"
             minW={0}
@@ -183,11 +183,19 @@ export function ModalLiquidStake({
                 <Text color="white">Stake Max</Text>
               </Button>
             </HStack>
-            {!!errorAmount && (
-              <Text color="red.500" fontSize="xs" mt={2}>
-                {errorAmount}
-              </Text>
-            )}
+            <HStack
+              h={{
+                base: 8,
+                sm: 6,
+              }}
+              pt={2}
+            >
+              {!!errorAmount && (
+                <Text color="red.500" fontSize="xs">
+                  {errorAmount}
+                </Text>
+              )}
+            </HStack>
           </Card>
           <Card variant="outline" padding={3}>
             <HStack>
