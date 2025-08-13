@@ -1,13 +1,15 @@
 import { Text, VStack } from '@chakra-ui/react';
-import { Fragment, MutableRefObject } from 'react';
+import { Fragment, MutableRefObject, useMemo } from 'react';
 import { To, useNavigate } from 'react-router-dom';
 
+import { useOrderAssetsByUSD } from '@/modules/core';
 import { AssetCard } from '@/modules/core/components';
 import { Asset, NFT } from '@/modules/core/utils';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useVaultAssetsList } from '../hooks';
 
-interface TokensUSD {
+export interface TokensUSD {
   [assetId: string]: {
     usdAmount: number;
   };
@@ -33,9 +35,23 @@ const AssetsDetails = ({
   const navigate = useNavigate();
   const { visibleItems, showViewAll, countViewAll, itemWidth } =
     useVaultAssetsList(containerRef, assets, nfts);
+
+  const { assetsMap } = useWorkspaceContext();
+
+  const stableAssets = useMemo(() => assets, [assets]);
+  const stableTokensUSD = useMemo(() => tokensUSD, [tokensUSD]);
+  const stableAssetsMap = useMemo(() => assetsMap, [assetsMap]);
+
+  const assetsOrdered = useOrderAssetsByUSD({
+    assets: stableAssets,
+    tokensUSD: stableTokensUSD,
+    assetsMap: stableAssetsMap,
+  });
+
   return (
     <>
-      {assets.map((asset, index) => {
+      {assetsOrdered.map((assetOrdered, index) => {
+        const asset = assetOrdered.asset;
         const usdData = tokensUSD[asset.assetId.toLowerCase()];
         const usdAmount = usdData?.usdAmount ?? null;
 

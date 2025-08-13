@@ -1,12 +1,12 @@
 import { useFuel } from '@fuels/react';
 import { useEffect, useState } from 'react';
 
+import { useEvm } from '@/modules';
 import { useContactToast } from '@/modules/addressBook';
+import { EConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
 import { useNetworks } from '@/modules/network/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { ENetworks } from '@/utils/constants';
-import { EConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
-import { useEvm } from '@/modules';
 
 import { Encoder, localStorageKeys, TypeUser } from '../../services';
 import { useCreateUserRequest, useSignInRequest } from '../useUserRequest';
@@ -14,7 +14,7 @@ import { useCreateUserRequest, useSignInRequest } from '../useUserRequest';
 export type UseWalletSignIn = ReturnType<typeof useWalletSignIn>;
 
 const useWalletSignIn = (
-  callback: (vaultId?: string, workspaceId?: string) => void
+  callback: (vaultId?: string, workspaceId?: string) => void,
 ) => {
   const [isAnyWalletConnectorOpen, setIsAnyWalletConnectorOpen] =
     useState(false);
@@ -27,7 +27,7 @@ const useWalletSignIn = (
     connect: evmConnect,
     signAndValidate: evmSignAndValidate,
     modal: evmModal,
-    getCurrentAccount: evmGetCurrentAccount
+    getCurrentAccount: evmGetCurrentAccount,
   } = useEvm();
 
   const [evmModalIsOpen, setEvmModalIsOpen] = useState<boolean>(false);
@@ -55,9 +55,10 @@ const useWalletSignIn = (
       const { code } = await createUserRequest.mutateAsync({
         address: address,
         provider: fromConnector
-          ? localStorage.getItem(localStorageKeys.SELECTED_NETWORK)!
+          ? (localStorage.getItem(localStorageKeys.SELECTED_NETWORK) ??
+            import.meta.env.VITE_MAINNET_NETWORK)
           : import.meta.env.VITE_MAINNET_NETWORK,
-        type: TypeUser.EVM
+        type: TypeUser.EVM,
       });
 
       const signature = await evmSignAndValidate(code, address);
@@ -67,7 +68,7 @@ const useWalletSignIn = (
         type: TypeUser.EVM,
         encoder: Encoder.EVM,
         account: address,
-        signature
+        signature,
       });
 
       authDetails.handlers.authenticate({
@@ -79,7 +80,7 @@ const useWalletSignIn = (
         singleWorkspace: result.workspace.id,
         permissions: result.workspace.permissions,
         provider_url: result.provider,
-        first_login: result.first_login
+        first_login: result.first_login,
       });
       invalidateGifAnimationRequest();
       callback(result.rootWallet, result.workspace.id);
@@ -87,7 +88,7 @@ const useWalletSignIn = (
       console.error(e);
       errorToast({
         title: 'Login error',
-        description: (e as { message: string }).message
+        description: (e as { message: string }).message,
       });
 
       // authDetails.handlers.setInvalidAccount?.(true);
@@ -97,7 +98,7 @@ const useWalletSignIn = (
   const handler: Record<string, (connector: string) => Promise<void>> = {
     [EConnectors.FUEL]: fuelWalletConnect,
     [EConnectors.FULLET]: fuelWalletConnect,
-    [EConnectors.EVM]: evmWalletConnect
+    [EConnectors.EVM]: evmWalletConnect,
   };
 
   const handleSelectWallet = async (connector: string) => {
@@ -122,7 +123,7 @@ const useWalletSignIn = (
       const { code, type } = await createUserRequest.mutateAsync({
         address: account!,
         provider: network!.url,
-        type: TypeUser.FUEL
+        type: TypeUser.FUEL,
       });
 
       if (fromConnector) {
@@ -131,7 +132,7 @@ const useWalletSignIn = (
 
       const result = await signInRequest.mutateAsync({
         code,
-        type
+        type,
       });
 
       authDetails.handlers.authenticate({
@@ -143,7 +144,7 @@ const useWalletSignIn = (
         singleWorkspace: result.workspace.id,
         permissions: result.workspace.permissions,
         provider_url: result.provider,
-        first_login: result.first_login
+        first_login: result.first_login,
       });
 
       invalidateGifAnimationRequest();
@@ -183,14 +184,14 @@ const useWalletSignIn = (
           case 'CONNECT_ERROR': {
             errorToast({
               title: 'Invalid Account',
-              description: 'You need to use the evm wallet to connect.'
+              description: 'You need to use the evm wallet to connect.',
             });
             break;
           }
           default:
             break;
         }
-      }
+      },
     );
 
     return () => {
@@ -200,7 +201,7 @@ const useWalletSignIn = (
 
   return {
     handleSelectWallet,
-    isAnyWalletConnectorOpen
+    isAnyWalletConnectorOpen,
   };
 };
 
