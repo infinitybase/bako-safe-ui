@@ -16,6 +16,10 @@ interface Inflation {
 
 const TOTAL_FUEL_SUPPLY = 10000000000000000000;
 
+const BASE_SEQUENCER_API = import.meta.env.DEV
+  ? '/rig'
+  : import.meta.env.VITE_SEQUENCER_URL;
+
 export const useAPY = () => {
   const {
     data: data,
@@ -25,11 +29,11 @@ export const useAPY = () => {
     queryKey: ['rig-apy'],
     queryFn: async () => {
       const inflationResponse = await request<Inflation>(
-        '/rig/cosmos/mint/v1beta1/inflation',
+        BASE_SEQUENCER_API + '/cosmos/mint/v1beta1/inflation',
       );
 
       const poolResponse = await request<StakingPool>(
-        '/rig/cosmos/staking/v1beta1/pool',
+        BASE_SEQUENCER_API + '/cosmos/staking/v1beta1/pool',
       );
 
       if (!inflationResponse) throw new Error('Error on get inflation');
