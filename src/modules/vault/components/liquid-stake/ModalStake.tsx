@@ -1,21 +1,11 @@
-import {
-  Box,
-  Button,
-  Card,
-  HStack,
-  Image,
-  InputGroup,
-  InputRightAddon,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { Button, Card, HStack, Image, Text, VStack } from '@chakra-ui/react';
 
-import { CurrencyField, Dialog, FuelIcon } from '@/components';
+import { Dialog, FuelIcon } from '@/components';
 import { DoubtIcon } from '@/components/icons/doubt';
 import { tokensIDS } from '@/modules/core/utils/assets/address';
-import { formatMaxDecimals } from '@/utils';
 
 import { useOperationLiquidStakeModal } from '../../hooks';
+import { InputField } from './InputField';
 
 interface ModalLiquidStakeProps {
   isOpen?: boolean;
@@ -53,65 +43,6 @@ export function ModalLiquidStake({
     slug: 'stFUEL',
     image: 'https://verified-assets.fuel.network/images/stFUEL.png',
     assetId: tokensIDS.stFUEL,
-  };
-
-  const InputField = ({
-    symbol,
-    ref,
-    value,
-    disabled,
-    onChange,
-  }: {
-    symbol: string;
-    ref?: React.RefObject<HTMLInputElement>;
-    value: string;
-    onChange?: (value: string) => void;
-    autoFocus?: boolean;
-    disabled?: boolean;
-  }) => {
-    return (
-      <Box
-        marginY={6}
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-      >
-        <InputGroup
-          alignItems="center"
-          justifyContent="center"
-          borderBottom="1px solid"
-          borderColor="grey.950"
-          _hover={{
-            borderColor: 'grey.200',
-          }}
-          px={0}
-          minW="150px"
-          w="fit-content"
-        >
-          <CurrencyField
-            width={`${value.length > 5 ? formatMaxDecimals(Number(value), 9).length + 1 : 5}ch`}
-            type="crypto"
-            textAlign="center"
-            borderBottomWidth="0"
-            minW={0}
-            px={0}
-            fontSize="3xl"
-            ref={ref}
-            value={value}
-            onChange={(e) => onChange?.(e)}
-            disabled={disabled}
-          />
-
-          <InputRightAddon
-            alignSelf="end"
-            color={`${disabled ? 'grey.75' : 'section.200'}`}
-            opacity={disabled ? 0.5 : 1}
-          >
-            {symbol}
-          </InputRightAddon>
-        </InputGroup>
-      </Box>
-    );
   };
 
   return (
