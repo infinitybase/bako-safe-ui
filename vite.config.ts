@@ -54,13 +54,6 @@ export default defineConfig(({ mode }) => {
       headers: {
         'Document-Policy': 'js-profiling',
       },
-      proxy: {
-        '/rig': {
-          target: env.VITE_SEQUENCER_URL,
-          changeOrigin: true,
-          rewrite: (p) => p.replace(/^\/rig/, ''),
-        },
-      },
     },
   };
 });

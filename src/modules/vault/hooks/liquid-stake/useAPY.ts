@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
 
-import { request } from '@/utils/request';
+import { getWithoutPreflight } from '@/utils/request';
 
 interface StakingPool {
   pool: {
@@ -16,9 +16,7 @@ interface Inflation {
 
 const TOTAL_FUEL_SUPPLY = 10000000000000000000;
 
-const BASE_SEQUENCER_API = import.meta.env.DEV
-  ? '/rig/'
-  : import.meta.env.VITE_SEQUENCER_URL;
+const BASE_SEQUENCER_API = import.meta.env.VITE_SEQUENCER_URL;
 
 export const useAPY = () => {
   const {
@@ -28,11 +26,11 @@ export const useAPY = () => {
   } = useQuery({
     queryKey: ['rig-apy'],
     queryFn: async () => {
-      const inflationResponse = await request<Inflation>(
+      const inflationResponse = await getWithoutPreflight<Inflation>(
         BASE_SEQUENCER_API + 'cosmos/mint/v1beta1/inflation',
       );
 
-      const poolResponse = await request<StakingPool>(
+      const poolResponse = await getWithoutPreflight<StakingPool>(
         BASE_SEQUENCER_API + 'cosmos/staking/v1beta1/pool',
       );
 
