@@ -71,4 +71,20 @@ const requestWithTimeout = async <T = unknown>(
   }
 };
 
-export { request, requestWithTimeout };
+const getWithoutPreflight = async <T = unknown>(url: string) => {
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    return null;
+  }
+
+  const data = await response.json();
+  return data as T;
+};
+
+export { getWithoutPreflight, request, requestWithTimeout };

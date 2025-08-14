@@ -26,7 +26,7 @@ export function MobileDropdownLiquidStake({
   return (
     <Drawer placement="bottom" onClose={onClose} isOpen={isOpen}>
       <DrawerOverlay />
-      <DrawerContent padding={4}>
+      <DrawerContent padding={4} bg={'dark.950'}>
         <DrawerHeader>
           <HStack marginBottom={4} fontWeight="normal">
             <Icon as={FuelIcon} fontSize={24} />
