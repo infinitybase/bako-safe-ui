@@ -178,11 +178,11 @@ export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
       </ItemLiquidStake>
       <ItemLiquidStake
         label="Total FUEL"
-        value={totalFuelTokens}
+        value={totalFuelTokens.toUpperCase()}
         isLoading={isLoadingFuelTokens}
       />
       <ItemLiquidStake
-        label="APY%"
+        label="APY"
         value={`${apyValue}%`}
         isLoading={isLoadingApy}
       />
