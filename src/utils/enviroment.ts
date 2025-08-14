@@ -47,4 +47,6 @@ export const getBakoIDURL = (): string => {
   return baseUrl;
 };
 
+export const GARAGE_APP_URL = 'https://garage.zone';
+
 export { getEnvironment };
