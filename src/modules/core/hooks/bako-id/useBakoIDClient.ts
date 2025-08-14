@@ -9,6 +9,9 @@ import { BakoProvider } from 'bakosafe';
 import { Provider } from 'fuels';
 import { useCallback } from 'react';
 
+import { localStorageKeys } from '@/modules/auth';
+import { availableNetWorks, NetworkType } from '@/modules/network/services';
+
 const client = new BakoIDClient();
 
 const BAKOID_QUERY_KEYS = {
@@ -23,6 +26,10 @@ const BAKOID_QUERY_KEYS = {
   },
   names: (addresses: string[]) => {
     const base = BAKOID_QUERY_KEYS.base.concat(['names', ...addresses]);
+    return base as QueryKey;
+  },
+  avatar: (name: string) => {
+    const base = BAKOID_QUERY_KEYS.base.concat(['avatar', name]);
     return base as QueryKey;
   },
 };
@@ -115,4 +122,18 @@ export const useBakoIDClient = (providerInstance: Promise<BakoProvider>) => {
       },
     },
   };
+};
+
+export const useAvatar = (name: string) => {
+  const chainId = Number(
+    localStorage.getItem(localStorageKeys.SELECTED_CHAIN_ID) ??
+      availableNetWorks[NetworkType.MAINNET].chainId,
+  );
+  const { data: avatar, ...rest } = useQuery({
+    queryFn: () => {
+      return client.avatar(name, chainId);
+    },
+  });
+
+  return { avatar, ...rest };
 };
