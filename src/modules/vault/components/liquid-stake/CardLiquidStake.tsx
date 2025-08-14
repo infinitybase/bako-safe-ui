@@ -191,10 +191,7 @@ export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
         borderRadius={9}
         height={{ base: '70px', sm: 16, md: 36 }}
         padding={{ base: 3, md: 4 }}
-        backgroundImage={{
-          base: '/bg-stake-mobile.png',
-          md: '/bg-stake-desktop.png',
-        }}
+        backgroundImage={'/bg-stake-card.png'}
         backgroundSize="cover"
         alignContent={{ base: 'center', md: 'flex-start' }}
       >
