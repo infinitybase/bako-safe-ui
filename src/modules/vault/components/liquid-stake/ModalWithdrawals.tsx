@@ -17,11 +17,11 @@ import { ItemWithdrawals } from './ItemWithdrawals';
 
 const TITLE = 'Withdrawal';
 const DESCRIPTION = (
-  <>
+  <span style={{ display: 'block', maxWidth: 'none', whiteSpace: 'normal' }}>
     Rig hasn’t enabled direct stFUEL withdrawals yet.
     <br />
     Until that option is live, you can swap stFUEL for FUEL through MICROCHAIN.
-  </>
+  </span>
 );
 const REDEEM_URL = 'https://www.microchain.systems/';
 
@@ -117,6 +117,9 @@ export function ModalWithdrawalsLiquidStake({
           mt={0}
           titleSxProps={{ fontSize: 16 }}
           onClose={onClose}
+          sx={{
+            '& div': { maxWidth: 'none !important' },
+          }}
         />
         <HStack marginY={{ base: 10 }}>
           {ITENS.map(({ image, title, description }, i) => (
