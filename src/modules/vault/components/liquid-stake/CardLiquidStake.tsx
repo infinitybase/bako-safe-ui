@@ -11,13 +11,7 @@ import {
 import { Vault } from 'bakosafe';
 import { useMemo, useState } from 'react';
 
-import {
-  CustomSkeleton,
-  FuelIcon,
-  RigIcon,
-  TooltipNotEnoughBalance,
-} from '@/components';
-import { TooltipIcon } from '@/components/icons/tooltip';
+import { FuelIcon, RigIcon, TooltipNotEnoughBalance } from '@/components';
 import { useGetTokenInfos, useScreenSize } from '@/modules/core';
 import { tokensIDS } from '@/modules/core/utils/assets/address';
 import { useNetworks } from '@/modules/network/hooks';
@@ -222,32 +216,11 @@ export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
           onClick={handleOpenMobileItem}
         >
           <Icon as={FuelIcon} fontSize={{ base: 32, md: 33 }} />
-          <VStack alignItems="flex-start" gap={0}>
-            <Text fontSize={isMobile ? 12 : 14}>Auto Stake $FUEL</Text>
-            <HStack alignItems="center" whiteSpace="nowrap">
-              <Text
-                as="span"
-                fontSize={isMobile ? 10 : 12}
-                color="gray.400"
-                display="inline"
-              >
-                Earn Up to{' '}
-                <Box as="span" display="inline-flex" alignItems="center">
-                  <CustomSkeleton
-                    isLoaded={!isLoadingApy}
-                    display="inline-block"
-                    width={'3.5em'}
-                  >
-                    {apyValue}%
-                  </CustomSkeleton>
-                </Box>{' '}
-                More than Manual Staking
-              </Text>
-              {!isMobile && (
-                <Icon color="grey.400" boxSize="14px" as={TooltipIcon} ml={1} />
-              )}
-            </HStack>
-          </VStack>
+
+          <Text fontWeight={500} fontSize={isMobile ? 12 : 14}>
+            Liquid Stake FUEL
+          </Text>
+
           <HStack
             flex={1}
             justifyContent="flex-end"
