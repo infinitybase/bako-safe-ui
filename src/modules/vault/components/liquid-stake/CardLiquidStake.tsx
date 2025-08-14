@@ -12,7 +12,6 @@ import { Vault } from 'bakosafe';
 import { useMemo, useState } from 'react';
 
 import { FuelIcon, RigIcon, TooltipNotEnoughBalance } from '@/components';
-import { TooltipIcon } from '@/components/icons/tooltip';
 import { useGetTokenInfos, useScreenSize } from '@/modules/core';
 import { tokensIDS } from '@/modules/core/utils/assets/address';
 import { useNetworks } from '@/modules/network/hooks';
@@ -173,11 +172,11 @@ export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
       </ItemLiquidStake>
       <ItemLiquidStake
         label="Total FUEL"
-        value={totalFuelTokens}
+        value={totalFuelTokens.toUpperCase()}
         isLoading={isLoadingFuelTokens}
       />
       <ItemLiquidStake
-        label="APY%"
+        label="APY"
         value={`${apyValue}%`}
         isLoading={isLoadingApy}
       />
@@ -192,10 +191,7 @@ export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
         borderRadius={9}
         height={{ base: '70px', sm: 16, md: 36 }}
         padding={{ base: 3, md: 4 }}
-        backgroundImage={{
-          base: '/bg-stake-mobile.png',
-          md: '/bg-stake-desktop.png',
-        }}
+        backgroundImage={'/bg-stake-card.png'}
         backgroundSize="cover"
         alignContent={{ base: 'center', md: 'flex-start' }}
       >
@@ -217,17 +213,11 @@ export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
           onClick={handleOpenMobileItem}
         >
           <Icon as={FuelIcon} fontSize={{ base: 32, md: 33 }} />
-          <VStack alignItems="flex-start" gap={0}>
-            <Text fontSize={isMobile ? 12 : 14}>Auto Stake $FUEL</Text>
-            <HStack>
-              <Text fontSize={isMobile ? 10 : 12} color={'gray.400'}>
-                Earn Up to 18% More than Manual Staking
-              </Text>
-              {!isMobile && (
-                <Icon color="grey.400" boxSize="14px" as={TooltipIcon} />
-              )}
-            </HStack>
-          </VStack>
+
+          <Text fontWeight={500} fontSize={isMobile ? 12 : 14}>
+            Liquid Stake FUEL
+          </Text>
+
           <HStack
             flex={1}
             justifyContent="flex-end"
