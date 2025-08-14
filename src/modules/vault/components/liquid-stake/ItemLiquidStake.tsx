@@ -28,6 +28,7 @@ export function ItemLiquidStake({
       <HStack
         flex={1}
         padding={3}
+        borderRadius={9}
         background={'var(--chakra-colors-gradients-transaction-card)'}
       >
         <VStack flex={1} alignItems="flex-start" gap={0}>
