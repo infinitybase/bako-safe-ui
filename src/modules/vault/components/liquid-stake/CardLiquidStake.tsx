@@ -12,6 +12,7 @@ import {
 import React, { useMemo, useState } from 'react';
 
 import {
+  CustomSkeleton,
   ErrorTooltip,
   FuelIcon,
   RigIcon,
@@ -240,12 +241,27 @@ export function CardLiquidStake({ assets }: CardLiquidStakeProps) {
           <Icon as={FuelIcon} fontSize={{ base: 32, md: 33 }} />
           <VStack alignItems="flex-start" gap={0}>
             <Text fontSize={isMobile ? 12 : 14}>Auto Stake $FUEL</Text>
-            <HStack>
-              <Text fontSize={isMobile ? 10 : 12} color={'gray.400'}>
-                Earn Up to 18% More than Manual Staking
+            <HStack alignItems="center" whiteSpace="nowrap">
+              <Text
+                as="span"
+                fontSize={isMobile ? 10 : 12}
+                color="gray.400"
+                display="inline"
+              >
+                Earn Up to{' '}
+                <Box as="span" display="inline-flex" alignItems="center">
+                  <CustomSkeleton
+                    isLoaded={!isLoadingApy}
+                    display="inline-block"
+                    width={'3.5em'}
+                  >
+                    {apyValue}%
+                  </CustomSkeleton>
+                </Box>{' '}
+                More than Manual Staking
               </Text>
               {!isMobile && (
-                <Icon color="grey.400" boxSize="14px" as={TooltipIcon} />
+                <Icon color="grey.400" boxSize="14px" as={TooltipIcon} ml={1} />
               )}
             </HStack>
           </VStack>
