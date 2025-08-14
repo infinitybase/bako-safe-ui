@@ -20,14 +20,15 @@ const DESCRIPTION = (
   <>
     Rig hasn’t enabled direct stFUEL withdrawals yet.
     <br />
-    Until that option is live, you can swap stFUEL for FUEL through MIRA.
+    Until that option is live, you can swap stFUEL for FUEL through MICROCHAIN.
   </>
 );
+const REDEEM_URL = 'https://www.microchain.systems/';
 
 const ITENS = [
   {
     image: '/stake-withdrawals-1.png',
-    title: '1. Open Mira',
+    title: '1. Open Microchain',
     description: 'Connect your vault to access the stFUEL swap.',
   },
   {
@@ -86,9 +87,9 @@ export function ModalWithdrawalsLiquidStake({
             <Button
               variant="primary"
               width="full"
-              onClick={() => (window.location.href = 'https://mira.ly')}
+              onClick={() => (window.location.href = REDEEM_URL)}
             >
-              Open MIRA
+              Open Microchain
             </Button>
           </DrawerBody>
         </DrawerContent>
@@ -131,9 +132,9 @@ export function ModalWithdrawalsLiquidStake({
           <Button
             variant="primary"
             width="full"
-            onClick={() => window.open('https://mira.ly', '_blank')}
+            onClick={() => window.open(REDEEM_URL, '_blank')}
           >
-            Open MIRA
+            Open Microchain
           </Button>
         </Dialog.Actions>
       </Dialog.Body>
