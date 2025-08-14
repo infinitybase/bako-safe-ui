@@ -1,20 +1,14 @@
-import { Box, Image, Skeleton, Text } from '@chakra-ui/react';
-import { memo, useState } from 'react';
+import { Box, Text } from '@chakra-ui/react';
+import { memo, ReactElement } from 'react';
 
 interface WithdrawlItemProps {
-  image: string;
   title: string;
   description: string;
+  iconItem: ReactElement;
 }
 
 export const ItemWithdrawals = memo(
-  ({ image, title, description }: WithdrawlItemProps) => {
-    const [isLoadingImage, setIsLoadingImage] = useState(true);
-
-    const handleLoadImage = () => {
-      setIsLoadingImage(false);
-    };
-
+  ({ title, description, iconItem }: WithdrawlItemProps) => {
     return (
       <Box
         width={{ base: 'full', md: 300 }}
@@ -25,19 +19,12 @@ export const ItemWithdrawals = memo(
         justifyContent={{ base: 'flex-start', md: 'center' }}
         alignItems={{ base: 'flex-start', md: 'center' }}
       >
-        <Skeleton
-          isLoaded={!isLoadingImage}
-          maxWidth={{ base: '48px', md: '80px' }}
-          marginBottom={{ base: 0, md: 12 }}
+        {iconItem}
+        <Box
+          display={{ base: 'row' }}
+          marginTop={{ base: 0, md: 6 }}
+          marginLeft={{ base: 4, md: 0 }}
         >
-          <Image
-            onLoad={handleLoadImage}
-            src={image}
-            alt={title}
-            borderRadius={8}
-          />
-        </Skeleton>
-        <Box display={{ base: 'row' }} marginLeft={{ base: 4, md: 0 }}>
           <Text
             fontSize={16}
             fontWeight={700}

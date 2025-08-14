@@ -10,7 +10,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 
-import { Dialog } from '@/components';
+import { Dialog, MiraIcon, SwapStakeIcon, WalletStakeIcon } from '@/components';
 import { useScreenSize } from '@/modules/core';
 
 import { ItemWithdrawals } from './ItemWithdrawals';
@@ -27,19 +27,19 @@ const REDEEM_URL = 'https://www.microchain.systems/';
 
 const ITENS = [
   {
-    image: '/stake-withdrawals-1.png',
     title: '1. Open Microchain',
     description: 'Connect your vault to access the stFUEL swap.',
+    icon: <MiraIcon boxSize={70} borderRadius={8} />,
   },
   {
-    image: '/stake-withdrawals-2.png',
     title: '2. Swap stFUEL → FUEL',
     description: 'Select the pair and confirm the transaction.',
+    icon: <SwapStakeIcon fontSize={70} borderRadius={8} />,
   },
   {
-    image: '/stake-withdrawals-3.png',
     title: '3. Receive FUEL',
     description: 'The FUEL will be credited in your vault within seconds.',
+    icon: <WalletStakeIcon fontSize={70} borderRadius={8} />,
   },
 ];
 
@@ -75,12 +75,12 @@ export function ModalWithdrawalsLiquidStake({
           </DrawerHeader>
           <DrawerBody>
             <VStack>
-              {ITENS.map(({ image, title, description }, i) => (
+              {ITENS.map(({ title, description, icon }, i) => (
                 <ItemWithdrawals
                   key={`WithdrawalsLiquidStakeItem-${i}`}
-                  image={image}
                   title={title}
                   description={description}
+                  iconItem={icon}
                 />
               ))}
             </VStack>
@@ -122,12 +122,12 @@ export function ModalWithdrawalsLiquidStake({
           }}
         />
         <HStack marginY={{ base: 10 }}>
-          {ITENS.map(({ image, title, description }, i) => (
+          {ITENS.map(({ title, description, icon }, i) => (
             <ItemWithdrawals
               key={`WithdrawalsLiquidStakeItem-${i}`}
-              image={image}
               title={title}
               description={description}
+              iconItem={icon}
             />
           ))}
         </HStack>
