@@ -35,7 +35,7 @@ export const NFTsEmptyState = () => {
 
         <Stack spacing={2}>
           <Text textAlign="center" color="grey.50" fontSize="md">
-            No itens found
+            No items found
           </Text>
           <Text textAlign="center" color="grey.250" fontSize="xs">
             Discover new collection on Marketplace
