@@ -158,9 +158,9 @@ const VaultBox = (props: VaultBoxPropx) => {
             label={
               !isPending &&
               !isFirstAssetsLoading &&
-              isEthBalanceLowerThanReservedAmount
-                ? TooltipNotEnoughBalance()
-                : null
+              isEthBalanceLowerThanReservedAmount ? (
+                <TooltipNotEnoughBalance />
+              ) : null
             }
             hasArrow
             placement="top"

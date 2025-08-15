@@ -329,9 +329,9 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                     <Tooltip
                       label={
                         isEthBalanceLowerThanReservedAmount &&
-                        !props.isPendingSigner
-                          ? TooltipNotEnoughBalance()
-                          : null
+                        !props.isPendingSigner ? (
+                          <TooltipNotEnoughBalance />
+                        ) : null
                       }
                       hasArrow
                       placement="top"
