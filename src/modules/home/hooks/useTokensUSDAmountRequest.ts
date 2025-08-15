@@ -28,6 +28,8 @@ const useTokensUSDAmountRequest = () => {
 
   const response = data ?? [[Address.fromRandom().toString(), 0.0]];
 
+  console.log('>>> DATA TOKENS USD', data);
+
   const result = response?.reduce<Record<string, { usdAmount: number }>>(
     (acc, [address, usdAmount]) => {
       acc[String(address)] = { usdAmount: Number(usdAmount) };
@@ -35,6 +37,8 @@ const useTokensUSDAmountRequest = () => {
     },
     {},
   );
+
+  console.log('>>> RESULT TOKENS USD', result);
 
   return { data: result, isUnknownToken, ...query };
 };
