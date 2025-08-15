@@ -97,7 +97,7 @@ export const CoinBox = memo(
               ref={coinInputRef}
               value={coin.amount || '0'}
               currency="ETH_FUEL"
-              px={2}
+              px={1}
               isDisabled={isLoadingAmount}
               fontSize="3xl"
               onChange={onChangeAmount}
@@ -115,6 +115,7 @@ export const CoinBox = memo(
               onClick={() => {
                 coinInputRef.current?.focus();
               }}
+              px={1 / 2}
               alignSelf="end"
             >
               <Text
