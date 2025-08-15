@@ -1,4 +1,4 @@
-import { BN, CoinQuantity } from 'fuels';
+import { BN, bn, CoinQuantity } from 'fuels';
 
 import { api } from '@/config';
 import { Asset, NFT } from '@/modules/core';
@@ -110,6 +110,13 @@ export class VaultService {
     const { data } = await api.get<HasReservedCoins>(
       `/predicate/reserved-coins/${predicateId}`,
     );
+
+    console.log('>>> DATA HAS RESERVED COINS', data);
+
+    data.currentBalance.forEach((item) => {
+      console.log('>>> AMOUNT RESERVE', bn(item.amount).toString());
+    });
+
     return {
       ...data,
       reservedCoins: data.reservedCoins.map((reservedCoin) => ({
