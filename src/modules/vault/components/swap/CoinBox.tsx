@@ -14,6 +14,7 @@ import { memo, useEffect, useMemo, useRef } from 'react';
 
 import { CurrencyField } from '@/components';
 import { Asset, SelectedCurrency } from '@/modules';
+import { CRYPTO_CONFIG, formatCurrencyValue } from '@/utils';
 import { moneyFormat } from '@/utils/money-format';
 
 import { AssetsModal } from './AssetsModal';
@@ -55,6 +56,8 @@ export const CoinBox = memo(
       return amount.mul(rate).formatUnits(coin.units * 2);
     }, [coin.amount, coin.rate, coin.units]);
 
+    const value = useMemo(() => coin.amount || '0', [coin.amount]);
+
     return (
       <Card variant="outline" p={3} pb={12}>
         <Flex alignItems="center" justifyContent="space-between">
@@ -92,14 +95,15 @@ export const CoinBox = memo(
             _hover={{
               borderColor: 'grey.200',
             }}
+            gap={2}
           >
             <CurrencyField
               name={`amount-${mode}`}
               borderBottomWidth="0"
               ref={coinInputRef}
-              value={coin.amount || '0'}
-              currency="ETH_FUEL"
-              px={1}
+              value={value}
+              type="crypto"
+              px={0}
               isDisabled={isLoadingAmount}
               fontSize="3xl"
               onChange={onChangeAmount}
@@ -108,16 +112,15 @@ export const CoinBox = memo(
               position="absolute"
               visibility="hidden"
               fontSize="3xl"
-              px={2}
               ref={mirrorRef}
             >
-              {coin.amount || '0'}
+              {formatCurrencyValue(value, CRYPTO_CONFIG, false)}
             </Box>
             <InputRightAddon
               onClick={() => {
                 coinInputRef.current?.focus();
               }}
-              px={1 / 2}
+              px={0}
               alignSelf="end"
             >
               <Text

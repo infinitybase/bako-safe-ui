@@ -3,7 +3,7 @@ import { forwardRef, memo, useCallback, useMemo } from 'react';
 import MaskedInput from 'react-text-mask';
 import { createNumberMask } from 'text-mask-addons';
 
-import { CRYPTO_CONFIG, CURRENCY_CONFIGS } from '@/utils';
+import { CRYPTO_CONFIG, CURRENCY_CONFIGS, formatCurrencyValue } from '@/utils';
 
 export type CurrencyCode = 'BRL' | 'USD' | 'EUR';
 export type CryptoCode = 'ETH_FUEL' | 'ETH';
@@ -39,40 +39,6 @@ export interface CurrencyConfig {
   thousandsSeparator: string | undefined;
   decimalSeparator: string;
 }
-
-const formatValue = (
-  value: string,
-  config: CurrencyConfig,
-  includeLeadingZero: boolean,
-) => {
-  const [integerPart, decimalPart] = value.split(config.decimalSeparator);
-  let decimal = decimalPart || '';
-  let integer = integerPart || '';
-
-  if (config.thousandsSeparator) {
-    integer = integer.replace(
-      /\B(?=(\d{3})+(?!\d))/g,
-      config.thousandsSeparator,
-    );
-  }
-
-  if (includeLeadingZero) {
-    decimal = decimal.padEnd(config.decimalScale, '0');
-  }
-
-  if (!includeLeadingZero) {
-    const endsWithDecimal = value.endsWith(config.decimalSeparator);
-    if (decimal.length === 0) {
-      if (endsWithDecimal) {
-        return `${integer}${config.decimalSeparator}`;
-      }
-      return integer; // no decimal typed
-    }
-    return `${integer}${config.decimalSeparator}${decimal}`;
-  }
-
-  return `${integer}${config.decimalSeparator}${decimal}`;
-};
 
 const Field = forwardRef<HTMLInputElement, CurrencyFieldProps>(
   ({ value = '', currency, type, onChange, isInvalid, ...props }, ref) => {
@@ -128,7 +94,7 @@ const Field = forwardRef<HTMLInputElement, CurrencyFieldProps>(
       if (!value) return '';
 
       const allowedValue = value.replace(getAllowedPattern(), '');
-      return formatValue(allowedValue, config, isCrypto);
+      return formatCurrencyValue(allowedValue, config, !isCrypto);
     }, [value, getAllowedPattern, config, isCrypto]);
 
     const handleInputChange = useCallback(
