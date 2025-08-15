@@ -3,21 +3,15 @@ import {
   Button,
   HStack,
   Icon,
-  IconButton,
   Text,
   Tooltip,
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
-import React, { useMemo, useState } from 'react';
+import { Vault } from 'bakosafe';
+import { useMemo, useState } from 'react';
 
-import {
-  ErrorTooltip,
-  FuelIcon,
-  RigIcon,
-  TooltipNotEnoughBalance,
-} from '@/components';
-import { TooltipIcon } from '@/components/icons/tooltip';
+import { FuelIcon, RigIcon, TooltipNotEnoughBalance } from '@/components';
 import { useGetTokenInfos, useScreenSize } from '@/modules/core';
 import { tokensIDS } from '@/modules/core/utils/assets/address';
 import { useNetworks } from '@/modules/network/hooks';
@@ -29,8 +23,10 @@ import {
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import {
+  useAPY,
   useDepositLiquidStake,
-  useGetInfosCardLiquidStake,
+  useRig,
+  useTotalFuelTokens,
   UseVaultDetailsReturn,
 } from '../../hooks';
 import BalanceHelperDrawer from '../BalanceHelperDrawer';
@@ -39,18 +35,19 @@ import { ItemLiquidStake } from './ItemLiquidStake';
 import { MobileDropdownLiquidStake } from './MobileDropdownLiquidStake';
 export interface CardLiquidStakeProps {
   assets: UseVaultDetailsReturn['assets'];
+  vault: Vault | undefined;
 }
 
-export function CardLiquidStake({ assets }: CardLiquidStakeProps) {
+export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
   const { isMobile } = useScreenSize();
+  const rigContract = useRig(vault);
   const { assetsMap } = useWorkspaceContext();
 
   const { currentNetwork } = useNetworks();
-  const { rigContract, price, isPendingSigner } = useDepositLiquidStake();
-  const { apyValue, isLoadingApy, totalFuelTokens, isLoadingFuelTokens } =
-    useGetInfosCardLiquidStake({
-      rigContract,
-    });
+  const { price, isPendingSigner } = useDepositLiquidStake();
+  const { apyValue, isLoadingApy } = useAPY();
+  const { totalFuelTokens, isLoadingFuelTokens } =
+    useTotalFuelTokens(rigContract);
 
   const [isOpenMobileItem, setIsOpenMobileItem] = useState<boolean>(false);
   const [modal, setModal] = useState<'STAKE' | 'REDEEM' | ''>('');
@@ -101,11 +98,8 @@ export function CardLiquidStake({ assets }: CardLiquidStakeProps) {
     setModal('');
   };
 
-  const {
-    isOpen: isOpenErrorBalance,
-    onClose: onCloseErrorBalance,
-    onOpen,
-  } = useDisclosure();
+  const { isOpen: isOpenErrorBalance, onClose: onCloseErrorBalance } =
+    useDisclosure();
 
   const buttonStake = (
     <Button
@@ -118,7 +112,11 @@ export function CardLiquidStake({ assets }: CardLiquidStakeProps) {
       fontSize={12}
       onClick={() => handleOpenModal('STAKE')}
       isDisabled={
-        !isMainnet || !assets.assets || isPendingSigner || notEnoughBalanceETH
+        !isMainnet ||
+        !assets.assets ||
+        isPendingSigner ||
+        notEnoughBalanceETH ||
+        Number(fuelTokens) === 0
       }
     >
       Stake
@@ -133,9 +131,11 @@ export function CardLiquidStake({ assets }: CardLiquidStakeProps) {
         isLoading={!assets.assets}
       >
         <VStack alignItems={'flex-end'} gap={0}>
-          {notEnoughBalanceETH ? (
+          {notEnoughBalanceETH || Number(fuelTokens) === 0 ? (
             <Tooltip
-              label={TooltipNotEnoughBalance()}
+              label={TooltipNotEnoughBalance({
+                asset: Number(fuelTokens) === 0 ? 'FUEL' : 'ETH',
+              })}
               hasArrow
               placement="top"
               bg="dark.700"
@@ -148,34 +148,11 @@ export function CardLiquidStake({ assets }: CardLiquidStakeProps) {
           ) : (
             buttonStake
           )}
-          ;
-          {isMobile && notEnoughBalanceETH && !!assets.assets && (
-            <Text
-              variant="description"
-              textAlign={{ base: 'end', sm: 'left' }}
-              fontWeight={400}
-              fontSize={8}
-              color="error.650"
-              onClick={onOpen}
-              cursor="pointer"
-            >
-              Not enough balance{' '}
-              <IconButton
-                bg="none"
-                _hover={{ bg: 'none' }}
-                aria-label="Open helper modal"
-                size={'sm'}
-                minW={2}
-                maxH={2}
-                icon={<Icon as={ErrorTooltip} fontSize={8} />}
-              />
-            </Text>
-          )}
         </VStack>
       </ItemLiquidStake>
 
       <ItemLiquidStake
-        label="stFuel Balance"
+        label="stFUEL Balance"
         value={stFuelTokens}
         isLoading={!assets.assets}
       >
@@ -194,12 +171,12 @@ export function CardLiquidStake({ assets }: CardLiquidStakeProps) {
         </Button>
       </ItemLiquidStake>
       <ItemLiquidStake
-        label="Total Fuel"
-        value={totalFuelTokens}
+        label="Total FUEL"
+        value={totalFuelTokens.toUpperCase()}
         isLoading={isLoadingFuelTokens}
       />
       <ItemLiquidStake
-        label="APY%"
+        label="APY"
         value={`${apyValue}%`}
         isLoading={isLoadingApy}
       />
@@ -212,12 +189,9 @@ export function CardLiquidStake({ assets }: CardLiquidStakeProps) {
         maxW="full"
         marginBottom={9}
         borderRadius={9}
-        height={{ base: 16, md: 36 }}
+        height={{ base: '70px', sm: 16, md: 36 }}
         padding={{ base: 3, md: 4 }}
-        backgroundImage={{
-          base: '/bg-stake-mobile.png',
-          md: '/bg-stake-desktop.png',
-        }}
+        backgroundImage={'/bg-stake-card.png'}
         backgroundSize="cover"
         alignContent={{ base: 'center', md: 'flex-start' }}
       >
@@ -235,20 +209,15 @@ export function CardLiquidStake({ assets }: CardLiquidStakeProps) {
 
         <HStack
           marginBottom={{ base: 0, md: 4 }}
+          height={{ base: 'none', md: 'flex' }}
           onClick={handleOpenMobileItem}
         >
           <Icon as={FuelIcon} fontSize={{ base: 32, md: 33 }} />
-          <VStack alignItems="flex-start" gap={0}>
-            <Text fontSize={isMobile ? 12 : 14}>Auto Stake $FUEL</Text>
-            <HStack>
-              <Text fontSize={isMobile ? 10 : 12} color={'gray.400'}>
-                Earn Up to 18% More than Manual Staking
-              </Text>
-              {!isMobile && (
-                <Icon color="grey.400" boxSize="14px" as={TooltipIcon} />
-              )}
-            </HStack>
-          </VStack>
+
+          <Text fontWeight={500} fontSize={isMobile ? 12 : 14}>
+            Liquid Stake FUEL
+          </Text>
+
           <HStack
             flex={1}
             justifyContent="flex-end"
@@ -258,18 +227,46 @@ export function CardLiquidStake({ assets }: CardLiquidStakeProps) {
             <Text fontSize={10}>powered by</Text>
             <RigIcon fontSize={32} />
           </HStack>
-          <Text
-            flex={1}
-            textAlign="right"
-            fontSize={14}
-            display={{ base: 'block', md: 'none' }}
-          >
-            {stFuelTokens}
-            <br />
-            <Text as="span" fontSize={12}>
-              in staking
+
+          {Number(stFuelTokens) > 0 ? (
+            <Text
+              flex={1}
+              textAlign="right"
+              fontSize={14}
+              display={{ base: 'block', md: 'none' }}
+            >
+              {stFuelTokens}
+              <br />
+              <Text as="span" fontSize={12}>
+                in staking
+              </Text>
             </Text>
-          </Text>
+          ) : (
+            <Box
+              flex={1}
+              display={{ base: 'flex', md: 'none' }}
+              justifyContent="flex-end"
+            >
+              <Button
+                variant="outline"
+                color="grey.75"
+                borderColor="grey.75"
+                fontSize={'12px'}
+                px="8px"
+                py="4px"
+                _hover={{ bg: '#f5f5f513' }}
+                onClick={() => handleOpenModal('STAKE')}
+                isDisabled={
+                  !isMainnet ||
+                  !assets.assets ||
+                  isPendingSigner ||
+                  notEnoughBalanceETH
+                }
+              >
+                {'Start staking'}
+              </Button>
+            </Box>
+          )}
         </HStack>
         <HStack
           justifyContent="space-between"

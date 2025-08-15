@@ -10,28 +10,36 @@ import {
   VStack,
 } from '@chakra-ui/react';
 
-import { Dialog } from '@/components';
+import { Dialog, MiraIcon, SwapStakeIcon, WalletStakeIcon } from '@/components';
 import { useScreenSize } from '@/modules/core';
 
 import { ItemWithdrawals } from './ItemWithdrawals';
 
-const TITLE = 'Withdrawals';
-const DESCRIPTION = `Rig hasn’t enabled direct stFUEL withdrawals yet. Until that option is live, you can swap stFUEL for FUEL through MIRA.`;
+const TITLE = 'Withdrawal';
+const DESCRIPTION = (
+  <span style={{ display: 'block', maxWidth: 'none', whiteSpace: 'normal' }}>
+    Rig hasn’t enabled direct stFUEL withdrawals yet.
+    <br />
+    Until that option is live, you can swap stFUEL for FUEL through MICROCHAIN.
+  </span>
+);
+const REDEEM_URL = 'https://www.microchain.systems/';
+
 const ITENS = [
   {
-    image: '/stake-withdrawals-1.png',
-    title: '1. Open Mira',
+    title: '1. Open Microchain',
     description: 'Connect your vault to access the stFUEL swap.',
+    icon: <MiraIcon boxSize={70} borderRadius={8} />,
   },
   {
-    image: '/stake-withdrawals-2.png',
     title: '2. Swap stFUEL → FUEL',
     description: 'Select the pair and confirm the transaction.',
+    icon: <SwapStakeIcon fontSize={70} borderRadius={8} />,
   },
   {
-    image: '/stake-withdrawals-3.png',
     title: '3. Receive FUEL',
     description: 'The FUEL will be credited in your vault within seconds.',
+    icon: <WalletStakeIcon fontSize={70} borderRadius={8} />,
   },
 ];
 
@@ -67,21 +75,21 @@ export function ModalWithdrawalsLiquidStake({
           </DrawerHeader>
           <DrawerBody>
             <VStack>
-              {ITENS.map(({ image, title, description }, i) => (
+              {ITENS.map(({ title, description, icon }, i) => (
                 <ItemWithdrawals
                   key={`WithdrawalsLiquidStakeItem-${i}`}
-                  image={image}
                   title={title}
                   description={description}
+                  iconItem={icon}
                 />
               ))}
             </VStack>
             <Button
               variant="primary"
               width="full"
-              onClick={() => (window.location.href = 'https://mira.ly')}
+              onClick={() => (window.location.href = REDEEM_URL)}
             >
-              Open MIRA
+              Open Microchain
             </Button>
           </DrawerBody>
         </DrawerContent>
@@ -105,17 +113,21 @@ export function ModalWithdrawalsLiquidStake({
           mb={0}
           title={TITLE}
           description={DESCRIPTION}
+          descriptionColor={'#868079'}
           mt={0}
           titleSxProps={{ fontSize: 16 }}
           onClose={onClose}
+          sx={{
+            '& div': { maxWidth: 'none !important' },
+          }}
         />
         <HStack marginY={{ base: 10 }}>
-          {ITENS.map(({ image, title, description }, i) => (
+          {ITENS.map(({ title, description, icon }, i) => (
             <ItemWithdrawals
               key={`WithdrawalsLiquidStakeItem-${i}`}
-              image={image}
               title={title}
               description={description}
+              iconItem={icon}
             />
           ))}
         </HStack>
@@ -123,9 +135,9 @@ export function ModalWithdrawalsLiquidStake({
           <Button
             variant="primary"
             width="full"
-            onClick={() => window.open('https://mira.ly', '_blank')}
+            onClick={() => window.open(REDEEM_URL, '_blank')}
           >
-            Open MIRA
+            Open Microchain
           </Button>
         </Dialog.Actions>
       </Dialog.Body>

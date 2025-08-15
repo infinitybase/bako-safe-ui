@@ -11,7 +11,7 @@ import { TransactionService } from '@/modules/transactions/services';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useVaultInfosContext } from '../../VaultInfosProvider';
-import { DECIMALS } from './useGetInfosCardLiquidStake';
+import { DECIMALS } from './useTotalFuelTokens';
 
 const RIG_ID_CONTRACT = import.meta.env.VITE_RIG_ID_CONTRACT!;
 const WALLET_BAKO = import.meta.env.VITE_WALLET_BAKO!;
@@ -113,11 +113,13 @@ const useDepositLiquidStake = () => {
       TransactionStatus.AWAIT_REQUIREMENTS,
     ]);
 
-    await refetchTransactionsList();
-    await refetchHomeTransactionsList();
-    await refetchVaultTransactionsList();
-
-    await confirmTransaction(transaction.id, undefined, transaction);
+    await confirmTransaction(transaction.id, undefined, transaction).finally(
+      async () => {
+        await refetchVaultTransactionsList();
+        await refetchTransactionsList();
+        await refetchHomeTransactionsList();
+      },
+    );
 
     return transaction;
   };

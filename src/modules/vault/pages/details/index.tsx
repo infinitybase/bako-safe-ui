@@ -24,7 +24,7 @@ import WelcomeDialog from '@/components/welcomeDialog';
 import { Drawer } from '@/layouts/dashboard/drawer';
 import { CardLiquidStake } from '@/modules';
 import { PermissionRoles } from '@/modules/core';
-import { useGetParams } from '@/modules/core/hooks';
+import { useBakoSafeVault, useGetParams } from '@/modules/core/hooks';
 import { Pages } from '@/modules/core/routes';
 import { useTemplateStore } from '@/modules/template/store/useTemplateStore';
 import { TransactionCard, WaitingSignatureBadge } from '@/modules/transactions';
@@ -85,6 +85,11 @@ const VaultDetailsPage = () => {
   const { OWNER, SIGNER } = PermissionRoles;
 
   const canSetTemplate = hasPermission([SIGNER]) || hasPermission([OWNER]);
+  const { vault: vaultSafe } = useBakoSafeVault({
+    address: vault.data.predicateAddress,
+    provider: vault.data.provider,
+    id: vault.data.id,
+  });
 
   const hideSetTemplateButton = true;
 
@@ -238,7 +243,7 @@ const VaultDetailsPage = () => {
         )}
       </HStack>
 
-      <CardLiquidStake assets={assets} />
+      <CardLiquidStake assets={assets} vault={vaultSafe} />
 
       <HStack
         mb={{ base: 10, sm: 14 }}
