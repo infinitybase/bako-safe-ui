@@ -50,7 +50,9 @@ export const CoinBox = memo(
 
     const amountInUSD = useMemo(() => {
       if (!coin.amount || !coin.rate) return '0';
-      return bn.parseUnits(coin.amount).mul(coin.rate).formatUnits(coin.units);
+      const amount = bn.parseUnits(coin.amount, coin.units);
+      const rate = bn.parseUnits(coin.rate.toString(), coin.units);
+      return amount.mul(rate).formatUnits(coin.units * 2);
     }, [coin.amount, coin.rate, coin.units]);
 
     return (
