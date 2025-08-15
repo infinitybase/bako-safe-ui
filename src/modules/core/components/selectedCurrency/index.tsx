@@ -19,7 +19,7 @@ export const SelectedCurrency = ({
     <Skeleton minW="130px" minH="30px" isLoaded={!isLoadingCurrencies}>
       <Flex
         alignItems="center"
-        justifyContent="space-between"
+        justifyContent="flex-end"
         gap={2}
         cursor="pointer"
         align="center"
