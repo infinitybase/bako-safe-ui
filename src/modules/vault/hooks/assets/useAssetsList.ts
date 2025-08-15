@@ -18,16 +18,24 @@ export const useAssetsList = ({ vault }: { vault?: Vault }) => {
   });
   const { assets, isLoading: isLoadingAssets } = useBaseAssetList();
   const { data, isLoading: isLoadingUSDTokens } = useTokensUSDAmountRequest();
+  console.log('data', data);
 
   const assetsWithBalance = useMemo(
     () =>
-      assets.map((asset) => ({
-        ...asset,
-        balance:
-          balances?.find((balance) => balance.assetId === asset.assetId)
-            ?.amount || null,
-        rate: data?.[asset.assetId.toLowerCase()]?.usdAmount,
-      })),
+      assets
+        .map((asset) => ({
+          ...asset,
+          balance:
+            balances?.find((balance) => balance.assetId === asset.assetId)
+              ?.amount || null,
+          rate: data?.[asset.assetId.toLowerCase()]?.usdAmount,
+        }))
+        .sort((a, b) => {
+          if (a.balance && b.balance) {
+            return a.balance.gt(b.balance) ? -1 : 1;
+          }
+          return 0;
+        }),
     [assets, balances, data],
   );
 
