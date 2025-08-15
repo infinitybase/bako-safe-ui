@@ -18,7 +18,6 @@ export const useAssetsList = ({ vault }: { vault?: Vault }) => {
   });
   const { assets, isLoading: isLoadingAssets } = useBaseAssetList();
   const { data, isLoading: isLoadingUSDTokens } = useTokensUSDAmountRequest();
-  console.log('data', data);
 
   const assetsWithBalance = useMemo(
     () =>
@@ -28,7 +27,7 @@ export const useAssetsList = ({ vault }: { vault?: Vault }) => {
           balance:
             balances?.find((balance) => balance.assetId === asset.assetId)
               ?.amount || null,
-          rate: data?.[asset.assetId.toLowerCase()]?.usdAmount,
+          rate: data?.[asset.assetId]?.usdAmount,
         }))
         .sort((a, b) => {
           if (a.balance && b.balance) {
