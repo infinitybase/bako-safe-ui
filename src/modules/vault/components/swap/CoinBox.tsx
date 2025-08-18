@@ -141,11 +141,12 @@ export const CoinBox = memo(
             </InputRightAddon>
           </InputGroup>
 
-          {coin.amount && coin.rate && bn.parseUnits(coin.amount).gt(0) && (
-            <Text color="grey.500" fontSize="xs">
-              {moneyFormat(amountInUSD)}
-            </Text>
-          )}
+          <Text color="grey.500" fontSize="xs" minH="20px">
+            {coin.amount &&
+              coin.rate &&
+              bn.parseUnits(coin.amount).gt(0) &&
+              moneyFormat(amountInUSD)}
+          </Text>
         </Stack>
       </Card>
     );
