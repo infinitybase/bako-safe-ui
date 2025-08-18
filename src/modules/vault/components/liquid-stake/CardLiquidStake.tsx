@@ -238,7 +238,7 @@ export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
               {stFuelTokens}
               <br />
               <Text as="span" fontSize={12}>
-                in staking
+                stFUEL
               </Text>
             </Text>
           ) : (
