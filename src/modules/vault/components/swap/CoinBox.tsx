@@ -26,6 +26,7 @@ interface CoinBoxProps {
   assets: (Asset & { balance: BN | null })[];
   onChangeAmount: (value: string) => void;
   isLoadingAmount?: boolean;
+  isLoadingAssets?: boolean;
 }
 
 export const CoinBox = memo(
@@ -36,6 +37,7 @@ export const CoinBox = memo(
     assets,
     onChangeAmount,
     isLoadingAmount,
+    isLoadingAssets,
   }: CoinBoxProps) => {
     const assetsModal = useDisclosure();
     const mirrorRef = useRef<HTMLDivElement>(null);
@@ -57,7 +59,6 @@ export const CoinBox = memo(
     }, [coin.amount, coin.rate, coin.units]);
 
     const value = useMemo(() => coin.amount || '', [coin.amount]);
-    console.log('VALUE', { mode, value });
 
     return (
       <Card variant="outline" p={3} pb={12}>
@@ -73,6 +74,7 @@ export const CoinBox = memo(
               name={coin.name}
               imageUrl={coin.icon}
               onClick={assetsModal.onOpen}
+              isLoadingCurrencies={isLoadingAssets}
             />
           </Box>
 
