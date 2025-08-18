@@ -100,11 +100,11 @@ export const RootSwap = memo(({ assets, vault }: RootSwapProps) => {
       ...prevState,
       from: {
         ...prevState.from,
-        amount: '0',
+        amount: '',
       },
       to: {
         ...prevState.to,
-        amount: '0',
+        amount: '',
       },
     }));
     setSwapButtonTitle(SwapButtonTitle.PREVIEW);
@@ -201,7 +201,7 @@ export const RootSwap = memo(({ assets, vault }: RootSwapProps) => {
           to: isSameAsset ? prevState.from : prevState.to,
           from: {
             ...selectedAsset,
-            amount: prevState.from.amount || '0',
+            amount: prevState.from.amount || '',
           },
           status: 'idle',
         }));
@@ -223,7 +223,7 @@ export const RootSwap = memo(({ assets, vault }: RootSwapProps) => {
           from: isSameAsset ? prevState.to : prevState.from,
           to: {
             ...selectedAsset,
-            amount: prevState.to.amount || '0',
+            amount: prevState.to.amount || '',
           },
           status: 'idle',
         }));
@@ -240,7 +240,7 @@ export const RootSwap = memo(({ assets, vault }: RootSwapProps) => {
         const stateMode = mode === 'sell' ? 'from' : 'to';
         const updatedAsset = prevState[stateMode];
         const otherKey = stateMode === 'from' ? 'to' : 'from';
-        const otherAsset = prevState[stateMode === 'from' ? 'to' : 'from'];
+        const otherAsset = prevState[otherKey];
         handleSwapModeChange(mode);
         if (mode === 'sell') {
           handleCheckBalance(value, updatedAsset.assetId);
@@ -254,7 +254,7 @@ export const RootSwap = memo(({ assets, vault }: RootSwapProps) => {
           },
           [otherKey]: {
             ...otherAsset,
-            amount: '0',
+            amount: '',
           },
         };
       });
@@ -390,10 +390,7 @@ export const RootSwap = memo(({ assets, vault }: RootSwapProps) => {
         />
       )}
 
-      <Flex alignItems="center" gap={2} mt={4}>
-        <Button variant="secondary" onClick={handleResetAmounts}>
-          Cancel
-        </Button>
+      <Flex alignItems="center" mt={4}>
         <Button
           w="full"
           variant="primary"
