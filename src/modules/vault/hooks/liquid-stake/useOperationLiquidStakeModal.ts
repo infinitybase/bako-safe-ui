@@ -3,7 +3,7 @@ import { bn } from 'fuels';
 import { useCallback, useState } from 'react';
 
 import { useTransactionToast } from '@/modules/transactions/providers/toast';
-import { formatMinDecimals } from '@/utils';
+import { formatMaxDecimals, formatMinDecimals } from '@/utils';
 
 import { useDepositLiquidStake } from './useDepositLiquidStake';
 
@@ -52,7 +52,8 @@ const useOperationLiquidStakeModal = ({
     const sourceNumber = value || 0;
     const destinationValue = (sourceNumber * price).toString();
 
-    const formattedDestination = formatMinDecimals(destinationValue, 3);
+    const formattedMinDestination = formatMinDecimals(destinationValue, 3);
+    const formattedDestination = formatMaxDecimals(formattedMinDestination, 9);
     setValueDestination(formattedDestination);
 
     setErrorAmount(
@@ -70,7 +71,9 @@ const useOperationLiquidStakeModal = ({
     const destinationNumber = parseFloat(newValue) || 0;
     const sourceValue = (destinationNumber / price).toString();
 
-    const formattedSource = formatMinDecimals(sourceValue, 3);
+    const formattedMinSource = formatMinDecimals(sourceValue, 3);
+    const formattedSource = formatMaxDecimals(formattedMinSource, 9);
+
     setValueSource(formattedSource);
     setErrorAmount(
       Number(formattedSource) > balance
@@ -90,7 +93,9 @@ const useOperationLiquidStakeModal = ({
     setIsDepositing(true);
 
     try {
+      console.log('>>> VALUE BEFORE BN: ', valueSource);
       const COIN_QUANTITY = bn.parseUnits(valueSource.replace(/,/g, ''), 9);
+      console.log('>>> CHAMOU O DEPOSIT');
       await depositWithVault(COIN_QUANTITY);
       handleClose();
     } catch (error) {
