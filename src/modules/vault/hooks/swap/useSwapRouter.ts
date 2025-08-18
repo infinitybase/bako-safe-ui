@@ -22,8 +22,9 @@ export const useSwapRouter = (
   amount = bn(0),
   assetIn: Asset,
   assetOut: Asset,
+  networkUrl: string,
 ) => {
-  const amm = useMiraReadonly();
+  const amm = useMiraReadonly(networkUrl);
 
   const shouldFetch = useMemo(
     () => !!assetIn && !!assetOut && amount.gt(0),
