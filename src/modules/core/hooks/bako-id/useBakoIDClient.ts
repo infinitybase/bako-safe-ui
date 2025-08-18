@@ -12,7 +12,7 @@ import { useCallback } from 'react';
 import { localStorageKeys } from '@/modules/auth';
 import { availableNetWorks, NetworkType } from '@/modules/network/services';
 
-const client = new BakoIDClient();
+const client = new BakoIDClient('http://localhost:3000/api');
 
 const BAKOID_QUERY_KEYS = {
   base: ['bako-id'] as QueryKey,
@@ -133,6 +133,7 @@ export const useAvatar = (name: string) => {
     queryFn: () => {
       return client.avatar(name, chainId);
     },
+    queryKey: BAKOID_QUERY_KEYS.avatar(name),
   });
 
   return { avatar, ...rest };
