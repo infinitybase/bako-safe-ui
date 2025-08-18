@@ -93,9 +93,7 @@ const useOperationLiquidStakeModal = ({
     setIsDepositing(true);
 
     try {
-      console.log('>>> VALUE BEFORE BN: ', valueSource);
       const COIN_QUANTITY = bn.parseUnits(valueSource.replace(/,/g, ''), 9);
-      console.log('>>> CHAMOU O DEPOSIT');
       await depositWithVault(COIN_QUANTITY);
       handleClose();
     } catch (error) {
