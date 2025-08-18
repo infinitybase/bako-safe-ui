@@ -56,7 +56,8 @@ export const CoinBox = memo(
       return amount.mul(rate).formatUnits(coin.units * 2);
     }, [coin.amount, coin.rate, coin.units]);
 
-    const value = useMemo(() => coin.amount || '0', [coin.amount]);
+    const value = useMemo(() => coin.amount || '', [coin.amount]);
+    console.log('VALUE', { mode, value });
 
     return (
       <Card variant="outline" p={3} pb={12}>
@@ -104,6 +105,8 @@ export const CoinBox = memo(
               value={value}
               type="crypto"
               px={0}
+              placeholder="0"
+              _placeholder={{ opacity: 0.5 }}
               isDisabled={isLoadingAmount}
               fontSize="3xl"
               onChange={onChangeAmount}
@@ -114,7 +117,7 @@ export const CoinBox = memo(
               fontSize="3xl"
               ref={mirrorRef}
             >
-              {formatCurrencyValue(value, CRYPTO_CONFIG, false)}
+              {formatCurrencyValue(value || '0', CRYPTO_CONFIG, false)}
             </Box>
             <InputRightAddon
               onClick={() => {
