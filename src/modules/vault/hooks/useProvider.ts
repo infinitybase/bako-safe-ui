@@ -1,16 +1,8 @@
 import { Provider } from 'fuels';
 import { useMemo } from 'react';
 
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
-
-export const useProvider = () => {
-  const {
-    authDetails: { userInfos },
-  } = useWorkspaceContext();
-
+export const useProvider = (url: string | undefined) => {
   return useMemo(() => {
-    if (userInfos.network.url) {
-      return new Provider(userInfos.network.url);
-    }
-  }, [userInfos.network.url]);
+    return new Provider(url || import.meta.env.VITE_MAINNET_NETWORK);
+  }, [url]);
 };
