@@ -103,10 +103,14 @@ export const CoinBox = memo(
             _hover={{
               borderColor: 'grey.200',
             }}
+            onClick={() => {
+              coinInputRef.current?.focus();
+            }}
             gap={2}
           >
             <CurrencyField
               name={`amount-${mode}`}
+              id={`amount-${mode}`}
               borderBottomWidth="0"
               ref={coinInputRef}
               value={value}
@@ -127,9 +131,8 @@ export const CoinBox = memo(
               {formatCurrencyValue(value || '0', CRYPTO_CONFIG, false)}
             </Box>
             <InputRightAddon
-              onClick={() => {
-                coinInputRef.current?.focus();
-              }}
+              as="label"
+              htmlFor={`amount-${mode}`}
               px={0}
               alignSelf="end"
             >
