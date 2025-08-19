@@ -51,12 +51,17 @@ export const CoinBox = memo(
       }
     }, [coin.amount]);
 
+    const currentRate = useMemo(
+      () => assets.find((a) => a.assetId === coin.assetId)?.rate || 0,
+      [assets, coin.assetId],
+    );
+
     const amountInUSD = useMemo(() => {
-      if (!coin.amount || !coin.rate) return '0';
+      if (!coin.amount || !currentRate) return '0';
       const amount = bn.parseUnits(coin.amount, coin.units);
-      const rate = bn.parseUnits(coin.rate.toString(), coin.units);
+      const rate = bn.parseUnits(currentRate.toString(), coin.units);
       return amount.mul(rate).formatUnits(coin.units * 2);
-    }, [coin.amount, coin.rate, coin.units]);
+    }, [coin.amount, currentRate, coin.units]);
 
     const value = useMemo(() => coin.amount || '', [coin.amount]);
 
@@ -145,7 +150,7 @@ export const CoinBox = memo(
 
           <Text color="grey.500" fontSize="xs" minH="20px">
             {coin.amount &&
-              coin.rate &&
+              currentRate &&
               bn.parseUnits(coin.amount).gt(0) &&
               moneyFormat(amountInUSD)}
           </Text>

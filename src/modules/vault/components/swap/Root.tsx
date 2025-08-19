@@ -90,6 +90,7 @@ export const RootSwap = memo(
         : DEFAULT_FUEL_ASSET,
       status: 'idle',
     });
+
     const availableEthBalance = useAvailableEthBalance(swapState.from, assets);
     const bakoAmm = useBakoAmm(vault);
 
