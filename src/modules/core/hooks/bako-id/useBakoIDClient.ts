@@ -9,7 +9,7 @@ import { BakoProvider } from 'bakosafe';
 import { Provider } from 'fuels';
 import { useCallback } from 'react';
 
-const client = new BakoIDClient('http://localhost:3000/api');
+const client = new BakoIDClient();
 
 const BAKOID_QUERY_KEYS = {
   base: ['bako-id'] as QueryKey,
