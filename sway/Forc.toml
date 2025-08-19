@@ -1,0 +1,7 @@
+[workspace]
+members = [
+    "./libraries/interfaces",
+    "./libraries/math",
+    "./libraries/utils",
+    "./contracts/swap",
+]

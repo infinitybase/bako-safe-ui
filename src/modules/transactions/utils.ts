@@ -4,6 +4,7 @@ import { bn } from 'fuels';
 import {
   DownLeftArrowGreen,
   LiquidStakeIcon,
+  SwapIcon,
   UpRightArrowYellow,
 } from '@/components';
 import { ContractIcon } from '@/components/icons/tx-contract';
@@ -95,14 +96,17 @@ export const getTransactionIconComponent = ({
   isFromConnector,
   isFromCLI,
   isDeposit,
+  isSwap,
   isLiquidStake,
 }: {
   isDeploy: boolean;
   isFromConnector: boolean;
   isFromCLI: boolean;
   isDeposit: boolean;
+  isSwap: boolean;
   isLiquidStake: boolean;
 }) => {
+  if (isSwap) return SwapIcon;
   if (isDeploy) return DeployIcon;
   if (isLiquidStake) return LiquidStakeIcon;
   if (isFromConnector || isFromCLI) return ContractIcon;
