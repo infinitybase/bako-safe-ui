@@ -1,22 +1,25 @@
+import { WarningTwoIcon } from '@chakra-ui/icons';
 import {
   Avatar,
   Badge,
   chakra,
   Flex,
-  HStack, Icon,
+  HStack,
+  Icon,
+  Skeleton,
   Text,
-  VStack
+  VStack,
 } from '@chakra-ui/react';
-import { useNotification } from '@/modules/notification';
 
 import { AddAddressBook, AddressWithCopyBtn, Handle } from '@/components';
 import { Card } from '@/components/card';
 import { TypeUser } from '@/modules/auth';
 import { AddressUtils } from '@/modules/core';
 import { useScreenSize } from '@/modules/core/hooks';
+import { useBakoIdAvatar } from '@/modules/core/hooks/bako-id';
+import { useNetworks } from '@/modules/network/hooks';
+import { useNotification } from '@/modules/notification';
 import { HandleUtils } from '@/utils/handle';
-import { WarningTwoIcon } from '@chakra-ui/icons';
-import React from 'react';
 
 const { VITE_BAKO_ID_URL } = import.meta.env;
 
@@ -65,6 +68,14 @@ const CardMember = ({
   const { isLitteSmall, isLargerThan680, isLargerThan1700, isExtraLarge } =
     useScreenSize();
   const toast = useNotification();
+  const { currentNetwork } = useNetworks();
+
+  // the avatar request is enabled only when have handle
+  const { avatar, isLoading: isLoadingAvatar } = useBakoIdAvatar(
+    // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
+    member?.handle!,
+    currentNetwork.chainId,
+  );
 
   const hasNickname = member?.nickname;
   const address =
@@ -84,13 +95,18 @@ const CardMember = ({
       boxShadow="lg"
     >
       <Flex flexDir="row" gap={2} w="full" alignItems="center">
-        <Avatar
-          borderRadius={8}
-          src={member?.avatar}
+        <Skeleton
+          isLoaded={!isLoadingAvatar}
           boxSize={{ base: '32px', xs: '40px' }}
-          border="1px solid"
-          borderColor="grey.75"
-        />
+        >
+          <Avatar
+            borderRadius={8}
+            src={avatar || member?.avatar}
+            boxSize="full"
+            border={avatar ? 'none' : '1px solid'}
+            borderColor="grey.75"
+          />
+        </Skeleton>
 
         <HStack
           w="full"
