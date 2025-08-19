@@ -12,6 +12,7 @@ import {
   keyframes,
   Text,
   TextProps,
+  Tooltip,
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
@@ -24,6 +25,7 @@ import {
   CustomSkeleton,
   ErrorTooltip,
   SquarePlusIcon,
+  TooltipNotEnoughBalance,
 } from '@/components';
 import { EyeCloseIcon } from '@/components/icons/eye-close';
 import { EyeOpenIcon } from '@/components/icons/eye-open';
@@ -324,30 +326,50 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                     hidden={!hasBalance}
                     alignItems={{ base: 'flex-end', sm: 'flex-start' }}
                   >
-                    <Button
-                      alignSelf="end"
-                      onClick={() =>
-                        navigate(
-                          Pages.createTransaction({
-                            vaultId: vault.data?.id,
-                            workspaceId,
-                          }),
-                        )
+                    <Tooltip
+                      label={
+                        isEthBalanceLowerThanReservedAmount &&
+                        !props.isPendingSigner ? (
+                          <TooltipNotEnoughBalance />
+                        ) : null
                       }
-                      isDisabled={
-                        !hasBalance ||
-                        !makeTransactionsPerm ||
-                        props.isPendingSigner ||
-                        isEthBalanceLowerThanReservedAmount
-                      }
-                      variant="primary"
-                      leftIcon={<SquarePlusIcon />}
-                      fontWeight="bold"
+                      hasArrow
+                      placement="top"
+                      bg="dark.700"
+                      color="white"
                     >
-                      Send
-                    </Button>
+                      <Box
+                        display="inline-block"
+                        cursor="not-allowed"
+                        w={'100%'}
+                      >
+                        <Button
+                          alignSelf="end"
+                          onClick={() =>
+                            navigate(
+                              Pages.createTransaction({
+                                vaultId: vault.data?.id,
+                                workspaceId,
+                              }),
+                            )
+                          }
+                          isDisabled={
+                            !hasBalance ||
+                            !makeTransactionsPerm ||
+                            props.isPendingSigner ||
+                            isEthBalanceLowerThanReservedAmount
+                          }
+                          variant="primary"
+                          leftIcon={<SquarePlusIcon />}
+                          fontWeight="bold"
+                        >
+                          Send
+                        </Button>
+                      </Box>
+                    </Tooltip>
                     {isEthBalanceLowerThanReservedAmount &&
-                      !props.isPendingSigner && (
+                      !props.isPendingSigner &&
+                      isMobile && (
                         <Text
                           variant="description"
                           textAlign={{ base: 'end', sm: 'left' }}
