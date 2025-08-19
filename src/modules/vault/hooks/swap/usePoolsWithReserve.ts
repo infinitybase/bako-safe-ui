@@ -1,8 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
+import { ReadonlyMiraAmm } from 'mira-dex-ts';
 import { useMemo } from 'react';
 
 import { PoolIdCombination, PoolsWithReserve } from '../../utils';
-import { useMiraReadonly } from './useMiraReadonly';
 
 const constructPoolKey = (combination: PoolIdCombination): string => {
   const pool = combination[2];
@@ -11,10 +11,9 @@ const constructPoolKey = (combination: PoolIdCombination): string => {
 
 export const usePoolsWithReserve = (
   poolsCombination: PoolIdCombination[],
+  amm: ReadonlyMiraAmm | undefined,
   shouldFetch = false,
 ) => {
-  const amm = useMiraReadonly();
-
   const poolsKeys = useMemo(
     () => poolsCombination.map(constructPoolKey),
     [poolsCombination],
