@@ -59,7 +59,7 @@ export const getGarageURL = (): string => {
       baseUrl = 'https://preview.garage.zone/';
       break;
     case 'production':
-      baseUrl = 'https://preview.garage.zone/';
+      baseUrl = 'https://garage.zone/';
       break;
     default:
       baseUrl = 'http://127.0.0.1:5174';
