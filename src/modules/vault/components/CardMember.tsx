@@ -1,22 +1,23 @@
+import { WarningTwoIcon } from '@chakra-ui/icons';
 import {
   Avatar,
   Badge,
   chakra,
   Flex,
-  HStack, Icon,
+  HStack,
+  Icon,
   Text,
-  VStack
+  VStack,
 } from '@chakra-ui/react';
-import { useNotification } from '@/modules/notification';
+import React from 'react';
 
 import { AddAddressBook, AddressWithCopyBtn, Handle } from '@/components';
 import { Card } from '@/components/card';
 import { TypeUser } from '@/modules/auth';
 import { AddressUtils } from '@/modules/core';
 import { useScreenSize } from '@/modules/core/hooks';
+import { useNotification } from '@/modules/notification';
 import { HandleUtils } from '@/utils/handle';
-import { WarningTwoIcon } from '@chakra-ui/icons';
-import React from 'react';
 
 const { VITE_BAKO_ID_URL } = import.meta.env;
 
@@ -44,13 +45,7 @@ const SignerCard = chakra(Card, {
 
 const CardMemberBagde = () => {
   return (
-    <Badge
-      py={0}
-      ml={{ base: 0, sm: 8 }}
-      variant="success"
-      alignSelf="flex-start"
-      fontSize="2xs"
-    >
+    <Badge py={0} variant="success" alignSelf="flex-start" fontSize="2xs">
       Owner
     </Badge>
   );
