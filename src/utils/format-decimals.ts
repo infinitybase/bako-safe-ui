@@ -11,11 +11,14 @@ export const formatMinDecimals = (value: string, minDecimals: number) => {
   return `${integerPart}.${finalDecimal}`;
 };
 
-export const formatMaxDecimals = (num: number, maxDecimals: number) => {
-  if (isNaN(num)) return '';
+export const formatMaxDecimals = (value: string, maxDecimals: number) => {
+  if (!value.includes('.')) {
+    return value;
+  }
 
-  return num.toLocaleString('en-US', {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: maxDecimals,
-  });
+  const [integerPart, decimalPart] = value.split('.');
+
+  const trimmedDecimal = decimalPart.slice(0, maxDecimals);
+
+  return trimmedDecimal ? `${integerPart}.${trimmedDecimal}` : integerPart;
 };

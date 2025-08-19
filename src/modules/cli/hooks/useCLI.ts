@@ -20,10 +20,10 @@ export const requiredCLIRoles = [
 ];
 
 export enum CLIFeaturesLabels {
-  API_TOKEN = 'API Tokens',
-  ADD_OTHER_TOKENS = 'Add other tokens',
-  RECOVERY = 'Recovery',
-  SPEND_LIMIT = 'Spend limit',
+  API_TOKEN = 'API Token',
+  ADD_OTHER_TOKENS = 'Add Custom token',
+  RECOVERY = 'Account Recovery',
+  SPEND_LIMIT = 'Spending limit',
 }
 
 export interface IUseCLIProps {

@@ -113,11 +113,13 @@ const useDepositLiquidStake = () => {
       TransactionStatus.AWAIT_REQUIREMENTS,
     ]);
 
-    await refetchTransactionsList();
-    await refetchHomeTransactionsList();
-    await refetchVaultTransactionsList();
-
-    await confirmTransaction(transaction.id, undefined, transaction);
+    await confirmTransaction(transaction.id, undefined, transaction).finally(
+      async () => {
+        await refetchVaultTransactionsList();
+        await refetchTransactionsList();
+        await refetchHomeTransactionsList();
+      },
+    );
 
     return transaction;
   };

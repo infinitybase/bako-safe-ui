@@ -23,11 +23,12 @@ export function ItemLiquidStake({
       alignItems="center"
       background={'var(--chakra-colors-dark-950)'}
       width="full"
-      minW={value.length > 9 ? '225px' : '150px'}
+      minW={value.length > 9 ? '235px' : '140px'}
     >
       <HStack
         flex={1}
         padding={3}
+        borderRadius={9}
         background={'var(--chakra-colors-gradients-transaction-card)'}
       >
         <VStack flex={1} alignItems="flex-start" gap={0}>
