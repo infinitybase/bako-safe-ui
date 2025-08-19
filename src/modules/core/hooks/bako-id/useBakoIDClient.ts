@@ -25,6 +25,10 @@ const BAKOID_QUERY_KEYS = {
     const base = BAKOID_QUERY_KEYS.base.concat(['names', ...addresses]);
     return base as QueryKey;
   },
+  avatar: (name: string) => {
+    const base = BAKOID_QUERY_KEYS.base.concat(['avatar', name]);
+    return base as QueryKey;
+  },
 };
 
 export const useBakoIDResolveNames = (options: {
@@ -115,4 +119,18 @@ export const useBakoIDClient = (providerInstance: Promise<BakoProvider>) => {
       },
     },
   };
+};
+
+export const useBakoIdAvatar = (name: string, chainId: number) => {
+  const { data: avatar, ...rest } = useQuery({
+    queryFn: () => {
+      return client.avatar(name, chainId);
+    },
+    queryKey: [...BAKOID_QUERY_KEYS.avatar(name), chainId],
+    enabled: !!name,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+  });
+
+  return { avatar, ...rest };
 };
