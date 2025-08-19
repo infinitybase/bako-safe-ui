@@ -28,7 +28,7 @@ export const useSwapPreview = (
     }
   }, [sellAsset, buyAsset, isBuy]);
 
-  const debouncedValue = useDebounce(rawUserInputAmount.toString(), 500);
+  const debouncedValue = useDebounce(rawUserInputAmount.toString(), 600);
 
   return useSwapRouter(
     mode,
