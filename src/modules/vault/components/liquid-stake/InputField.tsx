@@ -2,6 +2,7 @@ import { Box, InputGroup, InputRightAddon } from '@chakra-ui/react';
 import { useEffect, useRef } from 'react';
 
 import { CurrencyField } from '@/components';
+import { formatMaxDecimals } from '@/utils';
 
 export const InputField = ({
   symbol,
@@ -60,7 +61,7 @@ export const InputField = ({
           px={2}
           ref={mirrorRef}
         >
-          {value || '0'}
+          {formatMaxDecimals(value, 9) || '0'}
         </Box>
 
         <InputRightAddon

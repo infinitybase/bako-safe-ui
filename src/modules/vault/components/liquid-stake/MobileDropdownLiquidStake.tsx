@@ -30,12 +30,7 @@ export function MobileDropdownLiquidStake({
         <DrawerHeader>
           <HStack marginBottom={4} fontWeight="normal">
             <Icon as={FuelIcon} fontSize={24} />
-            <VStack alignItems="flex-start" gap={0}>
-              <Text fontSize={12}>Auto Stake $FUEL</Text>
-              <Text fontSize={10} color={'gray.400'}>
-                Earn Up to 18% More than Manual Staking
-              </Text>
-            </VStack>
+            <Text fontSize={12}>Liquid Stake FUEL</Text>
             <HStack
               flex={1}
               justifyContent="flex-end"

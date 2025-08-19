@@ -2,7 +2,6 @@ import { Button, Card, HStack, Image, Text, VStack } from '@chakra-ui/react';
 import { useEffect } from 'react';
 
 import { Dialog, FuelIcon } from '@/components';
-import { DoubtIcon } from '@/components/icons/doubt';
 import { tokensIDS } from '@/modules/core/utils/assets/address';
 
 import { useOperationLiquidStakeModal } from '../../hooks';
@@ -169,7 +168,6 @@ export function ModalLiquidStake({
                   <Text color="#AAA6A1" fontSize={12} flex={1}>
                     Conversion Ratio
                   </Text>
-                  <DoubtIcon fontSize={16} />
                 </HStack>
                 <Text color="#AAA6A1" fontSize={12} flex={1} align="right">
                   1 FUEL ~ {price} stFUEL

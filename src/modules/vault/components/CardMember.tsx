@@ -47,13 +47,7 @@ const SignerCard = chakra(Card, {
 
 const CardMemberBagde = () => {
   return (
-    <Badge
-      py={0}
-      ml={{ base: 0, sm: 8 }}
-      variant="success"
-      alignSelf="flex-start"
-      fontSize="2xs"
-    >
+    <Badge py={0} variant="success" alignSelf="flex-start" fontSize="2xs">
       Owner
     </Badge>
   );
