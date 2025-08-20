@@ -9,7 +9,7 @@ import { useSwapRouter } from './useSwapRouter';
 export const useSwapPreview = (
   swapState: SwapState,
   mode: SwapMode,
-  newtworkUrl: string,
+  networkUrl: string,
 ) => {
   const sellAsset = swapState.from;
   const buyAsset = swapState.to;
@@ -35,6 +35,6 @@ export const useSwapPreview = (
     bn(debouncedValue),
     sellAsset,
     buyAsset,
-    newtworkUrl,
+    networkUrl,
   );
 };
