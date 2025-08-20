@@ -6,7 +6,11 @@ import { useDebounce } from '@/modules/core';
 import { SwapMode, SwapState } from '../../components/swap/Root';
 import { useSwapRouter } from './useSwapRouter';
 
-export const useSwapPreview = (swapState: SwapState, mode: SwapMode) => {
+export const useSwapPreview = (
+  swapState: SwapState,
+  mode: SwapMode,
+  networkUrl: string,
+) => {
   const sellAsset = swapState.from;
   const buyAsset = swapState.to;
 
@@ -24,7 +28,13 @@ export const useSwapPreview = (swapState: SwapState, mode: SwapMode) => {
     }
   }, [sellAsset, buyAsset, isBuy]);
 
-  const debouncedValue = useDebounce(rawUserInputAmount.toString(), 500);
+  const debouncedValue = useDebounce(rawUserInputAmount.toString(), 600);
 
-  return useSwapRouter(mode, bn(debouncedValue), sellAsset, buyAsset);
+  return useSwapRouter(
+    mode,
+    bn(debouncedValue),
+    sellAsset,
+    buyAsset,
+    networkUrl,
+  );
 };

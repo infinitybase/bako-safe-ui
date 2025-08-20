@@ -1,4 +1,4 @@
-import { InfoIcon } from '@chakra-ui/icons';
+import { WarningIcon } from '@chakra-ui/icons';
 import { Card, Text } from '@chakra-ui/react';
 
 export const SwapError = ({ error }: { error: string }) => {
@@ -10,8 +10,8 @@ export const SwapError = ({ error }: { error: string }) => {
       alignItems="center"
       flexDirection="row"
     >
-      <InfoIcon color="info.300" />
-      <Text color="info.300" fontSize="xs">
+      <WarningIcon color="warning.500" />
+      <Text color="warning.500" fontSize="xs">
         {error}
       </Text>
     </Card>

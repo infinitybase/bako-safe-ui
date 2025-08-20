@@ -1,16 +1,23 @@
 import { ReadonlyMiraAmm } from 'mira-dex-ts';
 import { useMemo } from 'react';
 
+import { getChainId } from '@/modules/core';
+import {
+  DEFAULT_AMM_CONTRACT_ID,
+  TESTNET_AMM_CONTRACT_ID,
+} from '@/modules/core/utils/bako-amm';
+
 import { useProvider } from '../useProvider';
 
-export const useMiraReadonly = () => {
-  const provider = useProvider();
+export const useMiraReadonly = (networkUrl: string) => {
+  const provider = useProvider(networkUrl);
 
   return useMemo(() => {
     if (provider) {
+      const chainId = getChainId();
       return new ReadonlyMiraAmm(
         provider,
-        // '0xd5a716d967a9137222219657d7877bd8c79c64e1edb5de9f2901c98ebe74da80',
+        chainId === 0 ? TESTNET_AMM_CONTRACT_ID : DEFAULT_AMM_CONTRACT_ID,
       );
     }
   }, [provider]);

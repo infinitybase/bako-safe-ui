@@ -26,6 +26,7 @@ interface CoinBoxProps {
   assets: (Asset & { balance: BN | null })[];
   onChangeAmount: (value: string) => void;
   isLoadingAmount?: boolean;
+  isLoadingAssets?: boolean;
 }
 
 export const CoinBox = memo(
@@ -36,6 +37,7 @@ export const CoinBox = memo(
     assets,
     onChangeAmount,
     isLoadingAmount,
+    isLoadingAssets,
   }: CoinBoxProps) => {
     const assetsModal = useDisclosure();
     const mirrorRef = useRef<HTMLDivElement>(null);
@@ -49,14 +51,19 @@ export const CoinBox = memo(
       }
     }, [coin.amount]);
 
-    const amountInUSD = useMemo(() => {
-      if (!coin.amount || !coin.rate) return '0';
-      const amount = bn.parseUnits(coin.amount, coin.units);
-      const rate = bn.parseUnits(coin.rate.toString(), coin.units);
-      return amount.mul(rate).formatUnits(coin.units * 2);
-    }, [coin.amount, coin.rate, coin.units]);
+    const currentRate = useMemo(
+      () => assets.find((a) => a.assetId === coin.assetId)?.rate || 0,
+      [assets, coin.assetId],
+    );
 
-    const value = useMemo(() => coin.amount || '0', [coin.amount]);
+    const amountInUSD = useMemo(() => {
+      if (!coin.amount || !currentRate) return '0';
+      const amount = bn.parseUnits(coin.amount, coin.units);
+      const rate = bn.parseUnits(currentRate.toString(), coin.units);
+      return amount.mul(rate).formatUnits(coin.units * 2);
+    }, [coin.amount, currentRate, coin.units]);
+
+    const value = useMemo(() => coin.amount || '', [coin.amount]);
 
     return (
       <Card variant="outline" p={3} pb={12}>
@@ -72,6 +79,7 @@ export const CoinBox = memo(
               name={coin.name}
               imageUrl={coin.icon}
               onClick={assetsModal.onOpen}
+              isLoadingCurrencies={isLoadingAssets}
             />
           </Box>
 
@@ -95,15 +103,21 @@ export const CoinBox = memo(
             _hover={{
               borderColor: 'grey.200',
             }}
+            onClick={() => {
+              coinInputRef.current?.focus();
+            }}
             gap={2}
           >
             <CurrencyField
               name={`amount-${mode}`}
+              id={`amount-${mode}`}
               borderBottomWidth="0"
               ref={coinInputRef}
               value={value}
               type="crypto"
               px={0}
+              placeholder="0"
+              _placeholder={{ opacity: 0.5 }}
               isDisabled={isLoadingAmount}
               fontSize="3xl"
               onChange={onChangeAmount}
@@ -114,12 +128,11 @@ export const CoinBox = memo(
               fontSize="3xl"
               ref={mirrorRef}
             >
-              {formatCurrencyValue(value, CRYPTO_CONFIG, false)}
+              {formatCurrencyValue(value || '0', CRYPTO_CONFIG, false)}
             </Box>
             <InputRightAddon
-              onClick={() => {
-                coinInputRef.current?.focus();
-              }}
+              as="label"
+              htmlFor={`amount-${mode}`}
               px={0}
               alignSelf="end"
             >
@@ -138,11 +151,12 @@ export const CoinBox = memo(
             </InputRightAddon>
           </InputGroup>
 
-          {coin.amount && coin.rate && bn.parseUnits(coin.amount).gt(0) && (
-            <Text color="grey.500" fontSize="xs">
-              {moneyFormat(amountInUSD)}
-            </Text>
-          )}
+          <Text color="grey.500" fontSize="xs" minH="20px">
+            {coin.amount &&
+              currentRate &&
+              bn.parseUnits(coin.amount).gt(0) &&
+              moneyFormat(amountInUSD)}
+          </Text>
         </Stack>
       </Card>
     );

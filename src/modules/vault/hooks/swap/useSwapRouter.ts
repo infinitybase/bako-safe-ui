@@ -22,8 +22,9 @@ export const useSwapRouter = (
   amount = bn(0),
   assetIn: Asset,
   assetOut: Asset,
+  networkUrl: string,
 ) => {
-  const amm = useMiraReadonly();
+  const amm = useMiraReadonly(networkUrl);
 
   const shouldFetch = useMemo(
     () => !!assetIn && !!assetOut && amount.gt(0),
@@ -34,7 +35,15 @@ export const useSwapRouter = (
     routes,
     isLoading: routesLoading,
     isFetching,
-  } = useRoutablePools(assetIn, assetOut, shouldFetch);
+  } = useRoutablePools(assetIn, assetOut, amm, shouldFetch);
+  const pools = routes
+    .map((r) =>
+      r.pools.map(
+        (pool) =>
+          `${pool.poolId[0].bits}-${pool.poolId[1].bits}-${pool.poolId[2]}`,
+      ),
+    )
+    .join('-');
 
   const {
     data: quotes = [],
@@ -48,7 +57,7 @@ export const useSwapRouter = (
       amount.toString(),
       assetIn?.assetId,
       assetOut?.assetId,
-      routes,
+      pools,
     ],
 
     queryFn: () =>
