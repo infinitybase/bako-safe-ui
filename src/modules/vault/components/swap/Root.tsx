@@ -153,8 +153,7 @@ export const RootSwap = memo(
             setSwapButtonTitle(SwapButtonTitle.PREVIEW);
             handleResetAmounts();
           })
-          .catch((err) => {
-            console.error('Swap transaction errorToast:', err);
+          .catch(() => {
             errorToast({
               title: 'Swap Error',
               description: 'Error on try to send transaction, try again later',
