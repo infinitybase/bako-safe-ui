@@ -345,7 +345,8 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                       color="white"
                     >
                       <Box
-                        display="inline-block"
+                        display="flex"
+                        justifyContent="end"
                         cursor="not-allowed"
                         w={'100%'}
                       >
