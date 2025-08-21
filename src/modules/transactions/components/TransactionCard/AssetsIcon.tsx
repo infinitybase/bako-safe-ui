@@ -54,8 +54,6 @@ export const AssetsIcon = memo(
             <Image
               w={{ base: '30.5px', sm: 7 }}
               h={{ base: 'full', sm: 7 }}
-              fallbackSrc={assetsMap?.['UNKNOWN'].icon}
-              fallbackStrategy="onError"
               src={asset.image}
               borderRadius="md"
               alt="Asset Icon"
