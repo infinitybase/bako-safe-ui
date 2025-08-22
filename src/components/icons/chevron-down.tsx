@@ -15,7 +15,7 @@ const ChevronDownIcon = createIcon({
         <g clipPath="url(#clip1_19791_16812)">
           <path
             d="M10.0014 10.9766L14.1264 6.85156L15.3047 8.0299L10.0014 13.3332L4.69802 8.0299L5.87635 6.85156L10.0014 10.9766Z"
-            fill="#151413"
+            fill={'currentColor'}
           />
         </g>
       </g>
