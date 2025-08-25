@@ -60,8 +60,6 @@ export const AssetsIcon = memo(
               borderRadius="md"
               alt="Asset Icon"
               objectFit="cover"
-              fallbackSrc={assetsMap.UNKNOWN.icon!}
-              fallbackStrategy="onError"
             />
           </Skeleton>
         ))}

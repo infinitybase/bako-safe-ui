@@ -12,6 +12,7 @@ import {
   Tooltip,
   VStack,
 } from '@chakra-ui/react';
+import { useMemo } from 'react';
 import { FiPlusSquare } from 'react-icons/fi';
 
 import {
@@ -25,6 +26,8 @@ import {
 } from '@/components';
 import { NetworkService } from '@/modules/network/services';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+
+import { TooltipPendingTx } from '../TooltipPendingTx';
 
 interface VaultBoxPropx {
   name: string;
@@ -91,6 +94,16 @@ const VaultBox = (props: VaultBoxPropx) => {
       '_BLANK',
     );
 
+  const ToolTipComponent = useMemo(() => {
+    if (!isFirstAssetsLoading && isPending) {
+      return <TooltipPendingTx />;
+    }
+    if (!isFirstAssetsLoading && isEthBalanceLowerThanReservedAmount) {
+      return <TooltipNotEnoughBalance />;
+    }
+    return null;
+  }, [isPending, isFirstAssetsLoading, isEthBalanceLowerThanReservedAmount]);
+
   return (
     <Box w="100%">
       {/* Headers BTNS */}
@@ -155,13 +168,7 @@ const VaultBox = (props: VaultBoxPropx) => {
       {hasPermission && (
         <Box w="100%">
           <Tooltip
-            label={
-              !isPending &&
-              !isFirstAssetsLoading &&
-              isEthBalanceLowerThanReservedAmount ? (
-                <TooltipNotEnoughBalance />
-              ) : null
-            }
+            label={ToolTipComponent}
             hasArrow
             placement="top"
             bg="dark.700"
@@ -187,7 +194,7 @@ const VaultBox = (props: VaultBoxPropx) => {
             </Box>
           </Tooltip>
 
-          {isPending && (
+          {isPending && isMobile && (
             <Text variant="description" mt={2} color="error.500">
               This vault has pending transactions.
             </Text>
