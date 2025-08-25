@@ -25,6 +25,10 @@ export interface AssetItem {
   balance: string;
 }
 
+export interface AssetItemBrigdeProps {
+  asset: AssetItem;
+}
+
 export interface ModalSelectAssetsProps {
   title: string;
   isOpen?: boolean;
@@ -151,16 +155,12 @@ export function ModalSelectAssetsBridge({
     setFilteredAssets(filtered);
   };
 
-  interface AssetItemProps {
-    asset: AssetItem;
-  }
-
   const handleSelectAsset = (asset: AssetItem) => {
     onSelect(asset);
     onClose();
   };
 
-  const AssetItem = ({ asset }: AssetItemProps) => {
+  const AssetItem = ({ asset }: AssetItemBrigdeProps) => {
     const { image, name, symbol, balance } = asset;
 
     return (
