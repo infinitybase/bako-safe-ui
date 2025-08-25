@@ -11,35 +11,25 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { FormProvider, useForm } from 'react-hook-form';
+import { FormProvider } from 'react-hook-form';
 import { RiMenuUnfoldLine } from 'react-icons/ri';
 import { useNavigate } from 'react-router-dom';
 
 import { HomeIcon } from '@/components';
 import { Drawer } from '@/layouts/dashboard/drawer';
-import { Pages } from '@/modules/core';
+import { Pages, useScreenSize } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import {
   AmountBrigde,
-  AssetItem,
   DetailsBridge,
   InputAddressBridge,
   SelectBridgeNetwork,
 } from '../../components/bridge';
-import { useStepsBridge } from '../../hooks/bridge';
+import { useFormBridge, useStepsBridge } from '../../hooks/bridge';
 import { useVaultInfosContext } from '../../VaultInfosProvider';
+import { FormMobilePageBrigde } from './formMobile';
 import { ResumePageBrigde } from './resumePage';
-
-export interface ITransferBridgePayload {
-  selectNetworkFrom: string;
-  selectAssetFrom: string;
-  selectNetworkTo: string;
-  selectAssetTo: AssetItem | null;
-  destinationAddress: string;
-  amount: string;
-  searchAsset: string;
-}
 
 const MotionBox = motion(VStack);
 
@@ -49,6 +39,10 @@ const VaultBridgePage = () => {
   const { vault } = useVaultInfosContext();
   const { stepsForm, screenBridge, setScreenBridge, setStepsForm } =
     useStepsBridge();
+
+  const { form, onSubmit } = useFormBridge();
+
+  const { isMobile } = useScreenSize();
 
   const {
     authDetails: { userInfos },
@@ -60,27 +54,13 @@ const VaultBridgePage = () => {
 
   const workspaceId = userInfos.workspace?.id ?? '';
 
-  const methods = useForm<ITransferBridgePayload>({
-    defaultValues: {
-      selectNetworkFrom: '',
-      selectAssetFrom: '',
-      selectNetworkTo: '',
-      selectAssetTo: null,
-      searchAsset: '',
-    },
-  });
-
-  const onSubmit = methods.handleSubmit((data) => {
-    console.log('Form data', data);
-  });
-
   if (!vault) return null;
 
   return (
-    <Box w="full">
+    <Box w="full" p={0}>
       <Drawer isOpen={menuDrawer.isOpen} onClose={menuDrawer.onClose} />
 
-      <HStack mb={8} w="full" justifyContent="space-between">
+      <HStack mb={{ base: 2, md: 8 }} w="full" justifyContent="space-between">
         {vaultRequiredSizeToColumnLayout ? (
           <HStack gap={1.5} onClick={menuDrawer.onOpen}>
             <Icon as={RiMenuUnfoldLine} fontSize="xl" color="grey.200" />
@@ -152,10 +132,10 @@ const VaultBridgePage = () => {
         )}
       </HStack>
 
-      <HStack gap={5} align="flex-start" justifyContent="center">
-        {screenBridge === 'form' && (
+      <HStack gap={5} align="flex-start" justifyContent="center" h="100%">
+        {screenBridge === 'form' && !isMobile && (
           <VStack w={'full'} justifyContent="center" align="center">
-            <FormProvider {...methods}>
+            <FormProvider {...form}>
               <form onSubmit={onSubmit}>
                 <VStack alignItems="center" w="full" spacing={2}>
                   <SelectBridgeNetwork
@@ -165,7 +145,6 @@ const VaultBridgePage = () => {
                   <AnimatePresence mode="wait">
                     {stepsForm > 0 && (
                       <AmountBrigde
-                        symbol="ETH"
                         stepsForm={stepsForm}
                         setStepsForm={setStepsForm}
                       />
@@ -201,6 +180,11 @@ const VaultBridgePage = () => {
               </form>
             </FormProvider>
           </VStack>
+        )}
+        {screenBridge === 'form' && isMobile && (
+          <FormProvider {...form}>
+            <FormMobilePageBrigde setScreenBridge={setScreenBridge} />
+          </FormProvider>
         )}
         {screenBridge === 'resume' && (
           <ResumePageBrigde setScreenBridge={setScreenBridge} />

@@ -17,13 +17,21 @@ import { Controller, useFormContext, useWatch } from 'react-hook-form';
 import { AssetSelect, ChevronDownIcon, SwapIcon } from '@/components';
 import { limitCharacters } from '@/utils';
 
-import { ITransferBridgePayload } from '../../pages';
+import { ITransferBridgePayload } from '../../hooks/bridge';
 import { ModalSelectAssetsBridge } from './modalSelectAssets';
 
 export interface SelectNetworkProps {
   stepsForm: number;
   setStepsForm: React.Dispatch<React.SetStateAction<number>>;
 }
+
+export interface NetworkOptionItem {
+  value: string;
+  image: string;
+  name: string;
+  symbol: string;
+}
+
 const MotionBox = motion(Box);
 
 export function SelectBridgeNetwork({
@@ -33,9 +41,14 @@ export function SelectBridgeNetwork({
   const { control } = useFormContext<ITransferBridgePayload>();
   const dialogSelectNetwork = useDisclosure();
 
-  const networkValue = useWatch({
+  const networkToValue = useWatch({
     control,
     name: 'selectNetworkTo',
+  });
+
+  const assetFromValue = useWatch({
+    control,
+    name: 'selectAssetFrom',
   });
 
   const optionsAssets = [
@@ -124,7 +137,7 @@ export function SelectBridgeNetwork({
                         ?.value
                     }
                     isDisabled={true}
-                    boxProps={{ bg: 'grey.925' }}
+                    boxProps={{ bg: 'grey.925', h: '45px' }}
                   />
                 </InputGroup>
               </FormControl>
@@ -141,7 +154,7 @@ export function SelectBridgeNetwork({
                     {...field}
                     options={optionsAssets}
                     label={!field.value ? 'Asset' : undefined}
-                    boxProps={{ bg: 'grey.925' }}
+                    boxProps={{ bg: 'grey.925', h: '45px' }}
                     textValueProps={{ color: 'grey.50' }}
                   />
                 </InputGroup>
@@ -185,7 +198,13 @@ export function SelectBridgeNetwork({
                     {...field}
                     options={optionsNets}
                     label={!field.value ? 'Destination' : undefined}
-                    boxProps={{ bg: 'grey.925' }}
+                    boxProps={{
+                      bg: 'grey.925',
+                      h: '45px',
+                      cursor: !assetFromValue ? 'not-allowed' : 'pointer',
+                      'aria-disabled': !assetFromValue,
+                      opacity: !assetFromValue ? 0.5 : 1,
+                    }}
                     textValueProps={{ color: 'grey.50' }}
                   />
                 </InputGroup>
@@ -201,7 +220,7 @@ export function SelectBridgeNetwork({
                 <Box
                   position="relative"
                   w="full"
-                  h="50px"
+                  h="45px"
                   px={5}
                   py={3}
                   bg="grey.925"
@@ -209,9 +228,9 @@ export function SelectBridgeNetwork({
                   borderColor={'grey.800'}
                   borderRadius={10}
                   aria-label={'Select an asset'}
-                  cursor={!networkValue ? 'not-allowed' : 'pointer'}
-                  opacity={!networkValue ? 0.5 : 1}
-                  aria-disabled={!networkValue}
+                  cursor={!networkToValue ? 'not-allowed' : 'pointer'}
+                  opacity={!networkToValue ? 0.5 : 1}
+                  aria-disabled={!networkToValue}
                   onClick={() => dialogSelectNetwork.onOpen()}
                   {...field}
                 >

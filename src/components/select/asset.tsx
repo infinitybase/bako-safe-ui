@@ -36,6 +36,7 @@ interface AssetSelectProps {
   needShowOptionsAbove?: boolean;
   maxOptionsHeight?: number;
   boxProps?: BoxSelectProps;
+  textLabelProps?: TextProps;
   textValueProps?: TextProps;
 }
 
@@ -51,6 +52,7 @@ const AssetSelect = ({
   maxOptionsHeight,
   name,
   boxProps,
+  textLabelProps,
   textValueProps,
 }: AssetSelectProps) => {
   const selectRef = useRef<HTMLDivElement>(null);
@@ -258,7 +260,7 @@ const AssetSelect = ({
             mb={1}
             fontWeight="medium"
             lineHeight="1"
-            {...boxProps}
+            {...textLabelProps}
           >
             {label}
           </Text>

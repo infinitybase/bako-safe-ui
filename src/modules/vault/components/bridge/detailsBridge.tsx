@@ -36,7 +36,7 @@ export function DetailsBridge({
           </Text>
         </HStack>
         <HStack width="full">
-          <Text color="#AAA6A1" fontSize={12} flex={1} w={'full'}>
+          <Text color="#AAA6A1" fontSize={12}>
             You will receive
           </Text>
           <HStack

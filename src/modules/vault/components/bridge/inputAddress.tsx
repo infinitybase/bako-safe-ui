@@ -13,19 +13,28 @@ import { useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
 import { LineCloseIcon } from '@/components';
+import { useScreenSize } from '@/modules/core';
 
 import { ITransferBridgePayload } from '../../pages';
 
 export function InputAddressBridge() {
   const { control } = useFormContext<ITransferBridgePayload>();
   const [isFocused, setIsFocused] = useState(false);
+  const { isMobile } = useScreenSize();
 
   return (
-    <Card variant="outline" padding={3}>
-      <VStack p={0} gap={1} align={'flex-start'}>
-        <Text color="#868079" fontSize={12} flex={1}>
-          Destination address
-        </Text>
+    <Card
+      variant="outline"
+      padding={isMobile ? 0 : 3}
+      w="full"
+      boxShadow="none"
+    >
+      <VStack p={0} gap={1} align={'flex-start'} w="full">
+        {!isMobile && (
+          <Text color="#868079" fontSize={12} flex={1}>
+            Destination address
+          </Text>
+        )}
         <Controller
           control={control}
           name="destinationAddress"
@@ -42,18 +51,15 @@ export function InputAddressBridge() {
                   },
                 }}
               >
-                <InputRightElement pr={3} top="35%" cursor={'pointer'}>
-                  {field.value && (
-                    <LineCloseIcon
-                      color="grey.75"
-                      fontSize={'16px'}
-                      onClick={() => field.onChange('')}
-                    />
-                  )}
+                <InputRightElement top="35%" width="1.5rem" cursor="pointer">
+                  <LineCloseIcon
+                    color="grey.75"
+                    fontSize="16px"
+                    onClick={() => field.onChange('')}
+                  />
                 </InputRightElement>
 
                 <Input
-                  maxLength={27}
                   value={field.value?.trimStart()}
                   onChange={field.onChange}
                   placeholder=" "
