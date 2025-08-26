@@ -198,6 +198,7 @@ export function SelectBridgeNetwork({
                     {...field}
                     options={optionsNets}
                     label={!field.value ? 'Destination' : undefined}
+                    isDisabled={!assetFromValue}
                     boxProps={{
                       bg: 'grey.925',
                       h: '45px',
@@ -231,7 +232,9 @@ export function SelectBridgeNetwork({
                   cursor={!networkToValue ? 'not-allowed' : 'pointer'}
                   opacity={!networkToValue ? 0.5 : 1}
                   aria-disabled={!networkToValue}
-                  onClick={() => dialogSelectNetwork.onOpen()}
+                  onClick={
+                    networkToValue ? dialogSelectNetwork.onOpen : undefined
+                  }
                   {...field}
                 >
                   <HStack w="100%" justify="space-between">

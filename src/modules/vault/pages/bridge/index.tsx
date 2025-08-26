@@ -40,7 +40,7 @@ const VaultBridgePage = () => {
   const { stepsForm, screenBridge, setScreenBridge, setStepsForm } =
     useStepsBridge();
 
-  const { form, onSubmit } = useFormBridge();
+  const { assetFrom, form, onSubmit } = useFormBridge();
 
   const { isMobile } = useScreenSize();
 
@@ -145,6 +145,7 @@ const VaultBridgePage = () => {
                   <AnimatePresence mode="wait">
                     {stepsForm > 0 && (
                       <AmountBrigde
+                        symbol={assetFrom?.symbol ?? ''}
                         stepsForm={stepsForm}
                         setStepsForm={setStepsForm}
                       />

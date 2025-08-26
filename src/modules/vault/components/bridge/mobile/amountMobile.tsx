@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   Card,
   HStack,
@@ -55,7 +56,7 @@ export function AmountBrigdeMobile() {
       padding={3}
       paddingBottom={1}
       w={'full'}
-      maxW={{ base: '358px', sm: 'full' }}
+      //axW={{ base: '358px', sm: 'full' }}
       overflow="visible"
       position="relative"
     >
@@ -95,12 +96,14 @@ export function AmountBrigdeMobile() {
         </VStack>
       </HStack>
 
-      <InputAmount
-        symbol={network.symbol}
-        value={valueSource}
-        onChange={handleSourceChange}
-        disabled={false} //maxFee === 0 || maxFee == undefined}
-      />
+      <Box maxW={{ base: '300px', md: '350px' }} alignSelf={'center'}>
+        <InputAmount
+          symbol={network.symbol}
+          value={valueSource}
+          onChange={handleSourceChange}
+          disabled={false} //maxFee === 0 || maxFee == undefined}
+        />
+      </Box>
 
       <HStack justifyContent="center">
         <Text color="#868079" fontSize={12} fontWeight={400}>
