@@ -56,7 +56,6 @@ export function AmountBrigdeMobile() {
       padding={3}
       paddingBottom={1}
       w={'full'}
-      //axW={{ base: '358px', sm: 'full' }}
       overflow="visible"
       position="relative"
     >
