@@ -14,7 +14,7 @@ import { memo, useEffect, useMemo, useRef } from 'react';
 
 import { CurrencyField } from '@/components';
 import { Asset, SelectedCurrency } from '@/modules';
-import { CRYPTO_CONFIG, formatCurrencyValue } from '@/utils';
+import { CRYPTO_CONFIG, formatCurrencyValue, formatMaxDecimals } from '@/utils';
 import { moneyFormat } from '@/utils/money-format';
 
 import { AssetsModal } from './AssetsModal';
@@ -59,7 +59,8 @@ export const CoinBox = memo(
     const amountInUSD = useMemo(() => {
       if (!coin.amount || !currentRate) return '0';
       const amount = bn.parseUnits(coin.amount, coin.units);
-      const rate = bn.parseUnits(currentRate.toString(), coin.units);
+      const currentRateFormatted = formatMaxDecimals(currentRate.toString(), 9);
+      const rate = bn.parseUnits(currentRateFormatted, coin.units);
       return amount.mul(rate).formatUnits(coin.units * 2);
     }, [coin.amount, currentRate, coin.units]);
 
