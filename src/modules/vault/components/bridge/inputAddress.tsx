@@ -13,9 +13,9 @@ import { useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
 import { LineCloseIcon } from '@/components';
-import { useScreenSize } from '@/modules/core';
+import { AddressUtils, useScreenSize } from '@/modules/core';
 
-import { ITransferBridgePayload } from '../../pages';
+import { ITransferBridgePayload } from './providers/FormBridgeProvider';
 
 export function InputAddressBridge() {
   const { control } = useFormContext<ITransferBridgePayload>();
@@ -38,52 +38,63 @@ export function InputAddressBridge() {
         <Controller
           control={control}
           name="destinationAddress"
-          render={({ field, fieldState }) => (
-            <FormControl isInvalid={fieldState.invalid} paddingTop={0}>
-              <InputGroup
-                sx={{
-                  paddingTop: 0,
-                  paddingBottom: 0,
-                  '> input': {
+          render={({ field, fieldState }) => {
+            const displayValue = AddressUtils.format(field?.value ?? '');
+
+            return (
+              <FormControl isInvalid={fieldState.invalid} paddingTop={0}>
+                <InputGroup
+                  sx={{
                     paddingTop: 0,
                     paddingBottom: 0,
-                    height: '46px',
-                  },
-                }}
-              >
-                <InputRightElement top="35%" width="1.5rem" cursor="pointer">
-                  <LineCloseIcon
-                    color="grey.75"
-                    fontSize="16px"
-                    onClick={() => field.onChange('')}
-                  />
-                </InputRightElement>
-
-                <Input
-                  value={field.value?.trimStart()}
-                  onChange={field.onChange}
-                  placeholder=" "
-                  variant="dark"
-                  onFocus={() => setIsFocused(true)}
-                  onBlur={() => setIsFocused(false)}
-                  paddingTop={0}
-                />
-                {!isFocused && !field.value && (
-                  <FormLabel
-                    id="destination_addr"
-                    fontSize={'14px !important'}
-                    color={'#AAA6A1 !important'}
-                    paddingTop={0}
+                    '> input': {
+                      paddingTop: 0,
+                      paddingBottom: 0,
+                      height: '46px',
+                    },
+                  }}
+                >
+                  <InputRightElement
+                    top={'7%'}
+                    cursor="pointer"
+                    right={4}
+                    h="calc(100% - 6px)"
+                    w="fit-content"
+                    pl={2}
                   >
-                    {'Enter address'}
-                  </FormLabel>
-                )}
-              </InputGroup>
-              <FormHelperText paddingTop={0} color="error.500">
-                {fieldState.error?.message}
-              </FormHelperText>
-            </FormControl>
-          )}
+                    <LineCloseIcon
+                      color="grey.75"
+                      fontSize="16px"
+                      onClick={() => field.onChange('')}
+                    />
+                  </InputRightElement>
+
+                  <Input
+                    value={displayValue}
+                    onChange={field.onChange}
+                    placeholder=" "
+                    variant="dark"
+                    onFocus={() => setIsFocused(true)}
+                    onBlur={() => setIsFocused(false)}
+                    paddingTop={0}
+                  />
+                  {!isFocused && !field.value && (
+                    <FormLabel
+                      id="destination_addr"
+                      fontSize={'14px !important'}
+                      color={'#AAA6A1 !important'}
+                      paddingTop={0}
+                    >
+                      {'Enter address'}
+                    </FormLabel>
+                  )}
+                </InputGroup>
+                <FormHelperText paddingTop={0} color="error.500">
+                  {fieldState.error?.message}
+                </FormHelperText>
+              </FormControl>
+            );
+          }}
         />
       </VStack>
     </Card>

@@ -78,7 +78,7 @@ export function SelectBridgeNetwork({
   const optionsNets = [
     {
       value: 'Network ethereum',
-      name: 'Ethereum',
+      name: 'Ethereum Network',
       image: 'https://assets.fuel.network/providers/eth.svg',
       symbol: null,
     },

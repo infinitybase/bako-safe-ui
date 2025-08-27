@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
-import { useForm } from 'react-hook-form';
 
 import { AssetItem } from '../../components/bridge';
+import { useFormBridgeContext } from '../../components/bridge/providers/FormBridgeProvider';
 
 export interface ITransferBridgePayload {
   selectNetworkFrom: string;
@@ -36,22 +36,37 @@ const optionsAssets = [
   },
 ];
 
+const optionsNets = [
+  {
+    value: 'Network ethereum',
+    name: 'Ethereum Network',
+    image: 'https://assets.fuel.network/providers/eth.svg',
+    symbol: null,
+  },
+  {
+    value: 'Network Fuel Ignition',
+    name: 'Fuel Ignition',
+    image: 'https://verified-assets.fuel.network/images/fuel.svg',
+    symbol: null,
+  },
+  {
+    value: 'Network Base',
+    name: 'Base',
+    image:
+      'https://firebasestorage.googleapis.com/v0/b/pump-555ee.appspot.com/o/images%2Faecb0358-d860-402c-9f3c-c5b579e4eb88.jpeg?alt=media&token=b39c9a29-4b5e-4b2c-8600-62e9afff2448',
+    symbol: null,
+  },
+];
+
 const useFormBridge = () => {
-  const form = useForm<ITransferBridgePayload>({
-    defaultValues: {
-      selectNetworkFrom: '',
-      selectAssetFrom: '',
-      selectNetworkTo: '',
-      selectAssetTo: null,
-      searchAsset: '',
-    },
-  });
+  const { form } = useFormBridgeContext();
 
   const { watch } = form;
 
   const assetFromValue = watch('selectAssetFrom');
   const assetTo = watch('selectAssetTo');
   const networkToValue = watch('selectNetworkTo');
+  const destinationAddress = watch('destinationAddress');
 
   const assetFrom =
     useMemo(
@@ -60,7 +75,7 @@ const useFormBridge = () => {
     ) ?? null;
 
   const networkTo = useMemo(
-    () => optionsAssets.find((a) => a.value === networkToValue),
+    () => optionsNets.find((a) => a.value === networkToValue),
     [networkToValue],
   );
 
@@ -73,6 +88,7 @@ const useFormBridge = () => {
     assetFrom,
     assetTo,
     networkTo,
+    destinationAddress,
     onSubmit,
   };
 };

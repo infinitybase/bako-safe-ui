@@ -3,15 +3,11 @@ import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
-  Button,
   HStack,
   Icon,
   Text,
   useDisclosure,
-  VStack,
 } from '@chakra-ui/react';
-import { AnimatePresence, motion } from 'framer-motion';
-import { FormProvider } from 'react-hook-form';
 import { RiMenuUnfoldLine } from 'react-icons/ri';
 import { useNavigate } from 'react-router-dom';
 
@@ -20,28 +16,19 @@ import { Drawer } from '@/layouts/dashboard/drawer';
 import { Pages, useScreenSize } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
-import {
-  AmountBrigde,
-  DetailsBridge,
-  InputAddressBridge,
-  SelectBridgeNetwork,
-} from '../../components/bridge';
-import { useFormBridge, useStepsBridge } from '../../hooks/bridge';
+import { FormBridgeProvider } from '../../components/bridge/providers/FormBridgeProvider';
+import { useStepsBridge } from '../../hooks/bridge';
 import { useVaultInfosContext } from '../../VaultInfosProvider';
+import { FormPageBrigde } from './form';
 import { FormMobilePageBrigde } from './formMobile';
 import { ResumePageBrigde } from './resumePage';
-
-const MotionBox = motion(VStack);
 
 const VaultBridgePage = () => {
   const navigate = useNavigate();
   const menuDrawer = useDisclosure();
-  const { vault } = useVaultInfosContext();
+  const { vault, assets } = useVaultInfosContext();
   const { stepsForm, screenBridge, setScreenBridge, setStepsForm } =
     useStepsBridge();
-
-  const { assetFrom, form, onSubmit } = useFormBridge();
-
   const { isMobile } = useScreenSize();
 
   const {
@@ -133,63 +120,21 @@ const VaultBridgePage = () => {
       </HStack>
 
       <HStack gap={5} align="flex-start" justifyContent="center" h="100%">
-        {screenBridge === 'form' && !isMobile && (
-          <VStack w={'full'} justifyContent="center" align="center">
-            <FormProvider {...form}>
-              <form onSubmit={onSubmit}>
-                <VStack alignItems="center" w="full" spacing={2}>
-                  <SelectBridgeNetwork
-                    stepsForm={stepsForm}
-                    setStepsForm={setStepsForm}
-                  />
-                  <AnimatePresence mode="wait">
-                    {stepsForm > 0 && (
-                      <AmountBrigde
-                        symbol={assetFrom?.symbol ?? ''}
-                        stepsForm={stepsForm}
-                        setStepsForm={setStepsForm}
-                      />
-                    )}
-                  </AnimatePresence>
-                  {stepsForm > 1 && (
-                    <MotionBox
-                      key="box"
-                      initial={{ y: -40, opacity: 0 }}
-                      animate={{ y: 0, opacity: 1 }}
-                      exit={{ y: -40, opacity: 0 }}
-                      transition={{ duration: 0.35, ease: 'easeOut' }}
-                      w="full"
-                    >
-                      <DetailsBridge />
-                      <InputAddressBridge />
-                      <Button
-                        //isDisabled={!hasPermission([OWNER, MANAGER, ADMIN])}
-                        variant="primary"
-                        type="submit"
-                        fontWeight={600}
-                        fontSize={14}
-                        letterSpacing={'2%'}
-                        w={'full'}
-                        mt={4}
-                        onClick={() => setScreenBridge('resume')}
-                      >
-                        Continue to resume
-                      </Button>
-                    </MotionBox>
-                  )}
-                </VStack>
-              </form>
-            </FormProvider>
-          </VStack>
-        )}
-        {screenBridge === 'form' && isMobile && (
-          <FormProvider {...form}>
+        <FormBridgeProvider>
+          {screenBridge === 'form' && !isMobile && (
+            <FormPageBrigde
+              setStepsForm={setStepsForm}
+              setScreenBridge={setScreenBridge}
+              stepsForm={stepsForm}
+            />
+          )}
+          {screenBridge === 'form' && isMobile && (
             <FormMobilePageBrigde setScreenBridge={setScreenBridge} />
-          </FormProvider>
-        )}
-        {screenBridge === 'resume' && (
-          <ResumePageBrigde setScreenBridge={setScreenBridge} />
-        )}
+          )}
+          {screenBridge === 'resume' && (
+            <ResumePageBrigde setScreenBridge={setScreenBridge} />
+          )}
+        </FormBridgeProvider>
       </HStack>
     </Box>
   );

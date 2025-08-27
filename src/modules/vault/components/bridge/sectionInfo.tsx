@@ -10,6 +10,11 @@ import {
 
 export interface SectionInfoBridgeProps {
   direction: 'From' | 'To';
+  network: string;
+  asset: string;
+  image: string;
+  symbol: string;
+  imageNetwork?: string;
 }
 
 interface SectionItemBridgeProps {
@@ -69,7 +74,14 @@ const SectionItem = ({
   );
 };
 
-export function SectionInfo({ direction }: SectionInfoBridgeProps) {
+export function SectionInfo({
+  direction,
+  network,
+  asset,
+  symbol,
+  image,
+  imageNetwork,
+}: SectionInfoBridgeProps) {
   return (
     <Card variant="outline" paddingX={3} paddingY={2} w="full">
       <VStack p={0} gap={0}>
@@ -93,14 +105,14 @@ export function SectionInfo({ direction }: SectionInfoBridgeProps) {
         )}
         <HStack w="full" mt={3}>
           <SectionItem
-            title="Etherium"
-            description="Fuel Network"
-            image="https://assets.fuel.network/providers/eth.svg"
-            imageNetwork="https://assets.fuel.network/providers/eth.svg"
+            title={asset}
+            description={network}
+            image={image}
+            imageNetwork={imageNetwork ?? ''}
           />
           <VStack w="full" align="flex-end" gap={0}>
             <Text color="grey.50" fontSize={14} fontWeight={500}>
-              {'0.5367 ETH'}
+              {`0.5367 ${symbol} `}
             </Text>
 
             <Text color="grey.250" fontSize={12}>

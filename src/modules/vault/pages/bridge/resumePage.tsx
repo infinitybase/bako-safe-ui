@@ -9,18 +9,22 @@ import {
 } from '@chakra-ui/react';
 
 import { InformationIcon, MinimalAlertIcon, SwapIcon } from '@/components';
+import { AddressUtils } from '@/modules/core';
 
 import {
   AlertsBrigde,
   DetailsBridge,
   SectionInfo,
 } from '../../components/bridge';
+import { useFormBridge } from '../../hooks/bridge';
 
 interface ResumePageBrigdeProps {
   setScreenBridge: React.Dispatch<React.SetStateAction<'form' | 'resume'>>;
 }
 
 export function ResumePageBrigde({ setScreenBridge }: ResumePageBrigdeProps) {
+  const { assetFrom, assetTo, networkTo, destinationAddress } = useFormBridge();
+
   return (
     <VStack w="585px" borderRadius="16px" bgColor={'#0D0D0C'} p={4}>
       <VStack w={'full'} flex="start" align="start" gap={4}>
@@ -31,20 +35,34 @@ export function ResumePageBrigde({ setScreenBridge }: ResumePageBrigdeProps) {
           Check your informations before confirming bridge.
         </Text>
       </VStack>
-      <SectionInfo direction="From" />
+      <SectionInfo
+        direction="From"
+        asset={assetFrom?.name ?? ''}
+        network={'Fuel ignition'}
+        symbol={assetFrom?.symbol ?? ''}
+        image={assetFrom?.image ?? ''}
+        imageNetwork={'https://verified-assets.fuel.network/images/fuel.svg'}
+      />
       <HStack w="full" align="center" marginY={3}>
         <Divider borderColor="grey.950" h="1px" flex="1" />
         <Icon as={SwapIcon} color="grey.550" fontSize="18px" />
         <Divider borderColor="grey.950" h="1px" flex="1" />
       </HStack>
-      <SectionInfo direction="To" />
+      <SectionInfo
+        direction="To"
+        asset={assetTo?.name ?? ''}
+        symbol={assetTo?.symbol ?? ''}
+        network={networkTo?.name ?? ''}
+        image={assetTo?.image ?? ''}
+        imageNetwork={networkTo?.image ?? ''}
+      />
       <Card variant="outline" mt={3} padding={3} paddingY={2} w="full">
         <HStack w="full" justifyContent="space-between">
           <Text color="grey.250" fontSize={12}>
             On wallet
           </Text>
           <Text color="grey.50" fontSize={12} fontWeight={500}>
-            0xfu...bk14
+            {AddressUtils.format(destinationAddress ?? '', 4)}
           </Text>
         </HStack>
       </Card>
