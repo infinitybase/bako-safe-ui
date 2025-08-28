@@ -149,8 +149,6 @@ export const RootSwap = memo(
             handleResetAmounts();
           })
           .catch((e) => {
-            console.log('>>> ERROR SWAP', e);
-
             const errorMessage = String(e);
 
             if (errorMessage.includes('InsufficientFeeAmount')) {
