@@ -150,10 +150,22 @@ export const RootSwap = memo(
           })
           .catch((e) => {
             console.log('>>> ERROR SWAP', e);
-            errorToast({
-              title: 'Swap Error',
-              description: 'Error on try to send transaction, try again later',
-            });
+
+            const errorMessage = String(e);
+
+            if (errorMessage.includes('InsufficientFeeAmount')) {
+              errorToast({
+                title: 'Insufficient Fee',
+                description:
+                  'Insufficient Fee. Bridge more ETH to complete this transaction.',
+              });
+            } else {
+              errorToast({
+                title: 'Swap Error',
+                description:
+                  'Error on try to send transaction, try again later',
+              });
+            }
             setSwapState((prevState) => ({
               ...prevState,
               status: 'error',
