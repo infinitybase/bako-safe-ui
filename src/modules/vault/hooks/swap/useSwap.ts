@@ -1,8 +1,9 @@
 import { useMutation } from '@tanstack/react-query';
-import { Vault } from 'bakosafe';
+import { TransactionStatus, Vault } from 'bakosafe';
 import { TransactionRequestLike } from 'fuels';
 
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
+import { TransactionService } from '@/modules/transactions/services';
 
 export const useSwap = () => {
   const {
@@ -15,10 +16,11 @@ export const useSwap = () => {
     vaultTransactions: {
       request: { refetch: refetchVaultTransactionsList },
     },
+    signTransaction: { confirmTransaction },
   } = useTransactionsContext();
   const { mutateAsync: sendTx, ...rest } = useMutation({
     mutationKey: ['swap'],
-    mutationFn: ({
+    mutationFn: async ({
       vault,
       tx,
       assetIn,
@@ -32,7 +34,17 @@ export const useSwap = () => {
       if (!vault) {
         throw new Error('Vault is not available');
       }
-      return vault.BakoTransfer(tx, { name: `Swap ${assetIn} to ${assetOut}` });
+      const vaultTx = await vault.BakoTransfer(tx, {
+        name: `Swap ${assetIn} to ${assetOut}`,
+      });
+
+      const transaction = await TransactionService.getByHash(vaultTx.hashTxId, [
+        TransactionStatus.AWAIT_REQUIREMENTS,
+      ]);
+
+      await confirmTransaction(transaction.id, undefined, transaction);
+
+      return vaultTx;
     },
     onSuccess: () => {
       refetchTransactionsList();
