@@ -6,6 +6,8 @@ import { queryClient } from '@/config';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 import { TransactionService } from '@/modules/transactions/services';
 
+import { assetsListQueryKey } from '../assets';
+
 export const useSwap = () => {
   const {
     transactionsPageList: {
@@ -46,7 +48,7 @@ export const useSwap = () => {
       await confirmTransaction(transaction.id, undefined, transaction).finally(
         () => {
           queryClient.invalidateQueries({
-            queryKey: ['vaultBalances', vault],
+            queryKey: [assetsListQueryKey],
           });
         },
       );
