@@ -8,7 +8,7 @@ const useGetFuelsTokensListRequest = () => {
     queryFn: () => WorkspaceService.getFuelTokensList(),
     refetchOnWindowFocus: false,
     refetchOnMount: false,
-    staleTime: 500,
+    staleTime: 1000 * 60 * 60, // 1 hour
   });
 
   return {
