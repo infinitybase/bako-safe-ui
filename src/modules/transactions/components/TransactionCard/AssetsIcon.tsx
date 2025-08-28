@@ -32,7 +32,7 @@ export const AssetsIcon = memo(
               assetsMap.UNKNOWN.icon!,
           ),
         })),
-      [assets, metadataAssets, assetsMap],
+      [assets, metadataAssets, assetsMap.UNKNOWN.icon],
     );
 
     return (

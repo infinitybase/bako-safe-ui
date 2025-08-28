@@ -31,6 +31,7 @@ import {
 } from '../../hooks';
 import BalanceHelperDrawer from '../BalanceHelperDrawer';
 import BalanceHelperDialog from '../dialog/BalanceHelper';
+import { TooltipPendingTx } from '../TooltipPendingTx';
 import { ItemLiquidStake } from './ItemLiquidStake';
 import { MobileDropdownLiquidStake } from './MobileDropdownLiquidStake';
 export interface CardLiquidStakeProps {
@@ -101,6 +102,11 @@ export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
   const { isOpen: isOpenErrorBalance, onClose: onCloseErrorBalance } =
     useDisclosure();
 
+  const emptyEthOrFuel = useMemo(
+    () => notEnoughBalanceETH || Number(fuelTokens) === 0,
+    [fuelTokens, notEnoughBalanceETH],
+  );
+
   const buttonStake = (
     <Button
       variant="secondaryV2"
@@ -131,11 +137,17 @@ export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
         isLoading={!assets.assets}
       >
         <VStack alignItems={'flex-end'} gap={0}>
-          {notEnoughBalanceETH || Number(fuelTokens) === 0 ? (
+          {emptyEthOrFuel || isPendingSigner ? (
             <Tooltip
-              label={TooltipNotEnoughBalance({
-                asset: Number(fuelTokens) === 0 ? 'FUEL' : 'ETH',
-              })}
+              label={
+                isPendingSigner ? (
+                  <TooltipPendingTx />
+                ) : (
+                  TooltipNotEnoughBalance({
+                    asset: Number(fuelTokens) === 0 ? 'FUEL' : 'ETH',
+                  })
+                )
+              }
               hasArrow
               placement="top"
               bg="dark.700"

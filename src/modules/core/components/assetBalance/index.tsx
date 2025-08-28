@@ -62,15 +62,28 @@ const NftsBalanceList = ({ nfts }: NftsBalanceProps) => {
     if (!nfts) return {};
     return nfts.reduce<Record<string, typeof nfts>>((acc, nft) => {
       const isBakoId = nft.symbol === 'BID' || nft.collection === 'Bako ID';
-      const key = isBakoId ? 'Bako ID' : (nft.collection ?? 'Other');
+      const isBKT = nft.symbol === 'BKT';
+      const key = isBakoId
+        ? 'Bako ID'
+        : isBKT
+          ? 'Bakteria'
+          : (nft.collection ?? 'Other');
       (acc[key] ??= []).push(nft);
       return acc;
     }, {});
   }, [nfts]);
 
+  const orderedGrouped = Object.entries(grouped).sort(([groupA], [groupB]) => {
+    if (groupA === 'Bako ID') return 1;
+    if (groupB === 'Bako ID') return -1;
+    if (groupA === 'Other') return 1;
+    if (groupB === 'Other') return -1;
+    return groupA.localeCompare(groupB);
+  });
+
   return (
     <>
-      {Object.entries(grouped).map(([group, groupNfts]) => (
+      {orderedGrouped.map(([group, groupNfts]) => (
         <div key={group}>
           <h2 style={{ margin: '1rem 0' }}>
             {group === 'BID' ? 'Bako ID' : group}

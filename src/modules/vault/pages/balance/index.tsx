@@ -22,6 +22,7 @@ import { Drawer } from '@/layouts/dashboard/drawer';
 import { AssetsBalanceList, NFT, NftsBalanceList, Pages } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
+import { NFTsEmptyState } from '../../components/NFTsEmptyState';
 import { useVaultInfosContext } from '../../VaultInfosProvider';
 
 const VaultBalancePage = () => {
@@ -38,6 +39,7 @@ const VaultBalancePage = () => {
     },
     screenSizes: { vaultRequiredSizeToColumnLayout },
   } = useWorkspaceContext();
+  const workspaceId = userInfos.workspace?.id ?? '';
 
   if (!vault) return null;
 
@@ -97,7 +99,13 @@ const VaultBalancePage = () => {
                 fontSize="sm"
                 color="grey.200"
                 fontWeight="semibold"
-                href="#"
+                onClick={() =>
+                  navigate(
+                    Pages.userVaults({
+                      workspaceId,
+                    }),
+                  )
+                }
               >
                 Vaults
               </BreadcrumbLink>
@@ -191,12 +199,7 @@ const VaultBalancePage = () => {
                 {assets.nfts?.length ? (
                   <NftsBalanceList nfts={assets.nfts as NFT[]} />
                 ) : (
-                  <EmptyState
-                    showAction={false}
-                    title="No Data available"
-                    subTitle="Currently, there is no available data to display in this section."
-                    h="full"
-                  />
+                  <NFTsEmptyState />
                 )}
               </CustomSkeleton>
             </TabPanel>
