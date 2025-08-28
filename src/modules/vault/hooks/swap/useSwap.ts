@@ -2,6 +2,7 @@ import { useMutation } from '@tanstack/react-query';
 import { TransactionStatus, Vault } from 'bakosafe';
 import { TransactionRequestLike } from 'fuels';
 
+import { queryClient } from '@/config';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 import { TransactionService } from '@/modules/transactions/services';
 
@@ -42,7 +43,13 @@ export const useSwap = () => {
         TransactionStatus.AWAIT_REQUIREMENTS,
       ]);
 
-      await confirmTransaction(transaction.id, undefined, transaction);
+      await confirmTransaction(transaction.id, undefined, transaction).finally(
+        () => {
+          queryClient.invalidateQueries({
+            queryKey: ['vaultBalances', vault],
+          });
+        },
+      );
 
       return vaultTx;
     },

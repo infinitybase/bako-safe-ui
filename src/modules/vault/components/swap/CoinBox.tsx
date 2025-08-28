@@ -58,7 +58,7 @@ export const CoinBox = memo(
 
     const balance = useMemo(() => {
       const asset = assets.find((a) => a.assetId === coin.assetId);
-      if (!asset?.balance) return '';
+      if (!asset?.balance) return '0';
 
       return asset.balance.formatUnits(asset.units);
     }, [assets, coin.assetId]);

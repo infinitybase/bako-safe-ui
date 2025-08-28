@@ -156,8 +156,7 @@ export const RootSwap = memo(
             if (errorMessage.includes('InsufficientFeeAmount')) {
               errorToast({
                 title: 'Insufficient Fee',
-                description:
-                  'Insufficient Fee. Bridge more ETH to complete this transaction.',
+                description: 'Bridge more ETH to complete this transaction.',
               });
             } else {
               errorToast({
