@@ -3,11 +3,7 @@ import { Vault } from 'bakosafe';
 import { BN, bn } from 'fuels';
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 
-import {
-  DEFAULT_SLIPPAGE,
-  MinEthValueBN,
-  SwapButtonTitle,
-} from '@/config/swap';
+import { DEFAULT_SLIPPAGE, SwapButtonTitle } from '@/config/swap';
 import {
   Asset,
   FUEL_ASSET_ID,
@@ -27,7 +23,6 @@ import { useAvailableEthBalance } from '../../hooks/swap/useAvailableEthBalance'
 import { useMira } from '../../hooks/swap/useMira';
 import { State } from '../../hooks/swap/useSwapRouter';
 import { CoinBox } from './CoinBox';
-import { GasAlert } from './GasAlert';
 import { SwapCost } from './SwapCost';
 import { SwapDivider } from './SwapDivider';
 import { SwapError } from './SwapError';
@@ -189,10 +184,7 @@ export const RootSwap = memo(
       (amount: string, assetId: string) => {
         const asset = assets.find((asset) => asset.assetId === assetId);
         if (asset && asset.balance) {
-          const isEth = asset.slug === 'ETH';
-          const assetAmount = isEth
-            ? bn.parseUnits(amount, asset.units).add(MinEthValueBN)
-            : bn.parseUnits(amount, asset.units);
+          const assetAmount = bn.parseUnits(amount, asset.units);
           const isBalanceSufficient = asset.balance.gte(assetAmount);
 
           if (isBalanceSufficient) {
@@ -325,6 +317,38 @@ export const RootSwap = memo(
       ],
     );
 
+    const handleClearAmount = useCallback(
+      (mode: SwapMode) => {
+        if (mode === 'sell') {
+          const amountTo = swapState.to.amount;
+
+          if (amountTo === '0') return;
+          setSwapState((prevState) => ({
+            ...prevState,
+            to: {
+              ...prevState.to,
+              amount: '0',
+            },
+          }));
+          return;
+        }
+
+        const amountFrom = swapState.from.amount;
+
+        console.log('amountFrom', amountFrom);
+
+        if (amountFrom === '0') return;
+        setSwapState((prevState) => ({
+          ...prevState,
+          from: {
+            ...prevState.from,
+            amount: '0',
+          },
+        }));
+      },
+      [swapState.from.amount, swapState.to.amount],
+    );
+
     useEffect(() => {
       if (
         trade &&
@@ -341,11 +365,22 @@ export const RootSwap = memo(
           handleUpdateAmountIn(formattedAmount);
         }
       }
+
+      const noTradeAmount =
+        trade?.amountIn?.eq(0) ||
+        !trade.amountIn ||
+        trade?.amountOut?.eq(0) ||
+        !trade.amountOut;
+
+      if (trade && trade.state === State.IDLE && noTradeAmount) {
+        handleClearAmount(swapMode);
+      }
     }, [
       trade,
       swapMode,
       handleUpdateAmountIn,
       handleUpdateAmountOut,
+      handleClearAmount,
       swapState.from.units,
       swapState.to.units,
     ]);
@@ -369,6 +404,26 @@ export const RootSwap = memo(
       () => swapButtonTitle === SwapButtonTitle.INSUFFICIENT_BALANCE,
       [swapButtonTitle],
     );
+
+    const isInsufficientETHBalance = useMemo(
+      () => swapButtonTitle === SwapButtonTitle.INSUFFICIENT_ETH_BALANCE,
+      [swapButtonTitle],
+    );
+
+    useEffect(() => {
+      if (
+        !availableEthBalance &&
+        !isInsufficientBalance &&
+        (Number(swapState.to.amount) > 0 || Number(swapState.from.amount) > 0)
+      ) {
+        setSwapButtonTitle(SwapButtonTitle.INSUFFICIENT_ETH_BALANCE);
+      }
+    }, [
+      availableEthBalance,
+      swapState.to.amount,
+      swapState.from.amount,
+      isInsufficientBalance,
+    ]);
 
     return (
       <Stack spacing={1}>
@@ -396,8 +451,6 @@ export const RootSwap = memo(
 
         {trade.error && <SwapError error={trade.error} />}
 
-        {!availableEthBalance && <GasAlert />}
-
         {swapButtonTitle === SwapButtonTitle.SWAP && (
           <SwapCost
             isLoadingCost={isLoadingPreview || isLoading}
@@ -413,7 +466,10 @@ export const RootSwap = memo(
             w="full"
             variant="primary"
             isDisabled={
-              isEmptyAmounts || isEmptyAssets || isInsufficientBalance
+              isEmptyAmounts ||
+              isEmptyAssets ||
+              isInsufficientBalance ||
+              isInsufficientETHBalance
             }
             isLoading={isLoadingPreview || isSendingTx || isLoading}
             onClick={handleSubmitSwap}
