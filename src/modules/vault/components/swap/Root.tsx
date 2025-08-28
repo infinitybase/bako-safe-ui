@@ -335,8 +335,6 @@ export const RootSwap = memo(
 
         const amountFrom = swapState.from.amount;
 
-        console.log('amountFrom', amountFrom);
-
         if (amountFrom === '0') return;
         setSwapState((prevState) => ({
           ...prevState,
