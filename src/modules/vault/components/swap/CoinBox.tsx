@@ -56,6 +56,13 @@ export const CoinBox = memo(
       [assets, coin.assetId],
     );
 
+    const balance = useMemo(() => {
+      const asset = assets.find((a) => a.assetId === coin.assetId);
+      if (!asset?.balance) return '';
+
+      return asset.balance.formatUnits(asset.units);
+    }, [assets, coin.assetId]);
+
     const amountInUSD = useMemo(() => {
       if (!coin.amount || !currentRate) return '0';
       const amount = bn.parseUnits(coin.amount, coin.units);
@@ -81,6 +88,8 @@ export const CoinBox = memo(
               imageUrl={coin.icon}
               onClick={assetsModal.onOpen}
               isLoadingCurrencies={isLoadingAssets}
+              balance={balance}
+              symbol={coin.slug}
             />
           </Box>
 
