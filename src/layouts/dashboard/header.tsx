@@ -11,6 +11,7 @@ import {
   PopoverBody,
   PopoverContent,
   PopoverTrigger,
+  Skeleton,
   Spacer,
   Spinner,
   Text,
@@ -43,6 +44,7 @@ import {
   useUserWorkspacesRequest,
 } from '@/modules';
 import { TypeUser } from '@/modules/auth/services';
+import { useBakoIdAvatar } from '@/modules/core/hooks/bako-id';
 import { EConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
 import { useSocketEvent } from '@/modules/core/hooks/socket/useSocketEvent';
 import { AddressUtils } from '@/modules/core/utils/address';
@@ -109,6 +111,11 @@ const UserBox = () => {
   const { unreadCounter, setUnreadCounter } = useAppNotifications();
   const mySettingsRequest = useMySettingsRequest(
     authDetails.userInfos?.address,
+  );
+
+  const { avatar, isLoading: isLoadingAvatar } = useBakoIdAvatar(
+    authDetails.userInfos?.address,
+    currentNetwork.chainId,
   );
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -365,12 +372,17 @@ const UserBox = () => {
                 )}
               </Text>
 
-              <Avatar
-                variant="roundedSquare"
-                src={authDetails.userInfos?.avatar}
+              <Skeleton
                 boxSize={isMobile ? '32px' : '40px'}
-                border="1px solid #CFCCC9"
-              />
+                isLoaded={!isLoadingAvatar}
+              >
+                <Avatar
+                  variant="roundedSquare"
+                  src={avatar || authDetails.userInfos?.avatar}
+                  boxSize="full"
+                  border={avatar ? 'none' : '1px solid #CFCCC9'}
+                />
+              </Skeleton>
 
               {!isMobile && (
                 <HStack
