@@ -1,18 +1,10 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 
-import { AssetItem } from '../../components/bridge';
+import { useScreenSize } from '@/modules/core';
+import { tokensIDS } from '@/modules/core/utils/assets/address';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+
 import { useFormBridgeContext } from '../../components/bridge/providers/FormBridgeProvider';
-
-export interface ITransferBridgePayload {
-  selectNetworkFrom: string;
-  selectAssetFrom: string;
-  selectNetworkTo: string;
-  selectAssetTo: AssetItem | null;
-  selectAssetToMobile: string;
-  destinationAddress: string;
-  amount: string;
-  searchAsset: string;
-}
 
 const optionsAssets = [
   {
@@ -60,13 +52,23 @@ const optionsNets = [
 
 const useFormBridge = () => {
   const { form } = useFormBridgeContext();
+  const { tokensUSD } = useWorkspaceContext();
+  const { isMobile } = useScreenSize();
 
   const { watch } = form;
 
   const assetFromValue = watch('selectAssetFrom');
-  const assetTo = watch('selectAssetTo');
+  const assetToValue = watch('selectAssetTo');
+  const assetToMobile = watch('selectAssetToMobile');
   const networkToValue = watch('selectNetworkTo');
   const destinationAddress = watch('destinationAddress');
+  const amount = watch('amount');
+
+  useEffect(() => {
+    if ((!assetFromValue || assetFromValue === '') && isMobile) {
+      form.setValue('selectAssetFrom', tokensIDS.ETH);
+    }
+  }, [assetFromValue, isMobile, form]);
 
   const assetFrom =
     useMemo(
@@ -79,16 +81,60 @@ const useFormBridge = () => {
     [networkToValue],
   );
 
+  const assetFromUSD = useMemo(() => {
+    if (!amount || amount === '0') return '$0';
+
+    if (!assetFrom) return '$0';
+
+    const usdData = tokensUSD.data[assetFrom.value];
+    const usdAmount = usdData?.usdAmount ?? null;
+
+    const txAmount = Number(amount.replace(/,/g, '')) * (usdAmount ?? 0);
+
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    }).format(txAmount);
+  }, [amount, assetFrom, tokensUSD.data]);
+
+  const assetTo =
+    useMemo(() => {
+      if (!isMobile) return assetToValue;
+      return optionsAssets.find((a) => a.value === assetToMobile);
+    }, [assetToMobile, assetToValue, isMobile]) ?? null;
+
+  const isFormComplete = useMemo(() => {
+    const amountTreated = Number(amount.replace(/,/g, ''));
+
+    return (
+      !!assetFromValue &&
+      !!networkToValue &&
+      !!destinationAddress &&
+      (!!assetToValue || !!assetToMobile) &&
+      amountTreated > 0
+    );
+  }, [
+    assetFromValue,
+    assetToValue,
+    assetToMobile,
+    amount,
+    networkToValue,
+    destinationAddress,
+  ]);
+
   const onSubmit = form.handleSubmit((data) => {
-    console.log('Form data', data);
+    console.log('>>> Form data', data);
   });
 
   return {
     form,
+    amount,
     assetFrom,
     assetTo,
     networkTo,
     destinationAddress,
+    assetFromUSD,
+    isFormComplete,
     onSubmit,
   };
 };

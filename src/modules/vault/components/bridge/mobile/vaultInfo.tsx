@@ -1,12 +1,18 @@
 import { Avatar, Card, HStack, Text, VStack } from '@chakra-ui/react';
+import { useMemo } from 'react';
 
 import { AddressWithCopyBtn } from '@/components';
 import { AddressUtils } from '@/modules/core';
+import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
 
 export function VaultInfoBridgeMobile() {
-  const vaultName = 'My Vault';
-  const address =
-    '0xf8f8b6283d7fa5b672b530cbb84fcccb4ff8dc40f8176ef4544ddb1f1952ad07';
+  const { vault } = useVaultInfosContext();
+
+  const vaultAddress = useMemo(() => {
+    if (!vault) return '';
+
+    return AddressUtils.format(vault.data?.predicateAddress ?? '', 4);
+  }, [vault]);
 
   return (
     <Card padding={3} w="full" bgColor="grey.825" gap={3}>
@@ -18,7 +24,7 @@ export function VaultInfoBridgeMobile() {
           borderRadius={6}
           bgColor="grey.950"
           color="grey.75"
-          name={vaultName}
+          name={vault?.data?.name}
           boxShadow="0px 1.5px 1.5px 0px rgba(0, 0, 0, 0.4);"
           boxSize="30px"
           sx={{
@@ -28,12 +34,12 @@ export function VaultInfoBridgeMobile() {
 
         <VStack w="full" align="start" gap={0}>
           <Text color="grey.50" fontSize={12} fontWeight={500}>
-            {vaultName}
+            {vault?.data?.name}
           </Text>
 
           <AddressWithCopyBtn
             h="18px"
-            value={address}
+            value={vault.data?.predicateAddress ?? ''}
             gap="4px"
             alignItems="center"
             textProps={{
@@ -45,7 +51,7 @@ export function VaultInfoBridgeMobile() {
               fontSize: 'xs',
             }}
             justifyContent="start"
-            customValue={AddressUtils.format(address)}
+            customValue={vaultAddress}
           />
         </VStack>
       </HStack>

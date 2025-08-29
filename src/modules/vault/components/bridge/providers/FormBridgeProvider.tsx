@@ -28,6 +28,7 @@ const FormBridgeProvider = ({ children }: { children: React.ReactNode }) => {
       selectNetworkTo: '',
       selectAssetTo: null,
       searchAsset: '',
+      amount: '0.000',
     },
   });
 

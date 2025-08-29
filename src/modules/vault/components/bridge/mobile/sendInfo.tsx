@@ -2,9 +2,9 @@ import { Card, FormControl, HStack, InputGroup, Text } from '@chakra-ui/react';
 import { Controller, useFormContext } from 'react-hook-form';
 
 import { AssetSelect } from '@/components';
-import { ITransferBridgePayload } from '@/modules/vault/hooks/bridge';
 
 import { InputAddressBridge } from '..';
+import { ITransferBridgePayload } from '../providers/FormBridgeProvider';
 
 export function SendInfoBridgeMobile() {
   const { control } = useFormContext<ITransferBridgePayload>();

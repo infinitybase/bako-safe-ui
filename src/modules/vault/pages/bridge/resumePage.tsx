@@ -23,7 +23,14 @@ interface ResumePageBrigdeProps {
 }
 
 export function ResumePageBrigde({ setScreenBridge }: ResumePageBrigdeProps) {
-  const { assetFrom, assetTo, networkTo, destinationAddress } = useFormBridge();
+  const {
+    assetFrom,
+    assetTo,
+    networkTo,
+    destinationAddress,
+    amount,
+    assetFromUSD,
+  } = useFormBridge();
 
   return (
     <VStack w="585px" borderRadius="16px" bgColor={'#0D0D0C'} p={4}>
@@ -37,11 +44,11 @@ export function ResumePageBrigde({ setScreenBridge }: ResumePageBrigdeProps) {
       </VStack>
       <SectionInfo
         direction="From"
-        asset={assetFrom?.name ?? ''}
+        asset={assetFrom}
         network={'Fuel ignition'}
-        symbol={assetFrom?.symbol ?? ''}
-        image={assetFrom?.image ?? ''}
         imageNetwork={'https://verified-assets.fuel.network/images/fuel.svg'}
+        amount={amount}
+        amountUSD={assetFromUSD}
       />
       <HStack w="full" align="center" marginY={3}>
         <Divider borderColor="grey.950" h="1px" flex="1" />
@@ -50,11 +57,11 @@ export function ResumePageBrigde({ setScreenBridge }: ResumePageBrigdeProps) {
       </HStack>
       <SectionInfo
         direction="To"
-        asset={assetTo?.name ?? ''}
-        symbol={assetTo?.symbol ?? ''}
+        asset={assetTo}
         network={networkTo?.name ?? ''}
-        image={assetTo?.image ?? ''}
         imageNetwork={networkTo?.image ?? ''}
+        amount={'0.005791'}
+        amountUSD={assetFromUSD}
       />
       <Card variant="outline" mt={3} padding={3} paddingY={2} w="full">
         <HStack w="full" justifyContent="space-between">
