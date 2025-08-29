@@ -39,7 +39,11 @@ export function InputAddressBridge() {
           control={control}
           name="destinationAddress"
           render={({ field, fieldState }) => {
-            const displayValue = AddressUtils.format(field?.value ?? '');
+            const minLengthAddress = 64;
+            const displayValue =
+              field?.value?.length > minLengthAddress
+                ? AddressUtils.format(field?.value ?? '')
+                : field?.value;
 
             return (
               <FormControl isInvalid={fieldState.invalid} paddingTop={0}>
@@ -57,7 +61,7 @@ export function InputAddressBridge() {
                   <InputRightElement
                     top={'7%'}
                     cursor="pointer"
-                    right={4}
+                    right={2}
                     h="calc(100% - 6px)"
                     w="fit-content"
                     pl={2}

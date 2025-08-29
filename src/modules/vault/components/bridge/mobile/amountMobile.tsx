@@ -9,46 +9,72 @@ import {
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
-import { useState } from 'react';
+import { bn } from 'fuels';
+import { useCallback, useMemo, useState } from 'react';
 
 import { LeftAndRightArrow } from '@/components';
+import { Asset } from '@/modules/core';
+import { useFormBridge } from '@/modules/vault/hooks/bridge';
 
 import { InputAmount } from '../inputAmount';
-import { NetworkOptionItem } from '../selectNewtork';
 import { SelectNetworkDrawerBridge } from './selectNetworkDrawer';
 
-const optionsNets = [
-  {
-    value: 'Network ethereum',
-    name: 'Ethereum',
-    image: 'https://assets.fuel.network/providers/eth.svg',
-    symbol: 'ETH',
-  },
-  {
-    value: 'Network Fuel Ignition',
-    name: 'Fuel Ignition',
-    image: 'https://verified-assets.fuel.network/images/fuel.svg',
-    symbol: 'FUEL',
-  },
-  {
-    value: 'Network Base',
-    name: 'Base',
-    image:
-      'https://firebasestorage.googleapis.com/v0/b/pump-555ee.appspot.com/o/images%2Faecb0358-d860-402c-9f3c-c5b579e4eb88.jpeg?alt=media&token=b39c9a29-4b5e-4b2c-8600-62e9afff2448',
-    symbol: 'BASE',
-  },
-];
+export interface AmountBridgeMobileProps {
+  assets?: Required<Asset>[];
+}
 
-export function AmountBrigdeMobile() {
-  const [valueSource, setValueSource] = useState('0.000');
+export function AmountBrigdeMobile({ assets }: AmountBridgeMobileProps) {
   const [errorAmount, setErrorAmount] = useState(false);
-  const [network, setNetwork] = useState<NetworkOptionItem>(optionsNets[0]);
   const selectNetworkDrawer = useDisclosure();
+  const { assetFrom, form, amount, assetFromUSD } = useFormBridge();
+  const fuelImg = 'https://verified-assets.fuel.network/images/fuel.svg';
+  const fee = 0.000003205;
 
-  const handleSourceChange = (value: string) => {
-    console.log('value', value);
-    setValueSource(value);
-  };
+  const balance = useMemo(() => {
+    const asset = assets?.find((a) => a.assetId === assetFrom?.value);
+
+    if (!asset?.amount) return '0';
+
+    const balance = bn(asset.amount)?.format({
+      units: asset.units,
+    });
+
+    return balance;
+  }, [assets, assetFrom?.value]);
+
+  const handleSourceChange = useCallback(
+    (value: string) => {
+      form.setValue('amount', value);
+      const balanceTreated = Number(balance.replace(/,/g, ''));
+      const valueTreated = Number(value.replace(/,/g, ''));
+
+      if (valueTreated > balanceTreated) setErrorAmount(true);
+      else if (errorAmount) setErrorAmount(false);
+    },
+    [form, errorAmount, balance],
+  );
+
+  const handleMinAmount = useCallback(async () => {
+    if (!balance || balance === '0') {
+      form.setValue('amount', '0');
+      return;
+    }
+
+    const amount = fee + 0.00000001;
+    form.setValue('amount', amount.toString());
+  }, [form, balance]);
+
+  const handleMaxAmount = useCallback(() => {
+    if (!balance || balance === '0') {
+      form.setValue('amount', '0');
+      return;
+    }
+
+    const balanceTreated = balance.replace(/,/g, '');
+
+    const amount = Number(balanceTreated) - fee;
+    form.setValue('amount', amount.toString());
+  }, [form, balance]);
 
   return (
     <Card
@@ -62,7 +88,7 @@ export function AmountBrigdeMobile() {
       <SelectNetworkDrawerBridge
         isOpen={selectNetworkDrawer.isOpen}
         onClose={selectNetworkDrawer.onClose}
-        selectNetwork={setNetwork}
+        form={form}
       />
       <HStack w="full" justifyContent={'space-between'} align="start">
         <Text color="#868079" fontSize={12} fontWeight={400}>
@@ -70,9 +96,9 @@ export function AmountBrigdeMobile() {
         </Text>
         <VStack justifyContent="flex-end" gap={0} p={1}>
           <HStack w={'full'} align="center" justifyContent="flex-end">
-            <Image src={network.image} boxSize={4} />
+            <Image src={fuelImg} boxSize={4} />
             <Text color="grey.50" fontSize={12} fontWeight={400}>
-              {network.name}
+              {'Fuel Ignition'}
             </Text>
             <IconButton
               icon={<LeftAndRightArrow />}
@@ -90,15 +116,16 @@ export function AmountBrigdeMobile() {
             />
           </HStack>
           <Text color="#868079" fontSize={12} fontWeight={400}>
-            Balance: {'5.458 ' + network.symbol}
+            Balance:{' '}
+            {balance + ' ' + (assetFrom?.symbol ? assetFrom.symbol : 'ETH')}
           </Text>
         </VStack>
       </HStack>
 
       <Box maxW={{ base: '300px', md: '350px' }} alignSelf={'center'}>
         <InputAmount
-          symbol={network.symbol}
-          value={valueSource}
+          symbol={assetFrom?.symbol ?? ''}
+          value={amount}
           onChange={handleSourceChange}
           disabled={false} //maxFee === 0 || maxFee == undefined}
         />
@@ -106,7 +133,7 @@ export function AmountBrigdeMobile() {
 
       <HStack justifyContent="center">
         <Text color="#868079" fontSize={12} fontWeight={400}>
-          {'$ 00,00'}
+          {assetFromUSD}
         </Text>
       </HStack>
       <HStack justifyContent="center" gap={2} align="flex-end" height={'100%'}>
@@ -119,7 +146,7 @@ export function AmountBrigdeMobile() {
           padding={'4px 6px 4px 6px'}
           fontSize={10}
           fontWeight={500}
-          //onClick={() => handleSetCurrencyAmount(25, balance)}
+          onClick={() => handleMinAmount()}
         >
           <Text color="#868079">MIN</Text>
         </Button>
@@ -128,9 +155,7 @@ export function AmountBrigdeMobile() {
           minW="48px"
           isDisabled={false} //maxFee === 0 || maxFee == undefined}
           variant="secondary"
-          onClick={() => {
-            setErrorAmount(!errorAmount);
-          }} //handleSetCurrencyAmount(50, balance)}
+          onClick={handleMaxAmount} //handleSetCurrencyAmount(50, balance)}
           borderRadius={6}
           padding={'4px 6px 4px 6px'}
           fontSize={10}

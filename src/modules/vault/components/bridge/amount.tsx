@@ -1,13 +1,18 @@
 import { Button, Card, HStack, Text, VStack } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import { bn } from 'fuels';
+import { useCallback, useMemo, useState } from 'react';
 
+import { Asset } from '@/modules/core';
+
+import { useFormBridge } from '../../hooks/bridge';
 import { InputAmount } from './inputAmount';
 
 export interface AmountBridgeProps {
   symbol: string;
   stepsForm: number;
   setStepsForm: React.Dispatch<React.SetStateAction<number>>;
+  assets?: Required<Asset>[];
 }
 
 const MotionBox = motion(VStack);
@@ -16,25 +21,70 @@ export function AmountBrigde({
   symbol,
   stepsForm,
   setStepsForm,
+  assets,
 }: AmountBridgeProps) {
-  //const { control } = useFormContext<ITransferBridgePayload>();
-  const [valueSource, setValueSource] = useState('0.000');
   const [errorAmount, setErrorAmount] = useState(false);
+  const { assetFrom, form, amount, assetFromUSD } = useFormBridge();
+  const fee = 0.000003205;
 
-  const handleSourceChange = (value: string) => {
-    console.log('value', value);
-    setValueSource(value);
+  const balance = useMemo(() => {
+    const asset = assets?.find((a) => a.assetId === assetFrom?.value);
+    if (!asset?.amount) return '0';
 
-    const removeStep = (Number(value) === 0 || errorAmount) && stepsForm > 1;
+    return bn(asset.amount)?.format({
+      units: asset.units,
+    });
+  }, [assets, assetFrom?.value]);
 
-    if (removeStep) {
-      setStepsForm(1);
+  const handleSourceChange = useCallback(
+    (value: string) => {
+      form.setValue('amount', value);
+
+      const balanceTreated = Number(balance.replace(/,/g, ''));
+      const valueTreated = Number(value.replace(/,/g, ''));
+      const insufficientBalance = valueTreated > balanceTreated;
+      setErrorAmount(insufficientBalance);
+
+      const removeStep =
+        (valueTreated === 0 || insufficientBalance) && stepsForm > 1;
+
+      if (removeStep) {
+        setStepsForm(1);
+        return;
+      }
+
+      const addNewStep =
+        valueTreated > 0 && !insufficientBalance && stepsForm === 1;
+      if (addNewStep) setStepsForm(2);
+    },
+    [form, balance, stepsForm, setStepsForm],
+  );
+
+  const handleMinAmount = useCallback(() => {
+    if (!balance || balance === '0') {
+      form.setValue('amount', '0');
       return;
     }
 
-    const addNewStep = Number(value) > 0 && !errorAmount && stepsForm === 1;
-    if (addNewStep) setStepsForm(2);
-  };
+    const amount = fee + 0.00000001;
+    form.setValue('amount', amount.toString());
+
+    if (stepsForm === 1) setStepsForm(2);
+  }, [form, balance, stepsForm, setStepsForm]);
+
+  const handleMaxAmount = useCallback(() => {
+    if (!balance || balance === '0') {
+      form.setValue('amount', '0');
+      return;
+    }
+
+    const balanceTreated = balance.replace(/,/g, '');
+
+    const amount = Number(balanceTreated) - fee;
+    form.setValue('amount', amount.toString());
+
+    if (stepsForm === 1) setStepsForm(2);
+  }, [form, balance, stepsForm, setStepsForm]);
 
   return (
     <MotionBox
@@ -58,21 +108,21 @@ export function AmountBrigde({
           </Text>
           <HStack flex={1} justifyContent="flex-end">
             <Text color="#868079" fontSize={12} fontWeight={400}>
-              Balance: {'5.458 ' + symbol}
+              Balance: {balance + ' ' + symbol}
             </Text>
           </HStack>
         </HStack>
 
         <InputAmount
           symbol={symbol}
-          value={valueSource}
+          value={amount}
           onChange={handleSourceChange}
           disabled={false} //maxFee === 0 || maxFee == undefined}
         />
 
         <HStack justifyContent="center" mb={{ base: 2, md: 4 }}>
           <Text color="#868079" fontSize={12} fontWeight={400}>
-            {'$ 00,00'}
+            {assetFromUSD}
           </Text>
         </HStack>
         <HStack justifyContent="center" gap={2}>
@@ -85,7 +135,7 @@ export function AmountBrigde({
             padding={'4px 6px 4px 6px'}
             fontSize={10}
             fontWeight={500}
-            //onClick={() => handleSetCurrencyAmount(25, balance)}
+            onClick={() => handleMinAmount()}
           >
             <Text color="#868079">MIN</Text>
           </Button>
@@ -94,9 +144,7 @@ export function AmountBrigde({
             minW="48px"
             isDisabled={false} //maxFee === 0 || maxFee == undefined}
             variant="secondary"
-            onClick={() => {
-              setErrorAmount(!errorAmount);
-            }} //handleSetCurrencyAmount(50, balance)}
+            onClick={() => handleMaxAmount()} //handleSetCurrencyAmount(50, balance)}
             borderRadius={6}
             padding={'4px 6px 4px 6px'}
             fontSize={10}
@@ -114,8 +162,7 @@ export function AmountBrigde({
         >
           {!!errorAmount && (
             <Text color="red.500" fontSize="xs">
-              {/* {errorAmount} */}
-              Error na quantidde amount, insuficiente, tente outra coisa!
+              Insufficient balance for this operation!
             </Text>
           )}
         </HStack>
