@@ -1,6 +1,7 @@
 import { Button, Divider, HStack, Icon, VStack } from '@chakra-ui/react';
 
 import { SwapIcon } from '@/components';
+import { Asset } from '@/modules/core';
 
 import {
   AmountBrigdeMobile,
@@ -8,19 +9,23 @@ import {
   SendInfoBridgeMobile,
   VaultInfoBridgeMobile,
 } from '../../components/bridge';
+import { useFormBridge } from '../../hooks/bridge';
 
 interface FormMobilePageBrigdeProps {
   setScreenBridge: React.Dispatch<React.SetStateAction<'form' | 'resume'>>;
+  assets?: Required<Asset>[];
 }
 
 export function FormMobilePageBrigde({
+  assets,
   setScreenBridge,
 }: FormMobilePageBrigdeProps) {
+  const { isFormComplete } = useFormBridge();
   return (
     <VStack w="585px" height={'100%'} borderRadius="16px" p={4}>
       <VaultInfoBridgeMobile />
 
-      <AmountBrigdeMobile />
+      <AmountBrigdeMobile assets={assets} />
 
       <HStack w="full" align="center" marginY={3}>
         <Divider borderColor="grey.950" h="1px" flex="1" />
@@ -33,7 +38,7 @@ export function FormMobilePageBrigde({
       <DetailsBridge />
 
       <Button
-        //isDisabled={!hasPermission([OWNER, MANAGER, ADMIN])}
+        isDisabled={!isFormComplete}
         variant="primary"
         type="submit"
         fontWeight={600}

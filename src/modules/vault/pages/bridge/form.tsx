@@ -1,6 +1,8 @@
 import { Button, VStack } from '@chakra-ui/react';
 import { AnimatePresence, motion } from 'framer-motion';
 
+import { Asset } from '@/modules/core';
+
 import {
   AmountBrigde,
   DetailsBridge,
@@ -13,6 +15,7 @@ interface FormPageBrigdeProps {
   stepsForm: number;
   setStepsForm: React.Dispatch<React.SetStateAction<number>>;
   setScreenBridge: React.Dispatch<React.SetStateAction<'form' | 'resume'>>;
+  assets?: Required<Asset>[];
 }
 
 const MotionBox = motion(VStack);
@@ -21,8 +24,9 @@ export function FormPageBrigde({
   stepsForm,
   setStepsForm,
   setScreenBridge,
+  assets,
 }: FormPageBrigdeProps) {
-  const { assetFrom, onSubmit } = useFormBridge();
+  const { assetFrom, isFormComplete, onSubmit } = useFormBridge();
 
   return (
     <VStack w={'full'} justifyContent="center" align="center">
@@ -38,6 +42,7 @@ export function FormPageBrigde({
                 symbol={assetFrom?.symbol ?? ''}
                 stepsForm={stepsForm}
                 setStepsForm={setStepsForm}
+                assets={assets}
               />
             )}
           </AnimatePresence>
@@ -53,7 +58,7 @@ export function FormPageBrigde({
               <DetailsBridge />
               <InputAddressBridge />
               <Button
-                //isDisabled={!hasPermission([OWNER, MANAGER, ADMIN])}
+                isDisabled={!isFormComplete}
                 variant="primary"
                 type="submit"
                 fontWeight={600}
