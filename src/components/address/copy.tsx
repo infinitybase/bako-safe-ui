@@ -45,7 +45,7 @@ const AddressWithCopyBtn = ({
     }
 
     if (isB256(value)) {
-      return FuelsAddress.fromB256(value).toString();
+      return new FuelsAddress(value).b256Address;
     }
 
     return value;

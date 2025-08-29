@@ -45,7 +45,7 @@ const Address = (props: AddressProps) => {
     }
 
     return value && !isPasskey
-      ? FuelsAddress.fromString(value).toString()
+      ? new FuelsAddress(value).b256Address
       : (value ?? '');
   };
 
