@@ -1,9 +1,19 @@
 import { Icon } from '@chakra-ui/icons';
-import { Box, Flex, Image, Stack, Text, VStack } from '@chakra-ui/react';
+import {
+  Box,
+  BoxProps,
+  Flex,
+  Image,
+  Stack,
+  Text,
+  TextProps,
+  VStack,
+} from '@chakra-ui/react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-import { ArrowDownIcon } from '../icons';
 import { UNKNOWN_ASSET } from '@/modules';
+
+import { ArrowDownIcon } from '../icons';
 
 interface AssetSelectOption {
   value: string;
@@ -11,6 +21,8 @@ interface AssetSelectOption {
   name: string;
   symbol: string | null;
 }
+
+interface BoxSelectProps extends BoxProps {}
 
 interface AssetSelectProps {
   value?: string;
@@ -23,6 +35,9 @@ interface AssetSelectProps {
   onChange: (value: string) => void;
   needShowOptionsAbove?: boolean;
   maxOptionsHeight?: number;
+  boxProps?: BoxSelectProps;
+  textLabelProps?: TextProps;
+  textValueProps?: TextProps;
 }
 
 const AssetSelect = ({
@@ -36,6 +51,9 @@ const AssetSelect = ({
   needShowOptionsAbove,
   maxOptionsHeight,
   name,
+  boxProps,
+  textLabelProps,
+  textValueProps,
 }: AssetSelectProps) => {
   const selectRef = useRef<HTMLDivElement>(null);
   const hiddenInputRef = useRef<HTMLInputElement>(null);
@@ -224,6 +242,7 @@ const AssetSelect = ({
         aria-label={label || 'Select an asset'}
         aria-invalid={isInvalid}
         aria-describedby={isInvalid ? `${name}-error` : undefined}
+        {...boxProps}
       >
         {label && (
           <Text
@@ -241,6 +260,7 @@ const AssetSelect = ({
             mb={1}
             fontWeight="medium"
             lineHeight="1"
+            {...textLabelProps}
           >
             {label}
           </Text>
@@ -262,6 +282,7 @@ const AssetSelect = ({
                 whiteSpace="nowrap"
                 overflow="hidden"
                 textOverflow="ellipsis"
+                {...textValueProps}
               >
                 {selectedOption.name}
               </Text>
