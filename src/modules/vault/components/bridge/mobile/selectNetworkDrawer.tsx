@@ -9,51 +9,47 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { SetStateAction } from 'react';
+import { UseFormReturn } from 'react-hook-form';
 
 import { AssetItem } from '../modalSelectAssets';
-import { NetworkOptionItem } from '../selectNewtork';
+import { ITransferBridgePayload } from '../providers/FormBridgeProvider';
 
 export interface SelectNetworkDrawerProps {
   isOpen: boolean;
   onClose: () => void;
-  selectNetwork: React.Dispatch<SetStateAction<NetworkOptionItem>>;
+  form: UseFormReturn<ITransferBridgePayload>;
   children?: React.ReactNode;
 }
 
-const optionsNets = [
+const optionsAssets = [
   {
-    value: 'Network ethereum',
-    name: 'Ethereum',
+    value: '0xf8f8b6283d7fa5b672b530cbb84fcccb4ff8dc40f8176ef4544ddb1f1952ad07',
+    name: 'ETH',
     image: 'https://assets.fuel.network/providers/eth.svg',
     symbol: 'ETH',
   },
   {
-    value: 'Network Fuel Ignition',
-    name: 'Fuel Ignition',
+    value: '0x1d5d97005e41cae2187a895fd8eab0506111e0e2f3331cd3912c15c24e3c1d82',
+    name: 'FUEL',
     image: 'https://verified-assets.fuel.network/images/fuel.svg',
     symbol: 'FUEL',
   },
   {
-    value: 'Network Base',
-    name: 'Base',
+    value: 'USDC',
+    name: 'USDC',
     image:
       'https://firebasestorage.googleapis.com/v0/b/pump-555ee.appspot.com/o/images%2Faecb0358-d860-402c-9f3c-c5b579e4eb88.jpeg?alt=media&token=b39c9a29-4b5e-4b2c-8600-62e9afff2448',
-    symbol: 'BASE',
+    symbol: 'USC',
   },
 ];
 
 interface AssetItemBrigdeProps {
   asset: AssetItem;
-  selectNetwork: React.Dispatch<SetStateAction<NetworkOptionItem>>;
+  form: UseFormReturn<ITransferBridgePayload>;
   onClose: () => void;
 }
 
-const AssetItemMobile = ({
-  asset,
-  selectNetwork,
-  onClose,
-}: AssetItemBrigdeProps) => {
+const AssetItemMobile = ({ asset, form, onClose }: AssetItemBrigdeProps) => {
   const { image, name } = asset;
 
   return (
@@ -66,7 +62,7 @@ const AssetItemMobile = ({
       _hover={{ bgColor: 'grey.925' }}
       w="full"
       onClick={() => {
-        selectNetwork(asset);
+        form.setValue('selectAssetFrom', asset.value);
         onClose();
       }}
     >
@@ -81,7 +77,7 @@ const AssetItemMobile = ({
 export function SelectNetworkDrawerBridge({
   isOpen,
   onClose,
-  selectNetwork,
+  form,
 }: SelectNetworkDrawerProps) {
   return (
     <Drawer placement="bottom" onClose={onClose} isOpen={isOpen}>
@@ -114,12 +110,12 @@ export function SelectNetworkDrawerBridge({
               },
             }}
           >
-            {optionsNets.map((asset) => (
+            {optionsAssets.map((asset) => (
               /* eslint-disable react/prop-types */
               <AssetItemMobile
                 key={asset.value}
-                asset={{ ...asset, balance: '0' }}
-                selectNetwork={selectNetwork}
+                asset={asset}
+                form={form}
                 onClose={onClose}
               />
             ))}

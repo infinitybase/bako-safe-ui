@@ -17,8 +17,8 @@ import { Controller, useFormContext, useWatch } from 'react-hook-form';
 import { AssetSelect, ChevronDownIcon, SwapIcon } from '@/components';
 import { limitCharacters } from '@/utils';
 
-import { ITransferBridgePayload } from '../../hooks/bridge';
 import { ModalSelectAssetsBridge } from './modalSelectAssets';
+import { ITransferBridgePayload } from './providers/FormBridgeProvider';
 
 export interface SelectNetworkProps {
   stepsForm: number;

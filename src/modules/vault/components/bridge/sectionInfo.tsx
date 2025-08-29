@@ -7,14 +7,20 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
+import { useMemo } from 'react';
+
+import { AddressUtils } from '@/modules/core';
+
+import { useVaultInfosContext } from '../../VaultInfosProvider';
+import { AssetItem } from './modalSelectAssets';
 
 export interface SectionInfoBridgeProps {
   direction: 'From' | 'To';
   network: string;
-  asset: string;
-  image: string;
-  symbol: string;
+  asset: AssetItem | null;
   imageNetwork?: string;
+  amount?: string;
+  amountUSD?: string;
 }
 
 interface SectionItemBridgeProps {
@@ -78,10 +84,18 @@ export function SectionInfo({
   direction,
   network,
   asset,
-  symbol,
-  image,
   imageNetwork,
+  amount,
+  amountUSD,
 }: SectionInfoBridgeProps) {
+  const { vault } = useVaultInfosContext();
+
+  const vaultAddress = useMemo(() => {
+    if (!vault) return '';
+
+    return AddressUtils.format(vault.data?.predicateAddress ?? '', 4);
+  }, [vault]);
+
   return (
     <Card variant="outline" paddingX={3} paddingY={2} w="full">
       <VStack p={0} gap={0}>
@@ -96,8 +110,8 @@ export function SectionInfo({
         {direction === 'From' && (
           <HStack w="full" mt={3}>
             <SectionItem
-              title="My Vault"
-              description="0xfe...3y56"
+              title={vault?.data?.name ?? ''}
+              description={vaultAddress ?? ''}
               image="https://assets.fuel.network/providers/eth.svg"
               avatar={true}
             />
@@ -105,18 +119,18 @@ export function SectionInfo({
         )}
         <HStack w="full" mt={3}>
           <SectionItem
-            title={asset}
+            title={asset?.name ?? ''}
             description={network}
-            image={image}
+            image={asset?.image ?? ''}
             imageNetwork={imageNetwork ?? ''}
           />
           <VStack w="full" align="flex-end" gap={0}>
             <Text color="grey.50" fontSize={14} fontWeight={500}>
-              {`0.5367 ${symbol} `}
+              {`${amount} ${asset?.symbol} `}
             </Text>
 
             <Text color="grey.250" fontSize={12}>
-              {'$999.54'}
+              {amountUSD}
             </Text>
           </VStack>
         </HStack>

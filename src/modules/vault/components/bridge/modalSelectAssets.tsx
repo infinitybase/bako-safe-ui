@@ -15,14 +15,14 @@ import { Controller, useFormContext } from 'react-hook-form';
 
 import { Dialog, SearchIcon } from '@/components';
 
-import { ITransferBridgePayload } from '../../pages';
+import { ITransferBridgePayload } from './providers/FormBridgeProvider';
 
 export interface AssetItem {
   value: string;
   image: string;
   name: string;
   symbol: string;
-  balance: string;
+  balance?: string;
 }
 
 export interface AssetItemBrigdeProps {
@@ -40,7 +40,7 @@ const optionsAssets = [
   {
     value: '0xf8f8b6283d7fa5b672b530cbb84fcccb4ff8dc40f8176ef4544ddb1f1952ad07',
     balance: '0.00057891',
-    name: 'Etherium',
+    name: 'ETH',
     image: 'https://assets.fuel.network/providers/eth.svg',
     symbol: 'ETH',
   },
