@@ -2,22 +2,17 @@ import { Button, Heading, Stack, Text } from '@chakra-ui/react';
 import { bn } from 'fuels';
 import { useCallback, useMemo } from 'react';
 
-import { useListAssets } from '@/hooks/marketplace/useListAssets';
-import { useUpdateOrder } from '@/hooks/marketplace/useUpdateOrder';
 import { useContactToast } from '@/modules/addressBook';
 
-import { NftCardSaleForm, type NftSaleCardForm } from '../NftCardSaleForm';
+import { useListAssets } from '../hooks';
+import { useUpdateOrder } from '../hooks/useUpdateOrder';
 import type { Order } from '../types';
+import {
+  ListingConfigFormProps,
+  ListingConfigSetup,
+} from './ListingConfigSetup';
 
-export default function UpateOrderForm({
-  assetSymbolUrl,
-  order,
-  value,
-  onClose,
-  name,
-  onCancel,
-  userWithHandle,
-}: {
+type UpateOrderFormProps = {
   order: Order;
   value: number;
   assetSymbolUrl: string;
@@ -25,13 +20,25 @@ export default function UpateOrderForm({
   name: string;
   onCancel: () => void;
   userWithHandle: boolean;
-}) {
+};
+
+export default function UpateOrderForm({
+  order,
+  value,
+  assetSymbolUrl,
+  onClose,
+  name,
+  onCancel,
+  userWithHandle,
+}: UpateOrderFormProps) {
   const { updateOrderAsync, isPending } = useUpdateOrder();
   const { successToast, errorToast } = useContactToast();
   const { assets } = useListAssets();
 
   const handleUpdateOrder = useCallback(
-    async (data: NftSaleCardForm & { currentReceiveAmountInUsd: number }) => {
+    async (
+      data: ListingConfigFormProps & { currentReceiveAmountInUsd: number },
+    ) => {
       try {
         const sellPrice = bn.parseUnits(
           data.sellPrice.toString(),
@@ -82,7 +89,7 @@ export default function UpateOrderForm({
       <Text color="section.500">
         Select new asset and price for your listing.
       </Text>
-      <NftCardSaleForm
+      <ListingConfigSetup
         onSubmit={handleUpdateOrder}
         assets={assets}
         userWithHandle={userWithHandle}

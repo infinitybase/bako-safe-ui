@@ -1,16 +1,22 @@
-import { useMemo } from "react";
+import { MarketplaceContract } from '@garage/sdk';
+import { useMemo } from 'react';
 
-import { useWallet } from "@fuels/react";
-import { MarketplaceContract } from "@garage/sdk";
+import { useBakoSafeVault } from '@/modules/core';
+import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
 
 export const useGarage = () => {
-    const { wallet } = useWallet();
+  const { vault } = useVaultInfosContext();
 
-    const marketplace = useMemo(
-        // @ts-ignore
-        () => MarketplaceContract.create(wallet!),
-        [wallet]
-    );
+  const { vault: vaultSafe } = useBakoSafeVault({
+    address: vault?.data?.predicateAddress,
+    provider: vault?.data?.provider,
+    id: vault?.data?.id,
+  });
 
-    return marketplace;
+  const marketplace = useMemo(
+    () => MarketplaceContract.create(vaultSafe!),
+    [vaultSafe],
+  );
+
+  return marketplace;
 };

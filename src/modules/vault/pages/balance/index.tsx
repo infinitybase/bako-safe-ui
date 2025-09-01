@@ -3,6 +3,7 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   Flex,
+  Grid,
   HStack,
   Icon,
   Tab,
@@ -13,6 +14,7 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
+import { useMemo } from 'react';
 import { RiMenuUnfoldLine } from 'react-icons/ri';
 import { useNavigate } from 'react-router-dom';
 
@@ -20,6 +22,8 @@ import { CustomSkeleton, HomeIcon } from '@/components';
 import { EmptyState } from '@/components/emptyState';
 import { Drawer } from '@/layouts/dashboard/drawer';
 import { AssetsBalanceList, NFT, NftsBalanceList, Pages } from '@/modules/core';
+import ListedOrderCard from '@/modules/garage/components/ListedOrderCard';
+import { useListInfiniteOrdersByAddress } from '@/modules/garage/hooks/useListInfiniteOrdersByAddress';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { NFTsEmptyState } from '../../components/NFTsEmptyState';
@@ -29,6 +33,12 @@ const VaultBalancePage = () => {
   const navigate = useNavigate();
   const menuDrawer = useDisclosure();
   const { vault, assets } = useVaultInfosContext();
+
+  const { orders } = useListInfiniteOrdersByAddress({
+    sellerAddress:
+      '0x8e4f57882b46e63EA37f67c90e0Aa4A0aB618C8c5fC3d793F07FB84560226FA0',
+  });
+
   const {
     authDetails: { userInfos },
     workspaceInfos: {
@@ -40,6 +50,11 @@ const VaultBalancePage = () => {
     screenSizes: { vaultRequiredSizeToColumnLayout },
   } = useWorkspaceContext();
   const workspaceId = userInfos.workspace?.id ?? '';
+
+  const userOrders = useMemo(
+    () => orders?.pages?.flatMap((page) => page.data) ?? [],
+    [orders],
+  );
 
   if (!vault) return null;
 
@@ -196,9 +211,34 @@ const VaultBalancePage = () => {
                 isLoaded={!userInfos.isLoading && !assets.isLoading}
                 flex={1}
               >
-                {assets.nfts?.length ? (
+                {assets.nfts && assets.nfts?.length > 0 && (
                   <NftsBalanceList nfts={assets.nfts as NFT[]} />
-                ) : (
+                )}
+
+                {userOrders.length > 0 && (
+                  <Grid
+                    mt={6}
+                    gap={4}
+                    templateColumns={{
+                      base: 'repeat(2, 1fr)',
+                      xs: 'repeat(3, 1fr)',
+                      sm: 'repeat(4, 1fr)',
+                      md: 'repeat(5, 1fr)',
+                      xl: 'repeat(5, 1fr)',
+                      '2xl': 'repeat(6, 1fr)',
+                    }}
+                  >
+                    {userOrders.map((order) => (
+                      <ListedOrderCard
+                        key={order.id}
+                        order={order}
+                        withHandle={true}
+                      />
+                    ))}
+                  </Grid>
+                )}
+
+                {assets.nfts?.length === 0 && userOrders.length === 0 && (
                   <NFTsEmptyState />
                 )}
               </CustomSkeleton>

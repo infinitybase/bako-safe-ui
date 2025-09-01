@@ -10,8 +10,7 @@ import { Networks, resolveNetwork } from '../utils/resolver-network';
 
 const BASE_API_URL = import.meta.env.VITE_BAKO_ID_API_URL;
 
-// const BASE_GARAGE_URL = import.meta.env.VITE_GARAGE_API_URL;
-const BASE_GARAGE_URL = 'https://garage-api.bako.global';
+const BASE_GARAGE_URL = import.meta.env.VITE_GARAGE_API_URL;
 
 export enum ORDER_EVENTS {
   OrderCreatedEvent = 'OrderCreatedEvent',

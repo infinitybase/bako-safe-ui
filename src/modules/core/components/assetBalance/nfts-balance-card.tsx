@@ -1,4 +1,4 @@
-import { Box, Text, VStack } from '@chakra-ui/react';
+import { Box, Button, Text, VStack } from '@chakra-ui/react';
 import { useState } from 'react';
 
 import { Card } from '@/components';
@@ -65,6 +65,15 @@ const NftBalanceCard = ({ nft }: { nft: NFT }) => {
               ? `${nftsInfo.symbol || ''} ${nftsInfo.name || nftsInfo.metadata.name || ''}`.trim()
               : AddressUtils.format(nftsInfo.assetId, 10)}
           </Text>
+          <Button
+            variant="primary"
+            size="sm"
+            w="100%"
+            borderRadius="4px"
+            h="24px"
+          >
+            List
+          </Button>
         </VStack>
       </Card>
 

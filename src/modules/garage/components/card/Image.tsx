@@ -1,12 +1,8 @@
-import {
-  Box,
-  Image as ChakraImg,
-  type ImageProps,
-  Skeleton,
-} from '@chakra-ui/react';
+import { Box, Image as ChakraImg, type ImageProps } from '@chakra-ui/react';
 import { useMemo, useState } from 'react';
 
-import EmptyImg from '@/assets/nft-empty.png';
+import { CustomSkeleton } from '@/components';
+import EmptyImg from '/nft-empty.svg';
 
 export const Image = ({ boxSize = { xl: '160px ' }, ...props }: ImageProps) => {
   const [status, setStatus] = useState<'loading' | 'error' | 'idle'>('loading');
@@ -24,7 +20,13 @@ export const Image = ({ boxSize = { xl: '160px ' }, ...props }: ImageProps) => {
 
   return (
     <Box borderTopRadius="lg">
-      <Skeleton isLoaded={!isLoading}>
+      <CustomSkeleton
+        isLoaded={!isLoading}
+        startColor="dark.200"
+        endColor="dark.500"
+        w="full"
+        h="full"
+      >
         <ChakraImg
           onLoad={handleOnLoad}
           fallbackSrc={EmptyImg}
@@ -35,7 +37,7 @@ export const Image = ({ boxSize = { xl: '160px ' }, ...props }: ImageProps) => {
           {...props}
           src={isError ? EmptyImg : props.src}
         />
-      </Skeleton>
+      </CustomSkeleton>
     </Box>
   );
 };

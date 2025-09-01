@@ -18,6 +18,16 @@ import {
   ListingConfigSetup,
 } from './ListingConfigSetup';
 
+type ListingContentProps = {
+  name: React.ReactNode;
+  assetId: string;
+  onClose: () => void;
+  userWithHandle: boolean;
+  onCancel: () => void;
+  assets: Asset[];
+  nftImage: string;
+};
+
 export default function ListingContent({
   name,
   assetId,
@@ -26,15 +36,7 @@ export default function ListingContent({
   userWithHandle,
   assets,
   nftImage,
-}: {
-  name: React.ReactNode;
-  assetId: string;
-  onClose: () => void;
-  userWithHandle: boolean;
-  onCancel: () => void;
-  assets: Asset[];
-  nftImage: string;
-}) {
+}: ListingContentProps) {
   const { createOrderAsync, isPending } = useCreateOrder();
   const { errorToast, successToast } = useContactToast();
 
