@@ -60,6 +60,15 @@ export const useSwap = () => {
       refetchHomeTransactionsList();
       refetchVaultTransactionsList();
     },
+    onError: (e: unknown) => {
+      const message = e instanceof Error ? e.message : String(e);
+
+      if (message === 'Rejected request!') {
+        refetchTransactionsList();
+        refetchHomeTransactionsList();
+        refetchVaultTransactionsList();
+      }
+    },
   });
 
   return { sendTx, ...rest };

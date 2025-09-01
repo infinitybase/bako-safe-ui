@@ -12,6 +12,7 @@ import {
   NativeAssetId,
   useContactToast,
 } from '@/modules';
+import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 
 import {
   useBakoAmm,
@@ -77,6 +78,7 @@ export const RootSwap = memo(
     const { successToast, errorToast } = useContactToast();
     const amm = useMira({ vault });
     const isTestnet = getChainId() === 0;
+    const { isPendingSigner } = useTransactionsContext();
 
     const [swapState, setSwapState] = useState<SwapState>({
       from: DEFAULT_ETH_ASSET,
@@ -408,6 +410,11 @@ export const RootSwap = memo(
       [swapState.from.assetId, swapState.to.assetId],
     );
 
+    const isPendingTransaction = useMemo(
+      () => swapButtonTitle === SwapButtonTitle.PENDING_TRANSACTION,
+      [swapButtonTitle],
+    );
+
     const isInsufficientBalance = useMemo(
       () => swapButtonTitle === SwapButtonTitle.INSUFFICIENT_BALANCE,
       [swapButtonTitle],
@@ -432,6 +439,15 @@ export const RootSwap = memo(
       swapState.from.amount,
       isInsufficientBalance,
     ]);
+
+    useEffect(() => {
+      if (
+        isPendingSigner &&
+        swapButtonTitle !== SwapButtonTitle.PENDING_TRANSACTION
+      ) {
+        setSwapButtonTitle(SwapButtonTitle.PENDING_TRANSACTION);
+      }
+    }, [isPendingSigner, swapButtonTitle]);
 
     return (
       <Stack spacing={1}>
@@ -477,6 +493,7 @@ export const RootSwap = memo(
               isEmptyAmounts ||
               isEmptyAssets ||
               isInsufficientBalance ||
+              isPendingTransaction ||
               isInsufficientETHBalance
             }
             isLoading={isLoadingPreview || isSendingTx || isLoading}

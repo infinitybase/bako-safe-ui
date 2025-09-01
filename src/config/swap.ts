@@ -20,6 +20,7 @@ export enum SwapButtonTitle {
   PREVIEW = 'Preview',
   INSUFFICIENT_BALANCE = 'Insufficient Balance',
   INSUFFICIENT_ETH_BALANCE = 'Bridge more ETH to pay for Gas',
+  PENDING_TRANSACTION = 'Pending Transaction',
   SWAP = 'Swap',
 }
 
