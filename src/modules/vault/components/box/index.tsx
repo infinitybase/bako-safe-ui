@@ -9,8 +9,10 @@ import {
   SkeletonCircle,
   SkeletonText,
   Text,
+  Tooltip,
   VStack,
 } from '@chakra-ui/react';
+import { useMemo } from 'react';
 import { FiPlusSquare } from 'react-icons/fi';
 
 import {
@@ -19,10 +21,13 @@ import {
   CustomSkeleton,
   HomeIcon,
   LeftAndRightArrow,
+  TooltipNotEnoughBalance,
   UpRightArrow,
 } from '@/components';
 import { NetworkService } from '@/modules/network/services';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+
+import { TooltipPendingTx } from '../TooltipPendingTx';
 
 interface VaultBoxPropx {
   name: string;
@@ -89,6 +94,16 @@ const VaultBox = (props: VaultBoxPropx) => {
       '_BLANK',
     );
 
+  const ToolTipComponent = useMemo(() => {
+    if (!isFirstAssetsLoading && isPending) {
+      return <TooltipPendingTx />;
+    }
+    if (!isFirstAssetsLoading && isEthBalanceLowerThanReservedAmount) {
+      return <TooltipNotEnoughBalance />;
+    }
+    return null;
+  }, [isPending, isFirstAssetsLoading, isEthBalanceLowerThanReservedAmount]);
+
   return (
     <Box w="100%">
       {/* Headers BTNS */}
@@ -152,29 +167,41 @@ const VaultBox = (props: VaultBoxPropx) => {
       {/* Create Tx Btn */}
       {hasPermission && (
         <Box w="100%">
-          <Button
-            aria-label={'Create transaction btn'}
-            w="100%"
-            variant="primary"
-            fontWeight="bold"
-            onClick={onCreateTransaction}
-            isDisabled={
-              !hasBalance ||
-              isPending ||
-              isEthBalanceLowerThanReservedAmount ||
-              isFirstAssetsLoading
-            }
-            leftIcon={<FiPlusSquare fontSize={isMobile ? 20 : 22} />}
+          <Tooltip
+            label={ToolTipComponent}
+            hasArrow
+            placement="top"
+            bg="dark.700"
+            color="white"
           >
-            Create transaction
-          </Button>
-          {isPending && (
+            <Box display="inline-block" cursor="not-allowed" w={'100%'}>
+              <Button
+                aria-label={'Create transaction btn'}
+                w="100%"
+                variant="primary"
+                fontWeight="bold"
+                onClick={onCreateTransaction}
+                isDisabled={
+                  !hasBalance ||
+                  isPending ||
+                  isEthBalanceLowerThanReservedAmount ||
+                  isFirstAssetsLoading
+                }
+                leftIcon={<FiPlusSquare fontSize={isMobile ? 20 : 22} />}
+              >
+                Create transaction
+              </Button>
+            </Box>
+          </Tooltip>
+
+          {isPending && isMobile && (
             <Text variant="description" mt={2} color="error.500">
               This vault has pending transactions.
             </Text>
           )}
           {!isPending &&
             !isFirstAssetsLoading &&
+            isMobile &&
             isEthBalanceLowerThanReservedAmount && (
               <Text variant="description" mt={2} color="error.500">
                 Not enough balance.

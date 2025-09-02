@@ -128,6 +128,29 @@ const Field = forwardRef<HTMLInputElement, CurrencyFieldProps>(
       [onChange],
     );
 
+    const handleBefoteInput = (e: React.InputEvent<HTMLInputElement>) => {
+      if (e.data === ',') {
+        e.preventDefault();
+
+        const input = e.currentTarget;
+        const start = input.selectionStart ?? 0;
+        const end = input.selectionEnd ?? 0;
+
+        const newValue =
+          input.value.slice(0, start) + '.' + input.value.slice(end);
+
+        input.value = newValue;
+
+        const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+          HTMLInputElement.prototype,
+          'value',
+        )?.set;
+        nativeInputValueSetter?.call(input, newValue);
+
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+      }
+    };
+
     return (
       <MaskedInput
         key={config.decimalScale}
@@ -140,6 +163,7 @@ const Field = forwardRef<HTMLInputElement, CurrencyFieldProps>(
           <Input
             {...props}
             {...maskedInputProps}
+            onBeforeInput={handleBefoteInput}
             ref={(input) => {
               maskedInputRef(input as HTMLInputElement);
               if (typeof ref === 'function') {
