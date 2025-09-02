@@ -1,6 +1,7 @@
 export * from './addAddressBook';
 export * from './address';
 export * from './autocomplete';
+export * from './bakoGarageBanner';
 export * from './bakoLoading';
 export * from './banner';
 export * from './card';
@@ -20,6 +21,7 @@ export * from './select';
 export * from './select/asset';
 export * from './skeleton';
 export * from './tooltip';
+export * from './tooltipNotEnoughBalance';
 export * from './transactionExpire';
 export * from './transactionTypeFilters';
 export * from './welcomeDialog';

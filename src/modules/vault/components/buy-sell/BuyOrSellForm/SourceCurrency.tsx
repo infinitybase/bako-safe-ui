@@ -19,8 +19,9 @@ import {
   useListCryptoCurrencies,
   useListFiatCurrencies,
 } from '@/modules/vault/hooks';
-import { parseToBN } from '@/modules/vault/utils';
+import { parseToBN, splitToFiat } from '@/modules/vault/utils';
 import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
+import { moneyFormat } from '@/utils';
 import { FUEL_ETH_ID } from '@/utils/constants';
 import mergeRefs from '@/utils/merge-refs';
 
@@ -48,7 +49,7 @@ export const SourceCurrency = ({
     control,
     watch,
     setValue,
-    setFocus,
+    trigger,
     formState: { errors },
   } = useFormContext<ICreateWidgetPayload>();
   const currencyModal = useDisclosure();
@@ -91,8 +92,13 @@ export const SourceCurrency = ({
   const handleSetCurrencyAmount = (percentage: number) => {
     const percentageAmount = ethAmount.mul(percentage).div(100);
     setValue('sourceAmount', percentageAmount.format({ precision: 9 }));
-    setFocus('sourceAmount');
+    trigger('sourceAmount');
   };
+
+  const fiatLocale = useMemo(
+    () => (currentCurrency?.currencyCode === 'BRL' ? 'pt-BR' : 'en-US'),
+    [currentCurrency],
+  );
 
   return (
     <CardRoot>
@@ -141,30 +147,28 @@ export const SourceCurrency = ({
             required: 'Source amount is required',
             validate: {
               positive: (value) => {
-                if (value && parseToBN(value).lte(0)) {
+                if (value && parseToBN(value, fiatLocale).lte(0)) {
                   return 'Source amount must be greater than 0';
                 }
               },
               min: (value) => {
                 if (
                   minAmount &&
-                  parseToBN(value).lt(parseToBN(minAmount.toString()))
+                  parseToBN(value, fiatLocale).lt(
+                    parseToBN(minAmount.toString(), 'en-US'),
+                  )
                 ) {
-                  return `Source amount must be greater than ${minAmount}`;
+                  return `Source amount must be greater than ${moneyFormat(splitToFiat(minAmount, fiatLocale), fiatLocale)}`;
                 }
               },
               max: (value) => {
                 if (
                   maxAmount &&
-                  parseToBN(value).gt(parseToBN(maxAmount.toString()))
+                  parseToBN(value, fiatLocale).gt(
+                    parseToBN(maxAmount.toString(), 'en-US'),
+                  )
                 ) {
-                  return `Source amount must be less than ${Intl.NumberFormat(
-                    currentCurrency?.currencyCode || 'USD',
-                    {
-                      style: 'currency',
-                      currency: currentCurrency?.currencyCode || 'USD',
-                    },
-                  ).format(maxAmount)}`;
+                  return `Source amount must be less than ${moneyFormat(splitToFiat(maxAmount, fiatLocale), fiatLocale)}`;
                 }
                 if (!isOnRamp && ethAmount.lt(bn.parseUnits(value, 9))) {
                   return `You don't have enough ETH to sell`;
@@ -192,28 +196,39 @@ export const SourceCurrency = ({
                   borderColor: errors.sourceAmount ? 'red.500' : 'grey.200',
                 }}
                 px={0}
-                minW="150px"
+                minW={0}
                 w="fit-content"
+                gap={2}
               >
                 <CurrencyField
-                  currency={currentCurrencyCode as CurrencyCode}
+                  type={isOnRamp ? 'fiat' : 'crypto'}
+                  currency={
+                    isOnRamp ? (currentCurrencyCode as CurrencyCode) : undefined
+                  }
                   isInvalid={!!errors.sourceAmount}
                   textAlign="center"
                   borderBottomWidth="0"
                   minW={0}
                   px={0}
                   fontSize="3xl"
-                  {...rest}
+                  {...(rest as any)}
                   ref={mergeRefs(ref, inputRef)}
                   value={value}
                   onChange={onChange}
                 />
                 <InputMirror
                   inputRef={inputRef}
-                  value={value}
+                  value={
+                    isOnRamp
+                      ? moneyFormat(value, fiatLocale, {
+                          currency: currentCurrency?.currencyCode || 'USD',
+                          style: 'decimal',
+                        })
+                      : value || '0'
+                  }
                   isValueWithDecimals={isOnRamp}
                 />
-                <InputRightAddon alignSelf="end" color="section.200">
+                <InputRightAddon alignSelf="end" color="section.200" px={0}>
                   {currentCurrency?.currencyCode === 'ETH_FUEL'
                     ? 'ETH'
                     : currentCurrency?.currencyCode}

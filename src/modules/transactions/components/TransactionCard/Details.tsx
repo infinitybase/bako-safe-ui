@@ -1,13 +1,18 @@
 import {
   Box,
   Button,
+  Flex,
   HStack,
   Icon,
   Link,
   Stack,
+  Text,
   VStack,
 } from '@chakra-ui/react';
 import { TransactionStatus, TransactionType } from 'bakosafe';
+import { parseISO } from 'date-fns';
+import { enUS } from 'date-fns/locale';
+import { formatInTimeZone } from 'date-fns-tz';
 import { memo, useCallback, useMemo, useState } from 'react';
 
 import { CustomSkeleton, FileCodeIcon, UpRightArrow } from '@/components';
@@ -182,41 +187,63 @@ const Details = memo(
                   )}
                 </Stack>
 
-                <HStack justifyContent="end" width="100%">
+                <Flex justify="space-between" width="100%" align="center">
+                  {/* LADO ESQUERDO */}
                   {!isMobile && !isDeposit && (
-                    <Button
-                      variant="secondaryV2"
-                      alignSelf="flex-end"
-                      href={`${env.BASE_API_URL}/transaction/${transaction.id}/advanced-details`}
-                      isExternal
-                      as={Link}
-                      size={{ base: 'sm', sm: 'xs', lg: 'sm' }}
-                      rightIcon={<Icon as={FileCodeIcon} fontSize="lg" />}
-                    >
-                      Advanced details
-                    </Button>
+                    <Box>
+                      <Text
+                        variant="description"
+                        color="grey.425"
+                        fontSize="xs"
+                      >
+                        {formatInTimeZone(
+                          parseISO(transaction.createdAt),
+                          Intl.DateTimeFormat().resolvedOptions().timeZone,
+                          'EEE, do MMM, hh:mm a',
+                          { locale: enUS },
+                        )}
+                      </Text>
+                    </Box>
                   )}
 
-                  {!isMobile &&
-                    transaction.status === TransactionStatus.SUCCESS && (
+                  {/* LADO DIREITO */}
+                  <HStack spacing={2}>
+                    {!isMobile && !isDeposit && (
                       <Button
                         variant="secondaryV2"
-                        onClick={handleViewInExplorer}
+                        alignSelf="flex-end"
+                        href={`${env.BASE_API_URL}/transaction/${transaction.id}/advanced-details`}
+                        isExternal
+                        as={Link}
                         size={{ base: 'sm', sm: 'xs', lg: 'sm' }}
-                        rightIcon={
-                          <Icon
-                            as={UpRightArrow}
-                            textColor="grey.75"
-                            fontSize="lg"
-                            className="btn-icon"
-                          />
-                        }
+                        rightIcon={<Icon as={FileCodeIcon} fontSize="lg" />}
                       >
-                        View on Explorer
+                        Advanced details
                       </Button>
                     )}
-                  <CancelTransactionButton transaction={transaction} />
-                </HStack>
+
+                    {!isMobile &&
+                      transaction.status === TransactionStatus.SUCCESS && (
+                        <Button
+                          variant="secondaryV2"
+                          onClick={handleViewInExplorer}
+                          size={{ base: 'sm', sm: 'xs', lg: 'sm' }}
+                          rightIcon={
+                            <Icon
+                              as={UpRightArrow}
+                              textColor="grey.75"
+                              fontSize="lg"
+                              className="btn-icon"
+                            />
+                          }
+                        >
+                          View on Explorer
+                        </Button>
+                      )}
+
+                    <CancelTransactionButton transaction={transaction} />
+                  </HStack>
+                </Flex>
               </VStack>
             )}
           </CustomSkeleton>

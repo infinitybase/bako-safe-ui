@@ -12,7 +12,7 @@ import { LineCloseIcon } from '../icons';
 
 interface DialogHeaderProps extends StackProps {
   title: string;
-  description?: string;
+  description?: string | JSX.Element;
   descriptionFontSize?: string;
   descriptionColor?: string;
   hideCloseButton?: boolean;

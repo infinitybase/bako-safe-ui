@@ -121,6 +121,7 @@ export const DestinationCurrency = ({
             }}
             px={0}
             w="fit-content"
+            gap={2}
           >
             <Input
               name="destinationAmount"
@@ -135,7 +136,7 @@ export const DestinationCurrency = ({
               disabled
             />
             <InputMirror inputRef={inputRef} value={destinationAmount || '0'} />
-            <InputRightAddon alignSelf="end" color="section.200">
+            <InputRightAddon alignSelf="end" color="section.200" px={0}>
               {currentCurrency?.currencyCode === 'ETH_FUEL'
                 ? 'ETH'
                 : currentCurrency?.currencyCode}

@@ -24,21 +24,22 @@ export const ordinateMembers = (
     .sort((a, b) => (a.isOwner === b.isOwner ? 0 : a.isOwner ? -1 : 1));
 };
 
-export const valueWithoutCommas = (value: string): string => {
+export const valueWithoutCommas = (value: string, locale: string): string => {
   if (!value) return '0';
-  if (value.includes(',')) {
+  if (locale === 'pt-BR') {
     // If the value contains a comma, it is likely a decimal separator in some locales.
     // Replace commas with dots and remove dots.
     return value.replace(/\./g, '').replace(/,/g, '.');
   }
-  return value;
+
+  return value.replace(/,/g, '');
 };
 
-export const parseToBN = (value: string): BN => {
+export const parseToBN = (value: string, locale: string): BN => {
   try {
     // remove all dots and replace commas with dots
-    // Ex: "1.500,50" → "1500.50"
-    const normalizedValue = valueWithoutCommas(value);
+    // Ex: "1.500,50" → "1500.50" or "1,500.00" → "1500.00"
+    const normalizedValue = valueWithoutCommas(value, locale);
 
     if (!normalizedValue || normalizedValue === '.') {
       return bn(0);
@@ -48,4 +49,13 @@ export const parseToBN = (value: string): BN => {
   } catch {
     return bn(0);
   }
+};
+
+export const splitToFiat = (value: number, fiatLocale: string) => {
+  if (fiatLocale === 'pt-BR') {
+    const [integer, decimal] = value.toString().split('.');
+
+    return `${integer},${decimal ?? '00'}`;
+  }
+  return value.toString();
 };

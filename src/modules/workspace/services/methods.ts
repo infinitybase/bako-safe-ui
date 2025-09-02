@@ -14,7 +14,7 @@ import {
 } from '@/modules/core';
 import { ITransaction } from '@/modules/core/hooks/bakosafe/utils/types';
 import { FIAT_CURRENCIES_ASSET_MAP } from '@/modules/core/utils/fiat-currencies';
-import request from '@/utils/request';
+import { request } from '@/utils/request';
 
 export interface IWitnesses {
   account: string;

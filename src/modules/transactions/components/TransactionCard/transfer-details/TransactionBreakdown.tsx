@@ -1,11 +1,14 @@
 import { Box, Divider, HStack, Text } from '@chakra-ui/react';
 import { TransactionStatus } from 'bakosafe';
 
+import { RigContractIcon } from '@/components';
 import { AddressUtils, type TransactionState } from '@/modules/core';
+import { tokensIDS } from '@/modules/core/utils/assets/address';
 import { FIAT_CURRENCIES } from '@/modules/core/utils/fiat-currencies';
 import { useVerifyTransactionInformations } from '@/modules/transactions/hooks/details/useVerifyTransactionInformations';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
+import { TransactionCard } from '..';
 import { AssetBoxInfo, type TransactionUI } from '../Details';
 import { ConnectorInfos } from './ConnectorInfos';
 import { ContractAddresses } from './contract-call/ContractAddresses';
@@ -30,6 +33,10 @@ const TransactionBreakdown = ({
   const isNotSigned = !status?.isDeclined && !status?.isSigned;
 
   const showContractAddresses = (isDeploy || isContract) && !isMint;
+
+  const isLiquidStake =
+    transaction.name === 'Liquid Stake' &&
+    transaction.assets[0].assetId === tokensIDS.FUEL;
 
   return (
     <Box
@@ -102,6 +109,16 @@ const TransactionBreakdown = ({
           isNotSigned={isNotSigned}
           isPending={isPending}
         />
+      )}
+
+      {isLiquidStake && (
+        <Box mt={4} w={'full'}>
+          <TransactionCard.TransactionRequestFrom
+            name={'Liquid stake via RIG'}
+            origin={'https://rig.st/'}
+            icon={RigContractIcon}
+          />
+        </Box>
       )}
 
       <Box

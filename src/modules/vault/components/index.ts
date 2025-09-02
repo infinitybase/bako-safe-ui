@@ -2,5 +2,8 @@ export * from './AssetsDetails';
 export * from './box';
 export * from './dialog';
 export * from './ExtraVaulCard';
+export * from './liquid-stake/CardLiquidStake';
+export * from './liquid-stake/ModalStake';
+export * from './liquid-stake/ModalWithdrawals';
 export * from './modal';
 export * from './VaultCard';
