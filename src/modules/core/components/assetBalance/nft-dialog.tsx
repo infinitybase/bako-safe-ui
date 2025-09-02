@@ -154,11 +154,8 @@ export const NftDialog = ({
         {step === 2 && order && (
           <UpateOrderForm
             order={order}
-            value={order.price.amount}
-            assetSymbolUrl={order.price.symbol}
             userWithHandle={!!resolverName}
             onClose={handleCloseListDialog}
-            name={order.asset.name}
             onCancel={handleChangeStepToDetails}
             vaultId={vault?.data?.id ?? ''}
           />

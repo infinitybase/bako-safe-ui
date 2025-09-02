@@ -70,7 +70,11 @@ export const ListingConfigSetup = ({
   );
 
   const findDefaultAsset = useMemo(
-    () => assets.find((asset) => asset.id === FUEL_ASSET_ID),
+    () =>
+      assets.find(
+        (asset) =>
+          asset.id === FUEL_ASSET_ID || asset.metadata?.symbol === 'FUEL',
+      ),
     [assets],
   );
   const defaultAsset = {

@@ -2,6 +2,8 @@ import { Button, Heading, Stack, Text } from '@chakra-ui/react';
 import { bn } from 'fuels';
 import { useMemo } from 'react';
 
+import UnknownNft from '/tokens/unknown.svg';
+
 import { useListAssets } from '../hooks';
 import { useUpdateOrder } from '../hooks/useUpdateOrder';
 import type { Order } from '../types';
@@ -12,10 +14,7 @@ import {
 
 type UpateOrderFormProps = {
   order: Order;
-  value: number;
-  assetSymbolUrl: string;
   onClose: () => void;
-  name: string;
   onCancel: () => void;
   userWithHandle: boolean;
   vaultId: string;
@@ -23,10 +22,7 @@ type UpateOrderFormProps = {
 
 export default function UpateOrderForm({
   order,
-  value,
-  assetSymbolUrl,
   onClose,
-  name,
   onCancel,
   userWithHandle,
   vaultId,
@@ -57,6 +53,10 @@ export default function UpateOrderForm({
     [assets, order.price.assetId],
   );
 
+  const assetSymbol =
+    assets.find((a) => a.id === order.price.assetId)?.metadata!.icon ||
+    UnknownNft;
+
   return (
     <Stack
       w="full"
@@ -73,7 +73,7 @@ export default function UpateOrderForm({
       }}
       style={{ scrollbarWidth: 'none' }}
     >
-      <Heading>{name}</Heading>
+      <Heading>{order.asset.name}</Heading>
       <Text color="section.500">
         Select new asset and price for your listing.
       </Text>
@@ -84,11 +84,11 @@ export default function UpateOrderForm({
         initialValues={{
           sellAsset: {
             id: order.price.assetId,
-            icon: assetSymbolUrl,
+            icon: assetSymbol,
             name: order.price.name ?? 'Unknown',
             decimals,
           },
-          sellPrice: value,
+          sellPrice: order.price.amount,
         }}
       />
 
