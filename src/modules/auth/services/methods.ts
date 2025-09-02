@@ -289,6 +289,7 @@ export const localStorageKeys = {
   FUEL_MAPPED_TOKENS: 'bakosafe/fuel-mapped-tokens',
   FUEL_MAPPED_ASSETS: 'bakosafe/fuel-mapped-assets',
   FUEL_MAPPED_NFTS: 'bakosafe/fuel-mapped-nfts',
+  USERNAMES: 'bakosafe/usernames',
 };
 
 export const UserQueryKey = {

@@ -11,6 +11,7 @@ import {
 } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 
+import UnknownNft from '/tokens/unknown.svg';
 import { UpRightArrow } from '@/components';
 import { BakoIcon } from '@/components/icons/assets/bakoIcon';
 import { NetworkService } from '@/modules/network/services';
@@ -24,6 +25,7 @@ import {
   NativeAssetId,
   shakeAnimationY,
 } from '../../utils';
+import { parseURI } from '../../utils/formatter';
 
 interface DefaultAsset {
   assetId: string;
@@ -45,7 +47,7 @@ interface AssetDetailsProps {
 }
 
 interface AssetCardProps extends CardProps {
-  asset: Asset;
+  asset: Asset & { image?: string };
   isNFT?: boolean;
   usdAmount?: number | null;
   visibleBalance?: boolean;
@@ -63,7 +65,7 @@ const AssetDetails = ({
 }: AssetDetailsProps) => {
   const amount = assetAmount ?? defaultAsset.amount;
   const slug = assetSlug ?? defaultAsset.slug;
-  const transactionAmount = Number(amount) * (usdAmount ?? 0);
+  const transactionAmount = Number(amount.replace(/,/g, '')) * (usdAmount ?? 0);
 
   const formattedAmount = new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -182,6 +184,21 @@ const AssetCard = ({
       '_BLANK',
     );
 
+  const nftImage =
+    isNFT && asset.image ? (
+      <Image
+        src={parseURI(asset.image)}
+        w={10}
+        h={10}
+        rounded="md"
+        alt="Asset Icon"
+        objectFit="cover"
+        fallback={<Image src={UnknownNft} w={10} h={10} />}
+      />
+    ) : (
+      <Icon as={BakoIcon} w={10} h={10} />
+    );
+
   return (
     <Card
       bgColor="grey.700"
@@ -198,7 +215,7 @@ const AssetCard = ({
       <VStack align="flex-start" justify="center" w="full" h="full" spacing={1}>
         <Box mb={4}>
           {isNFT ? (
-            <Icon as={BakoIcon} w={10} h={10} />
+            nftImage
           ) : (
             <Image
               w={10}

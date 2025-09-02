@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 import { Asset, NFT } from '@/modules/core/utils';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
+import { useOrderAssetsByUSD } from '../../hooks';
 import { AssetsBalanceCard } from './assets-balance-card';
 import { NftBalanceCard } from './nfts-balance-card';
 
@@ -16,7 +17,18 @@ interface NftsBalanceProps {
 }
 
 const AssetsBalanceList = ({ assets }: AssetsBalanceProps) => {
-  const { tokensUSD } = useWorkspaceContext();
+  const { tokensUSD, assetsMap } = useWorkspaceContext();
+
+  const stableAssets = useMemo(() => assets, [assets]);
+  const stableTokensUSD = useMemo(() => tokensUSD, [tokensUSD]);
+  const stableAssetsMap = useMemo(() => assetsMap, [assetsMap]);
+
+  const assetsOrdered = useOrderAssetsByUSD({
+    assets: stableAssets,
+    tokensUSD: stableTokensUSD.data,
+    assetsMap: stableAssetsMap,
+  });
+
   return (
     <Grid
       gap={4}
@@ -29,7 +41,8 @@ const AssetsBalanceList = ({ assets }: AssetsBalanceProps) => {
         '2xl': 'repeat(6, 1fr)',
       }}
     >
-      {assets?.map((asset) => {
+      {assetsOrdered?.map((assetOrdered) => {
+        const asset = assetOrdered.asset;
         const usdData = tokensUSD.data[asset.assetId.toLowerCase()];
         const usdAmount = usdData?.usdAmount ?? null;
         return (
@@ -49,15 +62,28 @@ const NftsBalanceList = ({ nfts }: NftsBalanceProps) => {
     if (!nfts) return {};
     return nfts.reduce<Record<string, typeof nfts>>((acc, nft) => {
       const isBakoId = nft.symbol === 'BID' || nft.collection === 'Bako ID';
-      const key = isBakoId ? 'Bako ID' : (nft.collection ?? 'Other');
+      const isBKT = nft.symbol === 'BKT';
+      const key = isBakoId
+        ? 'Bako ID'
+        : isBKT
+          ? 'Bakteria'
+          : (nft.collection ?? 'Other');
       (acc[key] ??= []).push(nft);
       return acc;
     }, {});
   }, [nfts]);
 
+  const orderedGrouped = Object.entries(grouped).sort(([groupA], [groupB]) => {
+    if (groupA === 'Bako ID') return 1;
+    if (groupB === 'Bako ID') return -1;
+    if (groupA === 'Other') return 1;
+    if (groupB === 'Other') return -1;
+    return groupA.localeCompare(groupB);
+  });
+
   return (
     <>
-      {Object.entries(grouped).map(([group, groupNfts]) => (
+      {orderedGrouped.map(([group, groupNfts]) => (
         <div key={group}>
           <h2 style={{ margin: '1rem 0' }}>
             {group === 'BID' ? 'Bako ID' : group}

@@ -1,188 +1,203 @@
 import {
-  Box,
-  CloseButton,
-  Flex,
-  Heading,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+	Box,
+	CloseButton,
+	Flex,
+	Heading,
+	Stack,
+	Text,
+	VStack,
+} from "@chakra-ui/react";
+import { useMemo } from "react";
 
-import { Dialog } from '@/components';
-import { BTCIcon } from '@/components/icons/btc-icon';
-import { ContractIcon } from '@/components/icons/contract-icon';
-import { NFT } from '@/modules/core/utils';
+import { Dialog } from "@/components";
+import { BTCIcon } from "@/components/icons/btc-icon";
+import { ContractIcon } from "@/components/icons/contract-icon";
+import type { NFT } from "@/modules/core/utils";
 
-import { NftImage } from './nft-image';
-import { NFTText } from './nft-text';
+import { NftImage } from "./nft-image";
+import { NftMetadataBlock } from "./nft-metadata-block";
+import { NFTText } from "./nft-text";
 
 type NftDialogProps = {
-  isOpen: boolean;
-  onClose: () => void;
-  nftsInfo: NFT;
-  imageSrc?: string;
+	isOpen: boolean;
+	onClose: () => void;
+	nftsInfo: NFT;
+	imageSrc?: string;
 };
 
 export const NftDialog = ({
-  isOpen,
-  onClose,
-  nftsInfo,
-  imageSrc,
-}: NftDialogProps) => (
-  <Dialog.Modal
-    size={{ base: '5xl', md: '4xl' }}
-    onClose={onClose}
-    isOpen={isOpen}
-    modalContentProps={{
-      borderWidth: '1px',
-      borderColor: 'gradients.transaction-border',
-    }}
-  >
-    <Dialog.Body
-      h="full"
-      display="flex"
-      flexDirection={{ base: 'column-reverse', md: 'row' }}
-      alignItems={{ base: 'center', md: 'stretch' }}
-      justifyContent="space-between"
-      gap={6}
-      pt={3}
-      pl={3}
-      pr={3}
-    >
-      <Box
-        w="full"
-        maxW="432px"
-        flexShrink={0}
-        position="relative"
-        borderRadius="xl"
-        overflow="hidden"
-      >
-        <Box w="full" aspectRatio={1} position="relative">
-          <NftImage src={imageSrc} />
-        </Box>
+	isOpen,
+	onClose,
+	nftsInfo,
+	imageSrc,
+}: NftDialogProps) => {
+	const metadataArray = Object.entries(nftsInfo.metadata || {}).filter(
+		([key]) => !["attributes"].includes(key),
+	);
 
-        <Flex
-          wrap="wrap"
-          gap={3}
-          mt={3}
-          justifyContent="space-between"
-          w="full"
-        >
-          <NFTText
-            value={nftsInfo.assetId ?? ''}
-            title="Asset ID"
-            isCopy
-            icon={<BTCIcon />}
-            flex="1"
-            minW="200px"
-          />
-          <NFTText
-            value={nftsInfo.contractId ?? ''}
-            title="Contract Address"
-            isCopy
-            icon={<ContractIcon />}
-            flex="1"
-            minW="200px"
-          />
-        </Flex>
-      </Box>
+	return (
+		<Dialog.Modal
+			size="5xl"
+			onClose={onClose}
+			isOpen={isOpen}
+			modalContentProps={{
+				borderWidth: "1px",
+				borderColor: "gradients.transaction-border",
+			}}
+		>
+			<Dialog.Body
+				h="full"
+				display="flex"
+				flexDirection={{ base: "column", md: "row" }}
+				alignItems={{ base: "center", md: "stretch" }}
+				justifyContent="space-between"
+				gap={6}
+				pl={3}
+				pr={3}
+				maxH="480px"
+				overflowY={{
+					base: "scroll",
+					md: "hidden",
+				}}
+				style={{ scrollbarWidth: "none" }}
+				position="relative"
+			>
+				<Box
+					boxSize={{
+						base: "full",
+						sm: "330px",
+						md: "480px",
+					}}
+					minH={{
+						lg: "480px",
+					}}
+					mx="auto"
+					borderRadius="lg"
+				>
+					<NftImage src={imageSrc} />
+					<CloseButton
+						onClick={onClose}
+						display={{ base: "block", md: "none" }}
+						ml="auto"
+						position="absolute"
+						top={0}
+						right={4}
+					/>
+				</Box>
 
-      <VStack
-        flex={1}
-        justifyContent="space-between"
-        alignItems="flex-start"
-        w="full"
-        h="full"
-      >
-        <Flex w="full" alignItems="center" justifyContent="space-between">
-          <Heading fontSize="xl" noOfLines={1}>
-            {nftsInfo.name || nftsInfo.metadata?.name || 'NFT Details'}
-          </Heading>
-          <CloseButton onClick={onClose} />
-        </Flex>
+				<VStack
+					flex={1}
+					justifyContent="space-between"
+					alignItems="flex-start"
+					maxH={{ md: "490px" }}
+					overflowY={{
+						base: "unset",
+						md: "scroll",
+					}}
+					style={{ scrollbarWidth: "none" }}
+				>
+					<Flex w="full" alignItems="center" justifyContent="space-between">
+						<Heading fontSize="xl" noOfLines={1}>
+							{nftsInfo.name || nftsInfo.metadata?.name || "NFT Details"}
+						</Heading>
 
-        <Box
-          flex={1}
-          mt={6}
-          maxH="calc(100vh - 300px)"
-          overflowY="auto"
-          pr={3}
-          sx={{
-            '&::-webkit-scrollbar': {
-              width: '8px',
-              backgroundColor: 'grey.900',
-              borderRadius: '30px',
-            },
-            '&::-webkit-scrollbar-thumb': {
-              backgroundColor: 'brand.500',
-              borderRadius: '30px',
-            },
-          }}
-        >
-          <Box mb={6}>
-            <Heading fontSize="md">Description</Heading>
-            <Text mt={3} fontSize="sm" color="section.500">
-              {nftsInfo.description ||
-                nftsInfo.metadata?.description ||
-                'Description not provided.'}
-            </Text>
-          </Box>
+						<CloseButton
+							onClick={onClose}
+							display={{ base: "none", md: "block" }}
+						/>
+					</Flex>
 
-          <Box mb={3}>
-            <Heading fontSize="md">Metadata</Heading>
-            <Flex
-              maxH={{ base: 'none', md: '294px' }}
-              overflowY={{ base: 'hidden', md: 'auto' }}
-              direction="row"
-              wrap="wrap"
-              gap={3}
-              mt={7}
-              pr={2}
-              sx={{
-                '&::-webkit-scrollbar': {
-                  width: '5px',
-                  backgroundColor: 'grey.900',
-                  borderRadius: '30px',
-                },
-                '&::-webkit-scrollbar-thumb': {
-                  backgroundColor: 'brand.500',
-                  borderRadius: '30px',
-                },
-              }}
-            >
-              {Object.entries(nftsInfo.metadata || {})
-                .filter(
-                  ([key]) =>
-                    key !== 'name' &&
-                    key !== 'description' &&
-                    key !== 'attributes',
-                )
-                .map(([key, value]) => (
-                  <NFTText key={key} value={String(value)} title={key} />
-                ))}
+					<Box flex={1} mt={6} maxH="calc(100vh - 300px)" pr={3}>
+						<Box mb={3}>
+							<Heading fontSize="md">Description</Heading>
+							<Text mt={3} fontSize="sm" color="section.500">
+								{nftsInfo.description ||
+									nftsInfo.metadata?.description ||
+									"Description not provided."}
+							</Text>
+						</Box>
+						<Box
+							w="full"
+							maxW="432px"
+							flexShrink={0}
+							position="relative"
+							borderRadius="xl"
+							overflow="hidden"
+						>
+							<Flex
+								wrap="wrap"
+								gap={3}
+								mt={3}
+								justifyContent="space-between"
+								w="full"
+							>
+								<NFTText
+									value={nftsInfo.assetId ?? ""}
+									title="Asset ID"
+									isCopy
+									icon={<BTCIcon />}
+									flex="1"
+									minW="200px"
+								/>
+								<NFTText
+									value={nftsInfo.contractId ?? ""}
+									title="Contract Address"
+									isCopy
+									icon={<ContractIcon />}
+									flex="1"
+									minW="200px"
+								/>
+							</Flex>
+						</Box>
 
-              {nftsInfo.metadata?.attributes?.map((attr) => (
-                <NFTText
-                  key={attr.trait_type}
-                  value={attr.trait_type}
-                  title={`attributes: ${attr.trait_type}`}
-                />
-              ))}
+						<Stack spacing={2} mt={6}>
+							<Heading fontSize="md">Metadata</Heading>
+							<Flex
+								maxH={{ base: "none", md: "294px" }}
+								overflowY={{ base: "hidden", md: "auto" }}
+								direction="row"
+								wrap="wrap"
+								gap={3}
+								pr={2}
+								sx={{
+									"&::-webkit-scrollbar": {
+										width: "5px",
+										backgroundColor: "grey.900",
+										borderRadius: "30px",
+									},
+									"&::-webkit-scrollbar-thumb": {
+										backgroundColor: "brand.500",
+										borderRadius: "30px",
+									},
+								}}
+							>
+								{metadataArray.map(([key, value]) => (
+									<NftMetadataBlock
+										key={key}
+										value={String(value)}
+										title={key}
+									/>
+								))}
 
-              {!nftsInfo.metadata?.attributes?.length &&
-                Object.entries(nftsInfo.metadata || {}).filter(
-                  ([key]) =>
-                    key !== 'name' &&
-                    key !== 'description' &&
-                    key !== 'attributes',
-                ).length === 0 && (
-                  <Text fontSize="sm" color="section.500">
-                    Empty metadata.
-                  </Text>
-                )}
-            </Flex>
-          </Box>
-        </Box>
-      </VStack>
-    </Dialog.Body>
-  </Dialog.Modal>
-);
+								{nftsInfo.metadata?.attributes?.map((attr) => (
+									<NFTText
+										key={attr.trait_type}
+										value={attr.trait_type}
+										title={`attributes: ${attr.trait_type}`}
+									/>
+								))}
+
+								{!nftsInfo.metadata?.attributes?.length &&
+									metadataArray.length === 0 && (
+										<Text fontSize="sm" color="section.500">
+											Empty metadata.
+										</Text>
+									)}
+							</Flex>
+						</Stack>
+					</Box>
+				</VStack>
+			</Dialog.Body>
+		</Dialog.Modal>
+	);
+};

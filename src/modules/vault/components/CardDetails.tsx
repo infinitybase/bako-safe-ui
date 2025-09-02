@@ -12,6 +12,7 @@ import {
   keyframes,
   Text,
   TextProps,
+  Tooltip,
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
@@ -24,6 +25,7 @@ import {
   CustomSkeleton,
   ErrorTooltip,
   SquarePlusIcon,
+  TooltipNotEnoughBalance,
 } from '@/components';
 import { EyeCloseIcon } from '@/components/icons/eye-close';
 import { EyeOpenIcon } from '@/components/icons/eye-open';
@@ -38,6 +40,7 @@ import { openFaucet } from '../utils';
 import { AssetsDetails } from './AssetsDetails';
 import BalanceHelperDrawer from './BalanceHelperDrawer';
 import BalanceHelperDialog from './dialog/BalanceHelper';
+import { TooltipPendingTx } from './TooltipPendingTx';
 
 export interface CardDetailsProps {
   vault: UseVaultDetailsReturn['vault'];
@@ -129,6 +132,16 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
     const as = hasPermission(reqPerm);
     return as;
   }, [vault.data?.id, balanceFormatted]);
+
+  const ToolTipComponent = useMemo(() => {
+    if (props.isPendingSigner) {
+      return <TooltipPendingTx />;
+    }
+    if (isEthBalanceLowerThanReservedAmount) {
+      return <TooltipNotEnoughBalance />;
+    }
+    return null;
+  }, [props.isPendingSigner, isEthBalanceLowerThanReservedAmount]);
 
   if (!vault) return null;
 
@@ -324,30 +337,46 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                     hidden={!hasBalance}
                     alignItems={{ base: 'flex-end', sm: 'flex-start' }}
                   >
-                    <Button
-                      alignSelf="end"
-                      onClick={() =>
-                        navigate(
-                          Pages.createTransaction({
-                            vaultId: vault.data?.id,
-                            workspaceId,
-                          }),
-                        )
-                      }
-                      isDisabled={
-                        !hasBalance ||
-                        !makeTransactionsPerm ||
-                        props.isPendingSigner ||
-                        isEthBalanceLowerThanReservedAmount
-                      }
-                      variant="primary"
-                      leftIcon={<SquarePlusIcon />}
-                      fontWeight="bold"
+                    <Tooltip
+                      label={ToolTipComponent}
+                      hasArrow
+                      placement="top"
+                      bg="dark.700"
+                      color="white"
                     >
-                      Send
-                    </Button>
+                      <Box
+                        display="flex"
+                        justifyContent="end"
+                        cursor="not-allowed"
+                        w={'100%'}
+                      >
+                        <Button
+                          alignSelf="end"
+                          onClick={() =>
+                            navigate(
+                              Pages.createTransaction({
+                                vaultId: vault.data?.id,
+                                workspaceId,
+                              }),
+                            )
+                          }
+                          isDisabled={
+                            !hasBalance ||
+                            !makeTransactionsPerm ||
+                            props.isPendingSigner ||
+                            isEthBalanceLowerThanReservedAmount
+                          }
+                          variant="primary"
+                          leftIcon={<SquarePlusIcon />}
+                          fontWeight="bold"
+                        >
+                          Send
+                        </Button>
+                      </Box>
+                    </Tooltip>
                     {isEthBalanceLowerThanReservedAmount &&
-                      !props.isPendingSigner && (
+                      !props.isPendingSigner &&
+                      isMobile && (
                         <Text
                           variant="description"
                           textAlign={{ base: 'end', sm: 'left' }}
@@ -369,7 +398,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                           />
                         </Text>
                       )}
-                    {props.isPendingSigner ? (
+                    {props.isPendingSigner && isMobile ? (
                       <Text
                         variant="description"
                         textAlign={{ base: 'end', sm: 'left' }}

@@ -1,7 +1,6 @@
 import { HStack, Icon, Text, VStack } from '@chakra-ui/react';
 
 import { PlusIcon } from '@/components';
-import { CreateContactDialog } from '@/modules/addressBook/components/dialog';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface AddToAddressBookProps {
@@ -11,22 +10,12 @@ interface AddToAddressBookProps {
 const AddToAddressBook = ({ address }: AddToAddressBookProps) => {
   const {
     addressBookInfos: {
-      dialog: { contactDialog },
       handlers: { handleOpenDialog },
-      requests: { createContactRequest },
-      form: contactForm,
     },
   } = useWorkspaceContext();
 
   return (
     <>
-      <CreateContactDialog
-        form={contactForm}
-        dialog={contactDialog}
-        isLoading={createContactRequest.isPending}
-        isEdit={false}
-      />
-
       <HStack
         spacing={4}
         px={4}

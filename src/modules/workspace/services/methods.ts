@@ -13,7 +13,7 @@ import {
   Workspace,
 } from '@/modules/core';
 import { ITransaction } from '@/modules/core/hooks/bakosafe/utils/types';
-import request from '@/utils/request';
+import { request } from '@/utils/request';
 
 export interface IWitnesses {
   account: string;
