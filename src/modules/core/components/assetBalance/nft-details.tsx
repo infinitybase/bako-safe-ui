@@ -25,6 +25,7 @@ type NftDetailsProps = {
   order?: OrderWithMedatada;
   onEdit?: () => void;
   vaultId: string;
+  isMobile?: boolean;
 };
 
 export const NftDetails = ({
@@ -34,6 +35,7 @@ export const NftDetails = ({
   order,
   onEdit,
   vaultId,
+  isMobile,
 }: NftDetailsProps) => {
   const metadataArray = nftsInfo?.metadata
     ? Object.entries(nftsInfo?.metadata)
@@ -58,11 +60,10 @@ export const NftDetails = ({
   return (
     <VStack
       flex={1}
-      justifyContent="space-between"
-      alignItems="flex-start"
+      alignItems="center"
       minW={{
         base: 'full',
-        sm: '480px',
+        md: '480px',
       }}
       maxH={{ md: '490px' }}
       overflowY={{
@@ -71,18 +72,28 @@ export const NftDetails = ({
       }}
       style={{ scrollbarWidth: 'none' }}
     >
-      <Flex w="full" alignItems="center" justifyContent="space-between">
-        <Heading fontSize="xl" noOfLines={1}>
-          {nftsInfo?.metadata?.name || 'NFT Details'}
-        </Heading>
+      {!isMobile && (
+        <Flex
+          w="full"
+          alignItems="center"
+          justifyContent="space-between"
+          position="sticky"
+          top={0}
+          zIndex={10}
+          bg="dark.950"
+        >
+          <Heading fontSize="xl">
+            {nftsInfo?.metadata?.name || 'NFT Details'}
+          </Heading>
 
-        <CloseButton
-          onClick={onClose}
-          display={{ base: 'none', md: 'block' }}
-        />
-      </Flex>
+          <CloseButton
+            onClick={onClose}
+            display={{ base: 'none', md: 'block' }}
+          />
+        </Flex>
+      )}
 
-      <Box flex={1} mt={6} maxH="calc(100vh - 300px)" pr={3}>
+      <Box flex={1} mt={6} pr={3}>
         <Box mb={3}>
           <Heading fontSize="md">Description</Heading>
           <Text mt={3} fontSize="sm" color="section.500">
@@ -95,7 +106,8 @@ export const NftDetails = ({
           flexShrink={0}
           position="relative"
           borderRadius="xl"
-          overflow="hidden"
+          overflowY="hidden"
+          h="fit-content"
         >
           <Flex
             wrap="wrap"
@@ -136,23 +148,12 @@ export const NftDetails = ({
         <Stack spacing={2} mt={6}>
           <Heading fontSize="md">Metadata</Heading>
           <Flex
-            maxH={{ base: 'none', md: '294px' }}
-            overflowY={{ base: 'hidden', md: 'auto' }}
+            maxH="full"
+            overflowY="hidden"
             direction="row"
             wrap="wrap"
             gap={3}
             pr={2}
-            sx={{
-              '&::-webkit-scrollbar': {
-                width: '5px',
-                backgroundColor: 'grey.900',
-                borderRadius: '30px',
-              },
-              '&::-webkit-scrollbar-thumb': {
-                backgroundColor: 'brand.500',
-                borderRadius: '30px',
-              },
-            }}
           >
             {metadataArray.map(({ label, value }) => (
               <NftMetadataBlock

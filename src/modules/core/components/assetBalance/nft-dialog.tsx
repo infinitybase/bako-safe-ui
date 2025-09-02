@@ -1,4 +1,4 @@
-import { Box, CloseButton } from '@chakra-ui/react';
+import { Box, CloseButton, Flex, Heading } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 
 import { Dialog } from '@/components';
@@ -33,6 +33,10 @@ export const NftDialog = ({
   setStepToSell,
 }: NftDialogProps) => {
   const [step, setStep] = useState(0);
+
+  const {
+    screenSizes: { isMobile },
+  } = useWorkspaceContext();
 
   useEffect(() => {
     setStep(setStepToSell ? 1 : 0);
@@ -116,15 +120,21 @@ export const NftDialog = ({
           mx="auto"
           borderRadius="lg"
         >
+          {isMobile && (
+            <Flex
+              w="full"
+              alignItems="center"
+              justifyContent="space-between"
+              mb={3}
+            >
+              <Heading fontSize="xl" noOfLines={1}>
+                {nftsInfo?.metadata?.name || 'NFT Details'}
+              </Heading>
+
+              <CloseButton onClick={onClose} />
+            </Flex>
+          )}
           <NftImage src={imageSrc} />
-          <CloseButton
-            onClick={onClose}
-            display={{ base: 'block', md: 'none' }}
-            ml="auto"
-            position="absolute"
-            top={0}
-            right={4}
-          />
         </Box>
 
         {step === 0 && (
@@ -135,13 +145,14 @@ export const NftDialog = ({
             order={orderData}
             onEdit={handleChangeStepToEdit}
             vaultId={vault?.data?.id ?? ''}
+            isMobile={isMobile}
           />
         )}
 
         {step === 1 && (
           <ListingContent
             assetId={nftsInfo?.assetId ?? ''}
-            name={nftsInfo?.name}
+            name={nftsInfo?.metadata?.name ?? ''}
             onCancel={handleChangeStepToDetails}
             onClose={handleCloseListDialog}
             userWithHandle={!!resolverName}

@@ -39,6 +39,11 @@ const NftBalanceCard = ({ nft }: { nft: NFT }) => {
 
   if (!nftsInfo) return null;
 
+  const nftName =
+    nftsInfo.symbol || nftsInfo.metadata.name || nftsInfo.name
+      ? `${nftsInfo.symbol || ''} ${nftsInfo.metadata.name || nftsInfo.name || ''}`.trim()
+      : AddressUtils.format(nftsInfo.assetId, 10);
+
   return (
     <>
       <Card
@@ -76,9 +81,7 @@ const NftBalanceCard = ({ nft }: { nft: NFT }) => {
             maxW="full"
             isTruncated
           >
-            {nftsInfo.symbol || nftsInfo.name || nftsInfo.metadata.name
-              ? `${nftsInfo.symbol || ''} ${nftsInfo.name || nftsInfo.metadata.name || ''}`.trim()
-              : AddressUtils.format(nftsInfo.assetId, 10)}
+            {nftName}
           </Text>
           <Button
             variant="primary"
