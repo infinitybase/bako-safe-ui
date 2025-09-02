@@ -1,5 +1,4 @@
 import { Box, CloseButton } from '@chakra-ui/react';
-import { useState } from 'react';
 
 import { Dialog } from '@/components';
 import type { NFT } from '@/modules/core/utils';
@@ -21,6 +20,8 @@ type NftDialogProps = {
   nftsInfo?: NFT;
   imageSrc?: string;
   order?: Order;
+  step?: number;
+  setStep?: (step: number) => void;
 };
 
 export const NftDialog = ({
@@ -29,8 +30,9 @@ export const NftDialog = ({
   nftsInfo,
   imageSrc,
   order,
+  step,
+  setStep,
 }: NftDialogProps) => {
-  const [step, setStep] = useState(0);
   const { vault } = useVaultInfosContext();
   const { providerInstance } = useWorkspaceContext();
 
@@ -47,22 +49,22 @@ export const NftDialog = ({
   });
 
   const handleChangeStepToDetails = () => {
-    setStep(0);
+    setStep?.(0);
   };
 
   const handleChangeStepToSell = () => {
-    setStep(1);
+    setStep?.(1);
   };
 
   const handleChangeStepToEdit = () => {
-    setStep(2);
+    setStep?.(2);
   };
 
   const { assets } = useListAssets();
 
   const handleCloseListDialog = () => {
     onClose();
-    setStep(0);
+    setStep?.(0);
   };
 
   return (

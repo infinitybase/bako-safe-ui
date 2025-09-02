@@ -3,6 +3,7 @@ import { useState } from 'react';
 
 import { Card } from '@/components';
 import { AddressUtils, NFT } from '@/modules/core/utils';
+import { useTransactionDetails } from '@/modules/transactions/hooks/context/useTransactionDetails';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useGetNftsInfos } from '../../hooks';
@@ -10,10 +11,13 @@ import { NftDialog } from './nft-dialog';
 import { NftImage } from './nft-image';
 
 const NftBalanceCard = ({ nft }: { nft: NFT }) => {
+  const [step, setStep] = useState(0);
+
   const {
     nftList,
     screenSizes: { isLitteSmall },
   } = useWorkspaceContext();
+  const { isPendingSigner } = useTransactionDetails();
 
   const { nftsInfo, nftImageUrl } = useGetNftsInfos({
     assetId: nft.assetId,
@@ -21,6 +25,10 @@ const NftBalanceCard = ({ nft }: { nft: NFT }) => {
   });
 
   const [dialogOpen, setDialogOpen] = useState(false);
+
+  const handleList = () => {
+    setStep(1);
+  };
 
   if (!nftsInfo) return null;
 
@@ -71,6 +79,8 @@ const NftBalanceCard = ({ nft }: { nft: NFT }) => {
             w="100%"
             borderRadius="4px"
             h="24px"
+            onClick={handleList}
+            isDisabled={isPendingSigner}
           >
             List
           </Button>
@@ -82,6 +92,8 @@ const NftBalanceCard = ({ nft }: { nft: NFT }) => {
         onClose={() => setDialogOpen(false)}
         nftsInfo={nftsInfo}
         imageSrc={nftImageUrl ?? undefined}
+        step={step}
+        setStep={setStep}
       />
     </>
   );

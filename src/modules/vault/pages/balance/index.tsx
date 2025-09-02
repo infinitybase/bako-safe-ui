@@ -33,7 +33,6 @@ const VaultBalancePage = () => {
   const navigate = useNavigate();
   const menuDrawer = useDisclosure();
   const { vault, assets } = useVaultInfosContext();
-
   const { orders } = useListInfiniteOrdersByAddress({
     sellerAddress: vault?.data?.predicateAddress,
   });
