@@ -6,11 +6,9 @@ import { useTokensUSDAmountRequest } from '@/modules/home';
 
 import { useBaseAssetList } from './useBaseAssetList';
 
-export const assetsListQueryKey = ['vaultAssetsBalances'];
-
 export const useAssetsList = ({ vault }: { vault?: Vault }) => {
   const { data: balances, isLoading: isLoadingBalances } = useQuery({
-    queryKey: [assetsListQueryKey],
+    queryKey: ['vaultAssetsBalances', vault?.address],
     queryFn: async () => {
       if (!vault) {
         return null;
