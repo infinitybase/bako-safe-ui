@@ -8,20 +8,19 @@ import {
 
 import { CookieName, CookiesConfig } from '@/config/cookies';
 import { authCredentials } from '@/modules/auth';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import {
   BakoSafeMutationFunction,
   BakoSafeQueryFunction,
   BakoSafeQueryOptions,
 } from './types';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
-const removeCredentialsWhenUnathorized = (error: any) => {
+const removeCredentialsWhenUnathorized = (error: any, logout?: () => void) => {
   const unauthorizedError = error.response?.status === 401;
-  const { authDetails } = useWorkspaceContext();
 
   if (unauthorizedError) {
-    authDetails.handlers?.logout?.();
+    logout?.();
     CookiesConfig.removeCookies([CookieName.ACCESS_TOKEN, CookieName.ADDRESS]);
   }
 };
@@ -39,6 +38,7 @@ const useBakoSafeQuery = <
     'queryKey' | 'queryFn'
   >,
 ) => {
+  const { authDetails } = useWorkspaceContext();
   return useQuery({
     queryKey,
     queryFn: async (context) => {
@@ -53,7 +53,7 @@ const useBakoSafeQuery = <
           },
         });
       } catch (error) {
-        removeCredentialsWhenUnathorized(error);
+        removeCredentialsWhenUnathorized(error, authDetails?.handlers?.logout);
         throw error;
       }
     },
