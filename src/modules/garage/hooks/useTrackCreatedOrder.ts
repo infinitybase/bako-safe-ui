@@ -1,8 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 
+import { queryClient } from '@/config';
 import { useContactToast } from '@/modules/addressBook';
 import { useTransactionsSignaturePending } from '@/modules/transactions';
+import { VAULT_TRANSACTIONS_LIST_PAGINATION } from '@/modules/vault/hooks/list/useVaultTransactionsRequest';
 
 import { GarageQueryKeys } from '../utils/constants';
 
@@ -31,6 +33,10 @@ export const useTrackCreatedOrder = (
             description: 'Your order has been successfully created.',
           });
           callback?.();
+          await queryClient.invalidateQueries({
+            queryKey: [VAULT_TRANSACTIONS_LIST_PAGINATION],
+            exact: false,
+          });
           setShouldStartTracking(false);
 
           return;

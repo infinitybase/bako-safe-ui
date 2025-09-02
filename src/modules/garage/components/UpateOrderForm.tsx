@@ -1,8 +1,6 @@
 import { Button, Heading, Stack, Text } from '@chakra-ui/react';
 import { bn } from 'fuels';
-import { useCallback, useMemo } from 'react';
-
-import { useContactToast } from '@/modules/addressBook';
+import { useMemo } from 'react';
 
 import { useListAssets } from '../hooks';
 import { useUpdateOrder } from '../hooks/useUpdateOrder';
@@ -20,6 +18,7 @@ type UpateOrderFormProps = {
   name: string;
   onCancel: () => void;
   userWithHandle: boolean;
+  vaultId: string;
 };
 
 export default function UpateOrderForm({
@@ -30,53 +29,28 @@ export default function UpateOrderForm({
   name,
   onCancel,
   userWithHandle,
+  vaultId,
 }: UpateOrderFormProps) {
-  const { updateOrderAsync, isPending } = useUpdateOrder();
-  const { successToast, errorToast } = useContactToast();
+  const { updateOrder, isPending, pendingTransactions } = useUpdateOrder(
+    vaultId,
+    onClose,
+  );
   const { assets } = useListAssets();
 
-  const handleUpdateOrder = useCallback(
-    async (
-      data: ListingConfigFormProps & { currentReceiveAmountInUsd: number },
-    ) => {
-      try {
-        const sellPrice = bn.parseUnits(
-          data.sellPrice.toString(),
-          data.sellAsset.decimals,
-        );
+  const handleUpdateOrder = (
+    data: ListingConfigFormProps & { currentReceiveAmountInUsd: number },
+  ) => {
+    const sellPrice = bn.parseUnits(
+      data.sellPrice.toString(),
+      data.sellAsset.decimals,
+    );
 
-        const oldAmount = order.price.amount;
-        const oldRaw = order.price.raw;
-        const newAmount = data.sellPrice;
-        const newRaw = sellPrice.toString();
-
-        const oldPrice = {
-          oldAmount,
-          oldRaw,
-        };
-
-        const newPrice = {
-          newAmount,
-          newRaw,
-          usd: data.currentReceiveAmountInUsd,
-        };
-
-        await updateOrderAsync({
-          oldPrice,
-          newPrice,
-          sellPrice,
-          sellAsset: data.sellAsset.id,
-          orderId: order.id,
-          assetIcon: data.sellAsset.icon ?? '',
-        });
-        successToast({ title: 'Order updated successfully!' });
-        onClose();
-      } catch {
-        errorToast({ title: 'Failed to update order' });
-      }
-    },
-    [updateOrderAsync, order, successToast, errorToast, onClose],
-  );
+    updateOrder({
+      sellPrice,
+      sellAsset: data.sellAsset.id,
+      orderId: order.id,
+    });
+  };
 
   const decimals = useMemo(
     () => assets.find((a) => a.id === order.price.assetId)?.metadata?.decimals,
@@ -84,7 +58,21 @@ export default function UpateOrderForm({
   );
 
   return (
-    <Stack w="full" spacing={4}>
+    <Stack
+      w="full"
+      spacing={4}
+      minW={{
+        base: 'full',
+        sm: '480px',
+      }}
+      maxW="480px"
+      maxH={{ md: '480px' }}
+      overflowY={{
+        base: 'unset',
+        md: 'scroll',
+      }}
+      style={{ scrollbarWidth: 'none' }}
+    >
       <Heading>{name}</Heading>
       <Text color="section.500">
         Select new asset and price for your listing.
@@ -121,6 +109,7 @@ export default function UpateOrderForm({
           variant="primary"
           form="nft-sale-form"
           isLoading={isPending}
+          isDisabled={pendingTransactions}
         >
           Save new price
         </Button>

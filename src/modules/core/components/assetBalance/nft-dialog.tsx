@@ -160,6 +160,7 @@ export const NftDialog = ({
             onClose={handleCloseListDialog}
             name={order.asset.name}
             onCancel={handleChangeStepToDetails}
+            vaultId={vault?.data?.id ?? ''}
           />
         )}
       </Dialog.Body>
