@@ -2,6 +2,7 @@ import { bn } from 'fuels';
 import { useMemo } from 'react';
 
 import { useDebounce } from '@/modules/core';
+import { formatMaxDecimals } from '@/utils';
 
 import { SwapMode, SwapState } from '../../components/swap/Root';
 import { useSwapRouter } from './useSwapRouter';
@@ -22,7 +23,8 @@ export const useSwapPreview = (
     const decimals = isBuy ? buyAsset.units : sellAsset.units;
 
     try {
-      return bn.parseUnits(amountString || '0', decimals);
+      const coinAmount = formatMaxDecimals(amountString || '0', decimals);
+      return bn.parseUnits(coinAmount || '0', decimals);
     } catch {
       return bn(0);
     }

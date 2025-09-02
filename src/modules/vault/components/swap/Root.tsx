@@ -13,6 +13,7 @@ import {
   useContactToast,
 } from '@/modules';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
+import { formatMaxDecimals } from '@/utils';
 
 import {
   useBakoAmm,
@@ -196,7 +197,8 @@ export const RootSwap = memo(
       (amount: string, assetId: string) => {
         const asset = assets.find((asset) => asset.assetId === assetId);
         if (asset && asset.balance) {
-          const assetAmount = bn.parseUnits(amount, asset.units);
+          const coinAmount = formatMaxDecimals(amount, asset.units);
+          const assetAmount = bn.parseUnits(coinAmount, asset.units);
           const isBalanceSufficient = asset.balance.gte(assetAmount);
 
           if (isBalanceSufficient) {

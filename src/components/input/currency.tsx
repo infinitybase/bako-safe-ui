@@ -26,6 +26,7 @@ type CommonFieldProps = Omit<InputProps, 'value' | 'onChange'> & {
   isInvalid?: boolean;
   disabled?: boolean;
   type: CurrencyFieldType;
+  decimalScale?: number;
 };
 
 export type CurrencyFieldProps = (FiatFieldProps | CryptoFieldProps) &
@@ -41,16 +42,24 @@ export interface CurrencyConfig {
 }
 
 const Field = forwardRef<HTMLInputElement, CurrencyFieldProps>(
-  ({ value = '', currency, type, onChange, isInvalid, ...props }, ref) => {
+  (
+    { value = '', currency, type, onChange, isInvalid, decimalScale, ...props },
+    ref,
+  ) => {
     const isCrypto = useMemo(() => type === 'crypto', [type]);
     const resolvedCurrency = type === 'crypto' ? null : currency;
 
     const config = useMemo(() => {
-      if (!resolvedCurrency) {
-        return CRYPTO_CONFIG;
-      }
-      return CURRENCY_CONFIGS[resolvedCurrency];
-    }, [resolvedCurrency]);
+      const baseConfig = resolvedCurrency
+        ? CURRENCY_CONFIGS[resolvedCurrency]
+        : CRYPTO_CONFIG;
+
+      return {
+        ...baseConfig,
+        decimalScale:
+          decimalScale != null ? Number(decimalScale) : baseConfig.decimalScale,
+      };
+    }, [resolvedCurrency, decimalScale]);
 
     const regexCache = useMemo(() => {
       const decimalEscaped = config.decimalSeparator.replace(
@@ -74,21 +83,19 @@ const Field = forwardRef<HTMLInputElement, CurrencyFieldProps>(
       return isCrypto ? regexCache.crypto : regexCache.currency;
     }, [regexCache, isCrypto]);
 
-    const currencyMask = useMemo(
-      () =>
-        createNumberMask({
-          prefix: '',
-          suffix: '',
-          includeThousandsSeparator: !!config.thousandsSeparator,
-          thousandsSeparatorSymbol: config.thousandsSeparator,
-          allowDecimal: true,
-          decimalSymbol: config.decimalSeparator,
-          decimalLimit: config.decimalScale,
-          allowNegative: false,
-          allowLeadingZeroes: false,
-        }),
-      [config],
-    );
+    const currencyMask = useMemo(() => {
+      return createNumberMask({
+        prefix: '',
+        suffix: '',
+        includeThousandsSeparator: !!config.thousandsSeparator,
+        thousandsSeparatorSymbol: config.thousandsSeparator,
+        allowDecimal: true,
+        decimalSymbol: config.decimalSeparator,
+        decimalLimit: config.decimalScale,
+        allowNegative: false,
+        allowLeadingZeroes: false,
+      });
+    }, [config]);
 
     const normalizedValue = useMemo(() => {
       if (!value) return '';
@@ -123,6 +130,7 @@ const Field = forwardRef<HTMLInputElement, CurrencyFieldProps>(
 
     return (
       <MaskedInput
+        key={config.decimalScale}
         mask={currencyMask}
         value={normalizedValue}
         onChange={handleInputChange}

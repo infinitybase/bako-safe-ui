@@ -10,7 +10,14 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { BN, bn } from 'fuels';
-import { memo, useEffect, useMemo, useRef } from 'react';
+import {
+  memo,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 import { CurrencyField } from '@/components';
 import { Asset, SelectedCurrency } from '@/modules';
@@ -42,6 +49,7 @@ export const CoinBox = memo(
     const assetsModal = useDisclosure();
     const mirrorRef = useRef<HTMLDivElement>(null);
     const coinInputRef = useRef<HTMLInputElement>(null);
+    const [inputWidth, setInputWidth] = useState<number | undefined>(undefined);
 
     useEffect(() => {
       if (mirrorRef.current && coinInputRef.current) {
@@ -65,13 +73,33 @@ export const CoinBox = memo(
 
     const amountInUSD = useMemo(() => {
       if (!coin.amount || !currentRate) return '0';
-      const amount = bn.parseUnits(coin.amount, coin.units);
-      const currentRateFormatted = formatMaxDecimals(currentRate.toString(), 9);
+      const coinAmount = formatMaxDecimals(coin.amount, coin.units);
+
+      const amount = bn.parseUnits(coinAmount, coin.units);
+
+      const currentRateFormatted = formatMaxDecimals(
+        currentRate.toString(),
+        coin.units,
+      );
       const rate = bn.parseUnits(currentRateFormatted, coin.units);
       return amount.mul(rate).formatUnits(coin.units * 2);
     }, [coin.amount, currentRate, coin.units]);
 
     const value = useMemo(() => coin.amount || '', [coin.amount]);
+
+    useLayoutEffect(() => {
+      if (!mirrorRef.current) return;
+      const w = mirrorRef.current.offsetWidth;
+      setInputWidth(w);
+    }, [value, coin.units]);
+
+    const config = useMemo(() => {
+      return {
+        ...CRYPTO_CONFIG,
+        decimalScale:
+          coin.units != null ? Number(coin.units) : CRYPTO_CONFIG.decimalScale,
+      };
+    }, [coin.units]);
 
     return (
       <Card variant="outline" p={3} pb={12}>
@@ -130,6 +158,9 @@ export const CoinBox = memo(
               _placeholder={{ opacity: 0.5 }}
               isDisabled={isLoadingAmount}
               fontSize="3xl"
+              decimalScale={coin.units}
+              w={inputWidth ? `${inputWidth}px` : undefined}
+              minW="40px"
               onChange={onChangeAmount}
             />
             <Box
@@ -137,8 +168,9 @@ export const CoinBox = memo(
               visibility="hidden"
               fontSize="3xl"
               ref={mirrorRef}
+              whiteSpace="nowrap"
             >
-              {formatCurrencyValue(value || '0', CRYPTO_CONFIG, false)}
+              {formatCurrencyValue(value || '0', config, false)}
             </Box>
             <InputRightAddon
               as="label"
