@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 
-import { queryClient } from '@/config';
 import { useContactToast } from '@/modules/addressBook';
 import { useTransactionsSignaturePending } from '@/modules/transactions';
 
@@ -33,10 +32,7 @@ export const useTrackCreatedOrder = (
           });
           callback?.();
           setShouldStartTracking(false);
-          queryClient.invalidateQueries({
-            queryKey: [GarageQueryKeys.USER_ORDERS],
-            exact: false,
-          });
+
           return;
         }
         // Continue polling if no transactions yet

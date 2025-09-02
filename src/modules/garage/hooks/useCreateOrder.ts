@@ -11,11 +11,7 @@ export const useCreateOrder = (vaultId: string, callback?: () => void) => {
     callback,
   );
 
-  const {
-    mutate: createOrder,
-    mutateAsync: createOrderAsync,
-    ...rest
-  } = useMutation({
+  const { mutate: createOrder, ...rest } = useMutation({
     mutationFn: async (order: OrderFromFuel & { image: string }) => {
       startTracking();
 
@@ -24,5 +20,5 @@ export const useCreateOrder = (vaultId: string, callback?: () => void) => {
     },
   });
 
-  return { createOrder, createOrderAsync, pendingTransactions, ...rest };
+  return { createOrder, pendingTransactions, ...rest };
 };

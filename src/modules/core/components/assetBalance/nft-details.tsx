@@ -24,6 +24,7 @@ type NftDetailsProps = {
   handleChangeStepToSell: () => void;
   order?: OrderWithMedatada;
   onEdit?: () => void;
+  vaultId: string;
 };
 
 export const NftDetails = ({
@@ -32,6 +33,7 @@ export const NftDetails = ({
   handleChangeStepToSell,
   order,
   onEdit,
+  vaultId,
 }: NftDetailsProps) => {
   const metadataArray = nftsInfo?.metadata
     ? Object.entries(nftsInfo?.metadata)
@@ -43,7 +45,14 @@ export const NftDetails = ({
     : [];
 
   if (order) {
-    return <UpdateOrderStep order={order} onClose={onClose} onEdit={onEdit} />;
+    return (
+      <UpdateOrderStep
+        order={order}
+        onClose={onClose}
+        onEdit={onEdit}
+        vaultId={vaultId}
+      />
+    );
   }
 
   return (

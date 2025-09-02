@@ -11,14 +11,13 @@ import {
   Tooltip,
   VStack,
 } from '@chakra-ui/react';
-import { useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
 import { LuUser2 } from 'react-icons/lu';
 import { RiEditLine } from 'react-icons/ri';
 
 import { BTCIcon } from '@/components/icons/btc-icon';
 import { ContractIcon } from '@/components/icons/contract-icon';
 import { LightIcon } from '@/components/icons/light-bulb-icon';
-import { useContactToast } from '@/modules/addressBook';
 import { NftMetadataBlock } from '@/modules/core/components/assetBalance/nft-metadata-block';
 import { NFTText } from '@/modules/core/components/assetBalance/nft-text';
 import { useCancelOrder } from '@/modules/garage/hooks/useCancelOrder';
@@ -31,12 +30,14 @@ type UpdateOrderStepProps = {
   onClose: () => void;
   onEdit?: () => void;
   order?: OrderWithMedatada;
+  vaultId: string;
 };
 
 export const UpdateOrderStep = ({
   onClose,
   order,
   onEdit,
+  vaultId,
 }: UpdateOrderStepProps) => {
   const metadataArray = Object.entries(order?.asset?.metadata ?? {}).map(
     ([key, value]) => ({
@@ -44,24 +45,14 @@ export const UpdateOrderStep = ({
       label: key,
     }),
   );
-  const { successToast, errorToast } = useContactToast();
-  const { cancelOrderAsync, isPending: isCanceling } = useCancelOrder();
+  const { cancelOrder, isPending: isCanceling } = useCancelOrder(
+    vaultId,
+    onClose,
+  );
 
-  const handleCancelOrder = useCallback(async () => {
-    try {
-      await cancelOrderAsync(order?.id ?? '');
-      successToast({
-        title: 'Delisted successfully',
-        description: 'Your order has been successfully cancelled.',
-      });
-      onClose();
-    } catch {
-      errorToast({
-        title: 'Error delisting order',
-        description: 'An error occurred while delisting your order.',
-      });
-    }
-  }, [order?.id, successToast, errorToast, onClose]);
+  const handleCancelOrder = () => {
+    cancelOrder(order?.id ?? '');
+  };
 
   const orderPrice = useMemo(() => {
     return Intl.NumberFormat('en-US').format(Number(order?.price.amount));
@@ -75,7 +66,6 @@ export const UpdateOrderStep = ({
 
   return (
     <VStack
-      border="1px solid red"
       flex={1}
       justifyContent="space-between"
       alignItems="flex-start"
@@ -153,10 +143,14 @@ export const UpdateOrderStep = ({
           mt={3}
           w="100%"
           onClick={handleCancelOrder}
-          bg={'error.600'}
-          color={'grey.825'}
-          borderColor={'error.600'}
+          bg="error.600"
+          color="grey.825"
+          borderColor="error.600"
           isLoading={isCanceling}
+          _hover={{
+            bg: 'error.600',
+            color: 'grey.825',
+          }}
         >
           Delist NFT
         </Button>

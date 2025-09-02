@@ -36,13 +36,13 @@ export default function ListingContent({
   nftImage,
   vaultId,
 }: ListingContentProps) {
-  const { createOrderAsync, isPending, pendingTransactions } = useCreateOrder(
+  const { createOrder, isPending, pendingTransactions } = useCreateOrder(
     vaultId,
     onClose,
   );
 
   const handleCreateOrder = (data: ListingConfigFormProps) => {
-    createOrderAsync({
+    createOrder({
       itemAsset: assetId,
       itemAmount: bn(1),
       sellPrice: bn.parseUnits(

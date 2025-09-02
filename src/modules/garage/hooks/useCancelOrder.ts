@@ -1,63 +1,23 @@
-import { useAccount } from '@fuels/react';
-import {
-  type InfiniteData,
-  useMutation,
-  useQueryClient,
-} from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 
-import { GarageService } from '../services/garage';
-import { Order } from '../types';
-import { GarageQueryKeys } from '../utils/constants';
-import { PaginationResult } from '../utils/pagination';
-import { Networks } from '../utils/resolver-network';
-import { useChainId } from './useChainId';
 import { useGarage } from './useGarage';
+import { useTrackCreatedOrder } from './useTrackCreatedOrder';
 
-export const useCancelOrder = () => {
+export const useCancelOrder = (vaultId: string, callback?: () => void) => {
   const marketplaceContract = useGarage();
-  const queryClient = useQueryClient();
-  const { account } = useAccount();
-  const { chainId } = useChainId();
-  const address = account?.toLowerCase() ?? '';
+  const { startTracking, pendingTransactions } = useTrackCreatedOrder(
+    vaultId,
+    callback,
+  );
 
-  const {
-    mutate: cancelOrder,
-    mutateAsync: cancelOrderAsync,
-    ...rest
-  } = useMutation({
+  const { mutate: cancelOrder, ...rest } = useMutation({
     mutationFn: async (orderId: string) => {
+      startTracking();
+
       const marketplace = await marketplaceContract;
-      const { transactionResult } = await marketplace.cancelOrder(orderId);
-      return { orderId, txId: transactionResult.id };
-    },
-
-    onSuccess: async ({ orderId, txId }) => {
-      await queryClient.invalidateQueries({
-        queryKey: [GarageQueryKeys.USER_ORDERS, address],
-      });
-
-      await GarageService.saveReceipt({
-        txId,
-        chainId: chainId ?? Networks.MAINNET,
-      });
-
-      queryClient.setQueryData(
-        [GarageQueryKeys.USER_ORDERS, address],
-        (old: InfiniteData<PaginationResult<Order>, unknown>) => {
-          return {
-            ...old,
-            pages: old.pages.map((page) => {
-              const result = {
-                ...page,
-                data: page.data.filter((item) => item.id !== orderId),
-              };
-              return result;
-            }),
-          };
-        },
-      );
+      await marketplace.cancelOrder(orderId);
     },
   });
 
-  return { cancelOrder, cancelOrderAsync, ...rest };
+  return { cancelOrder, pendingTransactions, ...rest };
 };

@@ -11,7 +11,7 @@ import { NftDialog } from './nft-dialog';
 import { NftImage } from './nft-image';
 
 const NftBalanceCard = ({ nft }: { nft: NFT }) => {
-  const [step, setStep] = useState(0);
+  const [stepTosell, setStepTosell] = useState(false);
 
   const {
     nftList,
@@ -27,7 +27,12 @@ const NftBalanceCard = ({ nft }: { nft: NFT }) => {
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const handleList = () => {
-    setStep(1);
+    setStepTosell(true);
+  };
+
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+    setStepTosell(false);
   };
 
   if (!nftsInfo) return null;
@@ -89,11 +94,10 @@ const NftBalanceCard = ({ nft }: { nft: NFT }) => {
 
       <NftDialog
         isOpen={dialogOpen}
-        onClose={() => setDialogOpen(false)}
+        onClose={handleCloseDialog}
         nftsInfo={nftsInfo}
         imageSrc={nftImageUrl ?? undefined}
-        step={step}
-        setStep={setStep}
+        setStepToSell={stepTosell}
       />
     </>
   );
