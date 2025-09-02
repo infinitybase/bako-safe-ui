@@ -139,6 +139,7 @@ export const NftDialog = ({
             userWithHandle={!!resolverName}
             assets={assets}
             nftImage={nftsInfo?.metadata?.image ?? ''}
+            vaultId={vault?.data?.id ?? ''}
           />
         )}
 

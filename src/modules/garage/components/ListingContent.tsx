@@ -7,9 +7,6 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { bn } from 'fuels';
-import { useCallback } from 'react';
-
-import { useContactToast } from '@/modules/addressBook';
 
 import { useCreateOrder } from '../hooks/useCreateOrder';
 import type { Asset } from '../types';
@@ -26,6 +23,7 @@ type ListingContentProps = {
   onCancel: () => void;
   assets: Asset[];
   nftImage: string;
+  vaultId: string;
 };
 
 export default function ListingContent({
@@ -36,41 +34,25 @@ export default function ListingContent({
   userWithHandle,
   assets,
   nftImage,
+  vaultId,
 }: ListingContentProps) {
-  const { createOrderAsync, isPending } = useCreateOrder();
-  const { errorToast, successToast } = useContactToast();
-
-  const handleCreateOrder = useCallback(
-    async (data: ListingConfigFormProps) => {
-      try {
-        await createOrderAsync({
-          itemAsset: assetId,
-          itemAmount: bn(1),
-          sellPrice: bn.parseUnits(
-            data.sellPrice.toString(),
-            data.sellAsset.decimals,
-          ),
-          sellAsset: data.sellAsset.id,
-          image: nftImage,
-        });
-        successToast({ title: 'Order created successfully!' });
-        onClose();
-      } catch (e) {
-        console.log('error creating order', e);
-        const insufficientFundsError =
-          e instanceof Error && e?.message?.includes('Insufficient funds');
-        errorToast({
-          title: insufficientFundsError
-            ? 'Insufficient funds'
-            : 'Failed to create order. Please try again.',
-          description: insufficientFundsError
-            ? 'Not enough ethereum to cover the transaction fee'
-            : undefined,
-        });
-      }
-    },
-    [assetId, createOrderAsync, errorToast, onClose, successToast, nftImage],
+  const { createOrderAsync, isPending, pendingTransactions } = useCreateOrder(
+    vaultId,
+    onClose,
   );
+
+  const handleCreateOrder = (data: ListingConfigFormProps) => {
+    createOrderAsync({
+      itemAsset: assetId,
+      itemAmount: bn(1),
+      sellPrice: bn.parseUnits(
+        data.sellPrice.toString(),
+        data.sellAsset.decimals,
+      ),
+      sellAsset: data.sellAsset.id,
+      image: nftImage,
+    });
+  };
 
   return (
     <Stack w="full" spacing={4} h="480px" maxW="480px">
@@ -110,6 +92,7 @@ export default function ListingContent({
           type="submit"
           form="nft-sale-form"
           isLoading={isPending}
+          isDisabled={pendingTransactions}
         >
           Confirm listing
         </Button>

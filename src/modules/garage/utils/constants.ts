@@ -3,6 +3,7 @@ export enum GarageQueryKeys {
   ASSETS_BALANCE = 'assets-balance',
   ASSETS_FOR_LISTING = 'assets-for-listing',
   ORDER = 'order',
+  TRACK_ORDER_CREATED = 'track-order-created',
 }
 export const ETH_ID =
   '0xf8f8b6283d7fa5b672b530cbb84fcccb4ff8dc40f8176ef4544ddb1f1952ad07';

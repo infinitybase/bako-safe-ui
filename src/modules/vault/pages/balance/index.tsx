@@ -35,8 +35,7 @@ const VaultBalancePage = () => {
   const { vault, assets } = useVaultInfosContext();
 
   const { orders } = useListInfiniteOrdersByAddress({
-    sellerAddress:
-      '0x8e4f57882b46e63EA37f67c90e0Aa4A0aB618C8c5fC3d793F07FB84560226FA0',
+    sellerAddress: vault?.data?.predicateAddress,
   });
 
   const {

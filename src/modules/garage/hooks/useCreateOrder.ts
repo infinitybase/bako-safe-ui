@@ -1,19 +1,65 @@
-import { useAccount, useChainId } from '@fuels/react';
 import type { Order as OrderFromFuel } from '@garage/sdk';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
 
-import { GarageService } from '../services/garage';
+import { useContactToast } from '@/modules/addressBook';
+import { useTransactionsSignaturePending } from '@/modules/transactions';
+
 import { GarageQueryKeys } from '../utils/constants';
-import { Networks } from '../utils/resolver-network';
 import { useGarage } from './useGarage';
 
-export const useCreateOrder = () => {
-  const garageContract = useGarage();
-  const queryClient = useQueryClient();
-  const { chainId } = useChainId();
-  const { account } = useAccount();
+const useTrackOrderCreated = (vaultId: string, callback: () => void) => {
+  const { successToast } = useContactToast();
+  const [initialPendingTxCount, setInitialPendingTxCount] = useState<
+    number | null
+  >(null);
+  const { data: pendingTransactions, refetch } =
+    useTransactionsSignaturePending([vaultId]);
 
-  const address = account?.toLowerCase() ?? ' ';
+  // Polling to track if order is created successfully
+  useQuery({
+    queryKey: [
+      GarageQueryKeys.TRACK_ORDER_CREATED,
+      vaultId,
+      initialPendingTxCount,
+    ],
+    queryFn: async () => {
+      if (pendingTransactions && initialPendingTxCount !== null) {
+        if (pendingTransactions.ofUser > initialPendingTxCount) {
+          successToast({
+            title: 'Order created successfully',
+            description: 'Your order has been successfully created.',
+          });
+          callback();
+          return { shouldStop: true };
+        }
+        // Continue polling if count hasn't increased
+        await refetch();
+        return { shouldStop: false };
+      }
+      return { shouldStop: false };
+    },
+    enabled: !!pendingTransactions && initialPendingTxCount !== null,
+    refetchInterval: 2000,
+  });
+
+  return {
+    setInitialCount: () => {
+      if (pendingTransactions) {
+        setInitialPendingTxCount(pendingTransactions.ofUser);
+      }
+    },
+    pendingTransactions:
+      !!pendingTransactions?.ofUser && pendingTransactions?.ofUser > 0,
+  };
+};
+
+export const useCreateOrder = (vaultId: string, callback: () => void) => {
+  const garageContract = useGarage();
+  const { setInitialCount, pendingTransactions } = useTrackOrderCreated(
+    vaultId,
+    callback,
+  );
 
   const {
     mutate: createOrder,
@@ -21,29 +67,12 @@ export const useCreateOrder = () => {
     ...rest
   } = useMutation({
     mutationFn: async (order: OrderFromFuel & { image: string }) => {
+      setInitialCount();
+
       const garage = await garageContract;
-
-      const { orderId, transactionResult } = await garage.createOrder(order);
-
-      return {
-        orderId,
-        image: order.image,
-        assetId: order.itemAsset,
-        txId: transactionResult.id,
-      };
-    },
-
-    onSuccess: async (orderResult) => {
-      queryClient.invalidateQueries({
-        queryKey: [GarageQueryKeys.USER_ORDERS, chainId, address],
-      });
-
-      await GarageService.saveReceipt({
-        txId: orderResult?.txId ?? '',
-        chainId: chainId ?? Networks.MAINNET,
-      });
+      await garage.createOrder(order);
     },
   });
 
-  return { createOrder, createOrderAsync, ...rest };
+  return { createOrder, createOrderAsync, pendingTransactions, ...rest };
 };
