@@ -75,8 +75,12 @@ export const BuyOrSellForm = ({
     walletAddress,
     paymentMethodType,
   } = useWatch({ control });
+  const locale = useMemo(() => {
+    if (sourceCurrencyCode === 'BRL') return 'pt-BR';
+    return 'en-US';
+  }, [sourceCurrencyCode]);
   const debouncedAmount = useDebounce(
-    Number(valueWithoutCommas(sourceAmount || '0')),
+    Number(valueWithoutCommas(sourceAmount || '0', locale)),
     600,
   );
 
