@@ -1,5 +1,5 @@
 import { Box, CloseButton } from '@chakra-ui/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Dialog } from '@/components';
 import type { NFT } from '@/modules/core/utils';
@@ -32,7 +32,12 @@ export const NftDialog = ({
   order,
   setStepToSell,
 }: NftDialogProps) => {
-  const [step, setStep] = useState(setStepToSell ? 1 : 0);
+  const [step, setStep] = useState(0);
+
+  useEffect(() => {
+    setStep(setStepToSell ? 1 : 0);
+  }, [setStepToSell]);
+
   const { vault } = useVaultInfosContext();
   const { providerInstance } = useWorkspaceContext();
 

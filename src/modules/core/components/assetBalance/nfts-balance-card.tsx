@@ -26,8 +26,10 @@ const NftBalanceCard = ({ nft }: { nft: NFT }) => {
 
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  const handleList = () => {
+  const handleList = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
     setStepTosell(true);
+    setDialogOpen(true);
   };
 
   const handleCloseDialog = () => {
