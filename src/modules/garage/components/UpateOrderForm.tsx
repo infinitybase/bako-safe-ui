@@ -1,4 +1,11 @@
-import { Button, Heading, Stack, Text } from '@chakra-ui/react';
+import {
+  Button,
+  CloseButton,
+  Flex,
+  Heading,
+  Stack,
+  Text,
+} from '@chakra-ui/react';
 import { bn } from 'fuels';
 import { useMemo } from 'react';
 
@@ -61,19 +68,31 @@ export default function UpateOrderForm({
     <Stack
       w="full"
       spacing={4}
+      flex={1}
+      justifyContent="space-between"
+      alignItems="flex-start"
       minW={{
         base: 'full',
         sm: '480px',
       }}
       maxW="480px"
-      maxH={{ md: '480px' }}
+      maxH={{ md: '490px' }}
       overflowY={{
         base: 'unset',
         md: 'scroll',
       }}
       style={{ scrollbarWidth: 'none' }}
     >
-      <Heading>{order.asset.name}</Heading>
+      <Flex w="full" alignItems="center" justifyContent="space-between">
+        <Heading fontSize="xl" noOfLines={1}>
+          {order?.asset?.name || 'NFT Details'}
+        </Heading>
+
+        <CloseButton
+          onClick={onClose}
+          display={{ base: 'none', md: 'block' }}
+        />
+      </Flex>
       <Text color="section.500">
         Select new asset and price for your listing.
       </Text>
