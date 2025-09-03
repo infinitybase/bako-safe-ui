@@ -1,4 +1,5 @@
 import { Box, Button, Text, VStack } from '@chakra-ui/react';
+import { AssetInfo } from 'fuels';
 import { useState } from 'react';
 
 import { Card } from '@/components';
@@ -10,13 +11,25 @@ import { useGetNftsInfos } from '../../hooks';
 import { NftDialog } from './nft-dialog';
 import { NftImage } from './nft-image';
 
-const NftBalanceCard = ({ nft }: { nft: NFT }) => {
+const NftBalanceCard = ({
+  nft,
+  assets,
+}: {
+  nft: NFT;
+  assets: {
+    metadata: AssetInfo | null;
+    id: string;
+    fees: [string, string];
+    __typename: 'Asset';
+  }[];
+}) => {
   const [stepTosell, setStepTosell] = useState(false);
 
   const {
     nftList,
     screenSizes: { isLitteSmall },
   } = useWorkspaceContext();
+
   const { isPendingSigner } = useTransactionDetails();
 
   const { nftsInfo, nftImageUrl } = useGetNftsInfos({
@@ -103,6 +116,7 @@ const NftBalanceCard = ({ nft }: { nft: NFT }) => {
         nftsInfo={nftsInfo}
         imageSrc={nftImageUrl ?? undefined}
         setStepToSell={stepTosell}
+        assets={assets}
       />
     </>
   );

@@ -7,6 +7,7 @@ import {
   Tooltip,
   useDisclosure,
 } from '@chakra-ui/react';
+import { AssetInfo } from 'fuels';
 import { useMemo } from 'react';
 
 import { useScreenSize } from '@/modules/core';
@@ -24,11 +25,18 @@ interface ListedOrderCardProps {
   withHandle: boolean;
   openModalOnClick?: boolean;
   ctaButtonVariant?: 'primary' | 'mktPrimary';
+  assets: {
+    metadata: AssetInfo | null;
+    id: string;
+    fees: [string, string];
+    __typename: 'Asset';
+  }[];
 }
 
 const ListedOrderCard = ({
   order,
   openModalOnClick = true,
+  assets,
 }: ListedOrderCardProps) => {
   const { isMobile } = useScreenSize();
 
@@ -53,7 +61,9 @@ const ListedOrderCard = ({
     [order.price.usd],
   );
 
-  const assetSymbolUrl = order.price.image || UnknownAssetSymbol;
+  const asset = assets.find((a) => a.id === order.price.assetId);
+  const assetSymbolUrl =
+    asset?.metadata?.icon || order.price.image || UnknownAssetSymbol;
 
   const imageUrl = parseURI(order.asset?.image) || nftEmpty;
   const name = order.asset.name || 'Unknown NFT';
@@ -125,6 +135,7 @@ const ListedOrderCard = ({
           isOpen={isOpen}
           onClose={handleCloseDialog}
           imageSrc={imageUrl}
+          assets={assets}
         />
       )}
     </NftCard.Root>

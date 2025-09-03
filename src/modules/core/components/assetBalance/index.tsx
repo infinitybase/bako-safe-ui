@@ -1,4 +1,5 @@
 import { Grid } from '@chakra-ui/react';
+import { AssetInfo } from 'fuels';
 import { useMemo } from 'react';
 
 import { Asset, NFT } from '@/modules/core/utils';
@@ -14,6 +15,12 @@ interface AssetsBalanceProps {
 
 interface NftsBalanceProps {
   nfts?: NFT[];
+  assets: {
+    metadata: AssetInfo | null;
+    id: string;
+    fees: [string, string];
+    __typename: 'Asset';
+  }[];
 }
 
 const AssetsBalanceList = ({ assets }: AssetsBalanceProps) => {
@@ -57,7 +64,7 @@ const AssetsBalanceList = ({ assets }: AssetsBalanceProps) => {
   );
 };
 
-const NftsBalanceList = ({ nfts }: NftsBalanceProps) => {
+const NftsBalanceList = ({ nfts, assets }: NftsBalanceProps) => {
   const grouped = useMemo(() => {
     if (!nfts) return {};
     return nfts.reduce<Record<string, typeof nfts>>((acc, nft) => {
@@ -100,7 +107,7 @@ const NftsBalanceList = ({ nfts }: NftsBalanceProps) => {
             }}
           >
             {groupNfts.map((nft) => (
-              <NftBalanceCard key={nft.assetId} nft={nft} />
+              <NftBalanceCard key={nft.assetId} nft={nft} assets={assets} />
             ))}
           </Grid>
         </div>

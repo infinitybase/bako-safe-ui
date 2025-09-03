@@ -25,6 +25,7 @@ import { EmptyState } from '@/components/emptyState';
 import { Drawer } from '@/layouts/dashboard/drawer';
 import { AssetsBalanceList, NFT, NftsBalanceList, Pages } from '@/modules/core';
 import ListedOrderCard from '@/modules/garage/components/ListedOrderCard';
+import { useListAssets } from '@/modules/garage/hooks';
 import { useListInfiniteOrdersByAddress } from '@/modules/garage/hooks/useListInfiniteOrdersByAddress';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
@@ -35,6 +36,7 @@ const VaultBalancePage = () => {
   const navigate = useNavigate();
   const menuDrawer = useDisclosure();
   const { vault, assets } = useVaultInfosContext();
+  const { assets: tokenList } = useListAssets();
   const { orders, hasNextPage, isFetchingNextPage, fetchNextPage } =
     useListInfiniteOrdersByAddress({
       sellerAddress: vault?.data?.predicateAddress,
@@ -220,7 +222,10 @@ const VaultBalancePage = () => {
                 flex={1}
               >
                 {assets.nfts && assets.nfts?.length > 0 && (
-                  <NftsBalanceList nfts={assets.nfts as NFT[]} />
+                  <NftsBalanceList
+                    nfts={assets.nfts as NFT[]}
+                    assets={tokenList}
+                  />
                 )}
 
                 {userOrders.length > 0 && (
@@ -241,6 +246,7 @@ const VaultBalancePage = () => {
                         key={order.id}
                         order={order}
                         withHandle={true}
+                        assets={tokenList}
                       />
                     ))}
                   </Grid>

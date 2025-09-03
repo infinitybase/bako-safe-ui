@@ -1,11 +1,11 @@
 import { Box, CloseButton, Flex, Heading } from '@chakra-ui/react';
+import { AssetInfo } from 'fuels';
 import { useEffect, useState } from 'react';
 
 import { Dialog } from '@/components';
 import type { NFT } from '@/modules/core/utils';
 import ListingContent from '@/modules/garage/components/ListingContent';
 import UpateOrderForm from '@/modules/garage/components/UpateOrderForm';
-import { useListAssets } from '@/modules/garage/hooks';
 import { useGetOrder } from '@/modules/garage/hooks/useGetOrder';
 import { Order } from '@/modules/garage/types';
 import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
@@ -22,6 +22,12 @@ type NftDialogProps = {
   imageSrc?: string;
   order?: Order;
   setStepToSell?: boolean;
+  assets: {
+    metadata: AssetInfo | null;
+    id: string;
+    fees: [string, string];
+    __typename: 'Asset';
+  }[];
 };
 
 export const NftDialog = ({
@@ -31,6 +37,7 @@ export const NftDialog = ({
   imageSrc,
   order,
   setStepToSell,
+  assets,
 }: NftDialogProps) => {
   const [step, setStep] = useState(0);
 
@@ -68,8 +75,6 @@ export const NftDialog = ({
   const handleChangeStepToEdit = () => {
     setStep(2);
   };
-
-  const { assets } = useListAssets();
 
   const handleCloseListDialog = () => {
     onClose();
