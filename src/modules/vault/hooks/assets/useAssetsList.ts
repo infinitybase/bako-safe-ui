@@ -45,7 +45,6 @@ export const useAssetsList = ({ vault }: { vault?: Vault }) => {
         .filter((a) => !a.isNFT) || [],
     [assets, balances, getAssetByAssetId, data],
   );
-  console.log(noVerifiedAssets);
 
   const assetsWithBalance = useMemo(
     () =>
