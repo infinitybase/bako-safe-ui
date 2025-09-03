@@ -80,6 +80,10 @@ export default function ListingContent({
           type="button"
           onClick={onCancel}
           isDisabled={isPending}
+          _hover={{
+            borderColor: 'brand.500',
+            color: 'brand.500',
+          }}
         >
           Cancel
         </Button>

@@ -5,6 +5,7 @@ import {
   Heading,
   Stack,
   Text,
+  useDisclosure,
 } from '@chakra-ui/react';
 import { bn } from 'fuels';
 import { useMemo } from 'react';
@@ -14,6 +15,7 @@ import UnknownNft from '/tokens/unknown.svg';
 import { useListAssets } from '../hooks';
 import { useUpdateOrder } from '../hooks/useUpdateOrder';
 import type { Order } from '../types';
+import { ConfirmationDialog } from './ConfirmationDialog';
 import {
   ListingConfigFormProps,
   ListingConfigSetup,
@@ -39,6 +41,8 @@ export default function UpateOrderForm({
     onClose,
   );
   const { assets } = useListAssets();
+
+  const confirmationDialog = useDisclosure();
 
   const handleUpdateOrder = (
     data: ListingConfigFormProps & { currentReceiveAmountInUsd: number },
@@ -112,18 +116,43 @@ export default function UpateOrderForm({
       />
 
       <Stack direction="row" justifyContent="space-between" mt="auto" w="full">
-        <Button type="button" variant="secondary" onClick={onCancel}>
+        <Button
+          type="button"
+          variant="secondary"
+          onClick={onCancel}
+          _hover={{
+            borderColor: 'brand.500',
+            color: 'brand.500',
+          }}
+        >
           Cancel
         </Button>
         <Button
-          type="submit"
+          type="button"
           variant="primary"
-          form="nft-sale-form"
           isLoading={isPending}
+          onClick={confirmationDialog.onOpen}
           isDisabled={pendingTransactions}
         >
           Save new price
         </Button>
+        <ConfirmationDialog
+          isOpen={confirmationDialog.isOpen}
+          onClose={confirmationDialog.onClose}
+          confirmActionButtonProps={{
+            type: 'submit',
+            form: 'nft-sale-form',
+            variant: 'primary',
+            bg: 'brand.500',
+            _hover: {
+              bg: 'brand.500',
+            },
+          }}
+          isLoading={isPending}
+          confirmText="Save new price"
+          description="Are you sure you want to update the price of this NFT?"
+          title="Edit NFT"
+        />
       </Stack>
     </Stack>
   );

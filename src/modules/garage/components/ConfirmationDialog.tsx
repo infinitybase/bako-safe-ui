@@ -1,13 +1,16 @@
+import { ButtonProps } from '@chakra-ui/react';
+
 import { Dialog } from '@/components';
 
 type ConfirmationDialogProps = {
   isOpen: boolean;
   onClose: () => void;
-  confirmAction: () => void;
+  confirmAction?: () => void;
   confirmText: string;
   description: string;
   title: string;
   isLoading?: boolean;
+  confirmActionButtonProps?: ButtonProps;
 };
 
 export const ConfirmationDialog = ({
@@ -18,6 +21,7 @@ export const ConfirmationDialog = ({
   description,
   title,
   isLoading,
+  confirmActionButtonProps,
 }: ConfirmationDialogProps) => {
   return (
     <Dialog.Modal
@@ -67,6 +71,7 @@ export const ConfirmationDialog = ({
             opacity: 0.8,
             borderColor: 'error.600',
           }}
+          {...confirmActionButtonProps}
         >
           {confirmText}
         </Dialog.PrimaryAction>
