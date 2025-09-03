@@ -138,7 +138,7 @@ export const NftDetails = ({
         <Button
           variant="primary"
           size="sm"
-          mt={3}
+          mt={6}
           w="100%"
           onClick={handleChangeStepToSell}
         >

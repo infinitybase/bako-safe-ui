@@ -152,7 +152,7 @@ export const UpdateOrderStep = ({
         <Button
           variant="primary"
           size="sm"
-          mt={3}
+          mt={6}
           w="100%"
           onClick={delistDialog.onOpen}
           bg="error.600"
@@ -170,7 +170,7 @@ export const UpdateOrderStep = ({
         <Flex
           wrap="wrap"
           gap={3}
-          mt={3}
+          mt={6}
           justifyContent="space-between"
           w="full"
         >
