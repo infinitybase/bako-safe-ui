@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Vault } from 'bakosafe';
 import { useMemo } from 'react';
 
+import { useMappedAssetStore } from '@/modules/assets-tokens/hooks/useAssetMap';
 import { useTokensUSDAmountRequest } from '@/modules/home';
 
 import { useBaseAssetList } from './useBaseAssetList';
@@ -16,8 +17,33 @@ export const useAssetsList = ({ vault }: { vault?: Vault }) => {
       return (await vault.getBalances()).balances;
     },
   });
+  const { getAssetByAssetId } = useMappedAssetStore();
   const { assets, isLoading: isLoadingAssets } = useBaseAssetList();
   const { data, isLoading: isLoadingUSDTokens } = useTokensUSDAmountRequest();
+
+  const noVerifiedAssets = useMemo(
+    () =>
+      balances
+        ?.filter(
+          (balance) =>
+            !assets.find((asset) => asset.assetId === balance.assetId),
+        )
+        .map((asset) => {
+          const assetInfo = getAssetByAssetId(asset.assetId);
+          return {
+            ...assetInfo,
+            assetId: asset.assetId,
+            balance: asset.amount || null,
+            rate: data?.[asset.assetId]?.usdAmount,
+            name: assetInfo?.name || 'Unknown',
+            slug: assetInfo?.slug || assetInfo?.symbol || 'unknown',
+            symbol: assetInfo?.symbol || 'UNK',
+            units: assetInfo?.units || 9,
+            icon: assetInfo?.icon || '/tokens/unknown.svg',
+          };
+        }) || [],
+    [assets, balances, getAssetByAssetId, data],
+  );
 
   const assetsWithBalance = useMemo(
     () =>
@@ -29,6 +55,7 @@ export const useAssetsList = ({ vault }: { vault?: Vault }) => {
               ?.amount || null,
           rate: data?.[asset.assetId]?.usdAmount,
         }))
+        .concat(...noVerifiedAssets)
         .sort((a, b) => {
           if (a.balance && a?.rate && b.balance && b?.rate) {
             const aUsd = a.balance.mul(Math.floor(a.rate * 1e9)).div(1e9);
@@ -48,7 +75,7 @@ export const useAssetsList = ({ vault }: { vault?: Vault }) => {
 
           return 0;
         }),
-    [assets, balances, data],
+    [assets, balances, data, noVerifiedAssets],
   );
 
   return {
