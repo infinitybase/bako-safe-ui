@@ -99,7 +99,14 @@ export const RootSwap = memo(
       [trade],
     );
 
-    const isLoading = trade.state === State.LOADING;
+    const isLoading = useMemo(
+      () => trade.state === State.LOADING,
+      [trade.state],
+    );
+    const isNoRoute = useMemo(
+      () => trade.state === State.NO_ROUTES,
+      [trade.state],
+    );
 
     const {
       swapData,
@@ -499,7 +506,8 @@ export const RootSwap = memo(
               isEmptyAssets ||
               isInsufficientBalance ||
               isPendingTransaction ||
-              isInsufficientETHBalance
+              isInsufficientETHBalance ||
+              isNoRoute
             }
             isLoading={isLoadingPreview || isSendingTx || isLoading}
             onClick={handleSubmitSwap}
