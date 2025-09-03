@@ -9,6 +9,7 @@ import {
   Stack,
   Text,
   Tooltip,
+  useDisclosure,
   VStack,
 } from '@chakra-ui/react';
 import { useMemo } from 'react';
@@ -24,6 +25,7 @@ import { useCancelOrder } from '@/modules/garage/hooks/useCancelOrder';
 import UnknownAssetSymbol from '/tokens/unknown.svg';
 
 import { OrderWithMedatada } from '../types';
+import { ConfirmationDialog } from './ConfirmationDialog';
 import ShareOrder from './ShareOrder';
 
 type UpdateOrderStepProps = {
@@ -39,12 +41,14 @@ export const UpdateOrderStep = ({
   onEdit,
   vaultId,
 }: UpdateOrderStepProps) => {
-  const metadataArray = Object.entries(order?.asset?.metadata ?? {}).map(
-    ([key, value]) => ({
-      value,
-      label: key,
-    }),
-  );
+  const metadataWithoutAttributes = Object.entries(
+    order?.asset?.metadata ?? {},
+  ).filter(([key]) => key !== 'attributes');
+  const metadataArray = metadataWithoutAttributes.map(([key, value]) => ({
+    value,
+    label: key,
+  }));
+  const delistDialog = useDisclosure();
   const { cancelOrder, isPending: isCanceling } = useCancelOrder(
     vaultId,
     onClose,
@@ -80,7 +84,15 @@ export const UpdateOrderStep = ({
       }}
       style={{ scrollbarWidth: 'none' }}
     >
-      <Flex w="full" alignItems="center" justifyContent="space-between">
+      <Flex
+        w="full"
+        alignItems="center"
+        justifyContent="space-between"
+        position="sticky"
+        top={0}
+        zIndex={10}
+        bg="dark.950"
+      >
         <Heading fontSize="xl" noOfLines={1}>
           {order?.asset?.name || 'NFT Details'}
         </Heading>
@@ -142,7 +154,7 @@ export const UpdateOrderStep = ({
           size="sm"
           mt={3}
           w="100%"
-          onClick={handleCancelOrder}
+          onClick={delistDialog.onOpen}
           bg="error.600"
           color="grey.825"
           borderColor="error.600"
@@ -199,26 +211,8 @@ export const UpdateOrderStep = ({
 
         <Stack spacing={2} mt={6}>
           <Heading fontSize="md">Metadata</Heading>
-          <Flex
-            maxH={{ base: 'none', md: '294px' }}
-            overflowY={{ base: 'hidden', md: 'auto' }}
-            direction="row"
-            wrap="wrap"
-            gap={3}
-            pr={2}
-            sx={{
-              '&::-webkit-scrollbar': {
-                width: '5px',
-                backgroundColor: 'grey.900',
-                borderRadius: '30px',
-              },
-              '&::-webkit-scrollbar-thumb': {
-                backgroundColor: 'brand.500',
-                borderRadius: '30px',
-              },
-            }}
-          >
-            {metadataArray.map(({ label, value }) => (
+          <Flex direction="row" wrap="wrap" gap={3} pr={2}>
+            {metadataArray?.map(({ label, value }) => (
               <NftMetadataBlock
                 key={label}
                 value={String(value)}
@@ -229,7 +223,7 @@ export const UpdateOrderStep = ({
             {order?.asset?.metadata?.attributes?.map((attr) => (
               <NFTText
                 key={attr.trait_type}
-                value={attr.trait_type}
+                value={attr.value}
                 title={`attributes: ${attr.trait_type}`}
               />
             ))}
@@ -243,6 +237,15 @@ export const UpdateOrderStep = ({
           </Flex>
         </Stack>
       </Box>
+      <ConfirmationDialog
+        isOpen={delistDialog.isOpen}
+        onClose={delistDialog.onClose}
+        confirmAction={handleCancelOrder}
+        confirmText="Yes, delist NFT"
+        title="Delist NFT"
+        description="Are you sure you want to delist this NFT?"
+        isLoading={isCanceling}
+      />
     </VStack>
   );
 };

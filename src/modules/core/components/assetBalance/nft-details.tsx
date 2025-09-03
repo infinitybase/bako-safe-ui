@@ -166,7 +166,7 @@ export const NftDetails = ({
             {nftsInfo?.metadata?.attributes?.map((attr) => (
               <NFTText
                 key={attr.trait_type}
-                value={attr.trait_type}
+                value={attr.value}
                 title={`attributes: ${attr.trait_type}`}
               />
             ))}

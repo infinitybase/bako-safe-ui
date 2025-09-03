@@ -111,16 +111,8 @@ export default function UpateOrderForm({
         }}
       />
 
-      <Stack direction="row" justifyContent="space-between" mt="auto">
-        <Button
-          type="button"
-          variant="secondary"
-          onClick={onCancel}
-          _hover={{
-            borderColor: 'garage.100',
-            color: 'garage.100',
-          }}
-        >
+      <Stack direction="row" justifyContent="space-between" mt="auto" w="full">
+        <Button type="button" variant="secondary" onClick={onCancel}>
           Cancel
         </Button>
         <Button
