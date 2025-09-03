@@ -24,6 +24,10 @@ import { NetworkService } from '@/modules/network/services';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
+import {
+  ON_OFF_RAMP_TRANSACTION_TYPES,
+  TransactionTypeWithRamp,
+} from '../../services';
 import { AssetBoxInfo } from './AssetBoxInfo';
 import { DepositDetails } from './deposit-details/DepositDetails';
 import DetailsTransactionStepper from './DetailsTransactionStepper';
@@ -37,7 +41,7 @@ export type TransactionUI = Omit<ITransaction, 'assets'> & {
     to: string;
     recipientNickname?: string;
   }[];
-  type: TransactionType;
+  type: TransactionType | TransactionTypeWithRamp;
 };
 
 interface CancelTransactionButtonProps {
@@ -117,6 +121,10 @@ const Details = memo(
       () => transaction.type === TransactionType.DEPOSIT,
       [transaction.type],
     );
+    const isOnOffRamp = useMemo(
+      () => ON_OFF_RAMP_TRANSACTION_TYPES.includes(transaction.type),
+      [transaction.type],
+    );
 
     const {
       screenSizes: { isMobile },
@@ -167,14 +175,16 @@ const Details = memo(
                   />
 
                   {/* Transaction History */}
-                  <Box
-                    alignSelf="flex-start"
-                    w="full"
-                    minW={{ base: 200, sm: 'full' }}
-                    mt={isMobile ? 3 : 'unset'}
-                  >
-                    <TransactionStepper steps={transactionHistory ?? []} />
-                  </Box>
+                  {!isOnOffRamp && (
+                    <Box
+                      alignSelf="flex-start"
+                      w="full"
+                      minW={{ base: 200, sm: 'full' }}
+                      mt={isMobile ? 3 : 'unset'}
+                    >
+                      <TransactionStepper steps={transactionHistory ?? []} />
+                    </Box>
+                  )}
                 </Stack>
 
                 <Flex justify="space-between" width="100%" align="center">

@@ -4,6 +4,7 @@ import { TransactionStatus } from 'bakosafe';
 import { RigContractIcon } from '@/components';
 import { AddressUtils, type TransactionState } from '@/modules/core';
 import { tokensIDS } from '@/modules/core/utils/assets/address';
+import { FIAT_CURRENCIES } from '@/modules/core/utils/fiat-currencies';
 import { useVerifyTransactionInformations } from '@/modules/transactions/hooks/details/useVerifyTransactionInformations';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
@@ -87,6 +88,8 @@ const TransactionBreakdown = ({
               borderBottomWidth={
                 index === transaction.assets.length - 1 ? 1 : 0
               }
+              isFiatCurrency={FIAT_CURRENCIES.has(asset.assetId)}
+              rampTransaction={transaction.rampTransaction}
             />
           ))}
 

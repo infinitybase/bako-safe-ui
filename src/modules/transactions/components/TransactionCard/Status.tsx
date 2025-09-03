@@ -28,7 +28,8 @@ const Status = ({
   showDescription = true,
   ...rest
 }: TransactionCardStatusProps) => {
-  const { isReproved, isCompleted, isError, isCanceled } = status;
+  const { isReproved, isCompleted, isError, isCanceled, isPendingProvider } =
+    status;
 
   const signaturesCount =
     transaction!.resume?.witnesses?.filter((w) =>
@@ -89,10 +90,12 @@ const Status = ({
             {isReproved && 'Declined'}
             {isCanceled && 'Canceled'}
             {isCompleted && !isError && 'Completed'}
+            {isPendingProvider && 'Waiting Provider'}
             {!isCompleted &&
               !isReproved &&
               !isError &&
               !isCanceled &&
+              !isPendingProvider &&
               signatureStatus}
           </Badge>
         </HStack>
