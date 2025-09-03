@@ -33,7 +33,7 @@ export const useAssetsList = ({ vault }: { vault?: Vault }) => {
           return {
             ...assetInfo,
             assetId: asset.assetId,
-            balance: asset.amount || null,
+            balance: asset.amount.isZero() ? null : asset.amount,
             rate: data?.[asset.assetId]?.usdAmount,
             name: assetInfo?.name || 'Unknown',
             slug: assetInfo?.slug || assetInfo?.symbol || 'unknown',
@@ -41,20 +41,25 @@ export const useAssetsList = ({ vault }: { vault?: Vault }) => {
             units: assetInfo?.units || 9,
             icon: assetInfo?.icon || '/tokens/unknown.svg',
           };
-        }) || [],
+        })
+        .filter((a) => !a.isNFT) || [],
     [assets, balances, getAssetByAssetId, data],
   );
+  console.log(noVerifiedAssets);
 
   const assetsWithBalance = useMemo(
     () =>
       assets
-        .map((asset) => ({
-          ...asset,
-          balance:
-            balances?.find((balance) => balance.assetId === asset.assetId)
-              ?.amount || null,
-          rate: data?.[asset.assetId]?.usdAmount,
-        }))
+        .map((asset) => {
+          const currentBalance = balances?.find(
+            (balance) => balance.assetId === asset.assetId,
+          )?.amount;
+          return {
+            ...asset,
+            balance: currentBalance?.isZero() ? null : currentBalance,
+            rate: data?.[asset.assetId]?.usdAmount,
+          };
+        })
         .concat(...noVerifiedAssets)
         .sort((a, b) => {
           if (a.balance && a?.rate && b.balance && b?.rate) {
