@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { Vault } from 'bakosafe';
+import { bn } from 'fuels';
 import { useMemo } from 'react';
 
 import { useTokensUSDAmountRequest } from '@/modules/home';
@@ -30,17 +31,22 @@ export const useAssetsList = ({ vault }: { vault?: Vault }) => {
           rate: data?.[asset.assetId]?.usdAmount,
         }))
         .sort((a, b) => {
-          if (a.balance && a?.rate && b.balance && b?.rate) {
-            const aUsd = a.balance.mul(Math.floor(a.rate * 1e9)).div(1e9);
-            const bUsd = b.balance.mul(Math.floor(b.rate * 1e9)).div(1e9);
+          if (a.balance && a.rate && b.balance && b.rate) {
+            const aUsd = bn(a.balance)
+              .mul(bn(Math.floor(a.rate * 10)))
+              .div(bn(10).pow(a.units));
+            const bUsd = bn(b.balance)
+              .mul(bn(Math.floor(b.rate * 10)))
+              .div(bn(10).pow(b.units));
+
             return aUsd.gt(bUsd) ? -1 : 1;
           }
 
-          if (a.balance && a?.rate) return -1;
+          if (a.balance && a.rate) return -1;
           if (b.balance && b.rate) return 1;
 
           if (a.balance && b.balance) {
-            return a.balance.gt(b.balance) ? -1 : 1;
+            return bn(a.balance).gt(bn(b.balance)) ? -1 : 1;
           }
 
           if (a.balance) return -1;

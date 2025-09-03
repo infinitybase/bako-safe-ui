@@ -46,6 +46,11 @@ export const AssetsModal = ({
     [onSelect, onClose, setSearch],
   );
 
+  const handleCloseModal = useCallback(() => {
+    setSearch('');
+    onClose();
+  }, [onClose, setSearch]);
+
   const debouncedSearch = useCallback(
     // eslint-disable-next-line react-compiler/react-compiler
     debounce((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -77,7 +82,7 @@ export const AssetsModal = ({
     <Dialog.Modal
       modalContentProps={{ padding: 0 }}
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={handleCloseModal}
     >
       <Box display={{ base: 'block', xs: 'none' }} w="full">
         <Header />
@@ -87,7 +92,7 @@ export const AssetsModal = ({
         mb={3}
         px={4}
         title="Select Asset"
-        onClose={onClose}
+        onClose={handleCloseModal}
       />
       <Dialog.Body py={{ base: 0, xs: 2 }}>
         <Stack spacing={4}>
