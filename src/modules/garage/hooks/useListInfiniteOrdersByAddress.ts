@@ -24,8 +24,6 @@ export const useListInfiniteOrdersByAddress = ({
   limit,
 }: useListInfiniteOrdersByAddressProps) => {
   const { chainId } = useChainId();
-  //   const { cancelledOrders, updatedOrders, removeUpdatedOrders } =
-  //     useProcessingOrdersStore();
 
   const {
     data: orders,
@@ -48,13 +46,6 @@ export const useListInfiniteOrdersByAddress = ({
         limit: limit ?? 10,
         sellerAddress,
       });
-
-      //   const filteredData = filterAndUpdateOrdersWithProcessingState({
-      //     items: data.items,
-      //     cancelledOrders,
-      //     updatedOrders,
-      //     removeUpdatedOrders,
-      //   });
 
       return {
         data: data.items,

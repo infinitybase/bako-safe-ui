@@ -1,6 +1,5 @@
 import {
   Asset,
-  GaragePaginatedResponse,
   GaragePaginatedResponseUserOrders,
   Order,
   OrderWithMedatada,
@@ -56,43 +55,6 @@ export class GarageService {
     return data;
   }
 
-  static async getCollectionOrders({
-    collectionId,
-    page,
-    limit,
-    search,
-    chainId = Networks.MAINNET,
-    sortValue,
-    sortDirection,
-  }: {
-    collectionId: string;
-    page: number | string;
-    limit: number;
-    search?: string;
-    chainId?: number;
-    sortValue: string;
-    sortDirection: 'asc' | 'desc';
-  }): Promise<GaragePaginatedResponse<Order>> {
-    const network = resolveNetwork(chainId);
-
-    const url = constructUrl(
-      `${BASE_GARAGE_URL}/${network}/collections/${collectionId}/orders`,
-      {
-        page,
-        limit,
-        assetId: search,
-        orderBy: sortValue,
-        orderDirection: sortDirection,
-      },
-    );
-
-    const response = await fetch(url);
-
-    const data = await response.json();
-
-    return data;
-  }
-
   static async listUserOrders({
     page,
     chainId = Networks.MAINNET,
@@ -137,33 +99,6 @@ export class GarageService {
       const response = await fetch(url, {
         method: 'POST',
       });
-
-      return response.json();
-    } catch {
-      return null;
-    }
-  }
-
-  static async getReceiptStatus(data: {
-    txId: string;
-    chainId: number;
-  }): Promise<{
-    success: boolean;
-    data: {
-      isProcessed: boolean;
-      event: keyof typeof ORDER_EVENTS;
-    };
-  } | null> {
-    const { txId, chainId } = data;
-    const network = resolveNetwork(chainId);
-
-    try {
-      const url = constructUrl(
-        `${BASE_GARAGE_URL}/${network}/receipts/tx/${txId}`,
-        {},
-      );
-
-      const response = await fetch(url);
 
       return response.json();
     } catch {
