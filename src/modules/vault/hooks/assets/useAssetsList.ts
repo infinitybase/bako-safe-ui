@@ -70,6 +70,15 @@ export const useAssetsList = ({ vault }: { vault?: Vault }) => {
               .mul(bn(Math.floor(b.rate * 10)))
               .div(bn(10).pow(b.units));
 
+            console.log('>>>> names', a.name, b.name);
+            console.log(
+              '>>> BALANCES',
+              a.balance.toString(),
+              b.balance.toString(),
+            );
+            console.log('>>> RATES', a.rate, b.rate);
+            console.log('usds', aUsd.toString(), bUsd.toString());
+
             return aUsd.gt(bUsd) ? -1 : 1;
           }
 

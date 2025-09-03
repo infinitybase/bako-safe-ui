@@ -200,7 +200,7 @@ export const CoinBox = memo(
             </InputRightAddon>
           </InputGroup>
 
-          <Text color="grey.500" fontSize="xs" minH="20px">
+          <Text color="grey.500" fontSize="xs" minH="20px" maxW={'450px'}>
             {coin.amount &&
               currentRate &&
               bn.parseUnits(coin.amount).gt(0) &&
