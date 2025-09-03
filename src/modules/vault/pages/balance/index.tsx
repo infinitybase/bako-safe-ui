@@ -1,8 +1,10 @@
 import {
+  Box,
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
   Flex,
+  Grid,
   HStack,
   Icon,
   Tab,
@@ -13,13 +15,18 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
+import { useEffect, useMemo } from 'react';
 import { RiMenuUnfoldLine } from 'react-icons/ri';
+import { useInView } from 'react-intersection-observer';
 import { useNavigate } from 'react-router-dom';
 
 import { CustomSkeleton, HomeIcon } from '@/components';
 import { EmptyState } from '@/components/emptyState';
 import { Drawer } from '@/layouts/dashboard/drawer';
 import { AssetsBalanceList, NFT, NftsBalanceList, Pages } from '@/modules/core';
+import ListedOrderCard from '@/modules/garage/components/ListedOrderCard';
+import { useListAssets } from '@/modules/garage/hooks';
+import { useListInfiniteOrdersByAddress } from '@/modules/garage/hooks/useListInfiniteOrdersByAddress';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { NFTsEmptyState } from '../../components/NFTsEmptyState';
@@ -29,6 +36,13 @@ const VaultBalancePage = () => {
   const navigate = useNavigate();
   const menuDrawer = useDisclosure();
   const { vault, assets } = useVaultInfosContext();
+  const { assets: tokenList } = useListAssets();
+  const { orders, hasNextPage, isFetchingNextPage, fetchNextPage } =
+    useListInfiniteOrdersByAddress({
+      sellerAddress: vault?.data?.predicateAddress,
+    });
+  const { ref, inView } = useInView();
+
   const {
     authDetails: { userInfos },
     workspaceInfos: {
@@ -40,6 +54,17 @@ const VaultBalancePage = () => {
     screenSizes: { vaultRequiredSizeToColumnLayout },
   } = useWorkspaceContext();
   const workspaceId = userInfos.workspace?.id ?? '';
+
+  const userOrders = useMemo(
+    () => orders?.pages?.flatMap((page) => page.data) ?? [],
+    [orders],
+  );
+
+  useEffect(() => {
+    if (inView && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   if (!vault) return null;
 
@@ -196,9 +221,40 @@ const VaultBalancePage = () => {
                 isLoaded={!userInfos.isLoading && !assets.isLoading}
                 flex={1}
               >
-                {assets.nfts?.length ? (
-                  <NftsBalanceList nfts={assets.nfts as NFT[]} />
-                ) : (
+                {assets.nfts && assets.nfts?.length > 0 && (
+                  <NftsBalanceList
+                    nfts={assets.nfts as NFT[]}
+                    assets={tokenList}
+                  />
+                )}
+
+                {userOrders.length > 0 && (
+                  <Grid
+                    mt={6}
+                    gap={4}
+                    templateColumns={{
+                      base: 'repeat(2, 1fr)',
+                      xs: 'repeat(3, 1fr)',
+                      sm: 'repeat(4, 1fr)',
+                      md: 'repeat(5, 1fr)',
+                      xl: 'repeat(5, 1fr)',
+                      '2xl': 'repeat(6, 1fr)',
+                    }}
+                  >
+                    {userOrders.map((order) => (
+                      <ListedOrderCard
+                        key={order.id}
+                        order={order}
+                        withHandle={true}
+                        assets={tokenList}
+                      />
+                    ))}
+                  </Grid>
+                )}
+
+                <Box ref={ref} h="1px" w="full" />
+
+                {assets.nfts?.length === 0 && userOrders.length === 0 && (
                   <NFTsEmptyState />
                 )}
               </CustomSkeleton>

@@ -10,6 +10,7 @@ import {
 export interface DialogActionsProps extends BoxProps {
   hideDivider?: boolean;
   dividerBorderColor?: string;
+  buttonSpacing?: number;
 }
 export interface DialogActionProps extends ButtonProps {}
 
@@ -20,6 +21,7 @@ const DialogActions = ({
   flexWrap,
   flexDir,
   flexDirection,
+  buttonSpacing,
   ...rest
 }: DialogActionsProps) => (
   <Box w="full" {...rest}>
@@ -32,7 +34,7 @@ const DialogActions = ({
       flexDir={flexDir}
       flexDirection={flexDirection}
       flexWrap={flexWrap}
-      spacing={4}
+      spacing={buttonSpacing ?? 4}
       justifyContent="center"
     >
       {children}

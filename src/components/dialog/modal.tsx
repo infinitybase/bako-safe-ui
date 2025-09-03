@@ -7,6 +7,7 @@ import {
   ModalOverlay,
   ModalOverlayProps,
   ModalProps,
+  Text,
 } from '@chakra-ui/react';
 
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
@@ -17,10 +18,12 @@ export interface DialogModalProps extends ModalProps {
   modalBodyProps?: ModalBodyProps;
   xsBreakPointPy?: number;
   overlayProps?: ModalOverlayProps;
+  modalTitle?: string;
+  modalSubtitle?: string;
 }
 
 const DialogModal = (props: DialogModalProps) => {
-  const { children, ...rest } = props;
+  const { children, modalTitle, modalSubtitle, ...rest } = props;
   const {
     screenSizes: { isMobile },
   } = useWorkspaceContext();
@@ -41,6 +44,16 @@ const DialogModal = (props: DialogModalProps) => {
         py={{ base: 2, xs: props.xsBreakPointPy ?? 8 }}
         {...props.modalContentProps}
       >
+        {modalTitle && (
+          <Text fontSize="lg" fontWeight="bold">
+            {modalTitle}
+          </Text>
+        )}
+        {modalSubtitle && (
+          <Text fontSize="sm" color="section.500">
+            {modalSubtitle}
+          </Text>
+        )}
         <ModalBody
           overflowY="auto"
           zIndex={400}

@@ -1,4 +1,4 @@
-import { BoxProps, Flex, TextProps } from '@chakra-ui/react';
+import { BoxProps, Flex, Text, TextProps } from '@chakra-ui/react';
 import { AddressUtils as BakoAddressUtils } from 'bakosafe';
 import { Address as FuelsAddress, isB256 } from 'fuels';
 import { useMemo } from 'react';
@@ -20,6 +20,7 @@ export interface AddressWithCopyBtnProps extends BoxProps {
   customValue?: string;
   hideCopyButton?: boolean;
   isDetailDialog?: boolean;
+  isNoAddress?: boolean;
 }
 
 const AddressWithCopyBtn = ({
@@ -31,6 +32,7 @@ const AddressWithCopyBtn = ({
   customValue,
   hideCopyButton = false,
   isDetailDialog = false,
+  isNoAddress = false,
   ...rest
 }: AddressWithCopyBtnProps) => {
   const {
@@ -72,14 +74,20 @@ const AddressWithCopyBtn = ({
       {...rest}
       aria-label={undefined}
     >
-      <Address
-        value={address}
-        customValue={customValue}
-        isDeposit={isDeposit}
-        isSidebarAddress={isSidebarAddress}
-        isDetailDialog={isDetailDialog}
-        {...textProps}
-      />
+      {isNoAddress ? (
+        <Text fontSize="sm" color="white">
+          {address}
+        </Text>
+      ) : (
+        <Address
+          value={address}
+          customValue={customValue}
+          isDeposit={isDeposit}
+          isSidebarAddress={isSidebarAddress}
+          isDetailDialog={isDetailDialog}
+          {...textProps}
+        />
+      )}
 
       <CopyAddressButton
         display={hideCopyButton ? 'none' : 'initial'}

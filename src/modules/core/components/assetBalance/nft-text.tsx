@@ -1,4 +1,5 @@
 import { Box, Flex, FlexProps, Icon, Text } from '@chakra-ui/react';
+
 import { AddressWithCopyBtn } from '@/components';
 
 type NFTTextProps = {
@@ -6,6 +7,7 @@ type NFTTextProps = {
   title: string;
   icon?: React.ReactNode;
   isCopy?: boolean;
+  isNoAddress?: boolean;
 } & FlexProps;
 
 export const NFTText = ({
@@ -13,6 +15,7 @@ export const NFTText = ({
   title,
   icon,
   isCopy,
+  isNoAddress,
   ...rest
 }: NFTTextProps) => (
   <Flex
@@ -33,7 +36,11 @@ export const NFTText = ({
       </Text>
       <Flex gap={2}>
         {isCopy ? (
-          <AddressWithCopyBtn value={value} isDetailDialog />
+          <AddressWithCopyBtn
+            value={value}
+            isDetailDialog
+            isNoAddress={isNoAddress}
+          />
         ) : (
           <Text fontSize="sm" color="white" wordBreak="break-word">
             {value}

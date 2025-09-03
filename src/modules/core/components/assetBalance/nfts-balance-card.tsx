@@ -1,19 +1,36 @@
-import { Box, Text, VStack } from '@chakra-ui/react';
+import { Box, Button, Text, VStack } from '@chakra-ui/react';
+import { AssetInfo } from 'fuels';
 import { useState } from 'react';
 
 import { Card } from '@/components';
 import { AddressUtils, NFT } from '@/modules/core/utils';
+import { useTransactionDetails } from '@/modules/transactions/hooks/context/useTransactionDetails';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useGetNftsInfos } from '../../hooks';
 import { NftDialog } from './nft-dialog';
 import { NftImage } from './nft-image';
 
-const NftBalanceCard = ({ nft }: { nft: NFT }) => {
+const NftBalanceCard = ({
+  nft,
+  assets,
+}: {
+  nft: NFT;
+  assets: {
+    metadata: AssetInfo | null;
+    id: string;
+    fees: [string, string];
+    __typename: 'Asset';
+  }[];
+}) => {
+  const [stepTosell, setStepTosell] = useState(false);
+
   const {
     nftList,
     screenSizes: { isLitteSmall },
   } = useWorkspaceContext();
+
+  const { isPendingSigner } = useTransactionDetails();
 
   const { nftsInfo, nftImageUrl } = useGetNftsInfos({
     assetId: nft.assetId,
@@ -22,7 +39,23 @@ const NftBalanceCard = ({ nft }: { nft: NFT }) => {
 
   const [dialogOpen, setDialogOpen] = useState(false);
 
+  const handleList = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    setStepTosell(true);
+    setDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+    setStepTosell(false);
+  };
+
   if (!nftsInfo) return null;
+
+  const nftName =
+    nftsInfo.symbol || nftsInfo.metadata.name || nftsInfo.name
+      ? `${nftsInfo.symbol || ''} ${nftsInfo.metadata.name || nftsInfo.name || ''}`.trim()
+      : AddressUtils.format(nftsInfo.assetId, 10);
 
   return (
     <>
@@ -61,18 +94,29 @@ const NftBalanceCard = ({ nft }: { nft: NFT }) => {
             maxW="full"
             isTruncated
           >
-            {nftsInfo.symbol || nftsInfo.name || nftsInfo.metadata.name
-              ? `${nftsInfo.symbol || ''} ${nftsInfo.name || nftsInfo.metadata.name || ''}`.trim()
-              : AddressUtils.format(nftsInfo.assetId, 10)}
+            {nftName}
           </Text>
+          <Button
+            variant="primary"
+            size="sm"
+            w="100%"
+            borderRadius="4px"
+            h="24px"
+            onClick={handleList}
+            isDisabled={isPendingSigner}
+          >
+            List
+          </Button>
         </VStack>
       </Card>
 
       <NftDialog
         isOpen={dialogOpen}
-        onClose={() => setDialogOpen(false)}
+        onClose={handleCloseDialog}
         nftsInfo={nftsInfo}
         imageSrc={nftImageUrl ?? undefined}
+        setStepToSell={stepTosell}
+        assets={assets}
       />
     </>
   );
