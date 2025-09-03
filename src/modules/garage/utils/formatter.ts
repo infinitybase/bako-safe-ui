@@ -1,3 +1,9 @@
+import {
+  GARAGE_CONTRACT_ID_MAINNET,
+  GARAGE_CONTRACT_ID_TESTNET,
+} from './constants';
+import { Networks } from './resolver-network';
+
 export function objectToGetParams(object: {
   [key: string]: string | number | undefined | null;
 }) {
@@ -27,3 +33,9 @@ export const twitterLink = (
     hashtags: hashtags.length > 0 ? hashtags.join(',') : undefined,
     related: related.length > 0 ? related.join(',') : undefined,
   })}`;
+
+export const getGarageContractId = (chainId: number) => {
+  return chainId === Networks.MAINNET
+    ? GARAGE_CONTRACT_ID_MAINNET
+    : GARAGE_CONTRACT_ID_TESTNET;
+};

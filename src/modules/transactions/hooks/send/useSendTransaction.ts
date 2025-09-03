@@ -7,6 +7,7 @@ import { useBakoSafeTransactionSend, WitnessStatus } from '@/modules/core';
 import { ITransaction } from '@/modules/core/hooks/bakosafe/utils/types';
 import { GarageService } from '@/modules/garage/services/garage';
 import { GarageQueryKeys } from '@/modules/garage/utils/constants';
+import { getGarageContractId } from '@/modules/garage/utils/formatter';
 import { useNotificationsStore } from '@/modules/notifications/store';
 import { TransactionService } from '@/modules/transactions/services';
 
@@ -29,11 +30,15 @@ const useSendTransaction = ({ onTransactionSuccess }: IUseSendTransaction) => {
     onSuccess: (transaction: ITransaction) => {
       onTransactionSuccess();
       validateResult(transaction);
-      const isContractCall = transaction.summary?.operations.some(
-        (op) => op.name === OperationName.contractCall,
+
+      const garageContractId = getGarageContractId(userInfos.network.chainId);
+      const isGarageContractCall = transaction.summary?.operations.some(
+        (op) =>
+          op.name === OperationName.contractCall &&
+          op.to?.address === garageContractId,
       );
 
-      if (isContractCall) {
+      if (isGarageContractCall) {
         GarageService.saveReceipt({
           txId: `0x${transaction.hash}`,
           chainId: userInfos.network.chainId,
