@@ -58,7 +58,15 @@ const TransactionCardMobile = (props: TransactionCardMobileProps) => {
       }),
     [transaction, account],
   );
-  const { isSigned, isCompleted, isDeclined, isReproved, isCanceled } = status;
+  const {
+    isSigned,
+    isCompleted,
+    isDeclined,
+    isReproved,
+    isCanceled,
+    isPendingProvider,
+    isError,
+  } = status;
 
   const missingSignature =
     !isSigned && !isCompleted && !isDeclined && !isReproved && !isCanceled;
@@ -69,7 +77,9 @@ const TransactionCardMobile = (props: TransactionCardMobileProps) => {
     !isCompleted &&
     !isReproved &&
     transaction &&
-    !isCanceled;
+    !isCanceled &&
+    !isPendingProvider &&
+    !isError;
 
   const { isOpen, onOpen, onClose } = useDetailsDialog();
 
@@ -139,7 +149,9 @@ const TransactionCardMobile = (props: TransactionCardMobileProps) => {
                 showAmount={!showAmountInformations || isDeposit || isMint}
               />
 
-              <TransactionCard.ActionsMobile awaitingAnswer={awaitingAnswer} />
+              <TransactionCard.ActionsMobile
+                isPossibleToSign={awaitingAnswer}
+              />
             </HStack>
           </VStack>
         </HStack>

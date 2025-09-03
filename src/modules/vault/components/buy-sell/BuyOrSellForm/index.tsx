@@ -139,9 +139,19 @@ export const BuyOrSellForm = ({
 
   const isOnRamp = useMemo(() => type === 'BUY', [type]);
 
+  const beforeSubmit = (data: ICreateWidgetPayload) => {
+    const payload: ICreateWidgetPayload = {
+      ...data,
+      destinationAmount: quotes?.quotes
+        ?.find((quote) => quote.serviceProvider === data.serviceProvider)
+        ?.destinationAmount?.toString(),
+    };
+    onSubmit(payload);
+  };
+
   return (
     <FormProvider {...methods}>
-      <Stack as="form" onSubmit={handleSubmit(onSubmit)} spacing={2}>
+      <Stack as="form" onSubmit={handleSubmit(beforeSubmit)} spacing={2}>
         <SourceCurrency
           maxAmount={limits?.maximumAmount}
           minAmount={limits?.minimumAmount}
