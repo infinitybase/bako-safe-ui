@@ -1,4 +1,5 @@
 import {
+  Box,
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
@@ -14,8 +15,9 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { RiMenuUnfoldLine } from 'react-icons/ri';
+import { useInView } from 'react-intersection-observer';
 import { useNavigate } from 'react-router-dom';
 
 import { CustomSkeleton, HomeIcon } from '@/components';
@@ -33,9 +35,11 @@ const VaultBalancePage = () => {
   const navigate = useNavigate();
   const menuDrawer = useDisclosure();
   const { vault, assets } = useVaultInfosContext();
-  const { orders } = useListInfiniteOrdersByAddress({
-    sellerAddress: vault?.data?.predicateAddress,
-  });
+  const { orders, hasNextPage, isFetchingNextPage, fetchNextPage } =
+    useListInfiniteOrdersByAddress({
+      sellerAddress: vault?.data?.predicateAddress,
+    });
+  const { ref, inView } = useInView();
 
   const {
     authDetails: { userInfos },
@@ -53,6 +57,12 @@ const VaultBalancePage = () => {
     () => orders?.pages?.flatMap((page) => page.data) ?? [],
     [orders],
   );
+
+  useEffect(() => {
+    if (inView && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   if (!vault) return null;
 
@@ -235,6 +245,8 @@ const VaultBalancePage = () => {
                     ))}
                   </Grid>
                 )}
+
+                <Box ref={ref} h="1px" w="full" />
 
                 {assets.nfts?.length === 0 && userOrders.length === 0 && (
                   <NFTsEmptyState />
