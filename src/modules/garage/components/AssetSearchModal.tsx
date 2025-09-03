@@ -12,7 +12,6 @@ import {
   ListItem,
   Stack,
   Text,
-  useToken,
 } from '@chakra-ui/react';
 import { useCallback, useMemo, useState } from 'react';
 
@@ -22,7 +21,7 @@ import UnknownAsset from '/tokens/unknown.svg';
 import { useAssetsBalance } from '../hooks/useAssetsBalance';
 import { useListAssets } from '../hooks/useListAssets';
 import type { Asset } from '../types';
-import { FUEL_ASSET_ID } from '../utils/constants';
+import { FUEL_ASSET_ID, FUEL_ASSET_ID_TESTNNET } from '../utils/constants';
 import { removeRightZeros } from '../utils/remove-right-zeros';
 
 interface AssetSearchModalProps {
@@ -40,7 +39,6 @@ export const AssetSearchModal = ({
 }: AssetSearchModalProps) => {
   const [search, setSearch] = useState('');
   const { assets, isLoading: isAssetsLoading } = useListAssets();
-  const [garage] = useToken('colors', ['garage.100']);
 
   const { data, isLoading: isBalancesLoading } = useAssetsBalance({ assets });
 
@@ -152,14 +150,15 @@ export const AssetSearchModal = ({
                     borderRadius="full"
                   />
                   <Text>{asset.metadata?.name}</Text>
-                  {asset.id === FUEL_ASSET_ID && (
+                  {(asset.id === FUEL_ASSET_ID ||
+                    asset.id === FUEL_ASSET_ID_TESTNNET) && (
                     <Badge
                       variant="outline"
                       shadow="none"
-                      borderColor={`${garage}26`}
+                      borderColor="brand.500"
                       py={1}
                       px={2}
-                      color="garage.100"
+                      color="brand.500"
                       title={`${userWithHandle ? asset.fees?.[1] : asset.fees?.[0]} Fee`}
                     >
                       {getFeePercentage(asset)}% Fee
