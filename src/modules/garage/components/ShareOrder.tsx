@@ -58,7 +58,7 @@ export default function ShareOrder({
       <MenuButton>
         <AiOutlineShareAlt />
       </MenuButton>
-      <MenuList bg="input.600" rounded="lg" borderColor="grey.600">
+      <MenuList bg="input.600" rounded="lg" borderColor="grey.600" zIndex={30}>
         <MenuItem
           bg="input.600"
           cursor="pointer"
