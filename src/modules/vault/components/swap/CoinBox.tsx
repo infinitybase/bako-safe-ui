@@ -34,6 +34,7 @@ interface CoinBoxProps {
   onChangeAmount: (value: string) => void;
   isLoadingAmount?: boolean;
   isLoadingAssets?: boolean;
+  isLoadingPreview: boolean;
 }
 
 export const CoinBox = memo(
@@ -45,6 +46,7 @@ export const CoinBox = memo(
     onChangeAmount,
     isLoadingAmount,
     isLoadingAssets,
+    isLoadingPreview,
   }: CoinBoxProps) => {
     const assetsModal = useDisclosure();
     const mirrorRef = useRef<HTMLDivElement>(null);
@@ -85,7 +87,10 @@ export const CoinBox = memo(
       return amount.mul(rate).formatUnits(coin.units * 2);
     }, [coin.amount, currentRate, coin.units]);
 
-    const value = useMemo(() => coin.amount || '', [coin.amount]);
+    const value = useMemo(
+      () => (coin.amount === '0' ? '' : coin.amount || ''),
+      [coin.amount],
+    );
 
     useLayoutEffect(() => {
       if (!mirrorRef.current) return;
@@ -156,11 +161,13 @@ export const CoinBox = memo(
               px={0}
               placeholder="0"
               _placeholder={{ opacity: 0.5 }}
-              isDisabled={isLoadingAmount}
+              _focus={{ _placeholder: { color: 'grey.50' } }}
+              isDisabled={isLoadingAmount || isLoadingPreview}
               fontSize="3xl"
               decimalScale={coin.units}
               w={inputWidth ? `${inputWidth}px` : undefined}
-              minW="40px"
+              minW={'10px'}
+              maxW="450px"
               onChange={onChangeAmount}
             />
             <Box

@@ -258,6 +258,8 @@ export const RootSwap = memo(
 
     const handleChangeAssetAmount = useCallback(
       (mode: SwapMode, value: string) => {
+        const normalizedValue = value === '0' ? '0.' : value;
+
         setSwapState((prevState) => {
           const stateMode = mode === 'sell' ? 'from' : 'to';
           const updatedAsset = prevState[stateMode];
@@ -265,14 +267,14 @@ export const RootSwap = memo(
           const otherAsset = prevState[otherKey];
           handleSwapModeChange(mode);
           if (mode === 'sell') {
-            handleCheckBalance(value, updatedAsset.assetId);
+            handleCheckBalance(normalizedValue, updatedAsset.assetId);
           }
           return {
             ...prevState,
             status: 'idle',
             [stateMode]: {
               ...updatedAsset,
-              amount: value,
+              amount: normalizedValue,
             },
             [otherKey]: {
               ...otherAsset,
@@ -283,7 +285,6 @@ export const RootSwap = memo(
       },
       [handleSwapModeChange, handleCheckBalance],
     );
-
     const handleSwapAssets = useCallback(() => {
       if (swapState.to.amount && swapState.to.amount !== '0') {
         handleCheckBalance(swapState.to.amount, swapState.to.assetId);
@@ -461,6 +462,7 @@ export const RootSwap = memo(
           onChangeAmount={(value) => handleChangeAssetAmount('sell', value)}
           isLoadingAmount={isLoading && swapMode === 'buy'}
           isLoadingAssets={isLoadingAssets}
+          isLoadingPreview={isLoadingPreview}
         />
 
         <SwapDivider onSwap={handleSwapAssets} />
@@ -473,6 +475,7 @@ export const RootSwap = memo(
           onChangeAmount={(value) => handleChangeAssetAmount('buy', value)}
           isLoadingAmount={isLoading && swapMode === 'sell'}
           isLoadingAssets={isLoadingAssets}
+          isLoadingPreview={isLoadingPreview}
         />
 
         {trade.error && <SwapError error={trade.error} />}

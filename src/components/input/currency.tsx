@@ -1,5 +1,12 @@
 import { Input, InputProps } from '@chakra-ui/react';
-import { forwardRef, memo, useCallback, useMemo } from 'react';
+import {
+  forwardRef,
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+} from 'react';
 import MaskedInput from 'react-text-mask';
 import { createNumberMask } from 'text-mask-addons';
 
@@ -151,6 +158,21 @@ const Field = forwardRef<HTMLInputElement, CurrencyFieldProps>(
       }
     };
 
+    const inputRef = useRef<HTMLInputElement | null>(null);
+
+    useEffect(() => {
+      if (normalizedValue === '0.') {
+        requestAnimationFrame(() => {
+          if (inputRef.current) {
+            inputRef.current.setSelectionRange(
+              normalizedValue.length,
+              normalizedValue.length,
+            );
+          }
+        });
+      }
+    }, [normalizedValue]);
+
     return (
       <MaskedInput
         key={config.decimalScale}
@@ -166,6 +188,7 @@ const Field = forwardRef<HTMLInputElement, CurrencyFieldProps>(
             onBeforeInput={handleBefoteInput}
             ref={(input) => {
               maskedInputRef(input as HTMLInputElement);
+              inputRef.current = input as HTMLInputElement;
               if (typeof ref === 'function') {
                 ref(input);
               } else if (ref) {
