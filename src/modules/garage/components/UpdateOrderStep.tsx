@@ -103,7 +103,7 @@ export const UpdateOrderStep = ({
         />
       </Flex>
 
-      <Box flex={1} mt={6} maxH="calc(100vh - 300px)" pr={3}>
+      <Box flex={1} mt={6} pr={3}>
         <Box mb={3}>
           <Heading fontSize="md">Description</Heading>
           <Text mt={3} fontSize="sm" color="section.500">

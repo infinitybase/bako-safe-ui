@@ -30,7 +30,7 @@ export const ConfirmationDialog = ({
       onClose={onClose}
       closeOnOverlayClick={false}
       size={{
-        base: 'full',
+        base: 'md',
         sm: 'lg',
       }}
     >

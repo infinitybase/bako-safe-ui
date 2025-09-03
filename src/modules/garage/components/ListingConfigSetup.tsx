@@ -138,6 +138,7 @@ export const ListingConfigSetup = ({
 
   return (
     <Grid
+      w="full"
       as="form"
       id="nft-sale-form"
       onSubmit={handleSubmit((data) =>

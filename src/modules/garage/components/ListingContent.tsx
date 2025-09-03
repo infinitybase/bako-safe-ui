@@ -55,7 +55,12 @@ export default function ListingContent({
   };
 
   return (
-    <Stack w="full" spacing={4} h="480px" maxW="480px">
+    <Stack
+      w="full"
+      spacing={4}
+      maxH={{ md: '490px' }}
+      maxW={{ base: 'full', sm: '480px' }}
+    >
       <Flex w="full" alignItems="center" justifyContent="space-between">
         <Heading fontSize="xl">{name}</Heading>
         <CloseButton
