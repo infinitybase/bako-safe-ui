@@ -166,7 +166,7 @@ export const CoinBox = memo(
               fontSize="3xl"
               decimalScale={coin.units}
               w={inputWidth ? `${inputWidth}px` : undefined}
-              minW={'10px'}
+              minW={'20px'}
               maxW="450px"
               onChange={onChangeAmount}
             />
