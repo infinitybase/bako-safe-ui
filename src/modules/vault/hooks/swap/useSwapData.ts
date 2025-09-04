@@ -81,13 +81,15 @@ export const useSwapData = ({
   vault,
   pools,
   bakoAmm,
+  networkUrl,
 }: {
   amm?: MiraAmm;
   bakoAmm?: BakoAMM;
   vault?: Vault;
   pools: PoolId[];
+  networkUrl?: string;
 }) => {
-  const provider = useProvider();
+  const provider = useProvider(networkUrl);
   const { errorToast } = useContactToast();
 
   const {

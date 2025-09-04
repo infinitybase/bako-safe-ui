@@ -112,7 +112,7 @@ export const RootSwap = memo(
       swapData,
       getSwapPreview,
       isPending: isLoadingPreview,
-    } = useSwapData({ amm, vault, pools, bakoAmm });
+    } = useSwapData({ amm, vault, pools, bakoAmm, networkUrl });
 
     const { sendTx, isPending: isSendingTx } = useSwap();
 
