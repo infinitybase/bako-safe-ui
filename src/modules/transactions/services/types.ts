@@ -34,6 +34,16 @@ export enum TransactionHistoryType {
   SEND = 'SEND',
 }
 
+export enum TransactionTypeWithRamp {
+  ON_RAMP_DEPOSIT = 'ON_RAMP_DEPOSIT',
+  OFF_RAMP_WITHDRAW = 'OFF_RAMP_WITHDRAW',
+}
+
+export const ON_OFF_RAMP_TRANSACTION_TYPES: string[] = [
+  TransactionTypeWithRamp.ON_RAMP_DEPOSIT,
+  TransactionTypeWithRamp.OFF_RAMP_WITHDRAW,
+];
+
 export type ITransactionStatusFilter = TransactionStatus[] | string[] | string;
 
 export enum TypeUser {
@@ -146,12 +156,14 @@ export type OperationWithAssets = Operation & {
   assetsSent?: { assetId?: string; amount?: string }[];
 };
 
+type TTransactionType = TransactionType | TransactionTypeWithRamp;
+
 export type TransactionWithVault = ITransaction & {
   predicate?: PredicateAndWorkspace;
-  type: TransactionType;
+  type: TTransactionType;
 };
 export interface ITransactionWithType extends ITransaction {
-  type: TransactionType;
+  type: TTransactionType;
 }
 
 export interface ITransactionsGroupedByMonth {

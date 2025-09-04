@@ -13,6 +13,7 @@ import {
   Workspace,
 } from '@/modules/core';
 import { ITransaction } from '@/modules/core/hooks/bakosafe/utils/types';
+import { FIAT_CURRENCIES_ASSET_MAP } from '@/modules/core/utils/fiat-currencies';
 import { request } from '@/utils/request';
 
 export interface IWitnesses {
@@ -172,6 +173,10 @@ export class WorkspaceService {
   }
 
   static async getTokenFuelApi(assetId: string, chainId: number) {
+    const fiatCurrency = FIAT_CURRENCIES_ASSET_MAP[assetId];
+    if (fiatCurrency) {
+      return fiatCurrency;
+    }
     const _chainId: { [key: number]: string } = {
       [9889]: 'https://mainnet-explorer.fuel.network',
       [0]: 'https://explorer-indexer-testnet.fuel.network',

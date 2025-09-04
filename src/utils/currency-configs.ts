@@ -1,4 +1,5 @@
 import { CryptoCode, Currency, CurrencyConfig } from '@/components';
+import { valueWithoutCommas } from '@/modules/vault/utils';
 
 import { formatMaxDecimals } from './format-decimals';
 
@@ -70,4 +71,20 @@ export const formatCurrencyValue = (
   }
 
   return `${integer}${config.decimalSeparator}${decimal}`;
+};
+
+export const moneyFormat = (
+  value: string | number,
+  locale = 'en-US',
+  options?: Intl.NumberFormatOptions,
+) => {
+  const formattedValue = parseFloat(
+    valueWithoutCommas(value.toString(), locale),
+  );
+  return Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency: locale === 'pt-BR' ? 'BRL' : 'USD',
+    minimumFractionDigits: 2,
+    ...options,
+  }).format(formattedValue);
 };
