@@ -200,13 +200,44 @@ export const RootSwap = memo(
       [swapMode],
     );
 
+    const validateOtherInputBalance = useCallback(
+      (assetId: string): boolean => {
+        const amount =
+          assetId === swapState.to.assetId
+            ? swapState.from.amount
+            : swapState.to.amount;
+
+        const assetIndex =
+          swapState.to.assetId === assetId ? swapState.from.assetId : assetId;
+
+        const asset = assets.find((asset) => asset.assetId === assetIndex);
+
+        if (!asset || !asset.balance || !amount) return false;
+
+        const coinAmount = formatMaxDecimals(amount, asset.units);
+        const assetAmount = bn.parseUnits(coinAmount, asset.units);
+
+        return asset.balance.gte(assetAmount);
+      },
+      [assets, swapState],
+    );
+
     const handleCheckBalance = useCallback(
       (amount: string, assetId: string) => {
         const asset = assets.find((asset) => asset.assetId === assetId);
+
         if (asset && asset.balance) {
           const coinAmount = formatMaxDecimals(amount, asset.units);
           const assetAmount = bn.parseUnits(coinAmount, asset.units);
+
           const isBalanceSufficient = asset.balance.gte(assetAmount);
+
+          const alreadyInsufficient =
+            isBalanceSufficient &&
+            swapButtonTitle === SwapButtonTitle.INSUFFICIENT_BALANCE &&
+            !validateOtherInputBalance(assetId);
+
+          if (alreadyInsufficient) return;
 
           if (isBalanceSufficient) {
             return setSwapButtonTitle(SwapButtonTitle.PREVIEW);
@@ -216,7 +247,7 @@ export const RootSwap = memo(
           setSwapButtonTitle(SwapButtonTitle.INSUFFICIENT_BALANCE);
         }
       },
-      [assets, setSwapButtonTitle, swapButtonTitle],
+      [assets, setSwapButtonTitle, validateOtherInputBalance, swapButtonTitle],
     );
 
     const handleFromAssetSelect = useCallback(
@@ -235,7 +266,6 @@ export const RootSwap = memo(
             status: 'idle',
           }));
         }
-        setSwapButtonTitle(SwapButtonTitle.PREVIEW);
         handleCheckBalance(swapState.from.amount || '0', assetId);
       },
       [assets, swapState, handleSwapModeChange, handleCheckBalance],
@@ -257,10 +287,8 @@ export const RootSwap = memo(
             status: 'idle',
           }));
         }
-        setSwapButtonTitle(SwapButtonTitle.PREVIEW);
-        handleCheckBalance(swapState.to.amount || '0', assetId);
       },
-      [assets, swapState, handleSwapModeChange, handleCheckBalance],
+      [assets, swapState, handleSwapModeChange],
     );
 
     const handleChangeAssetAmount = useCallback(
@@ -306,6 +334,7 @@ export const RootSwap = memo(
     const handleUpdateAmountOut = useCallback(
       (amount: string) => {
         if (swapState.to.amount === amount) return;
+
         setSwapState((prevState) => ({
           ...prevState,
           to: {
@@ -313,16 +342,18 @@ export const RootSwap = memo(
             amount,
           },
         }));
+
+        if (swapMode === 'sell') {
+          handleCheckBalance(amount, swapState.to.assetId);
+        }
       },
-      [swapState.to.amount],
+      [handleCheckBalance, swapMode, swapState.to.amount, swapState.to.assetId],
     );
 
     const handleUpdateAmountIn = useCallback(
       (amount: string) => {
         if (swapState.from.amount === amount) return;
-        if (swapMode === 'buy') {
-          handleCheckBalance(amount, swapState.from.assetId);
-        }
+
         setSwapState((prevState) => ({
           ...prevState,
           from: {
@@ -330,6 +361,10 @@ export const RootSwap = memo(
             amount,
           },
         }));
+
+        if (swapMode === 'buy') {
+          handleCheckBalance(amount, swapState.from.assetId);
+        }
       },
       [
         swapState.from.amount,
