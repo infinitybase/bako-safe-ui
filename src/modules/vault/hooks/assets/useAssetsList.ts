@@ -1,10 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
 import { Vault } from 'bakosafe';
-import { bn } from 'fuels';
 import { useMemo } from 'react';
 
 import { useMappedAssetStore } from '@/modules/assets-tokens/hooks/useAssetMap';
-import { useTokensUSDAmountRequest } from '@/modules/home';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useBaseAssetList } from './useBaseAssetList';
 
@@ -20,7 +19,12 @@ export const useAssetsList = ({ vault }: { vault?: Vault }) => {
   });
   const { getAssetByAssetId } = useMappedAssetStore();
   const { assets, isLoading: isLoadingAssets } = useBaseAssetList();
-  const { data, isLoading: isLoadingUSDTokens } = useTokensUSDAmountRequest();
+  const {
+    vaultDetails: {
+      assets: { nfts },
+    },
+    tokensUSD,
+  } = useWorkspaceContext();
 
   const noVerifiedAssets = useMemo(
     () =>
@@ -31,11 +35,13 @@ export const useAssetsList = ({ vault }: { vault?: Vault }) => {
         )
         .map((asset) => {
           const assetInfo = getAssetByAssetId(asset.assetId);
+          const usdData = tokensUSD.data[asset.assetId.toLowerCase()];
+
           return {
             ...assetInfo,
             assetId: asset.assetId,
             balance: asset.amount.isZero() ? null : asset.amount,
-            rate: data?.[asset.assetId]?.usdAmount,
+            rate: usdData?.usdAmount ?? null,
             name: assetInfo?.name || 'Unknown',
             slug: assetInfo?.slug || assetInfo?.symbol || 'unknown',
             symbol: assetInfo?.symbol || 'UNK',
@@ -43,8 +49,8 @@ export const useAssetsList = ({ vault }: { vault?: Vault }) => {
             icon: assetInfo?.icon || '/tokens/unknown.svg',
           };
         })
-        .filter((a) => !a.isNFT) || [],
-    [assets, balances, getAssetByAssetId, data],
+        .filter((a) => !nfts?.some((nft) => nft.assetId === a.assetId)) || [],
+    [assets, balances, getAssetByAssetId, nfts, tokensUSD.data],
   );
 
   const assetsWithBalance = useMemo(
@@ -54,51 +60,50 @@ export const useAssetsList = ({ vault }: { vault?: Vault }) => {
           const currentBalance = balances?.find(
             (balance) => balance.assetId === asset.assetId,
           )?.amount;
+
+          const usdData = tokensUSD.data[asset.assetId.toLowerCase()];
           return {
             ...asset,
             balance: currentBalance?.isZero() ? null : currentBalance,
-            rate: data?.[asset.assetId]?.usdAmount,
+            rate: usdData?.usdAmount ?? null,
           };
         })
         .concat(...noVerifiedAssets)
         .sort((a, b) => {
-          if (a.balance && a.rate && b.balance && b.rate) {
-            const aUsd = bn(a.balance)
-              .mul(bn(Math.floor(a.rate * 10)))
-              .div(bn(10).pow(a.units));
-            const bUsd = bn(b.balance)
-              .mul(bn(Math.floor(b.rate * 10)))
-              .div(bn(10).pow(b.units));
+          const aAmount =
+            a.balance
+              ?.format({
+                units: a.units,
+              })
+              .replace(/,/g, '') ?? 0;
 
-            console.log('>>>> names', a.name, b.name);
-            console.log(
-              '>>> BALANCES',
-              a.balance.toString(),
-              b.balance.toString(),
-            );
-            console.log('>>> RATES', a.rate, b.rate);
-            console.log('usds', aUsd.toString(), bUsd.toString());
+          const bAmount =
+            b.balance
+              ?.format({
+                units: b.units,
+              })
+              .replace(/,/g, '') ?? 0;
 
-            return aUsd.gt(bUsd) ? -1 : 1;
+          const aUsd = Number(aAmount) * (a.rate ?? 0);
+          const bUsd = Number(bAmount) * (b.rate ?? 0);
+
+          if (aUsd !== bUsd) {
+            return bUsd - aUsd;
           }
-
-          if (a.balance && a.rate) return -1;
-          if (b.balance && b.rate) return 1;
 
           if (a.balance && b.balance) {
-            return bn(a.balance).gt(bn(b.balance)) ? -1 : 1;
+            if (!a.balance.eq(b.balance)) {
+              return b.balance.gt(a.balance) ? 1 : -1;
+            }
           }
-
-          if (a.balance) return -1;
-          if (b.balance) return 1;
 
           return 0;
         }),
-    [assets, balances, data, noVerifiedAssets],
+    [assets, balances, tokensUSD.data, noVerifiedAssets],
   );
 
   return {
     assets: assetsWithBalance,
-    isLoading: isLoadingAssets || isLoadingBalances || isLoadingUSDTokens,
+    isLoading: isLoadingAssets || isLoadingBalances,
   };
 };
