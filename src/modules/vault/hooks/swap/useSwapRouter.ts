@@ -1,0 +1,135 @@
+import { useQuery } from '@tanstack/react-query';
+import { bn } from 'fuels';
+import { useMemo } from 'react';
+
+import { Asset } from '@/modules/core';
+
+import { SwapMode } from '../../components/swap/Root';
+import { getSwapQuotesBatch } from '../../utils';
+import { useMiraReadonly } from './useMiraReadonly';
+import { useRoutablePools } from './useRoutablePools';
+
+export enum State {
+  NO_ROUTES = 'No routes available',
+  LOADING = 'Loading',
+  VALID = 'Valid routes found',
+  ERROR = 'Error fetching routes',
+  IDLE = 'Idle',
+}
+
+export const useSwapRouter = (
+  mode: SwapMode,
+  amount = bn(0),
+  assetIn: Asset,
+  assetOut: Asset,
+  networkUrl: string,
+) => {
+  const amm = useMiraReadonly(networkUrl);
+
+  const shouldFetch = useMemo(
+    () => !!assetIn && !!assetOut && amount.gt(0),
+    [assetIn, assetOut, amount],
+  );
+
+  const {
+    routes,
+    isLoading: routesLoading,
+    isFetching,
+  } = useRoutablePools(assetIn, assetOut, amm, shouldFetch);
+  const pools = routes
+    .map((r) =>
+      r.pools.map(
+        (pool) =>
+          `${pool.poolId[0].bits}-${pool.poolId[1].bits}-${pool.poolId[2]}`,
+      ),
+    )
+    .join('-');
+
+  const {
+    data: quotes = [],
+    isLoading: quotesLoading,
+    isFetched,
+    isFetching: isFetchingQuotes,
+  } = useQuery({
+    queryKey: [
+      'swap-quotes',
+      mode,
+      amount.toString(),
+      assetIn?.assetId,
+      assetOut?.assetId,
+      pools,
+    ],
+
+    queryFn: () =>
+      getSwapQuotesBatch(
+        amount,
+        mode,
+        routes,
+        amm!,
+        assetIn?.assetId,
+        assetOut?.assetId,
+      ),
+    enabled: shouldFetch && routes.length > 0 && !!amm && !routesLoading,
+    initialData: shouldFetch ? undefined : [],
+    refetchOnWindowFocus: true,
+    refetchOnReconnect: true,
+  });
+
+  return useMemo(() => {
+    if (routesLoading || quotesLoading || isFetching || isFetchingQuotes) {
+      return {
+        trade: {
+          state: State.LOADING,
+          bestRoute: null,
+        },
+      };
+    }
+
+    if (!isFetched && !shouldFetch) {
+      return {
+        trade: {
+          state: State.IDLE,
+          bestRoute: null,
+        },
+      };
+    }
+
+    if (!quotes.length || !routes.length) {
+      return {
+        trade: {
+          state: State.NO_ROUTES,
+          bestRoute: null,
+          error: 'No valid routes found for the given assets.',
+        },
+      };
+    }
+
+    const best = quotes.reduce((best, current) => {
+      if (mode === 'sell') {
+        return current.amountOut.gt(best.amountOut) ? current : best;
+      }
+      return current.amountIn.lt(best.amountIn) ? current : best;
+    }, quotes[0]);
+
+    return {
+      trade: {
+        state: State.VALID,
+        bestRoute: best.route,
+        assetIn: best.assetIdIn,
+        assetOut: best.assetIdOut,
+        amountIn: best.amountIn,
+        amountOut: best.amountOut,
+      },
+    };
+  }, [
+    quotes,
+    routesLoading,
+    quotesLoading,
+    mode,
+    isFetched,
+    isFetching,
+    isFetchingQuotes,
+    shouldFetch,
+    routes.length,
+  ]);
+};
