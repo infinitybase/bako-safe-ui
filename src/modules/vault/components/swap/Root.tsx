@@ -200,28 +200,6 @@ export const RootSwap = memo(
       [swapMode],
     );
 
-    const validateOtherInputBalance = useCallback(
-      (assetId: string): boolean => {
-        const amount =
-          assetId === swapState.to.assetId
-            ? swapState.from.amount
-            : swapState.to.amount;
-
-        const assetIndex =
-          swapState.to.assetId === assetId ? swapState.from.assetId : assetId;
-
-        const asset = assets.find((asset) => asset.assetId === assetIndex);
-
-        if (!asset || !asset.balance || !amount) return false;
-
-        const coinAmount = formatMaxDecimals(amount, asset.units);
-        const assetAmount = bn.parseUnits(coinAmount, asset.units);
-
-        return asset.balance.gte(assetAmount);
-      },
-      [assets, swapState],
-    );
-
     const handleCheckBalance = useCallback(
       (amount: string, assetId: string) => {
         const asset = assets.find((asset) => asset.assetId === assetId);
@@ -232,13 +210,6 @@ export const RootSwap = memo(
 
           const isBalanceSufficient = asset.balance.gte(assetAmount);
 
-          const alreadyInsufficient =
-            isBalanceSufficient &&
-            swapButtonTitle === SwapButtonTitle.INSUFFICIENT_BALANCE &&
-            !validateOtherInputBalance(assetId);
-
-          if (alreadyInsufficient) return;
-
           if (isBalanceSufficient) {
             return setSwapButtonTitle(SwapButtonTitle.PREVIEW);
           }
@@ -247,7 +218,7 @@ export const RootSwap = memo(
           setSwapButtonTitle(SwapButtonTitle.INSUFFICIENT_BALANCE);
         }
       },
-      [assets, setSwapButtonTitle, validateOtherInputBalance, swapButtonTitle],
+      [assets, setSwapButtonTitle, swapButtonTitle],
     );
 
     const handleFromAssetSelect = useCallback(
@@ -342,12 +313,8 @@ export const RootSwap = memo(
             amount,
           },
         }));
-
-        if (swapMode === 'sell') {
-          handleCheckBalance(amount, swapState.to.assetId);
-        }
       },
-      [handleCheckBalance, swapMode, swapState.to.amount, swapState.to.assetId],
+      [swapState.to.amount],
     );
 
     const handleUpdateAmountIn = useCallback(
