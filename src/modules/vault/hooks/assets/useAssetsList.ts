@@ -37,6 +37,15 @@ export const useAssetsList = ({ vault }: { vault?: Vault }) => {
           const assetInfo = getAssetByAssetId(asset.assetId);
           const usdData = tokensUSD.data[asset.assetId.toLowerCase()];
 
+          console.log('>>> tokens USD', tokensUSD.data);
+
+          if (
+            asset.assetId ===
+            '0x336b7c06352a4b736ff6f688ba6885788b3df16e136e95310ade51aa32dc6f05'
+          ) {
+            console.log('>>> usdc assettData', usdData);
+          }
+
           return {
             ...assetInfo,
             assetId: asset.assetId,
@@ -91,10 +100,11 @@ export const useAssetsList = ({ vault }: { vault?: Vault }) => {
             return bUsd - aUsd;
           }
 
-          if (a.balance && b.balance) {
-            if (!a.balance.eq(b.balance)) {
-              return b.balance.gt(a.balance) ? 1 : -1;
-            }
+          const aNum = Number(aAmount);
+          const bNum = Number(bAmount);
+
+          if (aNum !== bNum) {
+            return bNum - aNum;
           }
 
           return 0;
