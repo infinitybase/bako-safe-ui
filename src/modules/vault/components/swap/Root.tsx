@@ -447,8 +447,8 @@ export const RootSwap = memo(
       }
     }, [
       availableEthBalance,
-      swapState.to.amount,
-      swapState.from.amount,
+      swapState.to,
+      swapState.from,
       isInsufficientBalance,
     ]);
 
