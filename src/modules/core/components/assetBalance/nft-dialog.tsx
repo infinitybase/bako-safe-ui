@@ -34,8 +34,6 @@ export const NftDialog = ({
     ([key]) => !['attributes'].includes(key),
   );
 
-  console.log('>>> NFTS INFOS', nftsInfo);
-
   return (
     <Dialog.Modal
       size="5xl"
