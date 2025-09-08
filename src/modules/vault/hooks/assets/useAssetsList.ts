@@ -2,7 +2,6 @@ import { useQuery } from '@tanstack/react-query';
 import { Vault } from 'bakosafe';
 import { useMemo } from 'react';
 
-import { useMappedAssetStore } from '@/modules/assets-tokens/hooks/useAssetMap';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useBaseAssetList } from './useBaseAssetList';
@@ -17,44 +16,8 @@ export const useAssetsList = ({ vault }: { vault?: Vault }) => {
       return (await vault.getBalances()).balances;
     },
   });
-  const { getAssetByAssetId } = useMappedAssetStore();
   const { assets, isLoading: isLoadingAssets } = useBaseAssetList();
-  const {
-    vaultDetails: {
-      assets: { nfts },
-    },
-    tokensUSD,
-  } = useWorkspaceContext();
-
-  const noVerifiedAssets = useMemo(
-    () =>
-      balances
-        ?.filter(
-          (balance) =>
-            !assets.find((asset) => asset.assetId === balance.assetId),
-        )
-        .map((asset) => {
-          const assetInfo = getAssetByAssetId(asset.assetId);
-          const usdData = tokensUSD.data[asset.assetId.toLowerCase()];
-
-          return {
-            ...assetInfo,
-            assetId: asset.assetId,
-            balance: asset.amount.isZero() ? null : asset.amount,
-            rate: usdData?.usdAmount ?? null,
-            name: assetInfo?.name || 'Unknown',
-            slug: assetInfo?.slug || assetInfo?.symbol || 'unknown',
-            symbol: assetInfo?.symbol || 'UNK',
-            units: assetInfo?.units || 9,
-            icon:
-              assetInfo?.icon ||
-              assetInfo?.metadata?.URI ||
-              '/tokens/unknown.svg',
-          };
-        })
-        .filter((a) => !nfts?.some((nft) => nft.assetId === a.assetId)) || [],
-    [assets, balances, getAssetByAssetId, nfts, tokensUSD.data],
-  );
+  const { tokensUSD } = useWorkspaceContext();
 
   const assetsWithBalance = useMemo(
     () =>
@@ -71,7 +34,6 @@ export const useAssetsList = ({ vault }: { vault?: Vault }) => {
             rate: usdData?.usdAmount ?? null,
           };
         })
-        .concat(...noVerifiedAssets)
         .sort((a, b) => {
           const aAmount =
             a.balance
@@ -103,7 +65,7 @@ export const useAssetsList = ({ vault }: { vault?: Vault }) => {
 
           return 0;
         }),
-    [assets, balances, tokensUSD.data, noVerifiedAssets],
+    [assets, balances, tokensUSD.data],
   );
 
   return {
