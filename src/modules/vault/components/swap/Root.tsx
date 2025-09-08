@@ -155,7 +155,6 @@ export const RootSwap = memo(
         })
           .then(() => {
             successToast({ description: 'Swap transaction sent successfully' });
-            setSwapButtonTitle(SwapButtonTitle.PREVIEW);
             handleResetAmounts();
           })
           .catch((e) => {
@@ -459,7 +458,14 @@ export const RootSwap = memo(
       ) {
         setSwapButtonTitle(SwapButtonTitle.PENDING_TRANSACTION);
       }
-    }, [isPendingSigner, swapButtonTitle]);
+      if (
+        !isPendingSigner &&
+        swapButtonTitle === SwapButtonTitle.PENDING_TRANSACTION &&
+        swapMode === 'idle'
+      ) {
+        setSwapButtonTitle(SwapButtonTitle.PREVIEW);
+      }
+    }, [isPendingSigner, swapButtonTitle, swapMode]);
 
     return (
       <Stack spacing={1}>
