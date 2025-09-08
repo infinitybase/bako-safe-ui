@@ -40,6 +40,7 @@ import { openFaucet } from '../utils';
 import { AssetsDetails } from './AssetsDetails';
 import BalanceHelperDrawer from './BalanceHelperDrawer';
 import BalanceHelperDialog from './dialog/BalanceHelper';
+import { TooltipPendingTx } from './TooltipPendingTx';
 
 export interface CardDetailsProps {
   vault: UseVaultDetailsReturn['vault'];
@@ -131,6 +132,16 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
     const as = hasPermission(reqPerm);
     return as;
   }, [vault.data?.id, balanceFormatted]);
+
+  const ToolTipComponent = useMemo(() => {
+    if (props.isPendingSigner) {
+      return <TooltipPendingTx />;
+    }
+    if (isEthBalanceLowerThanReservedAmount) {
+      return <TooltipNotEnoughBalance />;
+    }
+    return null;
+  }, [props.isPendingSigner, isEthBalanceLowerThanReservedAmount]);
 
   if (!vault) return null;
 
@@ -327,19 +338,15 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                     alignItems={{ base: 'flex-end', sm: 'flex-start' }}
                   >
                     <Tooltip
-                      label={
-                        isEthBalanceLowerThanReservedAmount &&
-                        !props.isPendingSigner ? (
-                          <TooltipNotEnoughBalance />
-                        ) : null
-                      }
+                      label={ToolTipComponent}
                       hasArrow
                       placement="top"
                       bg="dark.700"
                       color="white"
                     >
                       <Box
-                        display="inline-block"
+                        display="flex"
+                        justifyContent="end"
                         cursor="not-allowed"
                         w={'100%'}
                       >
@@ -391,7 +398,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                           />
                         </Text>
                       )}
-                    {props.isPendingSigner ? (
+                    {props.isPendingSigner && isMobile ? (
                       <Text
                         variant="description"
                         textAlign={{ base: 'end', sm: 'left' }}

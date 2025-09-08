@@ -1,3 +1,40 @@
+## [1.9.0](https://github.com/infinitybase/bako-safe-ui/compare/v1.8.0...v1.9.0) (2025-08-28)
+
+### Features
+
+* **banner:** add new banner garage in sidebar vault ([7bf5b82](https://github.com/infinitybase/bako-safe-ui/commit/7bf5b822a7ea393fc1f2f1d1c16cdfc9c68d10d4))
+* **banner:** add new banner garage in sidebar vault ([e8b35fa](https://github.com/infinitybase/bako-safe-ui/commit/e8b35fa9a906caa157fe1a7a04b0cd95d795f3cf))
+* **CardLiquidStake:** integrate TooltipPendingTx for pending transactions ([1955cdf](https://github.com/infinitybase/bako-safe-ui/commit/1955cdfb2fe8d823ac7f93e7710553a3fac4bcca))
+* **collection bkt:** create collection for assets type bakteria, fix showing address cutted ([517e8b8](https://github.com/infinitybase/bako-safe-ui/commit/517e8b8292e4509204b2cc8e48ec1a0e32e90afa))
+* **link garage:** add enviroment preview ([7913541](https://github.com/infinitybase/bako-safe-ui/commit/7913541e20b5c4a39b5d9d0426f759cbb1cd7faa))
+* **link garage:** add enviroment preview ([4857e84](https://github.com/infinitybase/bako-safe-ui/commit/4857e84167fe90d3ac5bb5d569b8568272e6e4fc))
+* **link garage:** create function to get link garage by enviroment ([e0fefca](https://github.com/infinitybase/bako-safe-ui/commit/e0fefca2af59c0094021e32f7594f54cfbc34de2))
+* **link garage:** create function to get link garage by enviroment ([29eb973](https://github.com/infinitybase/bako-safe-ui/commit/29eb973e11157a484f09a7184adcea539cb6470a))
+* **NFTsEmptyState:** add component to display empty state for NFTs ([5f07c71](https://github.com/infinitybase/bako-safe-ui/commit/5f07c713cbc79d8a976e8ba657c26dc0b772a77b))
+* **tooltip:** create tooltip to show msg notEnoughBalance, keep old msg in mobile ([32b67a0](https://github.com/infinitybase/bako-safe-ui/commit/32b67a05d42069f542a54834aea2185d4b20efe1))
+* **Tooltip:** integrate TooltipPendingTx for pending transactions in CardDetails and VaultBox components ([f5cc629](https://github.com/infinitybase/bako-safe-ui/commit/f5cc62939ef3a7898e52e7dbf35151f46813f2c9))
+* **TooltipPendingTx:** add tooltip component for pending transactions ([337d311](https://github.com/infinitybase/bako-safe-ui/commit/337d311f1f503c636467b90e723bd574300d2aec))
+* **VaultBalancePage:** integrate NFTsEmptyState component and fix vault breadcrub link ([64cc610](https://github.com/infinitybase/bako-safe-ui/commit/64cc61087d301c5faede163beaed94a17e1bb396))
+
+### Bug Fixes
+
+* **AssetBoxInfo:** adjust VStack width and enable text wrapping for asset info ([1c5bcdc](https://github.com/infinitybase/bako-safe-ui/commit/1c5bcdc605ba944495a9949a3b171c0962779db0))
+* **AssetsIcon:**  use optional chaining for safer access ([7687d44](https://github.com/infinitybase/bako-safe-ui/commit/7687d4412dea8acb88d868e2e88ed7078191a87b))
+* **AssetsIcon:** remove duplicate attribute ([1d54940](https://github.com/infinitybase/bako-safe-ui/commit/1d549407494bf16964e5d5c3b133ed91d011afd5))
+* **black screen:** change tooltip way used, not necessary pass a asset ([b9f30a2](https://github.com/infinitybase/bako-safe-ui/commit/b9f30a29590246b90d5f806d6fcfa0776d6be697))
+* **CardDetails:** change Box display to flex and align content to the end ([98c8a2b](https://github.com/infinitybase/bako-safe-ui/commit/98c8a2b868abc5df7a1af2e651915f4497988968))
+* center nft image skeleton spinner and add a default metadata to nfts ([6b32eeb](https://github.com/infinitybase/bako-safe-ui/commit/6b32eeb6daf0419009b8a29a7af6abc035de3746))
+* **dialog contact:** change place render dialog contact ([6dd17f9](https://github.com/infinitybase/bako-safe-ui/commit/6dd17f98636d613fee45afffb983b76d1a43bc07))
+* **dialog render:** change to use a new dialog add address book by every item ([0e5449f](https://github.com/infinitybase/bako-safe-ui/commit/0e5449f8afd3fe0192bd6ffe2c1de830409e8bd5))
+* enchance nft dialog ([1c756e8](https://github.com/infinitybase/bako-safe-ui/commit/1c756e8b5eddde28569f49dc0f0dda10aaf5c94d))
+* improve assets icon loading in transaction card ([0439890](https://github.com/infinitybase/bako-safe-ui/commit/0439890c9e8d1a36c93c1224ffe5574e66783827))
+* improve image fallback logic in transaction card amount ([820bfcc](https://github.com/infinitybase/bako-safe-ui/commit/820bfcc7958b8e32e8413604131146c2908c3cf1))
+* **NFTsEmptyState:** correct typo in 'No items found' text ([8560dda](https://github.com/infinitybase/bako-safe-ui/commit/8560dda44b52b2c9c5eca859d48b0e618a3ce782))
+* **ordenation assets:** remove comma before calc ([d27c1ef](https://github.com/infinitybase/bako-safe-ui/commit/d27c1ef2a2911b88cdaa7c00147e09badb8a19e5))
+* show nft image on vault breakdown and align member badge ([39d692a](https://github.com/infinitybase/bako-safe-ui/commit/39d692a62f314fbecd64812b3b428760b703fbb9))
+* **TransactionStepper:** update text component styles and address formatting ([19277e1](https://github.com/infinitybase/bako-safe-ui/commit/19277e1b68a0ab26c0cebcc89159fba032338669))
+* **vault:** correct feature labels for CLI settings ([c592e0b](https://github.com/infinitybase/bako-safe-ui/commit/c592e0b18f0c3e0f783a2cad9a8d2b6b17ca9b28))
+
 ## [1.8.0](https://github.com/infinitybase/bako-safe-ui/compare/v1.7.0...v1.8.0) (2025-08-19)
 
 ### Features

@@ -10,9 +10,11 @@ import {
   TransactionsVaultPage,
   VaultBalancePage,
   VaultBridgePage,
+  VaultBuySellPage,
   VaultDetailsPage,
   VaultSettingsPage,
 } from './pages';
+import { VaultBuySellSessionPage } from './pages/buy-sell/session';
 import { VaultInfosProvider } from './VaultInfosProvider';
 
 const VaultRoutes = () => {
@@ -73,6 +75,22 @@ const VaultRoutes = () => {
             element={
               <AuthRoute>
                 <VaultBridgePage />
+              </AuthRoute>
+            }
+          />
+          <Route
+            path={Pages.vaultBuySell()}
+            element={
+              <AuthRoute>
+                <VaultBuySellPage />
+              </AuthRoute>
+            }
+          />
+          <Route
+            path={Pages.vaultBuySellSession()}
+            element={
+              <AuthRoute>
+                <VaultBuySellSessionPage />
               </AuthRoute>
             }
           />
