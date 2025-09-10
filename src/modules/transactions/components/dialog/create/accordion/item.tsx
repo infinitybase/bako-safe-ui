@@ -5,7 +5,7 @@ import {
   useAccordionItemState,
   VStack,
 } from '@chakra-ui/react';
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
@@ -27,6 +27,11 @@ const AccordionItem = ({
   } = useWorkspaceContext();
   const { isOpen } = useAccordionItemState();
 
+  const flexDirection = useMemo(
+    () => (isExtraSmall ? 'column' : 'row'),
+    [isExtraSmall],
+  );
+
   return (
     <>
       <Box p={0} alignItems="center" justifyContent="space-between">
@@ -34,7 +39,7 @@ const AccordionItem = ({
           <Box
             w="full"
             display="flex"
-            flexDir={isExtraSmall ? 'column' : 'row'}
+            flexDir={flexDirection}
             alignItems="start"
             rowGap={6}
           >

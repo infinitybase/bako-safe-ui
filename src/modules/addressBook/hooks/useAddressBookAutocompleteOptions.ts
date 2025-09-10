@@ -94,7 +94,7 @@ const useAddressBookAutocompleteOptions = ({
         ? [...options, option]
         : [...options, { value: fieldValue, label: fieldValue }];
     },
-    [handleCustomOption],
+    [handleCustomOption, setResolverAndHandle],
   );
 
   const currentIndex = fields?.length <= 1 ? 0 : fields.length - 1;

@@ -12,7 +12,8 @@ import {
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
+import { useWatch } from 'react-hook-form';
 
 import { Dialog, DialogModalProps } from '@/components';
 import { TooltipIcon } from '@/components/icons/tooltip';
@@ -31,6 +32,29 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
       ECreateTransactionMethods.CREATE_AND_SIGN,
     );
   const { assets } = useVaultInfosContext();
+
+  const createTransactionParams = useMemo(
+    () => ({
+      assets: assets.assets,
+      nfts: assets.nfts,
+      hasAssetBalance: assets.hasAssetBalance,
+      getCoinAmount: assets.getCoinAmount,
+      onClose: props.onClose,
+      isOpen: props.isOpen,
+      createTransactionAndSign:
+        createTxMethod === ECreateTransactionMethods.CREATE_AND_SIGN,
+    }),
+    [
+      assets.assets,
+      assets.nfts,
+      assets.hasAssetBalance,
+      assets.getCoinAmount,
+      props.onClose,
+      props.isOpen,
+      createTxMethod,
+    ],
+  );
+
   const {
     form,
     nicks,
@@ -42,38 +66,52 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
     isLoadingVault,
     getBalanceAvailable,
     handleClose,
-  } = useCreateTransaction({
-    assets: assets.assets,
-    nfts: assets.nfts,
-    hasAssetBalance: assets.hasAssetBalance,
-    getCoinAmount: assets.getCoinAmount,
-    onClose: props.onClose,
-    isOpen: props.isOpen,
-    createTransactionAndSign:
-      createTxMethod === ECreateTransactionMethods.CREATE_AND_SIGN,
-  });
+  } = useCreateTransaction(createTransactionParams);
 
   const { isOpen, onToggle, onClose } = useDisclosure();
   const {
     screenSizes: { isMobile },
   } = useWorkspaceContext();
 
-  const currentAmount = form.watch(`transactions.${accordion.index}.amount`);
-  const isCurrentAmountZero = Number(currentAmount) === 0;
-  const isTransactionFeeLoading =
-    isLoadingVault ||
-    resolveTransactionCosts.isPending ||
-    !transactionFee ||
-    Number(transactionFee) === 0;
+  const currentAmount = useWatch({
+    control: form.control,
+    name: `transactions.${accordion.index}.amount`,
+  });
 
-  const isDisabled =
-    !form.formState.isValid ||
-    form.formState.isSubmitting ||
-    isCurrentAmountZero ||
-    isTransactionFeeLoading ||
-    !!resolveTransactionCosts.error;
+  const isCurrentAmountZero = useMemo(
+    () => Number(currentAmount) === 0,
+    [currentAmount],
+  );
 
-  const isLoading = transactionRequest.isPending || form.formState.isSubmitting;
+  const isTransactionFeeLoading = useMemo(
+    () =>
+      isLoadingVault ||
+      resolveTransactionCosts.isPending ||
+      !transactionFee ||
+      Number(transactionFee) === 0,
+    [isLoadingVault, resolveTransactionCosts.isPending, transactionFee],
+  );
+
+  const isDisabled = useMemo(
+    () =>
+      !form.formState.isValid ||
+      form.formState.isSubmitting ||
+      isCurrentAmountZero ||
+      isTransactionFeeLoading ||
+      !!resolveTransactionCosts.error,
+    [
+      form.formState.isValid,
+      form.formState.isSubmitting,
+      isCurrentAmountZero,
+      isTransactionFeeLoading,
+      resolveTransactionCosts.error,
+    ],
+  );
+
+  const isLoading = useMemo(
+    () => transactionRequest.isPending || form.formState.isSubmitting,
+    [transactionRequest.isPending, form.formState.isSubmitting],
+  );
 
   return (
     <Dialog.Modal

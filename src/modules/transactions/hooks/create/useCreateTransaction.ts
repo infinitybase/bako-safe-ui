@@ -101,13 +101,22 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     },
   });
 
-  const transactionFee = resolveTransactionCosts.data?.fee.format();
+  const transactionFee = useMemo(
+    () => resolveTransactionCosts.data?.fee.format(),
+    [resolveTransactionCosts.data],
+  );
+
+  const assets = useMemo(
+    () =>
+      props?.assets?.map((asset) => ({
+        amount: asset.amount!,
+        assetId: asset.assetId,
+      })),
+    [props?.assets],
+  );
 
   const { transactionsFields, form } = useCreateTransactionForm({
-    assets: props?.assets?.map((asset) => ({
-      amount: asset.amount!,
-      assetId: asset.assetId,
-    })),
+    assets,
     nfts: props?.nfts,
     assetsMap,
     getCoinAmount: (asset) => props?.getCoinAmount(asset) ?? bn(''),
