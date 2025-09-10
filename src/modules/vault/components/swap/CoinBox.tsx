@@ -14,7 +14,7 @@ import { memo, useEffect, useMemo, useRef } from 'react';
 
 import { CurrencyField } from '@/components';
 import { Asset, SelectedCurrency } from '@/modules';
-import { CRYPTO_CONFIG, formatCurrencyValue } from '@/utils';
+import { CRYPTO_CONFIG, formatCurrencyValue, formatMaxDecimals } from '@/utils';
 import { moneyFormat } from '@/utils/money-format';
 
 import { AssetsModal } from './AssetsModal';
@@ -56,10 +56,18 @@ export const CoinBox = memo(
       [assets, coin.assetId],
     );
 
+    const balance = useMemo(() => {
+      const asset = assets.find((a) => a.assetId === coin.assetId);
+      if (!asset?.balance) return '0';
+
+      return asset.balance.formatUnits(asset.units);
+    }, [assets, coin.assetId]);
+
     const amountInUSD = useMemo(() => {
       if (!coin.amount || !currentRate) return '0';
       const amount = bn.parseUnits(coin.amount, coin.units);
-      const rate = bn.parseUnits(currentRate.toString(), coin.units);
+      const currentRateFormatted = formatMaxDecimals(currentRate.toString(), 9);
+      const rate = bn.parseUnits(currentRateFormatted, coin.units);
       return amount.mul(rate).formatUnits(coin.units * 2);
     }, [coin.amount, currentRate, coin.units]);
 
@@ -80,6 +88,8 @@ export const CoinBox = memo(
               imageUrl={coin.icon}
               onClick={assetsModal.onOpen}
               isLoadingCurrencies={isLoadingAssets}
+              balance={balance}
+              symbol={coin.slug}
             />
           </Box>
 
