@@ -2,11 +2,9 @@ import { useQuery } from '@tanstack/react-query';
 import { Vault } from 'bakosafe';
 import { useMemo } from 'react';
 
-import { useTokensUSDAmountRequest } from '@/modules/home';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useBaseAssetList } from './useBaseAssetList';
-
-export const assetsListQueryKey = ['vaultAssetsBalances'];
 
 export const useAssetsList = ({ vault }: { vault?: Vault }) => {
   const { data: balances, isLoading: isLoadingBalances } = useQuery({
@@ -19,42 +17,59 @@ export const useAssetsList = ({ vault }: { vault?: Vault }) => {
     },
   });
   const { assets, isLoading: isLoadingAssets } = useBaseAssetList();
-  const { data, isLoading: isLoadingUSDTokens } = useTokensUSDAmountRequest();
+  const { tokensUSD } = useWorkspaceContext();
 
   const assetsWithBalance = useMemo(
     () =>
       assets
-        .map((asset) => ({
-          ...asset,
-          balance:
-            balances?.find((balance) => balance.assetId === asset.assetId)
-              ?.amount || null,
-          rate: data?.[asset.assetId]?.usdAmount,
-        }))
+        .map((asset) => {
+          const currentBalance = balances?.find(
+            (balance) => balance.assetId === asset.assetId,
+          )?.amount;
+
+          const usdData = tokensUSD.data[asset.assetId.toLowerCase()];
+          return {
+            ...asset,
+            balance: currentBalance?.isZero() ? null : currentBalance,
+            rate: usdData?.usdAmount ?? null,
+          };
+        })
         .sort((a, b) => {
-          if (a.balance && a?.rate && b.balance && b?.rate) {
-            const aUsd = a.balance.mul(Math.floor(a.rate * 1e9)).div(1e9);
-            const bUsd = b.balance.mul(Math.floor(b.rate * 1e9)).div(1e9);
-            return aUsd.gt(bUsd) ? -1 : 1;
+          const aAmount =
+            a.balance
+              ?.format({
+                units: a.units,
+              })
+              .replace(/,/g, '') ?? 0;
+
+          const bAmount =
+            b.balance
+              ?.format({
+                units: b.units,
+              })
+              .replace(/,/g, '') ?? 0;
+
+          const aUsd = Number(aAmount) * (a.rate ?? 0);
+          const bUsd = Number(bAmount) * (b.rate ?? 0);
+
+          if (aUsd !== bUsd) {
+            return bUsd - aUsd;
           }
 
-          if (a.balance && a?.rate) return -1;
-          if (b.balance && b.rate) return 1;
+          const aNum = Number(aAmount);
+          const bNum = Number(bAmount);
 
-          if (a.balance && b.balance) {
-            return a.balance.gt(b.balance) ? -1 : 1;
+          if (aNum !== bNum) {
+            return bNum - aNum;
           }
-
-          if (a.balance) return -1;
-          if (b.balance) return 1;
 
           return 0;
         }),
-    [assets, balances, data],
+    [assets, balances, tokensUSD.data],
   );
 
   return {
     assets: assetsWithBalance,
-    isLoading: isLoadingAssets || isLoadingBalances || isLoadingUSDTokens,
+    isLoading: isLoadingAssets || isLoadingBalances,
   };
 };

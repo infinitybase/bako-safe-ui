@@ -19,6 +19,6 @@ export const useAvailableEthBalance = (
       const amountWithMinEthValue = amountParsed.add(MinEthValueBN);
       return ethBalance.gte(amountWithMinEthValue);
     }
-    return true;
+    return ethBalance.gte(MinEthValueBN);
   }, [assetIn, ethBalance]);
 };

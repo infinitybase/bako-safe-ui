@@ -20,6 +20,7 @@ export enum SwapButtonTitle {
   PREVIEW = 'Preview',
   INSUFFICIENT_BALANCE = 'Insufficient Balance',
   INSUFFICIENT_ETH_BALANCE = 'Bridge more ETH to pay for Gas',
+  PENDING_TRANSACTION = 'Pending Transaction',
   SWAP = 'Swap',
 }
 
@@ -30,5 +31,5 @@ export const miraData = {
 };
 
 export const EthDecimals = 9 as const;
-export const MinEthValue = 0.0001 as const;
+export const MinEthValue = 0.00015 as const;
 export const MinEthValueBN = MinEthValue * 10 ** EthDecimals;

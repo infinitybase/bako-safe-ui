@@ -1,5 +1,12 @@
 import { Input, InputProps } from '@chakra-ui/react';
-import { forwardRef, memo, useCallback, useMemo } from 'react';
+import {
+  forwardRef,
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+} from 'react';
 import MaskedInput from 'react-text-mask';
 import { createNumberMask } from 'text-mask-addons';
 
@@ -26,6 +33,7 @@ type CommonFieldProps = Omit<InputProps, 'value' | 'onChange'> & {
   isInvalid?: boolean;
   disabled?: boolean;
   type: CurrencyFieldType;
+  decimalScale?: number;
 };
 
 export type CurrencyFieldProps = (FiatFieldProps | CryptoFieldProps) &
@@ -41,16 +49,24 @@ export interface CurrencyConfig {
 }
 
 const Field = forwardRef<HTMLInputElement, CurrencyFieldProps>(
-  ({ value = '', currency, type, onChange, isInvalid, ...props }, ref) => {
+  (
+    { value = '', currency, type, onChange, isInvalid, decimalScale, ...props },
+    ref,
+  ) => {
     const isCrypto = useMemo(() => type === 'crypto', [type]);
     const resolvedCurrency = type === 'crypto' ? null : currency;
 
     const config = useMemo(() => {
-      if (!resolvedCurrency) {
-        return CRYPTO_CONFIG;
-      }
-      return CURRENCY_CONFIGS[resolvedCurrency];
-    }, [resolvedCurrency]);
+      const baseConfig = resolvedCurrency
+        ? CURRENCY_CONFIGS[resolvedCurrency]
+        : CRYPTO_CONFIG;
+
+      return {
+        ...baseConfig,
+        decimalScale:
+          decimalScale != null ? Number(decimalScale) : baseConfig.decimalScale,
+      };
+    }, [resolvedCurrency, decimalScale]);
 
     const regexCache = useMemo(() => {
       const decimalEscaped = config.decimalSeparator.replace(
@@ -74,21 +90,19 @@ const Field = forwardRef<HTMLInputElement, CurrencyFieldProps>(
       return isCrypto ? regexCache.crypto : regexCache.currency;
     }, [regexCache, isCrypto]);
 
-    const currencyMask = useMemo(
-      () =>
-        createNumberMask({
-          prefix: '',
-          suffix: '',
-          includeThousandsSeparator: !!config.thousandsSeparator,
-          thousandsSeparatorSymbol: config.thousandsSeparator,
-          allowDecimal: true,
-          decimalSymbol: config.decimalSeparator,
-          decimalLimit: config.decimalScale,
-          allowNegative: false,
-          allowLeadingZeroes: false,
-        }),
-      [config],
-    );
+    const currencyMask = useMemo(() => {
+      return createNumberMask({
+        prefix: '',
+        suffix: '',
+        includeThousandsSeparator: !!config.thousandsSeparator,
+        thousandsSeparatorSymbol: config.thousandsSeparator,
+        allowDecimal: true,
+        decimalSymbol: config.decimalSeparator,
+        decimalLimit: config.decimalScale,
+        allowNegative: false,
+        allowLeadingZeroes: false,
+      });
+    }, [config]);
 
     const normalizedValue = useMemo(() => {
       if (!value) return '';
@@ -121,8 +135,47 @@ const Field = forwardRef<HTMLInputElement, CurrencyFieldProps>(
       [onChange],
     );
 
+    const handleBefoteInput = (e: React.InputEvent<HTMLInputElement>) => {
+      if (e.data === ',') {
+        e.preventDefault();
+
+        const input = e.currentTarget;
+        const start = input.selectionStart ?? 0;
+        const end = input.selectionEnd ?? 0;
+
+        const newValue =
+          input.value.slice(0, start) + '.' + input.value.slice(end);
+
+        input.value = newValue;
+
+        const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+          HTMLInputElement.prototype,
+          'value',
+        )?.set;
+        nativeInputValueSetter?.call(input, newValue);
+
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+      }
+    };
+
+    const inputRef = useRef<HTMLInputElement | null>(null);
+
+    useEffect(() => {
+      if (normalizedValue === '0.') {
+        requestAnimationFrame(() => {
+          if (inputRef.current) {
+            inputRef.current.setSelectionRange(
+              normalizedValue.length,
+              normalizedValue.length,
+            );
+          }
+        });
+      }
+    }, [normalizedValue]);
+
     return (
       <MaskedInput
+        key={config.decimalScale}
         mask={currencyMask}
         value={normalizedValue}
         onChange={handleInputChange}
@@ -132,8 +185,10 @@ const Field = forwardRef<HTMLInputElement, CurrencyFieldProps>(
           <Input
             {...props}
             {...maskedInputProps}
+            onBeforeInput={handleBefoteInput}
             ref={(input) => {
               maskedInputRef(input as HTMLInputElement);
+              inputRef.current = input as HTMLInputElement;
               if (typeof ref === 'function') {
                 ref(input);
               } else if (ref) {

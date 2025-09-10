@@ -12,6 +12,8 @@ import {
   NativeAssetId,
   useContactToast,
 } from '@/modules';
+import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
+import { formatMaxDecimals } from '@/utils';
 
 import {
   useBakoAmm,
@@ -77,6 +79,7 @@ export const RootSwap = memo(
     const { successToast, errorToast } = useContactToast();
     const amm = useMira({ vault });
     const isTestnet = getChainId() === 0;
+    const { isPendingSigner } = useTransactionsContext();
 
     const [swapState, setSwapState] = useState<SwapState>({
       from: DEFAULT_ETH_ASSET,
@@ -96,13 +99,20 @@ export const RootSwap = memo(
       [trade],
     );
 
-    const isLoading = trade.state === State.LOADING;
+    const isLoading = useMemo(
+      () => trade.state === State.LOADING,
+      [trade.state],
+    );
+    const isNoRoute = useMemo(
+      () => trade.state === State.NO_ROUTES,
+      [trade.state],
+    );
 
     const {
       swapData,
       getSwapPreview,
       isPending: isLoadingPreview,
-    } = useSwapData({ amm, vault, pools, bakoAmm });
+    } = useSwapData({ amm, vault, pools, bakoAmm, networkUrl });
 
     const { sendTx, isPending: isSendingTx } = useSwap();
 
@@ -145,7 +155,6 @@ export const RootSwap = memo(
         })
           .then(() => {
             successToast({ description: 'Swap transaction sent successfully' });
-            setSwapButtonTitle(SwapButtonTitle.PREVIEW);
             handleResetAmounts();
           })
           .catch((e) => {
@@ -193,8 +202,11 @@ export const RootSwap = memo(
     const handleCheckBalance = useCallback(
       (amount: string, assetId: string) => {
         const asset = assets.find((asset) => asset.assetId === assetId);
+
         if (asset && asset.balance) {
-          const assetAmount = bn.parseUnits(amount, asset.units);
+          const coinAmount = formatMaxDecimals(amount, asset.units);
+          const assetAmount = bn.parseUnits(coinAmount, asset.units);
+
           const isBalanceSufficient = asset.balance.gte(assetAmount);
 
           if (isBalanceSufficient) {
@@ -224,7 +236,6 @@ export const RootSwap = memo(
             status: 'idle',
           }));
         }
-        setSwapButtonTitle(SwapButtonTitle.PREVIEW);
         handleCheckBalance(swapState.from.amount || '0', assetId);
       },
       [assets, swapState, handleSwapModeChange, handleCheckBalance],
@@ -246,14 +257,14 @@ export const RootSwap = memo(
             status: 'idle',
           }));
         }
-        setSwapButtonTitle(SwapButtonTitle.PREVIEW);
-        handleCheckBalance(swapState.to.amount || '0', assetId);
       },
-      [assets, swapState, handleSwapModeChange, handleCheckBalance],
+      [assets, swapState, handleSwapModeChange],
     );
 
     const handleChangeAssetAmount = useCallback(
       (mode: SwapMode, value: string) => {
+        const normalizedValue = value === '0' ? '0.' : value;
+
         setSwapState((prevState) => {
           const stateMode = mode === 'sell' ? 'from' : 'to';
           const updatedAsset = prevState[stateMode];
@@ -261,14 +272,14 @@ export const RootSwap = memo(
           const otherAsset = prevState[otherKey];
           handleSwapModeChange(mode);
           if (mode === 'sell') {
-            handleCheckBalance(value, updatedAsset.assetId);
+            handleCheckBalance(normalizedValue, updatedAsset.assetId);
           }
           return {
             ...prevState,
             status: 'idle',
             [stateMode]: {
               ...updatedAsset,
-              amount: value,
+              amount: normalizedValue,
             },
             [otherKey]: {
               ...otherAsset,
@@ -279,7 +290,6 @@ export const RootSwap = memo(
       },
       [handleSwapModeChange, handleCheckBalance],
     );
-
     const handleSwapAssets = useCallback(() => {
       if (swapState.to.amount && swapState.to.amount !== '0') {
         handleCheckBalance(swapState.to.amount, swapState.to.assetId);
@@ -294,6 +304,7 @@ export const RootSwap = memo(
     const handleUpdateAmountOut = useCallback(
       (amount: string) => {
         if (swapState.to.amount === amount) return;
+
         setSwapState((prevState) => ({
           ...prevState,
           to: {
@@ -308,9 +319,7 @@ export const RootSwap = memo(
     const handleUpdateAmountIn = useCallback(
       (amount: string) => {
         if (swapState.from.amount === amount) return;
-        if (swapMode === 'buy') {
-          handleCheckBalance(amount, swapState.from.assetId);
-        }
+
         setSwapState((prevState) => ({
           ...prevState,
           from: {
@@ -318,6 +327,10 @@ export const RootSwap = memo(
             amount,
           },
         }));
+
+        if (swapMode === 'buy') {
+          handleCheckBalance(amount, swapState.from.assetId);
+        }
       },
       [
         swapState.from.amount,
@@ -408,6 +421,11 @@ export const RootSwap = memo(
       [swapState.from.assetId, swapState.to.assetId],
     );
 
+    const isPendingTransaction = useMemo(
+      () => swapButtonTitle === SwapButtonTitle.PENDING_TRANSACTION,
+      [swapButtonTitle],
+    );
+
     const isInsufficientBalance = useMemo(
       () => swapButtonTitle === SwapButtonTitle.INSUFFICIENT_BALANCE,
       [swapButtonTitle],
@@ -428,10 +446,26 @@ export const RootSwap = memo(
       }
     }, [
       availableEthBalance,
-      swapState.to.amount,
-      swapState.from.amount,
+      swapState.to,
+      swapState.from,
       isInsufficientBalance,
     ]);
+
+    useEffect(() => {
+      if (
+        isPendingSigner &&
+        swapButtonTitle !== SwapButtonTitle.PENDING_TRANSACTION
+      ) {
+        setSwapButtonTitle(SwapButtonTitle.PENDING_TRANSACTION);
+      }
+      if (
+        !isPendingSigner &&
+        swapButtonTitle === SwapButtonTitle.PENDING_TRANSACTION &&
+        swapMode === 'idle'
+      ) {
+        setSwapButtonTitle(SwapButtonTitle.PREVIEW);
+      }
+    }, [isPendingSigner, swapButtonTitle, swapMode]);
 
     return (
       <Stack spacing={1}>
@@ -443,6 +477,7 @@ export const RootSwap = memo(
           onChangeAmount={(value) => handleChangeAssetAmount('sell', value)}
           isLoadingAmount={isLoading && swapMode === 'buy'}
           isLoadingAssets={isLoadingAssets}
+          isLoadingPreview={isLoadingPreview}
         />
 
         <SwapDivider onSwap={handleSwapAssets} />
@@ -455,6 +490,7 @@ export const RootSwap = memo(
           onChangeAmount={(value) => handleChangeAssetAmount('buy', value)}
           isLoadingAmount={isLoading && swapMode === 'sell'}
           isLoadingAssets={isLoadingAssets}
+          isLoadingPreview={isLoadingPreview}
         />
 
         {trade.error && <SwapError error={trade.error} />}
@@ -477,7 +513,9 @@ export const RootSwap = memo(
               isEmptyAmounts ||
               isEmptyAssets ||
               isInsufficientBalance ||
-              isInsufficientETHBalance
+              isPendingTransaction ||
+              isInsufficientETHBalance ||
+              isNoRoute
             }
             isLoading={isLoadingPreview || isSendingTx || isLoading}
             onClick={handleSubmitSwap}

@@ -43,6 +43,10 @@ export const useSwap = () => {
         TransactionStatus.AWAIT_REQUIREMENTS,
       ]);
 
+      await refetchTransactionsList();
+      await refetchHomeTransactionsList();
+      await refetchVaultTransactionsList();
+
       await confirmTransaction(transaction.id, undefined, transaction).finally(
         () => {
           queryClient.invalidateQueries({
@@ -52,11 +56,6 @@ export const useSwap = () => {
       );
 
       return vaultTx;
-    },
-    onSuccess: () => {
-      refetchTransactionsList();
-      refetchHomeTransactionsList();
-      refetchVaultTransactionsList();
     },
   });
 

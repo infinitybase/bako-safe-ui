@@ -82,7 +82,13 @@ export const useMappedAssetStore = create(
                   } else {
                     assets[assetId] = {
                       ...asset,
-                      metadata: {},
+                      metadata: {
+                        ...asset.metadata,
+                        ...(asset.description && {
+                          description: asset.description,
+                        }),
+                        ...(asset.name && { name: asset.name }),
+                      },
                     };
                   }
                 } else {

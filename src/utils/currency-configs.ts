@@ -1,5 +1,7 @@
 import { CryptoCode, Currency, CurrencyConfig } from '@/components';
 
+import { formatMaxDecimals } from './format-decimals';
+
 export const CRYPTO_CODES: CryptoCode[] = ['ETH_FUEL'];
 
 export const CRYPTO_CONFIG: CurrencyConfig = {
@@ -37,7 +39,11 @@ export const formatCurrencyValue = (
   config: CurrencyConfig,
   includeLeadingZero: boolean,
 ) => {
-  const [integerPart, decimalPart] = value.split(config.decimalSeparator);
+  const valuFormatted = formatMaxDecimals(value, config.decimalScale);
+
+  const [integerPart, decimalPart] = valuFormatted.split(
+    config.decimalSeparator,
+  );
   let decimal = decimalPart || '';
   let integer = integerPart || '';
 
