@@ -1,3 +1,4 @@
+import { ReadonlyMiraAmm } from 'mira-dex-ts';
 import { useMemo } from 'react';
 
 import { Asset } from '@/modules/core';
@@ -9,13 +10,14 @@ import { usePoolsWithReserve } from './usePoolsWithReserve';
 export const useRoutablePools = (
   assetIn: Asset,
   assetOut: Asset,
+  amm: ReadonlyMiraAmm | undefined,
   shouldFetch = false,
 ) => {
   const pairs = useAllAssetsCombination(assetIn, assetOut);
 
   const poolKeys = useMemo(() => getPoolIdCombinations(pairs), [pairs]);
 
-  const { pools, ...rest } = usePoolsWithReserve(poolKeys, shouldFetch);
+  const { pools, ...rest } = usePoolsWithReserve(poolKeys, amm, shouldFetch);
 
   const routes = useMemo(() => {
     if (!pools) {

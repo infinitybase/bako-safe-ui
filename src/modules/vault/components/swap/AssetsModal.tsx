@@ -125,12 +125,16 @@ export const AssetsModal = ({
               >
                 <Image boxSize="24px" src={asset.icon} alt={asset.name} />
                 <Stack spacing={0}>
-                  <Text fontSize="md">{asset.slug}</Text>
-                  <Text fontSize="xs"> {asset.name}</Text>
+                  <Text fontSize="md" color="grey.50">
+                    {asset.slug}
+                  </Text>
+                  <Text fontSize="xs" color="grey.50">
+                    {asset.name}
+                  </Text>
                 </Stack>
 
                 {asset.balance && (
-                  <Text ml="auto" fontSize="xs" color="grey.500">
+                  <Text ml="auto" fontSize="xs" color="grey.50">
                     {asset.balance.formatUnits(asset.units)}
                   </Text>
                 )}

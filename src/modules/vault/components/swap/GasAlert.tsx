@@ -1,4 +1,4 @@
-import { InfoIcon } from '@chakra-ui/icons';
+import { WarningIcon } from '@chakra-ui/icons';
 import { Card, Text } from '@chakra-ui/react';
 import { memo } from 'react';
 
@@ -11,8 +11,8 @@ export const GasAlert = memo(function GasAlert() {
       alignItems="center"
       flexDirection="row"
     >
-      <InfoIcon color="info.300" />
-      <Text color="info.300" fontSize="xs">
+      <WarningIcon color="warning.500" />
+      <Text color="warning.500" fontSize="xs">
         Insufficient ETH balance for paying gas.
       </Text>
     </Card>

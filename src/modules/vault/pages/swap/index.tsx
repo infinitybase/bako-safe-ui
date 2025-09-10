@@ -4,12 +4,8 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   Container,
-  Divider,
-  Flex,
   HStack,
   Icon,
-  Skeleton,
-  Stack,
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
@@ -126,18 +122,12 @@ export const VaultSwapPage = () => {
       </HStack>
 
       <Container>
-        {isLoading && (
-          <Stack spacing={4}>
-            <Skeleton height="150px" />
-            <Divider />
-            <Skeleton height="150px" />
-            <Flex gap={4}>
-              <Skeleton w="130px" height="40px" />
-              <Skeleton w="full" height="40px" />
-            </Flex>
-          </Stack>
-        )}
-        {!isLoading && <RootSwap vault={bakoVault} assets={assets} />}
+        <RootSwap
+          vault={bakoVault}
+          assets={assets}
+          networkUrl={userInfos?.network?.url}
+          isLoadingAssets={isLoading}
+        />
       </Container>
     </Box>
   );
