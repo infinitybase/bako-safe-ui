@@ -1,10 +1,10 @@
-import { TransactionRequestLike } from 'fuels';
+import type { TransactionRequestLike } from 'fuels';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { useContactToast } from '@/modules/addressBook/hooks';
 import { useQueryParams } from '@/modules/auth/hooks';
 import {
-  IEventTX_CREATE,
+  type IEventTX_CREATE,
   SocketEvents,
   SocketUsernames,
   useSocket,
@@ -87,8 +87,8 @@ export const useTransactionSocket = () => {
   );
 
   const signMessageRequest = useWalletSignMessage({
-    onSuccess: (signedMessage, hash) => {
-      emitSignTransactionEvent(hash, signedMessage);
+    onSuccess: (signedMessage, { txHash }) => {
+      emitSignTransactionEvent(txHash, signedMessage);
     },
     onError: () => {
       showSignErrorToast();
@@ -99,7 +99,7 @@ export const useTransactionSocket = () => {
   const signTransaction = useCallback(
     (_hash?: string) => {
       setIsSigning(true);
-      signMessageRequest.mutateAsync(_hash || hash);
+      signMessageRequest.mutateAsync({ txHash: _hash || hash });
     },
     [hash, signMessageRequest],
   );

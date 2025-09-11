@@ -19,7 +19,7 @@ import {
 } from '@chakra-ui/react';
 import { useFuel } from '@fuels/react';
 import { AddressUtils as BakoAddressUtils } from 'bakosafe';
-import { Address, Network } from 'fuels';
+import { Address, type Network } from 'fuels';
 import React, { useEffect, useState } from 'react';
 import { FaChevronDown } from 'react-icons/fa';
 
@@ -37,7 +37,7 @@ import { NetworkIcon } from '@/components/icons/network';
 import { SettingsTopMenuIcon } from '@/components/icons/settings-top-menu';
 import { queryClient } from '@/config';
 import {
-  IDefaultMessage,
+  type IDefaultMessage,
   SocketEvents,
   useEvm,
   useUserWorkspacesRequest,
@@ -58,6 +58,7 @@ import { useMySettingsRequest } from '@/modules/settings/hooks/useMySettingsRequ
 import { SelectWorkspaceDialog } from '@/modules/workspace/components';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { limitCharacters } from '@/utils';
+import { EVM_ADDRESS_PREFIX } from '@/utils/constants';
 
 const SpacedBox = chakra(Box, {
   baseStyle: {
@@ -115,7 +116,8 @@ const UserBox = () => {
   const [openAlert, setOpenAlert] = React.useState(false);
 
   const name = mySettingsRequest.data?.name ?? '';
-  const hasNickName = name && !AddressUtils.isValid(name);
+  const hasNickName =
+    name && !name.includes(EVM_ADDRESS_PREFIX) && !AddressUtils.isValid(name);
 
   const isWebAuthn =
     authDetails.userInfos?.type?.type === TypeUser.WEB_AUTHN ||

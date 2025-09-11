@@ -6,12 +6,12 @@ import { queryClient } from '@/config';
 import { CookieName, CookiesConfig } from '@/config/cookies';
 import { useContactToast } from '@/modules/addressBook/hooks/useContactToast';
 import { useWalletSignMessage } from '@/modules/core';
-import { ITransaction } from '@/modules/core/hooks/bakosafe/utils/types';
+import type { ITransaction } from '@/modules/core/hooks/bakosafe/utils/types';
 import { VAULT_TRANSACTIONS_LIST_PAGINATION } from '@/modules/vault/hooks/list/useVaultTransactionsRequest';
 
 import { useTransactionToast } from '../../providers/toast';
-import { TransactionWithVault } from '../../services';
-import {
+import type { TransactionWithVault } from '../../services';
+import type {
   IPendingTransactionDetails,
   IPendingTransactionsRecord,
   IUseTransactionList,
@@ -108,9 +108,10 @@ const useSignTransaction = ({
 
     setSelectedTransaction(transaction);
 
-    const signedMessage = await signMessageRequest.mutateAsync(
-      transaction?.hash,
-    );
+    const signedMessage = await signMessageRequest.mutateAsync({
+      txHash: transaction?.hash,
+      predicateAddress: transaction.predicateAddress ?? '',
+    });
 
     await request.mutateAsync(
       {
