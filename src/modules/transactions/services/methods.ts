@@ -238,13 +238,18 @@ export class TransactionService {
       transactionRequest,
     });
 
+    const serializedTxCount = bn(
+      transactionRequest.toTransactionBytes().length,
+    );
+    totalGasUsed = totalGasUsed.add(serializedTxCount.mul(64));
+
     const predicateSuccessFeeDiff = calculateGasFee({
       gas: totalGasUsed,
       priceFactor: gasPriceFactor,
       gasPrice,
     });
 
-    const maxFeeWithDiff = maxFee.add(predicateSuccessFeeDiff).mul(14).div(10);
+    const maxFeeWithDiff = maxFee.add(predicateSuccessFeeDiff).mul(20).div(10);
 
     return {
       fee: maxFeeWithDiff,
