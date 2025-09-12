@@ -18,7 +18,8 @@ import { SwapFactory } from '../../sway/artifacts';
 import contracts from '../../sway/artifacts/contract-ids.json';
 
 interface Config {
-  account: Account;
+  owner: Account;
+  deployer: Account;
   provider: Provider;
 }
 
@@ -40,20 +41,20 @@ const getProxyAddress = (chainId: number, name: string) => {
   return contract?.[name];
 };
 
-export const deployProxy = async ({ account, provider }: Config) => {
+export const deployProxy = async ({ deployer, owner, provider }: Config) => {
   const addr = getProxyAddress(await provider.getChainId(), 'bakoSwap');
 
   if (addr) {
     console.log(`Using existing proxy address: ${addr}`);
-    return new Src14OwnedProxy(addr, account);
+    return new Src14OwnedProxy(addr, deployer);
   }
 
   console.log('Deploying new proxy...');
-  const proxy = await Src14OwnedProxyFactory.deploy(account, {
+  const proxy = await Src14OwnedProxyFactory.deploy(deployer, {
     configurableConstants: {
       INITIAL_TARGET: { bits: ZeroBytes32 },
       INITIAL_OWNER: {
-        Initialized: { Address: { bits: account.address.toB256() } },
+        Initialized: { Address: { bits: owner.address.toB256() } },
       },
     },
   });
@@ -74,14 +75,14 @@ export const deployProxy = async ({ account, provider }: Config) => {
   return contract;
 };
 
-export const deployBakoSwap = async ({ account, provider }: Config) => {
+export const deployBakoSwap = async ({ deployer, owner, provider }: Config) => {
   const chainId = await provider.getChainId();
   const ammId =
     chainId === 0 ? TESTNET_AMM_CONTRACT_ID : DEFAULT_AMM_CONTRACT_ID;
-  const bakoSwapDeployed = await SwapFactory.deploy(account, {
+  const bakoSwapDeployed = await SwapFactory.deploy(deployer, {
     configurableConstants: {
       BAKO_FEE: 1, // 1% fee
-      INITIAL_OWNER: { Address: { bits: account.address.toB256() } },
+      INITIAL_OWNER: { Address: { bits: owner.address.toB256() } },
       AMM_CONTRACT_ID: contractIdInput(ammId),
     },
   });
