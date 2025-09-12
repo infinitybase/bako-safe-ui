@@ -1,3 +1,9 @@
+## [1.9.1](https://github.com/infinitybase/bako-safe-ui/compare/v1.9.0...v1.9.1) (2025-09-12)
+
+### Bug Fixes
+
+* **tx:** increase total gas used based on tx bytes size ([b6457fb](https://github.com/infinitybase/bako-safe-ui/commit/b6457fbeada5326de8317f9d6d28d4103dd7bd28))
+
 ## [1.9.0](https://github.com/infinitybase/bako-safe-ui/compare/v1.8.0...v1.9.0) (2025-08-28)
 
 ### Features
