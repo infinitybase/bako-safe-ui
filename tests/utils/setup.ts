@@ -1,8 +1,6 @@
 import {
-  downloadFuel,
   FuelWalletTestHelper,
   getByAriaLabel,
-  //getInputByName,
   test,
 } from '@fuels/playwright-utils';
 import type { BrowserContext, Page } from '@playwright/test';
@@ -11,11 +9,8 @@ import { Account, bn, Mnemonic, Provider, Wallet } from 'fuels';
 import { TestAssets } from './helpers';
 
 export class E2ETestUtils {
-  static FUEL_WALLET_VERSION = '0.46.1';
-
   static async downloadFuelExtension(config: { test: typeof test }) {
-    const path = await downloadFuel(E2ETestUtils.FUEL_WALLET_VERSION);
-    config.test.use({ pathToExtension: path });
+    config.test.use({ pathToExtension: process.env.FUEL_EXTENSION_PATH! });
   }
 
   static async setupFuelWallet(config: {
