@@ -12,8 +12,8 @@ importers:
   .:
     dependencies:
       '@bako-id/sdk':
-        specifier: 0.0.17
-        version: 0.0.17(fuels@0.101.3(vitest@3.0.9(@types/debug@4.1.12)(@types/node@20.5.1)(terser@5.43.1)))
+        specifier: 0.0.21
+        version: 0.0.21(fuels@0.101.3(vitest@3.0.9(@types/debug@4.1.12)(@types/node@20.5.1)(terser@5.43.1)))
       '@chakra-ui/anatomy':
         specifier: ^2.2.2
         version: 2.3.4
@@ -414,10 +414,10 @@ packages:
     resolution: {integrity: sha512-ruv7Ae4J5dUYULmeXw1gmb7rYRz57OWCPM57pHojnLq/3Z1CK2lNSLTCVjxVk1F/TZHwOZZrOWi0ur95BbLxNQ==}
     engines: {node: '>=6.9.0'}
 
-  '@bako-id/sdk@0.0.17':
-    resolution: {integrity: sha512-lXHz9Ayf4UA7phv68zuWI2g1HzJEK/7CU9sKCBpMhcpmqBk2lZPpBUUWHf9JnoE822OcUD/UMdeRvificzpyFQ==}
+  '@bako-id/sdk@0.0.21':
+    resolution: {integrity: sha512-7cShrrdNvWwAbDiApv54aYvj7+cxEMzroCjz3xywc6I2ok/cGazObdaOWRfy7tvwPetkYTUAkY4imevqBooxNg==}
     peerDependencies:
-      fuels: 0.96.1
+      fuels: ^0.101.3
 
   '@base-org/account@1.0.2':
     resolution: {integrity: sha512-jVRmMgGWQSqL4EiKoj5koXPNnTbdf4a5h+ljRU0hL8wzbGJ0hM/ZyFm/j5VNrFAX5dLLmBoa9Tf+RRwyfTvdvQ==}
@@ -1450,13 +1450,13 @@ packages:
     resolution: {integrity: sha512-bb/wnMMcf8czSpsamPfJx/I3/ag/mcmO2B9Tzy5Z4cFYbRs1Vzm2rVAmh7qsr00evxhftiu9QesPACZUjabZag==}
     engines: {node: ^20.0.0 || ^22.0.0 || ^24.0.0}
 
+  '@fuel-ts/errors@0.100.6':
+    resolution: {integrity: sha512-dFJsISeTeK61TFm8wmfQjOdbfikY9RDEq5X8yhDIMsyXYYl2lvGBdtItpNKVTOga7IK4V2MP/aczLMbq72Z9SQ==}
+    engines: {node: ^18.20.3 || ^20.0.0 || ^22.0.0}
+
   '@fuel-ts/errors@0.101.3':
     resolution: {integrity: sha512-c2WqH0fkSLPqDmAeCNJonca1Ui9CElFz3PEh/77btIE61bX9Iclq/L7/GtZabz8jsedBBbGJwyrgE4GTgNMwXQ==}
     engines: {node: ^20.0.0 || ^22.0.0 || ^24.0.0}
-
-  '@fuel-ts/errors@0.90.0':
-    resolution: {integrity: sha512-iKYCS4cgWHV40Kr0c2+4kboUtebz9Vi8DHld6QWdeTh2khjhptZf7LrhgTh3gepAEaMF48x4F+3LZNd4Ia3wmg==}
-    engines: {node: ^18.18.2 || ^20.0.0}
 
   '@fuel-ts/hasher@0.101.3':
     resolution: {integrity: sha512-XaT1Gwq7KdQQUEDXrY3Vx7c6vgIAZlAVG6RszkY6a2Gl72eYGB1tMf1GKkkKEMw5/liF/C8OG9/recwbxlI4XQ==}
@@ -1492,14 +1492,14 @@ packages:
     peerDependencies:
       vitest: 3.0.9
 
+  '@fuel-ts/versions@0.100.6':
+    resolution: {integrity: sha512-bS8mrRhrKwCWRxHw+eAQIcbUOU7U3KbFwzvjFf4133bU3GZXf6OYkZOQsgr1zkItEQSf9PBivyA+3dgDHY09hQ==}
+    engines: {node: ^18.20.3 || ^20.0.0 || ^22.0.0}
+    hasBin: true
+
   '@fuel-ts/versions@0.101.3':
     resolution: {integrity: sha512-IVsK4t/ouxtvsWZNxLccOUVe+3BIsjsXhok74jWiwB8ATGmf/CtKnvsDJhhx9OrALZFdMz7WiCXrsBkhEITpCA==}
     engines: {node: ^20.0.0 || ^22.0.0 || ^24.0.0}
-    hasBin: true
-
-  '@fuel-ts/versions@0.90.0':
-    resolution: {integrity: sha512-oXXDleRAK1MLHuhveyfAUNQkHG9bISHtuvAGbjHYtaUVjI/k0o9ii9HLjlvRnFvc7G57CzIsnm6wSnoPaYBfhg==}
-    engines: {node: ^18.18.2 || ^20.0.0}
     hasBin: true
 
   '@fuels/connectors@0.43.2':
@@ -7397,9 +7397,9 @@ snapshots:
       '@babel/helper-string-parser': 7.27.1
       '@babel/helper-validator-identifier': 7.27.1
 
-  '@bako-id/sdk@0.0.17(fuels@0.101.3(vitest@3.0.9(@types/debug@4.1.12)(@types/node@20.5.1)(terser@5.43.1)))':
+  '@bako-id/sdk@0.0.21(fuels@0.101.3(vitest@3.0.9(@types/debug@4.1.12)(@types/node@20.5.1)(terser@5.43.1)))':
     dependencies:
-      '@fuel-ts/errors': 0.90.0
+      '@fuel-ts/errors': 0.100.6
       fuels: 0.101.3(vitest@3.0.9(@types/debug@4.1.12)(@types/node@20.5.1)(terser@5.43.1))
       tai64: 1.0.0
 
@@ -8690,13 +8690,13 @@ snapshots:
     transitivePeerDependencies:
       - vitest
 
+  '@fuel-ts/errors@0.100.6':
+    dependencies:
+      '@fuel-ts/versions': 0.100.6
+
   '@fuel-ts/errors@0.101.3':
     dependencies:
       '@fuel-ts/versions': 0.101.3
-
-  '@fuel-ts/errors@0.90.0':
-    dependencies:
-      '@fuel-ts/versions': 0.90.0
 
   '@fuel-ts/hasher@0.101.3(vitest@3.0.9(@types/debug@4.1.12)(@types/node@20.5.1)(terser@5.43.1))':
     dependencies:
@@ -8780,12 +8780,12 @@ snapshots:
       fflate: 0.8.2
       vitest: 3.0.9(@types/debug@4.1.12)(@types/node@20.5.1)(terser@5.43.1)
 
-  '@fuel-ts/versions@0.101.3':
+  '@fuel-ts/versions@0.100.6':
     dependencies:
       chalk: 4.1.2
       cli-table: 0.3.11
 
-  '@fuel-ts/versions@0.90.0':
+  '@fuel-ts/versions@0.101.3':
     dependencies:
       chalk: 4.1.2
       cli-table: 0.3.11
