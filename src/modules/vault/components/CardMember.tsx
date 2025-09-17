@@ -66,8 +66,7 @@ const CardMember = ({
 
   // the avatar request is enabled only when have handle
   const { avatar, isLoading: isLoadingAvatar } = useBakoIdAvatar(
-    // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
-    member?.handle!,
+    member?.handle || member.address,
     currentNetwork.chainId,
   );
 
