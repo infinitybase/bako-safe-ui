@@ -3,8 +3,9 @@ import {
   getByAriaLabel,
   test,
 } from '@fuels/playwright-utils';
+import { DeployContractConfig, launchTestNode, LaunchTestNodeReturn } from 'fuels/test-utils';
 import type { BrowserContext, Page } from '@playwright/test';
-import { Account, bn, Mnemonic, Provider, Wallet } from 'fuels';
+import { Account, bn, Mnemonic, Provider, Wallet, WalletUnlocked } from 'fuels';
 
 import { TestAssets } from './helpers';
 
@@ -17,38 +18,32 @@ export class E2ETestUtils {
     page: Page;
     context: BrowserContext;
     extensionId: string;
+    node: LaunchTestNodeReturn<DeployContractConfig[]>
   }) {
-    const { context, extensionId } = config;
-
-    const provider = new Provider('http://localhost:4000/v1/graphql');
-    const genesisWallet = Wallet.fromPrivateKey(
-      '0xa449b1ffee0e2205fa924c6740cc48b3b473aa28587df6dab12abc245d1f5298',
-      provider,
-    );
+    // const { provider, genesisWallet, cleanup } = await setupLaunchTestNode();
+    const { context, extensionId, node } = config;
 
     const fuelWalletTestHelper = await FuelWalletTestHelper.walletSetup({
       context,
       fuelExtensionId: extensionId,
       fuelProvider: {
-        url: provider.url,
-        chainId: await provider.getChainId(),
+        url: node.provider.url,
+        chainId: await node.provider.getChainId(),
       },
-      chainName: (await provider.getChain()).name,
+      chainName: (await node.provider.getChain()).name,
       mnemonic: Mnemonic.generate(),
     });
     await config.page.goto('/');
     await config.page.bringToFront();
     await config.page.waitForTimeout(2000);
 
-    return { fuelWalletTestHelper, genesisWallet };
+    // const genesisWallet = node.wallets[0];
+
+    return { fuelWalletTestHelper };
   }
 
   static async setupPasskey(config: { page: Page }) {
-    const provider = new Provider('http://localhost:4000/v1/graphql');
-    const genesisWallet = Wallet.fromPrivateKey(
-      '0xa449b1ffee0e2205fa924c6740cc48b3b473aa28587df6dab12abc245d1f5298',
-      provider,
-    );
+    // const { genesisWallet } = await setupLaunchTestNode();
 
     const client = await config.page.context().newCDPSession(config.page);
     await client.send('WebAuthn.enable');
@@ -67,7 +62,7 @@ export class E2ETestUtils {
     await config.page.bringToFront();
     await config.page.waitForTimeout(2000);
 
-    return { genesisWallet };
+    // return { genesisWallet };
   }
 
   static async signMessageFuelWallet(config: {

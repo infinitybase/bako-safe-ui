@@ -7,24 +7,54 @@ import {
   hasText,
   test,
 } from '@fuels/playwright-utils';
+import { DeployContractConfig, launchTestNode, LaunchTestNodeReturn } from 'fuels/test-utils';
 import { randomUUID, WalletUnlocked } from 'fuels';
 
 import { E2ETestUtils } from './utils/setup';
 
 await E2ETestUtils.downloadFuelExtension({ test });
 
-test.describe('Fuel Wallet', () => {
+const assetsHash = {
+  ETH: '0xf8f8b6283d7fa5b672b530cbb84fcccb4ff8dc40f8176ef4544ddb1f1952ad07',
+  DAI: '0x0d9be25f6bef5c945ce44db64b33da9235fbf1a9f690298698d899ad550abae1',
+  BTC: '0xccceae45a7c23dcd4024f4083e959a0686a191694e76fa4fb76c449361ca01f7',
+  USDC: '0xfed3ee85624c79cb18a3a848092239f2e764ed6b0aa156ad10a18bfdbe74269f',
+  UNI: '0xb3238af388ac05188e342b1801db79d358e4a162734511316c937b00c8687fe9',
+};
+
+const assets = () =>
+  Object.entries(assetsHash).map(([_, hash]) => ({
+    value: hash,
+  }));
+
+const walletsConfig = {
+  assets: assets(),
+  coinsPerAsset: 1,
+  amountPerCoin: 10_000_000_000,
+};
+
+test.describe('Fuel Wallet', async () => {
+  let node: LaunchTestNodeReturn<DeployContractConfig[]>;
   let fuelWalletTestHelper: FuelWalletTestHelper;
   let genesisWallet: WalletUnlocked;
+
+  test.beforeAll(async () => {
+    node = await launchTestNode({walletsConfig});
+  });
+
+  test.afterAll(() => {
+    node.cleanup();
+  });
 
   test.beforeEach(async ({ extensionId, context, page }) => {
     const E2EUtils = await E2ETestUtils.setupFuelWallet({
       page,
       context,
-      extensionId,
+      extensionId, 
+      node,
     });
-
-    genesisWallet = E2EUtils.genesisWallet;
+    
+    genesisWallet = node.wallets[0];
     fuelWalletTestHelper = E2EUtils.fuelWalletTestHelper;
   });
 
