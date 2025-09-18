@@ -1,24 +1,15 @@
 import { FuelWalletTestHelper, getByAriaLabel } from '@fuels/playwright-utils';
 import { Page } from '@playwright/test';
-import { WalletUnlocked } from 'fuels';
 
 import { disconnect } from '../helpers';
 import { E2ETestUtils } from '../setup';
 
-interface LoginAuthTestResponse {
-  username: string;
-  genesisWallet: WalletUnlocked;
-}
-
 export class AuthTestService {
   static async loginAuth(
     page: Page,
-    wallet: WalletUnlocked | null = null,
-  ): Promise<LoginAuthTestResponse> {
-    if (!wallet) {
-      const { genesisWallet } = await E2ETestUtils.setupPasskey({ page });
-      wallet = genesisWallet;
-    }
+    withPasskey: boolean = true,
+  ): Promise<{ username: string }> {
+    if (withPasskey) await E2ETestUtils.setupPasskey({ page });
 
     // Navegue até a página inicial
     await page.goto('/');
@@ -49,7 +40,7 @@ export class AuthTestService {
       .click();
     await page.waitForTimeout(1000);
 
-    return { username: name, genesisWallet: wallet };
+    return { username: name };
   }
 
   static async reloginAuthPassKey(page: Page, username: string) {
@@ -74,7 +65,7 @@ export class AuthTestService {
   }
 
   static async loginWalletConnection(
-    page,
+    page: Page,
     fuelWalletTestHelper: FuelWalletTestHelper,
   ) {
     await getByAriaLabel(page, 'Connect Fuel Wallet').click();
@@ -96,9 +87,9 @@ export class AuthTestService {
   ) {
     await disconnect(page);
 
-    await page.goto(
-      'chrome-extension://gkoblaakkldmbbfnfhijgegmjahojbee/popup.html#/wallet',
-    );
+    // await page.goto('chrome-extension://.../popup.html#/wallet');
+    page = fuelWalletTestHelper.getWalletPage();
+
     await page.bringToFront();
     await page.waitForTimeout(1200);
 
@@ -116,8 +107,7 @@ export class AuthTestService {
   }
 
   static async loginPassKeyInTwoAccounts(page: Page) {
-    const { genesisWallet: wallet, username: firstUsername } =
-      await this.loginAuth(page);
+    const { username: firstUsername } = await this.loginAuth(page);
 
     await page.waitForSelector('text=Welcome to Bako Safe!', {
       timeout: 30000,
@@ -136,11 +126,11 @@ export class AuthTestService {
 
     await getByAriaLabel(page, 'Disconnect').click();
 
-    await this.loginAuth(page, wallet);
+    await this.loginAuth(page, false);
 
     await page.locator('[aria-label="Close window"]').click();
     await page.getByRole('button', { name: 'Home' }).click();
 
-    return { genesisWallet: wallet, username: firstUsername, secondAddress };
+    return { username: firstUsername, secondAddress };
   }
 }
