@@ -181,7 +181,6 @@ export class TransactionService {
     const { vault, assets: assetsToSpend, assetsMap } = input;
     const hash = createTxCostHash(input);
     const cachedCosts = transactionCostCache.get(hash);
-    console.log('return by cache', cachedCosts);
     if (cachedCosts) return cachedCosts;
 
     const vaultAddress = vault.address.toString();

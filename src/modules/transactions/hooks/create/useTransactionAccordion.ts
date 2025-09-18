@@ -1,9 +1,5 @@
 import { useCallback, useState } from 'react';
 
-/**
- * Hook para gerenciar o estado do accordion de transações
- * Separado para reutilização e melhor organização
- */
 const useTransactionAccordion = () => {
   const [accordionIndex, setAccordionIndex] = useState(0);
 
