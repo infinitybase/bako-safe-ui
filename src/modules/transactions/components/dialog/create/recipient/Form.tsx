@@ -1,18 +1,4 @@
-import { CloseIcon } from '@chakra-ui/icons';
-import {
-  Box,
-  Button,
-  CircularProgress,
-  FormControl,
-  FormHelperText,
-  FormLabel,
-  HStack,
-  IconButton,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
-import { AddressUtils as BakoSafeUtils } from 'bakosafe';
-import { Address, bn, isB256 } from 'fuels';
+import { VStack } from '@chakra-ui/react';
 import { memo, useMemo } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
@@ -22,7 +8,6 @@ import {
   CreateContactDialog,
   useAddressBookAutocompleteOptions,
 } from '@/modules/addressBook';
-import { AddressUtils, AssetSelect } from '@/modules/core';
 import { useBakoIDClient } from '@/modules/core/hooks/bako-id';
 import {
   ITransactionForm,
@@ -31,7 +16,8 @@ import {
 } from '@/modules/transactions/hooks';
 import { UseVaultDetailsReturn } from '@/modules/vault';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
-import { AddressBookUtils } from '@/utils';
+
+import RecipientFormAsset from './form/asset';
 
 interface RecipientFormFieldProps {
   index: number;
@@ -263,91 +249,25 @@ const RecipientFormField = (props: RecipientFormFieldProps) => {
         <Controller
           name={`transactions.${index}.asset`}
           control={control}
-          render={({ field, fieldState }) => {
-            return (
-              <HStack
-                align="start"
-                spacing={2}
-                position="relative"
-                width="100%"
-                data-testid="transaction_asset"
-              >
-                <AssetSelect
-                  isInvalid={fieldState.invalid}
-                  options={assetsOptions}
-                  name={`transaction.${index}.asset`}
-                  value={field.value}
-                  onChange={(e) => {
-                    field.onChange(e);
-                    if (isNFTAsset(e)) {
-                      setValue(`transactions.${index}.amount`, bn(1).format());
-                      return;
-                    }
-
-                    if (isNFTAsset(field.value)) {
-                      setValue(`transactions.${index}.amount`, '');
-                    }
-                  }}
-                  helperText={
-                    <FormHelperText
-                      color={fieldState.error ? 'error.500' : 'grey.425'}
-                    >
-                      {!isNFT && (
-                        <Text display="flex" alignItems="center" mt={1}>
-                          {!field.value ? (
-                            'Select an asset to see the balance'
-                          ) : parseFloat(balanceAvailable) > 0 ? (
-                            isFeeCalcLoading ? (
-                              <>
-                                Balance (available):{' '}
-                                <CircularProgress
-                                  trackColor="dark.100"
-                                  size={3}
-                                  isIndeterminate
-                                  color="grey.425"
-                                  ml={1}
-                                />
-                              </>
-                            ) : (
-                              <>
-                                Balance (available):{' '}
-                                {assets.getAssetInfo(asset)?.slug}{' '}
-                                {balanceAvailable}
-                              </>
-                            )
-                          ) : null}
-                        </Text>
-                      )}
-                    </FormHelperText>
-                  }
-                />
-                {field.value && (
-                  <IconButton
-                    aria-label="Clear"
-                    icon={<CloseIcon boxSize={2.5} />}
-                    size="xs"
-                    variant="ghost"
-                    position="absolute"
-                    top={isNFT ? '47%' : '38%'}
-                    right="0.5rem"
-                    bg="grey.825"
-                    padding="0.5rem"
-                    paddingTop={'20px'}
-                    paddingBottom={'20px'}
-                    borderRadius="md"
-                    _hover={{ bg: 'grey.825' }}
-                    color={'white'}
-                    transform="translateY(-50%)"
-                    zIndex={1}
-                    onClick={() => {
-                      field.onChange(null);
-                      setValue(`transactions.${index}.amount`, '');
-                    }}
-                  />
-                )}
-              </HStack>
-            );
-          }}
+          render={({ field, fieldState }) => (
+            <RecipientFormAsset
+              error={fieldState.error}
+              index={index}
+              isNFT={isNFT}
+              isNFTAsset={isNFTAsset}
+              isInvalid={fieldState.invalid}
+              isFeeCalcLoading={isFeeCalcLoading}
+              balanceAvailable={balanceAvailable}
+              assets={assets}
+              assetsOptions={assetsOptions}
+              onChange={field.onChange}
+              onClearValue={() => {
+                field.onChange('');
+                setValue(`transactions.${index}.amount`, '');
+              }}
+              value={field.value}
+            />
+          )}
         />
         <Controller
           name={`transactions.${index}.amount`}
