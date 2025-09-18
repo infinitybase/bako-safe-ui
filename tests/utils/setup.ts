@@ -5,7 +5,7 @@ import {
 } from '@fuels/playwright-utils';
 import { DeployContractConfig, launchTestNode, LaunchTestNodeReturn } from 'fuels/test-utils';
 import type { BrowserContext, Page } from '@playwright/test';
-import { Account, bn, Mnemonic, Provider, Wallet, WalletUnlocked } from 'fuels';
+import { Account, bn, Mnemonic } from 'fuels';
 
 import { TestAssets } from './helpers';
 
@@ -14,13 +14,17 @@ export class E2ETestUtils {
     config.test.use({ pathToExtension: process.env.FUEL_EXTENSION_PATH! });
   }
 
-  static async setupFuelWallet(config: {
+  static defaultLaunchTestNode = async () => {
+    const node = await launchTestNode();
+    return { node, genesisWallet: node.wallets[0] };
+  }
+
+  static async setupFuelWalletTestHelper(config: {
     page: Page;
     context: BrowserContext;
     extensionId: string;
     node: LaunchTestNodeReturn<DeployContractConfig[]>
   }) {
-    // const { provider, genesisWallet, cleanup } = await setupLaunchTestNode();
     const { context, extensionId, node } = config;
 
     const fuelWalletTestHelper = await FuelWalletTestHelper.walletSetup({
@@ -33,18 +37,15 @@ export class E2ETestUtils {
       chainName: (await node.provider.getChain()).name,
       mnemonic: Mnemonic.generate(),
     });
+
     await config.page.goto('/');
     await config.page.bringToFront();
     await config.page.waitForTimeout(2000);
 
-    // const genesisWallet = node.wallets[0];
-
-    return { fuelWalletTestHelper };
+    return fuelWalletTestHelper;
   }
 
   static async setupPasskey(config: { page: Page }) {
-    // const { genesisWallet } = await setupLaunchTestNode();
-
     const client = await config.page.context().newCDPSession(config.page);
     await client.send('WebAuthn.enable');
     await client.send('WebAuthn.addVirtualAuthenticator', {
@@ -61,8 +62,6 @@ export class E2ETestUtils {
     await config.page.goto('/');
     await config.page.bringToFront();
     await config.page.waitForTimeout(2000);
-
-    // return { genesisWallet };
   }
 
   static async signMessageFuelWallet(config: {
