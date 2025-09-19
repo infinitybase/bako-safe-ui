@@ -11,6 +11,7 @@ import {
 } from '@/modules/core';
 import { tokensIDS } from '@/modules/core/utils/assets/address';
 import { useNetworks } from '@/modules/network/hooks';
+import { availableNetWorks, NetworkType } from '@/modules/network/services';
 import { useTransactionToast } from '@/modules/transactions/providers/toast';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 import { TransactionService } from '@/modules/transactions/services';
@@ -185,7 +186,7 @@ const useFormBridge = () => {
       if (!assetFrom?.name) return;
 
       const isMainnet =
-        currentNetwork.url === 'https://mainnet.fuel.network/v1/graphql'; //availableNetWorks[NetworkType.MAINNET].url;
+        currentNetwork.url === availableNetWorks[NetworkType.MAINNET].url;
 
       const data = await getDestinationsBridgeAsync({
         from_network: isMainnet ? 'FUEL_MAINNET' : 'FUEL_TESTNET',
@@ -265,16 +266,16 @@ const useFormBridge = () => {
     (assetToOverride?: AssetItem) => {
       const finalAssetTo = assetToOverride ?? assetTo;
       const isMainnet =
-        currentNetwork.url === 'https://mainnet.fuel.network/v1/graphql'; //availableNetWorks[NetworkType.MAINNET].url;
+        currentNetwork.url === availableNetWorks[NetworkType.MAINNET].url;
 
       const payload = {
-        destination_address: destinationAddress, //'0x9d48Fc9CF38487b0C5813D70B715A267Efdc4f42', //
+        destination_address: destinationAddress,
         source_network: isMainnet ? 'FUEL_MAINNET' : 'FUEL_TESTNET',
-        source_token: assetFrom?.name ?? '', //'ETH',
+        source_token: assetFrom?.name ?? '',
         destination_network: isMobile
           ? networkToMobile
-          : (networkToValueForm?.value ?? ''), //currentNetworkTo?.value ?? '', //'ETHEREUM_SEPOLIA'
-        destination_token: finalAssetTo?.symbol ?? '', // 'ETH'
+          : (networkToValueForm?.value ?? ''),
+        destination_token: finalAssetTo?.symbol ?? '',
         amount: Number(amount?.replace(/,/g, '')) || 0,
         source_address: vault?.address.toString(),
         refuel: false,

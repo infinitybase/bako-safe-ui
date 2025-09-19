@@ -8,14 +8,11 @@ import {
   VStack,
 } from '@chakra-ui/react';
 
-import { InformationIcon, MinimalAlertIcon, SwapIcon } from '@/components';
+import { SwapIcon } from '@/components';
 import { AddressUtils } from '@/modules/core';
 
-import {
-  AlertsBrigde,
-  DetailsBridge,
-  SectionInfo,
-} from '../../components/bridge';
+import { DetailsBridge, SectionInfo } from '../../components/bridge';
+import { TitleButtonsForm } from '../../components/bridge/utils';
 import { useFormBridge } from '../../hooks/bridge';
 
 interface ResumePageBrigdeProps {
@@ -30,10 +27,21 @@ export function ResumePageBrigde({ setScreenBridge }: ResumePageBrigdeProps) {
     destinationAddress,
     amount,
     assetFromUSD,
+    isSendingTx,
+    dataQuote,
+    isPendingSigner,
+    onSubmit,
   } = useFormBridge();
 
   return (
-    <VStack w="585px" borderRadius="16px" bgColor={'#0D0D0C'} p={4}>
+    <VStack
+      w="585px"
+      borderRadius="16px"
+      bgColor={'#0D0D0C'}
+      p={4}
+      as="form"
+      onSubmit={onSubmit}
+    >
       <VStack w={'full'} flex="start" align="start" gap={4}>
         <Text fontWeight={700} fontSize={16}>
           Resume
@@ -60,8 +68,14 @@ export function ResumePageBrigde({ setScreenBridge }: ResumePageBrigdeProps) {
         asset={assetTo}
         network={networkTo?.name ?? ''}
         imageNetwork={networkTo?.image ?? ''}
-        amount={'0.005791'}
-        amountUSD={assetFromUSD}
+        amount={
+          dataQuote?.quote?.receive_amount
+            ? dataQuote?.quote?.receive_amount
+            : ''
+        }
+        amountUSD={
+          dataQuote?.receive_in_usd ? `(${dataQuote?.receive_in_usd})` : '-'
+        }
       />
       <Card variant="outline" mt={3} padding={3} paddingY={2} w="full">
         <HStack w="full" justifyContent="space-between">
@@ -76,22 +90,9 @@ export function ResumePageBrigde({ setScreenBridge }: ResumePageBrigdeProps) {
       <Divider borderColor="grey.950" h="1px" flex="1" marginY={3} />
       <DetailsBridge bgColor={'#0D0D0C'} padding={0} />
 
-      <AlertsBrigde
-        title="Insufficient ETH for gas"
-        description="You might not be able to complete the transaction. Reserve 0.00000015121 ETH for gas."
-        type={'warning'}
-        icon={MinimalAlertIcon}
-      />
-      <AlertsBrigde
-        type={'info'}
-        description="Any asset deposited to Fuel can take up 7 days to withdraw back to Ethereum. Learn more about our architecture and security in our docs."
-        icon={InformationIcon}
-      />
       <HStack w={'full'} gap={4}>
         <Button
-          //isDisabled={!hasPermission([OWNER, MANAGER, ADMIN])}
           variant="secondary"
-          type="submit"
           fontWeight={500}
           fontSize={14}
           letterSpacing={'2%'}
@@ -103,7 +104,8 @@ export function ResumePageBrigde({ setScreenBridge }: ResumePageBrigdeProps) {
         </Button>
 
         <Button
-          //isDisabled={!hasPermission([OWNER, MANAGER, ADMIN])}
+          isDisabled={isSendingTx || isPendingSigner}
+          isLoading={isSendingTx}
           variant="primary"
           type="submit"
           fontWeight={600}
@@ -112,7 +114,9 @@ export function ResumePageBrigde({ setScreenBridge }: ResumePageBrigdeProps) {
           w={'full'}
           mt={4}
         >
-          Bridge
+          {isPendingSigner
+            ? TitleButtonsForm.PENDING_TX
+            : TitleButtonsForm.BRIDGE}
         </Button>
       </HStack>
     </VStack>
