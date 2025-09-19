@@ -6,7 +6,7 @@ on:
 
 jobs:
   e2e-tests:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04-arm64
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -34,19 +34,10 @@ jobs:
             --output text)
           echo "API_IMAGE_TAG=$TAG" >> $GITHUB_ENV
 
-      - name: Pull API image for amd64
-        env:
-          ECR_REGISTRY: ${{ steps.login_ecr.outputs.registry }}
-          ECR_REPOSITORY: bako-safe-api-stg
-          API_IMAGE_TAG: ${{ env.API_IMAGE_TAG }}
-        run: |
-          docker pull --platform linux/amd64 $ECR_REGISTRY/$ECR_REPOSITORY:$API_IMAGE_TAG
-
       - name: Start infra
         env:
           ECR_REGISTRY: ${{ steps.login_ecr.outputs.registry }}
           ECR_REPOSITORY: bako-safe-api-stg
-          API_IMAGE_TAG: ${{ env.API_IMAGE_TAG }}
         run: |
           docker compose --env-file .env.test -f docker-compose.e2e.yml up -d --wait
 
