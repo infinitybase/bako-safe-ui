@@ -3,6 +3,7 @@ import { defineConfig } from '@playwright/test';
 export default defineConfig({
   globalSetup: './tests/utils/global-setup.ts',
   testDir: './tests',
+  workers: 2,
   timeout: 220000,
   expect: {
     timeout: 6000,
@@ -12,7 +13,7 @@ export default defineConfig({
     headless: true,
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
-    baseURL: 'http://localhost:5173',
+    baseURL: process.env.BASE_URL || 'http://localhost:5173',
     permissions: ['clipboard-read', 'clipboard-write'],
     trace: 'on-first-retry',
     actionTimeout: 5000,

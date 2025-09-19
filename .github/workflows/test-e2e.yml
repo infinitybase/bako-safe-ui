@@ -1,45 +1,14 @@
 name: UI E2E Tests
 
 on:
-  - push
   - pull_request
 
 jobs:
   e2e-tests:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
-
-      - name: Setup forc
-        uses: ./.github/actions/setup-forc
-      
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.BAKO_AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.BAKO_AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-
-      - name: Login to Amazon ECR
-        id: login_ecr
-        uses: aws-actions/amazon-ecr-login@v1
-
-      - name: Get latest image tag from ECR
-        run: |
-          TAG=$(aws ecr describe-images \
-            --repository-name bako-safe-api-stg \
-            --region us-east-1 \
-            --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]' \
-            --output text)
-          echo "API_IMAGE_TAG=$TAG" >> $GITHUB_ENV
-
-      - name: Start infra
-        env:
-          ECR_REGISTRY: ${{ steps.login_ecr.outputs.registry }}
-          ECR_REPOSITORY: bako-safe-api-stg
-        run: |
-          docker compose --env-file .env.test -f docker-compose.e2e.yml up -d --wait
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -50,17 +19,21 @@ jobs:
         uses: pnpm/action-setup@v4
         with:
           version: 9.4.0
-          
+
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
 
       - name: Install Playwright Browsers
         run: pnpm exec playwright install --with-deps
 
-      - name: Run Playwright tests
-        run: pnpm exec playwright test
+      - name: Run Playwright tests (staging)
+        run: xvfb-run -a pnpm exec playwright test
+        env:
+          BASE_URL: https://stg-api.bako.global
+          NETWORK_URL: https://testnet.fuel.network/v1/graphql
 
-      - uses: actions/upload-artifact@v4
+      - name: Upload report to GitHub Actions Artifacts
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: playwright-report

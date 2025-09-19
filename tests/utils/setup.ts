@@ -13,18 +13,23 @@ export class E2ETestUtils {
     config.test.use({ pathToExtension: process.env.FUEL_EXTENSION_PATH! });
   }
 
+  static buildProvider = () => {
+    const provider = new Provider(process.env.NETWORK_URL || 'http://localhost:4000/v1/graphql');
+    const genesisWallet = Wallet.fromPrivateKey(
+      '0xa449b1ffee0e2205fa924c6740cc48b3b473aa28587df6dab12abc245d1f5298',
+      provider,
+    );
+
+    return { provider, genesisWallet }
+  }
+
   static async setupFuelWallet(config: {
     page: Page;
     context: BrowserContext;
     extensionId: string;
   }) {
     const { context, extensionId } = config;
-
-    const provider = new Provider('http://localhost:4000/v1/graphql');
-    const genesisWallet = Wallet.fromPrivateKey(
-      '0xa449b1ffee0e2205fa924c6740cc48b3b473aa28587df6dab12abc245d1f5298',
-      provider,
-    );
+    const { provider, genesisWallet } = this.buildProvider();
 
     const fuelWalletTestHelper = await FuelWalletTestHelper.walletSetup({
       context,
@@ -44,11 +49,7 @@ export class E2ETestUtils {
   }
 
   static async setupPasskey(config: { page: Page }) {
-    const provider = new Provider('http://localhost:4000/v1/graphql');
-    const genesisWallet = Wallet.fromPrivateKey(
-      '0xa449b1ffee0e2205fa924c6740cc48b3b473aa28587df6dab12abc245d1f5298',
-      provider,
-    );
+    const { provider, genesisWallet } = this.buildProvider();
 
     const client = await config.page.context().newCDPSession(config.page);
     await client.send('WebAuthn.enable');
