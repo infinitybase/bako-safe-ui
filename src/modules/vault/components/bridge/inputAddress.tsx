@@ -39,7 +39,7 @@ export function InputAddressBridge() {
           control={control}
           name="destinationAddress"
           render={({ field, fieldState }) => {
-            const minLengthAddress = 64;
+            const minLengthAddress = 40;
             const displayValue =
               field?.value?.length > minLengthAddress
                 ? AddressUtils.format(field?.value ?? '')

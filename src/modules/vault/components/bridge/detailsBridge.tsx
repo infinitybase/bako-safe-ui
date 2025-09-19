@@ -1,6 +1,8 @@
-import { Card, HStack, Icon, Text, VStack } from '@chakra-ui/react';
+import { Card, HStack, Icon, Spinner, Text, VStack } from '@chakra-ui/react';
 
 import { DoubtIcon } from '@/components/icons/doubt';
+
+import { useFormBridge } from '../../hooks/bridge';
 
 export interface DetailsBridgeProps {
   bgColor?: string;
@@ -11,6 +13,8 @@ export function DetailsBridge({
   bgColor = 'grey.825',
   padding = 3,
 }: DetailsBridgeProps) {
+  const { dataQuote, assetFrom, assetTo, isLoadingQuote } = useFormBridge();
+
   return (
     <Card variant="outline" padding={padding} bgColor={bgColor}>
       <VStack p={0} gap={0}>
@@ -20,9 +24,20 @@ export function DetailsBridge({
               Estimated time
             </Text>
           </HStack>
-          <Text color="#AAA6A1" fontSize={12} flex={1} align="right">
-            1 minute
-          </Text>
+          <HStack
+            w={'full'}
+            flex={1}
+            textAlign={'right'}
+            justifyContent={'flex-end'}
+          >
+            {isLoadingQuote ? (
+              <Spinner color="grey.500" size="xs" />
+            ) : (
+              <Text color="#AAA6A1" fontSize={12} flex={1} align="right">
+                {dataQuote?.quote?.avg_completion_time ?? '-'}
+              </Text>
+            )}
+          </HStack>
         </HStack>
         <HStack width="full">
           <HStack>
@@ -31,9 +46,22 @@ export function DetailsBridge({
             </Text>
             <Icon color="grey.75" fontSize="14px" as={DoubtIcon} />
           </HStack>
-          <Text color="#AAA6A1" fontSize={12} flex={1} align="right">
-            {'0.000035 ETH'}
-          </Text>
+          <HStack
+            w={'full'}
+            flex={1}
+            textAlign={'right'}
+            justifyContent={'flex-end'}
+          >
+            {isLoadingQuote ? (
+              <Spinner color="grey.500" size="xs" />
+            ) : (
+              <Text color="#AAA6A1" fontSize={12} flex={1} align="right">
+                {dataQuote?.quote?.total_fee
+                  ? dataQuote?.quote?.total_fee + ' ' + assetFrom?.symbol
+                  : '-'}
+              </Text>
+            )}
+          </HStack>
         </HStack>
         <HStack width="full">
           <Text color="#AAA6A1" fontSize={12}>
@@ -44,13 +72,29 @@ export function DetailsBridge({
             flex={1}
             textAlign={'right'}
             justifyContent={'flex-end'}
+            minH={'21px'}
           >
-            <Text color="grey.50" fontWeight={600} fontSize={14} align="right">
-              0.52123 ETH
-            </Text>
-            <Text color="#AAA6A1" fontSize={12} align="right">
-              {`($989.78)`}
-            </Text>
+            {isLoadingQuote ? (
+              <Spinner color="grey.500" size="xs" />
+            ) : (
+              <>
+                <Text
+                  color="grey.50"
+                  fontWeight={600}
+                  fontSize={14}
+                  align="right"
+                >
+                  {dataQuote?.quote?.receive_amount
+                    ? dataQuote?.quote?.receive_amount + ' ' + assetTo?.symbol
+                    : ''}
+                </Text>
+                <Text color="#AAA6A1" fontSize={12} align="right">
+                  {dataQuote?.receive_in_usd
+                    ? `(${dataQuote?.receive_in_usd})`
+                    : '-'}
+                </Text>
+              </>
+            )}
           </HStack>
         </HStack>
       </VStack>

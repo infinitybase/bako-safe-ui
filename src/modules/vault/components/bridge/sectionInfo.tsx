@@ -4,10 +4,11 @@ import {
   Card,
   HStack,
   Image,
+  Skeleton,
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 import { AddressUtils } from '@/modules/core';
 
@@ -19,7 +20,7 @@ export interface SectionInfoBridgeProps {
   network: string;
   asset: AssetItem | null;
   imageNetwork?: string;
-  amount?: string;
+  amount?: string | number;
   amountUSD?: string;
 }
 
@@ -38,6 +39,9 @@ const SectionItem = ({
   imageNetwork,
   avatar = false,
 }: SectionItemBridgeProps) => {
+  const [loadedMainImg, setLoadedMainImg] = useState(false);
+  const [loadedSecondImg, setLoadedSecondImg] = useState(false);
+
   return (
     <HStack w="full" align="center">
       {avatar ? (
@@ -53,18 +57,41 @@ const SectionItem = ({
           }}
         />
       ) : (
-        <Box position="relative" w="32px" h="32px">
-          <Image src={image} boxSize={8} />
-          <Image
-            src={imageNetwork}
-            boxSize={4}
+        <Box
+          position="relative"
+          w={{ base: '42px', md: '38px' }}
+          h={{ base: '28.8px', md: '32px' }}
+        >
+          <Skeleton
+            isLoaded={loadedMainImg}
+            boxSize={8}
+            border="1px solid"
+            borderRadius="full"
+          >
+            <Image
+              src={image}
+              boxSize={8}
+              borderRadius="full"
+              onLoad={() => setLoadedMainImg(true)}
+            />
+          </Skeleton>
+          <Skeleton
+            isLoaded={loadedSecondImg}
             position="absolute"
             bottom={0}
             right={0}
             transform="translate(25%, 25%)"
+            boxSize={5}
             borderRadius="full"
-            border="1px solid"
-          />
+          >
+            <Image
+              src={imageNetwork}
+              boxSize={5}
+              borderRadius="full"
+              border="1px solid"
+              onLoad={() => setLoadedSecondImg(true)}
+            />
+          </Skeleton>
         </Box>
       )}
 
@@ -126,11 +153,11 @@ export function SectionInfo({
           />
           <VStack w="full" align="flex-end" gap={0}>
             <Text color="grey.50" fontSize={14} fontWeight={500}>
-              {`${amount} ${asset?.symbol} `}
+              {amount && asset?.symbol ? `${amount} ${asset?.symbol} ` : '-'}
             </Text>
 
             <Text color="grey.250" fontSize={12}>
-              {amountUSD}
+              {amountUSD ? amountUSD : '-'}
             </Text>
           </VStack>
         </HStack>
