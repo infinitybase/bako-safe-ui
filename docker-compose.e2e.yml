@@ -1,6 +1,4 @@
-networks:
-  e2e-network:
-    external: true
+version: "3.9"
 
 services:
   redis:
@@ -29,8 +27,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-    networks:
-      - e2e-network
   
   mongodb:
     container_name: mongodb-e2e
@@ -46,8 +42,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-    networks:
-      - e2e-network
 
   bako-safe-api:
     container_name: ${API_NAME}
