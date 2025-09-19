@@ -26,7 +26,6 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v1
 
       - name: Get latest image tag from ECR
-        id: get-latest-image
         run: |
           TAG=$(aws ecr describe-images \
             --repository-name bako-safe-api-stg \
@@ -35,10 +34,21 @@ jobs:
             --output text)
           echo "API_IMAGE_TAG=$TAG" >> $GITHUB_ENV
 
+      - name: Pull API image and convert to amd64
+        env:
+          ECR_REGISTRY: ${{ steps.login_ecr.outputs.registry }}
+          ECR_REPOSITORY: bako-safe-api-stg
+          API_IMAGE_TAG: ${{ env.API_IMAGE_TAG }}
+        run: |
+          docker pull --platform linux/amd64 $ECR_REGISTRY/$ECR_REPOSITORY:$API_IMAGE_TAG
+          docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$API_IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:amd64-$API_IMAGE_TAG
+          echo "API_IMAGE_TAG_AMD64=amd64-$API_IMAGE_TAG" >> $GITHUB_ENV
+
       - name: Start infra
         env:
           ECR_REGISTRY: ${{ steps.login_ecr.outputs.registry }}
           ECR_REPOSITORY: bako-safe-api-stg
+          API_IMAGE_TAG: ${{ env.API_IMAGE_TAG_AMD64 }}
         run: |
           docker compose --env-file .env.test -f docker-compose.e2e.yml up -d --wait
 
