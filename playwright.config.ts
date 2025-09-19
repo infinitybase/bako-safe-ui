@@ -13,7 +13,7 @@ export default defineConfig({
     headless: true,
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
-    baseURL: process.env.BASE_URL || 'http://localhost:5173',
+    baseURL: process.env.E2E_TEST_URL || 'http://localhost:5173',
     permissions: ['clipboard-read', 'clipboard-write'],
     trace: 'on-first-retry',
     actionTimeout: 5000,

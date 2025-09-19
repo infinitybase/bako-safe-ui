@@ -29,8 +29,8 @@ jobs:
       - name: Run Playwright tests (staging)
         run: xvfb-run -a pnpm exec playwright test
         env:
-          BASE_URL: https://stg-api.bako.global
-          NETWORK_URL: https://testnet.fuel.network/v1/graphql
+          E2E_TEST_URL: ${{ vars.E2E_TEST_URL }}
+          E2E_TEST_NETWORK: ${{ vars.E2E_TEST_NETWORK }}
 
       - name: Upload report to GitHub Actions Artifacts
         uses: actions/upload-artifact@v4
