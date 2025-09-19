@@ -7,33 +7,25 @@ import {
   hasText,
   test,
 } from '@fuels/playwright-utils';
-import { DeployContractConfig, LaunchTestNodeReturn } from 'fuels/test-utils';
 import { randomUUID, WalletUnlocked } from 'fuels';
 
 import { E2ETestUtils } from './utils/setup';
 
 await E2ETestUtils.downloadFuelExtension({ test });
 
-test.describe('Fuel Wallet', async () => {
-  let node: LaunchTestNodeReturn<DeployContractConfig[]>;
-  let genesisWallet: WalletUnlocked;
+test.describe('Fuel Wallet', () => {
   let fuelWalletTestHelper: FuelWalletTestHelper;
-
-  test.beforeAll(async () => {
-    const result = await E2ETestUtils.defaultLaunchTestNode();
-    node = result.node;
-    genesisWallet = result.genesisWallet;
-  });
-
-  test.afterAll(() => node.cleanup());
+  let genesisWallet: WalletUnlocked;
 
   test.beforeEach(async ({ extensionId, context, page }) => {
-    fuelWalletTestHelper = await E2ETestUtils.setupFuelWalletTestHelper({
+    const E2EUtils = await E2ETestUtils.setupFuelWallet({
       page,
       context,
       extensionId,
-      node,
     });
+
+    genesisWallet = E2EUtils.genesisWallet;
+    fuelWalletTestHelper = E2EUtils.fuelWalletTestHelper;
   });
 
   test('example fuel wallet', async ({ page }) => {

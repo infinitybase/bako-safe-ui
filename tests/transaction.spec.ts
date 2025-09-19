@@ -5,7 +5,6 @@ import {
   test,
 } from '@fuels/playwright-utils';
 import { WalletUnlocked } from 'fuels';
-import { DeployContractConfig, LaunchTestNodeReturn } from 'fuels/test-utils';
 
 import {
   disconnect,
@@ -23,30 +22,24 @@ import { E2ETestUtils } from './utils/setup';
 await E2ETestUtils.downloadFuelExtension({ test });
 
 test.describe('Create transactions', () => {
-  let node: LaunchTestNodeReturn<DeployContractConfig[]>;
-  let genesisWallet: WalletUnlocked;
   let fuelWalletTestHelper: FuelWalletTestHelper;
-
-  test.beforeAll(async () => {
-    const result = await E2ETestUtils.defaultLaunchTestNode();
-    node = result.node;
-    genesisWallet = result.genesisWallet;
-  });
-
-  test.afterAll(() => node.cleanup());
+  let genesisWallet: WalletUnlocked;
 
   test.beforeEach(async ({ extensionId, context, page }) => {
     await mockRouteAssets(page);
-    fuelWalletTestHelper = await E2ETestUtils.setupFuelWalletTestHelper({
+
+    const E2EUtils = await E2ETestUtils.setupFuelWallet({
       page,
       context,
       extensionId,
-      node,
     });
+
+    genesisWallet = E2EUtils.genesisWallet;
+    fuelWalletTestHelper = E2EUtils.fuelWalletTestHelper;
   });
 
   test('create and sign passwordkey', async ({ page }) => {
-    await AuthTestService.loginAuth(page);
+    const { genesisWallet: wallet } = await AuthTestService.loginAuth(page);
 
     await page.waitForSelector('text=Welcome to Bako Safe!', {
       timeout: 30000,
@@ -60,7 +53,7 @@ test.describe('Create transactions', () => {
 
     const { vaultAddress } = await VaultTestService.createVault(page);
 
-    await VaultTestService.addFundVault(page, vaultAddress, genesisWallet);
+    await VaultTestService.addFundVault(page, vaultAddress, wallet);
     await page.waitForTimeout(2000);
 
     await getByAriaLabel(page, 'Create transaction btn').click();
@@ -159,6 +152,7 @@ test.describe('Create transactions', () => {
 
     const {
       secondAddress,
+      genesisWallet: wallet,
       username: firstUsername,
     } = await AuthTestService.loginPassKeyInTwoAccounts(page);
 
@@ -170,7 +164,7 @@ test.describe('Create transactions', () => {
       signsNeed,
     );
 
-    await VaultTestService.addFundVault(page, vaultAddress, genesisWallet);
+    await VaultTestService.addFundVault(page, vaultAddress, wallet);
 
     // -- start transaction 2/1 and signed  by 1
     await getByAriaLabel(page, 'Create transaction btn').click();
@@ -247,6 +241,7 @@ test.describe('Create transactions', () => {
 
     const {
       secondAddress,
+      genesisWallet: wallet,
       username: firstUsername,
     } = await AuthTestService.loginPassKeyInTwoAccounts(page);
 
@@ -258,7 +253,7 @@ test.describe('Create transactions', () => {
       signsNeed,
     );
 
-    await VaultTestService.addFundVault(page, vaultAddress, genesisWallet);
+    await VaultTestService.addFundVault(page, vaultAddress, wallet);
     // -- start test transaction 2/2 and decliened by 1
     await getByAriaLabel(page, 'Create transaction btn').click();
     await expect(
@@ -353,9 +348,9 @@ test.describe('Create transactions', () => {
     await getByAriaLabel(page, 'Disconnect').click();
     await page.waitForTimeout(3000);
 
-    // await page.goto('chrome-extension://.../popup.html#/wallet');
-    page = fuelWalletTestHelper.getWalletPage();
-
+    await page.goto(
+      'chrome-extension://gkoblaakkldmbbfnfhijgegmjahojbee/popup.html#/wallet',
+    );
     await page.bringToFront();
     await page.waitForTimeout(2000);
     expect(page.getByText('Account 1')).toBeVisible();
@@ -466,7 +461,8 @@ test.describe('Create transactions', () => {
       '0x19E0E3971aCe37F66B4a2740DfB910608Bbc2b980cE240BB11e2161c4B8aA360';
 
     // login and create vault 1
-    const { username: user2 } = await AuthTestService.loginAuth(page);
+    const { genesisWallet: wallet, username: user2 } =
+      await AuthTestService.loginAuth(page);
 
     await getByAriaLabel(page, 'Close window').click();
 
@@ -478,7 +474,7 @@ test.describe('Create transactions', () => {
 
     await disconnect(page);
     // login in user to send tx
-    await AuthTestService.loginAuth(page, false);
+    await AuthTestService.loginAuth(page, wallet);
 
     await page.waitForSelector('text=Welcome to Bako Safe!', {
       timeout: 30000,
@@ -529,12 +525,12 @@ test.describe('Create transactions', () => {
 
     const reload = true;
 
-    await VaultTestService.addFundVault(page, vaultAddress, genesisWallet, !reload);
+    await VaultTestService.addFundVault(page, vaultAddress, wallet, !reload);
 
     await VaultTestService.addFundVault(
       page,
       vaultAddress,
-      genesisWallet,
+      wallet,
       reload,
       TestAssets.UNK,
     );

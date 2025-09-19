@@ -6,7 +6,6 @@ import {
 } from '@fuels/playwright-utils';
 import { BakoProvider, Vault } from 'bakosafe';
 import { Address, WalletUnlocked } from 'fuels';
-import { DeployContractConfig, LaunchTestNodeReturn } from 'fuels/test-utils';
 
 import { mockRouteAssets } from './utils/helpers';
 import { AuthTestService } from './utils/services/auth-service';
@@ -16,26 +15,20 @@ import { E2ETestUtils } from './utils/setup';
 await E2ETestUtils.downloadFuelExtension({ test });
 
 test.describe('API Token', () => {
-  let node: LaunchTestNodeReturn<DeployContractConfig[]>;
-  let genesisWallet: WalletUnlocked;
   let fuelWalletTestHelper: FuelWalletTestHelper;
-
-  test.beforeAll(async () => {
-    const result = await E2ETestUtils.defaultLaunchTestNode();
-    node = result.node;
-    genesisWallet = result.genesisWallet;
-  });
-
-  test.afterAll(() => node.cleanup());
+  let genesisWallet: WalletUnlocked;
 
   test.beforeEach(async ({ extensionId, context, page }) => {
     await mockRouteAssets(page);
-    fuelWalletTestHelper = await E2ETestUtils.setupFuelWalletTestHelper({
+
+    const E2EUtils = await E2ETestUtils.setupFuelWallet({
       page,
       context,
       extensionId,
-      node,
     });
+
+    genesisWallet = E2EUtils.genesisWallet;
+    fuelWalletTestHelper = E2EUtils.fuelWalletTestHelper;
   });
 
   test('tx using api token', async ({ page }) => {
