@@ -10,25 +10,41 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { bn } from 'fuels';
-import { useCallback, useMemo, useState } from 'react';
+import debounce from 'lodash.debounce';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { LeftAndRightArrow } from '@/components';
 import { Asset } from '@/modules/core';
 import { useFormBridge } from '@/modules/vault/hooks/bridge';
 
 import { InputAmount } from '../inputAmount';
+import { ErrorBridgeForm } from '../utils';
 import { SelectNetworkDrawerBridge } from './selectNetworkDrawer';
 
 export interface AmountBridgeMobileProps {
   assets?: Required<Asset>[];
+  errorAmount?: string | null;
+  setErrorAmount: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
-export function AmountBrigdeMobile({ assets }: AmountBridgeMobileProps) {
-  const [errorAmount, setErrorAmount] = useState(false);
+export function AmountBrigdeMobile({
+  assets,
+  errorAmount,
+  setErrorAmount,
+}: AmountBridgeMobileProps) {
   const selectNetworkDrawer = useDisclosure();
-  const { assetFrom, form, amount, assetFromUSD } = useFormBridge();
+  const {
+    assetFrom,
+    form,
+    amount,
+    assetFromUSD,
+    dataLimits,
+    getOperationQuotes,
+  } = useFormBridge();
   const fuelImg = 'https://verified-assets.fuel.network/images/fuel.svg';
-  const fee = 0.000003205;
+  const [debounceTimer, setDebounceTimer] = useState<NodeJS.Timeout | null>(
+    null,
+  );
 
   const balance = useMemo(() => {
     const asset = assets?.find((a) => a.assetId === assetFrom?.value);
@@ -42,39 +58,102 @@ export function AmountBrigdeMobile({ assets }: AmountBridgeMobileProps) {
     return balance;
   }, [assets, assetFrom?.value]);
 
+  const debouncedGetQuotes = useMemo(
+    () =>
+      debounce((value: string) => {
+        getOperationQuotes(value);
+      }, 700),
+    [getOperationQuotes],
+  );
+
   const handleSourceChange = useCallback(
     (value: string) => {
       form.setValue('amount', value);
+      setErrorAmount(null);
       const balanceTreated = Number(balance.replace(/,/g, ''));
       const valueTreated = Number(value.replace(/,/g, ''));
+      const insufficientBalance = valueTreated > balanceTreated;
+      const hasMinAmount = valueTreated >= (dataLimits.min_amount ?? 0);
 
-      if (valueTreated > balanceTreated) setErrorAmount(true);
-      else if (errorAmount) setErrorAmount(false);
+      if (insufficientBalance) {
+        setErrorAmount(ErrorBridgeForm.INSUFFICIENT_BALANCE);
+        return;
+      }
+
+      if (!hasMinAmount && !insufficientBalance && valueTreated > 0) {
+        setErrorAmount(`Amount must be at least ${dataLimits.min_amount}`);
+      }
+
+      if (debounceTimer) {
+        clearTimeout(debounceTimer);
+      }
+
+      if (valueTreated > 0) {
+        const newTimer = setTimeout(() => {
+          getOperationQuotes(value);
+        }, 700);
+
+        setDebounceTimer(newTimer);
+      }
     },
-    [form, errorAmount, balance],
+    [
+      form,
+      debounceTimer,
+      balance,
+      dataLimits.min_amount,
+      setErrorAmount,
+      getOperationQuotes,
+    ],
   );
 
-  const handleMinAmount = useCallback(async () => {
-    if (!balance || balance === '0') {
-      form.setValue('amount', '0');
+  useEffect(() => {
+    return () => {
+      if (debounceTimer) {
+        clearTimeout(debounceTimer);
+      }
+    };
+  }, [debounceTimer]);
+
+  const handleMinAmount = useCallback(() => {
+    setErrorAmount(null);
+    const balanceTreated = Number(balance.replace(/,/g, ''));
+
+    form.setValue('amount', dataLimits.min_amount.toString());
+
+    if (dataLimits.min_amount > balanceTreated) {
+      setErrorAmount(ErrorBridgeForm.INSUFFICIENT_BALANCE);
       return;
     }
 
-    const amount = fee + 0.00000001;
-    form.setValue('amount', amount.toString());
-  }, [form, balance]);
+    debouncedGetQuotes(dataLimits.min_amount.toString());
+  }, [
+    form,
+    balance,
+    dataLimits.min_amount,
+    setErrorAmount,
+    debouncedGetQuotes,
+  ]);
 
   const handleMaxAmount = useCallback(() => {
-    if (!balance || balance === '0') {
-      form.setValue('amount', '0');
+    setErrorAmount(null);
+
+    const balanceTreated = Number(balance.replace(/,/g, ''));
+
+    form.setValue('amount', dataLimits.max_amount.toString());
+
+    if (dataLimits.max_amount > balanceTreated) {
+      setErrorAmount(ErrorBridgeForm.INSUFFICIENT_BALANCE);
       return;
     }
 
-    const balanceTreated = balance.replace(/,/g, '');
-
-    const amount = Number(balanceTreated) - fee;
-    form.setValue('amount', amount.toString());
-  }, [form, balance]);
+    debouncedGetQuotes(dataLimits.max_amount.toString());
+  }, [
+    form,
+    balance,
+    dataLimits.max_amount,
+    setErrorAmount,
+    debouncedGetQuotes,
+  ]);
 
   return (
     <Card
@@ -127,7 +206,7 @@ export function AmountBrigdeMobile({ assets }: AmountBridgeMobileProps) {
           symbol={assetFrom?.symbol ?? ''}
           value={amount}
           onChange={handleSourceChange}
-          disabled={false} //maxFee === 0 || maxFee == undefined}
+          disabled={false}
         />
       </Box>
 
@@ -140,7 +219,7 @@ export function AmountBrigdeMobile({ assets }: AmountBridgeMobileProps) {
         <Button
           maxH="28px"
           minW="48px"
-          isDisabled={false} //maxFee === 0 || maxFee == undefined}
+          isDisabled={!dataLimits.min_amount}
           variant="secondary"
           borderRadius={6}
           padding={'4px 6px 4px 6px'}
@@ -153,9 +232,9 @@ export function AmountBrigdeMobile({ assets }: AmountBridgeMobileProps) {
         <Button
           maxH="28px"
           minW="48px"
-          isDisabled={false} //maxFee === 0 || maxFee == undefined}
+          isDisabled={!dataLimits.max_amount}
           variant="secondary"
-          onClick={handleMaxAmount} //handleSetCurrencyAmount(50, balance)}
+          onClick={handleMaxAmount}
           borderRadius={6}
           padding={'4px 6px 4px 6px'}
           fontSize={10}
@@ -171,8 +250,7 @@ export function AmountBrigdeMobile({ assets }: AmountBridgeMobileProps) {
       >
         {!!errorAmount && (
           <Text color="red.500" fontSize={10}>
-            {/* {errorAmount} */}
-            Error na quantidde amount, insuficiente, tente outra coisa!
+            {errorAmount}
           </Text>
         )}
       </HStack>

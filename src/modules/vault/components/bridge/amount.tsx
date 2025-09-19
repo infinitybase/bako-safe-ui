@@ -1,12 +1,14 @@
 import { Button, Card, HStack, Text, VStack } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import { bn } from 'fuels';
-import { useCallback, useMemo, useState } from 'react';
+import debounce from 'lodash.debounce';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { Asset } from '@/modules/core';
 
 import { useFormBridge } from '../../hooks/bridge';
 import { InputAmount } from './inputAmount';
+import { ErrorBridgeForm } from './utils';
 
 export interface AmountBridgeProps {
   symbol: string;
@@ -23,9 +25,26 @@ export function AmountBrigde({
   setStepsForm,
   assets,
 }: AmountBridgeProps) {
-  const [errorAmount, setErrorAmount] = useState(false);
-  const { assetFrom, form, amount, assetFromUSD } = useFormBridge();
-  const fee = 0.000003205;
+  const [errorAmount, setErrorAmount] = useState<string | null>(null);
+  const {
+    assetFrom,
+    form,
+    amount,
+    assetFromUSD,
+    dataLimits,
+    getOperationQuotes,
+  } = useFormBridge();
+  const [debounceTimer, setDebounceTimer] = useState<NodeJS.Timeout | null>(
+    null,
+  );
+
+  const debouncedGetQuotes = useMemo(
+    () =>
+      debounce((value: string) => {
+        getOperationQuotes(value);
+      }, 700),
+    [getOperationQuotes],
+  );
 
   const balance = useMemo(() => {
     const asset = assets?.find((a) => a.assetId === assetFrom?.value);
@@ -39,11 +58,18 @@ export function AmountBrigde({
   const handleSourceChange = useCallback(
     (value: string) => {
       form.setValue('amount', value);
+      setErrorAmount(null);
 
       const balanceTreated = Number(balance.replace(/,/g, ''));
       const valueTreated = Number(value.replace(/,/g, ''));
       const insufficientBalance = valueTreated > balanceTreated;
-      setErrorAmount(insufficientBalance);
+      const hasMinAmount = valueTreated >= dataLimits.min_amount;
+
+      if (insufficientBalance)
+        setErrorAmount(ErrorBridgeForm.INSUFFICIENT_BALANCE);
+      if (!hasMinAmount && !insufficientBalance && valueTreated > 0) {
+        setErrorAmount(`Amount must be at least ${dataLimits.min_amount}`);
+      }
 
       const removeStep =
         (valueTreated === 0 || insufficientBalance) && stepsForm > 1;
@@ -56,35 +82,84 @@ export function AmountBrigde({
       const addNewStep =
         valueTreated > 0 && !insufficientBalance && stepsForm === 1;
       if (addNewStep) setStepsForm(2);
+
+      if (debounceTimer) {
+        clearTimeout(debounceTimer);
+      }
+
+      if (valueTreated > 0 && !insufficientBalance) {
+        const newTimer = setTimeout(() => {
+          getOperationQuotes(value);
+        }, 700);
+
+        setDebounceTimer(newTimer);
+      }
     },
-    [form, balance, stepsForm, setStepsForm],
+    [
+      form,
+      balance,
+      debounceTimer,
+      dataLimits.min_amount,
+      stepsForm,
+      setStepsForm,
+      getOperationQuotes,
+    ],
   );
 
+  useEffect(() => {
+    return () => {
+      if (debounceTimer) {
+        clearTimeout(debounceTimer);
+      }
+    };
+  }, [debounceTimer]);
+
   const handleMinAmount = useCallback(() => {
-    if (!balance || balance === '0') {
-      form.setValue('amount', '0');
+    setErrorAmount(null);
+    const balanceTreated = Number(balance.replace(/,/g, ''));
+
+    form.setValue('amount', dataLimits.min_amount.toString());
+
+    if (dataLimits.min_amount > balanceTreated) {
+      setErrorAmount(ErrorBridgeForm.INSUFFICIENT_BALANCE);
+      if (stepsForm > 1) setStepsForm(1);
       return;
     }
 
-    const amount = fee + 0.00000001;
-    form.setValue('amount', amount.toString());
-
     if (stepsForm === 1) setStepsForm(2);
-  }, [form, balance, stepsForm, setStepsForm]);
+    debouncedGetQuotes(dataLimits.min_amount.toString());
+  }, [
+    form,
+    balance,
+    dataLimits.min_amount,
+    stepsForm,
+    setStepsForm,
+    debouncedGetQuotes,
+  ]);
 
   const handleMaxAmount = useCallback(() => {
-    if (!balance || balance === '0') {
-      form.setValue('amount', '0');
+    setErrorAmount(null);
+
+    const balanceTreated = Number(balance.replace(/,/g, ''));
+
+    form.setValue('amount', dataLimits.max_amount.toString());
+
+    if (dataLimits.max_amount > balanceTreated) {
+      setErrorAmount(ErrorBridgeForm.INSUFFICIENT_BALANCE);
+      if (stepsForm > 1) setStepsForm(1);
       return;
     }
 
-    const balanceTreated = balance.replace(/,/g, '');
-
-    const amount = Number(balanceTreated) - fee;
-    form.setValue('amount', amount.toString());
-
     if (stepsForm === 1) setStepsForm(2);
-  }, [form, balance, stepsForm, setStepsForm]);
+    debouncedGetQuotes(dataLimits.max_amount.toString());
+  }, [
+    form,
+    balance,
+    dataLimits.max_amount,
+    stepsForm,
+    setStepsForm,
+    debouncedGetQuotes,
+  ]);
 
   return (
     <MotionBox
@@ -117,7 +192,7 @@ export function AmountBrigde({
           symbol={symbol}
           value={amount}
           onChange={handleSourceChange}
-          disabled={false} //maxFee === 0 || maxFee == undefined}
+          disabled={false}
         />
 
         <HStack justifyContent="center" mb={{ base: 2, md: 4 }}>
@@ -129,7 +204,7 @@ export function AmountBrigde({
           <Button
             maxH="28px"
             minW="48px"
-            isDisabled={false} //maxFee === 0 || maxFee == undefined}
+            isDisabled={false}
             variant="secondary"
             borderRadius={6}
             padding={'4px 6px 4px 6px'}
@@ -142,9 +217,9 @@ export function AmountBrigde({
           <Button
             maxH="28px"
             minW="48px"
-            isDisabled={false} //maxFee === 0 || maxFee == undefined}
+            isDisabled={false}
             variant="secondary"
-            onClick={() => handleMaxAmount()} //handleSetCurrencyAmount(50, balance)}
+            onClick={() => handleMaxAmount()}
             borderRadius={6}
             padding={'4px 6px 4px 6px'}
             fontSize={10}
@@ -162,7 +237,7 @@ export function AmountBrigde({
         >
           {!!errorAmount && (
             <Text color="red.500" fontSize="xs">
-              Insufficient balance for this operation!
+              {errorAmount}
             </Text>
           )}
         </HStack>

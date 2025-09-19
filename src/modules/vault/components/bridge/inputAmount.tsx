@@ -22,7 +22,7 @@ export const InputAmount = ({
   useEffect(() => {
     if (mirrorRef.current) {
       const mirrorWidth = mirrorRef.current.offsetWidth;
-      setInputWidth(mirrorWidth + 10);
+      setInputWidth(mirrorWidth + 13);
     }
   }, [value]);
 
