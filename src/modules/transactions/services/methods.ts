@@ -284,10 +284,10 @@ export class TransactionService {
     const serializedTxCount = bn(
       transactionRequest.toTransactionBytes().length,
     );
-    totalGasUsed = totalGasUsed.add(serializedTxCount.mul(64));
+    const totalGasWithBytes = totalGasUsed.add(serializedTxCount.mul(64));
 
     const predicateSuccessFeeDiff = calculateGasFee({
-      gas: totalGasUsed,
+      gas: totalGasWithBytes,
       priceFactor: gasPriceFactor,
       gasPrice,
     });
