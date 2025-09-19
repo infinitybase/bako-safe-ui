@@ -6,7 +6,7 @@ on:
 
 jobs:
   e2e-tests:
-    runs-on: ubuntu-22.04-arm64
+    runs-on: macos-latest
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
