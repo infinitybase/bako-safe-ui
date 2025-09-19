@@ -8,14 +8,14 @@ import {
   InputGroup,
   InputRightElement,
   Skeleton,
+  Spinner,
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
 import { Dialog, SearchIcon } from '@/components';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useFormBridge } from '../../hooks/bridge';
 import { ITransferBridgePayload } from './providers/FormBridgeProvider';
@@ -30,20 +30,23 @@ export interface AssetItem {
 
 export interface AssetItemBrigdeProps {
   asset: AssetItem;
-  onSelect: (asset: AssetItem) => void;
 }
 
 export interface ModalSelectAssetsProps {
   title: string;
   isOpen?: boolean;
   options?: AssetItem[];
+  isLoadingOptions: boolean;
   onClose: () => void;
   onSelect: (asset: AssetItem) => void;
 }
 
-const AssetItem = ({ asset, onSelect }: AssetItemBrigdeProps) => {
+const AssetItem = React.memo(function AssetItemMemo({
+  asset,
+  onSelect,
+}: AssetItemBrigdeProps & { onSelect: (a: AssetItem) => void }) {
   const [loaded, setLoaded] = useState(false);
-  const { image, name, symbol, balance } = asset;
+  const { image, name } = asset;
 
   return (
     <HStack
@@ -65,90 +68,70 @@ const AssetItem = ({ asset, onSelect }: AssetItemBrigdeProps) => {
           onError={() => setLoaded(true)}
         />
       </Skeleton>
+
       <Text fontSize={12} fontWeight={500} color="grey.50">
         {name}
       </Text>
-      <Text ml="auto" fontSize={12} fontWeight={400}>
-        {balance} {symbol}
-      </Text>
     </HStack>
   );
-};
-
-export function ModalSelectAssetsBridge({
+});
+export function ModalSelectNetworkBridge({
   title,
   isOpen = false,
   options,
+  isLoadingOptions,
   onClose,
   onSelect,
 }: ModalSelectAssetsProps) {
   const { control } = useFormContext<ITransferBridgePayload>();
-  const { tokensUSD } = useWorkspaceContext();
-  const { form, getOperationLimits } = useFormBridge();
-  const [filteredAssets, setFilteredAssets] = useState<AssetItem[]>([]);
+  const { form } = useFormBridge();
+
+  const [filteredNetworks, setFilteredNetworks] = useState<AssetItem[]>([]);
   const [assetSelected, setAssetSelected] = useState<AssetItem>(
     {} as AssetItem,
   );
-  const [searchValue, setSearchValue] = useState('');
 
   const handleClose = () => {
-    setFilteredAssets(options ?? []);
+    setFilteredNetworks(options ?? []);
     if (assetSelected?.value) {
       onSelect(assetSelected);
     } else {
-      form.resetField('selectAssetTo');
+      form.resetField('selectNetworkTo');
     }
 
-    form.resetField('searchAsset');
-    setSearchValue('');
+    form.resetField('searchNetwork');
     onClose();
   };
 
-  const orderOptions = useCallback(
-    (optionsOrder: AssetItem[]) => {
-      return optionsOrder?.sort((a, b) => {
-        const usdA = tokensUSD.data[a.value.toLowerCase()]?.usdAmount;
-        const usdB = tokensUSD.data[b.value.toLowerCase()]?.usdAmount;
-
-        if (usdA != null && usdB != null) {
-          return usdB - usdA;
-        }
-
-        if (usdA != null) return -1;
-        if (usdB != null) return 1;
-
-        return Number(b.balance) - Number(a.balance);
-      });
-    },
-    [tokensUSD.data],
-  );
-
   useEffect(() => {
-    if (!options) return;
+    setFilteredNetworks(options ?? []);
+  }, [options]);
 
-    let result = options;
+  const handleSearch = useCallback(
+    (searchValue: string) => {
+      if (!options) return;
 
-    if (searchValue.trim()) {
-      result = options.filter((asset) =>
+      if (!searchValue.trim()) {
+        setFilteredNetworks(options);
+        return;
+      }
+
+      const filtered = options.filter((asset) =>
         asset.name.toLowerCase().includes(searchValue.toLowerCase()),
       );
-    }
 
-    setFilteredAssets(orderOptions(result));
-  }, [options, orderOptions, searchValue]);
-
-  const handleSearch = useCallback((value: string) => {
-    setSearchValue(value);
-  }, []);
+      setFilteredNetworks(filtered);
+    },
+    [options, setFilteredNetworks],
+  );
 
   const handleSelectAsset = useCallback(
     (asset: AssetItem) => {
       onSelect(asset);
       setAssetSelected(asset);
-      getOperationLimits(asset);
       onClose();
     },
-    [onSelect, onClose, getOperationLimits],
+    [onSelect, onClose],
   );
 
   return (
@@ -162,7 +145,7 @@ export function ModalSelectAssetsBridge({
         <Dialog.Header
           position={{ base: 'static', sm: 'relative' }}
           title={title}
-          description={`Select the asset of your choice.`}
+          description={`Select the network of your choice.`}
           mb={0}
           mt={0}
           titleSxProps={{
@@ -175,7 +158,7 @@ export function ModalSelectAssetsBridge({
           onClose={handleClose}
         />
         <Controller
-          name="searchAsset"
+          name="searchNetwork"
           control={control}
           render={({ field, fieldState }) => {
             return (
@@ -195,7 +178,7 @@ export function ModalSelectAssetsBridge({
                     }}
                   />
 
-                  <FormLabel>Search asset</FormLabel>
+                  <FormLabel>Search Network</FormLabel>
                 </InputGroup>
               </FormControl>
             );
@@ -218,18 +201,20 @@ export function ModalSelectAssetsBridge({
             },
           }}
         >
-          {filteredAssets.length > 0 ? (
-            filteredAssets.map((asset) => (
+          {isLoadingOptions ? (
+            <Spinner color="grey.500" size="md" />
+          ) : filteredNetworks.length > 0 ? (
+            filteredNetworks.map((net) => (
               /* eslint-disable react/prop-types */
               <AssetItem
-                key={asset.value}
-                asset={asset}
+                key={net.value}
+                asset={net}
                 onSelect={handleSelectAsset}
               />
             ))
           ) : (
             <Text color="grey.50" fontSize={12}>
-              No assets found
+              No netwoks found
             </Text>
           )}
         </VStack>

@@ -12,13 +12,18 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { useCallback } from 'react';
 import { Controller, useFormContext, useWatch } from 'react-hook-form';
 
 import { AssetSelect, ChevronDownIcon, SwapIcon } from '@/components';
+import { useNetworks } from '@/modules/network/hooks';
 import { limitCharacters } from '@/utils';
 
+import { useFormBridge } from '../../hooks/bridge';
 import { ModalSelectAssetsBridge } from './modalSelectAssets';
+import { ModalSelectNetworkBridge } from './modalSelectNetwork';
 import { ITransferBridgePayload } from './providers/FormBridgeProvider';
+import { getFuelAssetsByNetwork, optionsNets } from './utils';
 
 export interface SelectNetworkProps {
   stepsForm: number;
@@ -40,6 +45,15 @@ export function SelectBridgeNetwork({
 }: SelectNetworkProps) {
   const { control } = useFormContext<ITransferBridgePayload>();
   const dialogSelectNetwork = useDisclosure();
+  const dialogSelectAsset = useDisclosure();
+  const {
+    toNetworkOptions,
+    toAssetOptions,
+    form,
+    isLoadingDestinations,
+    getDestinations,
+  } = useFormBridge();
+  const { currentNetwork } = useNetworks();
 
   const networkToValue = useWatch({
     control,
@@ -51,51 +65,14 @@ export function SelectBridgeNetwork({
     name: 'selectAssetFrom',
   });
 
-  const optionsAssets = [
-    {
-      value:
-        '0xf8f8b6283d7fa5b672b530cbb84fcccb4ff8dc40f8176ef4544ddb1f1952ad07',
-      name: 'ETH',
-      image: 'https://assets.fuel.network/providers/eth.svg',
-      symbol: null,
-    },
-    {
-      value:
-        '0x1d5d97005e41cae2187a895fd8eab0506111e0e2f3331cd3912c15c24e3c1d82',
-      name: 'FUEL',
-      image: 'https://verified-assets.fuel.network/images/fuel.svg',
-      symbol: null,
-    },
-    {
-      value: 'USDC',
-      name: 'USDC',
-      image:
-        'https://firebasestorage.googleapis.com/v0/b/pump-555ee.appspot.com/o/images%2Faecb0358-d860-402c-9f3c-c5b579e4eb88.jpeg?alt=media&token=b39c9a29-4b5e-4b2c-8600-62e9afff2448',
-      symbol: null,
-    },
-  ];
-
-  const optionsNets = [
-    {
-      value: 'Network ethereum',
-      name: 'Ethereum Network',
-      image: 'https://assets.fuel.network/providers/eth.svg',
-      symbol: null,
-    },
-    {
-      value: 'Network Fuel Ignition',
-      name: 'Fuel Ignition',
-      image: 'https://verified-assets.fuel.network/images/fuel.svg',
-      symbol: null,
-    },
-    {
-      value: 'Network Base',
-      name: 'Base',
-      image:
-        'https://firebasestorage.googleapis.com/v0/b/pump-555ee.appspot.com/o/images%2Faecb0358-d860-402c-9f3c-c5b579e4eb88.jpeg?alt=media&token=b39c9a29-4b5e-4b2c-8600-62e9afff2448',
-      symbol: null,
-    },
-  ];
+  const checkResetSteps = useCallback(() => {
+    if (stepsForm > 0) {
+      setTimeout(() => {
+        setStepsForm(0);
+        form.setValue('amount', '0.000');
+      }, 200);
+    }
+  }, [stepsForm, form, setStepsForm]);
 
   return (
     <VStack
@@ -152,10 +129,22 @@ export function SelectBridgeNetwork({
                 <InputGroup position="relative" overflow="visible" zIndex={1}>
                   <AssetSelect
                     {...field}
-                    options={optionsAssets}
+                    options={getFuelAssetsByNetwork(currentNetwork)}
                     label={!field.value ? 'Asset' : undefined}
                     boxProps={{ bg: 'grey.925', h: '45px' }}
                     textValueProps={{ color: 'grey.50' }}
+                    onChange={(e) => {
+                      field.onChange(e);
+                      checkResetSteps();
+                      form.resetField('selectNetworkTo');
+                      form.resetField('selectNetworkToMobile');
+                      form.resetField('selectAssetToMobile');
+                      form.resetField('selectAssetTo');
+                      const asset = getFuelAssetsByNetwork(currentNetwork).find(
+                        (a) => a.value === e,
+                      );
+                      getDestinations(asset);
+                    }}
                   />
                 </InputGroup>
               </FormControl>
@@ -193,22 +182,62 @@ export function SelectBridgeNetwork({
             name="selectNetworkTo"
             render={({ field }) => (
               <FormControl>
-                <InputGroup position="relative" overflow="visible">
-                  <AssetSelect
-                    {...field}
-                    options={optionsNets}
-                    label={!field.value ? 'Destination' : undefined}
-                    isDisabled={!assetFromValue}
-                    boxProps={{
-                      bg: 'grey.925',
-                      h: '45px',
-                      cursor: !assetFromValue ? 'not-allowed' : 'pointer',
-                      'aria-disabled': !assetFromValue,
-                      opacity: !assetFromValue ? 0.5 : 1,
+                <Box
+                  position="relative"
+                  w="full"
+                  h="45px"
+                  px={5}
+                  py={3}
+                  bg="grey.925"
+                  border="1px solid"
+                  borderColor={'grey.800'}
+                  borderRadius={10}
+                  aria-label={'Select a network'}
+                  cursor={!assetFromValue ? 'not-allowed' : 'pointer'}
+                  opacity={!assetFromValue ? 0.5 : 1}
+                  aria-disabled={!assetFromValue}
+                  onClick={
+                    assetFromValue ? dialogSelectNetwork.onOpen : undefined
+                  }
+                  {...field}
+                >
+                  <HStack w="100%" justify="space-between">
+                    <HStack>
+                      {field?.value && (
+                        <Image src={field?.value.image} boxSize={6} />
+                      )}
+                      <Text
+                        fontSize={field.value ? '14px' : 'md'}
+                        color={field.value ? 'grey.50' : 'grey.400'}
+                        fontWeight={400}
+                      >
+                        {field.value
+                          ? limitCharacters(field.value.name ?? '', 10)
+                          : 'Network'}
+                      </Text>
+                    </HStack>
+
+                    <ChevronDownIcon
+                      fontSize="20px"
+                      color="grey.75"
+                      transform="translateY(2px)"
+                    />
+                  </HStack>
+
+                  <ModalSelectNetworkBridge
+                    title="Select Network"
+                    isOpen={dialogSelectNetwork.isOpen}
+                    onClose={dialogSelectNetwork.onClose}
+                    options={toNetworkOptions}
+                    isLoadingOptions={isLoadingDestinations}
+                    onSelect={(value) => {
+                      form.resetField('selectAssetTo');
+                      form.resetField('selectAssetToMobile');
+                      checkResetSteps();
+                      field.onChange(value);
                     }}
-                    textValueProps={{ color: 'grey.50' }}
                   />
-                </InputGroup>
+                </Box>
               </FormControl>
             )}
           />
@@ -233,7 +262,7 @@ export function SelectBridgeNetwork({
                   opacity={!networkToValue ? 0.5 : 1}
                   aria-disabled={!networkToValue}
                   onClick={
-                    networkToValue ? dialogSelectNetwork.onOpen : undefined
+                    networkToValue ? dialogSelectAsset.onOpen : undefined
                   }
                   {...field}
                 >
@@ -262,8 +291,9 @@ export function SelectBridgeNetwork({
 
                   <ModalSelectAssetsBridge
                     title="Select Asset"
-                    isOpen={dialogSelectNetwork.isOpen}
-                    onClose={dialogSelectNetwork.onClose}
+                    isOpen={dialogSelectAsset.isOpen}
+                    onClose={dialogSelectAsset.onClose}
+                    options={toAssetOptions}
                     onSelect={(value) => {
                       field.onChange(value);
                       if (stepsForm === 0) {

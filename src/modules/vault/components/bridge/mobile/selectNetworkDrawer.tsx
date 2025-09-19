@@ -11,8 +11,11 @@ import {
 } from '@chakra-ui/react';
 import { UseFormReturn } from 'react-hook-form';
 
+import { useNetworks } from '@/modules/network/hooks';
+
 import { AssetItem } from '../modalSelectAssets';
 import { ITransferBridgePayload } from '../providers/FormBridgeProvider';
+import { getFuelAssetsByNetwork } from '../utils';
 
 export interface SelectNetworkDrawerProps {
   isOpen: boolean;
@@ -20,28 +23,6 @@ export interface SelectNetworkDrawerProps {
   form: UseFormReturn<ITransferBridgePayload>;
   children?: React.ReactNode;
 }
-
-const optionsAssets = [
-  {
-    value: '0xf8f8b6283d7fa5b672b530cbb84fcccb4ff8dc40f8176ef4544ddb1f1952ad07',
-    name: 'ETH',
-    image: 'https://assets.fuel.network/providers/eth.svg',
-    symbol: 'ETH',
-  },
-  {
-    value: '0x1d5d97005e41cae2187a895fd8eab0506111e0e2f3331cd3912c15c24e3c1d82',
-    name: 'FUEL',
-    image: 'https://verified-assets.fuel.network/images/fuel.svg',
-    symbol: 'FUEL',
-  },
-  {
-    value: 'USDC',
-    name: 'USDC',
-    image:
-      'https://firebasestorage.googleapis.com/v0/b/pump-555ee.appspot.com/o/images%2Faecb0358-d860-402c-9f3c-c5b579e4eb88.jpeg?alt=media&token=b39c9a29-4b5e-4b2c-8600-62e9afff2448',
-    symbol: 'USC',
-  },
-];
 
 interface AssetItemBrigdeProps {
   asset: AssetItem;
@@ -63,6 +44,8 @@ const AssetItemMobile = ({ asset, form, onClose }: AssetItemBrigdeProps) => {
       w="full"
       onClick={() => {
         form.setValue('selectAssetFrom', asset.value);
+        form.resetField('selectAssetToMobile');
+        form.resetField('selectNetworkToMobile');
         onClose();
       }}
     >
@@ -79,6 +62,8 @@ export function SelectNetworkDrawerBridge({
   onClose,
   form,
 }: SelectNetworkDrawerProps) {
+  const { currentNetwork } = useNetworks();
+
   return (
     <Drawer placement="bottom" onClose={onClose} isOpen={isOpen}>
       <DrawerOverlay />
@@ -86,10 +71,10 @@ export function SelectNetworkDrawerBridge({
         <DrawerHeader>
           <VStack fontWeight="normal" align="start">
             <Text fontSize={14} color="grey.50">
-              Network
+              Asset
             </Text>
             <Text fontSize={12} color="grey.425">
-              Select the network of your choice.
+              Select the asset of your choice.
             </Text>
           </VStack>
         </DrawerHeader>
@@ -110,7 +95,7 @@ export function SelectNetworkDrawerBridge({
               },
             }}
           >
-            {optionsAssets.map((asset) => (
+            {getFuelAssetsByNetwork(currentNetwork).map((asset) => (
               /* eslint-disable react/prop-types */
               <AssetItemMobile
                 key={asset.value}

@@ -126,12 +126,12 @@ const VaultBridgePage = () => {
               setStepsForm={setStepsForm}
               setScreenBridge={setScreenBridge}
               stepsForm={stepsForm}
-              assets={assets?.assets}
+              assets={assets}
             />
           )}
           {screenBridge === 'form' && isMobile && (
             <FormMobilePageBrigde
-              assets={assets?.assets}
+              assets={assets}
               setScreenBridge={setScreenBridge}
             />
           )}
