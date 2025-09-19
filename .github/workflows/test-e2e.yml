@@ -36,7 +36,7 @@ jobs:
       - name: Start infra
         env:
           ECR_REGISTRY: ${{ steps.login_ecr.outputs.registry }}
-          ECR_REPOSITORY: bako-safe-api
+          ECR_REPOSITORY: bako-safe-api-stg
         run: |
           docker compose --env-file .env.test -f docker-compose.e2e.yml up -d
 
