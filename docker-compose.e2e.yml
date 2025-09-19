@@ -51,7 +51,7 @@ services:
 
   bako-safe-api:
     container_name: ${API_NAME}
-    image: 392170836981.dkr.ecr.us-east-1.amazonaws.com/bako-safe-api-stg
+    image: ${ECR_REGISTRY}/${ECR_REPOSITORY}:${API_IMAGE_TAG}
     ports: 
       - '${API_PORT}:${API_PORT}'
     environment:
