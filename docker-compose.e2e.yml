@@ -1,0 +1,98 @@
+networks:
+  e2e-network:
+    external: true
+
+services:
+  redis:
+    container_name: redis-e2e
+    image: redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+     
+  postgres:
+    container_name: postgres-e2e
+    image: postgres:16.3-alpine3.20
+    environment:
+      POSTGRES_DB: ${DATABASE_NAME}
+      POSTGRES_USER: ${DATABASE_USERNAME}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+    ports:
+      - "${DATABASE_PORT}:5432"
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - e2e-network
+  
+  mongodb:
+    container_name: mongodb-e2e
+    image: mongo:6.0
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+    ports:
+      - "${MONGO_PORT}:27017"
+    restart: always
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - e2e-network
+
+  bako-safe-api:
+    container_name: ${API_NAME}
+    image: 392170836981.dkr.ecr.us-east-1.amazonaws.com/bako-safe-api-stg
+    ports: 
+      - '${API_PORT}:${API_PORT}'
+    environment:
+      - API_ENVIRONMENT=${API_ENVIRONMENT}
+      # DATABASE
+      - DATABASE_HOST=${DATABASE_HOST}
+      - DATABASE_PORT=${DATABASE_PORT}
+      - DATABASE_USERNAME=${DATABASE_USERNAME}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+      - DATABASE_NAME=${DATABASE_NAME}
+      - DB_METABASE_USERNAME=${DB_METABASE_USERNAME}
+      - DB_METABASE_PASS=${DB_METABASE_PASS}
+      # APP
+      - UI_URL=${UI_URL}
+      - API_URL=${API_URL}
+      - API_PORT=${API_PORT}
+      - APP_NAME=${API_NAME}
+      - REDIS_URL_WRITE=${REDIS_URL_WRITE}
+      - REDIS_URL_READ=${REDIS_URL_READ}
+      - SOCKET_URL=${SOCKET_URL}
+      - ASSETS_URL=${ASSETS_URL}
+      - FUEL_PROVIDER=${FUEL_PROVIDER}
+      - FUEL_PROVIDER_CHAIN_ID=${FUEL_PROVIDER_CHAIN_ID}
+      - EXTERN_TOKEN_SECRET=${EXTERN_TOKEN_SECRET}
+      # ASSETS
+      - COIN_MARKET_CAP_API_KEY=${COIN_MARKET_CAP_API_KEY}
+      - GAS_LIMIT=${GAS_LIMIT}
+      - MAX_FEE=${MAX_FEE}
+      # TOKENS
+      - ACCESS_TOKEN_SECRET=${ACCESS_TOKEN_SECRET}
+      - REFRESH_TOKEN_SECRET=${REFRESH_TOKEN_SECRET}
+      - API_TOKEN_SECRET=${API_TOKEN_SECRET}
+      - API_TOKEN_SECRET_IV=${API_TOKEN_SECRET_IV}
+      # SESSION
+      - TOKEN_EXPIRATION_TIME=${TOKEN_EXPIRATION_TIME}
+      - RENEWAL_TOKEN_EXPIRATION_TIME=${RENEWAL_TOKEN_EXPIRATION_TIME}
+      - MINUTES_TO_RENEW_TOKEN=${MINUTES_TO_RENEW_TOKEN}
+      # AWS
+      - AWS_SMTP_USER=${AWS_SMTP_USER}
+      - AWS_SMTP_PASS=${AWS_SMTP_PASS}
+      - AWS_SMTP_HOST=${AWS_SMTP_HOST}
+      # EMAIL
+      - EMAIL_FROM=${EMAIL_FROM}
+      - MAIL_TESTING_NOTIFICATIONS=${MAIL_TESTING_NOTIFICATIONS}
