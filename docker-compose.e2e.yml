@@ -46,6 +46,7 @@ services:
   bako-safe-api:
     container_name: ${API_NAME}
     image: ${ECR_REGISTRY}/${ECR_REPOSITORY}:${API_IMAGE_TAG}
+    platform: linux/amd64
     ports: 
       - '${API_PORT}:${API_PORT}'
     environment:
