@@ -1,7 +1,7 @@
 name: UI E2E Tests
 
 on:
-  - pull_request
+  pull_request:
 
 jobs:
   e2e-tests:
@@ -26,11 +26,11 @@ jobs:
       - name: Install Playwright Browsers
         run: pnpm exec playwright install --with-deps
 
-      - name: Run Playwright tests (staging)
+      - name: Build app
+        run: pnpm vite build --mode test
+
+      - name: Run Playwright tests
         run: xvfb-run -a pnpm exec playwright test
-        env:
-          E2E_TEST_URL: ${{ vars.E2E_TEST_URL }}
-          E2E_TEST_NETWORK: ${{ vars.E2E_TEST_NETWORK }}
 
       - name: Upload report to GitHub Actions Artifacts
         uses: actions/upload-artifact@v4

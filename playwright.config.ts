@@ -13,9 +13,13 @@ export default defineConfig({
     headless: true,
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
-    baseURL: process.env.E2E_TEST_URL || 'http://localhost:5173',
+    baseURL: 'http://localhost:5173',
     permissions: ['clipboard-read', 'clipboard-write'],
     trace: 'on-first-retry',
     actionTimeout: 5000,
+  },
+  webServer: {
+    command: 'pnpm vite preview --port 5173',
+    url: 'http://localhost:5173',
   },
 });
