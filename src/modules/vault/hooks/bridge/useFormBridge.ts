@@ -171,7 +171,7 @@ const useFormBridge = () => {
       const options: AssetFormItem[] = data.map((item) => ({
         value: item.name,
         image: item.logo,
-        name: item.display_name,
+        name: item.displayName,
         symbol: null,
         tokens: item.tokens,
       }));
@@ -189,8 +189,8 @@ const useFormBridge = () => {
         currentNetwork.url === availableNetWorks[NetworkType.MAINNET].url;
 
       const data = await getDestinationsBridgeAsync({
-        from_network: isMainnet ? 'FUEL_MAINNET' : 'FUEL_TESTNET',
-        from_token: assetFrom?.name ?? '',
+        fromNetwork: isMainnet ? 'FUEL_MAINNET' : 'FUEL_TESTNET',
+        fromToken: assetFrom?.name ?? '',
       });
 
       handleGetToNetworkOptions(data);
@@ -269,19 +269,19 @@ const useFormBridge = () => {
         currentNetwork.url === availableNetWorks[NetworkType.MAINNET].url;
 
       const payload = {
-        destination_address: destinationAddress,
-        source_network: isMainnet ? 'FUEL_MAINNET' : 'FUEL_TESTNET',
-        source_token: assetFrom?.name ?? '',
-        destination_network: isMobile
+        destinationAddress: destinationAddress,
+        sourceNetwork: isMainnet ? 'FUEL_MAINNET' : 'FUEL_TESTNET',
+        sourceToken: assetFrom?.name ?? '',
+        destinationNetwork: isMobile
           ? networkToMobile
           : (networkToValueForm?.value ?? ''),
-        destination_token: finalAssetTo?.symbol ?? '',
+        destinationToken: finalAssetTo?.symbol ?? '',
         amount: Number(amount?.replace(/,/g, '')) || 0,
-        source_address: vault?.address.toString(),
+        sourceAddress: vault?.address.toString(),
         refuel: false,
-        use_deposit_address: false,
-        use_new_deposit_address: null,
-        reference_id: null,
+        useDepositAddress: false,
+        useNewDepositAddress: null,
+        referenceId: null,
         slippage: null,
       };
 
@@ -323,7 +323,7 @@ const useFormBridge = () => {
       payload = {
         ...payload,
         amount: amountTreated,
-        destination_token: assetToData?.symbol ?? '',
+        destinationToken: assetToData?.symbol ?? '',
       };
       try {
         const data = await getQuoteBridgeAsync(payload);
@@ -333,7 +333,7 @@ const useFormBridge = () => {
           const usdData = tokensUSD.data[assetFrom?.value];
           const usdAmount = usdData?.usdAmount ?? null;
 
-          const receiveValue = usdAmount * data.quote.receive_amount;
+          const receiveValue = usdAmount * data.quote.receiveAmount;
 
           receiveInUsd = new Intl.NumberFormat('en-US', {
             style: 'currency',
@@ -344,11 +344,11 @@ const useFormBridge = () => {
         saveQuote({
           quote: {
             ...data.quote,
-            avg_completion_time: formatEstimativeTime(
-              data.quote.avg_completion_time,
+            avgCompletionTime: formatEstimativeTime(
+              data.quote.avgCompletionTime,
             ),
           },
-          receive_in_usd: receiveInUsd,
+          receiveInUsd: receiveInUsd,
         });
         if (ErrorBridgeForm.QUOTE) saveErrorForm(null);
       } catch (error) {
@@ -412,8 +412,8 @@ const useFormBridge = () => {
 
       const response = await createSwapBridgeAsync(payload);
 
-      const depositActions = response.deposit_actions[0];
-      const callData = JSON.parse(depositActions.call_data);
+      const depositActions = response.depositActions[0];
+      const callData = JSON.parse(depositActions.callData);
 
       const tx = new ScriptTransactionRequest({
         gasLimit: bn(callData.script.gasLimit ?? 1_000_000),
@@ -421,7 +421,7 @@ const useFormBridge = () => {
       tx.script = callData.script.script;
       tx.scriptData = callData.script.scriptData;
 
-      const address = new Address(depositActions.to_address);
+      const address = new Address(depositActions.toAddress);
 
       for (const q of callData.quantities || []) {
         tx.addCoinOutput(address, bn(q.amount), q.assetId);

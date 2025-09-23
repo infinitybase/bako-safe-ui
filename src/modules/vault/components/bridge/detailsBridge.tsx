@@ -34,7 +34,7 @@ export function DetailsBridge({
               <Spinner color="grey.500" size="xs" />
             ) : (
               <Text color="#AAA6A1" fontSize={12} flex={1} align="right">
-                {dataQuote?.quote?.avg_completion_time ?? '-'}
+                {dataQuote?.quote?.avgCompletionTime ?? '-'}
               </Text>
             )}
           </HStack>
@@ -56,8 +56,8 @@ export function DetailsBridge({
               <Spinner color="grey.500" size="xs" />
             ) : (
               <Text color="#AAA6A1" fontSize={12} flex={1} align="right">
-                {dataQuote?.quote?.total_fee
-                  ? dataQuote?.quote?.total_fee + ' ' + assetFrom?.symbol
+                {dataQuote?.quote?.totalFee
+                  ? dataQuote?.quote?.totalFee + ' ' + assetFrom?.symbol
                   : '-'}
               </Text>
             )}
@@ -84,13 +84,13 @@ export function DetailsBridge({
                   fontSize={14}
                   align="right"
                 >
-                  {dataQuote?.quote?.receive_amount
-                    ? dataQuote?.quote?.receive_amount + ' ' + assetTo?.symbol
+                  {dataQuote?.quote?.receiveAmount
+                    ? dataQuote?.quote?.receiveAmount + ' ' + assetTo?.symbol
                     : ''}
                 </Text>
                 <Text color="#AAA6A1" fontSize={12} align="right">
-                  {dataQuote?.receive_in_usd
-                    ? `(${dataQuote?.receive_in_usd})`
+                  {dataQuote?.receiveInUsd
+                    ? `(${dataQuote?.receiveInUsd})`
                     : '-'}
                 </Text>
               </>

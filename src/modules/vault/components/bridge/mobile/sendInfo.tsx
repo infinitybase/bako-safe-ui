@@ -31,9 +31,9 @@ export function SendInfoBridgeMobile({
   const handleCheckAmount = useCallback(
     (limits: IGetLimitsResponse) => {
       const amountTreated = Number(amount.replace(/,/g, ''));
-      const hasMinAmount = amountTreated >= (limits.min_amount ?? 0);
+      const hasMinAmount = amountTreated >= (limits.minAmount ?? 0);
       if (!hasMinAmount) {
-        setErrorAmount(`Amount must be at least ${limits.min_amount}`);
+        setErrorAmount(`Amount must be at least ${limits.minAmount}`);
       }
     },
     [amount, setErrorAmount],

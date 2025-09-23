@@ -215,52 +215,52 @@ export class VaultService {
   static async getDestinationsBridge(
     payload: IGetDestinationPayload,
   ): Promise<IGetDestinationsResponse[]> {
-    const { from_network, from_token } = payload;
+    const { fromNetwork, fromToken } = payload;
 
     const { data } = await api.get<IGetDestinationsResponse[]>(
-      `/layers-swap/destinations?from_network=${from_network}&from_token=${from_token}`,
+      `/layer-swap/destinations?fromNetwork=${fromNetwork}&fromToken=${fromToken}`,
     );
 
     return data;
   }
 
   static async getLimitsBridge({
-    source_network,
-    source_token,
-    destination_network,
-    destination_token,
+    sourceNetwork,
+    sourceToken,
+    destinationNetwork,
+    destinationToken,
   }: ICreateSwapBridgePayload): Promise<IGetLimitsResponse> {
     const params = new URLSearchParams({
-      source_network,
-      source_token,
-      destination_network,
-      destination_token,
+      sourceNetwork,
+      sourceToken,
+      destinationNetwork,
+      destinationToken,
     });
 
     const { data } = await api.get<IGetLimitsResponse>(
-      `/layers-swap/limits?${params}`,
+      `/layer-swap/limits?${params}`,
     );
 
     return data;
   }
 
   static async getQuoteBridge({
-    source_network,
-    source_token,
-    destination_network,
-    destination_token,
+    sourceNetwork,
+    sourceToken,
+    destinationNetwork,
+    destinationToken,
     amount,
   }: ICreateSwapBridgePayload): Promise<IGetQuotesResponse> {
     const params = new URLSearchParams({
-      source_network,
-      source_token,
-      destination_network,
-      destination_token,
+      sourceNetwork,
+      sourceToken,
+      destinationNetwork,
+      destinationToken,
       amount: String(amount),
     });
 
     const { data } = await api.get<IGetQuotesResponse>(
-      `/layers-swap/quote?${params}`,
+      `/layer-swap/quote?${params}`,
     );
 
     return data;
@@ -270,7 +270,7 @@ export class VaultService {
     payload: ICreateSwapBridgePayload,
   ): Promise<ICreateSwapBridgeResponse> {
     const { data } = await api.post<ICreateSwapBridgeResponse>(
-      `/layers-swap/swap`,
+      `/layer-swap/swap`,
       payload,
     );
 

@@ -63,12 +63,12 @@ export function AmountBrigde({
       const balanceTreated = Number(balance.replace(/,/g, ''));
       const valueTreated = Number(value.replace(/,/g, ''));
       const insufficientBalance = valueTreated > balanceTreated;
-      const hasMinAmount = valueTreated >= dataLimits.min_amount;
+      const hasMinAmount = valueTreated >= dataLimits.minAmount;
 
       if (insufficientBalance)
         setErrorAmount(ErrorBridgeForm.INSUFFICIENT_BALANCE);
       if (!hasMinAmount && !insufficientBalance && valueTreated > 0) {
-        setErrorAmount(`Amount must be at least ${dataLimits.min_amount}`);
+        setErrorAmount(`Amount must be at least ${dataLimits.minAmount}`);
       }
 
       const removeStep =
@@ -99,7 +99,7 @@ export function AmountBrigde({
       form,
       balance,
       debounceTimer,
-      dataLimits.min_amount,
+      dataLimits.minAmount,
       stepsForm,
       setStepsForm,
       getOperationQuotes,
@@ -118,20 +118,20 @@ export function AmountBrigde({
     setErrorAmount(null);
     const balanceTreated = Number(balance.replace(/,/g, ''));
 
-    form.setValue('amount', dataLimits.min_amount.toString());
+    form.setValue('amount', dataLimits.minAmount.toString());
 
-    if (dataLimits.min_amount > balanceTreated) {
+    if (dataLimits.minAmount > balanceTreated) {
       setErrorAmount(ErrorBridgeForm.INSUFFICIENT_BALANCE);
       if (stepsForm > 1) setStepsForm(1);
       return;
     }
 
     if (stepsForm === 1) setStepsForm(2);
-    debouncedGetQuotes(dataLimits.min_amount.toString());
+    debouncedGetQuotes(dataLimits.minAmount.toString());
   }, [
     form,
     balance,
-    dataLimits.min_amount,
+    dataLimits.minAmount,
     stepsForm,
     setStepsForm,
     debouncedGetQuotes,
@@ -142,20 +142,20 @@ export function AmountBrigde({
 
     const balanceTreated = Number(balance.replace(/,/g, ''));
 
-    form.setValue('amount', dataLimits.max_amount.toString());
+    form.setValue('amount', dataLimits.maxAmount.toString());
 
-    if (dataLimits.max_amount > balanceTreated) {
+    if (dataLimits.maxAmount > balanceTreated) {
       setErrorAmount(ErrorBridgeForm.INSUFFICIENT_BALANCE);
       if (stepsForm > 1) setStepsForm(1);
       return;
     }
 
     if (stepsForm === 1) setStepsForm(2);
-    debouncedGetQuotes(dataLimits.max_amount.toString());
+    debouncedGetQuotes(dataLimits.maxAmount.toString());
   }, [
     form,
     balance,
-    dataLimits.max_amount,
+    dataLimits.maxAmount,
     stepsForm,
     setStepsForm,
     debouncedGetQuotes,

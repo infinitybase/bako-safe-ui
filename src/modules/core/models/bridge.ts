@@ -1,82 +1,89 @@
 export interface TokenLayersSwap {
   symbol: string;
-  display_asset: string;
+  displayAsset: string;
   logo: string;
   contract: string;
   decimals: number;
-  price_in_usd: number;
+  priceInUsd: number;
   precision: number;
-  listing_date: Date;
-  source_rank: number;
-  destination_rank: number;
+  listingDate: Date;
+  sourceRank: number;
+  destinationRank: number;
+}
+
+export interface MetadataDestination {
+  listingDate: Date;
+  evmOracleContract: string;
+  evmMulticallContract: string;
+  zksPaymasterContract: string;
+  watchdogContract: string;
 }
 
 export interface INetworkLayersSwap {
   name: string;
-  display_name: string;
+  displayName: string;
   logo: string;
-  chain_id: string;
-  node_url: string;
+  chainId: string;
+  nodeUrl: string;
   type: 'evm';
-  transaction_explorer_template: string;
-  account_explorer_template: string;
-  source_rank: number;
-  destination_rank: number;
+  transactionExplorerTemplate: string;
+  accountExplorerTemplate: string;
+  sourceRank: number;
+  destinationRank: number;
   token: TokenLayersSwap;
   metadata: MetadataDestination;
-  deposit_methods: ['string'];
+  depositMethods: string[];
 }
 
 export interface QuoteLayersSwap {
-  total_fee: number;
-  total_fee_in_usd: number;
-  source_network: INetworkLayersSwap;
-  source_token: TokenLayersSwap;
-  destination_network: INetworkLayersSwap;
-  destination_token: TokenLayersSwap;
-  requested_amount: number;
-  receive_amount: number;
-  fee_discount: number;
-  min_receive_amount: number;
-  blockchain_fee: number;
-  service_fee: number;
-  avg_completion_time: string;
-  refuel_in_source: number;
+  totalFee: number;
+  totalFeeInUsd: number;
+  sourceNetwork: INetworkLayersSwap;
+  sourceToken: TokenLayersSwap;
+  destinationNetwork: INetworkLayersSwap;
+  destinationToken: TokenLayersSwap;
+  requestedAmount: number;
+  receiveAmount: number;
+  feeDiscount: number;
+  minReceiveAmount: number;
+  blockchainFee: number;
+  serviceFee: number;
+  avgCompletionTime: string;
+  refuelInSource: number;
   slippage: number;
 }
-
 export interface RefuelLayersSwap {
   token: TokenLayersSwap;
   network: INetworkLayersSwap;
   amount: number;
-  amount_in_usd: number;
+  amountInUsd: number;
 }
 
 export interface RewardLayersSwap {
   token: TokenLayersSwap;
   network: INetworkLayersSwap;
   amount: number;
-  amount_in_usd: number;
+  amountInUsd: number;
   campaign_type: string;
-  nft_contract_address: string;
+  nftContractAddress: string;
 }
 
 export interface MetadataDestination {
-  listing_date: Date;
-  evm_oracle_contract: string;
-  evm_multicall_contract: string;
-  zks_paymaster_contract: string;
-  watchdog_contract: string;
+  listingDate: Date;
+  evmOracleContract: string;
+  evmMulticallContract: string;
+  zksPaymasterContract: string;
+  watchdogContract: string;
 }
 
 export interface IGetDestinationPayload {
-  from_network: string;
-  from_token: string;
+  fromNetwork: string;
+  fromToken: string;
 }
 
 export interface IGetDestinationsResponse {
   name: string;
-  display_name: string;
+  displayName: string;
   logo: string;
   tokens: {
     symbol: string;
@@ -86,94 +93,122 @@ export interface IGetDestinationsResponse {
 }
 
 export interface ICreateSwapBridgePayload {
-  destination_address: string;
-  source_network: string;
-  source_token: string;
-  destination_network: string;
-  destination_token: string;
-  amount: number;
-  refuel: boolean;
-  use_deposit_address: boolean;
-  use_new_deposit_address?: null;
-  reference_id?: null;
-  source_address?: string | null;
+  destinationAddress: string;
+  sourceNetwork: string;
+  sourceToken: string;
+  destinationNetwork: string;
+  destinationToken: string;
+  amount?: number;
+  refuel?: boolean;
+  useDepositAddress?: boolean;
+  useNewDepositAddress?: null;
+  referenceId?: null;
+  sourceAddress?: string | null;
   slippage?: null;
 }
 
 export interface ICreateSwapBridgeResponse {
-  quote: QuoteLayersSwap;
-  refuel: RefuelLayersSwap;
-  reward: RewardLayersSwap;
+  quote: {
+    totalFee: number;
+    totalFeeInUsd: number;
+    sourceNetwork: INetworkLayersSwap;
+    sourceToken: TokenLayersSwap;
+    destinationNetwork: INetworkLayersSwap;
+    destinationToken: TokenLayersSwap;
+    requestedAmount: number;
+    receiveAmount: number;
+    feeDiscount: number;
+    minReceiveAmount: number;
+    blockchainFee: number;
+    serviceFee: number;
+    avgCompletionTime: string;
+    refuelInSource: number;
+    slippage: number;
+  };
+  refuel: {
+    token: TokenLayersSwap;
+    network: INetworkLayersSwap;
+    amount: number;
+    amountInUsd: number;
+  };
+  reward: {
+    token: TokenLayersSwap;
+    network: INetworkLayersSwap;
+    amount: number;
+    amountInUsd: number;
+    campaignType: string;
+    nftContractAddress: string;
+  };
   swap: {
     id: string;
-    created_date: Date;
-    source_network: INetworkLayersSwap;
-    source_token: TokenLayersSwap;
-    source_exchange: {
+    createdDate: Date;
+    sourceNetwork: INetworkLayersSwap;
+    sourceToken: TokenLayersSwap;
+    sourceExchange: {
       name: string;
-      display_name: string;
+      displayName: string;
       logo: string;
       metadata: {
         oauth: {
-          authorize_url: string;
-          connect_url: string;
+          authorizeUrl: string;
+          connectUrl: string;
         };
-        listing_date: Date;
+        listingDate: Date;
       };
     };
-    destination_network: INetworkLayersSwap;
-    destination_token: TokenLayersSwap;
-    destination_exchange: {
+    destinationNetwork: INetworkLayersSwap;
+    destinationToken: TokenLayersSwap;
+    destinationExchange: {
       name: string;
-      display_name: string;
+      displayName: string;
       logo: string;
       metadata: {
         oauth: {
-          authorize_url: string;
-          connect_url: string;
+          authorizeUrl: string;
+          connectUrl: string;
         };
-        listing_date: Date;
+        listingDate: Date;
       };
     };
-    requested_amount: number;
-    destination_address: string;
+    requestedAmount: number;
+    destinationAddress: string;
     status: string;
-    fail_reason: string;
-    use_deposit_address: true;
+    failReason: string;
+    useDepositAddress: boolean;
     metadata: {
-      sequence_number: number;
-      reference_id: string;
-      exchange_account: string;
+      sequenceNumber: number;
+      referenceId: string;
+      exchangeAccount: string;
     };
     transactions: [
       {
         from: string;
         to: string;
         timestamp: Date;
-        transaction_hash: string;
+        transactionHash: string;
         confirmations: number;
-        max_confirmations: number;
+        maxConfirmations: number;
         amount: number;
         type: string;
         status: string;
         token: TokenLayersSwap;
         network: INetworkLayersSwap;
-        fee_amount: number;
-        fee_token: TokenLayersSwap;
+        feeAmount: number;
+        feeToken: TokenLayersSwap;
       },
     ];
   };
-  deposit_actions: [
+  depositActions: [
     {
       type: string;
-      to_address: string;
+      toAddress: string;
       amount: number;
       order: number;
-      amount_in_base_units: string;
+      amountInBaseUnits: string;
       network: INetworkLayersSwap;
       token: TokenLayersSwap;
-      fee_token: TokenLayersSwap;
-      call_data: string;
+      feeToken: TokenLayersSwap;
+      callData: string;
     },
   ];
 }
@@ -186,12 +221,12 @@ export interface IGetQuotesResponse {
 
 export interface IQuoteFormLayersSwap {
   quote: QuoteLayersSwap;
-  receive_in_usd: string;
+  receiveInUsd: string;
 }
 
 export interface IGetLimitsResponse {
-  min_amount_in_usd: number;
-  min_amount: number;
-  max_amount_in_usd: number;
-  max_amount: number;
+  minAmountInUsd: number;
+  minAmount: number;
+  maxAmountInUsd: number;
+  maxAmount: number;
 }

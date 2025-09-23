@@ -69,12 +69,10 @@ export function ResumePageBrigde({ setScreenBridge }: ResumePageBrigdeProps) {
         network={networkTo?.name ?? ''}
         imageNetwork={networkTo?.image ?? ''}
         amount={
-          dataQuote?.quote?.receive_amount
-            ? dataQuote?.quote?.receive_amount
-            : ''
+          dataQuote?.quote?.receiveAmount ? dataQuote?.quote?.receiveAmount : ''
         }
         amountUSD={
-          dataQuote?.receive_in_usd ? `(${dataQuote?.receive_in_usd})` : '-'
+          dataQuote?.receiveInUsd ? `(${dataQuote?.receiveInUsd})` : '-'
         }
       />
       <Card variant="outline" mt={3} padding={3} paddingY={2} w="full">

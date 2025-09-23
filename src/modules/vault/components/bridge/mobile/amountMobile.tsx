@@ -73,7 +73,7 @@ export function AmountBrigdeMobile({
       const balanceTreated = Number(balance.replace(/,/g, ''));
       const valueTreated = Number(value.replace(/,/g, ''));
       const insufficientBalance = valueTreated > balanceTreated;
-      const hasMinAmount = valueTreated >= (dataLimits.min_amount ?? 0);
+      const hasMinAmount = valueTreated >= (dataLimits.minAmount ?? 0);
 
       if (insufficientBalance) {
         setErrorAmount(ErrorBridgeForm.INSUFFICIENT_BALANCE);
@@ -81,7 +81,7 @@ export function AmountBrigdeMobile({
       }
 
       if (!hasMinAmount && !insufficientBalance && valueTreated > 0) {
-        setErrorAmount(`Amount must be at least ${dataLimits.min_amount}`);
+        setErrorAmount(`Amount must be at least ${dataLimits.minAmount}`);
       }
 
       if (debounceTimer) {
@@ -100,7 +100,7 @@ export function AmountBrigdeMobile({
       form,
       debounceTimer,
       balance,
-      dataLimits.min_amount,
+      dataLimits.minAmount,
       setErrorAmount,
       getOperationQuotes,
     ],
@@ -118,42 +118,30 @@ export function AmountBrigdeMobile({
     setErrorAmount(null);
     const balanceTreated = Number(balance.replace(/,/g, ''));
 
-    form.setValue('amount', dataLimits.min_amount.toString());
+    form.setValue('amount', dataLimits.minAmount.toString());
 
-    if (dataLimits.min_amount > balanceTreated) {
+    if (dataLimits.minAmount > balanceTreated) {
       setErrorAmount(ErrorBridgeForm.INSUFFICIENT_BALANCE);
       return;
     }
 
-    debouncedGetQuotes(dataLimits.min_amount.toString());
-  }, [
-    form,
-    balance,
-    dataLimits.min_amount,
-    setErrorAmount,
-    debouncedGetQuotes,
-  ]);
+    debouncedGetQuotes(dataLimits.minAmount.toString());
+  }, [form, balance, dataLimits.minAmount, setErrorAmount, debouncedGetQuotes]);
 
   const handleMaxAmount = useCallback(() => {
     setErrorAmount(null);
 
     const balanceTreated = Number(balance.replace(/,/g, ''));
 
-    form.setValue('amount', dataLimits.max_amount.toString());
+    form.setValue('amount', dataLimits.maxAmount.toString());
 
-    if (dataLimits.max_amount > balanceTreated) {
+    if (dataLimits.maxAmount > balanceTreated) {
       setErrorAmount(ErrorBridgeForm.INSUFFICIENT_BALANCE);
       return;
     }
 
-    debouncedGetQuotes(dataLimits.max_amount.toString());
-  }, [
-    form,
-    balance,
-    dataLimits.max_amount,
-    setErrorAmount,
-    debouncedGetQuotes,
-  ]);
+    debouncedGetQuotes(dataLimits.maxAmount.toString());
+  }, [form, balance, dataLimits.maxAmount, setErrorAmount, debouncedGetQuotes]);
 
   return (
     <Card
@@ -219,7 +207,7 @@ export function AmountBrigdeMobile({
         <Button
           maxH="28px"
           minW="48px"
-          isDisabled={!dataLimits.min_amount}
+          isDisabled={!dataLimits.minAmount}
           variant="secondary"
           borderRadius={6}
           padding={'4px 6px 4px 6px'}
@@ -232,7 +220,7 @@ export function AmountBrigdeMobile({
         <Button
           maxH="28px"
           minW="48px"
-          isDisabled={!dataLimits.max_amount}
+          isDisabled={!dataLimits.maxAmount}
           variant="secondary"
           onClick={handleMaxAmount}
           borderRadius={6}
