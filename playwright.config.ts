@@ -21,5 +21,7 @@ export default defineConfig({
   webServer: {
     command: 'pnpm vite preview --port 5173',
     url: 'http://localhost:5173',
+    reuseExistingServer: !process.env.CI,
+    timeout: 120000,
   },
 });
