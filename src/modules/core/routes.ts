@@ -29,6 +29,9 @@ const Pages = {
   userVaults: pageRoute<{ workspaceId: string }>(
     '/workspace/:workspaceId/list/vault/me',
   ),
+  vaultSwap: pageRoute<{ workspaceId: string; vaultId: string }>(
+    '/workspace/:workspaceId/vault/:vaultId/swap',
+  ),
 
   addressBook: pageRoute<{ workspaceId: string }>(
     '/workspace/:workspaceId/address-book',

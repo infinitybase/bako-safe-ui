@@ -51,6 +51,12 @@ const useSidebar = ({ params }: UseSidebarProps) => {
         workspaceId: workspace?.id ?? '',
       }),
     ),
+    swap: checkPathname(
+      Pages.vaultSwap({
+        vaultId: params?.vaultId ?? '',
+        workspaceId: workspace?.id ?? '',
+      }),
+    ),
   };
 
   return {
