@@ -4,6 +4,7 @@ import { Address, bn, randomBytes, ScriptTransactionRequest } from 'fuels';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
+  ICreateSwapBridgePayload,
   IGetDestinationsResponse,
   IQuoteFormLayersSwap,
   useBakoSafeVault,
@@ -263,7 +264,7 @@ const useFormBridge = () => {
   ]);
 
   const prepareCreateSwapPayload = useCallback(
-    (assetToOverride?: AssetItem) => {
+    (assetToOverride?: AssetItem): ICreateSwapBridgePayload => {
       const finalAssetTo = assetToOverride ?? assetTo;
       const isMainnet =
         currentNetwork.url === availableNetWorks[NetworkType.MAINNET].url;
@@ -310,21 +311,41 @@ const useFormBridge = () => {
     [getLimitsBridgeAsync, prepareCreateSwapPayload, saveLimits],
   );
 
+  const getReceiveQuoteMobile = useCallback(() => {
+    if (assetFromValue && isMobile) {
+      const usdData = tokensUSD.data[assetFromValue];
+      const usdAmount = usdData?.usdAmount ?? null;
+
+      const receiveValue = usdAmount * dataQuote?.quote?.receiveAmount;
+
+      const receiveInUsd = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+      }).format(receiveValue);
+
+      saveQuote({
+        ...dataQuote,
+        receiveInUsd,
+      });
+    }
+  }, [isMobile, assetFromValue, tokensUSD.data, dataQuote, saveQuote]);
+
   const getOperationQuotes = useCallback(
-    async (amountForm = '0', assetToOverride?: AssetItem) => {
-      const assetToData = assetToOverride ?? assetTo;
+    async (amountForm = '0', payloadOverride?: ICreateSwapBridgePayload) => {
       const amountData = Number(amountForm) > 0 ? amountForm : amount;
       const amountTreated = Number(amountData.replace(/,/g, ''));
 
       if (amountTreated <= 0) return;
 
-      let payload = await prepareCreateSwapPayload();
+      let payload = payloadOverride
+        ? payloadOverride
+        : await prepareCreateSwapPayload();
 
       payload = {
         ...payload,
         amount: amountTreated,
-        destinationToken: assetToData?.symbol ?? '',
       };
+
       try {
         const data = await getQuoteBridgeAsync(payload);
         let receiveInUsd = '-';
@@ -360,7 +381,6 @@ const useFormBridge = () => {
       assetFrom?.value,
       tokensUSD,
       amount,
-      assetTo,
       getQuoteBridgeAsync,
       prepareCreateSwapPayload,
       saveQuote,
@@ -416,8 +436,9 @@ const useFormBridge = () => {
       const callData = JSON.parse(depositActions.callData);
 
       const tx = new ScriptTransactionRequest({
-        gasLimit: bn(callData.script.gasLimit ?? 1_000_000),
+        gasLimit: bn(1_000_000),
       });
+      tx.abis = callData.script.abis;
       tx.script = callData.script.script;
       tx.scriptData = callData.script.scriptData;
 
@@ -427,7 +448,7 @@ const useFormBridge = () => {
         tx.addCoinOutput(address, bn(q.amount), q.assetId);
       }
 
-      tx.addCoinOutput(new Address(WALLET_BAKO), bn(175), tokensIDS.ETH);
+      //tx.addCoinOutput(new Address(WALLET_BAKO), bn(175), tokensIDS.ETH);
 
       await sendTx(tx);
     } catch (err) {
@@ -467,6 +488,8 @@ const useFormBridge = () => {
     getDestinations,
     getOperationLimits,
     getOperationQuotes,
+    prepareCreateSwapPayload,
+    getReceiveQuoteMobile,
     onSubmit,
   };
 };

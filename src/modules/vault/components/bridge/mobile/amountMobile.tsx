@@ -9,139 +9,39 @@ import {
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
-import { bn } from 'fuels';
-import debounce from 'lodash.debounce';
-import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { LeftAndRightArrow } from '@/components';
 import { Asset } from '@/modules/core';
-import { useFormBridge } from '@/modules/vault/hooks/bridge';
+import { useAmountBridge, useFormBridge } from '@/modules/vault/hooks/bridge';
 
 import { InputAmount } from '../inputAmount';
-import { ErrorBridgeForm } from '../utils';
 import { SelectNetworkDrawerBridge } from './selectNetworkDrawer';
 
 export interface AmountBridgeMobileProps {
   assets?: Required<Asset>[];
   errorAmount?: string | null;
   setErrorAmount: React.Dispatch<React.SetStateAction<string | null>>;
+  stepsForm: number;
+  setStepsForm: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export function AmountBrigdeMobile({
   assets,
   errorAmount,
   setErrorAmount,
+  stepsForm,
+  setStepsForm,
 }: AmountBridgeMobileProps) {
   const selectNetworkDrawer = useDisclosure();
+  const { assetFrom, form, amount, assetFromUSD, dataLimits } = useFormBridge();
+
   const {
-    assetFrom,
-    form,
-    amount,
-    assetFromUSD,
-    dataLimits,
-    getOperationQuotes,
-  } = useFormBridge();
-  const fuelImg = 'https://verified-assets.fuel.network/images/fuel.svg';
-  const [debounceTimer, setDebounceTimer] = useState<NodeJS.Timeout | null>(
-    null,
-  );
-
-  const balance = useMemo(() => {
-    const asset = assets?.find((a) => a.assetId === assetFrom?.value);
-
-    if (!asset?.amount) return '0';
-
-    const balance = bn(asset.amount)?.format({
-      units: asset.units,
-    });
-
-    return balance;
-  }, [assets, assetFrom?.value]);
-
-  const debouncedGetQuotes = useMemo(
-    () =>
-      debounce((value: string) => {
-        getOperationQuotes(value);
-      }, 700),
-    [getOperationQuotes],
-  );
-
-  const handleSourceChange = useCallback(
-    (value: string) => {
-      form.setValue('amount', value);
-      setErrorAmount(null);
-      const balanceTreated = Number(balance.replace(/,/g, ''));
-      const valueTreated = Number(value.replace(/,/g, ''));
-      const insufficientBalance = valueTreated > balanceTreated;
-      const hasMinAmount = valueTreated >= (dataLimits.minAmount ?? 0);
-
-      if (insufficientBalance) {
-        setErrorAmount(ErrorBridgeForm.INSUFFICIENT_BALANCE);
-        return;
-      }
-
-      if (!hasMinAmount && !insufficientBalance && valueTreated > 0) {
-        setErrorAmount(`Amount must be at least ${dataLimits.minAmount}`);
-      }
-
-      if (debounceTimer) {
-        clearTimeout(debounceTimer);
-      }
-
-      if (valueTreated > 0) {
-        const newTimer = setTimeout(() => {
-          getOperationQuotes(value);
-        }, 700);
-
-        setDebounceTimer(newTimer);
-      }
-    },
-    [
-      form,
-      debounceTimer,
-      balance,
-      dataLimits.minAmount,
-      setErrorAmount,
-      getOperationQuotes,
-    ],
-  );
-
-  useEffect(() => {
-    return () => {
-      if (debounceTimer) {
-        clearTimeout(debounceTimer);
-      }
-    };
-  }, [debounceTimer]);
-
-  const handleMinAmount = useCallback(() => {
-    setErrorAmount(null);
-    const balanceTreated = Number(balance.replace(/,/g, ''));
-
-    form.setValue('amount', dataLimits.minAmount.toString());
-
-    if (dataLimits.minAmount > balanceTreated) {
-      setErrorAmount(ErrorBridgeForm.INSUFFICIENT_BALANCE);
-      return;
-    }
-
-    debouncedGetQuotes(dataLimits.minAmount.toString());
-  }, [form, balance, dataLimits.minAmount, setErrorAmount, debouncedGetQuotes]);
-
-  const handleMaxAmount = useCallback(() => {
-    setErrorAmount(null);
-
-    const balanceTreated = Number(balance.replace(/,/g, ''));
-
-    form.setValue('amount', dataLimits.maxAmount.toString());
-
-    if (dataLimits.maxAmount > balanceTreated) {
-      setErrorAmount(ErrorBridgeForm.INSUFFICIENT_BALANCE);
-      return;
-    }
-
-    debouncedGetQuotes(dataLimits.maxAmount.toString());
-  }, [form, balance, dataLimits.maxAmount, setErrorAmount, debouncedGetQuotes]);
+    balance,
+    fuelImg,
+    handleSourceChange,
+    handleMaxAmount,
+    handleMinAmount,
+  } = useAmountBridge({ stepsForm, setStepsForm, assets, setErrorAmount });
 
   return (
     <Card

@@ -1,3 +1,4 @@
+export * from './useAmountBridge';
 export * from './useCreateSwapBridge';
 export * from './useFormBridge';
 export * from './useGetDestinationsBridge';
