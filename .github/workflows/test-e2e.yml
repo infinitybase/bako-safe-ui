@@ -31,9 +31,6 @@ jobs:
 
       - name: Run Playwright tests
         run: xvfb-run --auto-servernum -- pnpm exec playwright test
-
-      - name: Run Playwright tests
-        run: xvfb-run -a pnpm exec playwright test
         env:
           TEST_NETWORK: ${{ vars.TEST_NETWORK }}
           TEST_WALLET_PRIVATE_KEY: ${{ secrets.TEST_WALLET_PRIVATE_KEY }}
