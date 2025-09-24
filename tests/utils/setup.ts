@@ -14,12 +14,8 @@ export class E2ETestUtils {
   }
 
   static buildProvider = () => {
-    const provider = new Provider('https://testnet.fuel.network/v1/graphql');
-    const genesisWallet = Wallet.fromPrivateKey(
-      '0xa449b1ffee0e2205fa924c6740cc48b3b473aa28587df6dab12abc245d1f5298',
-      provider,
-    );
-
+    const provider = new Provider(process.env.TEST_NETWORK!);
+    const genesisWallet = Wallet.fromPrivateKey(process.env.TEST_WALLET_PRIVATE_KEY!, provider);
     return { provider, genesisWallet }
   }
 
