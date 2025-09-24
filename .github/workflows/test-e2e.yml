@@ -20,6 +20,9 @@ jobs:
         with:
           version: 9.4.0
 
+      - name: Copy .env.test to .env
+        run: cp .env.test .env
+
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
 
