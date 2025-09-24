@@ -1,4 +1,5 @@
 import { Card, HStack, Icon, Spinner, Text, VStack } from '@chakra-ui/react';
+import { useEffect } from 'react';
 
 import { DoubtIcon } from '@/components/icons/doubt';
 
@@ -13,7 +14,18 @@ export function DetailsBridge({
   bgColor = 'grey.825',
   padding = 3,
 }: DetailsBridgeProps) {
-  const { dataQuote, assetFrom, assetTo, isLoadingQuote } = useFormBridge();
+  const {
+    dataQuote,
+    assetFrom,
+    assetTo,
+    isLoadingQuote,
+    getReceiveQuoteMobile,
+  } = useFormBridge();
+
+  useEffect(() => {
+    if (dataQuote.receiveInUsd !== '-') return;
+    getReceiveQuoteMobile();
+  }, [dataQuote.receiveInUsd, getReceiveQuoteMobile]);
 
   return (
     <Card variant="outline" padding={padding} bgColor={bgColor}>

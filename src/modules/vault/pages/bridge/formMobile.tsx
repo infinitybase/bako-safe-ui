@@ -14,12 +14,16 @@ import { UseVaultDetailsReturn } from '../../hooks';
 import { useFormBridge } from '../../hooks/bridge';
 
 interface FormMobilePageBrigdeProps {
+  stepsForm: number;
+  setStepsForm: React.Dispatch<React.SetStateAction<number>>;
   setScreenBridge: React.Dispatch<React.SetStateAction<'form' | 'resume'>>;
   assets?: UseVaultDetailsReturn['assets'];
 }
 
 export function FormMobilePageBrigde({
   assets,
+  stepsForm,
+  setStepsForm,
   setScreenBridge,
 }: FormMobilePageBrigdeProps) {
   const { isFormComplete, errorForm, isPendingSigner } = useFormBridge();
@@ -37,6 +41,8 @@ export function FormMobilePageBrigde({
         assets={assets?.assets}
         errorAmount={errorAmount}
         setErrorAmount={setErrorAmount}
+        stepsForm={stepsForm}
+        setStepsForm={setStepsForm}
       />
 
       <HStack w="full" align="center" marginY={3}>

@@ -26,6 +26,7 @@ export function SendInfoBridgeMobile({
     amount,
     getOperationLimits,
     getOperationQuotes,
+    prepareCreateSwapPayload,
   } = useFormBridge();
 
   const handleCheckAmount = useCallback(
@@ -87,8 +88,10 @@ export function SendInfoBridgeMobile({
                     field.onChange(e);
                     const option = toAssetOptions.find((a) => a.value === e);
                     const limits = await getOperationLimits(option);
+                    const payload = prepareCreateSwapPayload();
+                    payload.destinationToken = option?.symbol ?? '';
                     !errorAmount &&
-                      (await getOperationQuotes(undefined, option));
+                      (await getOperationQuotes(undefined, payload));
                     await handleCheckAmount(limits);
                   }}
                 />

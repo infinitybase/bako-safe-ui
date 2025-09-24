@@ -1,6 +1,6 @@
 import { Button, VStack } from '@chakra-ui/react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 import {
   AmountBrigde,
@@ -27,6 +27,8 @@ export function FormPageBrigde({
   setScreenBridge,
   assets,
 }: FormPageBrigdeProps) {
+  const [errorAmount, setErrorAmount] = useState<string | null>(null);
+
   const { assetFrom, isFormComplete, errorForm, isPendingSigner } =
     useFormBridge();
 
@@ -48,6 +50,8 @@ export function FormPageBrigde({
               stepsForm={stepsForm}
               setStepsForm={setStepsForm}
               assets={assets?.assets}
+              errorAmount={errorAmount}
+              setErrorAmount={setErrorAmount}
             />
           )}
         </AnimatePresence>
