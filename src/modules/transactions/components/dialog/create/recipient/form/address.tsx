@@ -50,9 +50,12 @@ const RecipientFormAddress = ({
 
   const filteredOptions = useMemo(
     () =>
-      addressBookOptions.filter(
-        (a) => new Address(a.value).toString() !== value,
-      ),
+      addressBookOptions.filter((a) => {
+        if (!isB256(value)) {
+          return true;
+        }
+        return new Address(a.value).equals(new Address(value));
+      }),
     [addressBookOptions, value],
   );
 
