@@ -28,6 +28,7 @@ interface AddressAutocompleteProps extends Omit<InputGroupProps, 'onSelect'> {
   inputValue?: string;
   optionsRef?: (node: HTMLDivElement) => void;
   onSelect: (value: string) => void;
+  emptyOptionsText?: string;
 }
 
 /**
@@ -46,6 +47,7 @@ const AddressAutocomplete = memo(
         rightElement,
         inputValue,
         onSelect,
+        emptyOptionsText,
         ...rest
       },
       ref,
@@ -115,7 +117,7 @@ const AddressAutocomplete = memo(
               ))}
 
               {options?.length === 0 && !isLoading && (
-                <Autocomplete.ListEmpty />
+                <Autocomplete.ListEmpty emptyMessage={emptyOptionsText} />
               )}
             </Autocomplete.List>
           )}

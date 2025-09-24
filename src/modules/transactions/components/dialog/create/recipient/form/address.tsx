@@ -148,6 +148,13 @@ const RecipientFormAddress = ({
     [isLoading, isResolvingAddress, isResolvingName],
   );
 
+  const emptyOptionsText = useMemo(() => {
+    if (isHandleInputted && inputValue.length > 3) {
+      return 'No resolver for domain provided';
+    }
+    return 'No results found';
+  }, [inputValue, isHandleInputted]);
+
   return (
     <HStack align="start" spacing={2} position="relative" width="100%">
       <FormControl isInvalid={!!error?.message} flex="1">
@@ -162,6 +169,7 @@ const RecipientFormAddress = ({
           options={autocompleteOptions}
           onSelect={handleSelectOption}
           optionsRef={optionsRef}
+          emptyOptionsText={emptyOptionsText}
           variant="dark"
         />
         <FormHelperText color="error.500">{error?.message}</FormHelperText>
