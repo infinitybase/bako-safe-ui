@@ -15,9 +15,12 @@ export class E2ETestUtils {
 
   static buildProvider = () => {
     const provider = new Provider(process.env.TEST_NETWORK!);
-    const genesisWallet = Wallet.fromPrivateKey(process.env.TEST_WALLET_PRIVATE_KEY!, provider);
-    return { provider, genesisWallet }
-  }
+    const genesisWallet = Wallet.fromPrivateKey(
+      process.env.TEST_WALLET_PRIVATE_KEY!,
+      provider,
+    );
+    return { provider, genesisWallet };
+  };
 
   static async setupFuelWallet(config: {
     page: Page;
@@ -45,7 +48,7 @@ export class E2ETestUtils {
   }
 
   static async setupPasskey(config: { page: Page }) {
-    const { provider, genesisWallet } = this.buildProvider();
+    const { genesisWallet } = this.buildProvider();
 
     const client = await config.page.context().newCDPSession(config.page);
     await client.send('WebAuthn.enable');

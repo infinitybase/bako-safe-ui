@@ -1,12 +1,14 @@
+import { downloadFuel } from '@fuels/playwright-utils';
 import fs from 'fs';
 import path from 'path';
-import { downloadFuel } from '@fuels/playwright-utils';
 
 const downloadFuelExtension = async (): Promise<string> => {
   const FUEL_WALLET_VERSION = '0.46.1';
 
-  const absCacheDir = path.resolve(`./tests/.cache/fuel-wallet/v${FUEL_WALLET_VERSION}`);
-  const relCacheDir = path.relative(process.cwd(), absCacheDir)
+  const absCacheDir = path.resolve(
+    `./tests/.cache/fuel-wallet/v${FUEL_WALLET_VERSION}`,
+  );
+  const relCacheDir = path.relative(process.cwd(), absCacheDir);
 
   if (!fs.existsSync(absCacheDir)) {
     fs.mkdirSync(absCacheDir, { recursive: true });
@@ -15,7 +17,9 @@ const downloadFuelExtension = async (): Promise<string> => {
   const markerFile = path.join(absCacheDir, 'READY');
 
   if (fs.existsSync(markerFile)) {
-    console.log(`Fuel Wallet v${FUEL_WALLET_VERSION} already cached at ${relCacheDir}.`);
+    console.log(
+      `Fuel Wallet v${FUEL_WALLET_VERSION} already cached at ${relCacheDir}.`,
+    );
   } else {
     console.log(`Downloading Fuel Wallet v${FUEL_WALLET_VERSION}...`);
     const extensionPath = await downloadFuel(FUEL_WALLET_VERSION);
@@ -27,7 +31,7 @@ const downloadFuelExtension = async (): Promise<string> => {
   }
 
   return absCacheDir;
-}
+};
 
 const globalSetup = async () => {
   process.env.FUEL_EXTENSION_PATH = await downloadFuelExtension();
