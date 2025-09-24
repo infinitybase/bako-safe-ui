@@ -27,7 +27,7 @@ jobs:
         run: pnpm exec playwright install --with-deps
 
       - name: Build app
-        run: pnpm vite build --mode test
+        run: pnpm build:test
 
       - name: Run Playwright tests
         run: xvfb-run -a pnpm exec playwright test
