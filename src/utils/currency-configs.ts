@@ -28,11 +28,24 @@ export const CURRENCY_CONFIGS: Record<Currency, CurrencyConfig> = {
   EUR: {
     locale: 'de-DE',
     decimalScale: 2,
-    thousandsSeparator: '.',
-    decimalSeparator: ',',
+    thousandsSeparator: ',',
+    decimalSeparator: '.',
   },
   ETH_FUEL: CRYPTO_CONFIG,
   ETH: CRYPTO_CONFIG,
+};
+
+const getCurrencyByLocale = (locale: string): Currency => {
+  switch (locale) {
+    case 'pt-BR':
+      return 'BRL';
+    case 'en-US':
+      return 'USD';
+    case 'de-DE':
+      return 'EUR';
+    default:
+      return 'USD';
+  }
 };
 
 export const moneyFormat = (
@@ -45,7 +58,7 @@ export const moneyFormat = (
   );
   return Intl.NumberFormat(locale, {
     style: 'currency',
-    currency: locale === 'pt-BR' ? 'BRL' : 'USD',
+    currency: getCurrencyByLocale(locale),
     minimumFractionDigits: 2,
     ...options,
   }).format(formattedValue);
