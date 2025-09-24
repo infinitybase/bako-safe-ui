@@ -5,21 +5,11 @@ import { createHtmlPlugin } from 'vite-plugin-html';
 import tsconfigPaths from 'vite-tsconfig-paths';
 
 export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, process.cwd(), ''); //load environments
-  let resolvedMode = process.env.VERCEL_ENV || 'development';
-
-  if (process.env.AWS_BRANCH) {
-    const branchMap: Record<string, string> = {
-      main: 'production',
-      '*': 'preview',
-    };
-    resolvedMode = branchMap[process.env.AWS_BRANCH] || branchMap['*'];
-  }
-
-  console.log('[MODE]:', resolvedMode);
+  const env = loadEnv(mode, process.cwd(), '');
+  console.log('[BUILD] Using mode:', mode);
 
   return {
-    mode: resolvedMode,
+    mode,
     plugins: [
       react(),
       tsconfigPaths(),
