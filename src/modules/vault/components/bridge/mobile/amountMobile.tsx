@@ -158,7 +158,7 @@ export function AmountBrigdeMobile({
         form={form}
       />
       <HStack w="full" justifyContent={'space-between'} align="start">
-        <Text color="#868079" fontSize={12} fontWeight={400}>
+        <Text color="grey.425" fontSize={12} fontWeight={400}>
           From
         </Text>
         <VStack justifyContent="flex-end" gap={0} p={1}>
@@ -182,7 +182,7 @@ export function AmountBrigdeMobile({
               onClick={() => selectNetworkDrawer.onOpen()}
             />
           </HStack>
-          <Text color="#868079" fontSize={12} fontWeight={400}>
+          <Text color="grey.425" fontSize={12} fontWeight={400}>
             Balance:{' '}
             {balance + ' ' + (assetFrom?.symbol ? assetFrom.symbol : 'ETH')}
           </Text>
@@ -199,7 +199,7 @@ export function AmountBrigdeMobile({
       </Box>
 
       <HStack justifyContent="center">
-        <Text color="#868079" fontSize={12} fontWeight={400}>
+        <Text color="grey.425" fontSize={12} fontWeight={400}>
           {assetFromUSD}
         </Text>
       </HStack>
@@ -215,7 +215,7 @@ export function AmountBrigdeMobile({
           fontWeight={500}
           onClick={() => handleMinAmount()}
         >
-          <Text color="#868079">MIN</Text>
+          <Text color="grey.425">MIN</Text>
         </Button>
         <Button
           maxH="28px"
@@ -228,7 +228,7 @@ export function AmountBrigdeMobile({
           fontSize={10}
           fontWeight={500}
         >
-          <Text color="#868079">MAX</Text>
+          <Text color="grey.425">MAX</Text>
         </Button>
       </HStack>
       <HStack

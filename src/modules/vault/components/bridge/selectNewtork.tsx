@@ -91,7 +91,7 @@ export function SelectBridgeNetwork({
               overflow="hidden"
             >
               <HStack mb={2}>
-                <Text color="#AAA6A1" fontSize={12}>
+                <Text color="grey.250" fontSize={12}>
                   From
                 </Text>
               </HStack>
@@ -171,7 +171,7 @@ export function SelectBridgeNetwork({
         </HStack>
 
         <HStack mb={2}>
-          <Text color="#AAA6A1" fontSize={12}>
+          <Text color="grey.250" fontSize={12}>
             To
           </Text>
         </HStack>

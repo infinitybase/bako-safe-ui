@@ -84,7 +84,7 @@ const CreateTxMenuButton = ({
           <MenuButton
             aria-label={'Menu select mode create tx'}
             as={Button}
-            rightIcon={<ChevronDownIcon fontSize="24px" color={'#151413'} />}
+            rightIcon={<ChevronDownIcon fontSize="24px" color="dark.950" />}
             variant="primary"
             w="20px"
             pl={2}

@@ -178,11 +178,11 @@ export function AmountBrigde({
         position="relative"
       >
         <HStack>
-          <Text color="#868079" fontSize={12} fontWeight={400}>
+          <Text color="grey.425" fontSize={12} fontWeight={400}>
             Amount
           </Text>
           <HStack flex={1} justifyContent="flex-end">
-            <Text color="#868079" fontSize={12} fontWeight={400}>
+            <Text color="grey.425" fontSize={12} fontWeight={400}>
               Balance: {balance + ' ' + symbol}
             </Text>
           </HStack>
@@ -196,7 +196,7 @@ export function AmountBrigde({
         />
 
         <HStack justifyContent="center" mb={{ base: 2, md: 4 }}>
-          <Text color="#868079" fontSize={12} fontWeight={400}>
+          <Text color="grey.425" fontSize={12} fontWeight={400}>
             {assetFromUSD}
           </Text>
         </HStack>
@@ -212,7 +212,7 @@ export function AmountBrigde({
             fontWeight={500}
             onClick={() => handleMinAmount()}
           >
-            <Text color="#868079">MIN</Text>
+            <Text color="grey.425">MIN</Text>
           </Button>
           <Button
             maxH="28px"
@@ -225,7 +225,7 @@ export function AmountBrigde({
             fontSize={10}
             fontWeight={500}
           >
-            <Text color="#868079">MAX</Text>
+            <Text color="grey.425">MAX</Text>
           </Button>
         </HStack>
         <HStack

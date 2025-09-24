@@ -128,7 +128,7 @@ export function SectionInfo({
       <VStack p={0} gap={0}>
         <HStack width="full">
           <HStack gap={2} align={'center'}>
-            <Text color="#AAA6A1" fontSize={12}>
+            <Text color="grey.250" fontSize={12}>
               {direction}
             </Text>
           </HStack>

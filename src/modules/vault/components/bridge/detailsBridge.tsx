@@ -20,7 +20,7 @@ export function DetailsBridge({
       <VStack p={0} gap={0}>
         <HStack width="full">
           <HStack gap={2} align={'center'}>
-            <Text color="#AAA6A1" fontSize={12} flex={1}>
+            <Text color="grey.250" fontSize={12} flex={1}>
               Estimated time
             </Text>
           </HStack>
@@ -33,7 +33,7 @@ export function DetailsBridge({
             {isLoadingQuote ? (
               <Spinner color="grey.500" size="xs" />
             ) : (
-              <Text color="#AAA6A1" fontSize={12} flex={1} align="right">
+              <Text color="grey.250" fontSize={12} flex={1} align="right">
                 {dataQuote?.quote?.avgCompletionTime ?? '-'}
               </Text>
             )}
@@ -41,7 +41,7 @@ export function DetailsBridge({
         </HStack>
         <HStack width="full">
           <HStack>
-            <Text color="#AAA6A1" fontSize={12}>
+            <Text color="grey.250" fontSize={12}>
               Fee
             </Text>
             <Icon color="grey.75" fontSize="14px" as={DoubtIcon} />
@@ -55,7 +55,7 @@ export function DetailsBridge({
             {isLoadingQuote ? (
               <Spinner color="grey.500" size="xs" />
             ) : (
-              <Text color="#AAA6A1" fontSize={12} flex={1} align="right">
+              <Text color="grey.250" fontSize={12} flex={1} align="right">
                 {dataQuote?.quote?.totalFee
                   ? dataQuote?.quote?.totalFee + ' ' + assetFrom?.symbol
                   : '-'}
@@ -64,7 +64,7 @@ export function DetailsBridge({
           </HStack>
         </HStack>
         <HStack width="full">
-          <Text color="#AAA6A1" fontSize={12}>
+          <Text color="grey.250" fontSize={12}>
             You will receive
           </Text>
           <HStack
@@ -88,7 +88,7 @@ export function DetailsBridge({
                     ? dataQuote?.quote?.receiveAmount + ' ' + assetTo?.symbol
                     : ''}
                 </Text>
-                <Text color="#AAA6A1" fontSize={12} align="right">
+                <Text color="grey.250" fontSize={12} align="right">
                   {dataQuote?.receiveInUsd
                     ? `(${dataQuote?.receiveInUsd})`
                     : '-'}

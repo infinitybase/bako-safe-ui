@@ -37,7 +37,7 @@ export function ResumePageBrigde({ setScreenBridge }: ResumePageBrigdeProps) {
     <VStack
       w="585px"
       borderRadius="16px"
-      bgColor={'#0D0D0C'}
+      bgColor={'dark.850'}
       p={4}
       as="form"
       onSubmit={onSubmit}
@@ -86,7 +86,7 @@ export function ResumePageBrigde({ setScreenBridge }: ResumePageBrigdeProps) {
         </HStack>
       </Card>
       <Divider borderColor="grey.950" h="1px" flex="1" marginY={3} />
-      <DetailsBridge bgColor={'#0D0D0C'} padding={0} />
+      <DetailsBridge bgColor={'dark.850'} padding={0} />
 
       <HStack w={'full'} gap={4}>
         <Button

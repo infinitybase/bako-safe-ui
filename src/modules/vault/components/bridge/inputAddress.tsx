@@ -31,7 +31,7 @@ export function InputAddressBridge() {
     >
       <VStack p={0} gap={1} align={'flex-start'} w="full">
         {!isMobile && (
-          <Text color="#868079" fontSize={12} flex={1}>
+          <Text color="grey.425" fontSize={12} flex={1}>
             Destination address
           </Text>
         )}
@@ -86,7 +86,7 @@ export function InputAddressBridge() {
                     <FormLabel
                       id="destination_addr"
                       fontSize={'14px !important'}
-                      color={'#AAA6A1 !important'}
+                      color={'grey.250 !important'}
                       paddingTop={0}
                     >
                       {'Enter address'}
