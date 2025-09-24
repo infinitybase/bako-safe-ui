@@ -1,13 +1,24 @@
-import { Box, FormControl, FormHelperText, HStack } from '@chakra-ui/react';
+import { FormControl, FormHelperText, HStack } from '@chakra-ui/react';
 import { AddressUtils as BakoSafeUtils } from 'bakosafe';
 import { Address, isB256 } from 'fuels';
-import { memo, useCallback, useMemo } from 'react';
-import { FieldError, useFormContext, useWatch } from 'react-hook-form';
+import { memo, useCallback, useMemo, useState } from 'react';
+import { FieldError, useFormContext } from 'react-hook-form';
 
-import { Autocomplete } from '@/components';
-import { AddressUtils, AddToAddressBook, EnumOption } from '@/modules';
+import { BakoIdIcon } from '@/components';
+import AddressAutocomplete from '@/components/autocomplete/address';
+import { AddressBookIcon } from '@/components/icons/address-book';
+import {
+  AddressUtils,
+  AddToAddressBook,
+  EnumOption,
+  ITransactionForm,
+  useDebounce,
+} from '@/modules';
+import {
+  useResolverAddressQuery,
+  useResolverNameQuery,
+} from '@/modules/core/hooks/bako-id';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
-import { AddressBookUtils } from '@/utils';
 
 import Clear from './clear';
 
@@ -17,9 +28,7 @@ interface RecipientFormAddressProps {
   onChange: (value: string) => void;
   handleOpenDialog: (addr: string) => void;
   isLoading: boolean;
-  handleResolverName: (name: string) => Promise<string | null>;
-  handleResolverAddress: (address: string) => Promise<string | null>;
-  addressBookOptions: EnumOption[];
+  addressBookOptions: Array<EnumOption & { name: string }>;
   optionsRef?: (node: HTMLDivElement) => void;
   error?: FieldError;
 }
@@ -28,38 +37,86 @@ const RecipientFormAddress = ({
   index,
   handleOpenDialog,
   isLoading,
-  handleResolverAddress,
-  handleResolverName,
   addressBookOptions,
   onChange,
   value,
   optionsRef,
   error,
 }: RecipientFormAddressProps) => {
+  const [inputValue, setInputValue] = useState(value || '');
   const {
     addressBookInfos: {
       requests: { listContactsRequest },
-      inView,
       canAddMember,
     },
+    providerInstance,
   } = useWorkspaceContext();
-  const { setValue, control } = useFormContext();
-  const labelPath = `transactions.${index}.resolvedLabel` as const;
-  const resolvedLabel = useWatch({ control, name: labelPath });
-  const inputValue = resolvedLabel?.startsWith('@') ? resolvedLabel : value;
+  const { setValue } = useFormContext<ITransactionForm>();
+
+  const debouncedValue = useDebounce(inputValue, 600);
+
+  const isHandleInputted = useMemo(
+    () => inputValue.startsWith('@'),
+    [inputValue],
+  );
+  const { name, isLoading: isResolvingName } = useResolverNameQuery(
+    { address: debouncedValue, providerInstance },
+    { enabled: isB256(debouncedValue) },
+  );
+  const { address, isLoading: isResolvingAddress } = useResolverAddressQuery(
+    { name: debouncedValue, providerInstance },
+    { enabled: isHandleInputted && debouncedValue.length > 3 },
+  );
+
+  const bakoIdData = useMemo(
+    () => ({
+      label: name ? `@${name}` : inputValue,
+      value: address || inputValue,
+      image: BakoIdIcon,
+    }),
+    [inputValue, name, address],
+  );
 
   const filteredOptions = useMemo(
     () =>
-      addressBookOptions.filter(
-        (a) => new Address(a.value).toString() !== value,
-      ),
-    [addressBookOptions, value],
+      addressBookOptions.map((option) => ({
+        ...option,
+        label: option.name,
+        image: AddressBookIcon,
+      })),
+    [addressBookOptions],
+  );
+
+  const showBakoIdOption = useMemo(() => !!name || !!address, [name, address]);
+
+  const autocompleteOptions = useMemo(() => {
+    if (isHandleInputted || showBakoIdOption) {
+      return showBakoIdOption ? [bakoIdData] : [];
+    }
+    return filteredOptions;
+  }, [isHandleInputted, filteredOptions, showBakoIdOption, bakoIdData]);
+
+  const currentValue = useMemo(
+    () => autocompleteOptions.find((o) => o.value === value),
+    [autocompleteOptions, value],
+  );
+
+  const handleChange = useCallback(
+    (value: string) => {
+      if (isB256(value)) {
+        onChange(value);
+        setInputValue(value);
+        return;
+      }
+      setInputValue(value);
+    },
+    [onChange],
   );
 
   const handleClear = useCallback(() => {
     onChange('');
-    setValue(labelPath, '');
-  }, [onChange, setValue, labelPath]);
+    setInputValue('');
+  }, [onChange]);
 
   const showAddToAddressBook = useMemo(
     () =>
@@ -74,54 +131,37 @@ const RecipientFormAddress = ({
     [canAddMember, error?.message, listContactsRequest.data, value],
   );
 
+  const handleSelectOption = useCallback(
+    (value: string) => {
+      if (isHandleInputted && address) {
+        setValue(`transactions.${index}.resolvedLabel`, bakoIdData.label);
+      }
+      onChange(value);
+    },
+    [address, bakoIdData.label, index, isHandleInputted, onChange, setValue],
+  );
+
+  const isLoadingOptions = useMemo(
+    () => isLoading || isResolvingAddress || isResolvingName,
+    [isLoading, isResolvingAddress, isResolvingName],
+  );
+
   return (
     <HStack align="start" spacing={2} position="relative" width="100%">
       <FormControl isInvalid={!!error?.message} flex="1">
-        <Box position="relative">
-          <Autocomplete
-            label={`Recipient ${index + 1} address`}
-            ariaLabel={`Autocomplete Recipient Address ${index + 1}`}
-            value={inputValue}
-            onChange={onChange}
-            onInputChange={async (value: string) => {
-              const result = { value, label: value };
-
-              if (value.startsWith('@')) {
-                const address = await handleResolverAddress(
-                  value.split(' - ').at(0)!,
-                );
-
-                if (address) {
-                  result.value = address;
-                  result.label = AddressBookUtils.formatForAutocomplete(
-                    value,
-                    address,
-                  );
-                }
-              } else if (isB256(value)) {
-                const name = await handleResolverName(value);
-                if (name) {
-                  result.label = AddressBookUtils.formatForAutocomplete(
-                    name,
-                    value,
-                  );
-                }
-                result.value = new Address(value).toB256();
-              }
-
-              onChange(result.value);
-              setValue(`transactions.${index}.resolvedLabel`, result.label);
-              return result;
-            }}
-            isLoading={isLoading}
-            options={filteredOptions}
-            inView={inView}
-            clearable
-            optionsRef={optionsRef}
-            variant="dark"
-          />
-          {!!value && <Clear onClear={handleClear} />}
-        </Box>
+        <AddressAutocomplete
+          label={`Recipient ${index + 1} address`}
+          aria-label={`Autocomplete Recipient Address ${index + 1}`}
+          value={currentValue}
+          rightElement={<Clear onClear={handleClear} />}
+          onInputChange={handleChange}
+          inputValue={inputValue}
+          isLoading={isLoadingOptions}
+          options={autocompleteOptions}
+          onSelect={handleSelectOption}
+          optionsRef={optionsRef}
+          variant="dark"
+        />
         <FormHelperText color="error.500">{error?.message}</FormHelperText>
         <AddToAddressBook
           visible={showAddToAddressBook}

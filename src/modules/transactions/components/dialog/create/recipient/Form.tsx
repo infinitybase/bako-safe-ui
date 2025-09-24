@@ -6,7 +6,6 @@ import {
   CreateContactDialog,
   useAddressBookAutocompleteOptions,
 } from '@/modules/addressBook';
-import { useBakoIDClient } from '@/modules/core/hooks/bako-id';
 import {
   ITransactionForm,
   useAssetSelectOptions,
@@ -39,7 +38,6 @@ const RecipientFormField = (props: RecipientFormFieldProps) => {
       requests: { listContactsRequest, createContactRequest },
       form: contactForm,
     },
-    providerInstance,
     vaultDetails: {
       assets: { isNFTAsset },
     },
@@ -47,9 +45,6 @@ const RecipientFormField = (props: RecipientFormFieldProps) => {
   } = useWorkspaceContext();
 
   const balanceAvailable = getBalanceAvailable();
-  const {
-    handlers: { fetchResolverName, fetchResolveAddress },
-  } = useBakoIDClient(providerInstance);
 
   const transactions = useWatch({ control, name: 'transactions' });
 
@@ -122,14 +117,8 @@ const RecipientFormField = (props: RecipientFormFieldProps) => {
               addressBookOptions={optionsRequests[index].options}
               optionsRef={optionRef}
               handleOpenDialog={handleOpenAddressBookDialog}
-              handleResolverAddress={fetchResolveAddress.handler}
-              handleResolverName={fetchResolverName.handler}
               index={index}
-              isLoading={
-                !optionsRequests[index].isSuccess ||
-                fetchResolveAddress.isLoading ||
-                fetchResolverName.isLoading
-              }
+              isLoading={optionsRequests[index].isPending}
               error={fieldState.error}
               {...field}
             />
