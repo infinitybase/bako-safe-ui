@@ -185,6 +185,8 @@ export const useAvatar = (name: string) => {
     queryFn: () => {
       return client.avatar(name, chainId);
     },
+    queryKey: BAKOID_QUERY_KEYS.avatar(name),
+    enabled: !!name,
   });
 
   return { avatar, ...rest };
