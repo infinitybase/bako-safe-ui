@@ -1,0 +1,15 @@
+[project]
+authors = ["vitor"]
+entry = "main.sw"
+license = "Apache-2.0"
+name = "swap"
+
+[dependencies]
+interfaces = { path = "../../libraries/interfaces" }
+math = { path = "../../libraries/math" }
+utils = { path = "../../libraries/utils" }
+ownership = "0.26.0"
+src5 = "0.8.0"
+reentrancy = "0.26.0"
+
+

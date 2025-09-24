@@ -14,6 +14,7 @@ import {
   VaultSettingsPage,
 } from './pages';
 import { VaultBuySellSessionPage } from './pages/buy-sell/session';
+import { VaultSwapPage } from './pages/swap';
 import { VaultInfosProvider } from './VaultInfosProvider';
 
 const VaultRoutes = () => {
@@ -66,6 +67,14 @@ const VaultRoutes = () => {
             element={
               <AuthRoute>
                 <VaultBalancePage />
+              </AuthRoute>
+            }
+          />
+          <Route
+            path={Pages.vaultSwap()}
+            element={
+              <AuthRoute>
+                <VaultSwapPage />
               </AuthRoute>
             }
           />

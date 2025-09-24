@@ -113,6 +113,9 @@ importers:
       lottie-react:
         specifier: ^2.4.0
         version: 2.4.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      mira-dex-ts:
+        specifier: ^1.1.42
+        version: 1.1.42(fuels@0.101.3(vitest@3.0.9(@types/debug@4.1.12)(@types/node@20.5.1)(terser@5.43.1)))
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@18.3.1)
@@ -5239,6 +5242,11 @@ packages:
     peerDependenciesMeta:
       typescript:
         optional: true
+
+  mira-dex-ts@1.1.42:
+    resolution: {integrity: sha512-YQQzQPSys/u/5S806E83skmjTQlm0Bajci0pvJpUy2GuEuPZsQs6VCHNI9/BnkXsr51afrTWUXpmgGLjV9g/wQ==}
+    peerDependencies:
+      fuels: ^0.100.3
 
   mkdirp@0.5.6:
     resolution: {integrity: sha512-FP+p8RB8OWpF3YZBCrP5gtADmtXApB5AMLn+vdyA+PyxCjrCs00mjyUozssO33cwDeT3wNGdLxJ5M//YqtHAJw==}
@@ -14569,6 +14577,10 @@ snapshots:
   mipd@0.0.7(typescript@5.4.5):
     optionalDependencies:
       typescript: 5.4.5
+
+  mira-dex-ts@1.1.42(fuels@0.101.3(vitest@3.0.9(@types/debug@4.1.12)(@types/node@20.5.1)(terser@5.43.1))):
+    dependencies:
+      fuels: 0.101.3(vitest@3.0.9(@types/debug@4.1.12)(@types/node@20.5.1)(terser@5.43.1))
 
   mkdirp@0.5.6:
     dependencies:
