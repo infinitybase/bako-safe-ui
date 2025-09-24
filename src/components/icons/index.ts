@@ -5,6 +5,7 @@ export * from './assets/ethereum';
 export * from './assets/rigIcon';
 export * from './assets/uniswap';
 export * from './assets/unknown';
+export * from './bako';
 export * from './bako-id';
 export * from './bit-coin';
 export * from './bridge';
