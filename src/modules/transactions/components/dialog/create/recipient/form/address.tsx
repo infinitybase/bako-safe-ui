@@ -135,7 +135,9 @@ const RecipientFormAddress = ({
     (value: string) => {
       if (isHandleInputted && address) {
         setValue(`transactions.${index}.resolvedLabel`, bakoIdData.label);
+        return onChange(value);
       }
+      setValue(`transactions.${index}.resolvedLabel`, '');
       onChange(value);
     },
     [address, bakoIdData.label, index, isHandleInputted, onChange, setValue],
