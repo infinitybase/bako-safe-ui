@@ -34,19 +34,19 @@ test.describe('AddressBook', () => {
     await adresbookForm.click();
     await modalCloseTest(page, adresbookForm);
 
-    await page.getByLabel('Name or Label').fill(addressTitle);
-    await page.getByLabel('Name or Label').clear();
-    await expect(page.getByText('Name is required')).toBeVisible();
+    await page.getByLabel('Name or Label').nth(1).fill(addressTitle);
+    await page.getByLabel('Name or Label').nth(1).clear();
+    await expect(page.getByText('Name is required.').nth(1)).toBeVisible();
 
-    await page.getByLabel('Name or Label').fill(addressTitle);
+    await page.getByLabel('Name or Label').nth(1).fill(addressTitle);
     await page
       .getByLabel('Address', { exact: true })
+      .nth(1)
       .fill(
         '0x03aAb6b3c770E134908ba0CDE7BFAD7F22b80138e90f2C0d3948aB3Ebd0659C8',
       );
 
-    await getByAriaLabel(page, 'Create address book').click();
-    await page.waitForLoadState('networkidle', { timeout: 2000 });
+    await page.getByLabel('Create address book').nth(1).click();
     await page.waitForTimeout(2000);
     await expect(page.getByText(addressTitle)).toBeVisible();
 
@@ -54,11 +54,10 @@ test.describe('AddressBook', () => {
     await page.getByRole('button', { name: 'Edit' }).click();
     await expect(page.locator('text=Edit address')).toBeVisible();
 
-    await page.getByLabel('Name or Label').clear();
-    await page.getByLabel('Name or Label').fill(addressTitleEdited);
+    await page.getByLabel('Name or Label').nth(1).clear();
+    await page.getByLabel('Name or Label').nth(1).fill(addressTitleEdited);
     await getByAriaLabel(page, 'Edit address book').click();
 
-    await page.waitForLoadState('networkidle', { timeout: 2000 });
     await page.waitForTimeout(2000);
     await expect(page.getByText(addressTitleEdited)).toBeVisible();
 
@@ -85,33 +84,39 @@ test.describe('AddressBook', () => {
     });
     await adresbookForm.click();
     await modalCloseTest(page, adrFormDuplicated);
-    await page.getByLabel('Name or Label').fill(addressTitleEdited);
+    await page.getByLabel('Name or Label').nth(1).fill(addressTitleEdited);
     await page
       .getByLabel('Address', { exact: true })
+      .nth(1)
       .fill(
         '0x03aAb6b3c770E134908ba0CDE7BFAD7F22b80138e90f2C0d3948aB3Ebd0659C8',
       );
-
-    await getByAriaLabel(page, 'Create address book').click();
+    await page.getByLabel('Create address book').nth(1).click();
     await page.waitForLoadState('networkidle', { timeout: 2000 });
     await page.waitForTimeout(2000);
-    await expect(page.getByText('Duplicated label')).toBeVisible();
-    await page.getByLabel('Name or Label').fill('duplicated test');
-    await getByAriaLabel(page, 'Create address book').click();
+    await expect(page.getByText('Duplicated label').nth(1)).toBeVisible();
+    await page.getByLabel('Name or Label').nth(1).fill('duplicated test');
+    await page.getByLabel('Create address book').nth(1).click();
     await page.waitForLoadState('networkidle', { timeout: 2000 });
     await page.waitForTimeout(2000);
     await expect(
-      page.locator('.chakra-form__helper-text').getByText('Duplicated address'),
+      page
+        .locator('.chakra-form__helper-text')
+        .getByText('Duplicated address')
+        .nth(1),
     ).toBeVisible();
 
     // add a adb with invalid address
-    await page.getByLabel('Name or Label').fill('duplicated test');
-    await page.getByLabel('Address', { exact: true }).fill('invalid address');
+    await page.getByLabel('Name or Label').nth(1).fill('duplicated test');
+    await page
+      .getByLabel('Address', { exact: true })
+      .nth(1)
+      .fill('invalid address');
     await expect(
-      page.getByText('This address can not receive assets from Bako.'),
+      page.getByText('This address can not receive assets from Bako.').nth(1),
     ).toBeVisible();
 
-    await getByAriaLabel(page, 'Cancel address book').click();
+    await page.getByText('Cancel').nth(1).click();
 
     // delete adb
     // await page.getByText('Address book', { exact: true }).click();

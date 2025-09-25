@@ -24,7 +24,7 @@ test('webauthn', async ({ page }) => {
   await expect(page).toHaveURL(/vault/);
 
   //await backHome(page, 'Vaults')
-  //Testar breadcrumbs - ajuda nos seletore
+  //Testar breadcrumbs - ajuda nos seletores
 
   //Acessa Transactions
   await page.getByText('Transactions', { exact: true }).click();

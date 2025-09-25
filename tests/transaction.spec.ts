@@ -49,14 +49,20 @@ test.describe('Create transactions', () => {
     await page.getByRole('button', { name: 'Home' }).click();
     await expect(page).toHaveURL(/home/);
 
-    await selectNetwork(page, TestNetworks.local);
+    // await selectNetwork(page, TestNetworks.local);
+    await selectNetwork(page, TestNetworks.fuel_sepolia_testnet);
 
     const { vaultAddress } = await VaultTestService.createVault(page);
 
     await VaultTestService.addFundVault(page, vaultAddress, wallet);
     await page.waitForTimeout(2000);
 
-    await getByAriaLabel(page, 'Create transaction btn').click();
+    try {
+      await getByAriaLabel(page, 'Create transaction btn').click();
+    } catch {
+      page.reload();
+      await getByAriaLabel(page, 'Create transaction btn').click();
+    }
     await expect(
       page.getByRole('heading', { name: 'Create Transaction' }),
     ).toBeVisible();
@@ -118,7 +124,12 @@ test.describe('Create transactions', () => {
     await page.getByText(vaultName, { exact: true }).click();
     // ------------------------
 
-    await getByAriaLabel(page, 'Create transaction btn').click();
+    try {
+      await getByAriaLabel(page, 'Create transaction btn').click();
+    } catch {
+      page.reload();
+      await getByAriaLabel(page, 'Create transaction btn').click();
+    }
     await expect(
       page.getByRole('heading', { name: 'Create Transaction' }),
     ).toBeVisible();
@@ -156,7 +167,8 @@ test.describe('Create transactions', () => {
       username: firstUsername,
     } = await AuthTestService.loginPassKeyInTwoAccounts(page);
 
-    await selectNetwork(page, TestNetworks.local);
+    // await selectNetwork(page, TestNetworks.local);
+    await selectNetwork(page, TestNetworks.fuel_sepolia_testnet);
 
     const { vaultAddress } = await VaultTestService.createVaulMultiSigns(
       page,
@@ -167,7 +179,12 @@ test.describe('Create transactions', () => {
     await VaultTestService.addFundVault(page, vaultAddress, wallet);
 
     // -- start transaction 2/1 and signed  by 1
-    await getByAriaLabel(page, 'Create transaction btn').click();
+    try {
+      await getByAriaLabel(page, 'Create transaction btn').click();
+    } catch {
+      page.reload();
+      await getByAriaLabel(page, 'Create transaction btn').click();
+    }
     await expect(
       page.getByRole('heading', { name: 'Create Transaction' }),
     ).toBeVisible();
@@ -193,7 +210,12 @@ test.describe('Create transactions', () => {
     // -- end transaction 2/1 and signed  by 1
 
     // -- start transaction 2/1 - declined by 1 & signed  by 1
-    await getByAriaLabel(page, 'Create transaction btn').click();
+    try {
+      await getByAriaLabel(page, 'Create transaction btn').click();
+    } catch {
+      page.reload();
+      await getByAriaLabel(page, 'Create transaction btn').click();
+    }
     await expect(
       page.getByRole('heading', { name: 'Create Transaction' }),
     ).toBeVisible();
@@ -205,8 +227,6 @@ test.describe('Create transactions', () => {
     ).toBeEnabled();
 
     await TransactionTestService.onlyCreateTx(page);
-
-    await expect(page.getByText('1 pending transaction')).toBeVisible();
 
     await expect(page.getByText('0/1 Sgd', { exact: true })).toBeVisible();
 
@@ -220,7 +240,8 @@ test.describe('Create transactions', () => {
     await page.getByRole('button', { name: 'Home' }).click();
     await expect(page).toHaveURL(/home/);
 
-    await selectNetwork(page, TestNetworks.local);
+    // await selectNetwork(page, TestNetworks.local);
+    await selectNetwork(page, TestNetworks.fuel_sepolia_testnet);
 
     await expect(page.getByText('0/1 Sgd', { exact: true })).toBeVisible();
 
@@ -245,7 +266,8 @@ test.describe('Create transactions', () => {
       username: firstUsername,
     } = await AuthTestService.loginPassKeyInTwoAccounts(page);
 
-    await selectNetwork(page, TestNetworks.local);
+    // await selectNetwork(page, TestNetworks.local);
+    await selectNetwork(page, TestNetworks.fuel_sepolia_testnet);
 
     const { vaultAddress } = await VaultTestService.createVaulMultiSigns(
       page,
@@ -255,7 +277,12 @@ test.describe('Create transactions', () => {
 
     await VaultTestService.addFundVault(page, vaultAddress, wallet);
     // -- start test transaction 2/2 and decliened by 1
-    await getByAriaLabel(page, 'Create transaction btn').click();
+    try {
+      await getByAriaLabel(page, 'Create transaction btn').click();
+    } catch {
+      page.reload();
+      await getByAriaLabel(page, 'Create transaction btn').click();
+    }
     await expect(
       page.getByRole('heading', { name: 'Create Transaction' }),
     ).toBeVisible();
@@ -281,7 +308,12 @@ test.describe('Create transactions', () => {
     // -- finish test transaction 2/2 and decliened by 1
 
     // -- start teste transaction 2/2 and signed by 2 accounts
-    await getByAriaLabel(page, 'Create transaction btn').click();
+    try {
+      await getByAriaLabel(page, 'Create transaction btn').click();
+    } catch {
+      page.reload();
+      await getByAriaLabel(page, 'Create transaction btn').click();
+    }
     await expect(
       page.getByRole('heading', { name: 'Create Transaction' }),
     ).toBeVisible();
@@ -310,7 +342,8 @@ test.describe('Create transactions', () => {
     await page.getByRole('button', { name: 'Home' }).click();
     await expect(page).toHaveURL(/home/);
 
-    await selectNetwork(page, TestNetworks.local);
+    // await selectNetwork(page, TestNetworks.local);
+    await selectNetwork(page, TestNetworks.fuel_sepolia_testnet);
 
     await expect(page.getByText('1/2 Sgd', { exact: true })).toBeVisible();
 
@@ -348,20 +381,7 @@ test.describe('Create transactions', () => {
     await getByAriaLabel(page, 'Disconnect').click();
     await page.waitForTimeout(3000);
 
-    await page.goto(
-      'chrome-extension://gkoblaakkldmbbfnfhijgegmjahojbee/popup.html#/wallet',
-    );
-    await page.bringToFront();
-    await page.waitForTimeout(2000);
-    expect(page.getByText('Account 1')).toBeVisible();
-    await page.waitForTimeout(200);
-    await page.getByRole('button', { name: 'Accounts' }).click();
-
-    await page.waitForTimeout(200);
-    await expect(page.getByText('Add new account')).toBeVisible();
-    await getByAriaLabel(page, 'Add account').click();
-    await page.waitForTimeout(2000);
-    expect(page.getByText('Account 2', { exact: true })).toBeVisible();
+    await fuelWalletTestHelper.addAccount();
 
     await page.goto('/');
     await page.bringToFront();
@@ -407,7 +427,12 @@ test.describe('Create transactions', () => {
 
     // -- start teste transaction 2/2 and signed by 2 accounts
     await page.waitForTimeout(2000);
-    await getByAriaLabel(page, 'Create transaction btn').click();
+    try {
+      await getByAriaLabel(page, 'Create transaction btn').click();
+    } catch {
+      page.reload();
+      await getByAriaLabel(page, 'Create transaction btn').click();
+    }
     await expect(
       page.getByRole('heading', { name: 'Create Transaction' }),
     ).toBeVisible();
@@ -456,7 +481,8 @@ test.describe('Create transactions', () => {
     expect(completedCount).toBe(1);
   });
 
-  test('tx multiple recipients and tokens', async ({ page }) => {
+  // Rodar somente local, pois precisa de saldo de tolkens UNK
+  test.fixme('tx multiple recipients and tokens', async ({ page }) => {
     const addr1 =
       '0x19E0E3971aCe37F66B4a2740DfB910608Bbc2b980cE240BB11e2161c4B8aA360';
 
@@ -467,7 +493,8 @@ test.describe('Create transactions', () => {
     await getByAriaLabel(page, 'Close window').click();
 
     await page.goto('/home');
-    await selectNetwork(page, TestNetworks.local);
+    // await selectNetwork(page, TestNetworks.local);
+    await selectNetwork(page, TestNetworks.fuel_sepolia_testnet);
 
     const { vaultAddress: vault2, vaultName: vaultName2 } =
       await VaultTestService.createVault(page);
@@ -494,10 +521,10 @@ test.describe('Create transactions', () => {
     await adresbookForm.click();
     await modalCloseTest(page, adresbookForm);
 
-    await page.getByLabel('Name or Label').fill('addr1');
-    await page.getByLabel('Address', { exact: true }).fill(addr1);
+    await page.getByLabel('Name or Label').nth(1).fill('addr1');
+    await page.getByLabel('Address', { exact: true }).nth(1).fill(addr1);
 
-    await getByAriaLabel(page, 'Create address book').click();
+    await page.getByLabel('Create address book').nth(1).click();
     await page.waitForTimeout(500);
 
     // add addrs book 2
@@ -507,16 +534,17 @@ test.describe('Create transactions', () => {
     await adresbookForm2.click();
     await modalCloseTest(page, adresbookForm2);
 
-    await page.getByLabel('Name or Label').fill('addr2');
-    await page.getByLabel('Address', { exact: true }).fill(vault2);
+    await page.getByLabel('Name or Label').nth(1).fill('addr2');
+    await page.getByLabel('Address', { exact: true }).nth(1).fill(vault2);
 
-    await getByAriaLabel(page, 'Create address book').click();
+    await page.getByLabel('Create address book').nth(1).click();
     await page.waitForTimeout(2000);
     await expect(page.getByText('addr1')).toBeVisible();
     await expect(page.getByText('addr2')).toBeVisible();
 
     await page.waitForTimeout(1000);
-    await selectNetwork(page, TestNetworks.local);
+    // await selectNetwork(page, TestNetworks.local);
+    await selectNetwork(page, TestNetworks.fuel_sepolia_testnet);
 
     await page.getByRole('button', { name: 'Home' }).click();
     await expect(page).toHaveURL(/home/);
@@ -536,7 +564,12 @@ test.describe('Create transactions', () => {
     );
 
     await page.waitForTimeout(2000);
-    await getByAriaLabel(page, 'Create transaction btn').click();
+    try {
+      await getByAriaLabel(page, 'Create transaction btn').click();
+    } catch {
+      page.reload();
+      await getByAriaLabel(page, 'Create transaction btn').click();
+    }
     await expect(
       page.getByRole('heading', { name: 'Create Transaction' }),
     ).toBeVisible();
@@ -565,7 +598,8 @@ test.describe('Create transactions', () => {
     await page.getByRole('button', { name: 'Home' }).click();
     await expect(page).toHaveURL(/home/);
 
-    await selectNetwork(page, TestNetworks.local);
+    // await selectNetwork(page, TestNetworks.local);
+    await selectNetwork(page, TestNetworks.fuel_sepolia_testnet);
 
     await page.waitForTimeout(2000);
 

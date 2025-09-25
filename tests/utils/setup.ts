@@ -19,6 +19,7 @@ export class E2ETestUtils {
       process.env.TEST_WALLET_PRIVATE_KEY!,
       provider,
     );
+
     return { provider, genesisWallet };
   };
 
@@ -40,9 +41,6 @@ export class E2ETestUtils {
       chainName: (await provider.getChain()).name,
       mnemonic: Mnemonic.generate(),
     });
-    await config.page.goto('/');
-    await config.page.bringToFront();
-    await config.page.waitForTimeout(2000);
 
     return { fuelWalletTestHelper, genesisWallet };
   }
@@ -62,10 +60,6 @@ export class E2ETestUtils {
         automaticPresenceSimulation: true,
       },
     });
-
-    await config.page.goto('/');
-    await config.page.bringToFront();
-    await config.page.waitForTimeout(2000);
 
     return { genesisWallet };
   }

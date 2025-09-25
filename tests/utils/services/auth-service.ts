@@ -26,7 +26,6 @@ export class AuthTestService {
 
     // select input by id
     const usernameInput = page.locator('#fixed_id');
-    console.log('Clicou no input', usernameInput.focus());
     const name = `teste${Date.now()}`;
     await usernameInput.fill(name); // type 'guilhermemr'
 
@@ -59,7 +58,6 @@ export class AuthTestService {
 
     // select input by id
     const usernameInput = page.locator('#fixed_id');
-    console.log('Clicou no input', usernameInput.focus());
 
     await usernameInput.fill(username);
 
@@ -77,7 +75,10 @@ export class AuthTestService {
     page: Page,
     fuelWalletTestHelper: FuelWalletTestHelper,
   ) {
-    await getByAriaLabel(page, 'Connect Fuel Wallet').click();
+    await page.goto('/');
+    await page.bringToFront();
+
+    await page.getByRole('heading', { name: 'Fuel Wallet' }).click();
 
     //Approve the connection in the Fuel Wallet
     await fuelWalletTestHelper.walletConnect();
@@ -96,21 +97,7 @@ export class AuthTestService {
   ) {
     await disconnect(page);
 
-    await page.goto(
-      'chrome-extension://gkoblaakkldmbbfnfhijgegmjahojbee/popup.html#/wallet',
-    );
-    await page.bringToFront();
-    await page.waitForTimeout(1200);
-
-    await page.getByRole('button', { name: 'Accounts' }).click();
-    await page.waitForTimeout(200);
-
-    await page.getByRole('heading', { name: accountName, exact: true }).click();
-
-    await page.waitForTimeout(2000);
-    await page.goto('/');
-    await page.bringToFront();
-    await page.waitForTimeout(9000);
+    await fuelWalletTestHelper.switchAccount(accountName);
 
     await AuthTestService.loginWalletConnection(page, fuelWalletTestHelper);
   }

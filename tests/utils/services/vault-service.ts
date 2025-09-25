@@ -36,6 +36,12 @@ export class VaultTestService {
       await hasClose.click();
     }
     await page.waitForTimeout(1000);
+    await page.getByText('vaultName').click();
+    await page.waitForTimeout(500);
+    if (await hasClose.isVisible()) {
+      await hasClose.click();
+    }
+
     await getByAriaLabel(page, 'Sidebar Vault Address').click();
     await page.waitForTimeout(500);
     const handleAddress = await page.evaluateHandle(() =>
@@ -90,7 +96,13 @@ export class VaultTestService {
     if (await hasClose.isVisible()) {
       await hasClose.click();
     }
+
+    await page.reload();
     await page.waitForTimeout(1000);
+    const vaultDiv = page.getByText('vvaultMultisignersSignersRoleOwner');
+    if (await vaultDiv.isVisible()) {
+      await vaultDiv.click();
+    }
     await getByAriaLabel(page, 'Sidebar Vault Address').click();
     await page.waitForTimeout(500);
     const handleAddress = await page.evaluateHandle(() =>
@@ -112,9 +124,13 @@ export class VaultTestService {
     await E2ETestUtils.fundVault({
       genesisWallet: wallet,
       vaultAddress,
-      amount: '1.001',
+      amount: '0.0000499',
       assetId,
     });
+
+    console.log(
+      `Transferred 0.0000499 of asset ${assetId} to vault address ${vaultAddress}`,
+    );
     await page.waitForTimeout(1000);
     if (reload) await page.reload();
   }

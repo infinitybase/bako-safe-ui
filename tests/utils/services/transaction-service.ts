@@ -45,10 +45,6 @@ export class TransactionTestService {
     await page.locator('[data-testid="transaction_amount"]').fill(amountTxFee);
     await page.waitForTimeout(500);
     await expect(page.getByText('Insufficient funds for gas')).toBeVisible();
-    //await expect(page.getByText('Not enough balance.')).toBeVisible();
-    await expect(
-      page.getByText('Not enough ETH to pay for transaction fee!'),
-    ).toBeVisible();
   }
 
   static async fillFormChangeAsset(

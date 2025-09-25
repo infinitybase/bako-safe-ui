@@ -36,6 +36,8 @@ test.describe('API Token', () => {
     const txNameApiToken = 'tx1';
     const txName = 'Deposit by apy token';
 
+    await page.goto('/');
+
     await AuthTestService.loginWalletConnection(page, fuelWalletTestHelper);
 
     await page.waitForSelector('text=Welcome to Bako Safe!', {
@@ -43,19 +45,17 @@ test.describe('API Token', () => {
     });
     await page.locator('[aria-label="Close window"]').click();
 
-    await getByAriaLabel(page, 'Sidebar Vault Address').click();
-    await page.waitForTimeout(500);
-    const handleAddress = await page.evaluateHandle(() =>
+    await page.waitForTimeout(1000);
+    await page.getByRole('button', { name: 'Sidebar Vault Address' }).click();
+    await page.waitForTimeout(1000);
+    const vaultAddressUI = await page.evaluate(() =>
       navigator.clipboard.readText(),
     );
-
-    const vaultAddressUI = await handleAddress.jsonValue();
-
     await VaultTestService.addFundVault(page, vaultAddressUI, genesisWallet);
 
     await page.locator('#settings_tab_sidebar').click();
-    expect(page.getByText('API Tokens')).toBeVisible();
-    await page.getByLabel('API Tokens').click();
+    expect(page.getByLabel('API Token').locator('div')).toBeVisible();
+    await page.getByLabel('API Token').locator('div').click();
     expect(
       page.getByRole('heading', { name: 'Create new API Tokens' }),
     ).toBeVisible();
@@ -79,13 +79,14 @@ test.describe('API Token', () => {
     await getByAriaLabel(page, 'Secundary action create api token').click();
     await page.waitForTimeout(300);
 
-    await getByAriaLabel(page, 'API Tokens').click();
+    await page.getByLabel('API Token').locator('div').click();
     expect(page.getByText('Add more api tokens')).toBeVisible();
     expect(page.getByText(apiTokenName)).toBeVisible();
     await getByAriaLabel(page, 'Secundary action create api token').click();
 
     const provider = await BakoProvider.create(genesisWallet.provider.url, {
-      serverApi: 'http://localhost:3333',
+      // serverApi: 'http://localhost:3333',
+      serverApi: 'https://stg-api.bako.global',
       apiToken,
     });
 
@@ -94,11 +95,17 @@ test.describe('API Token', () => {
 
     expect(vaultAddress).toBe(new Address(vaultAddressUI).toString());
 
+    await E2ETestUtils.fundVault({
+      genesisWallet,
+      vaultAddress,
+      amount: '0.00001',
+    });
+
     await vault.transaction({
       assets: [
         {
           assetId: await provider.getBaseAssetId(),
-          amount: '0.0001',
+          amount: '0.0000001',
           to: vault.address.toString(),
         },
       ],

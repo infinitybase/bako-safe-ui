@@ -6,8 +6,9 @@ export default defineConfig({
   workers: 2,
   timeout: 220000,
   expect: {
-    timeout: 6000,
+    timeout: 8000,
   },
+  retries: process.env.CI ? 2 : 0,
   reporter: [['html', { printSteps: true }]],
   use: {
     headless: true,

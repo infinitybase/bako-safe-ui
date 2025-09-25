@@ -78,6 +78,7 @@
     "@semantic-release/release-notes-generator": "^14.0.3",
     "@types/js-cookie": "^3.0.4",
     "@types/lodash.debounce": "^4.0.7",
+    "@types/node": "^24.5.2",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
     "@types/react-gtm-module": "^2.0.3",

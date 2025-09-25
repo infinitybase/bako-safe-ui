@@ -26,12 +26,10 @@ test.describe('loginWebAuth', () => {
     await getByAriaLabel(page, 'Username').clear();
     await getByAriaLabel(page, 'Username').fill(username);
     await page.locator('body').click();
+    await page.getByRole('button', { name: 'Login' }).click();
     await page.waitForTimeout(300);
 
-    await getByAriaLabel(page, 'Login account')
-      .filter({ has: page.locator(':visible') })
-      .click();
-    await page.waitForTimeout(1000);
+    await getByAriaLabel(page, 'Close window').click();
 
     await page.getByRole('button', { name: 'Home' }).click();
     await expect(page).toHaveURL(/home/);

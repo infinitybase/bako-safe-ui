@@ -1,6 +1,6 @@
 // helpers.js
 import { expect, getByAriaLabel } from '@fuels/playwright-utils';
-import { Page } from '@playwright/test';
+import { Locator, Page } from '@playwright/test';
 import fs from 'fs';
 
 export enum TestNetworks {
@@ -14,20 +14,20 @@ export enum TestAssets {
   UNK = '0xccceae45a7c23dcd4024f4083e959a0686a191694e76fa4fb76c449361ca01f7',
 }
 
-export async function modalCloseTest(page, element) {
-  await page.locator('[aria-label="Close window"]').click();
+export async function modalCloseTest(page: Page, element: Locator) {
+  await page.getByLabel('Close window').nth(1).click();
   await element.click();
-  await page.getByRole('button', { name: 'Cancel' }).click();
+  await page.getByText('Cancel').nth(1).click();
   await element.click();
 }
 
-export async function breadcrumbs(page, tab) {
+export async function breadcrumbs(page: Page, tab: string) {
   await expect(page.getByRole('li', { name: tab })).toBeVisible();
   await page.getByRole('link', { name: 'home' }).click();
   await expect(page).toHaveURL(/home/);
 }
 
-export async function txFilters(page) {
+export async function txFilters(page: Page) {
   await page.getByText('Completed').click();
   await page.getByText('Declined').click();
   await page.getByText('Pending').click();
@@ -35,12 +35,12 @@ export async function txFilters(page) {
   //await page.getByText('Incoming').click()
 }
 
-export async function settingsButtons(page, text) {
+export async function settingsButtons(page: Page, text: string) {
   await page.getByText(text).click();
   await page.getByRole('button', { name: 'Notify me when available' }).click();
 }
 
-export async function createVaults(page, baseVaultName) {
+export async function createVaults(page: Page, baseVaultName: string) {
   for (let i = 1; i <= 10; i++) {
     const vaultName = `${baseVaultName} ${i}`;
     console.log(`Criando vault: ${vaultName}`);
@@ -60,7 +60,7 @@ export async function createVaults(page, baseVaultName) {
 
 export async function newTabVerification(
   page: Page,
-  buttonSelector,
+  buttonSelector: Locator,
   urlEsperada: string,
 ) {
   const [novaAba] = await Promise.all([

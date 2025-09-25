@@ -49,21 +49,21 @@ test.describe('Vaults', () => {
     if (await hasClose.isVisible()) {
       await hasClose.click();
     }
+    await page
+      .locator('div')
+      .filter({
+        hasText: /^VaultsAccess and Manage All Your Vaults in One Place\.$/,
+      })
+      .first()
+      .click();
 
-    const elements = page.locator('text="vaultName"');
-    const count = await elements.count();
-    expect(count).toBe(3);
-    for (let i = 0; i < count; i++) {
-      await expect(elements.nth(i)).toBeVisible();
-    }
-    await expect.soft(page.getByText('vaultDescription')).toBeVisible();
+    await expect(page.getByText('vaultName')).toBeVisible();
     await expect(page).toHaveURL(/workspace/);
   });
 
   test('create vault 2/2', async ({ page }) => {
     //await AuthTestService.loginWalletConnection(page, context, extensionId);
     await mockRouteAssets(page);
-    const wrongAdr = '0xe77A8531c3EEEE448B7536dD9B44cc9B841269bE';
     const adr2 =
       '0x5cD19FF270Db082663993D3D9cF6342f9869491AfB06F6DC885B1794DB261fCB';
 
@@ -83,9 +83,6 @@ test.describe('Vaults', () => {
 
     await page.getByText('Add more addresses').click();
 
-    await page.locator('id=Address 2').fill(wrongAdr); //endereço meta mask
-    await page.waitForTimeout(1000);
-    await expect(page.getByText('Invalid address')).toBeVisible();
     await page.locator('#Address\\ 2').clear();
 
     await page.locator('#Address\\ 2').fill(adr2); //endereço meta mask

@@ -29,8 +29,10 @@ test.describe('Fuel Wallet', () => {
   });
 
   test('example fuel wallet', async ({ page }) => {
+    await page.goto('/');
+
     // Get the Fuel Wallet button and click it
-    await getByAriaLabel(page, 'Connect Fuel Wallet').click();
+    await page.getByRole('heading', { name: 'Fuel Wallet' }).click();
 
     // Approve the connection in the Fuel Wallet
     await fuelWalletTestHelper.walletConnect();
@@ -58,6 +60,11 @@ test.describe('Fuel Wallet', () => {
     await getButtonByText(page, 'Done').click();
     await page.waitForTimeout(2000);
 
+    const hasClose = page.locator('[aria-label="Close window"]');
+    await page.waitForTimeout(500);
+    if (await hasClose.isVisible()) {
+      await hasClose.click();
+    }
     await getByAriaLabel(page, 'Sidebar Vault Address').click();
 
     // Get clipboard content after the link/button has been clicked
@@ -68,7 +75,7 @@ test.describe('Fuel Wallet', () => {
     await E2ETestUtils.fundVault({
       genesisWallet,
       vaultAddress,
-      amount: '1.001',
+      amount: '0.00001',
     });
 
     await page.reload();
@@ -97,7 +104,6 @@ test('webauthn', async ({ page }) => {
 
   // select input by id
   const usernameInput = page.locator('#fixed_id');
-  console.log('Clicou no input', usernameInput.focus());
   const name = `guilhermemr${Date.now()}`;
   await usernameInput.fill(name); // type 'guilhermemr'
   await expect(usernameInput).toHaveValue(name);
