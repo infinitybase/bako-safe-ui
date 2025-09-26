@@ -2,8 +2,9 @@ import { Icon } from '@chakra-ui/icons';
 import { Box, Flex, Image, Stack, Text, VStack } from '@chakra-ui/react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-import { ArrowDownIcon } from '../icons';
 import { UNKNOWN_ASSET } from '@/modules';
+
+import { ArrowDownIcon } from '../icons';
 
 interface AssetSelectOption {
   value: string;
@@ -45,6 +46,7 @@ const AssetSelect = ({
     top: number;
     left: number;
     width: number;
+    height: number;
   } | null>(null);
 
   const selectedOption = useMemo(
@@ -128,26 +130,52 @@ const AssetSelect = ({
   };
 
   const calculateOptionsCoords = useCallback(() => {
-    if (!selectRef.current) return;
+    if (!selectRef.current || !options) return;
 
     const rect = selectRef.current.getBoundingClientRect();
     const windowHeight = window.innerHeight;
-    const optionsHeight = maxOptionsHeight ?? 207;
+
+    const OPTION_HEIGHT = 56;
+    const PADDING = 8;
+    const actualOptionsHeight = Math.min(
+      options.length * OPTION_HEIGHT + PADDING * 2,
+      maxOptionsHeight ?? 207,
+    );
 
     const shouldShowAbove =
       needShowOptionsAbove ??
-      (rect.bottom + optionsHeight > windowHeight && rect.top > optionsHeight);
+      (rect.bottom + actualOptionsHeight > windowHeight &&
+        rect.top > actualOptionsHeight);
 
+    const minusTop = 5;
     const top = shouldShowAbove
-      ? rect.top - optionsHeight - 8
-      : rect.bottom + 8;
+      ? rect.top - actualOptionsHeight - PADDING
+      : rect.bottom + PADDING - minusTop;
 
+    console.log('>>>> top', top);
     setOptionsCoords({
-      top,
+      top: top,
       left: rect.left,
       width: rect.width,
+      height: actualOptionsHeight + 5,
     });
-  }, [needShowOptionsAbove, maxOptionsHeight]);
+  }, [needShowOptionsAbove, maxOptionsHeight, options]);
+
+  useEffect(() => {
+    if (showOptions) {
+      const handleScrollResize = () => {
+        calculateOptionsCoords();
+      };
+
+      window.addEventListener('scroll', handleScrollResize, true);
+      window.addEventListener('resize', handleScrollResize);
+
+      return () => {
+        window.removeEventListener('scroll', handleScrollResize, true);
+        window.removeEventListener('resize', handleScrollResize);
+      };
+    }
+  }, [showOptions, calculateOptionsCoords]);
 
   const handleToggleOptions = () => {
     if (isDisabled || isLoading) return;
@@ -185,7 +213,7 @@ const AssetSelect = ({
   }, [showOptions]);
 
   return (
-    <Box w="full">
+    <Box w="full" position="relative">
       <input
         ref={hiddenInputRef}
         type="hidden"
@@ -295,21 +323,24 @@ const AssetSelect = ({
           top={`${optionsCoords.top}px`}
           left={`${optionsCoords.left}px`}
           w={optionsCoords.width}
+          h={optionsCoords.height}
           bg="dark.200"
           color="grey.200"
           fontSize="md"
           borderColor="dark.100"
           borderWidth={1}
           borderRadius={10}
-          zIndex={999}
+          zIndex={9999}
           boxShadow="lg"
+          overflow="hidden"
         >
           <VStack
             onMouseDown={(e) => {
               e.stopPropagation();
             }}
             w="full"
-            maxH={maxOptionsHeight ?? 207}
+            h="full"
+            maxH={optionsCoords.height}
             gap={0}
             overflowY="auto"
             css={{
