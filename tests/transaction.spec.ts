@@ -68,7 +68,7 @@ test.describe('Create transactions', () => {
     ).toBeVisible();
 
     await TransactionTestService.fillFormTxWrongData(page);
-    await TransactionTestService.fillFormTx(page);
+    await TransactionTestService.fillFormTx(page, genesisWallet);
 
     await expect(
       getByAriaLabel(page, 'Create Transaction Primary Action'),
@@ -134,7 +134,7 @@ test.describe('Create transactions', () => {
       page.getByRole('heading', { name: 'Create Transaction' }),
     ).toBeVisible();
 
-    await TransactionTestService.fillFormTx(page);
+    await TransactionTestService.fillFormTx(page, genesisWallet);
 
     await expect(
       getByAriaLabel(page, 'Create Transaction Primary Action'),
@@ -189,7 +189,7 @@ test.describe('Create transactions', () => {
       page.getByRole('heading', { name: 'Create Transaction' }),
     ).toBeVisible();
 
-    await TransactionTestService.fillFormTx(page);
+    await TransactionTestService.fillFormTx(page, genesisWallet, false);
 
     await expect(
       getByAriaLabel(page, 'Create Transaction Primary Action'),
@@ -220,7 +220,7 @@ test.describe('Create transactions', () => {
       page.getByRole('heading', { name: 'Create Transaction' }),
     ).toBeVisible();
 
-    await TransactionTestService.fillFormTx(page);
+    await TransactionTestService.fillFormTx(page, genesisWallet);
 
     await expect(
       getByAriaLabel(page, 'Create Transaction Primary Action'),
@@ -287,7 +287,7 @@ test.describe('Create transactions', () => {
       page.getByRole('heading', { name: 'Create Transaction' }),
     ).toBeVisible();
 
-    await TransactionTestService.fillFormTx(page);
+    await TransactionTestService.fillFormTx(page, genesisWallet, false);
 
     await expect(
       getByAriaLabel(page, 'Create Transaction Primary Action'),
@@ -318,7 +318,7 @@ test.describe('Create transactions', () => {
       page.getByRole('heading', { name: 'Create Transaction' }),
     ).toBeVisible();
 
-    await TransactionTestService.fillFormTx(page);
+    await TransactionTestService.fillFormTx(page, genesisWallet);
 
     await expect(
       getByAriaLabel(page, 'Create Transaction Primary Action'),
@@ -437,7 +437,7 @@ test.describe('Create transactions', () => {
       page.getByRole('heading', { name: 'Create Transaction' }),
     ).toBeVisible();
 
-    await TransactionTestService.fillFormTx(page);
+    await TransactionTestService.fillFormTx(page, genesisWallet);
 
     await expect(
       getByAriaLabel(page, 'Create Transaction Primary Action'),

@@ -75,7 +75,7 @@ test.describe('Fuel Wallet', () => {
     await E2ETestUtils.fundVault({
       genesisWallet,
       vaultAddress,
-      amount: '0.00001',
+      amount: '0.0000001',
     });
 
     await page.reload();
