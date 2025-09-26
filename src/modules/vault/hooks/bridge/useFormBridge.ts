@@ -1,6 +1,11 @@
 import { AxiosError } from 'axios';
 import { TransactionStatus } from 'bakosafe';
-import { Address, bn, randomBytes, ScriptTransactionRequest } from 'fuels';
+import {
+  bn,
+  randomBytes,
+  TransactionRequest,
+  transactionRequestify,
+} from 'fuels';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
@@ -34,8 +39,6 @@ import { useGetDestinationsBridge } from './useGetDestinationsBridge';
 import { useGetLimitsBridge } from './useGetLimits';
 import { useGetQuoteBridge } from './useGetQuoteBridge';
 
-const WALLET_BAKO = import.meta.env.VITE_WALLET_BAKO!;
-
 const useFormBridge = () => {
   const {
     tokensUSD,
@@ -66,6 +69,7 @@ const useFormBridge = () => {
     provider,
     id,
   });
+
   const {
     form,
     dataQuote,
@@ -389,7 +393,7 @@ const useFormBridge = () => {
   );
 
   const sendTx = useCallback(
-    async (tx: ScriptTransactionRequest) => {
+    async (tx: TransactionRequest) => {
       try {
         if (!vault) return;
 
@@ -412,6 +416,7 @@ const useFormBridge = () => {
           await refetchHomeTransactionsList();
         });
       } catch (error) {
+        console.info('error sendtx bridge', error);
         setIsSendingTx(false);
       }
     },
@@ -435,23 +440,27 @@ const useFormBridge = () => {
       const depositActions = response.depositActions[0];
       const callData = JSON.parse(depositActions.callData);
 
-      const tx = new ScriptTransactionRequest({
-        gasLimit: bn(1_000_000),
-      });
-      tx.abis = callData.script.abis;
-      tx.script = callData.script.script;
-      tx.scriptData = callData.script.scriptData;
+      const tx = transactionRequestify(callData.script);
+      if (!payload?.sourceAddress) return;
 
-      const address = new Address(depositActions.toAddress);
+      if (!vault) return;
 
-      for (const q of callData.quantities || []) {
-        tx.addCoinOutput(address, bn(q.amount), q.assetId);
-      }
+      const add = await vault.getResourcesToSpend(
+        callData.quantities.map((qtd: { assetId: string; amount: string }) => ({
+          assetId: qtd.assetId,
+          amount: qtd.amount,
+        })),
+      );
+
+      tx.addResources(add);
+      const txCost = await vault.getTransactionCost(tx);
+      await vault.fund(tx, txCost);
 
       //tx.addCoinOutput(new Address(WALLET_BAKO), bn(175), tokensIDS.ETH);
 
       await sendTx(tx);
     } catch (err) {
+      console.info('error submit brigde', err);
       if (
         err instanceof AxiosError &&
         err?.response?.data?.detail === 'Invalid address'
