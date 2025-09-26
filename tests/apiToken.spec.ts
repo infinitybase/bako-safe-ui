@@ -85,8 +85,7 @@ test.describe('API Token', () => {
     await getByAriaLabel(page, 'Secundary action create api token').click();
 
     const provider = await BakoProvider.create(genesisWallet.provider.url, {
-      // serverApi: 'http://localhost:3333',
-      serverApi: 'https://stg-api.bako.global',
+      serverApi: process.env.VITE_API_URL,
       apiToken,
     });
 

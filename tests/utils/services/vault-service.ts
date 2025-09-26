@@ -128,9 +128,6 @@ export class VaultTestService {
       assetId,
     });
 
-    console.log(
-      `Transferred 0.0000499 of asset ${assetId} to vault address ${vaultAddress}`,
-    );
     await page.waitForTimeout(1000);
     if (reload) await page.reload();
   }

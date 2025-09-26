@@ -1,4 +1,9 @@
-import { getByAriaLabel, hasText, test } from '@fuels/playwright-utils';
+import {
+  FuelWalletTestHelper,
+  getByAriaLabel,
+  hasText,
+  test,
+} from '@fuels/playwright-utils';
 import { expect } from '@playwright/test';
 
 import { AuthTestService } from './utils/services/auth-service';
@@ -6,8 +11,8 @@ import { E2ETestUtils } from './utils/setup';
 
 await E2ETestUtils.downloadFuelExtension({ test });
 
-test.describe('loginWebAuth', () => {
-  test('create acc and login', async ({ page }) => {
+test.describe('create account and login', () => {
+  test('loginWebAuth', async ({ page }) => {
     const { username } = await AuthTestService.loginAuth(page);
 
     await hasText(page, /Welcome to Bako Safe!/);
@@ -28,6 +33,37 @@ test.describe('loginWebAuth', () => {
     await page.locator('body').click();
     await page.getByRole('button', { name: 'Login' }).click();
     await page.waitForTimeout(300);
+
+    await getByAriaLabel(page, 'Close window').click();
+
+    await page.getByRole('button', { name: 'Home' }).click();
+    await expect(page).toHaveURL(/home/);
+  });
+
+  test('example fuel wallet', async ({ page, context, extensionId }) => {
+    let fuelWalletTestHelper!: FuelWalletTestHelper;
+    await test.step('', async () => {
+      const E2EUtils = await E2ETestUtils.setupFuelWallet({
+        page,
+        context,
+        extensionId,
+      });
+
+      fuelWalletTestHelper = E2EUtils.fuelWalletTestHelper;
+    });
+
+    await page.goto('/');
+
+    await page.getByRole('heading', { name: 'Fuel Wallet' }).click();
+
+    await fuelWalletTestHelper.walletConnect();
+
+    await E2ETestUtils.signMessageFuelWallet({
+      page,
+      fuelWalletTestHelper,
+    });
+
+    await hasText(page, /Welcome to Bako Safe!/);
 
     await getByAriaLabel(page, 'Close window').click();
 

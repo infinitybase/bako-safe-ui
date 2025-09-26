@@ -1,6 +1,8 @@
-import { getByAriaLabel } from '@fuels/playwright-utils';
+import { FuelWalletTestHelper, getByAriaLabel } from '@fuels/playwright-utils';
 import { expect, Page } from '@playwright/test';
 import { WalletUnlocked } from 'fuels';
+
+import { E2ETestUtils } from '../setup';
 
 interface TxTestResponse {
   transactionName: string;
@@ -52,6 +54,74 @@ export class TransactionTestService {
     await page.locator('[data-testid="transaction_amount"]').fill(amountTxFee);
     await page.waitForTimeout(500);
     await expect(page.getByText('Insufficient funds for gas')).toBeVisible();
+  }
+
+  static async returnFundsToGenesisWalletWithFuelWallet(
+    page: Page,
+    genesisWallet: WalletUnlocked,
+    fuelWalletTestHelper: FuelWalletTestHelper,
+  ) {
+    try {
+      await getByAriaLabel(page, 'Create transaction btn').click();
+    } catch {
+      page.reload();
+      await getByAriaLabel(page, 'Create transaction btn').click();
+    }
+    await expect(
+      page.getByRole('heading', { name: 'Create Transaction' }),
+    ).toBeVisible();
+
+    await TransactionTestService.fillFormTx(page, genesisWallet);
+
+    await expect(
+      getByAriaLabel(page, 'Create Transaction Primary Action'),
+    ).toBeEnabled();
+
+    await TransactionTestService.onlyCreateTx(page);
+    await page.waitForTimeout(500);
+
+    await getByAriaLabel(page, 'Sign btn tx card').click();
+
+    await page.waitForTimeout(2000);
+
+    await E2ETestUtils.signMessageFuelWallet({
+      page,
+      fuelWalletTestHelper,
+    });
+    await page.waitForTimeout(1000);
+
+    await expect(page.getByText('You signed')).toBeVisible();
+  }
+
+  static async returnFundsToGenesisWalletWithPasskey(
+    page: Page,
+    genesisWallet: WalletUnlocked,
+  ) {
+    try {
+      await getByAriaLabel(page, 'Create transaction btn').click();
+    } catch {
+      page.reload();
+      await getByAriaLabel(page, 'Create transaction btn').click();
+    }
+    await expect(
+      page.getByRole('heading', { name: 'Create Transaction' }),
+    ).toBeVisible();
+
+    await TransactionTestService.fillFormTxWrongData(page);
+    await TransactionTestService.fillFormTx(page, genesisWallet);
+
+    await expect(
+      getByAriaLabel(page, 'Create Transaction Primary Action'),
+    ).toBeEnabled();
+
+    await getByAriaLabel(page, 'Create Transaction Primary Action').click();
+
+    await page.waitForTimeout(1000);
+
+    await expect(page.getByText('You signed')).toBeVisible();
+
+    const completedCount = await page.getByText('Completed').count();
+    expect(completedCount).toBe(2);
   }
 
   static async fillFormChangeAsset(

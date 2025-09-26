@@ -18,57 +18,6 @@ export enum TestAssets {
   UNK = '0xccceae45a7c23dcd4024f4083e959a0686a191694e76fa4fb76c449361ca01f7',
 }
 
-export async function returnFundsToGenesisWallet(config: {
-  fuelWalletTestHelper: FuelWalletTestHelper;
-  genesisAddress: string;
-}) {
-  const { fuelWalletTestHelper, genesisAddress } = config;
-
-  const extensionPage = fuelWalletTestHelper.getWalletPage();
-
-  await extensionPage.waitForTimeout(2000);
-
-  const isZeroBalance = await extensionPage
-    .locator('p[data-account-name="Account 1"]')
-    .evaluate((el) => {
-      const text = el.textContent ?? '';
-      const value = parseFloat(text.replace('$', '').trim());
-      return value === 0;
-    });
-
-  if (isZeroBalance) {
-    console.log('No ETH balance found to return to genesis wallet.');
-    return;
-  }
-
-  await extensionPage.getByRole('button', { name: 'Send Button' }).click();
-  await extensionPage.getByRole('combobox', { name: 'Select Asset' }).click();
-  await extensionPage
-    .getByRole('menuitem', { name: 'Ethereum Ethereum ETH' })
-    .click();
-  await extensionPage
-    .getByRole('textbox', { name: 'Address Input' })
-    .fill(genesisAddress);
-  await extensionPage.getByRole('button', { name: 'Max' }).click();
-
-  await extensionPage.waitForTimeout(1500);
-  const reviewButton = extensionPage.getByRole('button', { name: 'Review' });
-  await expect(reviewButton).toBeEnabled();
-  await reviewButton.click();
-
-  await extensionPage.waitForTimeout(1500);
-  const submitButton = extensionPage.getByRole('button', { name: 'Submit' });
-  await expect(submitButton).toBeEnabled();
-  await submitButton.click();
-
-  await expect(
-    extensionPage.getByRole('dialog').getByText('Send', { exact: true }),
-  ).toBeVisible({
-    timeout: 8000,
-  });
-  await expect(extensionPage.getByText('success')).toBeVisible();
-}
-
 export async function modalCloseTest(page: Page, element: Locator) {
   await page.getByLabel('Close window').nth(1).click();
   await element.click();

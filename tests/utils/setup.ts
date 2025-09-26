@@ -91,5 +91,9 @@ export class E2ETestUtils {
       asset,
     );
     await transactionResponse.waitForResult();
+
+    console.log(
+      `Transferred ${amount} of asset ${asset} to vault address ${vaultAddress}`,
+    );
   }
 }

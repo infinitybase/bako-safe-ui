@@ -1,6 +1,6 @@
 import { expect, getByAriaLabel, hasText, test } from '@fuels/playwright-utils';
 
-import { mockRouteAssets } from './utils/helpers';
+import { mockRouteAssets, selectNetwork, TestNetworks } from './utils/helpers';
 import { AuthTestService } from './utils/services/auth-service';
 import { E2ETestUtils } from './utils/setup';
 
@@ -10,7 +10,7 @@ test.describe('Vaults', () => {
   test('create vault 1/1', async ({ page }) => {
     //await AuthTestService.loginWalletConnection(page, context, extensionId);
     await mockRouteAssets(page);
-    await AuthTestService.loginAuth(page);
+    const { genesisWallet } = await AuthTestService.loginAuth(page);
 
     // Check if the user is logged in and go to Home page
     await hasText(page, /Welcome to Bako Safe!/);
@@ -59,6 +59,44 @@ test.describe('Vaults', () => {
 
     await expect(page.getByText('vaultName')).toBeVisible();
     await expect(page).toHaveURL(/workspace/);
+
+    await test.step('verify balance', async () => {
+      // await selectNetwork(page, TestNetworks.local);
+      await selectNetwork(page, TestNetworks.fuel_sepolia_testnet);
+
+      await page.getByText('vaultName').click();
+      await page.waitForTimeout(500);
+      if (await hasClose.isVisible()) {
+        await hasClose.click();
+      }
+
+      await getByAriaLabel(page, 'Sidebar Vault Address').click();
+      await page.waitForTimeout(500);
+      const handleAddress = await page.evaluateHandle(() =>
+        navigator.clipboard.readText(),
+      );
+
+      const vaultAddress = await handleAddress.jsonValue();
+      const amount = '0.00001';
+
+      await E2ETestUtils.fundVault({
+        genesisWallet,
+        vaultAddress,
+        amount,
+      });
+
+      await page.reload();
+      await page
+        .getByRole('paragraph')
+        .filter({ hasText: 'Update' })
+        .getByRole('img')
+        .first()
+        .click();
+      await page.locator('.chakra-icon.css-bokek7').click();
+
+      await expect(page.getByRole('heading', { name: 'USD' })).toBeVisible();
+      await expect(page.getByText(`${amount} ETH`)).toBeVisible();
+    });
   });
 
   test('create vault 2/2', async ({ page }) => {
@@ -67,7 +105,7 @@ test.describe('Vaults', () => {
     const adr2 =
       '0x5cD19FF270Db082663993D3D9cF6342f9869491AfB06F6DC885B1794DB261fCB';
 
-    await AuthTestService.loginAuth(page);
+    const { genesisWallet } = await AuthTestService.loginAuth(page);
     await hasText(page, /Welcome to Bako Safe!/);
 
     await page.locator('[aria-label="Close window"]').click();
@@ -83,8 +121,14 @@ test.describe('Vaults', () => {
 
     await page.getByText('Add more addresses').click();
 
-    await page.locator('#Address\\ 2').clear();
+    await test.step('wrong and empty address', async () => {
+      await expect(page.getByText('Empty address')).toBeVisible();
 
+      await page.locator('#Address\\ 2').fill('invalid address');
+      await expect(page.getByText('Invalid address')).toBeVisible();
+
+      await page.locator('#Address\\ 2').clear();
+    });
     await page.locator('#Address\\ 2').fill(adr2); //endereço meta mask
 
     await page
@@ -113,5 +157,42 @@ test.describe('Vaults', () => {
     for (let i = 0; i < number; i++) {
       await expect(vaultsTitle.nth(i)).toBeVisible();
     }
+
+    await test.step('verify balance', async () => {
+      // await selectNetwork(page, TestNetworks.local);
+      await selectNetwork(page, TestNetworks.fuel_sepolia_testnet);
+
+      await page.waitForTimeout(500);
+      if (await hasClose.isVisible()) {
+        await hasClose.click();
+      }
+
+      await getByAriaLabel(page, 'Sidebar Vault Address').click();
+      await page.waitForTimeout(500);
+      const handleAddress = await page.evaluateHandle(() =>
+        navigator.clipboard.readText(),
+      );
+
+      const vaultAddress = await handleAddress.jsonValue();
+      const amount = '0.00001';
+
+      await E2ETestUtils.fundVault({
+        genesisWallet,
+        vaultAddress,
+        amount,
+      });
+
+      await page.reload();
+      await page
+        .getByRole('paragraph')
+        .filter({ hasText: 'Update' })
+        .getByRole('img')
+        .first()
+        .click();
+      await page.locator('.chakra-icon.css-bokek7').click();
+
+      await expect(page.getByRole('heading', { name: 'USD' })).toBeVisible();
+      await expect(page.getByText(`${amount} ETH`)).toBeVisible();
+    });
   });
 });
