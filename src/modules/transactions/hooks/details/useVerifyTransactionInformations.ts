@@ -82,6 +82,11 @@ const useVerifyTransactionInformations = (
     [isDeposit, transaction],
   );
 
+  const isSwap = useMemo(
+    () => transaction.name.includes('Swap'),
+    [transaction],
+  );
+
   const contractAddress = isContract
     ? Address.fromB256(mainOperation?.to?.address ?? '').toString()
     : '';
@@ -103,6 +108,7 @@ const useVerifyTransactionInformations = (
     isFromCLI,
     isLiquidStake,
     showAmountInformations,
+    isSwap,
   };
 };
 
