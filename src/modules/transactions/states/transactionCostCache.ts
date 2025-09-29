@@ -1,10 +1,8 @@
 import { FAKE_WITNESSES } from 'bakosafe';
-import { BN } from 'fuels';
 
 import { ResolveTransactionCostInput } from '../services';
 
 export const FAKE_SIGNATURES = Array.from({ length: 10 }, () => FAKE_WITNESSES);
-export const transactionCostCache = new Map<string, { fee: BN }>();
 
 export const createTxCostHash = (
   input: ResolveTransactionCostInput,
