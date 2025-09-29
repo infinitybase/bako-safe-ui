@@ -8,6 +8,7 @@ import {
   BakoGarageBanner,
   BakoIdIcon,
   Banner,
+  BridgeIcon,
   Carousel,
   CoinsIcon,
   Exchange2Icon,
@@ -190,6 +191,23 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
               <Icon as={PendingIcon} />{' '}
               {isPendingSigner && pendingSignerTransactionsLength}
             </SidebarMenu.Badge>
+          </SidebarMenu.Container>
+
+          <SidebarMenu.Container
+            isActive={menuItems.bridge}
+            onClick={() =>
+              handleNavigate(
+                Pages.bridge({
+                  workspaceId: route.params.workspaceId!,
+                  vaultId: route.params.vaultId!,
+                }),
+              )
+            }
+          >
+            <SidebarMenu.Icon as={BridgeIcon} isActive={false} />
+            <SidebarMenu.Title isActive={menuItems.bridge}>
+              Bridge
+            </SidebarMenu.Title>
           </SidebarMenu.Container>
 
           <SidebarMenu.Container

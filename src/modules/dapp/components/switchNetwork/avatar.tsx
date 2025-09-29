@@ -10,7 +10,7 @@ interface AvatarInfoProps {
 const AvatarSwitchNetwork = ({ ...props }: AvatarInfoProps) => {
   return (
     <AvatarUI
-      color="#AAA6A1"
+      color="grey.250"
       boxSize={props.size}
       bgColor={props.bgColor}
       src={props.src}
