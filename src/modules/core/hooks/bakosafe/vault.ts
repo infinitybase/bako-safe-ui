@@ -24,7 +24,7 @@ interface UseCreateBakoSafeVaultPayload {
 }
 
 interface IUseBakoSafeVault {
-  provider: string;
+  provider?: string;
   address: string;
   id: string;
 }

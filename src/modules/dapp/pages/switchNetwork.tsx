@@ -22,12 +22,7 @@ const SwitchNetwork = () => {
   }
 
   return (
-    <VStack
-      w="full"
-      backgroundColor="#0D0D0C"
-      padding={6}
-      h="$100vh"
-    >
+    <VStack w="full" backgroundColor="dark.850" padding={6} h="$100vh">
       <Box
         w="full"
         display="flex"
@@ -108,13 +103,13 @@ const SwitchNetwork = () => {
         alignItems={'center'}
         maxWidth={404}
         paddingY={6}
-        bgColor={'#0D0D0C'}
+        bgColor={'dark.850'}
       >
         <Button
           variant="primary"
           fontWeight={500}
           color={'grey.75'}
-          bgColor={'#0D0D0C'}
+          bgColor={'dark.850'}
           border={'1px solid'}
           borderColor={'grey.75'}
           letterSpacing={'2%'}

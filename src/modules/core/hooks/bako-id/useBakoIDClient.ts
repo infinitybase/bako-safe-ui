@@ -4,6 +4,7 @@ import {
   useMutation,
   useQuery,
   useQueryClient,
+  UseQueryOptions,
 } from '@tanstack/react-query';
 import { BakoProvider } from 'bakosafe';
 import { Provider } from 'fuels';
@@ -44,6 +45,57 @@ export const useBakoIDResolveNames = (options: {
     },
     enabled: addresses.length > 0,
   });
+};
+
+type QueryOptions = Omit<
+  UseQueryOptions<string | null>,
+  'queryKey' | 'queryFn'
+>;
+
+export const useResolverNameQuery = (
+  {
+    address,
+    providerInstance,
+  }: { address: string; providerInstance: Promise<Provider> },
+  options: QueryOptions = {},
+) => {
+  const { data, ...rest } = useQuery({
+    queryKey: BAKOID_QUERY_KEYS.address(address),
+    queryFn: async () => {
+      const provider = await providerInstance;
+      const nameResolved = await client.name(
+        address,
+        await provider.getChainId(),
+      );
+      return nameResolved;
+    },
+    ...options,
+  });
+
+  return { name: data, ...rest };
+};
+
+export const useResolverAddressQuery = (
+  {
+    name,
+    providerInstance,
+  }: { name: string; providerInstance: Promise<Provider> },
+  options: QueryOptions = {},
+) => {
+  const { data, ...rest } = useQuery({
+    queryKey: BAKOID_QUERY_KEYS.name(name),
+    queryFn: async () => {
+      const provider = await providerInstance;
+      const addressResolved = await client.resolver(
+        name,
+        await provider.getChainId(),
+      );
+      return addressResolved;
+    },
+    ...options,
+  });
+
+  return { address: data, ...rest };
 };
 
 export const useBakoIDClient = (providerInstance: Promise<BakoProvider>) => {

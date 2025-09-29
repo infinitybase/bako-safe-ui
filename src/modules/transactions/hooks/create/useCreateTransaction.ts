@@ -21,6 +21,7 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { useTransactionsContext } from '../../providers/TransactionsProvider';
 import { generateTransactionName } from '../../utils';
 import { useCreateTransactionForm } from './useCreateTransactionForm';
+import { useTransactionAccordion } from './useTransactionAccordion';
 
 const recipientMock =
   'fuel1tn37x48zw6e3tylz2p0r6h6ua4l6swanmt8jzzpqt4jxmmkgw3lszpcedp';
@@ -34,20 +35,6 @@ interface UseCreateTransactionParams {
   getCoinAmount: (assetId: string, needsFormat?: boolean | undefined) => BN;
   createTransactionAndSign: boolean;
 }
-
-const useTransactionAccordion = () => {
-  const [accordionIndex, setAccordionIndex] = useState(0);
-
-  const close = useCallback(() => setAccordionIndex(-1), []);
-
-  const open = useCallback((index: number) => setAccordionIndex(index), []);
-
-  return {
-    open,
-    close,
-    index: accordionIndex,
-  };
-};
 
 const useCreateTransaction = (props?: UseCreateTransactionParams) => {
   const {
@@ -101,13 +88,22 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     },
   });
 
-  const transactionFee = resolveTransactionCosts.data?.fee.format();
+  const transactionFee = useMemo(
+    () => resolveTransactionCosts.data?.fee.format(),
+    [resolveTransactionCosts.data],
+  );
+
+  const assets = useMemo(
+    () =>
+      props?.assets?.map((asset) => ({
+        amount: asset.amount!,
+        assetId: asset.assetId,
+      })),
+    [props?.assets],
+  );
 
   const { transactionsFields, form } = useCreateTransactionForm({
-    assets: props?.assets?.map((asset) => ({
-      amount: asset.amount!,
-      assetId: asset.assetId,
-    })),
+    assets,
     nfts: props?.nfts,
     assetsMap,
     getCoinAmount: (asset) => props?.getCoinAmount(asset) ?? bn(''),

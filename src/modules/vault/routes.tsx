@@ -9,11 +9,13 @@ import { VaultDashboardLayoutRouter } from './layout/VaultDashBoard';
 import {
   TransactionsVaultPage,
   VaultBalancePage,
+  VaultBridgePage,
   VaultBuySellPage,
   VaultDetailsPage,
   VaultSettingsPage,
 } from './pages';
 import { VaultBuySellSessionPage } from './pages/buy-sell/session';
+import { VaultSwapPage } from './pages/swap';
 import { VaultInfosProvider } from './VaultInfosProvider';
 
 const VaultRoutes = () => {
@@ -66,6 +68,22 @@ const VaultRoutes = () => {
             element={
               <AuthRoute>
                 <VaultBalancePage />
+              </AuthRoute>
+            }
+          />
+          <Route
+            path={Pages.bridge()}
+            element={
+              <AuthRoute>
+                <VaultBridgePage />
+              </AuthRoute>
+            }
+          />
+          <Route
+            path={Pages.vaultSwap()}
+            element={
+              <AuthRoute>
+                <VaultSwapPage />
               </AuthRoute>
             }
           />
