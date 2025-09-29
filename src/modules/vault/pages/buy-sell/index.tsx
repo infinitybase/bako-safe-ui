@@ -11,6 +11,7 @@ import {
   TabPanels,
   Tabs,
   Text,
+  Tooltip,
   useDisclosure,
 } from '@chakra-ui/react';
 import { RiMenuUnfoldLine } from 'react-icons/ri';
@@ -124,7 +125,11 @@ export const VaultBuySellPage = () => {
         >
           <TabList>
             <Tab w="full">Buy</Tab>
-            <Tab w="full">Sell</Tab>
+            <Tab w="full" isDisabled>
+              <Tooltip label="Coming soon" hasArrow>
+                Sell
+              </Tooltip>
+            </Tab>
           </TabList>
           <TabPanels>
             <TabPanel>
