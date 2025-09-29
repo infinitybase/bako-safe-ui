@@ -9,7 +9,8 @@ import {
 import { memo, useMemo } from 'react';
 
 import { BakoIcon, UnknownIcon } from '@/components/icons';
-import { useAvatar } from '@/modules/core/hooks/bako-id';
+import { useBakoIdAvatar } from '@/modules/core/hooks/bako-id';
+import { useNetworks } from '@/modules/network/hooks';
 
 interface InputValueImageProps {
   image?: ComponentWithAs<'svg', IconProps>;
@@ -19,9 +20,11 @@ interface InputValueImageProps {
 
 const InputValueImage = memo(
   ({ image, label, boxSize = '24px' }: InputValueImageProps) => {
+    const { currentNetwork } = useNetworks();
     const isHandle = useMemo(() => label.startsWith('@'), [label]);
-    const { avatar, isLoading } = useAvatar(
+    const { avatar, isLoading } = useBakoIdAvatar(
       isHandle ? label.replace('@', '') : '',
+      currentNetwork?.chainId,
     );
 
     return (
