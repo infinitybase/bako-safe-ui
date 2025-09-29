@@ -56,7 +56,8 @@ export class AddressValidator {
     }
 
     const provider = await this.provider;
-    const isValid = await provider.isUserAccount(address);
+    const addressType = await provider.getAddressType(address);
+    const isValid = ['Account', 'Contract'].includes(addressType);
     this.addresses.set(address, isValid);
 
     return isValid;
