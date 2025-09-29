@@ -152,7 +152,6 @@ const AssetSelect = ({
       ? rect.top - actualOptionsHeight - PADDING
       : rect.bottom + PADDING - minusTop;
 
-    console.log('>>>> top', top);
     setOptionsCoords({
       top: top,
       left: rect.left,
