@@ -45,12 +45,6 @@ const useSidebar = ({ params }: UseSidebarProps) => {
         workspaceId: workspace?.id ?? '',
       }),
     ),
-    bridge: checkPathname(
-      Pages.bridge({
-        vaultId: params?.vaultId ?? '',
-        workspaceId: workspace?.id ?? '',
-      }),
-    ),
     buySell: checkPathname(
       Pages.vaultBuySell({
         vaultId: params?.vaultId ?? '',

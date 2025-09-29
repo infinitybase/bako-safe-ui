@@ -1,5 +1,4 @@
 export * from './balance';
-export * from './bridge';
 export * from './buy-sell';
 export * from './details';
 export * from './settings';
