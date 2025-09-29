@@ -8,8 +8,9 @@ import {
   Heading,
   Input,
 } from '@chakra-ui/react';
+import { useQuery } from '@tanstack/react-query';
 import { bn } from 'fuels';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { Controller, FormProvider } from 'react-hook-form';
 
 import { Dialog } from '@/components';
@@ -39,29 +40,23 @@ const CreateTransactionForm = (props: CreateTransactionFormProps) => {
     isFeeCalcLoading,
     getBalanceAvailable,
   } = props;
-
   const { providerInstance } = useWorkspaceContext();
-
-  const [ethAssetId, setEthAssetId] = useState<string | undefined>();
-
-  useEffect(() => {
-    const fetchEthAssetId = async () => {
+  const { data: baseAssetId } = useQuery({
+    queryKey: ['baseAssetId'],
+    queryFn: async () => {
       const provider = await providerInstance;
-      const baseAssetId = await provider.getBaseAssetId();
-      setEthAssetId(baseAssetId);
-    };
-
-    fetchEthAssetId();
-  }, [providerInstance]);
+      return provider.getBaseAssetId();
+    },
+  });
 
   const { hasEthForFee } = useMemo(() => {
-    if (!ethAssetId) return { hasEthForFee: false };
+    if (!baseAssetId) return { hasEthForFee: false };
 
     let feeAlreadyAdded = false;
 
     const used = transactionsFields.fields.reduce((acc, _, index) => {
       const transaction = form.watch(`transactions.${index}`);
-      if (transaction.asset !== ethAssetId) return acc;
+      if (transaction.asset !== baseAssetId) return acc;
 
       const amount = Number(transaction.amount || 0);
       let fee = 0;
@@ -74,7 +69,7 @@ const CreateTransactionForm = (props: CreateTransactionFormProps) => {
       return acc + amount + fee;
     }, 0);
 
-    const asset = assets.assets?.find((a) => a.assetId === ethAssetId);
+    const asset = assets.assets?.find((a) => a.assetId === baseAssetId);
     const totalEth = asset?.amount ? bn(asset.amount).formatUnits() : 0;
 
     const hasEnough = Number(totalEth) >= Number(used.toFixed(9));
@@ -83,7 +78,7 @@ const CreateTransactionForm = (props: CreateTransactionFormProps) => {
       totalEthUsed: used,
       hasEthForFee: hasEnough,
     };
-  }, [transactionsFields, form, assets.assets, ethAssetId]);
+  }, [transactionsFields, form, assets.assets, baseAssetId]);
 
   return (
     <FormProvider {...form}>
@@ -127,7 +122,7 @@ const CreateTransactionForm = (props: CreateTransactionFormProps) => {
           transactions={transactionsFields}
           allAssetsUsed={form.allAssetsUsed}
           hasEthForFee={hasEthForFee}
-          ethAssetId={ethAssetId}
+          ethAssetId={baseAssetId}
         >
           {transactionsFields.fields.map((transaction, index) => (
             <Recipient.Item
@@ -141,7 +136,7 @@ const CreateTransactionForm = (props: CreateTransactionFormProps) => {
               nicks={nicks}
               index={index}
               hasEthForFee={hasEthForFee}
-              ethAssetId={ethAssetId}
+              ethAssetId={baseAssetId}
             />
           ))}
         </Recipient.List>

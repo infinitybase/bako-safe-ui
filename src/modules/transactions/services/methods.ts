@@ -1,9 +1,14 @@
-import { Asset, FAKE_WITNESSES, ITransactionResume } from 'bakosafe';
+import { Asset, ITransactionResume } from 'bakosafe';
 import { Address, bn, calculateGasFee, ScriptTransactionRequest } from 'fuels';
 
 import { api } from '@/config/api';
 import { ITransaction } from '@/modules/core/hooks/bakosafe/utils/types';
 
+import {
+  createTxCostHash,
+  FAKE_SIGNATURES,
+  transactionCostCache,
+} from '../states/transactionCostCache';
 import {
   CancelTransactionResponse,
   CloseTransactionPayload,
@@ -29,6 +34,10 @@ import {
   SignerTransactionPayload,
   SignerTransactionResponse,
 } from './types';
+
+// Cache estático para evitar re-chamadas desnecessárias
+const baseAssetIdCache = new Map<string, string>();
+const predicateGasCache = new Map<string, ReturnType<typeof bn>>();
 
 export class TransactionService {
   static async create(payload: CreateTransactionPayload) {
@@ -148,13 +157,32 @@ export class TransactionService {
 
   static async resolveTransactionCosts(input: ResolveTransactionCostInput) {
     const { vault, assets: assetsToSpend, assetsMap } = input;
+    const hash = createTxCostHash(input);
+    console.log({ hash });
+    const cachedCosts = transactionCostCache.get(hash);
+    console.log('return by cache', cachedCosts);
+    if (cachedCosts) return cachedCosts;
 
-    const predicateGasUsed = await vault.maxGasUsed();
+    // Cache do predicateGasUsed para evitar chamadas repetidas
+    const vaultAddress = vault.address.toString();
+    let predicateGasUsed = predicateGasCache.get(vaultAddress);
+    if (!predicateGasUsed) {
+      predicateGasUsed = await vault.maxGasUsed();
+      predicateGasCache.set(vaultAddress, predicateGasUsed);
+    }
+
     let transactionRequest = new ScriptTransactionRequest();
     const assets = [...(assetsToSpend || [])];
 
-    const baseAssetId = await vault.provider.getBaseAssetId();
-    const hasETHAsset = assets.some((a) => a.assetId === baseAssetId);
+    // Cache do baseAssetId para evitar chamadas repetidas ao provider
+    const providerKey = vault.provider.url;
+    let baseAssetId = baseAssetIdCache.get(providerKey);
+    if (!baseAssetId) {
+      baseAssetId = await vault.provider.getBaseAssetId();
+      baseAssetIdCache.set(providerKey, baseAssetId);
+    }
+
+    const hasETHAsset = assets.find((a) => a.assetId === baseAssetId);
 
     if (!assets.length || !hasETHAsset) {
       const { coins } = await vault.getCoins(baseAssetId);
@@ -182,12 +210,23 @@ export class TransactionService {
       coins[baseAssetId] = bn(0);
     }
 
-    const transactionCoins = Object.entries(coins).map(([assetId, amount]) => {
-      const assetUnits = assetsMap?.[assetId]?.units;
-      const asset = assets.find((a) => a.assetId === assetId);
+    // Otimização: Pre-calcular mapas para evitar múltiplos finds
+    const assetUnitsMap = new Map<string, number>();
+    const assetAmountMap = new Map<string, string>();
 
-      if (assetUnits !== 9 && asset?.amount) {
-        amount = bn.parseUnits(asset.amount, assetUnits);
+    // Pre-processar assets uma única vez
+    assets.forEach((asset) => {
+      const units = assetsMap?.[asset.assetId]?.units;
+      if (units) assetUnitsMap.set(asset.assetId, units);
+      if (asset.amount) assetAmountMap.set(asset.assetId, asset.amount);
+    });
+
+    const transactionCoins = Object.entries(coins).map(([assetId, amount]) => {
+      const assetUnits = assetUnitsMap.get(assetId);
+      const assetAmount = assetAmountMap.get(assetId);
+
+      if (assetUnits !== 9 && assetAmount) {
+        amount = bn.parseUnits(assetAmount, assetUnits);
       }
 
       return {
@@ -197,6 +236,7 @@ export class TransactionService {
     });
 
     const _coins = await vault.getResourcesToSpend(transactionCoins);
+    console.log({ transactionCoins, _coins });
 
     const fakeCoins = vault.generateFakeResources(
       _coins.map((c) => ({
@@ -207,11 +247,11 @@ export class TransactionService {
 
     Object.entries(outputs).forEach(([, value]) => {
       const assetId = value.assetId;
-      const assetUnits = assetsMap?.[assetId]?.units;
-      const asset = assets.find((a) => a.assetId === assetId);
+      const assetUnits = assetUnitsMap.get(assetId);
+      const assetAmount = assetAmountMap.get(assetId);
 
-      if (assetUnits !== 9 && asset?.amount) {
-        value.amount = bn.parseUnits(asset.amount, assetUnits);
+      if (assetUnits !== 9 && assetAmount) {
+        value.amount = bn.parseUnits(assetAmount, assetUnits);
       }
 
       transactionRequest.addCoinOutput(vault.address, value.amount, assetId);
@@ -219,19 +259,22 @@ export class TransactionService {
 
     transactionRequest.addResources(fakeCoins);
 
-    const fakeSignatures = Array.from({ length: 10 }, () => FAKE_WITNESSES);
-    fakeSignatures.forEach((sig) => transactionRequest.addWitness(sig));
+    FAKE_SIGNATURES.forEach((sig) => transactionRequest.addWitness(sig));
 
+    // Otimização: estimateAndFund is deprecated | use assembleTx
     transactionRequest = await transactionRequest.estimateAndFund(vault);
 
-    let totalGasUsed = bn(0);
-    transactionRequest.inputs.forEach((input) => {
+    // Otimização: calcular gas total usando reduce em vez de forEach
+    // let totalGasUsed = bn(0);
+    const totalGasUsed = transactionRequest.inputs.reduce((acc, input) => {
       if ('predicate' in input && input.predicate) {
         input.witnessIndex = 0;
         input.predicateGasUsed = undefined;
-        totalGasUsed = totalGasUsed.add(predicateGasUsed);
+        return acc.add(predicateGasUsed!);
       }
-    });
+      return acc;
+    }, bn(0));
+    console.log(totalGasUsed.format(), predicateGasUsed?.format());
 
     const { gasPriceFactor } = await vault.provider.getGasConfig();
     const { maxFee, gasPrice } = await vault.provider.estimateTxGasAndFee({
@@ -241,15 +284,17 @@ export class TransactionService {
     const serializedTxCount = bn(
       transactionRequest.toTransactionBytes().length,
     );
-    totalGasUsed = totalGasUsed.add(serializedTxCount.mul(64));
+    const totalGasWithBytes = totalGasUsed.add(serializedTxCount.mul(64));
 
     const predicateSuccessFeeDiff = calculateGasFee({
-      gas: totalGasUsed,
+      gas: totalGasWithBytes,
       priceFactor: gasPriceFactor,
       gasPrice,
     });
 
     const maxFeeWithDiff = maxFee.add(predicateSuccessFeeDiff).mul(20).div(10);
+
+    transactionCostCache.set(hash, { fee: maxFeeWithDiff });
 
     return {
       fee: maxFeeWithDiff,
