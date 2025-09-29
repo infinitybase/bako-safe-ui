@@ -1,0 +1,60 @@
+[[package]]
+name = "interfaces"
+source = "member"
+dependencies = ["std"]
+
+[[package]]
+name = "math"
+source = "member"
+dependencies = [
+    "interfaces",
+    "std",
+    "utils",
+]
+
+[[package]]
+name = "ownership"
+version = "0.26.0"
+source = "registry+ownership?0.26.0#QmbVoNUrvCTyQTdE8ZP83XxTQQVzhrevfMqk1rAJAkMFVo!"
+dependencies = [
+    "src5",
+    "std",
+]
+
+[[package]]
+name = "reentrancy"
+version = "0.26.0"
+source = "registry+reentrancy?0.26.0#QmP25Uux1SYjT97JiBJGw15NQtKHzbYczhHkwcoh3Bqh4C!"
+dependencies = ["std"]
+
+[[package]]
+name = "src5"
+version = "0.8.0"
+source = "registry+src5?0.8.0#QmNRPZrPHFBiEAyWPU8gesdPsD2zb3cMKwEgxJwV1ZEjyD!"
+dependencies = ["std"]
+
+[[package]]
+name = "std"
+version = "0.68.9"
+source = "registry+std?0.68.9#QmUaBxMs2JvY1bXgRCdeCsG3o6TN82ftRgv4Tq7ytqUGUT!"
+
+[[package]]
+name = "swap"
+source = "member"
+dependencies = [
+    "interfaces",
+    "math",
+    "ownership",
+    "reentrancy",
+    "src5",
+    "std",
+    "utils",
+]
+
+[[package]]
+name = "utils"
+source = "member"
+dependencies = [
+    "interfaces",
+    "std",
+]

@@ -4,10 +4,14 @@ import {
   useMutation,
   useQuery,
   useQueryClient,
+  UseQueryOptions,
 } from '@tanstack/react-query';
 import { BakoProvider } from 'bakosafe';
 import { Provider } from 'fuels';
 import { useCallback } from 'react';
+
+import { localStorageKeys } from '@/modules/auth';
+import { availableNetWorks, NetworkType } from '@/modules/network/services';
 
 const client = new BakoIDClient();
 
@@ -25,6 +29,10 @@ const BAKOID_QUERY_KEYS = {
     const base = BAKOID_QUERY_KEYS.base.concat(['names', ...addresses]);
     return base as QueryKey;
   },
+  avatar: (name: string) => {
+    const base = BAKOID_QUERY_KEYS.base.concat(['avatar', name]);
+    return base as QueryKey;
+  },
 };
 
 export const useBakoIDResolveNames = (options: {
@@ -40,6 +48,57 @@ export const useBakoIDResolveNames = (options: {
     },
     enabled: addresses.length > 0,
   });
+};
+
+type QueryOptions = Omit<
+  UseQueryOptions<string | null>,
+  'queryKey' | 'queryFn'
+>;
+
+export const useResolverNameQuery = (
+  {
+    address,
+    providerInstance,
+  }: { address: string; providerInstance: Promise<Provider> },
+  options: QueryOptions = {},
+) => {
+  const { data, ...rest } = useQuery({
+    queryKey: BAKOID_QUERY_KEYS.address(address),
+    queryFn: async () => {
+      const provider = await providerInstance;
+      const nameResolved = await client.name(
+        address,
+        await provider.getChainId(),
+      );
+      return nameResolved;
+    },
+    ...options,
+  });
+
+  return { name: data, ...rest };
+};
+
+export const useResolverAddressQuery = (
+  {
+    name,
+    providerInstance,
+  }: { name: string; providerInstance: Promise<Provider> },
+  options: QueryOptions = {},
+) => {
+  const { data, ...rest } = useQuery({
+    queryKey: BAKOID_QUERY_KEYS.name(name),
+    queryFn: async () => {
+      const provider = await providerInstance;
+      const addressResolved = await client.resolver(
+        name,
+        await provider.getChainId(),
+      );
+      return addressResolved;
+    },
+    ...options,
+  });
+
+  return { address: data, ...rest };
 };
 
 export const useBakoIDClient = (providerInstance: Promise<BakoProvider>) => {
@@ -115,4 +174,20 @@ export const useBakoIDClient = (providerInstance: Promise<BakoProvider>) => {
       },
     },
   };
+};
+
+export const useAvatar = (name: string) => {
+  const chainId = Number(
+    localStorage.getItem(localStorageKeys.SELECTED_CHAIN_ID) ??
+      availableNetWorks[NetworkType.MAINNET].chainId,
+  );
+  const { data: avatar, ...rest } = useQuery({
+    queryFn: () => {
+      return client.avatar(name, chainId);
+    },
+    queryKey: BAKOID_QUERY_KEYS.avatar(name),
+    enabled: !!name,
+  });
+
+  return { avatar, ...rest };
 };

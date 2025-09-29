@@ -3,7 +3,16 @@ import { BN, CoinQuantity } from 'fuels';
 import { api } from '@/config';
 import { Asset, NFT } from '@/modules/core';
 import { IPredicate } from '@/modules/core/hooks/bakosafe/utils/types';
-import { Predicate, Workspace } from '@/modules/core/models';
+import {
+  ICreateSwapBridgePayload,
+  ICreateSwapBridgeResponse,
+  IGetDestinationPayload,
+  IGetDestinationsResponse,
+  IGetLimitsResponse,
+  IGetQuotesResponse,
+  Predicate,
+  Workspace,
+} from '@/modules/core/models';
 import {
   ICreateWidgetPayload,
   ICreateWidgetResponse,
@@ -200,6 +209,71 @@ export class VaultService {
     const { data } = await api.get<{ widgetUrl: string }>(
       `/ramp-transactions/${id}`,
     );
+    return data;
+  }
+
+  static async getDestinationsBridge(
+    payload: IGetDestinationPayload,
+  ): Promise<IGetDestinationsResponse[]> {
+    const { fromNetwork, fromToken } = payload;
+
+    const { data } = await api.get<IGetDestinationsResponse[]>(
+      `/layer-swap/destinations?fromNetwork=${fromNetwork}&fromToken=${fromToken}`,
+    );
+
+    return data;
+  }
+
+  static async getLimitsBridge({
+    sourceNetwork,
+    sourceToken,
+    destinationNetwork,
+    destinationToken,
+  }: ICreateSwapBridgePayload): Promise<IGetLimitsResponse> {
+    const params = new URLSearchParams({
+      sourceNetwork,
+      sourceToken,
+      destinationNetwork,
+      destinationToken,
+    });
+
+    const { data } = await api.get<IGetLimitsResponse>(
+      `/layer-swap/limits?${params}`,
+    );
+
+    return data;
+  }
+
+  static async getQuoteBridge({
+    sourceNetwork,
+    sourceToken,
+    destinationNetwork,
+    destinationToken,
+    amount,
+  }: ICreateSwapBridgePayload): Promise<IGetQuotesResponse> {
+    const params = new URLSearchParams({
+      sourceNetwork,
+      sourceToken,
+      destinationNetwork,
+      destinationToken,
+      amount: String(amount),
+    });
+
+    const { data } = await api.get<IGetQuotesResponse>(
+      `/layer-swap/quote?${params}`,
+    );
+
+    return data;
+  }
+
+  static async createSwapBridge(
+    payload: ICreateSwapBridgePayload,
+  ): Promise<ICreateSwapBridgeResponse> {
+    const { data } = await api.post<ICreateSwapBridgeResponse>(
+      `/layer-swap/swap`,
+      payload,
+    );
+
     return data;
   }
 }

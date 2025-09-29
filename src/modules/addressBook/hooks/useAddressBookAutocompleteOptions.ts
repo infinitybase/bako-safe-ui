@@ -73,6 +73,7 @@ const useAddressBookAutocompleteOptions = ({
     return data?.map(({ nickname, user }) => ({
       label: AddressBookUtils.formatForAutocomplete(nickname, user.address),
       value: user.address,
+      name: nickname,
     }));
   }, []);
 
