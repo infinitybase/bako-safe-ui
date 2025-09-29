@@ -82,10 +82,6 @@ const Pages = {
     '/workspace/:workspaceId/balance',
   ),
 
-  bridge: pageRoute<{ vaultId: string; workspaceId: string }>(
-    '/workspace/:workspaceId/vault/:vaultId/bridge',
-  ),
-
   workspace: pageRoute<{ workspaceId: string }>('/workspace/:workspaceId'),
   // workspaceTransactions: pageRoute<{ workspaceId: string }>(
   //   'workspace/:WorkspaceId/transaction/me',
