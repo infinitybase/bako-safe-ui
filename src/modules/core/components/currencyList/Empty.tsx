@@ -11,7 +11,7 @@ export const Empty = ({
   ...rest
 }: EmptyProps) => {
   return (
-    <Item {...rest}>
+    <Item isDisabled _hover={{}} cursor="auto" {...rest}>
       <Text>{emptyMessage}</Text>
     </Item>
   );

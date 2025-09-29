@@ -43,6 +43,7 @@ export type Asset = {
   amount?: string;
   units: number;
   metadata?: DefaultMetadata;
+  rate?: number;
 };
 
 export type NFT = {

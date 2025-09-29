@@ -45,15 +45,14 @@ export const BuyOrSellForm = ({
   const limitByCountry = purchaseLimits?.find((limit) =>
     type === 'BUY'
       ? limit.currencyCode === currencyCodeByCountry
-      : limit.currencyCode === 'ETH_FUEL',
+      : limit.currencyCode === 'ETH',
   );
   const methods = useForm<ICreateWidgetPayload>({
     defaultValues: {
       type,
       countryCode: defaultCountry,
-      sourceCurrencyCode: type === 'BUY' ? currencyCodeByCountry : 'ETH_FUEL',
-      destinationCurrencyCode:
-        type === 'BUY' ? 'ETH_FUEL' : currencyCodeByCountry,
+      sourceCurrencyCode: type === 'BUY' ? currencyCodeByCountry : 'ETH',
+      destinationCurrencyCode: type === 'BUY' ? 'ETH' : currencyCodeByCountry,
       paymentMethodType: 'CREDIT_DEBIT_CARD',
       walletAddress: vaultAddress,
       sourceAmount: limitByCountry?.defaultAmount.toString(),
