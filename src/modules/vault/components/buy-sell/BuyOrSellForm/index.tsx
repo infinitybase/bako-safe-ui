@@ -161,12 +161,11 @@ export const BuyOrSellForm = ({
           isLoadingQuotes={isLoadingQuotes}
           isOnRamp={isOnRamp}
         />
-        {quotes?.quotes && quotes?.quotes?.length > 0 && (
-          <SelectQuote
-            quotes={quotes?.quotes}
-            bestProviderQuote={bestQuote?.serviceProvider}
-          />
-        )}
+        <SelectQuote
+          quotes={quotes?.quotes || []}
+          bestProviderQuote={bestQuote?.serviceProvider}
+          isLoadingQuotes={isLoadingQuotes}
+        />
         {errorQuote && <QuoteError />}
         <SelectPaymentMethod />
         <Button

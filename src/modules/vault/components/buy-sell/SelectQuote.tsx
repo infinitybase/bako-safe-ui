@@ -20,9 +20,11 @@ import { SelectQuoteModal } from './SelectQuoteModal';
 export const SelectQuote = ({
   quotes,
   bestProviderQuote,
+  isLoadingQuotes = false,
 }: {
   quotes: IQuote[];
   bestProviderQuote?: string;
+  isLoadingQuotes?: boolean;
 }) => {
   const { control, watch, setValue } = useFormContext<ICreateWidgetPayload>();
   const { providers, isLoading: isLoadingProviders } = useListMeldProviders();
@@ -52,8 +54,16 @@ export const SelectQuote = ({
     quoteModal.onClose();
   };
 
+  const isEmptyQuotes = useMemo(() => quotes.length === 0, [quotes]);
+
+  const handleOpenQuoteModal = () => {
+    if (!isEmptyQuotes) {
+      quoteModal.onOpen();
+    }
+  };
+
   return (
-    <Skeleton isLoaded={!isLoadingProviders}>
+    <Skeleton isLoaded={!isLoadingProviders && !isLoadingQuotes} w="full">
       <CardRoot
         flexDirection="row"
         justifyContent="space-between"
@@ -82,18 +92,29 @@ export const SelectQuote = ({
                 role="combobox"
                 aria-haspopup="listbox"
                 cursor="pointer"
-                onClick={quoteModal.onOpen}
+                onClick={handleOpenQuoteModal}
               >
-                <Image
-                  src={currentQuote?.providerLogo}
-                  alt={currentQuote?.serviceProvider}
-                  boxSize="16px"
-                  rounded="lg"
-                />
+                {currentQuote && (
+                  <>
+                    <Image
+                      src={currentQuote?.providerLogo}
+                      alt={currentQuote?.serviceProvider}
+                      boxSize="16px"
+                      rounded="lg"
+                    />
 
-                <Text color="section.200" fontSize="sm">
-                  {currentQuote?.serviceProvider}
-                </Text>
+                    <Text color="section.200" fontSize="sm">
+                      {currentQuote?.serviceProvider}
+                    </Text>
+                  </>
+                )}
+                {!currentQuote && (
+                  <Text color="section.200" fontSize="sm">
+                    {isEmptyQuotes
+                      ? 'No quotes available'
+                      : 'Select a provider'}
+                  </Text>
+                )}
 
                 <Icon as={LeftAndRightArrow} color="grey.75" />
               </Flex>
