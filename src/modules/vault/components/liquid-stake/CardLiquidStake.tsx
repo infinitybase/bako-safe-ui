@@ -39,6 +39,8 @@ export interface CardLiquidStakeProps {
   vault: Vault | undefined;
 }
 
+const WITHDRAW_URL = 'https://rig.st/';
+
 export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
   const { isMobile } = useScreenSize();
   const rigContract = useRig(vault);
@@ -176,10 +178,12 @@ export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
           padding={'6px 8px 6px 8px'}
           borderRadius={'6px'}
           fontSize={12}
-          onClick={() => handleOpenModal('REDEEM')}
-          isDisabled={!isMainnet || !assets.assets}
+          onClick={() => window.open(WITHDRAW_URL, '_blank')}
+          isDisabled={
+            !isMainnet || !assets.assets || Number(stFuelTokens) === 0
+          }
         >
-          Redeem
+          Withdraw
         </Button>
       </ItemLiquidStake>
       <ItemLiquidStake
