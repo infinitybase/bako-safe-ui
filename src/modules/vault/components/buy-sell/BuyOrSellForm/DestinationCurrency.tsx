@@ -19,6 +19,7 @@ import {
   useListCryptoCurrencies,
   useListFiatCurrencies,
 } from '@/modules/vault/hooks';
+import { formatMeldEthSlug } from '@/modules/vault/utils';
 import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
 
 import { CardRoot } from '../CardRoot';
@@ -153,7 +154,8 @@ export const DestinationCurrency = ({
             />
             <InputMirror inputRef={inputRef} value={destinationAmount || '0'} />
             <InputRightAddon alignSelf="end" color="section.200" px={0}>
-              {currentCurrency?.currencyCode}
+              {currentCurrency?.currencyCode &&
+                formatMeldEthSlug(currentCurrency.currencyCode)}
             </InputRightAddon>
           </InputGroup>
         </Stack>

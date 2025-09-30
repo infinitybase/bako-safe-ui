@@ -19,7 +19,11 @@ import {
   useListCryptoCurrencies,
   useListFiatCurrencies,
 } from '@/modules/vault/hooks';
-import { parseToBN, splitToFiat } from '@/modules/vault/utils';
+import {
+  formatMeldEthSlug,
+  parseToBN,
+  splitToFiat,
+} from '@/modules/vault/utils';
 import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
 import { moneyFormat } from '@/utils';
 import { FUEL_ETH_ID } from '@/utils/constants';
@@ -229,9 +233,8 @@ export const SourceCurrency = ({
                   isValueWithDecimals={isOnRamp}
                 />
                 <InputRightAddon alignSelf="end" color="section.200" px={0}>
-                  {currentCurrency?.currencyCode === 'ETH_FUEL'
-                    ? 'ETH'
-                    : currentCurrency?.currencyCode}
+                  {currentCurrency?.currencyCode &&
+                    formatMeldEthSlug(currentCurrency.currencyCode)}
                 </InputRightAddon>
               </InputGroup>
 

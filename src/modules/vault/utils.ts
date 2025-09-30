@@ -243,3 +243,7 @@ export const getSwapQuotesBatch = async (
 
   return formatSwapBatchResponse(response, mode, routes, isSell, amount);
 };
+
+export const formatMeldEthSlug = (slug: string) => {
+  return slug === 'ETH_FUEL' ? 'ETH' : slug;
+};
