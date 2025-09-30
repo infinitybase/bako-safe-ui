@@ -54,6 +54,9 @@ export class TransactionTestService {
     await page.locator('[data-testid="transaction_amount"]').fill(amountTxFee);
     await page.waitForTimeout(500);
     await expect(page.getByText('Insufficient funds for gas')).toBeVisible();
+
+    await page.locator('#transaction_name').clear();
+    await page.locator('[data-testid="transaction_amount"]').clear();
   }
 
   static async returnFundsToGenesisWalletWithFuelWallet(

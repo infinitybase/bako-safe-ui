@@ -7,14 +7,14 @@ import {
 import { BakoProvider, Vault } from 'bakosafe';
 import { Address, WalletUnlocked } from 'fuels';
 
-import { mockRouteAssets } from './utils/helpers';
-import { AuthTestService } from './utils/services/auth-service';
-import { VaultTestService } from './utils/services/vault-service';
-import { E2ETestUtils } from './utils/setup';
+import { mockRouteAssets } from '../utils/helpers';
+import { AuthTestService } from '../utils/services/auth-service';
+import { VaultTestService } from '../utils/services/vault-service';
+import { E2ETestUtils } from '../utils/setup';
 
 await E2ETestUtils.downloadFuelExtension({ test });
 
-test.describe('API Token', () => {
+test.describe('API Token fuel wallet', () => {
   let fuelWalletTestHelper: FuelWalletTestHelper;
   let genesisWallet: WalletUnlocked;
 
@@ -29,14 +29,14 @@ test.describe('API Token', () => {
 
     genesisWallet = E2EUtils.genesisWallet;
     fuelWalletTestHelper = E2EUtils.fuelWalletTestHelper;
+
+    await page.goto('/');
   });
 
   test('tx using api token', async ({ page }) => {
     const apiTokenName = 'key1';
     const txNameApiToken = 'tx1';
     const txName = 'Deposit by apy token';
-
-    await page.goto('/');
 
     await AuthTestService.loginWalletConnection(page, fuelWalletTestHelper);
 

@@ -6,22 +6,15 @@ import {
 } from '@fuels/playwright-utils';
 import { WalletUnlocked } from 'fuels';
 
-import {
-  disconnect,
-  mockRouteAssets,
-  modalCloseTest,
-  selectNetwork,
-  TestAssets,
-  TestNetworks,
-} from './utils/helpers';
-import { AuthTestService } from './utils/services/auth-service';
-import { TransactionTestService } from './utils/services/transaction-service';
-import { VaultTestService } from './utils/services/vault-service';
-import { E2ETestUtils } from './utils/setup';
+import { getWalletAddress, mockRouteAssets } from '../utils/helpers';
+import { AuthTestService } from '../utils/services/auth-service';
+import { TransactionTestService } from '../utils/services/transaction-service';
+import { VaultTestService } from '../utils/services/vault-service';
+import { E2ETestUtils } from '../utils/setup';
 
 await E2ETestUtils.downloadFuelExtension({ test });
 
-test.describe('Create transactions', () => {
+test.describe('Create transactions fuel wallet', async () => {
   let fuelWalletTestHelper: FuelWalletTestHelper;
   let genesisWallet: WalletUnlocked;
 
@@ -36,31 +29,8 @@ test.describe('Create transactions', () => {
 
     genesisWallet = E2EUtils.genesisWallet;
     fuelWalletTestHelper = E2EUtils.fuelWalletTestHelper;
-  });
 
-  test('create and sign passwordkey', async ({ page }) => {
-    const { genesisWallet: wallet } = await AuthTestService.loginAuth(page);
-
-    await page.waitForSelector('text=Welcome to Bako Safe!', {
-      timeout: 30000,
-    });
-
-    await page.locator('[aria-label="Close window"]').click();
-    await page.getByRole('button', { name: 'Home' }).click();
-    await expect(page).toHaveURL(/home/);
-
-    // await selectNetwork(page, TestNetworks.local);
-    await selectNetwork(page, TestNetworks.fuel_sepolia_testnet);
-
-    const { vaultAddress } = await VaultTestService.createVault(page);
-
-    await VaultTestService.addFundVault(page, vaultAddress, wallet);
-    await page.waitForTimeout(2000);
-
-    await TransactionTestService.returnFundsToGenesisWalletWithPasskey(
-      page,
-      genesisWallet,
-    );
+    await page.goto('/');
   });
 
   test('create and sign tx by wallet', async ({ page }) => {
@@ -115,22 +85,19 @@ test.describe('Create transactions', () => {
   }) => {
     const signsNeed = 1;
 
-    const {
-      secondAddress,
-      genesisWallet: wallet,
-      username: firstUsername,
-    } = await AuthTestService.loginPassKeyInTwoAccounts(page);
+    await AuthTestService.loginWalletConnection(page, fuelWalletTestHelper);
+    const { address2 } = await getWalletAddress(fuelWalletTestHelper);
 
-    // await selectNetwork(page, TestNetworks.local);
-    await selectNetwork(page, TestNetworks.fuel_sepolia_testnet);
+    await page.locator('[aria-label="Close window"]').click();
+    await page.getByRole('button', { name: 'Home' }).click();
 
     const { vaultAddress } = await VaultTestService.createVaulMultiSigns(
       page,
-      [secondAddress],
+      [address2],
       signsNeed,
     );
 
-    await VaultTestService.addFundVault(page, vaultAddress, wallet);
+    await VaultTestService.addFundVault(page, vaultAddress, genesisWallet);
 
     // -- start transaction 2/1 and signed  by 1
     try {
@@ -159,6 +126,7 @@ test.describe('Create transactions', () => {
 
     await getByAriaLabel(page, 'Sign btn tx card').click();
     await page.waitForTimeout(2000);
+    await E2ETestUtils.signMessageFuelWallet({ fuelWalletTestHelper, page });
 
     await expect(page.getByText('You signed')).toBeVisible();
     // -- end transaction 2/1 and signed  by 1
@@ -188,18 +156,23 @@ test.describe('Create transactions', () => {
 
     await expect(page.getByText('You declined')).toBeVisible();
 
-    await disconnect(page);
-
-    await AuthTestService.reloginAuthPassKey(page, firstUsername);
+    await AuthTestService.reloginWalletConnection(
+      page,
+      fuelWalletTestHelper,
+      'Account 2',
+    );
+    await page.locator('[aria-label="Close window"]').click();
     await page.getByRole('button', { name: 'Home' }).click();
     await expect(page).toHaveURL(/home/);
-
-    // await selectNetwork(page, TestNetworks.local);
-    await selectNetwork(page, TestNetworks.fuel_sepolia_testnet);
 
     await expect(page.getByText('0/1 Sgd', { exact: true })).toBeVisible();
 
     await getByAriaLabel(page, 'Sign btn tx card').click();
+    await E2ETestUtils.signMessageFuelWallet({
+      fuelWalletTestHelper,
+      page,
+    });
+
     await page.waitForTimeout(2000);
 
     await expect(page.getByText('You signed')).toBeVisible();
@@ -214,22 +187,19 @@ test.describe('Create transactions', () => {
   }) => {
     const signsNeed = 2;
 
-    const {
-      secondAddress,
-      genesisWallet: wallet,
-      username: firstUsername,
-    } = await AuthTestService.loginPassKeyInTwoAccounts(page);
+    await AuthTestService.loginWalletConnection(page, fuelWalletTestHelper);
+    const { address2 } = await getWalletAddress(fuelWalletTestHelper);
 
-    // await selectNetwork(page, TestNetworks.local);
-    await selectNetwork(page, TestNetworks.fuel_sepolia_testnet);
+    await page.locator('[aria-label="Close window"]').click();
+    await page.getByRole('button', { name: 'Home' }).click();
 
     const { vaultAddress } = await VaultTestService.createVaulMultiSigns(
       page,
-      [secondAddress],
+      [address2],
       signsNeed,
     );
 
-    await VaultTestService.addFundVault(page, vaultAddress, wallet);
+    await VaultTestService.addFundVault(page, vaultAddress, genesisWallet);
     // -- start test transaction 2/2 and decliened by 1
     try {
       await getByAriaLabel(page, 'Create transaction btn').click();
@@ -285,26 +255,42 @@ test.describe('Create transactions', () => {
     await expect(page.getByText('0/2 Sgd', { exact: true })).toBeVisible();
 
     await getByAriaLabel(page, 'Sign btn tx card').click();
+    await E2ETestUtils.signMessageFuelWallet({
+      fuelWalletTestHelper,
+      page,
+    });
+
     await page.waitForTimeout(1000);
 
     await expect(page.getByText('You signed')).toBeVisible();
     await expect(page.getByText('1/2 Sgd', { exact: true })).toBeVisible();
 
-    await disconnect(page);
+    await AuthTestService.reloginWalletConnection(
+      page,
+      fuelWalletTestHelper,
+      'Account 2',
+    );
 
-    await AuthTestService.reloginAuthPassKey(page, firstUsername);
+    await page.locator('[aria-label="Close window"]').click();
     await page.getByRole('button', { name: 'Home' }).click();
     await expect(page).toHaveURL(/home/);
 
-    // await selectNetwork(page, TestNetworks.local);
-    await selectNetwork(page, TestNetworks.fuel_sepolia_testnet);
-
     await expect(page.getByText('1/2 Sgd', { exact: true })).toBeVisible();
 
-    await getByAriaLabel(page, 'Sign btn tx card').click();
+    try {
+      await getByAriaLabel(page, 'Sign btn tx card').click();
+    } catch {
+      page.reload();
+      await getByAriaLabel(page, 'Sign btn tx card').click();
+    }
     await page.waitForTimeout(1000);
+    await E2ETestUtils.signMessageFuelWallet({
+      fuelWalletTestHelper,
+      page,
+    });
 
     await expect(page.getByText('You signed')).toBeVisible();
+
     // -- finish teste transaction 2/2 and signed by 2 accounts
 
     const completedCount = await page.getByText('Completed').count();
@@ -332,16 +318,19 @@ test.describe('Create transactions', () => {
     const secondAddress = await handleAddress.jsonValue();
 
     await page.waitForTimeout(300);
-    await getByAriaLabel(page, 'Disconnect').click();
     await page.waitForTimeout(3000);
-
-    await fuelWalletTestHelper.addAccount();
 
     await page.goto('/');
     await page.bringToFront();
     await page.waitForTimeout(2000);
 
-    await AuthTestService.loginWalletConnection(page, fuelWalletTestHelper);
+    await page.locator('body').click();
+
+    await AuthTestService.reloginWalletConnection(
+      page,
+      fuelWalletTestHelper,
+      'Account 2',
+    );
 
     await page.waitForSelector('text=Welcome to Bako Safe!', {
       timeout: 30000,
@@ -433,138 +422,5 @@ test.describe('Create transactions', () => {
     // -- finish teste transaction 2/2 and signed by 2 accounts
     const completedCount = await page.getByText('Completed').count();
     expect(completedCount).toBe(1);
-  });
-
-  // Rodar somente local, pois precisa de saldo de tolkens UNK
-  test.fixme('tx multiple recipients and tokens', async ({ page }) => {
-    const addr1 =
-      '0x19E0E3971aCe37F66B4a2740DfB910608Bbc2b980cE240BB11e2161c4B8aA360';
-
-    // login and create vault 1
-    const { genesisWallet: wallet, username: user2 } =
-      await AuthTestService.loginAuth(page);
-
-    await getByAriaLabel(page, 'Close window').click();
-
-    await page.goto('/home');
-    // await selectNetwork(page, TestNetworks.local);
-    await selectNetwork(page, TestNetworks.fuel_sepolia_testnet);
-
-    const { vaultAddress: vault2, vaultName: vaultName2 } =
-      await VaultTestService.createVault(page);
-
-    await disconnect(page);
-    // login in user to send tx
-    await AuthTestService.loginAuth(page, wallet);
-
-    await page.waitForSelector('text=Welcome to Bako Safe!', {
-      timeout: 30000,
-    });
-
-    await getByAriaLabel(page, 'Close window').click();
-
-    await page.goto('/home');
-
-    await page.getByText('Address book', { exact: true }).click();
-    await expect(page).toHaveURL(/address-book/);
-
-    // add addrs book 1
-    const adresbookForm = page.getByRole('button', {
-      name: 'Add new favorite',
-    });
-    await adresbookForm.click();
-    await modalCloseTest(page, adresbookForm);
-
-    await page.getByLabel('Name or Label').nth(1).fill('addr1');
-    await page.getByLabel('Address', { exact: true }).nth(1).fill(addr1);
-
-    await page.getByLabel('Create address book').nth(1).click();
-    await page.waitForTimeout(500);
-
-    // add addrs book 2
-    const adresbookForm2 = page.getByRole('button', {
-      name: 'Add new favorite',
-    });
-    await adresbookForm2.click();
-    await modalCloseTest(page, adresbookForm2);
-
-    await page.getByLabel('Name or Label').nth(1).fill('addr2');
-    await page.getByLabel('Address', { exact: true }).nth(1).fill(vault2);
-
-    await page.getByLabel('Create address book').nth(1).click();
-    await page.waitForTimeout(2000);
-    await expect(page.getByText('addr1')).toBeVisible();
-    await expect(page.getByText('addr2')).toBeVisible();
-
-    await page.waitForTimeout(1000);
-    // await selectNetwork(page, TestNetworks.local);
-    await selectNetwork(page, TestNetworks.fuel_sepolia_testnet);
-
-    await page.getByRole('button', { name: 'Home' }).click();
-    await expect(page).toHaveURL(/home/);
-
-    const { vaultAddress } = await VaultTestService.createVault(page);
-
-    const reload = true;
-
-    await VaultTestService.addFundVault(page, vaultAddress, wallet, !reload);
-
-    await VaultTestService.addFundVault(
-      page,
-      vaultAddress,
-      wallet,
-      reload,
-      TestAssets.UNK,
-    );
-
-    await page.waitForTimeout(2000);
-    try {
-      await getByAriaLabel(page, 'Create transaction btn').click();
-    } catch {
-      page.reload();
-      await getByAriaLabel(page, 'Create transaction btn').click();
-    }
-    await expect(
-      page.getByRole('heading', { name: 'Create Transaction' }),
-    ).toBeVisible();
-
-    await TransactionTestService.fillFormChangeAsset(page, addr1, 1);
-    await page.locator('#add_more_recipient').click();
-    await TransactionTestService.fillFormChangeAsset(page, vault2, 2);
-
-    await expect(
-      getByAriaLabel(page, 'Create Transaction Primary Action'),
-    ).toBeEnabled();
-
-    await getByAriaLabel(page, 'Create Transaction Primary Action').click();
-    await page.waitForTimeout(500);
-    await expect(page.getByText('You signed')).toBeVisible();
-    await page.waitForTimeout(300);
-    await page
-      .locator('[aria-label="Transaction Card Header"]')
-      .first()
-      .click();
-    await page.waitForTimeout(2000);
-
-    await disconnect(page);
-
-    await AuthTestService.reloginAuthPassKey(page, user2);
-    await page.getByRole('button', { name: 'Home' }).click();
-    await expect(page).toHaveURL(/home/);
-
-    // await selectNetwork(page, TestNetworks.local);
-    await selectNetwork(page, TestNetworks.fuel_sepolia_testnet);
-
-    await page.waitForTimeout(2000);
-
-    await page.getByText(vaultName2).click();
-    await page.waitForTimeout(500);
-
-    await getByAriaLabel(page, 'Transaction Card Header').click();
-
-    await expect(page.getByText('Deposit')).toBeVisible();
-    await expect(page.getByText('UNK', { exact: true })).toBeVisible();
-    const countMoney = await page.getByText('0.00001').count();
-    expect(countMoney).toBe(2);
   });
 });

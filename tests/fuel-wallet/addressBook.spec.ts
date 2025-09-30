@@ -1,20 +1,38 @@
-import { expect, getByAriaLabel, test } from '@fuels/playwright-utils';
+import {
+  expect,
+  FuelWalletTestHelper,
+  getByAriaLabel,
+  test,
+} from '@fuels/playwright-utils';
 
-import { mockRouteAssets, modalCloseTest } from './utils/helpers';
-import { AuthTestService } from './utils/services/auth-service';
-import { E2ETestUtils } from './utils/setup';
+import { mockRouteAssets, modalCloseTest } from '../utils/helpers';
+import { AuthTestService } from '../utils/services/auth-service';
+import { E2ETestUtils } from '../utils/setup';
 
 await E2ETestUtils.downloadFuelExtension({ test });
 
 test.describe('AddressBook', () => {
+  let fuelWalletTestHelper: FuelWalletTestHelper;
+
+  test.beforeEach(async ({ extensionId, context, page }) => {
+    await mockRouteAssets(page);
+
+    const E2EUtils = await E2ETestUtils.setupFuelWallet({
+      page,
+      context,
+      extensionId,
+    });
+
+    fuelWalletTestHelper = E2EUtils.fuelWalletTestHelper;
+
+    await page.goto('/');
+  });
+
   test('crud address book', async ({ page }) => {
     const addressTitle = 'Novo endereço';
     const addressTitleEdited = 'Endereço editado';
 
-    await mockRouteAssets(page);
-
-    //await AuthService.loginWalletConnection(page, context, extensionId);
-    await AuthTestService.loginAuth(page);
+    await AuthTestService.loginWalletConnection(page, fuelWalletTestHelper);
 
     await page.waitForSelector('text=Welcome to Bako Safe!', {
       timeout: 30000,

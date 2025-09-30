@@ -1,25 +1,25 @@
-import { expect, getByAriaLabel, hasText, test } from '@fuels/playwright-utils';
+import { expect, getByAriaLabel, hasText } from '@fuels/playwright-utils';
+import test from '@playwright/test';
 
-import { mockRouteAssets, selectNetwork, TestNetworks } from './utils/helpers';
-import { AuthTestService } from './utils/services/auth-service';
-import { E2ETestUtils } from './utils/setup';
+import { mockRouteAssets, selectNetwork, TestNetworks } from '../utils/helpers';
+import { AuthTestService } from '../utils/services/auth-service';
+import { E2ETestUtils } from '../utils/setup';
 
-await E2ETestUtils.downloadFuelExtension({ test });
+test.describe('vaults webauth', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/');
+  });
 
-test.describe('Vaults', () => {
   test('create vault 1/1', async ({ page }) => {
-    //await AuthTestService.loginWalletConnection(page, context, extensionId);
     await mockRouteAssets(page);
     const { genesisWallet } = await AuthTestService.loginAuth(page);
 
-    // Check if the user is logged in and go to Home page
     await hasText(page, /Welcome to Bako Safe!/);
 
     await page.locator('[aria-label="Close window"]').click();
     await page.getByRole('button', { name: 'Home' }).click();
     await expect(page).toHaveURL(/home/);
 
-    // create vault 1/1
     await page.getByRole('button', { name: 'Create vault' }).click();
     await page.waitForTimeout(1000);
 
@@ -100,7 +100,6 @@ test.describe('Vaults', () => {
   });
 
   test('create vault 2/2', async ({ page }) => {
-    //await AuthTestService.loginWalletConnection(page, context, extensionId);
     await mockRouteAssets(page);
     const adr2 =
       '0x5cD19FF270Db082663993D3D9cF6342f9869491AfB06F6DC885B1794DB261fCB';
@@ -129,7 +128,7 @@ test.describe('Vaults', () => {
 
       await page.locator('#Address\\ 2').clear();
     });
-    await page.locator('#Address\\ 2').fill(adr2); //endereço meta mask
+    await page.locator('#Address\\ 2').fill(adr2);
 
     await page
       .getByRole('textbox', { name: 'Select min signatures vault form' })

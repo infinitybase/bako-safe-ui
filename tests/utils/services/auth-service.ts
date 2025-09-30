@@ -21,7 +21,6 @@ export class AuthTestService {
     }
 
     // Navegue até a página inicial
-    await page.goto('/');
     await page.bringToFront();
 
     // select input by id
@@ -52,10 +51,6 @@ export class AuthTestService {
   }
 
   static async reloginAuthPassKey(page: Page, username: string) {
-    // Navegue até a página inicial
-    await page.goto('/');
-    await page.bringToFront();
-
     // select input by id
     const usernameInput = page.locator('#fixed_id');
 
@@ -75,7 +70,6 @@ export class AuthTestService {
     page: Page,
     fuelWalletTestHelper: FuelWalletTestHelper,
   ) {
-    await page.goto('/');
     await page.bringToFront();
 
     await page.getByRole('heading', { name: 'Fuel Wallet' }).click();

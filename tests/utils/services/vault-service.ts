@@ -86,10 +86,14 @@ export class VaultTestService {
     await page.getByText(String(numberSigners), { exact: true }).click();
     await page.waitForTimeout(200);
 
-    await getByAriaLabel(page, 'Create Vault Primary Action').click();
+    await getByAriaLabel(page, 'Create Vault Primary Action').click({
+      timeout: 10000,
+    });
     await page.waitForTimeout(1000);
 
-    await getByAriaLabel(page, 'Create Vault Secundary Action').click();
+    await getByAriaLabel(page, 'Create Vault Secundary Action').click({
+      timeout: 10000,
+    });
     await page.waitForTimeout(300);
 
     const hasClose = page.locator('[aria-label="Close window"]');
@@ -103,13 +107,11 @@ export class VaultTestService {
     if (await vaultDiv.isVisible()) {
       await vaultDiv.click();
     }
-    await getByAriaLabel(page, 'Sidebar Vault Address').click();
-    await page.waitForTimeout(500);
-    const handleAddress = await page.evaluateHandle(() =>
-      navigator.clipboard.readText(),
-    );
-
-    const vaultAddress = await handleAddress.jsonValue();
+    await page.waitForTimeout(1500);
+    await page.getByRole('button', { name: 'Sidebar Vault Address' }).click();
+    const vaultAddress = await page.evaluate(async () => {
+      return await navigator.clipboard.readText();
+    });
 
     return { vaultName, vaultDescription, vaultAddress };
   }

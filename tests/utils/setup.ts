@@ -42,6 +42,18 @@ export class E2ETestUtils {
       mnemonic: Mnemonic.generate(),
     });
 
+    const walletPage = fuelWalletTestHelper.getWalletPage();
+
+    const closeBtn = walletPage.getByRole('button', {
+      name: 'Close dialog',
+    });
+    if (await closeBtn.isVisible()) {
+      await closeBtn.click();
+    }
+
+    await fuelWalletTestHelper.addAccount();
+    await fuelWalletTestHelper.switchAccount('Account 1');
+
     return { fuelWalletTestHelper, genesisWallet };
   }
 

@@ -104,3 +104,34 @@ export async function mockRouteAssets(page: Page) {
     },
   );
 }
+
+export async function getWalletAddress(
+  fuelWalletTestHelper: FuelWalletTestHelper,
+) {
+  const walletPage = fuelWalletTestHelper.getWalletPage();
+
+  await walletPage.getByRole('button', { name: 'Accounts' }).click();
+
+  await walletPage
+    .getByRole('article', { name: 'Account 1' })
+    .getByLabel('Copy to clipboard')
+    .click();
+  const address1 = await walletPage.evaluate(() =>
+    navigator.clipboard.readText(),
+  );
+  await walletPage
+    .getByRole('article', { name: 'Account 2' })
+    .getByLabel('Copy to clipboard')
+    .click();
+  const address2 = await walletPage.evaluate(() =>
+    navigator.clipboard.readText(),
+  );
+
+  await walletPage
+    .getByRole('button', {
+      name: 'Close dialog',
+    })
+    .click();
+
+  return { address1, address2 };
+}
