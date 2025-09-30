@@ -1,7 +1,7 @@
 import { expect, getByAriaLabel, hasText } from '@fuels/playwright-utils';
 import test from '@playwright/test';
 
-import { mockRouteAssets, selectNetwork, TestNetworks } from '../utils/helpers';
+import { mockRouteAssets, selectNetwork } from '../utils/helpers';
 import { AuthTestService } from '../utils/services/auth-service';
 import { E2ETestUtils } from '../utils/setup';
 
@@ -61,8 +61,7 @@ test.describe('vaults webauth', () => {
     await expect(page).toHaveURL(/workspace/);
 
     await test.step('verify balance', async () => {
-      // await selectNetwork(page, TestNetworks.local);
-      await selectNetwork(page, TestNetworks.fuel_sepolia_testnet);
+      await selectNetwork(page);
 
       await page.getByText('vaultName').click();
       await page.waitForTimeout(500);
@@ -158,8 +157,7 @@ test.describe('vaults webauth', () => {
     }
 
     await test.step('verify balance', async () => {
-      // await selectNetwork(page, TestNetworks.local);
-      await selectNetwork(page, TestNetworks.fuel_sepolia_testnet);
+      await selectNetwork(page);
 
       await page.waitForTimeout(500);
       if (await hasClose.isVisible()) {

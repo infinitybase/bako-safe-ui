@@ -13,7 +13,7 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "prepare": "husky install",
-    "test:e2e": "dotenv -e .env.test playwright test"
+    "test:e2e": "PREVIEW_MODE=true dotenv -e .env.test playwright test"
   },
   "dependencies": {
     "@bako-id/sdk": "0.0.17",

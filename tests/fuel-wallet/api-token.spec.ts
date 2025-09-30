@@ -85,7 +85,7 @@ test.describe('API Token fuel wallet', () => {
     await getByAriaLabel(page, 'Secundary action create api token').click();
 
     const provider = await BakoProvider.create(genesisWallet.provider.url, {
-      serverApi: process.env.VITE_API_URL,
+      serverApi: process.env.TEST_API,
       apiToken,
     });
 

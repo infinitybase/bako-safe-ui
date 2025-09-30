@@ -6,7 +6,6 @@ import {
   modalCloseTest,
   selectNetwork,
   TestAssets,
-  TestNetworks,
 } from '../utils/helpers';
 import { AuthTestService } from '../utils/services/auth-service';
 import { TransactionTestService } from '../utils/services/transaction-service';
@@ -28,8 +27,7 @@ test.describe('Create transactions webAuth', () => {
     await page.getByRole('button', { name: 'Home' }).click();
     await expect(page).toHaveURL(/home/);
 
-    // await selectNetwork(page, TestNetworks.local);
-    await selectNetwork(page, TestNetworks.fuel_sepolia_testnet);
+    await selectNetwork(page);
 
     const { vaultAddress } = await VaultTestService.createVault(page);
 
@@ -53,8 +51,7 @@ test.describe('Create transactions webAuth', () => {
       username: firstUsername,
     } = await AuthTestService.loginPassKeyInTwoAccounts(page);
 
-    // await selectNetwork(page, TestNetworks.local);
-    await selectNetwork(page, TestNetworks.fuel_sepolia_testnet);
+    await selectNetwork(page);
 
     const { vaultAddress } = await VaultTestService.createVaulMultiSigns(
       page,
@@ -128,8 +125,7 @@ test.describe('Create transactions webAuth', () => {
     await page.getByRole('button', { name: 'Home' }).click();
     await expect(page).toHaveURL(/home/);
 
-    // await selectNetwork(page, TestNetworks.local);
-    await selectNetwork(page, TestNetworks.fuel_sepolia_testnet);
+    await selectNetwork(page);
 
     await expect(page.getByText('0/1 Sgd', { exact: true })).toBeVisible();
 
@@ -154,8 +150,7 @@ test.describe('Create transactions webAuth', () => {
       username: firstUsername,
     } = await AuthTestService.loginPassKeyInTwoAccounts(page);
 
-    // await selectNetwork(page, TestNetworks.local);
-    await selectNetwork(page, TestNetworks.fuel_sepolia_testnet);
+    await selectNetwork(page);
 
     const { vaultAddress } = await VaultTestService.createVaulMultiSigns(
       page,
@@ -235,8 +230,7 @@ test.describe('Create transactions webAuth', () => {
     await page.getByRole('button', { name: 'Home' }).click();
     await expect(page).toHaveURL(/home/);
 
-    // await selectNetwork(page, TestNetworks.local);
-    await selectNetwork(page, TestNetworks.fuel_sepolia_testnet);
+    await selectNetwork(page);
 
     await expect(page.getByText('1/2 Sgd', { exact: true })).toBeVisible();
 
@@ -267,8 +261,7 @@ test.describe('Create transactions webAuth', () => {
     await getByAriaLabel(page, 'Close window').click();
 
     await page.goto('/home');
-    // await selectNetwork(page, TestNetworks.local);
-    await selectNetwork(page, TestNetworks.fuel_sepolia_testnet);
+    await selectNetwork(page);
 
     const { vaultAddress: vault2, vaultName: vaultName2 } =
       await VaultTestService.createVault(page);
@@ -317,8 +310,7 @@ test.describe('Create transactions webAuth', () => {
     await expect(page.getByText('addr2')).toBeVisible();
 
     await page.waitForTimeout(1000);
-    // await selectNetwork(page, TestNetworks.local);
-    await selectNetwork(page, TestNetworks.fuel_sepolia_testnet);
+    await selectNetwork(page);
 
     await page.getByRole('button', { name: 'Home' }).click();
     await expect(page).toHaveURL(/home/);
@@ -372,8 +364,7 @@ test.describe('Create transactions webAuth', () => {
     await page.getByRole('button', { name: 'Home' }).click();
     await expect(page).toHaveURL(/home/);
 
-    // await selectNetwork(page, TestNetworks.local);
-    await selectNetwork(page, TestNetworks.fuel_sepolia_testnet);
+    await selectNetwork(page);
 
     await page.waitForTimeout(2000);
 

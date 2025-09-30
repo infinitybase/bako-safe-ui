@@ -34,6 +34,14 @@ const downloadFuelExtension = async (): Promise<string> => {
 };
 
 const globalSetup = async () => {
+  const isLocal = process.env.PREVIEW_MODE !== 'true';
+  process.env.TEST_NETWORK = isLocal
+    ? process.env.NETWORK_LOCAL
+    : process.env.NETWORK_PREVIEW;
+  process.env.TEST_API = isLocal
+    ? process.env.API_LOCAL
+    : process.env.API_PREVIEW;
+
   process.env.FUEL_EXTENSION_PATH = await downloadFuelExtension();
 };
 
