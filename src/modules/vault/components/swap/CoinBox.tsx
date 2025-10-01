@@ -137,6 +137,10 @@ export const CoinBox = memo(
         <Stack justifyContent="center" alignItems="center" w="full">
           <InputGroup
             w="fit-content"
+            maxW={{
+              base: '100%',
+              sm: 'none',
+            }}
             borderBottom="1px solid"
             borderColor="grey.950"
             _focusWithin={{
