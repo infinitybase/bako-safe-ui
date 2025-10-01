@@ -30,7 +30,10 @@ export const useAssetsList = ({ vault }: { vault?: Vault }) => {
           const usdData = tokensUSD.data[asset.assetId.toLowerCase()];
           return {
             ...asset,
-            balance: currentBalance?.isZero() ? null : currentBalance,
+            balance:
+              currentBalance && !currentBalance.isZero()
+                ? currentBalance
+                : null,
             rate: usdData?.usdAmount ?? null,
           };
         })
