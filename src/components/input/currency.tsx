@@ -114,12 +114,16 @@ const Field = forwardRef<HTMLInputElement, CurrencyFieldProps>(
     const handleInputChange = useCallback(
       (event: React.ChangeEvent<HTMLInputElement>) => {
         const inputValue = event.target.value;
-        const allowedPattern = getAllowedPattern();
-        const cleanedValue = inputValue.replace(allowedPattern, '');
 
-        onChange?.(cleanedValue);
+        if (!isCrypto) {
+          const allowedPattern = getAllowedPattern();
+          const cleanedValue = inputValue.replace(allowedPattern, '');
+          return onChange?.(cleanedValue);
+        }
+
+        onChange?.(inputValue);
       },
-      [getAllowedPattern, onChange],
+      [getAllowedPattern, onChange, isCrypto],
     );
 
     const handleOnFocus = useCallback(
@@ -135,7 +139,7 @@ const Field = forwardRef<HTMLInputElement, CurrencyFieldProps>(
       [onChange],
     );
 
-    const handleBefoteInput = (e: React.InputEvent<HTMLInputElement>) => {
+    const handleBeforeInput = (e: React.InputEvent<HTMLInputElement>) => {
       if (e.data === ',') {
         e.preventDefault();
 
@@ -185,7 +189,7 @@ const Field = forwardRef<HTMLInputElement, CurrencyFieldProps>(
           <Input
             {...props}
             {...maskedInputProps}
-            onBeforeInput={handleBefoteInput}
+            onBeforeInput={handleBeforeInput}
             ref={(input) => {
               maskedInputRef(input as HTMLInputElement);
               inputRef.current = input as HTMLInputElement;
