@@ -7,12 +7,13 @@
     "dev": "vite",
     "build": "vite build",
     "build:preview": "vite build --mode preview",
+    "build:test": "vite build --mode test",
     "build:staging": "vite build --mode staging",
-    "test:e2e": "playwright test",
     "build:sway": "pnpm fuels build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "test:e2e": "dotenv -e .env.test playwright test"
   },
   "dependencies": {
     "@bako-id/sdk": "0.0.21",
@@ -87,6 +88,7 @@
     "@typescript-eslint/parser": "6.5.0",
     "@vitejs/plugin-react": "^4.0.3",
     "conventional-changelog-conventionalcommits": "^8.0.0",
+    "dotenv-cli": "^10.0.0",
     "eslint": "8.44.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-import-resolver-typescript": "3.6.0",

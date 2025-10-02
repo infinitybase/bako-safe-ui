@@ -30,3 +30,4 @@ src/dev
 # test
 test-results
 playwright-report
+.cache

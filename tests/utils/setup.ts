@@ -1,8 +1,6 @@
 import {
-  downloadFuel,
   FuelWalletTestHelper,
   getByAriaLabel,
-  //getInputByName,
   test,
 } from '@fuels/playwright-utils';
 import type { BrowserContext, Page } from '@playwright/test';
@@ -11,12 +9,18 @@ import { Account, bn, Mnemonic, Provider, Wallet } from 'fuels';
 import { TestAssets } from './helpers';
 
 export class E2ETestUtils {
-  static FUEL_WALLET_VERSION = '0.46.1';
-
   static async downloadFuelExtension(config: { test: typeof test }) {
-    const path = await downloadFuel(E2ETestUtils.FUEL_WALLET_VERSION);
-    config.test.use({ pathToExtension: path });
+    config.test.use({ pathToExtension: process.env.FUEL_EXTENSION_PATH! });
   }
+
+  static buildProvider = () => {
+    const provider = new Provider(process.env.TEST_NETWORK!);
+    const genesisWallet = Wallet.fromPrivateKey(
+      process.env.TEST_WALLET_PRIVATE_KEY!,
+      provider,
+    );
+    return { provider, genesisWallet };
+  };
 
   static async setupFuelWallet(config: {
     page: Page;
@@ -24,12 +28,7 @@ export class E2ETestUtils {
     extensionId: string;
   }) {
     const { context, extensionId } = config;
-
-    const provider = new Provider('http://localhost:4000/v1/graphql');
-    const genesisWallet = Wallet.fromPrivateKey(
-      '0xa449b1ffee0e2205fa924c6740cc48b3b473aa28587df6dab12abc245d1f5298',
-      provider,
-    );
+    const { provider, genesisWallet } = this.buildProvider();
 
     const fuelWalletTestHelper = await FuelWalletTestHelper.walletSetup({
       context,
@@ -49,11 +48,7 @@ export class E2ETestUtils {
   }
 
   static async setupPasskey(config: { page: Page }) {
-    const provider = new Provider('http://localhost:4000/v1/graphql');
-    const genesisWallet = Wallet.fromPrivateKey(
-      '0xa449b1ffee0e2205fa924c6740cc48b3b473aa28587df6dab12abc245d1f5298',
-      provider,
-    );
+    const { genesisWallet } = this.buildProvider();
 
     const client = await config.page.context().newCDPSession(config.page);
     await client.send('WebAuthn.enable');
