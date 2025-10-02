@@ -157,6 +157,7 @@ export const CoinBox = memo(
           >
             <CurrencyField
               name={`amount-${mode}`}
+              interpretCommaAsDecimal
               id={`amount-${mode}`}
               borderBottomWidth="0"
               ref={coinInputRef}
