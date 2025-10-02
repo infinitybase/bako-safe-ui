@@ -121,7 +121,11 @@ const Field = forwardRef<HTMLInputElement, CurrencyFieldProps>(
           return onChange?.(cleanedValue);
         }
 
-        onChange?.(inputValue);
+        if ('data' in event.nativeEvent && event.nativeEvent.data === ',') {
+          event.target.value = event.target.value + '.';
+        }
+
+        onChange?.(event.target.value);
       },
       [getAllowedPattern, onChange, isCrypto],
     );
@@ -138,29 +142,6 @@ const Field = forwardRef<HTMLInputElement, CurrencyFieldProps>(
       },
       [onChange],
     );
-
-    const handleBeforeInput = (e: React.InputEvent<HTMLInputElement>) => {
-      if (e.data === ',') {
-        e.preventDefault();
-
-        const input = e.currentTarget;
-        const start = input.selectionStart ?? 0;
-        const end = input.selectionEnd ?? 0;
-
-        const newValue =
-          input.value.slice(0, start) + '.' + input.value.slice(end);
-
-        input.value = newValue;
-
-        const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
-          HTMLInputElement.prototype,
-          'value',
-        )?.set;
-        nativeInputValueSetter?.call(input, newValue);
-
-        input.dispatchEvent(new Event('input', { bubbles: true }));
-      }
-    };
 
     const inputRef = useRef<HTMLInputElement | null>(null);
 
@@ -189,7 +170,6 @@ const Field = forwardRef<HTMLInputElement, CurrencyFieldProps>(
           <Input
             {...props}
             {...maskedInputProps}
-            onBeforeInput={handleBeforeInput}
             ref={(input) => {
               maskedInputRef(input as HTMLInputElement);
               inputRef.current = input as HTMLInputElement;
