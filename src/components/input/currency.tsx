@@ -34,7 +34,6 @@ type CommonFieldProps = Omit<InputProps, 'value' | 'onChange'> & {
   disabled?: boolean;
   type: CurrencyFieldType;
   decimalScale?: number;
-  interpretCommaAsDecimal?: boolean;
 };
 
 export type CurrencyFieldProps = (FiatFieldProps | CryptoFieldProps) &
@@ -51,16 +50,7 @@ export interface CurrencyConfig {
 
 const Field = forwardRef<HTMLInputElement, CurrencyFieldProps>(
   (
-    {
-      value = '',
-      currency,
-      type,
-      onChange,
-      isInvalid,
-      decimalScale,
-      interpretCommaAsDecimal = false,
-      ...props
-    },
+    { value = '', currency, type, onChange, isInvalid, decimalScale, ...props },
     ref,
   ) => {
     const isCrypto = useMemo(() => type === 'crypto', [type]);
@@ -117,33 +107,19 @@ const Field = forwardRef<HTMLInputElement, CurrencyFieldProps>(
     const normalizedValue = useMemo(() => {
       if (!value) return '';
 
-      const decimalSymbol = config.decimalSeparator;
-      const preparedValue = interpretCommaAsDecimal
-        ? value.replace(/,/g, decimalSymbol)
-        : value;
-
-      const allowedValue = preparedValue.replace(getAllowedPattern(), '');
+      const allowedValue = value.replace(getAllowedPattern(), '');
       return formatCurrencyValue(allowedValue, config, !isCrypto);
-    }, [value, getAllowedPattern, config, isCrypto, interpretCommaAsDecimal]);
+    }, [value, getAllowedPattern, config, isCrypto]);
 
     const handleInputChange = useCallback(
       (event: React.ChangeEvent<HTMLInputElement>) => {
-        const decimalSymbol = config.decimalSeparator;
-        const inputValue = interpretCommaAsDecimal
-          ? event.target.value.replace(/,/g, decimalSymbol)
-          : event.target.value;
-        console.log(inputValue, event.target.value);
+        const inputValue = event.target.value;
         const allowedPattern = getAllowedPattern();
         const cleanedValue = inputValue.replace(allowedPattern, '');
 
         onChange?.(cleanedValue);
       },
-      [
-        getAllowedPattern,
-        onChange,
-        interpretCommaAsDecimal,
-        config.decimalSeparator,
-      ],
+      [getAllowedPattern, onChange],
     );
 
     const handleOnFocus = useCallback(
@@ -159,22 +135,16 @@ const Field = forwardRef<HTMLInputElement, CurrencyFieldProps>(
       [onChange],
     );
 
-    const handleBefoteInput = useCallback(
-      (e: React.InputEvent<HTMLInputElement>) => {
-        if (!interpretCommaAsDecimal || e.data !== ',') {
-          return;
-        }
-
+    const handleBefoteInput = (e: React.InputEvent<HTMLInputElement>) => {
+      if (e.data === ',') {
         e.preventDefault();
 
         const input = e.currentTarget;
         const start = input.selectionStart ?? 0;
         const end = input.selectionEnd ?? 0;
 
-        const decimalSymbol = config.decimalSeparator;
-
         const newValue =
-          input.value.slice(0, start) + decimalSymbol + input.value.slice(end);
+          input.value.slice(0, start) + '.' + input.value.slice(end);
 
         input.value = newValue;
 
@@ -185,9 +155,8 @@ const Field = forwardRef<HTMLInputElement, CurrencyFieldProps>(
         nativeInputValueSetter?.call(input, newValue);
 
         input.dispatchEvent(new Event('input', { bubbles: true }));
-      },
-      [interpretCommaAsDecimal, config.decimalSeparator],
-    );
+      }
+    };
 
     const inputRef = useRef<HTMLInputElement | null>(null);
 
