@@ -159,19 +159,21 @@ test.describe('vaults fuel wallet', () => {
     await page.getByText('2', { exact: true }).click();
     await page.waitForTimeout(200);
 
-    await getByAriaLabel(page, 'Create Vault Primary Action').click();
+    await getByAriaLabel(page, 'Create Vault Primary Action').click({
+      timeout: 8000,
+    });
     await page.waitForTimeout(2000);
     await page.locator('.loading-spinner').waitFor({ state: 'hidden' });
 
     await getByAriaLabel(page, 'Create Vault Secundary Action').click();
-    await page.waitForTimeout(300);
+    await page.waitForTimeout(1000);
 
     const hasClose = page.locator('[aria-label="Close window"]');
     if (await hasClose.isVisible()) {
       await hasClose.click();
     }
 
-    const vaultsTitle = await page.getByText('vaultName2');
+    const vaultsTitle = page.getByText('vaultName2');
     const number = await vaultsTitle.count();
     expect(number).toBe(3);
     for (let i = 0; i < number; i++) {

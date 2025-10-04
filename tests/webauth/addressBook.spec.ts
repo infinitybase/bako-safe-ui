@@ -4,7 +4,7 @@ import test from '@playwright/test';
 import { mockRouteAssets, modalCloseTest } from '../utils/helpers';
 import { AuthTestService } from '../utils/services/auth-service';
 
-test.describe('AddressBook', () => {
+test.describe.parallel('AddressBook', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
   });

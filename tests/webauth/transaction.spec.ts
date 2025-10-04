@@ -11,7 +11,7 @@ import { AuthTestService } from '../utils/services/auth-service';
 import { TransactionTestService } from '../utils/services/transaction-service';
 import { VaultTestService } from '../utils/services/vault-service';
 
-test.describe('Create transactions webAuth', () => {
+test.describe.parallel('Create transactions webAuth', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
   });

@@ -87,12 +87,14 @@ export async function disconnect(page: Page) {
 }
 
 export async function selectNetwork(page: Page, network?: TestNetworks) {
-  network = process.env.PREVIEW_MODE
-    ? TestNetworks.fuel_sepolia_testnet
-    : TestNetworks.local;
+  const selectedNetwork =
+    network ??
+    (process.env.PREVIEW_MODE
+      ? TestNetworks.fuel_sepolia_testnet
+      : TestNetworks.local);
 
   await getByAriaLabel(page, 'Select networks').click();
-  await page.getByText(network).click();
+  await page.getByText(selectedNetwork).click();
   await page.waitForTimeout(1000);
 }
 

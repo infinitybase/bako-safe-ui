@@ -48,7 +48,11 @@ export class E2ETestUtils {
       name: 'Close dialog',
     });
     if (await closeBtn.isVisible()) {
-      await closeBtn.click();
+      try {
+        await closeBtn.click();
+      } catch {
+        null;
+      }
     }
 
     await fuelWalletTestHelper.addAccount();

@@ -107,6 +107,7 @@ export class AuthTestService {
     await page.locator('[aria-label="Close window"]').click();
     await page.getByRole('button', { name: 'Home' }).click();
 
+    await page.waitForTimeout(1000);
     await getByAriaLabel(page, 'Dropdown header').click();
     await page.waitForTimeout(500);
     await getByAriaLabel(page, 'Copy address').click();

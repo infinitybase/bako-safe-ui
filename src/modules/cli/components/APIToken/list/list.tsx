@@ -122,6 +122,7 @@ const APITokenCard = (props: APITokenCardProps) => {
               color="grey.75"
               cursor="pointer"
               onClick={() => confirm.set(true)}
+              data-testid="delete-api-token"
             />
           )}
         </Stack>

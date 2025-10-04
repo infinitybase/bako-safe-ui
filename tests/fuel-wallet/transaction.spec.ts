@@ -62,22 +62,41 @@ test.describe('Create transactions fuel wallet', async () => {
       genesisWallet,
       reload,
     );
+    await page.reload();
+    await page.waitForTimeout(1000);
+
+    try {
+      await getByAriaLabel(page, 'Create transaction btn').click();
+    } catch {
+      page.reload();
+      await getByAriaLabel(page, 'Create transaction btn').click();
+    }
+    await expect(
+      page.getByRole('heading', { name: 'Create Transaction' }),
+    ).toBeVisible();
+
+    await TransactionTestService.fillFormTx(page, genesisWallet, true);
+
+    await expect(
+      getByAriaLabel(page, 'Create Transaction Primary Action'),
+    ).toBeEnabled();
+
+    await getByAriaLabel(page, 'Menu select mode create tx').click();
+    await getByAriaLabel(page, 'Menu item create tx').click();
+
+    await getByAriaLabel(page, 'Create Transaction Primary Action').click();
+
+    await expect(page.getByText('1 pending transaction')).toBeVisible();
+    await expect(page.getByText('0/1 Sgd', { exact: true })).toBeVisible();
+
+    await getByAriaLabel(page, 'Sign btn tx card').click();
     await page.waitForTimeout(2000);
-
-    // -- relogin
-    await AuthTestService.reloginWalletConnection(page, fuelWalletTestHelper);
-
-    await page.getByRole('button', { name: 'Home' }).click();
-    await expect(page).toHaveURL(/home/);
-
-    await page.getByText(vaultName, { exact: true }).click();
-    // ------------------------
-
-    await TransactionTestService.returnFundsToGenesisWalletWithFuelWallet(
-      page,
-      genesisWallet,
+    await E2ETestUtils.signMessageFuelWallet({
       fuelWalletTestHelper,
-    );
+      page,
+    });
+
+    await expect(page.getByText('You signed')).toBeVisible();
   });
 
   test('create two tx vault 2/1 and sign first and decline/sign second', async ({
@@ -321,7 +340,6 @@ test.describe('Create transactions fuel wallet', async () => {
     await page.waitForTimeout(3000);
 
     await page.goto('/');
-    await page.bringToFront();
     await page.waitForTimeout(2000);
 
     await page.locator('body').click();

@@ -3,7 +3,7 @@ import test, { expect } from '@playwright/test';
 
 import { AuthTestService } from '../utils/services/auth-service';
 
-test.describe('create account and login webAuth', () => {
+test.describe.parallel('create account and login webAuth', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
   });
@@ -26,7 +26,6 @@ test.describe('create account and login webAuth', () => {
 
     await getByAriaLabel(page, 'Username').clear();
     await getByAriaLabel(page, 'Username').fill(username);
-    await page.locator('body').click();
     await page.getByRole('button', { name: 'Login' }).click();
     await page.waitForTimeout(300);
 

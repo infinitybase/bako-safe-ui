@@ -108,6 +108,9 @@ export class VaultTestService {
       await vaultDiv.click();
     }
     await page.waitForTimeout(1500);
+    if (await hasClose.isVisible()) {
+      await hasClose.click();
+    }
     await page.getByRole('button', { name: 'Sidebar Vault Address' }).click();
     const vaultAddress = await page.evaluate(async () => {
       return await navigator.clipboard.readText();

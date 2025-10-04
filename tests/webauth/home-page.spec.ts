@@ -4,7 +4,7 @@ import test from '@playwright/test';
 import { txFilters } from '../utils/helpers';
 import { AuthTestService } from '../utils/services/auth-service';
 
-test.describe('home page webAuth', () => {
+test.describe.parallel('home page webAuth', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
   });

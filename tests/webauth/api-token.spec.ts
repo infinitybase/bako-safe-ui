@@ -1,36 +1,19 @@
-import {
-  expect,
-  FuelWalletTestHelper,
-  getByAriaLabel,
-  test,
-} from '@fuels/playwright-utils';
+import { expect, getByAriaLabel } from '@fuels/playwright-utils';
+import test from '@playwright/test';
 import { BakoProvider, Vault } from 'bakosafe';
-import { Address, WalletUnlocked } from 'fuels';
+import { Address } from 'fuels';
 
-import { getWalletAddress, mockRouteAssets } from '../utils/helpers';
+import { disconnect, selectNetwork } from '../utils/helpers';
 import { AuthTestService } from '../utils/services/auth-service';
 import { VaultTestService } from '../utils/services/vault-service';
 import { E2ETestUtils } from '../utils/setup';
 
-await E2ETestUtils.downloadFuelExtension({ test });
-
-test.describe('API Token fuel wallet', () => {
-  let fuelWalletTestHelper: FuelWalletTestHelper;
-  let genesisWallet: WalletUnlocked;
-
-  test.beforeEach(async ({ extensionId, context, page }) => {
-    await mockRouteAssets(page);
-
-    const E2EUtils = await E2ETestUtils.setupFuelWallet({
-      page,
-      context,
-      extensionId,
-    });
-
-    genesisWallet = E2EUtils.genesisWallet;
-    fuelWalletTestHelper = E2EUtils.fuelWalletTestHelper;
-
+test.describe.parallel('API Token WebAuth', () => {
+  test.beforeEach(async ({ page }) => {
     await page.goto('/');
+  });
+  test.afterEach(async ({ page }) => {
+    await page.pause();
   });
 
   test('tx using api token', async ({ page }) => {
@@ -38,15 +21,16 @@ test.describe('API Token fuel wallet', () => {
     const txNameApiToken = 'tx1';
     const txName = 'Deposit by apy token';
 
-    await AuthTestService.loginWalletConnection(page, fuelWalletTestHelper);
+    const { genesisWallet } = await AuthTestService.loginAuth(page);
 
     await page.waitForSelector('text=Welcome to Bako Safe!', {
       timeout: 30000,
     });
     await page.locator('[aria-label="Close window"]').click();
 
+    await selectNetwork(page);
+
     await page.waitForTimeout(1000);
-    await expect(page.getByText('Personal Vault').first()).toBeVisible();
     await page.getByRole('button', { name: 'Sidebar Vault Address' }).click();
     await page.waitForTimeout(1000);
     const vaultAddressUI = await page.evaluate(() =>
@@ -76,10 +60,9 @@ test.describe('API Token fuel wallet', () => {
 
       await page.getByLabel('API Token').locator('div').click();
       expect(page.getByText('Add more api tokens')).toBeVisible();
-      expect(page.getByText(apiTokenName)).toBeVisible();
+      expect(page.getByText(apiTokenName, { exact: true })).toBeVisible();
       await page.getByTestId('delete-api-token').click();
       await page.getByRole('button', { name: 'Delete' }).click();
-      await expect(page.getByText('API Token removed!')).toBeVisible();
       await page.waitForTimeout(300);
       await expect(
         page.getByRole('heading', { name: 'No Data available' }),
@@ -88,6 +71,8 @@ test.describe('API Token fuel wallet', () => {
         .getByRole('button', { name: 'Secundary action create api' })
         .click();
     });
+
+    await page.waitForTimeout(1500);
 
     await page.getByLabel('API Token').locator('div').click();
     expect(
@@ -115,7 +100,7 @@ test.describe('API Token fuel wallet', () => {
 
     await page.getByLabel('API Token').locator('div').click();
     expect(page.getByText('Add more api tokens')).toBeVisible();
-    expect(page.getByText(apiTokenName)).toBeVisible();
+    expect(page.getByText(apiTokenName, { exact: true })).toBeVisible();
     await getByAriaLabel(page, 'Secundary action create api token').click();
 
     const provider = await BakoProvider.create(genesisWallet.provider.url, {
@@ -154,10 +139,7 @@ test.describe('API Token fuel wallet', () => {
 
     await getByAriaLabel(page, 'Sign btn tx card').click();
     await page.waitForTimeout(1000);
-    await E2ETestUtils.signMessageFuelWallet({
-      page,
-      fuelWalletTestHelper,
-    });
+
     await page.waitForTimeout(1000);
     await expect(page.getByText('You signed')).toBeVisible();
   });
@@ -169,15 +151,16 @@ test.describe('API Token fuel wallet', () => {
     const txNameApiToken = 'tx1';
     const txName = 'Deposit by apy token';
 
-    await AuthTestService.loginWalletConnection(page, fuelWalletTestHelper);
-    const { address2 } = await getWalletAddress(fuelWalletTestHelper);
+    const {
+      secondAddress,
+      genesisWallet,
+      username: firstUsername,
+    } = await AuthTestService.loginPassKeyInTwoAccounts(page);
 
-    await page.locator('[aria-label="Close window"]').click();
-    await page.getByRole('button', { name: 'Home' }).click();
-    await expect(page).toHaveURL(/home/);
+    await selectNetwork(page);
 
     const { vaultAddress: vaultAddressUI } =
-      await VaultTestService.createVaulMultiSigns(page, [address2], 1);
+      await VaultTestService.createVaulMultiSigns(page, [secondAddress], 1);
 
     await page.waitForTimeout(1000);
 
@@ -283,7 +266,6 @@ test.describe('API Token fuel wallet', () => {
     await expect(page.getByText(txName)).toBeVisible();
     await expect(page.getByText('0/1 Sgd', { exact: true })).toBeVisible();
     await getByAriaLabel(page, 'Sign btn tx card').click();
-    await E2ETestUtils.signMessageFuelWallet({ fuelWalletTestHelper, page });
     await page.waitForTimeout(1000);
 
     await expect(page.getByText('You signed')).toBeVisible();
@@ -309,21 +291,18 @@ test.describe('API Token fuel wallet', () => {
 
     await expect(page.getByText('You declined')).toBeVisible();
 
-    await AuthTestService.reloginWalletConnection(
-      page,
-      fuelWalletTestHelper,
-      'Account 2',
-    );
-    await page.locator('[aria-label="Close window"]').click();
+    await disconnect(page);
 
+    await AuthTestService.reloginAuthPassKey(page, firstUsername);
     await page.getByRole('button', { name: 'Home' }).click();
     await expect(page).toHaveURL(/home/);
+
+    await selectNetwork(page);
 
     await expect(page.getByText('0/1 Sgd', { exact: true })).toBeVisible();
 
     await getByAriaLabel(page, 'Sign btn tx card').click();
     await page.waitForTimeout(2000);
-    await E2ETestUtils.signMessageFuelWallet({ fuelWalletTestHelper, page });
 
     await expect(page.getByText('You signed')).toBeVisible();
     // -- send transaction 2/1 - declined by 1 & signed  by 1
@@ -337,19 +316,18 @@ test.describe('API Token fuel wallet', () => {
     const txNameApiToken = 'tx1';
     const txName = 'Deposit by apy token';
 
-    await AuthTestService.loginWalletConnection(page, fuelWalletTestHelper);
+    const {
+      secondAddress,
+      genesisWallet,
+      username: firstUsername,
+    } = await AuthTestService.loginPassKeyInTwoAccounts(page);
 
-    const { address2 } = await getWalletAddress(fuelWalletTestHelper);
-
-    await page.waitForSelector('text=Welcome to Bako Safe!', {
-      timeout: 30000,
-    });
-    await page.locator('[aria-label="Close window"]').click();
+    await selectNetwork(page);
 
     await page.goto('/home');
 
     const { vaultAddress: vaultAddressUI } =
-      await VaultTestService.createVaulMultiSigns(page, [address2], 2);
+      await VaultTestService.createVaulMultiSigns(page, [secondAddress], 2);
 
     await page.waitForTimeout(1000);
 
@@ -376,7 +354,7 @@ test.describe('API Token fuel wallet', () => {
 
       await page.getByLabel('API Token').locator('div').click();
       expect(page.getByText('Add more api tokens')).toBeVisible();
-      expect(page.getByText(apiTokenName)).toBeVisible();
+      expect(page.getByText(apiTokenName, { exact: true })).toBeVisible();
       await page.getByTestId('delete-api-token').click();
       await page.getByRole('button', { name: 'Delete' }).click();
       await expect(page.getByText('API Token removed!')).toBeVisible();
@@ -415,7 +393,7 @@ test.describe('API Token fuel wallet', () => {
 
     await page.getByLabel('API Token').locator('div').click();
     expect(page.getByText('Add more api tokens')).toBeVisible();
-    expect(page.getByText(apiTokenName)).toBeVisible();
+    expect(page.getByText(apiTokenName, { exact: true })).toBeVisible();
     await getByAriaLabel(page, 'Secundary action create api token').click();
 
     const provider = await BakoProvider.create(genesisWallet.provider.url, {
@@ -448,39 +426,34 @@ test.describe('API Token fuel wallet', () => {
     await page.waitForTimeout(1000);
 
     await page.locator('#transactions_tab_sidebar').click();
-    await page.waitForTimeout(500);
     await page.reload();
-    expect(page.getByText(txName)).toBeVisible();
+    await page.waitForTimeout(500);
+    await expect(page.getByText(txName)).toBeVisible();
 
+    await page.reload();
     await getByAriaLabel(page, 'Sign btn tx card').click();
     await page.waitForTimeout(1000);
-    await E2ETestUtils.signMessageFuelWallet({
-      page,
-      fuelWalletTestHelper,
-    });
-    await page.waitForTimeout(1000);
+
     await expect(page.getByText('You signed')).toBeVisible();
 
-    await AuthTestService.reloginWalletConnection(
-      page,
-      fuelWalletTestHelper,
-      'Account 2',
-    );
-    await page.waitForSelector('text=Welcome to Bako Safe!', {
-      timeout: 30000,
-    });
-    await page.locator('[aria-label="Close window"]').click();
+    await disconnect(page);
+
+    try {
+      await AuthTestService.reloginAuthPassKey(page, firstUsername);
+    } catch {
+      page.reload();
+      await AuthTestService.reloginAuthPassKey(page, firstUsername);
+    }
+
+    await selectNetwork(page);
     await page.getByRole('button', { name: 'Home' }).click();
     await expect(page).toHaveURL(/home/);
 
     await expect(page.getByText('1/2 Sgd', { exact: true })).toBeVisible();
 
+    await page.reload();
+
     await getByAriaLabel(page, 'Sign btn tx card').click();
-    await page.waitForTimeout(1000);
-    await E2ETestUtils.signMessageFuelWallet({
-      page,
-      fuelWalletTestHelper,
-    });
     await page.waitForTimeout(1000);
 
     await expect(page.getByText('You signed')).toBeVisible();

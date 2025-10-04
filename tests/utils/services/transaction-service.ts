@@ -80,9 +80,10 @@ export class TransactionTestService {
       getByAriaLabel(page, 'Create Transaction Primary Action'),
     ).toBeEnabled();
 
-    await TransactionTestService.onlyCreateTx(page);
+    await getByAriaLabel(page, 'Create Transaction Primary Action').click();
     await page.waitForTimeout(500);
 
+    await page.reload();
     await getByAriaLabel(page, 'Sign btn tx card').click();
 
     await page.waitForTimeout(2000);
