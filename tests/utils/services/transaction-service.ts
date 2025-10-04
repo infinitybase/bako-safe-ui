@@ -101,15 +101,21 @@ export class TransactionTestService {
     page: Page,
     genesisWallet: WalletUnlocked,
   ) {
+    const transactionForm = getByAriaLabel(page, 'Create transaction btn');
+
     try {
-      await getByAriaLabel(page, 'Create transaction btn').click();
+      await transactionForm.click();
     } catch {
       page.reload();
-      await getByAriaLabel(page, 'Create transaction btn').click();
+      await transactionForm.click();
     }
+
     await expect(
       page.getByRole('heading', { name: 'Create Transaction' }),
     ).toBeVisible();
+
+    await page.getByLabel('Close window').click();
+    await transactionForm.click();
 
     await TransactionTestService.fillFormTxWrongData(page);
     await TransactionTestService.fillFormTx(page, genesisWallet);
