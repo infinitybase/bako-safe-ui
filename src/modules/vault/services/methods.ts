@@ -11,6 +11,7 @@ import {
   IGetLimitsResponse,
   IGetQuotesResponse,
   Predicate,
+  PredicateUpdatePayload,
   Workspace,
 } from '@/modules/core/models';
 import {
@@ -104,8 +105,10 @@ export class VaultService {
     return data;
   }
 
-  static async getByName(name: string) {
-    const { data } = await api.get<boolean>(`/predicate/by-name/${name}`);
+  static async getByName(name: string, ignoreId?: string) {
+    const { data } = await api.get<boolean>(
+      `/predicate/by-name/${name}?ignoreId=${ignoreId}`,
+    );
     return data;
   }
 
@@ -274,6 +277,11 @@ export class VaultService {
       payload,
     );
 
+    return data;
+  }
+
+  static async updatePredicate(id: string, payload: PredicateUpdatePayload) {
+    const { data } = await api.put<Predicate>(`/predicate/${id}`, payload);
     return data;
   }
 }
