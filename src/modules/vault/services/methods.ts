@@ -106,9 +106,12 @@ export class VaultService {
   }
 
   static async getByName(name: string, ignoreId?: string) {
-    const { data } = await api.get<boolean>(
-      `/predicate/by-name/${name}?ignoreId=${ignoreId}`,
-    );
+    const params = new URLSearchParams();
+    if (ignoreId !== undefined) {
+      params.append('ignoreId', ignoreId);
+    }
+    const url = `/predicate/by-name/${name}${params.toString() ? '?' + params.toString() : ''}`;
+    const { data } = await api.get<boolean>(url);
     return data;
   }
 
