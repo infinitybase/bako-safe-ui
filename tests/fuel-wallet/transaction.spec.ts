@@ -75,6 +75,7 @@ test.describe('Create transactions fuel wallet', async () => {
       page.getByRole('heading', { name: 'Create Transaction' }),
     ).toBeVisible();
 
+    await TransactionTestService.fillFormTxWrongData(page);
     await TransactionTestService.fillFormTx(page, genesisWallet, true);
 
     await expect(

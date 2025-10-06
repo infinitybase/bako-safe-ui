@@ -125,11 +125,12 @@ export class VaultTestService {
     wallet: WalletUnlocked,
     reload: boolean = true,
     assetId: TestAssets = TestAssets.ETH,
+    amount: string = '0.0000499',
   ) {
     await E2ETestUtils.fundVault({
       genesisWallet: wallet,
       vaultAddress,
-      amount: '0.0000499',
+      amount,
       assetId,
     });
 

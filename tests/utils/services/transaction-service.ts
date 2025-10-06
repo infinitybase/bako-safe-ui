@@ -20,9 +20,9 @@ export class TransactionTestService {
     const amount = '0.00001';
 
     await page.locator('#transaction_name').fill(transactionName);
-    await getByAriaLabel(page, 'Autocomplete Recipient Address 1').fill(
-      recipientAddr,
-    );
+    await page
+      .getByRole('textbox', { name: 'Recipient 1 address' })
+      .fill(recipientAddr);
     if (max) {
       await page.getByRole('button', { name: 'MAX' }).click();
     } else {
@@ -46,9 +46,9 @@ export class TransactionTestService {
     const amountTxFee = '1,500,000,000,000,000.00';
 
     await page.locator('#transaction_name').fill(transactionName);
-    await getByAriaLabel(page, 'Autocomplete Recipient Address 1').fill(
-      addrInvalid,
-    );
+    await page
+      .getByRole('textbox', { name: 'Recipient 1 address' })
+      .fill(addrInvalid);
     await expect(page.getByText('Invalid address.')).toBeVisible();
 
     await page.locator('[data-testid="transaction_amount"]').fill(amountTxFee);
@@ -80,13 +80,9 @@ export class TransactionTestService {
       getByAriaLabel(page, 'Create Transaction Primary Action'),
     ).toBeEnabled();
 
+    await TransactionTestService.fillFormTxWrongData(page);
     await getByAriaLabel(page, 'Create Transaction Primary Action').click();
-    await page.waitForTimeout(500);
-
-    await page.reload();
-    await getByAriaLabel(page, 'Sign btn tx card').click();
-
-    await page.waitForTimeout(2000);
+    await page.waitForTimeout(1000);
 
     await E2ETestUtils.signMessageFuelWallet({
       page,
@@ -94,6 +90,7 @@ export class TransactionTestService {
     });
     await page.waitForTimeout(1000);
 
+    await page.goto('/home');
     await expect(page.getByText('You signed')).toBeVisible();
   }
 
@@ -162,6 +159,6 @@ export class TransactionTestService {
     await page.locator('[data-testid="transaction_amount"]').fill(amount);
     await page.waitForTimeout(500);
 
-    return { transactionName, recipientAddr: addr, amount };
+    return { transactionName, recipientAddr: addr };
   }
 }

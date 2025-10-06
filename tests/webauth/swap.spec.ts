@@ -4,7 +4,7 @@ import { selectNetwork } from '../utils/helpers';
 import { AuthTestService } from '../utils/services/auth-service';
 import { VaultTestService } from '../utils/services/vault-service';
 
-test.describe.parallel('swap fuel wallet', () => {
+test.describe.parallel('swap webauth', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
   });
@@ -24,17 +24,6 @@ test.describe.parallel('swap fuel wallet', () => {
     await expect(
       page.getByRole('button', { name: 'Insufficient Balance' }),
     ).toBeVisible();
-  });
-
-  test.fixme('Swap with minimum amount', async ({ page }) => {
-    const { genesisWallet } = await AuthTestService.loginAuth(page);
-    await page.locator('[aria-label="Close window"]').click();
-    await page.getByRole('button', { name: 'Home' }).click();
-
-    const { vaultAddress } = await VaultTestService.createVault(page);
-    await VaultTestService.addFundVault(page, vaultAddress, genesisWallet);
-
-    await page.locator('#swap_tab_sidebar').click();
   });
 
   test('Search asset', async ({ page }) => {

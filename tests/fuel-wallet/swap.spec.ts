@@ -46,17 +46,6 @@ test.describe('swap fuel wallet', () => {
     );
   });
 
-  test.fixme('Swap with minimum amount', async ({ page }) => {
-    await AuthTestService.loginWalletConnection(page, fuelWalletTestHelper);
-    await page.locator('[aria-label="Close window"]').click();
-    await page.getByRole('button', { name: 'Home' }).click();
-
-    const { vaultAddress } = await VaultTestService.createVault(page);
-    await VaultTestService.addFundVault(page, vaultAddress, genesisWallet);
-
-    await page.locator('#swap_tab_sidebar').click();
-  });
-
   test('Search asset', async ({ page }) => {
     await AuthTestService.loginWalletConnection(page, fuelWalletTestHelper);
     await page.locator('[aria-label="Close window"]').click();

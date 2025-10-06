@@ -12,9 +12,6 @@ test.describe.parallel('API Token WebAuth', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
   });
-  test.afterEach(async ({ page }) => {
-    await page.pause();
-  });
 
   test('tx using api token', async ({ page }) => {
     const apiTokenName = 'key1';
