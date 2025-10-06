@@ -133,11 +133,11 @@ export const VaultBuySellPage = () => {
         >
           <TabList>
             <Tab w="full">Buy</Tab>
-            <Tab w="full" isDisabled>
-              <Tooltip label="Coming soon" hasArrow>
+            <Tooltip label="Coming soon" hasArrow>
+              <Tab w="full" isDisabled>
                 Sell
-              </Tooltip>
-            </Tab>
+              </Tab>
+            </Tooltip>
           </TabList>
           <TabPanels>
             <TabPanel>
