@@ -138,7 +138,7 @@ const AssetBoxInfo = ({
   const contactOrProvider = useMemo(
     () =>
       isFiatCurrency
-        ? rampTransaction?.providerTransaction
+        ? rampTransaction?.providerTransaction || '-'
         : assetAddressInfo?.contact,
     [
       isFiatCurrency,

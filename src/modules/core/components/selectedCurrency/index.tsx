@@ -47,11 +47,13 @@ export const SelectedCurrency = ({
 
           <Icon as={LeftAndRightArrow} color="grey.75" />
         </Flex>
-        <Flex>
-          <Text color="section.500" fontSize="12px">
-            {`Balance: ${balance} ${symbol}`}
-          </Text>
-        </Flex>
+        {balance && symbol && (
+          <Flex>
+            <Text color="section.500" fontSize="12px">
+              {`Balance: ${balance} ${symbol}`}
+            </Text>
+          </Flex>
+        )}
       </VStack>
     </Skeleton>
   );

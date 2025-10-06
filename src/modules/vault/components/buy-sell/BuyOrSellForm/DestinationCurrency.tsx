@@ -8,15 +8,19 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
+import { bn } from 'fuels';
 import { useMemo, useRef } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
+import { NativeAssetId } from '@/modules/core';
 import { SelectedCurrency } from '@/modules/core/components';
 import { ICreateWidgetPayload } from '@/modules/core/models/meld';
 import {
   useListCryptoCurrencies,
   useListFiatCurrencies,
 } from '@/modules/vault/hooks';
+import { formatMeldEthSlug } from '@/modules/vault/utils';
+import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
 
 import { CardRoot } from '../CardRoot';
 import { CurrencyOptionsModal } from '../CurrencyOptionsModal';
@@ -36,6 +40,7 @@ export const DestinationCurrency = ({
     useListCryptoCurrencies();
   const { fiatCurrencies, isLoading: isLoadingFiatCurrencies } =
     useListFiatCurrencies();
+  const { assets } = useVaultInfosContext();
   const { control, watch, setValue } = useFormContext<ICreateWidgetPayload>();
   const currencyModal = useDisclosure();
 
@@ -66,6 +71,16 @@ export const DestinationCurrency = ({
     [currencyOptions],
   );
 
+  const ethAsset = useMemo(
+    () => assets.assets?.find((asset) => asset.assetId === NativeAssetId),
+    [assets],
+  );
+
+  const ethBalance = useMemo(
+    () => bn(ethAsset?.amount || '0').format(),
+    [ethAsset],
+  );
+
   const isLoading = isLoadingCurrencies || isLoadingFiatCurrencies;
 
   return (
@@ -89,6 +104,8 @@ export const DestinationCurrency = ({
                 imageUrl={currentCurrency?.symbolImageUrl}
                 name={currentCurrency?.name}
                 isLoadingCurrencies={isLoading}
+                balance={isOnRamp ? ethBalance : undefined}
+                symbol={isOnRamp ? 'ETH' : undefined}
               />
             )}
           />
@@ -137,9 +154,8 @@ export const DestinationCurrency = ({
             />
             <InputMirror inputRef={inputRef} value={destinationAmount || '0'} />
             <InputRightAddon alignSelf="end" color="section.200" px={0}>
-              {currentCurrency?.currencyCode === 'ETH_FUEL'
-                ? 'ETH'
-                : currentCurrency?.currencyCode}
+              {currentCurrency?.currencyCode &&
+                formatMeldEthSlug(currentCurrency.currencyCode)}
             </InputRightAddon>
           </InputGroup>
         </Stack>

@@ -1,6 +1,6 @@
 import { AccordionItem, HStack, Text } from '@chakra-ui/react';
-import { memo } from 'react';
-import { useFormContext } from 'react-hook-form';
+import { memo, useCallback, useMemo } from 'react';
+import { useFormContext, useWatch } from 'react-hook-form';
 
 import { ListContactsResponse } from '@/modules/addressBook/services';
 import { AddressUtils } from '@/modules/core';
@@ -40,7 +40,7 @@ const RecipientItem = ({
   hasEthForFee,
   ethAssetId,
 }: RecipientItemProps) => {
-  const { watch, getFieldState } = useFormContext<ITransactionForm>();
+  const { getFieldState, control } = useFormContext<ITransactionForm>();
   const {
     providerInstance,
     vaultDetails: {
@@ -50,32 +50,61 @@ const RecipientItem = ({
   const {
     handlers: { getResolverName },
   } = useBakoIDClient(providerInstance);
-  const transaction = watch(`transactions.${index}`);
-  const assetSlug = assets.getAssetInfo(transaction.asset)?.slug;
+
+  const transaction = useWatch({ control, name: `transactions.${index}` });
+
+  const assetSlug = useMemo(
+    () => assets.getAssetInfo(transaction.asset)?.slug,
+    [assets, transaction.asset],
+  );
+
   const fieldState = getFieldState(`transactions.${index}`);
-  let resolvedLabel = watch(`transactions.${index}.resolvedLabel`);
 
-  if (resolvedLabel?.startsWith('@')) {
-    resolvedLabel = resolvedLabel?.split(' ')[0];
-  }
-  const hasEmptyField = Object.entries(transaction)
-    .filter(([key]) => key !== 'resolvedLabel')
-    .some(([, value]) => value === '');
+  const resolvedLabel = useMemo(() => {
+    const label = transaction.resolvedLabel;
+    return label?.startsWith('@') ? label?.split(' ')[0] : label;
+  }, [transaction]);
 
-  const currentAmount = watch(`transactions.${index}.amount`);
-  const isCurrentAmountZero = Number(currentAmount) === 0;
+  const hasEmptyField = useMemo(() => {
+    return Object.entries(transaction)
+      .filter(([key]) => key !== 'resolvedLabel')
+      .some(([, value]) => value === '');
+  }, [transaction]);
 
-  const isDisabled = hasEmptyField || fieldState.invalid || isCurrentAmountZero;
-  const contact = nicks.find(
-    (nick) => nick.user.address === transaction.value,
-  )?.nickname;
+  const isCurrentAmountZero = useMemo(
+    () => Number(transaction.amount) === 0,
+    [transaction.amount],
+  );
+
+  const isDisabled = useMemo(
+    () => hasEmptyField || fieldState.invalid || isCurrentAmountZero,
+    [hasEmptyField, fieldState.invalid, isCurrentAmountZero],
+  );
+
+  const contact = useMemo(
+    () =>
+      nicks.find((nick) => nick.user.address === transaction.value)?.nickname,
+    [nicks, transaction.value],
+  );
+
   const resolverName = getResolverName(transaction.value);
-  let recipientLabel =
-    contact ?? resolverName ?? AddressUtils.format(transaction.value);
-  if (resolvedLabel?.startsWith('@')) {
-    recipientLabel = resolvedLabel;
-  }
-  const isNFT = isNFTAsset(transaction.asset);
+
+  const recipientLabel = useMemo(() => {
+    if (resolvedLabel?.startsWith('@')) {
+      return resolvedLabel;
+    }
+    return contact ?? resolverName ?? AddressUtils.format(transaction.value);
+  }, [contact, resolverName, transaction.value, resolvedLabel]);
+
+  const isNFT = useMemo(
+    () => isNFTAsset(transaction.asset),
+    [isNFTAsset, transaction.asset],
+  );
+
+  const handleCloseAccordion = useCallback(
+    () => accordion.close(),
+    [accordion],
+  );
 
   return (
     <AccordionItem
@@ -103,12 +132,12 @@ const RecipientItem = ({
                 isDisabled={isFirstField}
                 onClick={() => {
                   onDelete(index);
-                  accordion.close();
+                  handleCloseAccordion();
                 }}
               />
             </HStack>
             <TransactionAccordion.ConfirmAction
-              onClick={() => accordion.close()}
+              onClick={() => handleCloseAccordion()}
               isDisabled={isDisabled}
               isLoading={!isCurrentAmountZero ? isFeeCalcLoading : false}
             />

@@ -26,6 +26,7 @@ import {
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { PredicateWorkspace, VaultService } from '../services';
+import VaultCardMemberAvatar from './VaultCardMemberAvatar';
 
 interface VaultCardProps extends CardProps {
   ownerId: string;
@@ -185,20 +186,8 @@ export const VaultCard = ({
                 },
               }}
             >
-              {members.map(({ avatar, address }) => (
-                <Avatar
-                  variant="roundedSquare"
-                  borderRadius={8}
-                  src={avatar}
-                  key={address}
-                  border="none"
-                  sx={{
-                    '&>img': {
-                      border: '1px solid #CFCCC9',
-                      boxShadow: '4px 0px 4px 0px #2B2827E5',
-                    },
-                  }}
-                />
+              {members.map((member) => (
+                <VaultCardMemberAvatar member={member} key={member.id} />
               ))}
             </AvatarGroup>
           </Box>

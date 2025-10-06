@@ -9,6 +9,7 @@ import { VaultDashboardLayoutRouter } from './layout/VaultDashBoard';
 import {
   TransactionsVaultPage,
   VaultBalancePage,
+  VaultBridgePage,
   VaultBuySellPage,
   VaultDetailsPage,
   VaultSettingsPage,
@@ -67,6 +68,14 @@ const VaultRoutes = () => {
             element={
               <AuthRoute>
                 <VaultBalancePage />
+              </AuthRoute>
+            }
+          />
+          <Route
+            path={Pages.bridge()}
+            element={
+              <AuthRoute>
+                <VaultBridgePage />
               </AuthRoute>
             }
           />

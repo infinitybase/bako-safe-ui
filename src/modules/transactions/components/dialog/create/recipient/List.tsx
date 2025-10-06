@@ -1,5 +1,5 @@
 import { Accordion, Button, Center, Text, Tooltip } from '@chakra-ui/react';
-import { memo } from 'react';
+import { memo, useCallback } from 'react';
 
 import { UserAddIcon } from '@/components';
 import { delay } from '@/modules/core';
@@ -27,14 +27,14 @@ export const RecipientList = ({
     screenSizes: { isMobile },
   } = useWorkspaceContext();
 
-  const handleAddMoreRecipient = () => {
+  const handleAddMoreRecipient = useCallback(() => {
     transactions.append({
       amount: '',
-      asset: ethAssetId ? ethAssetId : '',
+      asset: ethAssetId ?? '',
       value: '',
     });
     delay(() => accordion.open(transactions.fields.length), 100);
-  };
+  }, [transactions, ethAssetId, accordion]);
 
   return (
     <Accordion

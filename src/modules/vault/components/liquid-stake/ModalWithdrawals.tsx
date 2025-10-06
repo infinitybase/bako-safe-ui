@@ -68,7 +68,7 @@ export function ModalWithdrawalsLiquidStake({
               <Text fontSize={14} fontWeight={700}>
                 {TITLE}
               </Text>
-              <Text fontSize={12} color="#868079">
+              <Text fontSize={12} color="grey.425">
                 {DESCRIPTION}
               </Text>
             </VStack>
@@ -113,7 +113,7 @@ export function ModalWithdrawalsLiquidStake({
           mb={0}
           title={TITLE}
           description={DESCRIPTION}
-          descriptionColor={'#868079'}
+          descriptionColor={'grey.425'}
           mt={0}
           titleSxProps={{ fontSize: 16 }}
           onClose={onClose}

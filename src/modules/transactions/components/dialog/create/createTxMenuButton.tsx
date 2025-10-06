@@ -8,7 +8,7 @@ import {
   MenuList,
   Text,
 } from '@chakra-ui/react';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { Dialog } from '@/components';
 import { ChevronDownIcon } from '@/components/icons/chevron-down';
@@ -38,17 +38,17 @@ const CreateTxMenuButton = ({
   const actionMenuRef = useRef<HTMLDivElement>(null);
   const [menuWidth, setMenuWidth] = useState(0);
 
-  const updateMenuWidth = () => {
+  const updateMenuWidth = useCallback(() => {
     if (actionMenuRef.current) {
       setMenuWidth(actionMenuRef.current.offsetWidth);
     }
-  };
+  }, []);
 
-  const handleCreateTransactionByMethod = () => {
+  const handleCreateTransactionByMethod = useCallback(() => {
     return createTxMethod === ECreateTransactionMethods.CREATE
       ? handleCreateTransaction?.()
       : handleCreateAndSignTransaction?.();
-  };
+  }, [createTxMethod, handleCreateTransaction, handleCreateAndSignTransaction]);
 
   useEffect(() => {
     updateMenuWidth();
@@ -58,7 +58,7 @@ const CreateTxMenuButton = ({
     return () => {
       window.removeEventListener('resize', updateMenuWidth);
     };
-  }, []);
+  }, [updateMenuWidth]);
 
   return (
     <Menu
@@ -84,7 +84,7 @@ const CreateTxMenuButton = ({
           <MenuButton
             aria-label={'Menu select mode create tx'}
             as={Button}
-            rightIcon={<ChevronDownIcon fontSize="24px" />}
+            rightIcon={<ChevronDownIcon fontSize="24px" color="dark.950" />}
             variant="primary"
             w="20px"
             pl={2}

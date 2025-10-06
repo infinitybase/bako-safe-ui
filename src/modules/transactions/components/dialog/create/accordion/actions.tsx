@@ -9,6 +9,7 @@ import {
   StackProps,
   useAccordionItemState,
 } from '@chakra-ui/react';
+import { memo } from 'react';
 
 import { CheckIcon, RemoveIcon } from '@/components';
 import { EditIcon } from '@/components/icons/edit-icon';
@@ -19,7 +20,7 @@ type AccordionActionProp = Pick<
   'onClick' | 'isDisabled' | 'isLoading'
 >;
 
-const AccordionEditAction = (props: AccordionActionProp) => {
+const AccordionEditAction = memo((props: AccordionActionProp) => {
   const { isOpen } = useAccordionItemState();
 
   if (isOpen) return null;
@@ -37,9 +38,11 @@ const AccordionEditAction = (props: AccordionActionProp) => {
       onClick={props.onClick}
     />
   );
-};
+});
 
-const AccordionConfirmAction = (props: AccordionActionProp) => {
+AccordionEditAction.displayName = 'AccordionEditAction';
+
+const AccordionConfirmAction = memo((props: AccordionActionProp) => {
   const { isOpen } = useAccordionItemState();
 
   return (
@@ -63,23 +66,29 @@ const AccordionConfirmAction = (props: AccordionActionProp) => {
       <AccordionButton hidden />
     </Button>
   );
-};
+});
 
-const AccordionDeleteAction = (props: Omit<IconButtonProps, 'aria-label'>) => (
-  <IconButton
-    p={0}
-    h="auto"
-    minW="auto"
-    _hover={{}}
-    _active={{}}
-    bgColor="transparent"
-    aria-label="Remove transaction"
-    icon={<Icon fontSize="xl" color="grey.200" as={RemoveIcon} />}
-    {...props}
-  />
+AccordionConfirmAction.displayName = 'AccordionConfirmAction';
+
+const AccordionDeleteAction = memo(
+  (props: Omit<IconButtonProps, 'aria-label'>) => (
+    <IconButton
+      p={0}
+      h="auto"
+      minW="auto"
+      _hover={{}}
+      _active={{}}
+      bgColor="transparent"
+      aria-label="Remove transaction"
+      icon={<Icon fontSize="xl" color="grey.200" as={RemoveIcon} />}
+      {...props}
+    />
+  ),
 );
 
-const AccordionActions = ({ children, ...rest }: StackProps) => {
+AccordionDeleteAction.displayName = 'AccordionDeleteAction';
+
+const AccordionActions = memo(({ children, ...rest }: StackProps) => {
   const {
     screenSizes: { isExtraSmall },
   } = useWorkspaceContext();
@@ -93,7 +102,9 @@ const AccordionActions = ({ children, ...rest }: StackProps) => {
       {children}
     </HStack>
   );
-};
+});
+
+AccordionActions.displayName = 'AccordionActions';
 
 export {
   AccordionActions,

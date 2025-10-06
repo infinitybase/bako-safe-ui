@@ -1,9 +1,21 @@
-import { Asset, FAKE_WITNESSES, ITransactionResume } from 'bakosafe';
-import { Address, bn, calculateGasFee, ScriptTransactionRequest } from 'fuels';
+import { Asset, ITransactionResume, Vault } from 'bakosafe';
+import {
+  Address,
+  BN,
+  bn,
+  calculateGasFee,
+  Provider,
+  ScriptTransactionRequest,
+} from 'fuels';
+import memoize from 'lodash.memoize';
 
 import { api } from '@/config/api';
 import { ITransaction } from '@/modules/core/hooks/bakosafe/utils/types';
 
+import {
+  createTxCostHash,
+  FAKE_SIGNATURES,
+} from '../states/transactionCostCache';
 import {
   CancelTransactionResponse,
   CloseTransactionPayload,
@@ -29,6 +41,23 @@ import {
   SignerTransactionPayload,
   SignerTransactionResponse,
 } from './types';
+
+const getBaseAssetIdInternal = async (provider: Provider) => {
+  return await provider.getBaseAssetId();
+};
+
+const getPredicateGasInternal = async (vault: Vault) => {
+  return await vault.maxGasUsed();
+};
+
+const getBaseAssetId = memoize(
+  getBaseAssetIdInternal,
+  (provider: Provider) => provider.url,
+);
+
+const getPredicateGas = memoize(getPredicateGasInternal, (vault: Vault) =>
+  vault.address.toString(),
+);
 
 export class TransactionService {
   static async create(payload: CreateTransactionPayload) {
@@ -146,115 +175,135 @@ export class TransactionService {
     return data;
   }
 
-  static async resolveTransactionCosts(input: ResolveTransactionCostInput) {
-    const { vault, assets: assetsToSpend, assetsMap } = input;
+  static resolveTransactionCosts = memoize(
+    async (input: ResolveTransactionCostInput) => {
+      const { vault, assets: assetsToSpend, assetsMap } = input;
+      const predicateGasUsed = await getPredicateGas(vault);
 
-    const predicateGasUsed = await vault.maxGasUsed();
-    let transactionRequest = new ScriptTransactionRequest();
-    const assets = [...(assetsToSpend || [])];
+      let transactionRequest = new ScriptTransactionRequest();
+      const assets = [...(assetsToSpend || [])];
 
-    const baseAssetId = await vault.provider.getBaseAssetId();
-    const hasETHAsset = assets.some((a) => a.assetId === baseAssetId);
+      const baseAssetId = await getBaseAssetId(vault.provider);
+      const hasETHAsset = assets.find((a) => a.assetId === baseAssetId);
 
-    if (!assets.length || !hasETHAsset) {
-      const { coins } = await vault.getCoins(baseAssetId);
+      if (!assets.length || !hasETHAsset) {
+        const { coins } = await vault.getCoins(baseAssetId);
 
-      const resources = vault.generateFakeResources(
-        coins.map((c) => ({
+        const resources = vault.generateFakeResources(
+          coins.map((c) => ({
+            assetId: c.assetId,
+            amount: c.amount,
+          })),
+        );
+
+        assets.push({
+          amount: bn(1).formatUnits(),
+          assetId: baseAssetId,
+          to: Address.fromRandom().toString(),
+        });
+
+        transactionRequest.addResources(resources);
+      }
+
+      const outputs = Asset.assetsGroupByTo(assets);
+
+      const assetUnitsMap = new Map<string, number>();
+      const assetAmountMap = new Map<string, string>();
+
+      assets.forEach((asset) => {
+        const units = assetsMap?.[asset.assetId]?.units;
+        if (typeof units === 'number') assetUnitsMap.set(asset.assetId, units);
+        if (asset.amount) {
+          const currentAmount = assetAmountMap.get(asset.assetId) || '0';
+          const newAmount = bn
+            .parseUnits(currentAmount, units)
+            .add(bn.parseUnits(asset.amount, units));
+          assetAmountMap.set(asset.assetId, newAmount.formatUnits());
+        }
+      });
+
+      const transactionCoins = assets.reduce(
+        (acc, asset) => {
+          const alreadyExist = acc.find((a) => a.assetId === asset.assetId);
+          if (alreadyExist) {
+            // prevent duplicated assetIds
+            return acc;
+          }
+          const units = assetUnitsMap.get(asset.assetId);
+          const amount = assetAmountMap.get(asset.assetId);
+          if (!units || !amount) return acc;
+          const assetUnits = units;
+          const amountBN = bn.parseUnits(amount || '0', assetUnits);
+
+          return [...acc, { assetId: asset.assetId, amount: amountBN }];
+        },
+        [] as { assetId: string; amount: BN }[],
+      );
+
+      const _coins = await vault.getResourcesToSpend(transactionCoins);
+
+      const fakeCoins = vault.generateFakeResources(
+        _coins.map((c) => ({
           assetId: c.assetId,
           amount: c.amount,
         })),
       );
 
-      assets.push({
-        amount: bn(1).formatUnits(),
-        assetId: baseAssetId,
-        to: Address.fromRandom().toString(),
+      Object.entries(outputs).forEach(([, value]) => {
+        const assetId = value.assetId;
+        const assetUnits = assetUnitsMap.get(assetId);
+        const assetAmount = assetAmountMap.get(assetId);
+
+        if (assetUnits !== 9 && assetAmount) {
+          value.amount = bn.parseUnits(assetAmount, assetUnits);
+        }
+
+        transactionRequest.addCoinOutput(vault.address, value.amount, assetId);
       });
 
-      transactionRequest.addResources(resources);
-    }
+      transactionRequest.addResources(fakeCoins);
 
-    const outputs = Asset.assetsGroupByTo(assets);
-    const coins = Asset.assetsGroupById(assets);
+      FAKE_SIGNATURES.forEach((sig) => transactionRequest.addWitness(sig));
 
-    if (!coins[baseAssetId]) {
-      coins[baseAssetId] = bn(0);
-    }
+      // TODO: estimateAndFund is deprecated -> use assembleTx
+      transactionRequest = await transactionRequest.estimateAndFund(vault);
 
-    const transactionCoins = Object.entries(coins).map(([assetId, amount]) => {
-      const assetUnits = assetsMap?.[assetId]?.units;
-      const asset = assets.find((a) => a.assetId === assetId);
+      const totalGasUsed = transactionRequest.inputs.reduce((acc, input) => {
+        if ('predicate' in input && input.predicate) {
+          input.witnessIndex = 0;
+          input.predicateGasUsed = undefined;
+          return acc.add(predicateGasUsed);
+        }
+        return acc;
+      }, bn(0));
 
-      if (assetUnits !== 9 && asset?.amount) {
-        amount = bn.parseUnits(asset.amount, assetUnits);
-      }
+      const { gasPriceFactor } = await vault.provider.getGasConfig();
+      const { maxFee, gasPrice } = await vault.provider.estimateTxGasAndFee({
+        transactionRequest,
+      });
+
+      const serializedTxCount = bn(
+        transactionRequest.toTransactionBytes().length,
+      );
+      const totalGasWithBytes = totalGasUsed.add(serializedTxCount.mul(64));
+
+      const predicateSuccessFeeDiff = calculateGasFee({
+        gas: totalGasWithBytes,
+        priceFactor: gasPriceFactor,
+        gasPrice,
+      });
+
+      const maxFeeWithDiff = maxFee
+        .add(predicateSuccessFeeDiff)
+        .mul(20)
+        .div(10);
 
       return {
-        assetId,
-        amount,
+        fee: maxFeeWithDiff,
       };
-    });
-
-    const _coins = await vault.getResourcesToSpend(transactionCoins);
-
-    const fakeCoins = vault.generateFakeResources(
-      _coins.map((c) => ({
-        assetId: c.assetId,
-        amount: c.amount,
-      })),
-    );
-
-    Object.entries(outputs).forEach(([, value]) => {
-      const assetId = value.assetId;
-      const assetUnits = assetsMap?.[assetId]?.units;
-      const asset = assets.find((a) => a.assetId === assetId);
-
-      if (assetUnits !== 9 && asset?.amount) {
-        value.amount = bn.parseUnits(asset.amount, assetUnits);
-      }
-
-      transactionRequest.addCoinOutput(vault.address, value.amount, assetId);
-    });
-
-    transactionRequest.addResources(fakeCoins);
-
-    const fakeSignatures = Array.from({ length: 10 }, () => FAKE_WITNESSES);
-    fakeSignatures.forEach((sig) => transactionRequest.addWitness(sig));
-
-    transactionRequest = await transactionRequest.estimateAndFund(vault);
-
-    let totalGasUsed = bn(0);
-    transactionRequest.inputs.forEach((input) => {
-      if ('predicate' in input && input.predicate) {
-        input.witnessIndex = 0;
-        input.predicateGasUsed = undefined;
-        totalGasUsed = totalGasUsed.add(predicateGasUsed);
-      }
-    });
-
-    const { gasPriceFactor } = await vault.provider.getGasConfig();
-    const { maxFee, gasPrice } = await vault.provider.estimateTxGasAndFee({
-      transactionRequest,
-    });
-
-    const serializedTxCount = bn(
-      transactionRequest.toTransactionBytes().length,
-    );
-    totalGasUsed = totalGasUsed.add(serializedTxCount.mul(64));
-
-    const predicateSuccessFeeDiff = calculateGasFee({
-      gas: totalGasUsed,
-      priceFactor: gasPriceFactor,
-      gasPrice,
-    });
-
-    const maxFeeWithDiff = maxFee.add(predicateSuccessFeeDiff).mul(20).div(10);
-
-    return {
-      fee: maxFeeWithDiff,
-    };
-  }
+    },
+    (input: ResolveTransactionCostInput) => createTxCostHash(input),
+  );
 
   static async getTransactionsHistory(id: string, predicateId: string) {
     const { data } = await api.get<GetTransactionHistoryResponse>(

@@ -73,6 +73,7 @@ const useAddressBookAutocompleteOptions = ({
     return data?.map(({ nickname, user }) => ({
       label: AddressBookUtils.formatForAutocomplete(nickname, user.address),
       value: user.address,
+      name: nickname,
     }));
   }, []);
 
@@ -94,7 +95,7 @@ const useAddressBookAutocompleteOptions = ({
         ? [...options, option]
         : [...options, { value: fieldValue, label: fieldValue }];
     },
-    [handleCustomOption],
+    [handleCustomOption, setResolverAndHandle],
   );
 
   const currentIndex = fields?.length <= 1 ? 0 : fields.length - 1;
