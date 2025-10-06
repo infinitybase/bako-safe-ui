@@ -23,6 +23,7 @@ import { useNavigate } from 'react-router-dom';
 import {
   Card,
   CustomSkeleton,
+  EditIcon2,
   ErrorTooltip,
   SquarePlusIcon,
   TooltipNotEnoughBalance,
@@ -40,6 +41,7 @@ import { openFaucet } from '../utils';
 import { AssetsDetails } from './AssetsDetails';
 import BalanceHelperDrawer from './BalanceHelperDrawer';
 import BalanceHelperDialog from './dialog/BalanceHelper';
+import { UpdateVaultDialog } from './dialog/update';
 import { TooltipPendingTx } from './TooltipPendingTx';
 
 export interface CardDetailsProps {
@@ -88,6 +90,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
   const assetsContainerRef = useRef(null);
   const navigate = useNavigate();
   const { isOpen, onClose, onOpen } = useDisclosure();
+  const updateVaultDisclosure = useDisclosure();
 
   const { vault, assets, setAddAssetsDialogState } = props;
   const {
@@ -127,6 +130,11 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
     PermissionRoles.MANAGER,
     PermissionRoles.SIGNER,
   ];
+
+  const canEdit = useMemo(
+    () => hasPermission([PermissionRoles.OWNER]),
+    [hasPermission],
+  );
 
   const makeTransactionsPerm = useMemo(() => {
     const as = hasPermission(reqPerm);
@@ -200,14 +208,31 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                 />
                 <Box alignItems="center" justifyContent="center" w="full">
                   <HStack justifyContent="space-between" gap={2} maxW="full">
-                    <Heading
-                      alignSelf="flex-start"
-                      variant={{ base: 'title-md', sm: 'title-xl' }}
-                      noOfLines={1}
-                      wordBreak="break-all"
-                    >
-                      {vault?.data.name}
-                    </Heading>
+                    <Flex gap={2} alignItems="center">
+                      <Heading
+                        alignSelf="flex-start"
+                        variant={{ base: 'title-md', sm: 'title-xl' }}
+                        noOfLines={1}
+                        wordBreak="break-all"
+                      >
+                        {vault?.data.name}
+                      </Heading>
+                      <Button
+                        variant="unstyled"
+                        p={0}
+                        m={0}
+                        boxSize={5}
+                        minW="0"
+                        aria-label="Edit vault"
+                        visibility={canEdit ? 'visible' : 'hidden'}
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                        onClick={updateVaultDisclosure.onOpen}
+                      >
+                        <EditIcon2 boxSize={5} />
+                      </Button>
+                    </Flex>
                     {isMobile && (
                       <Update
                         isLoading={isUpdating}
@@ -489,6 +514,15 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
           </VStack>
         </Card>
       </CustomSkeleton>
+
+      {updateVaultDisclosure.isOpen && vault.data && (
+        <UpdateVaultDialog
+          isOpen={updateVaultDisclosure.isOpen}
+          onClose={updateVaultDisclosure.onClose}
+          initialValues={vault.data}
+          workspaceId={workspaceId}
+        />
+      )}
     </Box>
   );
 };
