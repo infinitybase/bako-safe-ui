@@ -22,7 +22,7 @@ import {
 } from 'react';
 
 import { CurrencyField } from '@/components';
-import { MinEthValue } from '@/config/swap';
+import { ETH_SLUG, MinEthValue } from '@/config/swap';
 import { Asset, SelectedCurrency } from '@/modules';
 import { CRYPTO_CONFIG, formatCurrencyValue, formatMaxDecimals } from '@/utils';
 import { moneyFormat } from '@/utils/money-format';
@@ -114,7 +114,7 @@ export const CoinBox = memo(
       // subtract MinEthValue to avoid insufficient funds for gas when selling ETH
       const gasBuffer = bn.parseUnits(MinEthValue.toString(), coin.units);
       const amount =
-        coin.slug === 'ETH' ? balanceInBN.sub(gasBuffer) : balanceInBN;
+        coin.slug === ETH_SLUG ? balanceInBN.sub(gasBuffer) : balanceInBN;
       onChangeAmount(amount.formatUnits(coin.units));
     }, [balance, coin, onChangeAmount]);
 
