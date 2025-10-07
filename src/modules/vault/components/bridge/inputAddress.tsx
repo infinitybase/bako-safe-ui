@@ -40,8 +40,9 @@ export function InputAddressBridge() {
           name="destinationAddress"
           render={({ field, fieldState }) => {
             const minLengthAddress = 40;
+
             const displayValue =
-              field?.value?.length > minLengthAddress
+              !isFocused && field?.value?.length > minLengthAddress
                 ? AddressUtils.format(field?.value ?? '')
                 : field?.value;
 
@@ -75,7 +76,7 @@ export function InputAddressBridge() {
 
                   <Input
                     value={displayValue}
-                    onChange={field.onChange}
+                    onChange={(e) => field.onChange(e.target.value)}
                     placeholder=" "
                     variant="dark"
                     onFocus={() => setIsFocused(true)}

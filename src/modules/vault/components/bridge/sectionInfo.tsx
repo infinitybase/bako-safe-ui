@@ -120,7 +120,7 @@ export function SectionInfo({
   const vaultAddress = useMemo(() => {
     if (!vault) return '';
 
-    return AddressUtils.format(vault.data?.predicateAddress ?? '', 4);
+    return AddressUtils.format(vault.data?.predicateAddress ?? '', 6);
   }, [vault]);
 
   return (
