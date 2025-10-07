@@ -9,10 +9,10 @@ import {
   TabPanel,
   VStack,
 } from '@chakra-ui/react';
+import { AddressUtils as BakoAddressUtils } from 'bakosafe';
 import { Address, isB256, isEvmAddress } from 'fuels';
 import { useRef, useState } from 'react';
 import { Controller } from 'react-hook-form';
-import { AddressUtils as BakoAddressUtils } from 'bakosafe';
 
 import { Autocomplete, Dialog, RemoveIcon, Select } from '@/components';
 import {
@@ -232,7 +232,10 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
                                     value.split(' - ').at(0)!,
                                   );
                                 if (address) {
-                                  result.value = address;
+                                  // address without checksum
+                                  // is required for validate if it's a not vault address
+                                  result.value = new Address(address).toB256();
+
                                   result.label =
                                     AddressBookUtils.formatForAutocomplete(
                                       value,
@@ -305,7 +308,8 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
 
                               if (BakoAddressUtils.isEvm(_address)) {
                                 _address =
-                                  'eth:' + BakoAddressUtils.parseFuelAddressToEth(
+                                  'eth:' +
+                                  BakoAddressUtils.parseFuelAddressToEth(
                                     _address,
                                   );
                               }
