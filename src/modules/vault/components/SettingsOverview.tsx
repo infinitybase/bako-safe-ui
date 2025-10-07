@@ -1,6 +1,7 @@
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import {
   Avatar,
+  Badge,
   Box,
   Button,
   Center,
@@ -23,7 +24,7 @@ import {
 } from '@/components';
 import { CLISettingsCard } from '@/modules/cli/components';
 import { CreateAPITokenDialog } from '@/modules/cli/components/APIToken/create';
-import { Pages, PermissionRoles } from '@/modules/core';
+import { AddressUtils, Pages, PermissionRoles } from '@/modules/core';
 import { useNetworks } from '@/modules/network/hooks';
 import { NetworkType } from '@/modules/network/services';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
@@ -79,6 +80,8 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
   }, [vault.data?.id]);
 
   if (!vault) return null;
+
+  const predicateVersion = vault.data?.configurable?.version;
 
   return (
     <>
@@ -348,18 +351,43 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                       }}
                     />
                   </Box>
-                  <AddressWithCopyBtn
-                    mt="auto"
-                    value={vault?.data?.predicateAddress ?? ''}
-                    p={2}
-                    px={3}
-                    flexDir="row-reverse"
-                    cursor="pointer"
-                    borderRadius={10}
-                    backgroundColor="dark.100"
-                    isSidebarAddress
-                    textProps={{ color: 'grey.500' }}
-                  />
+                  <Badge
+                    variant="filled"
+                    gap={{ base: 2, sm: 3 }}
+                    maxW={180}
+                    w="full"
+                    justifyContent="space-between"
+                  >
+                    Address
+                    <AddressWithCopyBtn
+                      value={vault?.data?.predicateAddress ?? ''}
+                      customValue={AddressUtils.format(
+                        vault?.data?.predicateAddress ?? '',
+                        4,
+                      )}
+                      minW="0"
+                      gap={1}
+                      copyBtnProps={{ fontSize: 'md' }}
+                    />
+                  </Badge>
+                  {predicateVersion && (
+                    <Badge
+                      variant="filled"
+                      gap={{ base: 2, sm: 3 }}
+                      maxW={180}
+                      w="full"
+                      justifyContent="space-between"
+                    >
+                      Predicate
+                      <AddressWithCopyBtn
+                        value={predicateVersion}
+                        customValue={AddressUtils.format(predicateVersion, 4)}
+                        gap={1}
+                        copyBtnProps={{ fontSize: 'md' }}
+                        minW="0"
+                      />
+                    </Badge>
+                  )}
                 </VStack>
               </Stack>
             </Card>
