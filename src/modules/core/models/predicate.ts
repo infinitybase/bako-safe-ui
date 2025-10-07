@@ -14,6 +14,7 @@ export interface IVaultConfigurable {
   SIGNATURES_COUNT: number;
   SIGNERS: string[];
   HASH_PREDICATE: string;
+  version: string;
 }
 
 export interface Predicate extends Omit<IPredicate, 'configurable'> {
