@@ -82,6 +82,7 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
   if (!vault) return null;
 
   const predicateVersion = vault.data?.configurable?.version;
+  const predicateAddress = vault.data?.predicateAddress;
 
   return (
     <>
@@ -351,25 +352,24 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                       }}
                     />
                   </Box>
-                  <Badge
-                    variant="filled"
-                    gap={{ base: 2, sm: 3 }}
-                    maxW={180}
-                    w="full"
-                    justifyContent="space-between"
-                  >
-                    Address
-                    <AddressWithCopyBtn
-                      value={vault?.data?.predicateAddress ?? ''}
-                      customValue={AddressUtils.format(
-                        vault?.data?.predicateAddress ?? '',
-                        4,
-                      )}
-                      minW="0"
-                      gap={1}
-                      copyBtnProps={{ fontSize: 'md' }}
-                    />
-                  </Badge>
+                  {predicateAddress && (
+                    <Badge
+                      variant="filled"
+                      gap={{ base: 2, sm: 3 }}
+                      maxW={180}
+                      w="full"
+                      justifyContent="space-between"
+                    >
+                      Address
+                      <AddressWithCopyBtn
+                        value={predicateAddress}
+                        customValue={AddressUtils.format(predicateAddress, 4)}
+                        minW="0"
+                        gap={1}
+                        copyBtnProps={{ fontSize: 'md' }}
+                      />
+                    </Badge>
+                  )}
                   {predicateVersion && (
                     <Badge
                       variant="filled"
