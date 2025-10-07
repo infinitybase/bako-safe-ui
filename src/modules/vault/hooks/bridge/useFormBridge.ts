@@ -91,8 +91,7 @@ const useFormBridge = () => {
   const { getDestinationsBridgeAsync, isPending: isLoadingDestinations } =
     useGetDestinationsBridge();
   const { getLimitsBridgeAsync } = useGetLimitsBridge();
-  const { getQuoteBridgeAsync, isPending: isPendingQuote } =
-    useGetQuoteBridge();
+  const { getQuoteBridgeAsync } = useGetQuoteBridge();
   const [toAssetOptions, setToAssetOptions] = useState<AssetFormItem[]>([]);
   const [isSendingTx, setIsSendingTx] = useState<boolean>(false);
 
@@ -103,12 +102,6 @@ const useFormBridge = () => {
   const networkToValueForm = watch('selectNetworkTo');
   const destinationAddress = watch('destinationAddress');
   const amount = watch('amount');
-
-  useEffect(() => {
-    if (isPendingQuote !== isLoadingQuote) {
-      setLoadingQuote(isPendingQuote);
-    }
-  }, [isPendingQuote]);
 
   const assetFrom =
     useMemo(
@@ -376,7 +369,13 @@ const useFormBridge = () => {
           receiveInUsd: receiveInUsd,
         });
         if (ErrorBridgeForm.QUOTE) saveErrorForm(null);
+        setTimeout(() => {
+          setLoadingQuote(false);
+        }, 1000);
+
+        return data;
       } catch (error) {
+        setLoadingQuote(false);
         saveQuote({} as IQuoteFormLayersSwap);
         saveErrorForm(ErrorBridgeForm.QUOTE);
       }
@@ -389,6 +388,7 @@ const useFormBridge = () => {
       prepareCreateSwapPayload,
       saveQuote,
       saveErrorForm,
+      setLoadingQuote,
     ],
   );
 
@@ -494,6 +494,7 @@ const useFormBridge = () => {
     isLoadingQuote,
     isSendingTx,
     errorForm,
+    setLoadingQuote,
     getDestinations,
     getOperationLimits,
     getOperationQuotes,
