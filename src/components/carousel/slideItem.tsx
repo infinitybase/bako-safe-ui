@@ -6,7 +6,7 @@ interface CarouselSlideItemProps extends BoxProps {
 
 const CarouselSlideItem = ({ children, ...props }: CarouselSlideItemProps) => {
   return (
-    <Box flex="0 0 100%" pl={2} {...props}>
+    <Box flex="0 0 100%" ml={2} {...props}>
       {children}
     </Box>
   );

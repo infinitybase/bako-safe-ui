@@ -107,12 +107,20 @@ const Field = forwardRef<HTMLInputElement, CurrencyFieldProps>(
     const handleInputChange = useCallback(
       (event: React.ChangeEvent<HTMLInputElement>) => {
         const inputValue = event.target.value;
-        const allowedPattern = regexCache;
-        const cleanedValue = inputValue.replace(allowedPattern, '');
 
-        onChange?.(cleanedValue);
+        if (!isCrypto) {
+          const allowedPattern = regexCache;
+          const cleanedValue = inputValue.replace(allowedPattern, '');
+          return onChange?.(cleanedValue);
+        }
+
+        if ('data' in event.nativeEvent && event.nativeEvent.data === ',') {
+          event.target.value = event.target.value + '.';
+        }
+
+        onChange?.(event.target.value);
       },
-      [regexCache, onChange],
+      [regexCache, onChange, isCrypto],
     );
 
     const handleOnFocus = useCallback(
@@ -127,29 +135,6 @@ const Field = forwardRef<HTMLInputElement, CurrencyFieldProps>(
       },
       [onChange],
     );
-
-    const handleBefoteInput = (e: React.InputEvent<HTMLInputElement>) => {
-      if (e.data === ',') {
-        e.preventDefault();
-
-        const input = e.currentTarget;
-        const start = input.selectionStart ?? 0;
-        const end = input.selectionEnd ?? 0;
-
-        const newValue =
-          input.value.slice(0, start) + '.' + input.value.slice(end);
-
-        input.value = newValue;
-
-        const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
-          HTMLInputElement.prototype,
-          'value',
-        )?.set;
-        nativeInputValueSetter?.call(input, newValue);
-
-        input.dispatchEvent(new Event('input', { bubbles: true }));
-      }
-    };
 
     const inputRef = useRef<HTMLInputElement | null>(null);
 
@@ -178,7 +163,6 @@ const Field = forwardRef<HTMLInputElement, CurrencyFieldProps>(
           <Input
             {...props}
             {...maskedInputProps}
-            onBeforeInput={handleBefoteInput}
             ref={(input) => {
               maskedInputRef(input as HTMLInputElement);
               inputRef.current = input as HTMLInputElement;
