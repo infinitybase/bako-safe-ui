@@ -39,7 +39,7 @@ export const UpdateVaultDialog = ({
       size="2xl"
       modalBodyProps={{ px: 4 }}
     >
-      <Dialog.Header title="Update Vault" onClose={onClose} />
+      <Dialog.Header title="Edit Vault" onClose={onClose} />
       <Dialog.Body>
         <UpdateVaultForm
           initialValues={initialValues}
