@@ -128,7 +128,8 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                     direction={{ base: 'column', sm: 'row' }}
                     alignItems={{ base: 'flex-start', sm: 'center' }}
                     spacing={{ base: 3, sm: 6 }}
-                    w="full"
+                    w={{ mxs: 'full', base: 'auto' }}
+                    mr="auto"
                     maxW={{ base: 'full', sm: '100%' }}
                   >
                     <Center>
