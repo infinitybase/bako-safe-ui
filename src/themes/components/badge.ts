@@ -60,6 +60,7 @@ const filled = defineStyle({
   borderColor: 'none',
   border: 'none',
   fontSize: { base: 'xs', xs: 'sm' },
+  padding: '6px 8px',
 });
 
 const baseStyle = defineStyle({
