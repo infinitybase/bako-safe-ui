@@ -66,6 +66,7 @@ export const SelectQuoteModal = ({
     <Dialog.Modal
       isOpen={open}
       onClose={onClose}
+      trapFocus={false}
       modalContentProps={{
         padding: 0,
       }}

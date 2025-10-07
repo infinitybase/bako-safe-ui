@@ -2,6 +2,7 @@ import { Button, Stack } from '@chakra-ui/react';
 import { useEffect, useMemo } from 'react';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 
+import { getChainId } from '@/modules/core';
 import { useDebounce } from '@/modules/core/hooks';
 import {
   ICreateWidgetPayload,
@@ -47,12 +48,15 @@ export const BuyOrSellForm = ({
       ? limit.currencyCode === currencyCodeByCountry
       : limit.currencyCode === 'ETH',
   );
+  const destinationCurrency = getChainId() === 0 ? 'ETH' : 'ETH_FUEL';
   const methods = useForm<ICreateWidgetPayload>({
     defaultValues: {
       type,
       countryCode: defaultCountry,
-      sourceCurrencyCode: type === 'BUY' ? currencyCodeByCountry : 'ETH',
-      destinationCurrencyCode: type === 'BUY' ? 'ETH' : currencyCodeByCountry,
+      sourceCurrencyCode:
+        type === 'BUY' ? currencyCodeByCountry : destinationCurrency,
+      destinationCurrencyCode:
+        type === 'BUY' ? destinationCurrency : currencyCodeByCountry,
       paymentMethodType: 'CREDIT_DEBIT_CARD',
       walletAddress: vaultAddress,
       sourceAmount: limitByCountry?.defaultAmount.toString(),
@@ -161,12 +165,11 @@ export const BuyOrSellForm = ({
           isLoadingQuotes={isLoadingQuotes}
           isOnRamp={isOnRamp}
         />
-        {quotes?.quotes && quotes?.quotes?.length > 0 && (
-          <SelectQuote
-            quotes={quotes?.quotes}
-            bestProviderQuote={bestQuote?.serviceProvider}
-          />
-        )}
+        <SelectQuote
+          quotes={quotes?.quotes || []}
+          bestProviderQuote={bestQuote?.serviceProvider}
+          isLoadingQuotes={isLoadingQuotes}
+        />
         {errorQuote && <QuoteError />}
         <SelectPaymentMethod />
         <Button

@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Card,
   Flex,
   InputGroup,
@@ -12,6 +13,7 @@ import {
 import { BN, bn } from 'fuels';
 import {
   memo,
+  useCallback,
   useEffect,
   useLayoutEffect,
   useMemo,
@@ -20,6 +22,7 @@ import {
 } from 'react';
 
 import { CurrencyField } from '@/components';
+import { ETH_SLUG, MinEthValue } from '@/config/swap';
 import { Asset, SelectedCurrency } from '@/modules';
 import { CRYPTO_CONFIG, formatCurrencyValue, formatMaxDecimals } from '@/utils';
 import { moneyFormat } from '@/utils/money-format';
@@ -105,6 +108,15 @@ export const CoinBox = memo(
           coin.units != null ? Number(coin.units) : CRYPTO_CONFIG.decimalScale,
       };
     }, [coin.units]);
+
+    const handleChangeMaxBalance = useCallback(() => {
+      const balanceInBN = bn.parseUnits(balance, coin.units);
+      // subtract MinEthValue to avoid insufficient funds for gas when selling ETH
+      const gasBuffer = bn.parseUnits(MinEthValue.toString(), coin.units);
+      const amount =
+        coin.slug === ETH_SLUG ? balanceInBN.sub(gasBuffer) : balanceInBN;
+      onChangeAmount(amount.formatUnits(coin.units));
+    }, [balance, coin, onChangeAmount]);
 
     return (
       <Card variant="outline" p={3} pb={12}>
@@ -210,6 +222,20 @@ export const CoinBox = memo(
               bn.parseUnits(coin.amount).gt(0) &&
               moneyFormat(amountInUSD)}
           </Text>
+
+          {mode === 'sell' && (
+            <Button
+              variant="secondary"
+              size="xs"
+              fontSize="2xs"
+              onClick={handleChangeMaxBalance}
+              disabled={isLoadingAmount}
+              color="grey.425"
+              borderRadius={6}
+            >
+              MAX
+            </Button>
+          )}
         </Stack>
       </Card>
     );

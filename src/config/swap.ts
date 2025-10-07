@@ -33,3 +33,4 @@ export const miraData = {
 export const EthDecimals = 9 as const;
 export const MinEthValue = 0.00015 as const;
 export const MinEthValueBN = MinEthValue * 10 ** EthDecimals;
+export const ETH_SLUG = 'ETH';

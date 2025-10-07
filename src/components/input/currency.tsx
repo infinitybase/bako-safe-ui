@@ -80,15 +80,8 @@ const Field = forwardRef<HTMLInputElement, CurrencyFieldProps>(
       const basePattern = `[^0-9\\${decimalEscaped}${
         thousandsEscaped ? `\\${thousandsEscaped}` : ''
       }]`;
-      return {
-        crypto: new RegExp(basePattern, 'g'),
-        currency: new RegExp(basePattern, 'g'),
-      };
+      return new RegExp(basePattern, 'g');
     }, [config.decimalSeparator, config.thousandsSeparator]);
-
-    const getAllowedPattern = useCallback(() => {
-      return isCrypto ? regexCache.crypto : regexCache.currency;
-    }, [regexCache, isCrypto]);
 
     const currencyMask = useMemo(() => {
       return createNumberMask({
@@ -107,16 +100,16 @@ const Field = forwardRef<HTMLInputElement, CurrencyFieldProps>(
     const normalizedValue = useMemo(() => {
       if (!value) return '';
 
-      const allowedValue = value.replace(getAllowedPattern(), '');
+      const allowedValue = value.replace(regexCache, '');
       return formatCurrencyValue(allowedValue, config, !isCrypto);
-    }, [value, getAllowedPattern, config, isCrypto]);
+    }, [value, regexCache, config, isCrypto]);
 
     const handleInputChange = useCallback(
       (event: React.ChangeEvent<HTMLInputElement>) => {
         const inputValue = event.target.value;
 
         if (!isCrypto) {
-          const allowedPattern = getAllowedPattern();
+          const allowedPattern = regexCache;
           const cleanedValue = inputValue.replace(allowedPattern, '');
           return onChange?.(cleanedValue);
         }
@@ -127,7 +120,7 @@ const Field = forwardRef<HTMLInputElement, CurrencyFieldProps>(
 
         onChange?.(event.target.value);
       },
-      [getAllowedPattern, onChange, isCrypto],
+      [regexCache, onChange, isCrypto],
     );
 
     const handleOnFocus = useCallback(

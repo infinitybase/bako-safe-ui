@@ -12,6 +12,8 @@ import { AuthTestService } from './utils/services/auth-service';
 import { VaultTestService } from './utils/services/vault-service';
 import { E2ETestUtils } from './utils/setup';
 
+await E2ETestUtils.downloadFuelExtension({ test });
+
 test.describe('API Token', () => {
   let fuelWalletTestHelper: FuelWalletTestHelper;
   let genesisWallet: WalletUnlocked;

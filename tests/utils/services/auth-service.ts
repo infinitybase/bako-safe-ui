@@ -74,7 +74,7 @@ export class AuthTestService {
   }
 
   static async loginWalletConnection(
-    page,
+    page: Page,
     fuelWalletTestHelper: FuelWalletTestHelper,
   ) {
     await getByAriaLabel(page, 'Connect Fuel Wallet').click();
