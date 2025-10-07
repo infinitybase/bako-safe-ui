@@ -39,7 +39,7 @@ export function AmountBrigdeMobile({
     balance,
     fuelImg,
     handleSourceChange,
-    handleMaxAmount,
+    handleGetFeeBeforeMaxAmount,
     handleMinAmount,
   } = useAmountBridge({ stepsForm, setStepsForm, assets, setErrorAmount });
 
@@ -122,7 +122,7 @@ export function AmountBrigdeMobile({
           minW="48px"
           isDisabled={!dataLimits.maxAmount}
           variant="secondary"
-          onClick={handleMaxAmount}
+          onClick={() => handleGetFeeBeforeMaxAmount()}
           borderRadius={6}
           padding={'4px 6px 4px 6px'}
           fontSize={10}
