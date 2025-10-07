@@ -1,11 +1,8 @@
 import { Button } from '@chakra-ui/react';
-import { useQueryClient } from '@tanstack/react-query';
 
 import { Dialog } from '@/components';
-import { useContactToast } from '@/modules/addressBook';
-import { HomeQueryKey, PredicateUpdatePayload } from '@/modules/core';
+import { PredicateUpdatePayload } from '@/modules/core';
 import { useUpdateVault } from '@/modules/vault/hooks';
-import { VAULT_TRANSACTIONS_LIST_PAGINATION } from '@/modules/vault/hooks/list/useVaultTransactionsRequest';
 
 import { UpdateVaultForm } from './form';
 
@@ -22,9 +19,7 @@ export const UpdateVaultDialog = ({
   onClose,
   workspaceId,
 }: UpdateVaultDialogProps) => {
-  const { isPending, updateVault } = useUpdateVault();
-  const queryClient = useQueryClient();
-  const { successToast, errorToast } = useContactToast();
+  const { isPending, updateVault } = useUpdateVault(workspaceId);
 
   const handleVaultUpdate = (data: PredicateUpdatePayload) => {
     updateVault(
@@ -32,20 +27,6 @@ export const UpdateVaultDialog = ({
       {
         onSuccess: () => {
           onClose();
-          queryClient.invalidateQueries({
-            queryKey: ['vault/by-id', initialValues.id],
-          });
-          queryClient.invalidateQueries({
-            queryKey: HomeQueryKey.HOME_DATA(workspaceId),
-          });
-          queryClient.invalidateQueries({
-            queryKey: [VAULT_TRANSACTIONS_LIST_PAGINATION],
-            exact: false,
-          });
-          successToast({ title: 'Vault updated successfully' });
-        },
-        onError: () => {
-          errorToast({ title: 'Failed to update vault' });
         },
       },
     );
