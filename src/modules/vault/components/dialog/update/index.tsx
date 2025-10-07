@@ -36,18 +36,22 @@ export const UpdateVaultDialog = ({
     <Dialog.Modal
       isOpen={isOpen}
       onClose={onClose}
-      size="2xl"
+      size={{ sm: '2xl', base: 'full' }}
       modalBodyProps={{ px: 4 }}
     >
-      <Dialog.Header title="Edit Vault" onClose={onClose} />
-      <Dialog.Body>
+      <Dialog.Header
+        title="Edit Vault"
+        onClose={onClose}
+        mt={{ base: 4, xs: 0 }}
+      />
+      <Dialog.Body flex={1}>
         <UpdateVaultForm
           initialValues={initialValues}
           onSubmit={handleVaultUpdate}
           vaultId={initialValues.id}
         />
       </Dialog.Body>
-      <Dialog.Actions>
+      <Dialog.Actions position="relative">
         <Button
           variant="secondary"
           disabled={isPending}
