@@ -233,7 +233,7 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
                                   );
                                 if (address) {
                                   // address without checksum
-                                  // is required for validate if it's a not vault address
+                                  // is required to validate if it's not a vault address
                                   result.value = new Address(address).toB256();
 
                                   result.label =
