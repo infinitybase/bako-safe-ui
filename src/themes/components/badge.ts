@@ -57,8 +57,8 @@ const grey = defineStyle({
 const filled = defineStyle({
   bgColor: 'rgba(245, 245, 245, 0.05)',
   color: 'grey.425',
-  borderColor: 'none',
-  border: 'none',
+  borderColor: 'transparent',
+  borderWidth: 0,
   fontSize: { base: 'xs', xs: 'sm' },
 });
 
