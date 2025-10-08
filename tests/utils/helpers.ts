@@ -111,6 +111,25 @@ export async function mockRouteAssets(page: Page) {
   );
 }
 
+export async function mockRouteBakoName(page: Page) {
+  await page.route(`https://api.bako.id/api/TESTNET/name/**`, async (route) => {
+    await route.fulfill({
+      json: {
+        name: 'mockedHandle',
+      },
+    });
+  });
+}
+export async function mockRouteBakoAddr(page: Page, address: string) {
+  await page.route(`https://api.bako.id/api/TESTNET/addr/**`, async (route) => {
+    await route.fulfill({
+      json: {
+        address,
+      },
+    });
+  });
+}
+
 export async function getWalletAddress(
   fuelWalletTestHelper: FuelWalletTestHelper,
 ) {

@@ -7,9 +7,12 @@ import {
 } from '@fuels/playwright-utils';
 import { WalletUnlocked } from 'fuels';
 
-import { mockRouteAssets } from '../utils/helpers';
+import {
+  mockRouteAssets,
+  mockRouteBakoAddr,
+  mockRouteBakoName,
+} from '../utils/helpers';
 import { AuthTestService } from '../utils/services/auth-service';
-import { NewHandleService } from '../utils/services/new-handle-service';
 import { E2ETestUtils } from '../utils/setup';
 
 await E2ETestUtils.downloadFuelExtension({ test });
@@ -216,98 +219,27 @@ test.describe('vaults fuel wallet', () => {
     });
   });
 
-  test.only('Should prevent adding vault addresses or handles as signers when creating multisig vault', async ({
+  test('Should prevent adding vault addresses or handles as signers when creating multisig vault', async ({
     page,
   }) => {
-    let handleAddress: string;
-    const handle = `automation${Date.now()}`;
-    console.log('new handle: ', handle);
-
-    await test.step('Create handle for personal vault in Bako ID', async () => {
-      await page.goto('https://app.bako.id/');
-
-      await test.step('Fill handle creation form and submit', async () => {
-        await page
-          .getByRole('textbox', { name: 'Search for an available Handle' })
-          .fill(handle);
-        await page.getByRole('button', { name: 'Continue' }).click();
-
-        await expect(page.getByText(handle)).toBeVisible();
-        await expect(page.getByText('Handles0.001 ETH')).toBeVisible();
-
-        const value = await NewHandleService.getValueNewHandle(page);
-
-        await test.step('Connect Fuel Wallet through Bako Safe and fund vault', async () => {
-          try {
-            await page.getByRole('button', { name: 'Connect Wallet' }).click();
-            await page.getByLabel('Connect to Bako Safe').click();
-          } catch {
-            await page
-              .getByRole('button', { name: 'Connect Wallet' })
-              .nth(1)
-              .click();
-            await page.getByLabel('Connect to Bako Safe').click();
-          }
-
-          const popupBako = await page.waitForEvent('popup');
-          await expect(
-            popupBako.getByLabel('Connect Fuel Wallet'),
-          ).toBeEnabled();
-          await page.waitForTimeout(1000);
-          await popupBako.getByLabel('Connect Fuel Wallet').click();
-          await fuelWalletTestHelper.walletConnect(['Account 1']);
-          await E2ETestUtils.signMessageFuelWallet({
-            fuelWalletTestHelper,
-            page,
-          });
-          await popupBako.waitForEvent('close');
-          await page.waitForTimeout(1500);
-          handleAddress = await page
-            .locator('input[name="resolver"]')
-            .inputValue();
-
-          await E2ETestUtils.fundVault({
-            genesisWallet,
-            vaultAddress: handleAddress,
-            amount: value.toString(),
-          });
-          await page.reload();
-          await page.waitForTimeout(500);
-        });
-
-        await page.getByRole('button', { name: 'Confirm Transaction' }).click();
-
-        await page
-          .getByLabel('Bako ID Terms Of Use Agreement')
-          .locator('div')
-          .filter({ hasText: '1. The Bako IDThe “Bako ID”' })
-          .nth(2)
-          .evaluate((el) => {
-            el.scrollTop = el.scrollHeight;
-          });
-        await page.getByRole('button', { name: 'Accept' }).click();
-
-        const popupBako = await page.waitForEvent('popup');
-        await popupBako
-          .getByRole('button', {
-            name: 'Create Transaction Primary',
-          })
-          .click();
-
-        await E2ETestUtils.signMessageFuelWallet({
-          fuelWalletTestHelper,
-          page,
-        });
-
-        await expect(
-          page.getByRole('heading', { name: 'Congratulations' }),
-        ).toBeVisible();
-      });
-    });
-
     await test.step('Navigate to Bako Safe and start vault creation', async () => {
-      await page.goto('https://safe.bako.global/');
+      await page.goto('/');
+      await AuthTestService.loginWalletConnection(page, fuelWalletTestHelper);
       await mockRouteAssets(page);
+
+      await hasText(page, /Welcome to Bako Safe!/);
+
+      await page.locator('[aria-label="Close window"]').click();
+      await expect(page.getByText('Personal Vault').first()).toBeVisible();
+      await page.waitForTimeout(2000);
+
+      await page.getByRole('button', { name: 'Sidebar Vault Address' }).click();
+      const handleAddress = await page.evaluate(() =>
+        navigator.clipboard.readText(),
+      );
+
+      await page.getByRole('button', { name: 'Home' }).click();
+      await expect(page).toHaveURL(/home/);
 
       await page.getByRole('button', { name: 'Create vault' }).click();
       await page.waitForTimeout(1000);
@@ -322,9 +254,11 @@ test.describe('vaults fuel wallet', () => {
         await expect(page.getByText('Empty address')).toBeVisible();
 
         await page.locator('#Address\\ 2').fill(handleAddress);
+        await mockRouteBakoName(page);
+
         await expect(
           page.getByText('You cannot add a vault as a signer'),
-        ).toBeVisible({ timeout: 8000 });
+        ).toBeVisible();
 
         await page.locator('#Address\\ 2').clear();
         await expect(
@@ -333,7 +267,8 @@ test.describe('vaults fuel wallet', () => {
       });
 
       await test.step('Attempt to add vault handle as signer (should be blocked)', async () => {
-        await page.locator('#Address\\ 2').fill(`@${handle}`);
+        await page.locator('#Address\\ 2').fill(`@mockedHandle`);
+        await mockRouteBakoAddr(page, handleAddress);
 
         await expect(
           page.getByText('You cannot add a vault as a signer'),
