@@ -12,3 +12,4 @@ A streamlined solution within the Fuel ecosystem, enabling seamless implementati
 2. Run the [Bako Safe API](https://github.com/infinitybase/bako-safe-api)
 3. Set up the .env file
 4. Run the application: `pnpm dev`
+<!-->
