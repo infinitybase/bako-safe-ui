@@ -190,6 +190,15 @@ export const RootSwap = memo(
       handleResetAmounts,
     ]);
 
+    const handleChangeSwapButtonTitle = useCallback(
+      (title: SwapButtonTitle) => {
+        if (swapButtonTitle !== title) {
+          setSwapButtonTitle(title);
+        }
+      },
+      [swapButtonTitle],
+    );
+
     const handleSwapModeChange = useCallback(
       (mode: SwapMode) => {
         if (swapMode !== mode) {
@@ -225,7 +234,6 @@ export const RootSwap = memo(
         const selectedAsset = assets.find((asset) => asset.assetId === assetId);
         const isSameAsset = selectedAsset?.assetId === swapState.to.assetId;
         if (selectedAsset) {
-          handleSwapModeChange('sell');
           setSwapState((prevState) => ({
             ...prevState,
             to: isSameAsset ? prevState.from : prevState.to,
@@ -235,10 +243,11 @@ export const RootSwap = memo(
             },
             status: 'idle',
           }));
+          handleChangeSwapButtonTitle(SwapButtonTitle.PREVIEW);
         }
         handleCheckBalance(swapState.from.amount || '0', assetId);
       },
-      [assets, swapState, handleSwapModeChange, handleCheckBalance],
+      [assets, swapState, handleCheckBalance, handleChangeSwapButtonTitle],
     );
 
     const handleToAssetSelect = useCallback(
@@ -246,7 +255,6 @@ export const RootSwap = memo(
         const selectedAsset = assets.find((asset) => asset.assetId === assetId);
         const isSameAsset = selectedAsset?.assetId === swapState.from.assetId;
         if (selectedAsset) {
-          handleSwapModeChange('sell');
           setSwapState((prevState) => ({
             ...prevState,
             from: isSameAsset ? prevState.to : prevState.from,
@@ -256,9 +264,10 @@ export const RootSwap = memo(
             },
             status: 'idle',
           }));
+          handleChangeSwapButtonTitle(SwapButtonTitle.PREVIEW);
         }
       },
-      [assets, swapState, handleSwapModeChange],
+      [assets, swapState, handleChangeSwapButtonTitle],
     );
 
     const handleChangeAssetAmount = useCallback(
@@ -467,6 +476,13 @@ export const RootSwap = memo(
       }
     }, [isPendingSigner, swapButtonTitle, swapMode]);
 
+    const showSwapCost = useMemo(
+      () =>
+        swapButtonTitle === SwapButtonTitle.SWAP &&
+        swapState.status === 'preview',
+      [swapButtonTitle, swapState.status],
+    );
+
     return (
       <Stack spacing={1}>
         <CoinBox
@@ -480,7 +496,10 @@ export const RootSwap = memo(
           isLoadingPreview={isLoadingPreview}
         />
 
-        <SwapDivider onSwap={handleSwapAssets} />
+        <SwapDivider
+          onSwap={handleSwapAssets}
+          disabled={isLoadingPreview || isLoading}
+        />
 
         <CoinBox
           mode="buy"
@@ -495,7 +514,7 @@ export const RootSwap = memo(
 
         {trade.error && <SwapError error={trade.error} />}
 
-        {swapButtonTitle === SwapButtonTitle.SWAP && (
+        {showSwapCost && (
           <SwapCost
             isLoadingCost={isLoadingPreview || isLoading}
             pools={pools}
