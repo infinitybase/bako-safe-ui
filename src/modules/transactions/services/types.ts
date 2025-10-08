@@ -44,6 +44,8 @@ export const ON_OFF_RAMP_TRANSACTION_TYPES: string[] = [
   TransactionTypeWithRamp.OFF_RAMP_WITHDRAW,
 ];
 
+export const BRIDGE_TRANSACTION_TYPES = 'Bridge Fuel Network to';
+
 export type ITransactionStatusFilter = TransactionStatus[] | string[] | string;
 
 export enum TypeUser {

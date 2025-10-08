@@ -1,12 +1,13 @@
 import { Box, Divider, HStack, Text } from '@chakra-ui/react';
 import { TransactionStatus } from 'bakosafe';
 
-import { RigContractIcon } from '@/components';
+import { LayerSwapIcon, RigContractIcon } from '@/components';
 import { miraData } from '@/config/swap';
 import { AddressUtils, type TransactionState } from '@/modules/core';
 import { tokensIDS } from '@/modules/core/utils/assets/address';
 import { FIAT_CURRENCIES } from '@/modules/core/utils/fiat-currencies';
 import { useVerifyTransactionInformations } from '@/modules/transactions/hooks/details/useVerifyTransactionInformations';
+import { BRIDGE_TRANSACTION_TYPES } from '@/modules/transactions/services';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { TransactionCard } from '..';
@@ -38,6 +39,8 @@ const TransactionBreakdown = ({
   const isLiquidStake =
     transaction.name === 'Liquid Stake' &&
     transaction.assets[0].assetId === tokensIDS.FUEL;
+
+  const isBridge = transaction.name.includes(BRIDGE_TRANSACTION_TYPES);
 
   return (
     <Box
@@ -127,6 +130,16 @@ const TransactionBreakdown = ({
             name={'Liquid stake via RIG'}
             origin={'https://rig.st/'}
             icon={RigContractIcon}
+          />
+        </Box>
+      )}
+
+      {isBridge && (
+        <Box mt={4} w={'full'}>
+          <TransactionCard.TransactionRequestFrom
+            name={'Layerswap.app'}
+            origin={'https://layerswap.io/'}
+            icon={LayerSwapIcon}
           />
         </Box>
       )}

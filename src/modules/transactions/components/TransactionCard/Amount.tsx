@@ -16,6 +16,7 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useGetAssetsByOperations } from '../../hooks';
 import {
+  BRIDGE_TRANSACTION_TYPES,
   ON_OFF_RAMP_TRANSACTION_TYPES,
   type TransactionWithVault,
 } from '../../services';
@@ -48,6 +49,11 @@ const Amount = ({
     [transaction.type],
   );
 
+  const isBridge = useMemo(
+    () => transaction.name.includes(BRIDGE_TRANSACTION_TYPES),
+    [transaction.name],
+  );
+
   const totalAmoutSent = useMemo(
     () =>
       transaction.assets
@@ -58,21 +64,34 @@ const Amount = ({
     [transaction.assets],
   );
 
-  const oneAssetOfEach = useMemo(
-    () =>
-      transaction.assets.reduce((uniqueAssets, current) => {
-        if (!uniqueAssets.find((asset) => asset.assetId === current.assetId)) {
-          uniqueAssets.push(current);
-        }
+  const oneAssetOfEach = useMemo(() => {
+    if (isBridge) {
+      const assetsBridge = [] as ITransferAsset[];
 
-        return uniqueAssets;
-      }, [] as ITransferAsset[]),
-    [transaction.assets],
-  );
+      transaction.summary?.operations.map((op) => {
+        const asset = op?.assetsSent?.[0];
+
+        assetsBridge.push({
+          assetId: asset?.assetId ?? '',
+          amount: bn(asset?.amount).toString() ?? '',
+          to: op.to?.address ?? '',
+        });
+      });
+
+      return assetsBridge;
+    }
+    return transaction.assets.reduce((uniqueAssets, current) => {
+      if (!uniqueAssets.find((asset) => asset.assetId === current.assetId)) {
+        uniqueAssets.push(current);
+      }
+
+      return uniqueAssets;
+    }, [] as ITransferAsset[]);
+  }, [transaction.assets, transaction.summary?.operations, isBridge]);
 
   const isMultiToken = useMemo(
-    () => oneAssetOfEach.length >= 2 && !isOnOffRamp,
-    [oneAssetOfEach.length, isOnOffRamp],
+    () => oneAssetOfEach.length >= 2 && !isOnOffRamp && !isBridge,
+    [oneAssetOfEach.length, isOnOffRamp, isBridge],
   );
 
   const formattedAssets = useMemo(() => {
