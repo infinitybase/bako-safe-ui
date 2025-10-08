@@ -398,7 +398,7 @@ const useFormBridge = () => {
         if (!vault) return;
 
         const { hashTxId } = await vault.BakoTransfer(tx, {
-          name: 'Transfer Bridge',
+          name: `Bridge Fuel Network to ${networkTo?.name}`,
         });
 
         const transaction = await TransactionService.getByHash(hashTxId, [
@@ -421,6 +421,7 @@ const useFormBridge = () => {
       }
     },
     [
+      networkTo,
       confirmTransaction,
       refetchHomeTransactionsList,
       refetchTransactionsList,
