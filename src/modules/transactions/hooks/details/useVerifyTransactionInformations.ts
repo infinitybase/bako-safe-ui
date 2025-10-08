@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 
 import { tokensIDS } from '@/modules/core/utils/assets/address';
 
-import { TransactionWithVault } from '../../services';
+import { BRIDGE_TRANSACTION_TYPES, TransactionWithVault } from '../../services';
 
 const useVerifyTransactionInformations = (
   transaction: TransactionWithVault,
@@ -16,6 +16,7 @@ const useVerifyTransactionInformations = (
   const isLiquidStake =
     transaction.name === 'Liquid Stake' &&
     transaction.assets[0].assetId === tokensIDS.FUEL;
+  const isBridge = transaction.name.includes(BRIDGE_TRANSACTION_TYPES);
 
   const isContract = useMemo(
     () =>
@@ -107,6 +108,7 @@ const useVerifyTransactionInformations = (
     isReceivingAssets,
     isFromCLI,
     isLiquidStake,
+    isBridge,
     showAmountInformations,
     isSwap,
   };
