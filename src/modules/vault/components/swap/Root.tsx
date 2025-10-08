@@ -478,8 +478,9 @@ export const RootSwap = memo(
 
     const showSwapCost = useMemo(
       () =>
-        swapButtonTitle === SwapButtonTitle.SWAP &&
-        swapState.status === 'preview',
+        [SwapButtonTitle.SWAP, SwapButtonTitle.PENDING_TRANSACTION].includes(
+          swapButtonTitle,
+        ) && swapState.status === 'preview',
       [swapButtonTitle, swapState.status],
     );
 
