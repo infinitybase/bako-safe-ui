@@ -192,11 +192,11 @@ export const RootSwap = memo(
 
     const handleChangeSwapButtonTitle = useCallback(
       (title: SwapButtonTitle) => {
-        if (swapButtonTitle !== title) {
-          setSwapButtonTitle(title);
-        }
+        setSwapButtonTitle((prevTitle) =>
+          prevTitle !== title ? title : prevTitle,
+        );
       },
-      [swapButtonTitle],
+      [],
     );
 
     const handleSwapModeChange = useCallback(
