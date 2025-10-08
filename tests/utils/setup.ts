@@ -66,6 +66,7 @@ export class E2ETestUtils {
 
     const client = await config.page.context().newCDPSession(config.page);
     await client.send('WebAuthn.enable');
+
     await client.send('WebAuthn.addVirtualAuthenticator', {
       options: {
         protocol: 'ctap2',
