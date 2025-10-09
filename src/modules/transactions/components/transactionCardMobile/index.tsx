@@ -33,6 +33,7 @@ const TransactionCardMobile = (props: TransactionCardMobileProps) => {
     isContract,
     isFuelFriday,
     isLiquidStake,
+    isBridge,
     isFromCLI,
     showAmountInformations,
     isMint,
@@ -45,9 +46,10 @@ const TransactionCardMobile = (props: TransactionCardMobileProps) => {
         isFromConnector,
         isDeposit,
         isLiquidStake,
+        isBridge,
         isFromCLI,
       }),
-    [isDeploy, isFromConnector, isDeposit, isFromCLI, isLiquidStake],
+    [isDeploy, isFromConnector, isDeposit, isFromCLI, isLiquidStake, isBridge],
   );
 
   const status = useMemo(
@@ -121,6 +123,7 @@ const TransactionCardMobile = (props: TransactionCardMobileProps) => {
             <Icon
               as={IconComponent}
               fontSize={isDeploy || isFromConnector ? 'inherit' : '12px'}
+              color={'grey.425'}
             />
           </Flex>
           <VStack w="full">
