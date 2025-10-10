@@ -1,6 +1,8 @@
 import { Card, HStack, Text, VStack } from '@chakra-ui/react';
 
 import { CustomSkeleton } from '@/components';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { limitCharacters } from '@/utils';
 
 export interface ItemLiquidStakeProps {
   label: string;
@@ -15,6 +17,12 @@ export function ItemLiquidStake({
   children,
   isLoading = false,
 }: ItemLiquidStakeProps) {
+  const {
+    screenSizes: { isMobile, isLargerThan1600 },
+  } = useWorkspaceContext();
+
+  const charLimit = isLargerThan1600 || isMobile ? 20 : 13;
+
   return (
     <Card
       flexDirection="row"
@@ -37,7 +45,7 @@ export function ItemLiquidStake({
           </Text>
           <CustomSkeleton isLoaded={!isLoading}>
             <Text fontSize={16} fontWeight={700} color="white">
-              {value}
+              {limitCharacters(value, charLimit)}
             </Text>
           </CustomSkeleton>
         </VStack>
