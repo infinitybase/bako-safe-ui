@@ -27,8 +27,12 @@ export function AmountBrigde({
 }: AmountBridgeProps) {
   const { amount, assetFromUSD } = useFormBridge();
 
-  const { balance, handleSourceChange, handleMaxAmount, handleMinAmount } =
-    useAmountBridge({ stepsForm, setStepsForm, assets, setErrorAmount });
+  const {
+    balance,
+    handleSourceChange,
+    handleGetFeeBeforeMaxAmount,
+    handleMinAmount,
+  } = useAmountBridge({ stepsForm, setStepsForm, assets, setErrorAmount });
 
   return (
     <MotionBox
@@ -88,7 +92,7 @@ export function AmountBrigde({
             minW="48px"
             isDisabled={false}
             variant="secondary"
-            onClick={() => handleMaxAmount()}
+            onClick={() => handleGetFeeBeforeMaxAmount()}
             borderRadius={6}
             padding={'4px 6px 4px 6px'}
             fontSize={10}
