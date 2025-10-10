@@ -6,6 +6,7 @@ export * from './liquid-stake';
 export * from './useCheckVaultByAddressRequest';
 export * from './useHomeVaultsRequest';
 export * from './user-vaults';
+export * from './useUpdateVault';
 export * from './useUserVaultRequest';
 export * from './useVaultByIdRequest';
 export * from './useVaultListRequest';

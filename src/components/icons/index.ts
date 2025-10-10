@@ -21,6 +21,7 @@ export * from './double-arrow-right';
 export * from './down-left-arrow';
 export * from './down-left-arrow-green';
 export * from './edit';
+export * from './edit-icon-2';
 export * from './empty-box';
 export * from './empty-box-outline';
 export * from './error';

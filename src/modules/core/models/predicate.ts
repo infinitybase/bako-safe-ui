@@ -25,3 +25,6 @@ export interface Predicate extends Omit<IPredicate, 'configurable'> {
 export interface SignersDetailsProps {
   vault: UseVaultDetailsReturn['vault'];
 }
+
+export interface PredicateUpdatePayload
+  extends Pick<Predicate, 'name' | 'description'> {}

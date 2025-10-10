@@ -5,11 +5,13 @@ import {
   Box,
   Button,
   Center,
+  Flex,
   Grid,
   Heading,
   HStack,
   Stack,
   Text,
+  useDisclosure,
   VStack,
 } from '@chakra-ui/react';
 import { QRCodeSVG } from 'qrcode.react';
@@ -21,6 +23,7 @@ import {
   Card,
   CommingSoonDialog,
   CustomSkeleton,
+  EditIcon2,
 } from '@/components';
 import { CLISettingsCard } from '@/modules/cli/components';
 import { CreateAPITokenDialog } from '@/modules/cli/components/APIToken/create';
@@ -33,6 +36,7 @@ import { limitCharacters } from '@/utils';
 import { UseVaultDetailsReturn } from '../hooks/details';
 import { openFaucet } from '../utils';
 import { useVaultInfosContext } from '../VaultInfosProvider';
+import { UpdateVaultDialog } from './dialog/update';
 
 export interface CardDetailsProps {
   assets: UseVaultDetailsReturn['assets'];
@@ -46,6 +50,7 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
   const { vault, assets, blockedTransfers, setAddAssetsDialogState } = props;
   const { balanceUSD, isEthBalanceLowerThanReservedAmount } = assets;
   const { checkNetwork } = useNetworks();
+  const updateVaultDisclosure = useDisclosure();
 
   const isTestnet = checkNetwork(NetworkType.TESTNET);
 
@@ -78,6 +83,11 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
     const as = hasPermission(reqPerm);
     return as;
   }, [vault.data?.id]);
+
+  const canEdit = useMemo(
+    () => hasPermission([PermissionRoles.OWNER]),
+    [hasPermission],
+  );
 
   if (!vault) return null;
 
@@ -122,7 +132,8 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                     direction={{ base: 'column', sm: 'row' }}
                     alignItems={{ base: 'flex-start', sm: 'center' }}
                     spacing={{ base: 3, sm: 6 }}
-                    w="full"
+                    w={{ mxs: 'full', base: 'auto' }}
+                    mr="auto"
                     maxW={{ base: 'full', sm: '100%' }}
                   >
                     <Center>
@@ -136,17 +147,33 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                       />
                     </Center>
                     <Box maxW="59%">
-                      <Heading
-                        mb={1}
-                        variant="title-xl"
-                        fontSize={{ base: 'md', sm: 'xl' }}
-                        isTruncated
-                        maxW={{ base: 250, xs: 400, md: 350, lg: 350 }}
-                      >
-                        {isExtraSmall
-                          ? limitCharacters(vault.data?.name ?? '', 10)
-                          : vault.data?.name}
-                      </Heading>
+                      <Flex alignItems="center" gap={2} mb={1}>
+                        <Heading
+                          variant="title-xl"
+                          fontSize={{ base: 'md', sm: 'xl' }}
+                          isTruncated
+                          maxW={{ base: 250, xs: 400, md: 350, lg: 350 }}
+                        >
+                          {isExtraSmall
+                            ? limitCharacters(vault.data?.name ?? '', 10)
+                            : vault.data?.name}
+                        </Heading>
+                        <Button
+                          variant="unstyled"
+                          p={0}
+                          m={0}
+                          boxSize={5}
+                          minW="0"
+                          aria-label="Edit vault"
+                          visibility={canEdit ? 'visible' : 'hidden'}
+                          display="flex"
+                          alignItems="center"
+                          justifyContent="center"
+                          onClick={updateVaultDisclosure.onOpen}
+                        >
+                          <EditIcon2 boxSize={5} />
+                        </Button>
+                      </Flex>
 
                       <Box maxW={420}>
                         <Text
@@ -436,6 +463,15 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
           onClose={commingSoonDialog.onClose}
           notifyHandler={selectedFeature.notifyHandler}
           title="Coming Soon"
+        />
+      )}
+
+      {updateVaultDisclosure.isOpen && vault.data && (
+        <UpdateVaultDialog
+          isOpen={updateVaultDisclosure.isOpen}
+          onClose={updateVaultDisclosure.onClose}
+          initialValues={vault.data}
+          workspaceId={workspaceId}
         />
       )}
     </>
