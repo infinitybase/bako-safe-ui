@@ -1,4 +1,4 @@
-import { createIcon } from '@chakra-ui/icons';
+import { createIcon } from '@chakra-ui/react';
 
 const TransactionsBoxIcon = createIcon({
   displayName: 'TransactionsBoxIcon',

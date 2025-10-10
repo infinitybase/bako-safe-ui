@@ -2,7 +2,7 @@ import {
   Box,
   Button,
   Center,
-  Divider,
+  Separator,
   Heading,
   HStack,
   Icon,
@@ -72,7 +72,7 @@ const FeedbackDelete = ({
         position={{ base: 'absolute', sm: 'unset' }}
         bottom={4}
       >
-        <Divider
+        <Separator
           maxW={440}
           hidden={!showAction}
           mb={8}
@@ -82,7 +82,7 @@ const FeedbackDelete = ({
           w="full"
           maxW={400}
           hidden={!showAction}
-          spacing={4}
+          gap={4}
           justifyContent="center"
         >
           <Button

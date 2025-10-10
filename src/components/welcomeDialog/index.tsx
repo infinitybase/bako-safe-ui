@@ -1,4 +1,4 @@
-import { Button, VStack } from '@chakra-ui/react';
+import { Button, DialogOpenChangeDetails, VStack } from '@chakra-ui/react';
 
 import { useNetworks } from '@/modules/network/hooks';
 import { NetworkType } from '@/modules/network/services';
@@ -11,14 +11,14 @@ import WelcomeCard from './card';
 
 interface IWelcomeDialogProps {
   isOpen: boolean;
-  setIsWelcomeDialogOpen: (value: boolean) => void;
+  onOpenChange: (value: DialogOpenChangeDetails) => void;
   setIsDepositDialogOpen: (value: boolean) => void;
 }
 
 const WelcomeDialog = ({
   isOpen,
   setIsDepositDialogOpen,
-  setIsWelcomeDialogOpen,
+  onOpenChange,
 }: IWelcomeDialogProps) => {
   const {
     screenSizes: {
@@ -52,12 +52,12 @@ const WelcomeDialog = ({
   const handleOpenDepositDialog = () => {
     handleUpdateUser();
     setIsDepositDialogOpen(true);
-    setIsWelcomeDialogOpen(false);
+    onOpenChange({ open: false });
   };
 
   const handleClose = () => {
     handleUpdateUser();
-    setIsWelcomeDialogOpen(false);
+    onOpenChange({ open: false });
   };
 
   const handleRedirectToMainNet = async () => {
@@ -66,11 +66,11 @@ const WelcomeDialog = ({
 
   return (
     <Dialog.Modal
-      onClose={() => handleClose()}
-      isOpen={(first_login && first_login && isOpen) ?? false}
-      closeOnEsc={false}
-      closeOnOverlayClick={false}
-      size={{ base: 'full', xs: 'lg' }}
+      onOpenChange={onOpenChange}
+      open={(first_login && first_login && isOpen) ?? false}
+      closeOnEscape={false}
+      closeOnInteractOutside={false}
+      size={{ base: 'full', sm: 'lg' }}
       modalContentProps={{
         px: 10,
         py: 10,
@@ -82,7 +82,7 @@ const WelcomeDialog = ({
           mb={0}
           onClose={() => handleClose()}
           w="full"
-          maxW={{ base: 480, xs: 'unset' }}
+          maxW={{ base: 480, sm: 'unset' }}
           title="Welcome to Bako Safe!"
           description={`Let's start by adding some funds to your personal vault.`}
           descriptionFontSize="12px"
@@ -96,7 +96,7 @@ const WelcomeDialog = ({
           pb={6}
         />
 
-        <VStack w="full" my={6} pb={isMobile ? 8 : 0} spacing={4}>
+        <VStack w="full" my={6} pb={isMobile ? 8 : 0} gap={4}>
           <WelcomeCard
             title="Deposit"
             description="Deposit using QR Code or vault adress."
@@ -129,7 +129,7 @@ const WelcomeDialog = ({
           bg={isMobile ? 'dark.950' : 'unset'}
           borderRadius={isMobile && !isSmall ? '20px' : 'unset'}
           pb={isMobile && !isSmall ? 5 : 'unset'}
-          sx={{
+          css={{
             '&>hr': {
               marginTop: '0',
               borderColor: '#868079',

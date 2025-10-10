@@ -1,4 +1,4 @@
-import { Box, Divider, HStack, Text } from '@chakra-ui/react';
+import { Box, HStack, Separator, Text } from '@chakra-ui/react';
 import { TransactionStatus } from 'bakosafe';
 
 import { RigContractIcon } from '@/components';
@@ -42,7 +42,7 @@ const TransactionBreakdown = ({
   return (
     <Box
       display="flex"
-      flexDirection={{ base: 'row', xs: 'column' }}
+      flexDirection={{ base: 'row', sm: 'column' }}
       w="full"
       minW={{ base: 200, sm: '476px' }}
       flexWrap="wrap"
@@ -55,7 +55,7 @@ const TransactionBreakdown = ({
         />
       )}
 
-      {isMobile && <Divider my={6} borderColor="grey.425" />}
+      {isMobile && <Separator my={6} borderColor="grey.425" />}
 
       <Box mb={isMobile ? 6 : 4}>
         <Text
@@ -70,7 +70,7 @@ const TransactionBreakdown = ({
         alignItems="flex-start"
         flexWrap="wrap"
         mb={isFromConnector ? 4 : 0}
-        w={{ base: 'full', xs: 'unset' }}
+        w={{ base: 'full', sm: 'unset' }}
       >
         {!isContract &&
           transaction.assets.map((asset, index) => (

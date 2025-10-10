@@ -1,11 +1,11 @@
-import { Divider, Flex, IconButton } from '@chakra-ui/react';
+import { Separator, Flex, IconButton } from '@chakra-ui/react';
 
 import { SwapIcon } from '@/components';
 
 export const SwapDivider = ({ onSwap }: { onSwap: () => void }) => {
   return (
     <Flex alignItems="center" gap={2}>
-      <Divider borderColor="grey.950" />
+      <Separator borderColor="grey.950" />
       <IconButton
         icon={<SwapIcon />}
         variant="unstyled"
@@ -20,7 +20,7 @@ export const SwapDivider = ({ onSwap }: { onSwap: () => void }) => {
         aria-label="Invert Assets"
         onClick={onSwap}
       />
-      <Divider borderColor="grey.950" />
+      <Separator borderColor="grey.950" />
     </Flex>
   );
 };

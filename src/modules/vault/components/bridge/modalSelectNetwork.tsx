@@ -1,12 +1,10 @@
 import {
-  Divider,
-  FormControl,
-  FormLabel,
+  Field,
   HStack,
   Image,
   Input,
   InputGroup,
-  InputRightElement,
+  Separator,
   Skeleton,
   Spinner,
   Text,
@@ -59,7 +57,7 @@ const AssetItem = React.memo(function AssetItemMemo({
       w="100%"
       onClick={() => onSelect(asset)}
     >
-      <Skeleton isLoaded={loaded} boxSize={6} borderRadius="full">
+      <Skeleton loading={!loaded} boxSize={6} borderRadius="full">
         <Image
           src={image}
           boxSize={6}
@@ -162,12 +160,8 @@ export function ModalSelectNetworkBridge({
           control={control}
           render={({ field, fieldState }) => {
             return (
-              <FormControl isInvalid={fieldState.invalid} marginY={4}>
-                <InputGroup>
-                  <InputRightElement pr={3} top="35%">
-                    <SearchIcon color="grey.75" fontSize={'16px'} />
-                  </InputRightElement>
-
+              <Field.Root invalid={fieldState.invalid} marginY={4}>
+                <InputGroup endElement={<SearchIcon color="grey.500" />}>
                   <Input
                     placeholder=""
                     bgColor="dark.950"
@@ -178,20 +172,20 @@ export function ModalSelectNetworkBridge({
                     }}
                   />
 
-                  <FormLabel>Search Network</FormLabel>
+                  <Field.Label>Search Network</Field.Label>
                 </InputGroup>
-              </FormControl>
+              </Field.Root>
             );
           }}
         />
-        <Divider marginTop={6} borderColor="grey.950" />
+        <Separator marginTop={6} borderColor="grey.950" />
         <VStack
           maxH={523}
           overflowY="auto"
           m={0}
           p={0}
           pt={6}
-          sx={{
+          css={{
             '&::-webkit-scrollbar': {
               display: 'none',
               width: '5px',

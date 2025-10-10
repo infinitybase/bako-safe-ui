@@ -1,14 +1,4 @@
-import {
-  Button,
-  Drawer,
-  DrawerBody,
-  DrawerContent,
-  DrawerHeader,
-  DrawerOverlay,
-  HStack,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { Button, Drawer, HStack, Text, VStack } from '@chakra-ui/react';
 
 import { Dialog, MiraIcon, SwapStakeIcon, WalletStakeIcon } from '@/components';
 import { useScreenSize } from '@/modules/core';
@@ -45,7 +35,7 @@ const ITENS = [
 
 interface ModalWithdrawalsLiquidStakeProps {
   isOpen?: boolean;
-  onClose: () => void;
+  onClose?: () => void;
 }
 
 export function ModalWithdrawalsLiquidStake({
@@ -56,10 +46,14 @@ export function ModalWithdrawalsLiquidStake({
 
   if (isMobile) {
     return (
-      <Drawer placement="bottom" onClose={onClose} isOpen={isOpen}>
-        <DrawerOverlay />
-        <DrawerContent padding={4}>
-          <DrawerHeader>
+      <Drawer.Root
+        placement="bottom"
+        onOpenChange={(e) => (e.open ? null : onClose?.())}
+        open={isOpen}
+      >
+        <Drawer.Backdrop />
+        <Drawer.Content padding={4}>
+          <Drawer.Header>
             <VStack
               marginBottom={4}
               fontWeight="normal"
@@ -72,8 +66,8 @@ export function ModalWithdrawalsLiquidStake({
                 {DESCRIPTION}
               </Text>
             </VStack>
-          </DrawerHeader>
-          <DrawerBody>
+          </Drawer.Header>
+          <Drawer.Body>
             <VStack>
               {ITENS.map(({ title, description, icon }, i) => (
                 <ItemWithdrawals
@@ -85,23 +79,23 @@ export function ModalWithdrawalsLiquidStake({
               ))}
             </VStack>
             <Button
-              variant="primary"
+              colorPalette="primary"
               width="full"
               onClick={() => (window.location.href = REDEEM_URL)}
             >
               Open Microchain
             </Button>
-          </DrawerBody>
-        </DrawerContent>
-      </Drawer>
+          </Drawer.Body>
+        </Drawer.Content>
+      </Drawer.Root>
     );
   }
 
   return (
     <Dialog.Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      closeOnOverlayClick={false}
+      open={isOpen}
+      onOpenChange={(e) => (e.open ? null : onClose?.())}
+      closeOnInteractOutside={false}
       modalContentProps={{
         width: '798px',
         maxWidth: { base: 'full', md: '798px !important' },
@@ -117,7 +111,7 @@ export function ModalWithdrawalsLiquidStake({
           mt={0}
           titleSxProps={{ fontSize: 16 }}
           onClose={onClose}
-          sx={{
+          css={{
             '& div': { maxWidth: 'none !important' },
           }}
         />
@@ -133,7 +127,7 @@ export function ModalWithdrawalsLiquidStake({
         </HStack>
         <Dialog.Actions hideDivider={true}>
           <Button
-            variant="primary"
+            colorPalette="primary"
             width="full"
             onClick={() => window.open(REDEEM_URL, '_blank')}
           >

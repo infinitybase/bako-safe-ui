@@ -49,7 +49,7 @@ const AddAddressBook = ({
       />
 
       {hasAdd && (
-        <HStack spacing={1} {...rest}>
+        <HStack gap={1} {...rest}>
           <IconButton
             aria-label="Add to Address Book"
             variant="icon"

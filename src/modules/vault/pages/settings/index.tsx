@@ -6,10 +6,8 @@ import {
   HStack,
   Icon,
   Text,
-  useDisclosure,
   VStack,
 } from '@chakra-ui/react';
-import { useState } from 'react';
 import { RiMenuUnfoldLine } from 'react-icons/ri';
 import { useNavigate } from 'react-router-dom';
 
@@ -18,6 +16,7 @@ import AddAssetsDialog from '@/components/addAssetsDialog';
 import DepositDialog from '@/components/depositDialog';
 import { Drawer } from '@/layouts/dashboard/drawer';
 import { Pages } from '@/modules/core';
+import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
@@ -26,10 +25,10 @@ import { SettingsSigners } from '../../components/SettingsSigners';
 import { useVaultInfosContext } from '../../VaultInfosProvider';
 
 const VaultSettingsPage = () => {
-  const [addAssetsDialogState, setAddAssetsDialogState] = useState(false);
-  const [depositDialogState, setDepositDialogState] = useState(false);
   const navigate = useNavigate();
   const menuDrawer = useDisclosure();
+  const depositDialog = useDisclosure();
+  const addAssetsDialog = useDisclosure();
   const { vault, assets } = useVaultInfosContext();
   const { isPendingSigner } = useTransactionsContext();
 
@@ -50,18 +49,18 @@ const VaultSettingsPage = () => {
 
   return (
     <Box w="full">
-      <Drawer isOpen={menuDrawer.isOpen} onClose={menuDrawer.onClose} />
+      <Drawer open={menuDrawer.isOpen} onOpenChange={menuDrawer.onOpenChange} />
 
       <DepositDialog
-        isOpen={depositDialogState}
-        setIsDepositDialogOpen={setDepositDialogState}
+        isOpen={depositDialog.isOpen}
+        onOpenChange={depositDialog.onOpenChange}
         vault={vault.data}
       />
 
       <AddAssetsDialog
-        isOpen={addAssetsDialogState}
-        setIsAddAssetDialogOpen={setAddAssetsDialogState}
-        setIsDepositDialogOpen={setDepositDialogState}
+        isOpen={addAssetsDialog.isOpen}
+        onOpenChange={addAssetsDialog.onOpenChange}
+        setIsDepositDialogOpen={depositDialog.setOpen}
       />
 
       <HStack mb={8} w="full" justifyContent="space-between">
@@ -73,22 +72,25 @@ const VaultSettingsPage = () => {
             </Text>
           </HStack>
         ) : (
-          <Breadcrumb>
-            <BreadcrumbItem>
-              <BreadcrumbLink
-                fontSize="sm"
-                color="grey.200"
-                fontWeight="semibold"
-                onClick={() => goHome()}
-              >
-                <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
-                Home
-              </BreadcrumbLink>
-            </BreadcrumbItem>
+          <Breadcrumb.Root>
+            <Breadcrumb.List>
+              <BreadcrumbItem>
+                <BreadcrumbLink
+                  fontSize="sm"
+                  color="grey.200"
+                  fontWeight="semibold"
+                  onClick={() => goHome()}
+                >
+                  <Icon mr={2} as={HomeIcon} w={3} color="grey.200" />
+                  Home
+                </BreadcrumbLink>
+              </BreadcrumbItem>
 
-            {/* Commented out code to temporarily disable workspaces. */}
+              <Breadcrumb.Separator />
 
-            {/* {!userInfos.onSingleWorkspace && (
+              {/* Commented out code to temporarily disable workspaces. */}
+
+              {/* {!userInfos.onSingleWorkspace && (
               <BreadcrumbItem>
                 <BreadcrumbLink
                   fontSize="sm"
@@ -109,62 +111,67 @@ const VaultSettingsPage = () => {
                 </BreadcrumbLink>
               </BreadcrumbItem>
             )} */}
-            <BreadcrumbItem>
-              <BreadcrumbLink
-                fontSize="sm"
-                color="grey.200"
-                fontWeight="semibold"
-                href="#"
-                onClick={() =>
-                  navigate(
-                    Pages.userVaults({
-                      workspaceId,
-                    }),
-                  )
-                }
-              >
-                Vaults
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbItem>
-              <BreadcrumbLink
-                fontSize="sm"
-                color="grey.200"
-                fontWeight="semibold"
-                onClick={() =>
-                  navigate(
-                    Pages.detailsVault({
-                      vaultId: vault.data?.id,
-                      workspaceId: userInfos.workspace?.id ?? '',
-                    }),
-                  )
-                }
-                isTruncated
-                maxW={640}
-              >
-                {vault?.data?.name}
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbItem>
-              <BreadcrumbLink
-                fontSize="sm"
-                color="grey.200"
-                fontWeight="semibold"
-                href="#"
-              >
-                Settings
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-          </Breadcrumb>
+              <BreadcrumbItem>
+                <BreadcrumbLink
+                  fontSize="sm"
+                  color="grey.200"
+                  fontWeight="semibold"
+                  href="#"
+                  onClick={() =>
+                    navigate(
+                      Pages.userVaults({
+                        workspaceId,
+                      }),
+                    )
+                  }
+                >
+                  Vaults
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <Breadcrumb.Separator />
+
+              <BreadcrumbItem>
+                <BreadcrumbLink
+                  fontSize="sm"
+                  color="grey.200"
+                  fontWeight="semibold"
+                  onClick={() =>
+                    navigate(
+                      Pages.detailsVault({
+                        vaultId: vault.data?.id,
+                        workspaceId: userInfos.workspace?.id ?? '',
+                      }),
+                    )
+                  }
+                  truncate
+                  maxW={640}
+                >
+                  {vault?.data?.name}
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <Breadcrumb.Separator />
+
+              <BreadcrumbItem>
+                <BreadcrumbLink
+                  fontSize="sm"
+                  color="grey.200"
+                  fontWeight="semibold"
+                  href="#"
+                >
+                  Settings
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+            </Breadcrumb.List>
+          </Breadcrumb.Root>
         )}
       </HStack>
 
-      <VStack mb={14} alignItems="flex-start" w="100%" maxW="full" spacing={12}>
+      <VStack mb={14} alignItems="flex-start" w="100%" maxW="full" gap={12}>
         <SettingsOverview
           vault={vault}
           assets={assets}
           blockedTransfers={isPendingSigner}
-          setAddAssetsDialogState={setAddAssetsDialogState}
+          setAddAssetsDialogState={addAssetsDialog.setOpen}
         />
         <SettingsSigners vault={vault} />
       </VStack>

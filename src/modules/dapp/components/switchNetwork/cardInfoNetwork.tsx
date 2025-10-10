@@ -1,6 +1,4 @@
-import { IconProps } from '@chakra-ui/icons';
 import {
-  ComponentWithAs,
   HStack,
   Icon,
   IconButton,
@@ -9,6 +7,12 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { IconType } from 'react-icons';
+
+type IconProps = {
+  as?: IconType;
+  boxSize?: number | string;
+  color?: string;
+};
 
 import { CheckIcon } from '@/components';
 import { AddressUtils } from '@/modules/core';
@@ -20,7 +24,7 @@ interface CardInfoNetworkProps {
   header: string;
   title: string;
   operation: string;
-  icon: ComponentWithAs<'svg', IconProps> | IconType;
+  icon: IconType | JSX.Element;
   colorIcon: string;
   avataBgColor: string;
   avatarUrl?: string;
@@ -58,7 +62,7 @@ const CardInfoNetwork = ({ ...props }: CardInfoNetworkProps) => {
           alignItems="flex-start"
           justifyContent="center"
           pt={1.5}
-          spacing={0}
+          gap={0}
           w="full"
         >
           <Text
@@ -70,7 +74,7 @@ const CardInfoNetwork = ({ ...props }: CardInfoNetworkProps) => {
           >
             {limitCharacters(props.title, 45)}
           </Text>
-          <HStack w="full" spacing={0.5}>
+          <HStack w="full" gap={0.5}>
             <Text
               fontSize={12}
               fontWeight={400}

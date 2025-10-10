@@ -9,7 +9,6 @@ import {
   SkeletonCircle,
   SkeletonText,
   Text,
-  Tooltip,
   VStack,
 } from '@chakra-ui/react';
 import { useMemo } from 'react';
@@ -24,6 +23,7 @@ import {
   TooltipNotEnoughBalance,
   UpRightArrow,
 } from '@/components';
+import { Tooltip } from '@/components/ui/tooltip';
 import { NetworkService } from '@/modules/network/services';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
@@ -45,19 +45,15 @@ interface VaultBoxPropx {
 
 const VaultBoxSkeleton = () => (
   <Box w="100%">
-    <HStack width="100%" alignItems="center" spacing={5} mb={5}>
+    <HStack width="100%" alignItems="center" gap={5} mb={5}>
       <SkeletonCircle />
       <Box w="100%" maxW="100%">
         <SkeletonText w="100%" />
       </Box>
     </HStack>
     <Box w="100%">
-      <Button
-        w="100%"
-        variant="primary"
-        fontWeight="bold"
-        leftIcon={<ChartBulletIcon mr={2} fontSize={22} />}
-      >
+      <Button w="100%" colorPalette="primary" fontWeight="bold">
+        <ChartBulletIcon mr={2} w="22px" />
         Create transaction
       </Button>
     </Box>
@@ -108,35 +104,36 @@ const VaultBox = (props: VaultBoxPropx) => {
     <Box w="100%">
       {/* Headers BTNS */}
       <HStack>
-        <Button w="full" variant="secondaryV2" onClick={() => goHome()}>
-          <Icon as={HomeIcon} fontSize="lg" mr="auto" />
+        <Button flex={1} colorPalette="secondaryV2" onClick={() => goHome()}>
+          <Icon as={HomeIcon} w={6} mr="auto" />
           <Text mr="auto">Home</Text>
         </Button>
-        <Button w="full" variant="secondaryV2" onClick={() => onChangeVault()}>
-          <Icon as={LeftAndRightArrow} fontSize="lg" mr="auto" />
+        <Button flex={1} colorPalette="secondaryV2" onClick={onChangeVault}>
+          <Icon as={LeftAndRightArrow} w={6} mr="auto" />
           <Text mr="auto">Vault</Text>
         </Button>
       </HStack>
       {/* Vault Avatar and Address */}
-      <HStack width="100%" alignItems="center" spacing={4} my={6}>
-        <CustomSkeleton w="min-content" isLoaded={!isLoading}>
-          <Avatar
-            variant="roundedSquare"
+      <HStack width="100%" alignItems="center" gap={4} my={6}>
+        <CustomSkeleton w="min-content" loading={isLoading}>
+          <Avatar.Root
+            shape="rounded"
             bgColor="dark.150"
             color="grey.75"
-            name={name}
             boxShadow="0px 3.5px 3.5px 0px rgba(0, 0, 0, 0.4);"
             boxSize="56px"
-          />
+          >
+            <Avatar.Fallback name={name} />
+          </Avatar.Root>
         </CustomSkeleton>
         <VStack
           alignItems="start"
-          spacing={3}
+          gap={3}
           justifyContent="center"
           minW="200px"
           w="full"
         >
-          <Heading size="xs" isTruncated textOverflow="ellipsis" w="full">
+          <Heading size="xs" truncate textOverflow="ellipsis" w="full">
             {name}
           </Heading>
           <HStack
@@ -152,7 +149,7 @@ const VaultBox = (props: VaultBoxPropx) => {
               flexDir="row-reverse"
             />
             <IconButton
-              icon={<Icon as={UpRightArrow} fontSize="md" color="grey.75" />}
+              // icon={<Icon as={UpRightArrow} fontSize="md" color="grey.75" />}
               aria-label="Explorer"
               size="xs"
               minW={2}
@@ -160,7 +157,9 @@ const VaultBox = (props: VaultBoxPropx) => {
               h={3}
               _hover={{ bg: 'none' }}
               onClick={redirectToNetwork}
-            />
+            >
+              <UpRightArrow />
+            </IconButton>
           </HStack>
         </VStack>
       </HStack>
@@ -168,34 +167,34 @@ const VaultBox = (props: VaultBoxPropx) => {
       {hasPermission && (
         <Box w="100%">
           <Tooltip
-            label={ToolTipComponent}
-            hasArrow
-            placement="top"
-            bg="dark.700"
-            color="white"
+            content={ToolTipComponent}
+            showArrow
+            positioning={{ placement: 'top' }}
+            // bg="dark.700"
+            // color="white"
           >
             <Box display="inline-block" cursor="not-allowed" w={'100%'}>
               <Button
                 aria-label={'Create transaction btn'}
                 w="100%"
-                variant="primary"
+                color="primary"
                 fontWeight="bold"
                 onClick={onCreateTransaction}
-                isDisabled={
+                disabled={
                   !hasBalance ||
                   isPending ||
                   isEthBalanceLowerThanReservedAmount ||
                   isFirstAssetsLoading
                 }
-                leftIcon={<FiPlusSquare fontSize={isMobile ? 20 : 22} />}
               >
+                <Icon as={FiPlusSquare} w={isMobile ? '20px' : '22px'} />
                 Create transaction
               </Button>
             </Box>
           </Tooltip>
 
           {isPending && isMobile && (
-            <Text variant="description" mt={2} color="error.500">
+            <Text fontSize="md" mt={2} color="error.500">
               This vault has pending transactions.
             </Text>
           )}
@@ -203,7 +202,7 @@ const VaultBox = (props: VaultBoxPropx) => {
             !isFirstAssetsLoading &&
             isMobile &&
             isEthBalanceLowerThanReservedAmount && (
-              <Text variant="description" mt={2} color="error.500">
+              <Text fontSize="md" mt={2} color="error.500">
                 Not enough balance.
               </Text>
             )}

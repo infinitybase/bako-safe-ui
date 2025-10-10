@@ -1,12 +1,4 @@
-import {
-  FormControl,
-  FormHelperText,
-  FormLabel,
-  Input,
-  TabPanel,
-  Textarea,
-  VStack,
-} from '@chakra-ui/react';
+import { Box, Field, Input, Textarea, VStack } from '@chakra-ui/react';
 import { ChangeEvent, useEffect } from 'react';
 import { Controller } from 'react-hook-form';
 
@@ -31,16 +23,21 @@ const VaultInfosStep = ({ form, vaultName }: VaultInfoStepProps) => {
   }, [formName]);
 
   return (
-    <TabPanel p={0}>
-      <VStack spacing={6}>
+    <Box p={0}>
+      <VStack gap={6}>
         <Controller
           control={form.control}
           name="name"
           render={({ field, fieldState }) => (
-            <FormControl>
+            <Field.Root
+              invalid={
+                fieldState.invalid ||
+                (vaultNameIsAvailable && search.length > 0)
+              }
+            >
               <Input
                 id="vault_name"
-                variant="dark"
+                // variant="dark"
                 value={search}
                 defaultValue={search || form.watch('name')}
                 maxLength={27}
@@ -49,13 +46,9 @@ const VaultInfosStep = ({ form, vaultName }: VaultInfoStepProps) => {
                   field.onChange(e.target.value);
                 }}
                 placeholder=" "
-                isInvalid={
-                  fieldState.invalid ||
-                  (vaultNameIsAvailable && search.length > 0)
-                }
               />
-              <FormLabel>Vault name</FormLabel>
-              <FormHelperText
+              <Field.Label>Vault name</Field.Label>
+              <Field.HelperText
                 color={
                   !!vaultNameIsAvailable || form.formState.errors.name?.message
                     ? 'error.500'
@@ -69,12 +62,12 @@ const VaultInfosStep = ({ form, vaultName }: VaultInfoStepProps) => {
                     : search.length > 0
                       ? 'This vault is available'
                       : ''}
-              </FormHelperText>
-            </FormControl>
+              </Field.HelperText>
+            </Field.Root>
           )}
         />
-        <FormControl
-          sx={{
+        <Field.Root
+          css={{
             'textarea::placeholder': {
               color: 'grey.500',
             },
@@ -89,10 +82,10 @@ const VaultInfosStep = ({ form, vaultName }: VaultInfoStepProps) => {
             borderColor={`grey.800`}
             resize="none"
           />
-          <FormHelperText>Optional</FormHelperText>
-        </FormControl>
+          <Field.HelperText>Optional</Field.HelperText>
+        </Field.Root>
       </VStack>
-    </TabPanel>
+    </Box>
   );
 };
 

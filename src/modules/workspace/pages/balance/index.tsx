@@ -1,8 +1,10 @@
 import {
   Box,
-  Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbRoot,
+  BreadcrumbSeparator,
   Button,
   Flex,
   HStack,
@@ -38,38 +40,36 @@ const WorkspaceBalancePage = () => {
       <HStack w="full" h="10" justifyContent="space-between" my={2}>
         <HStack>
           <Button
-            variant="primary"
+            colorPalette="primary"
             fontWeight="semibold"
             fontSize={15}
-            leftIcon={
-              <Box mr={-1}>
-                <IoChevronBack size={22} />
-              </Box>
-            }
             px={3}
             bg="dark.100"
             color="grey.200"
             onClick={() => goHome()}
           >
+            <IoChevronBack size={22} />
             Back home
           </Button>
 
-          <Breadcrumb display={{ base: 'none', sm: 'initial' }} ml={8}>
-            <BreadcrumbItem>
-              <BreadcrumbLink
-                fontSize="sm"
-                color="grey.200"
-                fontWeight="semibold"
-                onClick={() => goHome()}
-              >
-                <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
-                Home
-              </BreadcrumbLink>
-            </BreadcrumbItem>
+          <BreadcrumbRoot display={{ base: 'none', sm: 'initial' }} ml={8}>
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink
+                  fontSize="sm"
+                  color="grey.200"
+                  fontWeight="semibold"
+                  onClick={() => goHome()}
+                >
+                  <Icon mr={2} as={HomeIcon} w={6} color="grey.200" />
+                  Home
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
 
-            {/* Commented out code to temporarily disable workspaces. */}
+              {/* Commented out code to temporarily disable workspaces. */}
 
-            {/* <BreadcrumbItem>
+              {/* <BreadcrumbItem>
               <BreadcrumbLink
                 fontSize="sm"
                 color="grey.200"
@@ -87,17 +87,18 @@ const WorkspaceBalancePage = () => {
               </BreadcrumbLink>
             </BreadcrumbItem> */}
 
-            <BreadcrumbItem>
-              <BreadcrumbLink
-                fontSize="sm"
-                color="grey.200"
-                fontWeight="semibold"
-                href="#"
-              >
-                Balance
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-          </Breadcrumb>
+              <BreadcrumbItem>
+                <BreadcrumbLink
+                  fontSize="sm"
+                  color="grey.200"
+                  fontWeight="semibold"
+                  href="#"
+                >
+                  Balance
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </BreadcrumbRoot>
         </HStack>
       </HStack>
 
@@ -108,7 +109,7 @@ const WorkspaceBalancePage = () => {
           </Text>
         </Box>
 
-        <CustomSkeleton isLoaded={!workspaceBalance.isLoading} flex={1}>
+        <CustomSkeleton loading={workspaceBalance.isLoading} flex={1}>
           {workspaceBalance.balance.assetsBalance.length > 0 ? (
             <AssetsBalanceList
               assets={{ ...workspaceBalance.balance.assetsBalance }}

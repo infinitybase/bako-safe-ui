@@ -65,7 +65,7 @@ const VaultItemBoxComponent = ({
   const RootBadge = useMemo(
     () => (
       <Badge
-        variant="gray"
+        colorPalette="gray"
         fontSize="2xs"
         color="grey.75"
         h="20px"
@@ -81,7 +81,7 @@ const VaultItemBoxComponent = ({
   const MembersBadge = useMemo(
     () =>
       members !== undefined ? (
-        <HStack spacing={1} align="center">
+        <HStack gap={1} align="center">
           <Text fontSize="sm" color="grey.75" lineHeight="20px">
             {members}
           </Text>
@@ -104,14 +104,13 @@ const VaultItemBoxComponent = ({
       alignItems="center"
     >
       <Flex w="100%" align="center" justify="space-between">
-        <HStack spacing={4} align="center">
-          <Avatar
-            variant="roundedSquare"
+        <HStack gap={4} align="center">
+          <Avatar.Root
+            shape="rounded"
             color="grey.250"
             bgColor="grey.950"
-            name={name}
             size={'md'}
-            sx={{
+            css={{
               '> div': {
                 display: 'flex',
                 alignItems: 'center',
@@ -119,12 +118,14 @@ const VaultItemBoxComponent = ({
                 lineHeight: 'normal',
               },
             }}
-          />
-          <VStack spacing={2} align="flex-start">
+          >
+            <Avatar.Fallback name={name} />
+          </Avatar.Root>
+          <VStack gap={2} align="flex-start">
             <Text
-              variant="subtitle"
-              isTruncated
-              maxW={{ base: 120, xs: 250 }}
+              // variant="subtitle"
+              truncate
+              maxW={{ base: 120, sm: 250 }}
               color="grey.75"
               fontSize="xs"
               lineHeight="16px"
@@ -135,18 +136,18 @@ const VaultItemBoxComponent = ({
               fontSize="xs"
               color="grey.500"
               lineHeight="16px"
-              isTruncated
-              maxW={{ base: 120, xs: 250 }}
+              truncate
+              maxW={{ base: 120, sm: 250 }}
             >
               {AddressUtils.format(address ?? '', 4)}
             </Text>
           </VStack>
         </HStack>
 
-        <VStack spacing={2} align="flex-end">
+        <VStack gap={2} align="flex-end">
           {isRootAndPending ? (
             <>
-              <HStack spacing={3}>
+              <HStack gap={3}>
                 {RootBadge}
                 {MembersBadge}
               </HStack>
@@ -155,7 +156,7 @@ const VaultItemBoxComponent = ({
           ) : (
             <>
               {MembersBadge}
-              <HStack spacing={2}>
+              <HStack gap={2}>
                 {root && RootBadge}
                 {StatusBadge}
               </HStack>

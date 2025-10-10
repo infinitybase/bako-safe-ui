@@ -1,44 +1,36 @@
-import {
-  FormControl,
-  FormHelperText,
-  FormLabel,
-  Input,
-  TabPanel,
-  Textarea,
-  VStack,
-} from '@chakra-ui/react';
+import { Field, Input, Textarea, VStack } from '@chakra-ui/react';
 import { Controller, UseFormReturn } from 'react-hook-form';
 
 import { ITemplatePayload } from '@/modules/core';
 const InfoStep = ({ form }: { form: UseFormReturn<ITemplatePayload> }) => {
   return (
-    <TabPanel p={0}>
-      <VStack spacing={6}>
+    <Box p={0}>
+      <VStack gap={6}>
         <Controller
           name="name"
           control={form.control}
           render={({ field, fieldState }) => (
-            <FormControl isInvalid={fieldState.invalid}>
+            <Field.Root invalid={fieldState.invalid}>
               <Input
                 value={field.value}
                 onChange={field.onChange}
                 placeholder=" "
               />
               <FormLabel>Template name</FormLabel>
-              <FormHelperText color="error.500">
+              <Field.HelperText color="error.500">
                 {fieldState.error?.message}
-              </FormHelperText>
-            </FormControl>
+              </Field.HelperText>
+            </Field.Root>
           )}
         />
-        <FormControl>
+        <Field.Root>
           <Controller
             name="description"
             control={form.control}
             render={({ field, fieldState }) => (
-              <FormControl
-                isInvalid={fieldState.invalid}
-                sx={{
+              <Field.Root
+                invalid={fieldState.invalid}
+                css={{
                   'textarea::placeholder': {
                     color: 'grey.500',
                   },
@@ -49,16 +41,16 @@ const InfoStep = ({ form }: { form: UseFormReturn<ITemplatePayload> }) => {
                   onChange={field.onChange}
                   placeholder="Description"
                 />
-                <FormHelperText color="error.500">
+                <Field.HelperText color="error.500">
                   {fieldState.error?.message}
-                </FormHelperText>
-              </FormControl>
+                </Field.HelperText>
+              </Field.Root>
             )}
           />
-          <FormHelperText>Optional</FormHelperText>
-        </FormControl>
+          <Field.HelperText>Optional</Field.HelperText>
+        </Field.Root>
       </VStack>
-    </TabPanel>
+    </Box>
   );
 };
 

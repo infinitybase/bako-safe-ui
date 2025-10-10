@@ -24,7 +24,7 @@ interface SignersListProps extends SignersDetailsProps {
 }
 
 const SignerCard = chakra(Card, {
-  baseStyle: {
+  base: {
     w: 'full',
     h: 'full',
     p: 3,
@@ -72,10 +72,7 @@ const SignersList = ({ vault, isGrid }: SignersListProps) => {
 
         if (isBig > 0 && index == maxItems) {
           return (
-            <CustomSkeleton
-              isLoaded={!vault.isLoading && !isLoading}
-              key={index}
-            >
+            <CustomSkeleton loading={vault.isLoading && isLoading} key={index}>
               <SignerCard
                 borderStyle="dashed"
                 bg="gradients.transaction-card"
@@ -86,7 +83,7 @@ const SignersList = ({ vault, isGrid }: SignersListProps) => {
                 <VStack
                   w="100%"
                   h="full"
-                  spacing={0}
+                  gap={0}
                   display="flex"
                   justifyContent="center"
                   alignItems="center"
@@ -122,7 +119,7 @@ const SignersList = ({ vault, isGrid }: SignersListProps) => {
           : undefined;
 
         return (
-          <CustomSkeleton isLoaded={!vault.isLoading && !isLoading} key={index}>
+          <CustomSkeleton loading={vault.isLoading && isLoading} key={index}>
             <CardMember
               hasAdd={false}
               isOwner={member?.id === owner?.id}
@@ -160,7 +157,7 @@ const SignersDetails = ({ vault, ...rest }: ISignersDetailsExtendedProps) => {
         justify="flex-start"
         mb={4}
         w="full"
-        spacing={3}
+        gap={3}
         // h="20px"
       >
         <Text
@@ -179,7 +176,7 @@ const SignersDetails = ({ vault, ...rest }: ISignersDetailsExtendedProps) => {
           lineHeight="12.1px"
           fontSize="xs"
           color="grey.75"
-          variant="gray"
+          colorPalette="gray"
           border="1px solid #F5F5F540"
         >
           Required signers {vault.data?.configurable?.SIGNATURES_COUNT ?? 0}/
@@ -191,7 +188,7 @@ const SignersDetails = ({ vault, ...rest }: ISignersDetailsExtendedProps) => {
         <Grid
           templateColumns={{
             base: 'repeat(1, 1fr)',
-            xs: isLargerThan680 ? 'repeat(2, 1fr)' : 'repeat(1, 1fr)',
+            sm: isLargerThan680 ? 'repeat(2, 1fr)' : 'repeat(1, 1fr)',
             md: isExtraLarge ? 'repeat(3, 1fr)' : 'repeat(2, 1fr)',
           }}
           gap={3}
@@ -200,7 +197,7 @@ const SignersDetails = ({ vault, ...rest }: ISignersDetailsExtendedProps) => {
           <SignersList vault={vault} />
         </Grid>
       ) : (
-        <VStack spacing={3}>
+        <VStack gap={3}>
           <SignersList vault={vault} isGrid={false} />
         </VStack>
       )}

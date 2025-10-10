@@ -29,9 +29,9 @@ const EmptyState = ({
   ...rest
 }: EmptyStateProps) => {
   return (
-    <Card
+    <Card.Root
       w="full"
-      p={{ base: 10, xs: 10 }}
+      p={{ base: 10, sm: 10 }}
       bg="gradients.transaction-card"
       borderWidth={1}
       borderColor="gradients.transaction-border"
@@ -43,11 +43,11 @@ const EmptyState = ({
       alignItems="center"
       {...rest}
     >
-      <VStack spacing={0}>
+      <VStack gap={0}>
         <Box mb={5} filter="grayscale(100%)" opacity={0.5}>
           <EmptyBoxOutline w={100} h={100} />
         </Box>
-        <VStack spacing={3}>
+        <VStack gap={3}>
           <Heading color="grey.75" fontSize="xl" textAlign="center">
             {title ?? 'Nothing to show here.'}
           </Heading>
@@ -55,7 +55,7 @@ const EmptyState = ({
             color="grey.250"
             textAlign="center"
             fontWeight={400}
-            variant="description"
+            // variant="description"
           >
             {subTitle ?? `It seems like you haven't made any transactions yet.`}
           </Text>
@@ -63,8 +63,8 @@ const EmptyState = ({
         {showAction && (
           <Button
             mt={10}
-            variant="emptyState"
-            isDisabled={isDisabled}
+            colorPalette="emptyState"
+            disabled={isDisabled}
             onClick={buttonAction}
             w="full"
           >
@@ -72,7 +72,7 @@ const EmptyState = ({
           </Button>
         )}
       </VStack>
-    </Card>
+    </Card.Root>
   );
 };
 export { EmptyState };

@@ -1,12 +1,4 @@
-import {
-  Box,
-  Button,
-  FormControl,
-  FormHelperText,
-  FormLabel,
-  HStack,
-  Text,
-} from '@chakra-ui/react';
+import { Box, Button, Field, HStack, Text } from '@chakra-ui/react';
 import { memo, useMemo } from 'react';
 import { FieldError, useFormContext } from 'react-hook-form';
 
@@ -61,9 +53,9 @@ const RecipientFormAmount = memo(
     );
 
     return (
-      <HStack align="start" spacing={2} position="relative" width="100%">
-        <FormControl variant="floating" isInvalid={!!error?.message}>
-          <Box position="relative">
+      <HStack align="start" gap={2} position="relative" width="100%">
+        <Field.Root invalid={!!error?.message}>
+          <Box position="relative" w="full">
             <AmountInput
               placeholder=" "
               value={isNFT ? '1' : value}
@@ -74,11 +66,11 @@ const RecipientFormAmount = memo(
               }}
               onChange={({ target }) => onChange(target.value)}
               isInvalid={!!error?.message}
-              isDisabled={isNFT}
+              disabled={isNFT}
             />
-            <FormLabel data-testid="transaction_amount">Amount</FormLabel>
+            <Field.Label data-testid="transaction_amount">Amount</Field.Label>
 
-            <FormHelperText
+            <Field.HelperText
               pl={4}
               color={error?.message ? 'error.500' : 'gray.400'}
             >
@@ -96,14 +88,14 @@ const RecipientFormAmount = memo(
                   ~ {usdEstimate}
                 </Text>
               ) : null}
-            </FormHelperText>
+            </Field.HelperText>
 
             {!isNFT && (
               <HStack
                 position="absolute"
                 top="35%"
                 right="0.75rem"
-                spacing={1}
+                gap={1}
                 zIndex={1}
                 bg="grey.825"
                 transform="translateY(-50%)"
@@ -128,7 +120,7 @@ const RecipientFormAmount = memo(
                   _active={{
                     bg: 'grey.850',
                   }}
-                  isDisabled={isLoadingFee}
+                  disabled={isLoadingFee}
                   onClick={() => {
                     const max = getBalanceAvailable();
                     onChange(max);
@@ -139,7 +131,7 @@ const RecipientFormAmount = memo(
               </HStack>
             )}
           </Box>
-        </FormControl>
+        </Field.Root>
       </HStack>
     );
   },

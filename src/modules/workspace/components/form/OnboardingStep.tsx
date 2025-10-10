@@ -4,7 +4,7 @@ import {
   Box,
   Button,
   Center,
-  Divider,
+  Separator,
   Heading,
   HStack,
   Icon,
@@ -35,7 +35,7 @@ const OnboardingStep = (props: OnboardingStepProps) => {
         sm: 6,
       }}
     >
-      <VStack spacing={2} w="full" minH={220}>
+      <VStack gap={2} w="full" minH={220}>
         <Box m={{ base: 2, xs: 4, sm: 8 }}>
           <Icon fontSize={{ base: 70, xs: 100 }} as={TransactionsBoxIcon} />
         </Box>
@@ -59,7 +59,7 @@ const OnboardingStep = (props: OnboardingStepProps) => {
         </Box>
       </VStack>
 
-      <VStack spacing={{ base: 0, sm: 6 }} minH={{ base: 425, xs: 'unset' }}>
+      <VStack gap={{ base: 0, sm: 6 }} minH={{ base: 425, xs: 'unset' }}>
         <Box maxW={{ base: 'full', sm: 480 }} mt={{ base: 0, sm: 'unset' }}>
           <Text
             color="white"
@@ -160,8 +160,8 @@ const OnboardingStep = (props: OnboardingStepProps) => {
         </Box>
       </VStack>
 
-      <Divider mb={{ base: 3, xs: 4 }} borderColor="dark.100" mt="auto" />
-      <HStack w="full" spacing={4}>
+      <Separator mb={{ base: 3, xs: 4 }} borderColor="dark.100" mt="auto" />
+      <HStack w="full" gap={4}>
         <Button
           _hover={{
             borderColor: 'brand.500',

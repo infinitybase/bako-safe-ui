@@ -1,11 +1,11 @@
 import {
+  Box,
   Button,
   Card,
-  Divider,
   HStack,
   Icon,
+  Separator,
   Stack,
-  TabPanel,
   Text,
   VStack,
 } from '@chakra-ui/react';
@@ -30,7 +30,7 @@ const APITokenCard = (props: APITokenCardProps) => {
   } = useWorkspaceContext();
 
   return (
-    <Card
+    <Card.Root
       key={apiToken.id}
       w="full"
       maxW={440}
@@ -40,9 +40,9 @@ const APITokenCard = (props: APITokenCardProps) => {
       p={4}
       borderRadius={8}
     >
-      <HStack alignItems="center" justifyContent="space-between" spacing={4}>
+      <HStack alignItems="center" justifyContent="space-between" gap={4}>
         <VStack
-          spacing={3}
+          gap={3}
           alignItems="flex-start"
           justifyContent="space-between"
           w="full"
@@ -52,7 +52,7 @@ const APITokenCard = (props: APITokenCardProps) => {
             fontSize="xs"
             fontWeight={700}
             maxW="full"
-            noOfLines={1}
+            lineClamp={1}
             wordBreak="break-all"
           >
             {apiToken.name}
@@ -61,7 +61,7 @@ const APITokenCard = (props: APITokenCardProps) => {
             color="grey.250"
             fontSize="xs"
             maxW="full"
-            noOfLines={4}
+            lineClamp={4}
             wordBreak="break-all"
             hidden={!apiToken.config?.transactionTitle}
           >
@@ -76,13 +76,13 @@ const APITokenCard = (props: APITokenCardProps) => {
         <Stack
           flexDirection={{
             base: confirm.show && isLitteSmall ? 'column' : 'row',
-            xs: 'row',
+            sm: 'row',
           }}
-          spacing={4}
+          gap={4}
           flex={1}
           maxW={{
             base: isLitteSmall ? 70 : 'unset',
-            xs: 'unset,',
+            sm: 'unset,',
           }}
           alignItems="center"
           justifyContent="flex-end"
@@ -98,7 +98,7 @@ const APITokenCard = (props: APITokenCardProps) => {
               />
 
               <Button
-                variant="tertiary"
+                colorPalette="tertiary"
                 border="none"
                 color="grey.825"
                 h="28px"
@@ -107,7 +107,7 @@ const APITokenCard = (props: APITokenCardProps) => {
                 fontSize="xs"
                 fontWeight={700}
                 onClick={() => handler(apiToken.id)}
-                isLoading={request.isLoading}
+                loading={request.isLoading}
               >
                 Delete
               </Button>
@@ -126,7 +126,7 @@ const APITokenCard = (props: APITokenCardProps) => {
           )}
         </Stack>
       </HStack>
-    </Card>
+    </Card.Root>
   );
 };
 
@@ -143,26 +143,25 @@ const APITokensList = (props: APITokensListProps) => {
   };
 
   return (
-    <TabPanel p={0} display="flex" flexDirection="column" flex={1} minH="full">
-      <Divider my={{ base: 3, sm: 6 }} borderColor="grey.425" />
+    <Box p={0} display="flex" flexDirection="column" flex={1} minH="full">
+      <Separator my={{ base: 3, sm: 6 }} borderColor="grey.425" />
 
-      <VStack spacing={{ base: 4, xs: 6 }} pt={{ base: 2, sm: 0 }} flex={1}>
-        <CustomSkeleton isLoaded={!request.isLoading} flex={1} display="flex">
+      <VStack gap={{ base: 4, sm: 6 }} pt={{ base: 2, sm: 0 }} flex={1}>
+        <CustomSkeleton loading={request.isLoading} flex={1} display="flex">
           {request.data && request.data?.length > 0 ? (
             <VStack
-              spacing={{ base: 4, xs: 6 }}
+              gap={{ base: 4, sm: 6 }}
               w="full"
               maxH={{
                 base: 'calc($100vh - 301px)',
-                xs: 'calc($100vh - 320px)',
-                sm: 360,
+                sm: 'calc($100vh - 320px)',
                 md: 380,
               }}
               minH={300}
               flex={1}
               alignSelf="stretch"
               overflowY="scroll"
-              sx={{
+              css={{
                 '&::-webkit-scrollbar': {
                   display: 'none',
                   width: '5px',
@@ -190,7 +189,7 @@ const APITokensList = (props: APITokensListProps) => {
         </CustomSkeleton>
 
         <Button
-          variant="emptyState"
+          colorPalette="emptyState"
           onClick={handleAddMoreAPITokens}
           w="full"
           mt="auto"
@@ -198,7 +197,7 @@ const APITokensList = (props: APITokensListProps) => {
           Add more API Tokens
         </Button>
       </VStack>
-    </TabPanel>
+    </Box>
   );
 };
 

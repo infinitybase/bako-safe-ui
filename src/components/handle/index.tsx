@@ -21,7 +21,7 @@ const Handle = (props: HandleProps) => {
       borderRadius="full"
       px={1.5}
       bgColor="grey.925"
-      spacing={1}
+      gap={1}
       alignItems="center"
       justifyContent="center"
       cursor={onClick ? 'pointer' : 'default'}

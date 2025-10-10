@@ -9,25 +9,25 @@ interface CopyAddressProps {
 }
 
 const CopyAddress = ({ address, onClose }: CopyAddressProps) => {
-  const clipboard = useClipboard(address);
+  const clipboard = useClipboard({ value: address });
 
   return (
     <HStack
-      spacing={4}
+      gap={4}
       px={4}
       py={3}
       cursor="pointer"
       onClick={() => {
-        clipboard.onCopy();
+        clipboard.copy();
         setTimeout(() => onClose?.(), 600);
       }}
     >
       <Icon
-        as={clipboard.hasCopied ? CheckIcon : CopyIcon}
-        color={clipboard.hasCopied ? 'success.700' : 'grey.50'}
+        as={clipboard.copied ? CheckIcon : CopyIcon}
+        color={clipboard.copied ? 'success.700' : 'grey.50'}
         fontSize="lg"
       />
-      <VStack alignItems="flex-start" spacing={0} fontSize="xs">
+      <VStack alignItems="flex-start" gap={0} fontSize="xs">
         <Text color="grey.50">Copy address</Text>
         <Text color="grey.425">{AddressUtils.format(address)}</Text>
       </VStack>

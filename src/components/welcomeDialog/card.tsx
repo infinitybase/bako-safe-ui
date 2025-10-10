@@ -1,16 +1,12 @@
-import {
-  ComponentWithAs,
-  HStack,
-  Icon,
-  IconProps,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { HStack, Icon, IconProps, Text, VStack } from '@chakra-ui/react';
+import { ForwardRefExoticComponent } from 'react';
 
 interface IWelcomeCardProps {
   title: string;
   description: string;
-  icon: ComponentWithAs<'svg', IconProps>;
+  icon: ForwardRefExoticComponent<
+    IconProps & React.RefAttributes<SVGSVGElement>
+  >;
   onClick?: () => void;
   iconSize?: string;
   commingSoon?: boolean;
@@ -27,7 +23,7 @@ const WelcomeCard = ({
   return (
     <HStack
       w="full"
-      spacing={4}
+      gap={4}
       p={4}
       borderRadius="md"
       border="1px solid #35302F"
@@ -38,8 +34,8 @@ const WelcomeCard = ({
       pointerEvents={commingSoon ? 'none' : 'auto'}
       cursor={commingSoon ? 'auto' : 'pointer'}
     >
-      <Icon as={icon} color="grey.250" fontSize={iconSize} />
-      <VStack alignItems="start" w="full" spacing={1}>
+      <Icon as={icon} color="grey.250" w={iconSize} />
+      <VStack alignItems="start" w="full" gap={1}>
         <Text fontSize="sm" color="grey.250" lineHeight="15.85px">
           {title}
         </Text>
@@ -51,7 +47,7 @@ const WelcomeCard = ({
         <Text
           fontSize="xs"
           color="grey.250"
-          isTruncated
+          truncate
           minW="fit-content"
           p="4px 6px 4px 6px"
           borderRadius="xl"

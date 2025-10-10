@@ -95,7 +95,7 @@ const AssetsDetails = ({
           p={4}
           borderRadius={10}
           bgColor="grey.950"
-          spacing={0}
+          gap={0}
           cursor="pointer"
           onClick={() => navigate(viewAllRedirect)}
         >

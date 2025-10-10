@@ -1,10 +1,4 @@
-import {
-  FormControl,
-  FormHelperText,
-  FormLabel,
-  Input,
-  VStack,
-} from '@chakra-ui/react';
+import { Field, Input, VStack } from '@chakra-ui/react';
 import { Controller } from 'react-hook-form';
 
 import { AddressInput } from '@/components/input';
@@ -17,24 +11,24 @@ export interface CreateContactFormProps {
 
 const CreateContactForm = ({ form }: CreateContactFormProps) => {
   return (
-    <VStack spacing={6}>
+    <VStack gap={6}>
       <Controller
         control={form.control}
         name="nickname"
         render={({ field, fieldState }) => (
-          <FormControl isInvalid={fieldState.invalid}>
+          <Field.Root invalid={fieldState.invalid}>
             <Input
               value={field.value}
               onChange={field.onChange}
               placeholder=" "
-              variant="dark"
+              // variant="dark"
               maxLength={27}
             />
-            <FormLabel>Name or Label</FormLabel>
-            <FormHelperText color="error.500">
+            <Field.Label>Name or Label</Field.Label>
+            <Field.HelperText color="error.500">
               {fieldState.error?.message}
-            </FormHelperText>
-          </FormControl>
+            </Field.HelperText>
+          </Field.Root>
         )}
       />
 
@@ -42,17 +36,17 @@ const CreateContactForm = ({ form }: CreateContactFormProps) => {
         control={form.control}
         name="address"
         render={({ field, fieldState }) => (
-          <FormControl isInvalid={fieldState.invalid}>
+          <Field.Root invalid={fieldState.invalid}>
             <AddressInput
-              variant="dark"
+              // variant="dark"
               value={field.value}
               onChange={field.onChange}
               adbForm={form}
             />
-            <FormHelperText color="error.500">
+            <Field.HelperText color="error.500">
               {fieldState.error?.message}
-            </FormHelperText>
-          </FormControl>
+            </Field.HelperText>
+          </Field.Root>
         )}
       />
     </VStack>

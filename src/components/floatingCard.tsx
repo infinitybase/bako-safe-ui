@@ -1,6 +1,6 @@
-import { CloseIcon, StarIcon } from '@chakra-ui/icons';
 import { Box, Flex, HStack, IconButton, Text } from '@chakra-ui/react';
 import React from 'react';
+import { FiStar as StarIcon, FiX as CloseIcon } from 'react-icons/fi';
 
 import { useQueryParams } from '@/modules';
 
@@ -88,8 +88,8 @@ const FloatingCard = () => {
       zIndex="9999"
     >
       <Flex alignItems="center" justifyContent="space-between" cursor="pointer">
-        <HStack spacing={3}>
-          <StarIcon color="warning.550" boxSize={6} />
+        <HStack gap={3}>
+          <StarIcon color="warning.550" />
           <Box onClick={handleClick}>
             <Text fontSize="14" color="dark.950" lineHeight="1.2">
               Support the Bako team!
@@ -101,12 +101,13 @@ const FloatingCard = () => {
         </HStack>
         <IconButton
           aria-label="Close card"
-          icon={<CloseIcon />}
           size="sm"
           onClick={handleClose}
           variant="ghost"
           _hover={{ bg: 'gray.200' }}
-        />
+        >
+          <CloseIcon />
+        </IconButton>
       </Flex>
     </Box>
   );

@@ -1,24 +1,23 @@
 import {
   Box,
   Button,
-  DrawerProps,
-  FormControl,
-  FormLabel,
+  Drawer,
+  Field,
   Input,
   Spinner,
   Text,
-  useDisclosure,
   VStack,
 } from '@chakra-ui/react';
 
 import { CustomSkeleton, Dialog } from '@/components';
+import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { CreateVaultDialog } from '../dialog';
 import { useVaultDrawer } from './hook';
 import { VaultList } from './VaultList';
 
-interface VaultListModalProps extends Omit<DrawerProps, 'children'> {
+interface VaultListModalProps extends Omit<Drawer.RootProps, 'children'> {
   vaultId: string;
   onSelect?: (vaultId: string) => void;
   onCloseAll?: () => void;
@@ -38,15 +37,15 @@ const VaultListModal = ({
     request: { vaults, isSuccess, isLoading, isFetching },
     inView,
   } = useVaultDrawer({
-    onClose: props.onClose,
-    isOpen: props.isOpen,
+    onClose: () => props.onOpenChange?.({ open: false }),
+    isOpen: props.open,
     onCloseAll,
   });
 
   const {
     isOpen: isCreateVaultModalOpen,
-    onClose: createVaultModalOnClose,
     onOpen: createVaultModalOnOpen,
+    onOpenChange: createVaultModalOnOpenChange,
   } = useDisclosure();
 
   const isLoadingVaults = inView.inView
@@ -56,19 +55,19 @@ const VaultListModal = ({
   return (
     <>
       <CreateVaultDialog
-        isOpen={isCreateVaultModalOpen}
-        onClose={createVaultModalOnClose}
+        open={isCreateVaultModalOpen}
+        onOpenChange={createVaultModalOnOpenChange}
         onCreate={onCloseAll}
       />
 
       <Dialog.Modal
-        autoFocus={false}
-        onClose={drawer.onClose}
-        isOpen={props.isOpen}
+        onOpenChange={(e) => (e.open ? undefined : drawer.onClose())}
+        open={props.open}
+        size="md"
         modalContentProps={{
           px: 10,
           py: 10,
-          maxHeight: '$100vh',
+          maxHeight: '100vh',
         }}
         modalBodyProps={{
           overflow: 'visible',
@@ -80,7 +79,7 @@ const VaultListModal = ({
             mb={0}
             onClose={drawer.onClose}
             w="full"
-            maxW={{ base: 480, xs: 'unset' }}
+            maxW={{ base: 480, sm: 'unset' }}
             title="Select vault"
             description="Select the vault or create new one"
             descriptionFontSize="12px"
@@ -98,29 +97,29 @@ const VaultListModal = ({
             borderBottomWidth={1}
             borderColor="grey.425"
           >
-            <FormControl>
+            <Field.Root>
               <Input
                 placeholder=" "
                 bg="transparent"
                 colorScheme="dark"
                 onChange={search.handler}
               />
-              <FormLabel>Search</FormLabel>
-            </FormControl>
+              <Field.Label>Search</Field.Label>
+            </Field.Root>
           </Box>
 
           <VStack
             w="full"
             minH={300}
-            maxH={{ base: `calc(100vh - 350px)`, xs: 555, sm: 380, md: 500 }}
+            maxH={{ base: `calc(100vh - 350px)`, sm: 555, md: 500 }}
             overflowY="scroll"
-            sx={{
+            css={{
               '&::-webkit-scrollbar': { display: 'none' },
               '&::-webkit-scrollbar-thumb': { display: 'none' },
             }}
           >
             {isSuccess && !vaults.length && (
-              <Text variant="variant">
+              <Text>
                 We {"couldn't"} find any results for <b>“{search.value}”</b> in
                 the vault.
               </Text>
@@ -128,11 +127,11 @@ const VaultListModal = ({
 
             <VStack marginBottom={4} w="full">
               {isLoadingVaults && vaults.length === 0 && (
-                <VStack spacing={4} w="full" pt={4}>
-                  <Spinner size="md" thickness="4px" color="brand.500" />
+                <VStack gap={4} w="full" pt={4}>
+                  <Spinner size="md" borderWidth="4px" color="brand.500" />
                 </VStack>
               )}
-              <CustomSkeleton isLoaded={isLoadingVaults}>
+              <CustomSkeleton loading={isLoadingVaults}>
                 <VaultList
                   vaults={vaults}
                   currentVaultId={vaultId}
@@ -142,7 +141,7 @@ const VaultListModal = ({
               <Box ref={inView.ref} />
               {isFetching && vaults.length > 0 && (
                 <Box py={4}>
-                  <Spinner size="sm" thickness="3px" color="brand.500" />
+                  <Spinner size="sm" borderWidth="3px" color="brand.500" />
                 </Box>
               )}
             </VStack>
@@ -157,7 +156,7 @@ const VaultListModal = ({
             right={0}
             px={isMobile ? 10 : 'unset'}
             bg={isMobile ? 'dark.950' : 'unset'}
-            sx={{
+            css={{
               '&>hr': {
                 marginTop: '0',
               },

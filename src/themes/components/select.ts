@@ -20,7 +20,7 @@ const darkStyle = defineStyle({
 const Select = defineStyleConfig({
   baseStyle,
   defaultProps: {
-    colorScheme: 'dark',
+    colorPalette: 'dark',
   },
   variants: {
     custom: baseStyle,

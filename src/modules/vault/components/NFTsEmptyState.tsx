@@ -6,7 +6,7 @@ import { GARAGE_APP_URL } from '@/utils/enviroment';
 
 export const NFTsEmptyState = () => {
   return (
-    <Card
+    <Card.Root
       w="full"
       p={{ base: 10, xs: 10 }}
       bg="gradients.transaction-card"
@@ -19,7 +19,7 @@ export const NFTsEmptyState = () => {
       flexDirection="column"
       alignItems="center"
     >
-      <VStack spacing={8} py={{ md: 8, base: 4 }}>
+      <VStack gap={8} py={{ md: 8, base: 4 }}>
         <Image
           src={Empty}
           alt="Empty nfts"
@@ -33,7 +33,7 @@ export const NFTsEmptyState = () => {
           }}
         />
 
-        <Stack spacing={2}>
+        <Stack gap={2}>
           <Text textAlign="center" color="grey.50" fontSize="md">
             No items found
           </Text>
@@ -54,6 +54,6 @@ export const NFTsEmptyState = () => {
           Go to marketplace
         </Button>
       </VStack>
-    </Card>
+    </Card.Root>
   );
 };

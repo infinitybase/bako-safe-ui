@@ -1,10 +1,10 @@
-import { WarningIcon } from '@chakra-ui/icons';
 import { Card, Text } from '@chakra-ui/react';
 import { memo } from 'react';
+import { FiAlertTriangle as WarningIcon } from 'react-icons/fi';
 
 export const GasAlert = memo(function GasAlert() {
   return (
-    <Card
+    <Card.Root
       variant="outline"
       p={3}
       gap={2}
@@ -15,6 +15,6 @@ export const GasAlert = memo(function GasAlert() {
       <Text color="warning.500" fontSize="xs">
         Insufficient ETH balance for paying gas.
       </Text>
-    </Card>
+    </Card.Root>
   );
 });

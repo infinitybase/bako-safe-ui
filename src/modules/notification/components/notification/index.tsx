@@ -58,7 +58,7 @@ const Container = (props: ContainerProps) => {
       <HStack
         alignItems={props.alignItems}
         padding={hide ? 4 : 2}
-        spacing={2}
+        gap={2}
         bg="dark.225"
         backdropFilter="blur(30px)"
         whiteSpace="nowrap"

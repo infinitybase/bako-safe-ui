@@ -1,21 +1,22 @@
-import { Accordion, StackProps, VStack } from '@chakra-ui/react';
+import { Accordion, AccordionRootProps } from '@chakra-ui/react';
+import { useMemo } from 'react';
 
-interface TransactionCardListProps extends StackProps {
+interface TransactionCardListProps extends AccordionRootProps {
   openIndex?: number[];
 }
 
 const List = ({ children, openIndex, ...props }: TransactionCardListProps) => {
+  const value = useMemo(() => openIndex?.map(String) || [], [openIndex]);
   return (
-    <VStack
+    <Accordion.Root
       w="full"
-      as={Accordion}
       alignItems="flex-start"
-      defaultIndex={openIndex ?? []}
-      allowMultiple
+      multiple
+      defaultValue={value}
       {...props}
     >
       {children}
-    </VStack>
+    </Accordion.Root>
   );
 };
 

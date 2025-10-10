@@ -20,7 +20,7 @@ export const SelectedCurrency = ({
   symbol,
 }: SelectedCurrencyProps) => {
   return (
-    <Skeleton minW="130px" minH="30px" isLoaded={!isLoadingCurrencies}>
+    <Skeleton minW="130px" minH="30px" loading={isLoadingCurrencies}>
       <VStack p={0} gap={0} align="end">
         <Flex
           alignItems="center"
@@ -45,7 +45,7 @@ export const SelectedCurrency = ({
             </>
           )}
 
-          <Icon as={LeftAndRightArrow} color="grey.75" />
+          <Icon as={LeftAndRightArrow} w={3} color="grey.75" />
         </Flex>
         {balance && symbol && (
           <Flex>

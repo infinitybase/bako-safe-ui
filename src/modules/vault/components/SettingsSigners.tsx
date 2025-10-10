@@ -23,11 +23,17 @@ const SettingsSigners = ({ vault }: SignersDetailsProps) => {
 
   return (
     <Box w="full">
-      <HStack alignItems="center" mb={5} w="full" spacing={4}>
+      <HStack alignItems="center" mb={5} w="full" gap={4}>
         <Text color="grey.50" fontWeight="bold" fontSize="sm">
           Signers
         </Text>
-        <Badge p={0.1} rounded="lg" px={3} fontWeight="medium" variant="gray">
+        <Badge
+          p={0.1}
+          rounded="lg"
+          px={3}
+          fontWeight="medium"
+          colorPalette="gray"
+        >
           Required signers {vault.data?.configurable?.SIGNATURES_COUNT ?? 0}/
           {vault.data?.members?.length}
         </Badge>
@@ -36,7 +42,7 @@ const SettingsSigners = ({ vault }: SignersDetailsProps) => {
         w="full"
         templateColumns={{
           base: 'repeat(1, 1fr)',
-          xs: isLargerThan680 ? 'repeat(2, 1fr)' : 'repeat(1, 1fr)',
+          sm: isLargerThan680 ? 'repeat(2, 1fr)' : 'repeat(1, 1fr)',
           md: isExtraLarge ? 'repeat(3, 1fr)' : 'repeat(2, 1fr)',
           '2xl': isLargerThan1700 ? 'repeat(4, 1fr)' : 'repeat(3, 1fr)',
         }}
@@ -55,7 +61,7 @@ const SettingsSigners = ({ vault }: SignersDetailsProps) => {
           );
 
           return (
-            <CustomSkeleton isLoaded={!vault.isLoading} key={index}>
+            <CustomSkeleton loading={vault.isLoading} key={index}>
               <CardMember
                 hasAdd={false}
                 isOwner={vault?.data?.owner?.id === member.id}

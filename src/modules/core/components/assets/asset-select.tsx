@@ -1,4 +1,4 @@
-import { FormControl } from '@chakra-ui/react';
+import { Field } from '@chakra-ui/react';
 import React from 'react';
 
 import { AssetSelect as Select, AssetSelectProps } from '@/components';
@@ -11,10 +11,10 @@ function AssetSelect(props: Props) {
   const { helperText, ...rest } = props;
 
   return (
-    <FormControl>
+    <Field.Root>
       <Select label="Asset" maxOptionsHeight={300} {...rest} />
       {helperText}
-    </FormControl>
+    </Field.Root>
   );
 }
 

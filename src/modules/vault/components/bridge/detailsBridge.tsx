@@ -28,7 +28,7 @@ export function DetailsBridge({
   }, [dataQuote.receiveInUsd, getReceiveQuoteMobile]);
 
   return (
-    <Card variant="outline" padding={padding} bgColor={bgColor}>
+    <Card.Root variant="outline" padding={padding} bgColor={bgColor}>
       <VStack p={0} gap={0}>
         <HStack width="full">
           <HStack gap={2} align={'center'}>
@@ -45,7 +45,7 @@ export function DetailsBridge({
             {isLoadingQuote ? (
               <Spinner color="grey.500" size="xs" />
             ) : (
-              <Text color="grey.250" fontSize={12} flex={1} align="right">
+              <Text color="grey.250" fontSize={12} flex={1} textAlign="right">
                 {dataQuote?.quote?.avgCompletionTime ?? '-'}
               </Text>
             )}
@@ -67,7 +67,7 @@ export function DetailsBridge({
             {isLoadingQuote ? (
               <Spinner color="grey.500" size="xs" />
             ) : (
-              <Text color="grey.250" fontSize={12} flex={1} align="right">
+              <Text color="grey.250" fontSize={12} flex={1} textAlign="right">
                 {dataQuote?.quote?.totalFee
                   ? dataQuote?.quote?.totalFee + ' ' + assetFrom?.symbol
                   : '-'}
@@ -94,13 +94,13 @@ export function DetailsBridge({
                   color="grey.50"
                   fontWeight={600}
                   fontSize={14}
-                  align="right"
+                  textAlign="right"
                 >
                   {dataQuote?.quote?.receiveAmount
                     ? dataQuote?.quote?.receiveAmount + ' ' + assetTo?.symbol
                     : ''}
                 </Text>
-                <Text color="grey.250" fontSize={12} align="right">
+                <Text color="grey.250" fontSize={12} textAlign="right">
                   {dataQuote?.receiveInUsd
                     ? `(${dataQuote?.receiveInUsd})`
                     : '-'}
@@ -110,6 +110,6 @@ export function DetailsBridge({
           </HStack>
         </HStack>
       </VStack>
-    </Card>
+    </Card.Root>
   );
 }

@@ -1,16 +1,10 @@
-import {
-  TabPanel,
-  TabPanels,
-  Tabs,
-  Text,
-  useDisclosure,
-  VStack,
-} from '@chakra-ui/react';
+import { Box, Tabs, Text, VStack } from '@chakra-ui/react';
 import { useEffect } from 'react';
 
 import { useQueryParams } from '@/modules';
 import { useContactToast } from '@/modules/addressBook/hooks';
 import { useListConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
+import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
 import { useVerifyBrowserType } from '@/modules/dapp/hooks';
 import { NetworkSignInDrawer } from '@/modules/network/components/signInDrawer';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
@@ -89,11 +83,11 @@ const SignInWrapper = (props: SignInWrapperProps) => {
           pt={20}
           pb={6}
           px={6}
-          spacing={14}
+          gap={14}
         >
           <SignInHeader title={title} showDescription={false} />
 
-          <VStack w="full" maxW={390} spacing={6}>
+          <VStack w="full" maxW={390} gap={6}>
             <Text textAlign="center">
               Safari is not yet supported on external connectors.
             </Text>
@@ -113,9 +107,9 @@ const SignInWrapper = (props: SignInWrapperProps) => {
           onClose={loginDrawer.onClose}
         />
 
-        <Tabs index={tabs.tab} flex={1} w="full" display="flex">
-          <TabPanels flex={1}>
-            <TabPanel h="full" p={0}>
+        <Tabs.Root value={tabs.tab.toString()} flex={1} w="full" display="flex">
+          <Tabs.List>
+            <Box h="full" p={0}>
               <VStack
                 justifyContent="center"
                 h="full"
@@ -123,14 +117,14 @@ const SignInWrapper = (props: SignInWrapperProps) => {
                 pt={20}
                 pb={6}
                 px={6}
-                spacing={14}
+                gap={14}
               >
                 <SignInHeader
                   title={title}
                   showDescription={mode !== WebAuthnModeState.ACCOUNT_CREATED}
                 />
 
-                <VStack w="full" maxW={390} spacing={6}>
+                <VStack w="full" maxW={390} gap={6}>
                   <WebAuthnSignIn
                     formData={formData}
                     formState={formState}
@@ -150,17 +144,17 @@ const SignInWrapper = (props: SignInWrapperProps) => {
 
                 <SignInFooter />
               </VStack>
-            </TabPanel>
+            </Box>
 
-            <TabPanel h="full">
+            <Box h="full">
               <WebAuthnAccountCreated
                 showDescription={mode !== WebAuthnModeState.ACCOUNT_CREATED}
                 title={createdAcccountUsername}
                 formState={formState}
               />
-            </TabPanel>
-          </TabPanels>
-        </Tabs>
+            </Box>
+          </Tabs.List>
+        </Tabs.Root>
       </SigninContainerMobile>
     );
   }
@@ -172,12 +166,12 @@ const SignInWrapper = (props: SignInWrapperProps) => {
         onClose={loginDrawer.onClose}
       />
 
-      <Tabs index={tabs.tab} flex={1} w="full">
-        <TabPanels h="full">
-          <TabPanel h="full" p={0}>
+      <Tabs.Root value={tabs.tab.toString()} flex={1} w="full">
+        <Box h="full">
+          <Box h="full" p={0}>
             <VStack
               h="full"
-              spacing={20}
+              gap={20}
               alignItems="center"
               justifyContent="center"
             >
@@ -186,7 +180,7 @@ const SignInWrapper = (props: SignInWrapperProps) => {
                 showDescription={mode !== WebAuthnModeState.ACCOUNT_CREATED}
               />
 
-              <VStack w="full" spacing={8} maxW={390}>
+              <VStack w="full" gap={8} maxW={390}>
                 <WebAuthnSignIn
                   formData={formData}
                   formState={formState}
@@ -206,17 +200,17 @@ const SignInWrapper = (props: SignInWrapperProps) => {
 
               <SignInFooter />
             </VStack>
-          </TabPanel>
+          </Box>
 
-          <TabPanel h="full">
+          <Box h="full">
             <WebAuthnAccountCreated
               title={createdAcccountUsername}
               formState={formState}
               showDescription={mode !== WebAuthnModeState.ACCOUNT_CREATED}
             />
-          </TabPanel>
-        </TabPanels>
-      </Tabs>
+          </Box>
+        </Box>
+      </Tabs.Root>
     </SigninContainer>
   );
 };

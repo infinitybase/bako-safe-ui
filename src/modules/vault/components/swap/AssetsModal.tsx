@@ -1,20 +1,19 @@
-import { SearchIcon } from '@chakra-ui/icons';
 import {
   Box,
-  Divider,
-  FormControl,
-  FormLabel,
+  DialogOpenChangeDetails,
+  Field,
   Icon,
   Image,
   Input,
   InputGroup,
-  InputRightElement,
+  Separator,
   Stack,
   Text,
 } from '@chakra-ui/react';
 import { BN } from 'fuels';
 import debounce from 'lodash.debounce';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { FiSearch as SearchIcon } from 'react-icons/fi';
 
 import { Dialog } from '@/components';
 import { Header } from '@/layouts/dashboard/header';
@@ -22,7 +21,7 @@ import { Asset, CurrencyList } from '@/modules/core';
 
 interface AssetsModalProps {
   isOpen: boolean;
-  onClose: () => void;
+  onOpenChange: (isOpen: DialogOpenChangeDetails) => void;
   assets: (Asset & { balance: BN | null })[];
   isLoading?: boolean;
   onSelect: (asset: string) => void;
@@ -30,7 +29,7 @@ interface AssetsModalProps {
 
 export const AssetsModal = ({
   isOpen,
-  onClose,
+  onOpenChange,
   assets,
   isLoading = false,
   onSelect,
@@ -40,16 +39,19 @@ export const AssetsModal = ({
   const handleSelect = useCallback(
     (assetId: string) => {
       onSelect(assetId);
-      onClose();
+      onOpenChange({ open: false });
       setSearch('');
     },
-    [onSelect, onClose, setSearch],
+    [onSelect, onOpenChange, setSearch],
   );
 
-  const handleCloseModal = useCallback(() => {
-    setSearch('');
-    onClose();
-  }, [onClose, setSearch]);
+  const handleCloseModal = useCallback(
+    (e: DialogOpenChangeDetails) => {
+      setSearch('');
+      onOpenChange(e);
+    },
+    [onOpenChange, setSearch],
+  );
 
   const debouncedSearch = useCallback(
     // eslint-disable-next-line react-compiler/react-compiler
@@ -81,10 +83,10 @@ export const AssetsModal = ({
   return (
     <Dialog.Modal
       modalContentProps={{ padding: 0 }}
-      isOpen={isOpen}
-      onClose={handleCloseModal}
+      open={isOpen}
+      onOpenChange={handleCloseModal}
     >
-      <Box display={{ base: 'block', xs: 'none' }} w="full">
+      <Box display={{ base: 'block', sm: 'none' }} w="full">
         <Header />
       </Box>
       <Dialog.Header
@@ -92,30 +94,25 @@ export const AssetsModal = ({
         mb={3}
         px={4}
         title="Select Asset"
-        onClose={handleCloseModal}
+        onClose={() => handleCloseModal({ open: false })}
       />
-      <Dialog.Body py={{ base: 0, xs: 2 }}>
-        <Stack spacing={4}>
-          <FormControl px={4}>
-            <InputGroup position="relative">
-              <InputRightElement
-                position="absolute"
-                right={4}
-                top="50%"
-                transform="translateY(-50%)"
-              >
-                <Icon as={SearchIcon} color="grey.500" />
-              </InputRightElement>
+      <Dialog.Body py={{ base: 0, sm: 2 }}>
+        <Stack gap={4}>
+          <Field.Root px={4}>
+            <InputGroup
+              position="relative"
+              endElement={<Icon as={SearchIcon} color="grey.500" />}
+            >
               <Input
                 bg="dark.950"
                 onChange={(e) => debouncedSearch(e)}
                 placeholder=" "
               />
-              <FormLabel>Search asset</FormLabel>
             </InputGroup>
-          </FormControl>
+            <Field.Label>Search asset</Field.Label>
+          </Field.Root>
 
-          <Divider borderColor="grey.500" />
+          <Separator borderColor="grey.500" />
 
           <CurrencyList.Root pr={2} pl={4}>
             {filteredAssets.map((asset) => (
@@ -129,7 +126,7 @@ export const AssetsModal = ({
                 gap={2}
               >
                 <Image boxSize="24px" src={asset.icon} alt={asset.name} />
-                <Stack spacing={0}>
+                <Stack gap={0}>
                   <Text fontSize="md" color="grey.50">
                     {asset.slug}
                   </Text>

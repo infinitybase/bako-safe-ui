@@ -5,7 +5,7 @@ import { EmptyBoxOutline } from '@/components';
 const NotificationsEmptyState = () => {
   return (
     <Box h={'100%'} borderRadius={10} borderWidth={1} borderColor="grey.800">
-      <Card
+      <Card.Root
         w="full"
         h={'100%'}
         p={[10, 14]}
@@ -41,7 +41,7 @@ const NotificationsEmptyState = () => {
             {`You don't have any notifications yet. We will notify you as soon as a notification arrives.`}
           </Text>
         </Box>
-      </Card>
+      </Card.Root>
     </Box>
   );
 };

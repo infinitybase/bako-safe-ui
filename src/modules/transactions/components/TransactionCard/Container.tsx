@@ -1,13 +1,11 @@
 import {
+  Accordion,
   AccordionItem,
-  AccordionPanel,
-  Box,
-  CardProps,
+  CardRootProps,
   VStack,
 } from '@chakra-ui/react';
 import { memo, ReactNode, useMemo } from 'react';
 
-import { Card } from '@/components';
 import { TransactionState } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
@@ -17,7 +15,7 @@ import { useVerifyTransactionInformations } from '../../hooks/details/useVerifyT
 import { TransactionWithVault } from '../../services/types';
 import { DetailsDialog } from './DetailsDialog';
 
-interface TransactionCardContainerProps extends CardProps {
+interface TransactionCardContainerProps extends CardRootProps {
   status: TransactionState;
   details: ReactNode;
   transaction: TransactionWithVault;
@@ -57,14 +55,14 @@ const Container = memo(
       showAmountInformations,
     } = useVerifyTransactionInformations(transaction);
 
-    const { isOpen, onClose, onOpen } = useDetailsDialog();
+    const { isOpen, onOpen, onOpenChange } = useDetailsDialog();
 
     return (
       <>
         {transaction && isOpen && (
           <DetailsDialog
-            isOpen={isOpen}
-            onClose={onClose}
+            open={isOpen}
+            onOpenChange={onOpenChange}
             transaction={transaction}
             status={status}
             isSigner={isSigner}
@@ -74,12 +72,11 @@ const Container = memo(
           />
         )}
 
-        <Card
+        <AccordionItem
           pl={0}
           pr={{ base: 2, sm: 4, md: isInTheVaultPage ? 4 : 0, lg: 4 }}
           py={0}
           w="full"
-          as={AccordionItem}
           backdropFilter="blur(16px)"
           borderColor={
             missingSignature ? 'warning.500' : 'gradients.transaction-border'
@@ -87,8 +84,8 @@ const Container = memo(
           bg="gradients.transaction-card"
           boxShadow="0px 8px 6px 0px #00000026"
           maxW="full"
+          value={transaction.id}
           {...rest}
-          type={isFuelFriday ? 'green-gradient' : 'default'}
           display="flex"
         >
           <TransactionCard.Icon transaction={transaction} />
@@ -110,13 +107,11 @@ const Container = memo(
               showAmountInformations={showAmountInformations}
             />
 
-            <Box w="full">
-              <AccordionPanel px={{ base: 2, sm: 4 }} w="full">
-                {details}
-              </AccordionPanel>
-            </Box>
+            <Accordion.ItemContent px={{ base: 2, sm: 4 }} w="full">
+              <Accordion.ItemBody>{details}</Accordion.ItemBody>
+            </Accordion.ItemContent>
           </VStack>
-        </Card>
+        </AccordionItem>
       </>
     );
   },

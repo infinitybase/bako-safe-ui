@@ -59,7 +59,7 @@ const DappTransactionAssetInfo = ({ asset }: AssetInfoProps) => {
           alt="Asset Icon"
           objectFit="cover"
         />
-        <VStack spacing={0}>
+        <VStack gap={0}>
           <Text
             variant="subtitle"
             fontSize={12}
@@ -75,7 +75,7 @@ const DappTransactionAssetInfo = ({ asset }: AssetInfoProps) => {
             addressToCopy={assetInfo.assetId}
             w="100%"
             bg="transparent"
-            spacing={2}
+            gap={2}
             p={0}
           />
         </VStack>

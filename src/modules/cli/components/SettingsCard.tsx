@@ -1,7 +1,7 @@
-import { Card, CardProps, HStack, Icon, Text } from '@chakra-ui/react';
+import { Card, CardRootProps, HStack, Icon, Text } from '@chakra-ui/react';
 import { ElementType, useCallback } from 'react';
 
-interface CLISettingsCardProps extends CardProps {
+interface CLISettingsCardProps extends CardRootProps {
   label: string;
   icon: ElementType;
   disabled?: boolean;
@@ -17,7 +17,7 @@ const CLISettingsCard = (props: CLISettingsCardProps) => {
   }, [disabled, onClick]);
 
   return (
-    <Card
+    <Card.Root
       onClick={handleClick}
       w="full"
       cursor={disabled ? 'not-allowed' : 'pointer'}
@@ -27,26 +27,26 @@ const CLISettingsCard = (props: CLISettingsCardProps) => {
       borderRadius={10}
       borderWidth={1}
       borderColor={disabled ? 'grey.800' : 'gradients.transaction-border'}
-      textColor={disabled ? 'grey.400' : 'grey.250'}
+      color={disabled ? 'grey.400' : 'grey.250'}
       _hover={
         !disabled
           ? {
               bg: 'gradients.transaction-card-hover',
               borderColor: 'grey.50',
-              textColor: 'grey.50',
+              color: 'grey.50',
             }
           : {}
       }
       boxShadow="lg"
       {...rest}
     >
-      <HStack spacing={2}>
-        <Icon as={icon} fontSize="xl" />
+      <HStack gap={2}>
+        <Icon as={icon} w={5} />
         <Text fontSize="sm" fontWeight={500}>
           {label}
         </Text>
       </HStack>
-    </Card>
+    </Card.Root>
   );
 };
 

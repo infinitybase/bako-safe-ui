@@ -1,12 +1,10 @@
 import {
-  AccordionItem,
   Avatar,
   Button,
   Center,
   Heading,
   HStack,
   Icon,
-  Link,
   VStack,
 } from '@chakra-ui/react';
 import { format } from 'date-fns';
@@ -43,7 +41,7 @@ interface DetailsDialogProps extends Omit<DialogModalProps, 'children'> {
 }
 
 const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
-  const { onClose, isOpen, transaction, status, isSigner } = props;
+  const { onOpenChange, open, transaction, status, isSigner } = props;
   const {
     screenSizes: { isLowerThanFourHundredAndThirty },
   } = useWorkspaceContext();
@@ -94,16 +92,16 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
   const showSignActions = awaitingAnswer && isSigner && !isCanceled && !isError;
 
   return (
-    <Dialog.Modal onClose={onClose} isOpen={isOpen}>
-      <Dialog.Body as={AccordionItem} borderTop="none">
+    <Dialog.Modal onOpenChange={onOpenChange} open={open}>
+      <Dialog.Body borderTop="none">
         <Dialog.Header
-          onClose={onClose}
+          onClose={() => onOpenChange?.({ open: false })}
           w="full"
-          maxW={{ base: 480, xs: 'unset' }}
+          maxW={{ base: 480, sm: 'unset' }}
           title="Transaction Details"
         />
-        <VStack spacing={{ base: 3, xs: 5 }} display="block">
-          <VStack w="full" spacing={4} justifyContent="space-between">
+        <VStack gap={{ base: 3, sm: 5 }} display="block">
+          <VStack w="full" gap={4} justifyContent="space-between">
             <HStack w="full">
               <HStack minH="38px">
                 <Center
@@ -135,11 +133,11 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
                   gridRow={2}
                 >
                   <Heading
-                    variant={'title-sm'}
+                    // variant={'title-sm'}
                     color="grey.200"
                     textAlign="left"
                     wordBreak="break-all"
-                    noOfLines={1}
+                    lineClamp={1}
                   >
                     {transaction.name}
                   </Heading>
@@ -154,14 +152,12 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
                   fontWeight="normal"
                   letterSpacing=".5px"
                   ml="auto"
-                  variant="secondary"
+                  // variant="secondary"
                   h="28px"
                   p="6px 8px"
                   onClick={handleViewInExplorer}
-                  rightIcon={
-                    <Icon as={UpRightArrow} textColor="grey.75" fontSize="md" />
-                  }
                 >
+                  <UpRightArrow color="grey.75" fontSize="md" />
                   View on Explorer
                 </Button>
               )}
@@ -169,25 +165,26 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
 
             <HStack w="full" justifyContent="space-between" h="38px">
               <HStack w="75%">
-                <Avatar
-                  name={transaction.predicate?.name ?? ''}
+                <Avatar.Root
                   color="grey.425"
                   bgColor="grey.925"
                   boxSize={6}
                   borderRadius="4px"
-                  sx={{
+                  css={{
                     '&>div': {
                       fontSize: '10px',
                     },
                   }}
-                />
+                >
+                  <Avatar.Fallback name={transaction.predicate?.name ?? ''} />
+                </Avatar.Root>
 
                 <Heading
-                  variant={'title-sm'}
                   color="grey.200"
                   textAlign="left"
-                  noOfLines={1}
+                  lineClamp={1}
                   wordBreak="break-all"
+                  // variant={'title-sm'}
                 >
                   {transaction.predicate?.name}
                 </Heading>
@@ -220,50 +217,47 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
                     fontSize="xs"
                     fontWeight="normal"
                     letterSpacing=".5px"
-                    variant="secondary"
                     h="28px"
                     p="6px 8px"
                     onClick={handleViewInExplorer}
-                    rightIcon={
-                      <Icon
-                        as={UpRightArrow}
-                        textColor="grey.75"
-                        fontSize="md"
-                      />
-                    }
                   >
+                    <UpRightArrow color="grey.75" fontSize="md" />
                     View on Explorer
                   </Button>
                 )}
               </>
             )}
             {!isDeposit && (
-              <Button
-                variant="secondaryV2"
-                as={Link}
+              <a
                 href={`${env.BASE_API_URL}/transaction/${transaction.id}/advanced-details`}
-                isExternal
-                w="100%"
-                size="sm"
-                h={7}
-                rightIcon={<Icon as={FileCodeIcon} fontSize="lg" />}
+                target="_blank"
+                rel="noreferrer"
+                style={{ width: '100%', textDecoration: 'none' }}
               >
-                Advanced details
-              </Button>
+                <Button
+                  // variant="secondaryV2"
+                  w="100%"
+                  size="sm"
+                  h={7}
+                >
+                  <FileCodeIcon fontSize="lg" />
+                  Advanced details
+                </Button>
+              </a>
             )}
           </VStack>
 
           <TransactionCard.Details
             transaction={transaction}
             isMobile
-            isMobileDetailsOpen={isOpen}
+            isMobileDetailsOpen={open}
           />
         </VStack>
       </Dialog.Body>
 
       <Dialog.Actions
         mt="auto"
-        sx={{
+        css={{
           '&>hr': {
             marginTop: '0',
           },
@@ -272,22 +266,22 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
         {showSignActions ? (
           <>
             <Button
-              variant="secondary"
+              // variant="secondary"
               onClick={(e) => {
                 e.stopPropagation();
                 e.preventDefault();
                 declineTransaction(transaction.hash);
               }}
-              isLoading={isLoading}
-              isDisabled={isSuccess && !awaitingAnswer}
+              loading={isLoading}
+              disabled={isSuccess && !awaitingAnswer}
             >
               Decline
             </Button>
             <Button
-              variant="primary"
+              // variant="primary"
               w="full"
-              isLoading={isLoading}
-              isDisabled={isSuccess && !awaitingAnswer}
+              loading={isLoading}
+              disabled={isSuccess && !awaitingAnswer}
               onClick={(e) => {
                 e.stopPropagation();
                 e.preventDefault();
@@ -299,7 +293,11 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
             </Button>
           </>
         ) : (
-          <Button variant="secondary" w="full" onClick={onClose}>
+          <Button
+            // variant="secondary"
+            w="full"
+            onClick={() => onOpenChange?.({ open: false })}
+          >
             Back
           </Button>
         )}

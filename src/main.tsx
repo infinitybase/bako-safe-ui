@@ -1,4 +1,3 @@
-import { ChakraProvider } from '@chakra-ui/react';
 import { FueletWalletConnector, FuelWalletConnector } from '@fuels/connectors';
 import { FuelProvider } from '@fuels/react';
 import * as Sentry from '@sentry/react';
@@ -9,8 +8,8 @@ import TagManager from 'react-gtm-module';
 import { BrowserRouter } from 'react-router-dom';
 
 import App from '@/App';
+import { Provider } from '@/components/ui/provider';
 import { BakoSafeQueryClientProvider } from '@/config';
-import { defaultTheme } from '@/themes';
 
 import { SocketProvider } from './config/socket';
 import TransactionsProvider from './modules/transactions/providers/TransactionsProvider';
@@ -52,7 +51,7 @@ TagManager.initialize(tagManagerArgs);
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <ChakraProvider theme={defaultTheme}>
+    <Provider>
       <QueryClientProvider client={fuelConnectorsQueryClient}>
         <FuelProvider
           uiConfig={{ suggestBridge: false }}
@@ -77,6 +76,6 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
           </BakoSafeQueryClientProvider>
         </FuelProvider>
       </QueryClientProvider>
-    </ChakraProvider>
+    </Provider>
   </React.StrictMode>,
 );

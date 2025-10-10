@@ -1,4 +1,3 @@
-import { PlusSquareIcon } from '@chakra-ui/icons';
 import {
   Avatar,
   Badge,
@@ -7,11 +6,10 @@ import {
   Center,
   Flex,
   HStack,
-  TabPanel,
-  TabPanels,
   Tabs,
   Text,
 } from '@chakra-ui/react';
+import { FiPlusSquare as PlusSquareIcon } from 'react-icons/fi';
 import { useParams } from 'react-router-dom';
 
 import {
@@ -59,7 +57,7 @@ const MemberTab = () => {
   );
 
   return (
-    <Card
+    <Card.Root
       w="full"
       bgColor="grey.850"
       p={4}
@@ -71,15 +69,16 @@ const MemberTab = () => {
     >
       <HStack w="full" justifyContent="space-between">
         <Center w="full" gap={4}>
-          <Avatar
+          <Avatar.Root
             size="md"
             fontSize="md"
             color="white"
             bg="grey.900"
-            variant="roundedSquare"
-            src={member?.avatar}
-            name={contactNickname ?? member?.address}
-          />
+            shape="rounded"
+          >
+            <Avatar.Fallback name={contactNickname ?? member?.address} />
+            <Avatar.Image src={member?.avatar} />
+          </Avatar.Root>
           <Flex
             w="full"
             mr={1}
@@ -106,14 +105,14 @@ const MemberTab = () => {
               rounded="xl"
               p={1}
               px={3}
-              variant={permission?.variant}
+              colorPalette={permission?.variant}
             >
               {permission?.title}
             </Badge>
           </Flex>
         </Center>
       </HStack>
-    </Card>
+    </Card.Root>
   );
 };
 
@@ -126,11 +125,11 @@ const CreateMemberPage = () => {
   } = useWorkspaceContext();
 
   const TabsPanels = (
-    <TabPanels>
-      <TabPanel p={0}>
+    <Box>
+      <Box p={0}>
         <MemberPermissionForm form={permissionForm} formState={formState} />
-      </TabPanel>
-      <TabPanel p={0}>
+      </Box>
+      <Box p={0}>
         {tabs.is(MemberTabState.SUCCESS) && (
           <FeedbackSuccess
             showAction
@@ -143,8 +142,8 @@ const CreateMemberPage = () => {
             membersFormIcon={UserPlusIcon}
           />
         )}
-      </TabPanel>
-      <TabPanel p={0}>
+      </Box>
+      <Box p={0}>
         {tabs.is(MemberTabState.UPDATE) && (
           <FeedbackUpdate
             title={formState.title}
@@ -154,19 +153,22 @@ const CreateMemberPage = () => {
             onPrimaryAction={formState.handlePrimaryAction}
             onSecondaryAction={formState.handleSecondaryAction}
             newPermission={
+              // @ts-expect-error - TODO RESOLVE THIS
               WorkspacePermissionUtils.permissions[
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 formState.newPermission ?? ''
               ].title
             }
             oldPermission={
+              // @ts-expect-error - TODO RESOLVE THIS
               WorkspacePermissionUtils.permissions[
                 formState.oldPermission ?? ''
               ].title
             }
           />
         )}
-      </TabPanel>
-      <TabPanel p={0}>
+      </Box>
+      <Box p={0}>
         {tabs.is(MemberTabState.DELETE) && (
           <FeedbackDelete
             title={formState.title}
@@ -177,20 +179,19 @@ const CreateMemberPage = () => {
             onSecondaryAction={formState.handleSecondaryAction}
           />
         )}
-      </TabPanel>
-    </TabPanels>
+      </Box>
+    </Box>
   );
 
   return (
     <Dialog.Modal
-      isOpen
-      onClose={handleClose}
+      open
+      onOpenChange={handleClose}
       size={{
         base: 'full',
         sm: 'xl',
       }}
-      closeOnOverlayClick={false}
-      autoFocus={false}
+      closeOnInteractOutside={false}
     >
       <CreateContactDialog
         form={addressBook.form}
@@ -210,9 +211,14 @@ const CreateMemberPage = () => {
         hidden={!tabs.is(MemberTabState.FORM)}
       />
       {formState.isEditMember && (
-        <Tabs maxW={480} w="full" hidden={!tabs.is(MemberTabState.FORM)}>
+        <Tabs.Root
+          value="0"
+          maxW={480}
+          w="full"
+          hidden={!tabs.is(MemberTabState.FORM)}
+        >
           <MemberTab />
-        </Tabs>
+        </Tabs.Root>
       )}
       {!formState.isEditMember && tabs.is(MemberTabState.FORM) && (
         <>
@@ -223,27 +229,26 @@ const CreateMemberPage = () => {
         </>
       )}
       <Dialog.Body mb={{ base: formState.isEditMember ? 6 : 2, sm: 1 }}>
-        <Tabs
-          index={tabs.tab}
+        <Tabs.Root
+          value={String(tabs.tab)}
           maxH="full"
-          isLazy
-          colorScheme="green"
+          lazyMount
           minH={{ base: 440, sm: 'full' }}
         >
           {TabsPanels}
-        </Tabs>
+        </Tabs.Root>
       </Dialog.Body>
       {tabs.is(MemberTabState.FORM) && (
         <>
           <Dialog.Actions
-            sx={{
+            css={{
               '&>hr': {
                 marginTop:
                   isExtraSmallDevice && formState.isEditMember ? '0' : 4,
               },
             }}
             maxW={480}
-            mt={{ base: isExtraSmallDevice ? -6 : 'auto', xs: 'unset' }}
+            mt={{ base: isExtraSmallDevice ? -6 : 'auto', sm: 'unset' }}
             p={0}
           >
             {!isEditMember ? (
@@ -256,14 +261,14 @@ const CreateMemberPage = () => {
             ) : (
               <Dialog.TertiaryAction
                 onClick={formState.handleTertiaryAction}
-                leftIcon={<RemoveIcon color="error.500" />}
-                isDisabled={!formState?.tertiaryAction}
-                isLoading={formState?.isLoading}
+                disabled={!formState?.tertiaryAction}
+                loading={formState?.isLoading}
                 w="50%"
                 _hover={{
                   opacity: 0.8,
                 }}
               >
+                <RemoveIcon color="error.500" />
                 {formState.tertiaryAction}
               </Dialog.TertiaryAction>
             )}
@@ -273,10 +278,10 @@ const CreateMemberPage = () => {
                 opacity: 0.8,
               }}
               onClick={formState?.handlePrimaryAction}
-              leftIcon={!isEditMember ? <PlusSquareIcon /> : <RefreshIcon />}
-              isDisabled={!formState?.isValid}
-              isLoading={formState?.isLoading}
+              disabled={!formState?.isValid}
+              loading={formState?.isLoading}
             >
+              {!isEditMember ? <PlusSquareIcon /> : <RefreshIcon />}
               {formState.primaryAction}
             </Dialog.PrimaryAction>
           </Dialog.Actions>

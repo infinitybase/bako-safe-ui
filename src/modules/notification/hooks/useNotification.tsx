@@ -1,33 +1,37 @@
-import { StyleProps, useToast, UseToastOptions } from '@chakra-ui/react';
 import React from 'react';
 
-import { Notification } from '@/modules/notification/components';
+import { toaster } from '@/components/ui/toaster';
+
+interface UseToastOptions {
+  status?: 'success' | 'error' | 'warning' | 'info';
+  duration?: number;
+  isClosable?: boolean;
+  position?:
+    | 'top'
+    | 'top-right'
+    | 'top-left'
+    | 'bottom'
+    | 'bottom-right'
+    | 'bottom-left';
+  title?: string;
+  description?: string;
+  icon?: React.ReactNode;
+}
 
 const useNotification = (
   options?: UseToastOptions,
   createdAccountNotification?: boolean,
 ) => {
-  const createdAccountNotificationStyle: StyleProps | null =
-    createdAccountNotification
-      ? {
-          position: 'absolute',
-          top: -14,
-          right: 5,
-        }
-      : null;
-
-  return useToast({
-    containerStyle: {
-      display: 'flex',
-      alignItems: 'flex-end',
-      flexDirection: 'column',
-      minW: 'min-content',
-      ...createdAccountNotificationStyle,
-    },
-    position: 'top-right',
-    render: (props) => <Notification {...props} />,
-    ...options,
-  });
+  return (toastOptions: UseToastOptions) => {
+    toaster.create({
+      title: toastOptions.title || options?.title,
+      description: toastOptions.description || options?.description,
+      type: toastOptions.status || options?.status || 'info',
+      duration: toastOptions.duration || options?.duration || 5000,
+      ...options,
+      ...toastOptions,
+    });
+  };
 };
 
 export { useNotification };

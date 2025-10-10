@@ -15,7 +15,7 @@ const Header = ({
   descriptionFontSize,
   ...stackProps
 }: HeaderProps) => (
-  <VStack w="full" mb={12} spacing={4} alignItems="flex-start" {...stackProps}>
+  <VStack w="full" mb={12} gap={4} alignItems="flex-start" {...stackProps}>
     <Heading fontSize={titleFontSize ? titleFontSize : '2xl'} color="grey.200">
       {title}
     </Heading>

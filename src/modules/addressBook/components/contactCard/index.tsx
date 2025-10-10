@@ -1,24 +1,24 @@
-import { CheckIcon } from '@chakra-ui/icons';
 import {
   Avatar,
   Box,
-  CardProps,
-  Divider,
+  CardRootProps,
   Heading,
   HStack,
   Icon,
   IconButton,
+  Separator,
   Text,
   useClipboard,
   VStack,
 } from '@chakra-ui/react';
+import { FiCheck as CheckIcon } from 'react-icons/fi';
 
 import { Card, CopyIcon, EditIcon, RemoveIcon } from '@/components';
 import { useNotification } from '@/modules/notification';
 
 import { UseAddressBookReturn } from '../../hooks';
 
-interface ContactCardProps extends CardProps {
+interface ContactCardProps extends CardRootProps {
   nickname: string;
   address: string;
   avatar: string;
@@ -37,7 +37,7 @@ const ContactCard = ({
   handleEdit,
   ...rest
 }: ContactCardProps) => {
-  const clipboard = useClipboard(address);
+  const clipboard = useClipboard({ value: address });
   const toast = useNotification();
 
   return (
@@ -54,18 +54,21 @@ const ContactCard = ({
       <VStack flex={1} alignItems="flex-start">
         <HStack flex={1} justifyContent="space-between" mb={1}>
           <HStack>
-            <Avatar variant="roundedSquare" src={avatar} key={address} />
+            <Avatar.Root shape="rounded" key={address}>
+              <Avatar.Fallback name={nickname || address} />
+              <Avatar.Image src={avatar} alt={address} />
+            </Avatar.Root>
             <Box ml={2}>
               <Heading
-                variant="title-md"
+                // variant="title-md"
                 color="grey.200"
                 maxW="300px"
-                isTruncated
+                truncate
               >
                 {nickname}
               </Heading>
               <Text
-                variant="description"
+                // variant="description"
                 color="grey.500"
                 wordBreak="break-word"
               >
@@ -75,15 +78,13 @@ const ContactCard = ({
           </HStack>
         </HStack>
 
-        <Divider borderColor="grey.600" my={1} />
+        <Separator borderColor="grey.600" my={1} />
 
         <HStack w="full" justifyContent={{ base: 'end', sm: 'start' }}>
           <IconButton
             aria-label="Copy"
-            variant="icon"
-            icon={<Icon as={CopyIcon} color="grey.200" fontSize={18} />}
             onClick={() => {
-              clipboard.onCopy();
+              clipboard.copy();
               toast({
                 position: 'top-right',
                 duration: 2000,
@@ -92,21 +93,27 @@ const ContactCard = ({
                 icon: <Icon fontSize="2xl" color="brand.500" as={CheckIcon} />,
               });
             }}
-          />
+          >
+            <CopyIcon />
+          </IconButton>
           {showActionButtons && (
             <>
               <IconButton
                 aria-label="Edit"
-                variant="icon"
-                icon={<Icon as={EditIcon} color="grey.200" fontSize={18} />}
+                // variant="icon"
+                // icon={<Icon as={} color="grey.200" fontSize={18} />}
                 onClick={handleEdit}
-              />
+              >
+                <EditIcon />
+              </IconButton>
               <IconButton
                 aria-label="Delete"
-                variant="icon"
-                icon={<Icon as={RemoveIcon} color="grey.200" fontSize={18} />}
+                // variant="icon"
+                // icon={<Icon as={RemoveIcon} color="grey.200" fontSize={18} />}
                 onClick={handleDelete}
-              />
+              >
+                <RemoveIcon />
+              </IconButton>
             </>
           )}
         </HStack>

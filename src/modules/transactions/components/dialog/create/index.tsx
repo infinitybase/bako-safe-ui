@@ -1,15 +1,10 @@
 import {
-  Divider,
   Flex,
   Icon,
   Popover,
-  PopoverBody,
-  PopoverCloseButton,
-  PopoverContent,
-  PopoverTrigger,
+  PopoverRoot,
+  Separator,
   Text,
-  Tooltip,
-  useDisclosure,
   VStack,
 } from '@chakra-ui/react';
 import { useMemo, useState } from 'react';
@@ -17,6 +12,8 @@ import { useWatch } from 'react-hook-form';
 
 import { Dialog, DialogModalProps } from '@/components';
 import { TooltipIcon } from '@/components/icons/tooltip';
+import { Tooltip } from '@/components/ui/tooltip';
+import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
 import { useCreateTransaction } from '@/modules/transactions/hooks';
 import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
@@ -39,8 +36,8 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
       nfts: assets.nfts,
       hasAssetBalance: assets.hasAssetBalance,
       getCoinAmount: assets.getCoinAmount,
-      onClose: props.onClose,
-      isOpen: props.isOpen,
+      onClose: props.onOpenChange,
+      open: props.open,
       createTransactionAndSign:
         createTxMethod === ECreateTransactionMethods.CREATE_AND_SIGN,
     }),
@@ -49,8 +46,8 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
       assets.nfts,
       assets.hasAssetBalance,
       assets.getCoinAmount,
-      props.onClose,
-      props.isOpen,
+      props.onOpenChange,
+      props.open,
       createTxMethod,
     ],
   );
@@ -68,7 +65,7 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
     handleClose,
   } = useCreateTransaction(createTransactionParams);
 
-  const { isOpen, onToggle, onClose } = useDisclosure();
+  const { isOpen, onToggle, onOpenChange } = useDisclosure();
   const {
     screenSizes: { isMobile },
   } = useWorkspaceContext();
@@ -116,8 +113,11 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
   return (
     <Dialog.Modal
       {...props}
-      onClose={handleClose}
-      closeOnOverlayClick={false}
+      open
+      onOpenChange={(e) => {
+        if (!e.open) handleClose();
+      }}
+      closeOnInteractOutside={false}
       size={{ base: 'full', sm: 'lg' }}
     >
       <Dialog.Header
@@ -157,23 +157,27 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
           mb={{ base: 3, sm: 6 }}
           mt={0.5}
         >
-          <Divider mb={2} w="full" />
+          <Separator mb={2} w="full" />
           <Text
             visibility={!transactionFee ? 'hidden' : 'visible'}
-            variant="description"
+            // variant="description"
           >
             Max fee:{' '}
             {isMobile ? (
-              <Popover placement="top-start" isOpen={isOpen} onClose={onClose}>
-                <PopoverTrigger>
+              <PopoverRoot
+                positioning={{ placement: 'top-start' }}
+                open={isOpen}
+                onOpenChange={onOpenChange}
+              >
+                <Popover.Trigger>
                   <Icon
                     color="grey.200"
                     boxSize="14px"
                     as={TooltipIcon}
                     onClick={onToggle}
                   />
-                </PopoverTrigger>
-                <PopoverContent
+                </Popover.Trigger>
+                <Popover.Content
                   bg="grey.825"
                   p={2}
                   borderColor="dark.100"
@@ -181,29 +185,29 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
                   display={!isOpen ? 'none' : 'block'}
                   _focus={{ ring: 'none' }}
                 >
-                  <PopoverCloseButton />
-                  <PopoverBody color="white">
+                  <Popover.CloseTrigger />
+                  <Popover.Body color="white">
                     {`Max Fee is the most that you might pay for the transaction. Only the actual fee will be deducted from your wallet. 100% of this fee goes to the network.`}
-                  </PopoverBody>
-                </PopoverContent>
-              </Popover>
+                  </Popover.Body>
+                </Popover.Content>
+              </PopoverRoot>
             ) : (
               <Tooltip
-                label="Max Fee is the most that you might pay for the transaction. Only the actual fee will be deducted from your wallet. 100% of this fee goes to the network."
-                fontSize="xs"
-                bg="grey.825"
-                rounded={8}
-                maxW={270}
-                overflow="hidden"
-                placement="top-start"
-                padding={4}
+                content="Max Fee is the most that you might pay for the transaction. Only the actual fee will be deducted from your wallet. 100% of this fee goes to the network."
+                // fontSize="xs"
+                // bg="grey.825"
+                // rounded={8}
+                // maxW={270}
+                // overflow="hidden"
+                positioning={{ placement: 'top-start' }}
+                // padding={4}
                 closeOnScroll
               >
                 <Icon color="grey.200" boxSize="14px" as={TooltipIcon} />
               </Tooltip>
             )}
           </Text>
-          <Text variant="description">
+          <Text>
             {transactionFee} {transactionFee && 'ETH'}
           </Text>
         </Flex>

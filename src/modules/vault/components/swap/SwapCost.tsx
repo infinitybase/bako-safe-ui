@@ -25,8 +25,8 @@ export const SwapCost = memo(function SwapCost({
   const rate = useSwapRate({ swapState });
 
   return (
-    <Card variant="outline" p={3} mt={1}>
-      <Stack spacing={1}>
+    <Card.Root variant="outline" p={3} mt={1}>
+      <Stack gap={1}>
         <Flex alignItems="center" justifyContent="space-between">
           <Text color="section.500" fontSize="xs">
             Rate:
@@ -88,6 +88,6 @@ export const SwapCost = memo(function SwapCost({
           )}
         </Flex>
       </Stack>
-    </Card>
+    </Card.Root>
   );
 });

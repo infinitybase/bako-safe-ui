@@ -1,7 +1,7 @@
-import { Icon } from '@chakra-ui/icons';
 import {
   Center,
   HStack,
+  Icon,
   Image,
   Stack,
   type StackProps,
@@ -40,8 +40,6 @@ interface AssetBoxInfoProps extends StackProps {
 
 const AssetBoxInfo = ({
   asset,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  isDeposit,
   isDeploy,
   isContract,
   handle,
@@ -53,7 +51,6 @@ const AssetBoxInfo = ({
   const {
     tokensUSD,
     screenSizes: {
-      isMobile,
       isLowerThanFourHundredAndThirty,
       isExtraSmall,
       isLitteSmall,
@@ -167,12 +164,12 @@ const AssetBoxInfo = ({
       borderTopWidth={1}
       direction={{
         base: !rampTransaction ? 'row' : 'column',
-        xs: 'row',
+        sm: 'row',
       }}
       {...props}
     >
       <HStack
-        justifyContent={{ base: 'space-between', xs: 'flex-start' }}
+        justifyContent={{ base: 'space-between', sm: 'flex-start' }}
         w="full"
       >
         {assetInfo && (
@@ -195,7 +192,7 @@ const AssetBoxInfo = ({
         <VStack mt={0.5} minW={isLitteSmall ? '75px' : '105px'}>
           <Text
             textAlign="center"
-            variant={isMobile ? 'title-sm' : 'title-md'}
+            // variant={isMobile ? 'title-sm' : 'title-md'}
             color="grey.75"
             fontSize={isLowerThanFourHundredAndThirty ? 'xs' : 'sm'}
           >
@@ -204,7 +201,7 @@ const AssetBoxInfo = ({
           {FIAT_CURRENCIES_ASSET_IDS.USD !== asset?.assetId && (
             <Text
               textAlign="center"
-              variant="description"
+              // variant="description"
               fontSize="xs"
               color="grey.500"
             >
@@ -220,11 +217,11 @@ const AssetBoxInfo = ({
             gap={0}
             minW={{
               base: 'auto',
-              xs: '200px',
+              sm: '200px',
             }}
             alignItems={{
               base: 'start',
-              xs: 'end',
+              sm: 'end',
             }}
           >
             <Text color="grey.75" fontSize="xs">
@@ -255,18 +252,18 @@ const AssetBoxInfo = ({
           <HStack
             alignItems="center"
             justifyContent="flex-end"
-            spacing={{ base: isLitteSmall ? 0.5 : 1, xs: 2 }}
+            gap={{ base: isLitteSmall ? 0.5 : 1, sm: 2 }}
             minW={{
               base: isExtraSmall ? '100px' : isLitteSmall ? '125px' : '135px',
-              xs: '160px',
+              sm: '160px',
               md: '170px',
             }}
           >
-            <VStack alignItems="end" spacing={1}>
+            <VStack alignItems="end" gap={1}>
               {contactOrProvider && (
                 <Stack gap={0} alignItems="end">
                   <Text
-                    isTruncated
+                    truncate
                     textOverflow="ellipsis"
                     maxW={{
                       base: isExtraSmall
@@ -274,7 +271,7 @@ const AssetBoxInfo = ({
                         : isLitteSmall
                           ? '100px'
                           : '110px',
-                      xs: '130px',
+                      sm: '130px',
                       lg: '130px',
                     }}
                     color="grey.75"
@@ -302,7 +299,7 @@ const AssetBoxInfo = ({
               {assetAddressInfo?.handle && (
                 <Handle
                   value={assetAddressInfo.handle}
-                  isTruncated
+                  truncate
                   textOverflow="ellipsis"
                   maxW={{
                     base: isExtraSmall
@@ -310,7 +307,7 @@ const AssetBoxInfo = ({
                       : isLitteSmall
                         ? '75px'
                         : '85px',
-                    xs: '105px',
+                    sm: '105px',
                     lg: '105px',
                   }}
                 />

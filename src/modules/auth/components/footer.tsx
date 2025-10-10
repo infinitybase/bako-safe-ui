@@ -11,7 +11,7 @@ const SignInFooter = () => {
     window.open(import.meta.env.VITE_FEEDBACK_FORM, '_BLANK');
 
   return (
-    <VStack spacing={1} textAlign="center" mt={isMobile ? 6 : 0}>
+    <VStack gap={1} textAlign="center" mt={isMobile ? 6 : 0}>
       <Heading fontSize="sm" color="grey.75">
         New to Fuel Network?
       </Heading>
@@ -37,7 +37,7 @@ const SignInFooter = () => {
         <Icon as={FiArrowUpRight} fontSize="md" />
       </Link>
 
-      <HStack cursor="pointer" onClick={feedbackForm} spacing={3} mt={6}>
+      <HStack cursor="pointer" onClick={feedbackForm} gap={3} mt={6}>
         <Text
           color="grey.250"
           fontWeight={400}

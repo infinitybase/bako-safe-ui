@@ -4,8 +4,6 @@ import React from 'react';
 
 import { useVerifyTransactionInformations } from '@/modules/transactions/hooks';
 import { TransactionWithVault } from '@/modules/transactions/services';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
-import { formatAssetAmount, isHex } from '@/utils';
 
 import { AssetBoxInfo } from '../../AssetBoxInfo';
 import { ContractAddresses } from '../contract-call/ContractAddresses';
@@ -17,8 +15,6 @@ interface MintTokenProps {
 const MintTokenInfos = ({ transaction }: MintTokenProps) => {
   const { isDeploy, isDeposit } = useVerifyTransactionInformations(transaction);
 
-  const { fuelsTokens } = useWorkspaceContext();
-
   const operations = transaction.summary?.operations;
   if (!operations) {
     return null;
@@ -28,7 +24,7 @@ const MintTokenInfos = ({ transaction }: MintTokenProps) => {
     <Box
       alignItems="flex-start"
       flexWrap="wrap"
-      w={{ base: 'full', xs: 'unset' }}
+      w={{ base: 'full', sm: 'unset' }}
     >
       {operations.map((operation, index) => {
         const { assetsSent, to, name } = operation;

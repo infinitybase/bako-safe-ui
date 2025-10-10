@@ -468,7 +468,7 @@ export const RootSwap = memo(
     }, [isPendingSigner, swapButtonTitle, swapMode]);
 
     return (
-      <Stack spacing={1}>
+      <Stack gap={1}>
         <CoinBox
           mode="sell"
           coin={swapState.from}
@@ -508,8 +508,8 @@ export const RootSwap = memo(
         <Flex alignItems="center" mt={4}>
           <Button
             w="full"
-            variant="primary"
-            isDisabled={
+            colorPalette="primary"
+            disabled={
               isEmptyAmounts ||
               isEmptyAssets ||
               isInsufficientBalance ||
@@ -517,7 +517,7 @@ export const RootSwap = memo(
               isInsufficientETHBalance ||
               isNoRoute
             }
-            isLoading={isLoadingPreview || isSendingTx || isLoading}
+            loading={isLoadingPreview || isSendingTx || isLoading}
             onClick={handleSubmitSwap}
           >
             {swapButtonTitle}

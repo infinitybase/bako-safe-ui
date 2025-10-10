@@ -43,11 +43,11 @@ const AssetsBalanceCard = ({
           alt="Asset Icon"
           objectFit="cover"
         />
-        <VStack alignItems="flex-start" spacing={0} w="full">
-          <Text fontSize="sm" color="grey.50" maxW="full" isTruncated>
+        <VStack alignItems="flex-start" gap={0} w="full">
+          <Text fontSize="sm" color="grey.50" maxW="full" truncate>
             {assetsInfo?.name}
           </Text>
-          <Text fontSize="sm" color="grey.50" maxW="full" isTruncated>
+          <Text fontSize="sm" color="grey.50" maxW="full" truncate>
             {assetAmount}{' '}
             <Text as="span" color="grey.400" fontSize="xs">
               {assetsInfo?.slug?.toUpperCase() ?? ''}

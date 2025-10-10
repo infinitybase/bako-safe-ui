@@ -1,4 +1,4 @@
-import { CheckIcon } from '@chakra-ui/icons';
+import { FiCheck as CheckIcon } from 'react-icons/fi';
 import {
   Box,
   HStack,
@@ -33,7 +33,7 @@ function AddressCopy({
   return (
     <HStack
       p={3}
-      spacing={4}
+      gap={4}
       cursor="pointer"
       borderRadius={10}
       justifyContent="center"

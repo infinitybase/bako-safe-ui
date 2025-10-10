@@ -1,3 +1,4 @@
+import { DialogRootProps } from '@chakra-ui/react';
 import { useCallback } from 'react';
 
 import { queryClient } from '@/config';
@@ -9,7 +10,7 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { TabState, useCreateVault } from './useCreateVault';
 
 export interface UseCreateVaultDialogProps {
-  onClose: () => void;
+  onOpenChange?: DialogRootProps['onOpenChange'];
   onCreate?: () => void;
 }
 
@@ -63,8 +64,8 @@ const useCreateVaultDialog = (props: UseCreateVaultDialogProps) => {
     form.resetField('name');
     form.resetField('minSigners');
 
-    props.onClose();
-  }, [form, props, tabs]);
+    props.onOpenChange?.({ open: false });
+  }, [form, props, tabs, rest]);
 
   const close = (close_call: () => void, step?: TabState) => () => {
     const isValid = sessionId && name && origin && request_id;

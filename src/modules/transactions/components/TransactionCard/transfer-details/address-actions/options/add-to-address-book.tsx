@@ -17,7 +17,7 @@ const AddToAddressBook = ({ address }: AddToAddressBookProps) => {
   return (
     <>
       <HStack
-        spacing={4}
+        gap={4}
         px={4}
         py={3}
         cursor="pointer"
@@ -28,7 +28,7 @@ const AddToAddressBook = ({ address }: AddToAddressBookProps) => {
         }}
       >
         <Icon as={PlusIcon} color="grey.50" fontSize="xs" />
-        <VStack alignItems="flex-start" spacing={0} fontSize="xs">
+        <VStack alignItems="flex-start" gap={0} fontSize="xs">
           <Text color="grey.50">Add to Address Book</Text>
           <Text color="grey.425">Save this address to your address book</Text>
         </VStack>

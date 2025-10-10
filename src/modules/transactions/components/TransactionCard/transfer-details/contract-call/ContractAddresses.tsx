@@ -48,31 +48,26 @@ const ContractAddresses = ({
   return (
     <HStack
       py={2}
-      spacing={{ base: 1, xs: 10 }}
+      gap={{ base: 1, sm: 10 }}
       w="full"
       justifyContent="space-between"
       borderTopWidth={1}
       {...props}
     >
       {from?.address && (
-        <HStack
-          justifyContent="flex-start"
-          spacing={{ base: 1, xs: 2 }}
-          flex={1}
-        >
-          <VStack alignItems="start" spacing={2}>
+        <HStack justifyContent="flex-start" gap={{ base: 1, sm: 2 }} flex={1}>
+          <VStack alignItems="start" gap={2}>
             {_from?.contact && (
               <Text
-                isTruncated
+                truncate
                 textOverflow="ellipsis"
                 maxW={{
                   base: isExtraSmall ? '80px' : isLitteSmall ? '90px' : '125px',
-                  xs: '180px',
                   sm: isMobile ? '180px' : '135px',
                 }}
                 fontSize={isExtraSmall ? 'xs' : 'sm'}
                 textAlign="start"
-                textColor="grey.75"
+                color="grey.75"
               >
                 {_from.contact}
               </Text>
@@ -90,11 +85,10 @@ const ContractAddresses = ({
             {_from?.handle && (
               <Handle
                 value={_from.handle}
-                isTruncated
+                truncate
                 textOverflow="ellipsis"
                 maxW={{
                   base: isExtraSmall ? '55px' : '65px',
-                  xs: '155px',
                   sm: isMobile ? '155px' : '110px',
                 }}
               />
@@ -122,20 +116,19 @@ const ContractAddresses = ({
       </Flex>
 
       {to?.address && (
-        <HStack justifyContent="flex-end" spacing={{ base: 1, xs: 2 }} flex={1}>
-          <VStack alignItems="end" spacing={2}>
+        <HStack justifyContent="flex-end" gap={{ base: 1, sm: 2 }} flex={1}>
+          <VStack alignItems="end" gap={2}>
             {_to?.contact && (
               <Text
-                isTruncated
+                truncate
                 textOverflow="ellipsis"
                 maxW={{
                   base: isExtraSmall ? '80px' : isLitteSmall ? '90px' : '125px',
-                  xs: '180px',
                   sm: isMobile ? '180px' : '135px',
                 }}
                 fontSize={isExtraSmall ? 'xs' : 'sm'}
                 textAlign="end"
-                textColor="grey.75"
+                color="grey.75"
               >
                 {_to.contact}
               </Text>
@@ -153,11 +146,10 @@ const ContractAddresses = ({
             {_to?.handle && (
               <Handle
                 value={_to.handle}
-                isTruncated
+                truncate
                 textOverflow="ellipsis"
                 maxW={{
                   base: isExtraSmall ? '55px' : '65px',
-                  xs: '155px',
                   sm: isMobile ? '155px' : '110px',
                 }}
               />

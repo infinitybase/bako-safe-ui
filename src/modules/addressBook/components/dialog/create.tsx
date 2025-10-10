@@ -19,9 +19,9 @@ const CreateContactDialog = ({
   return (
     <Dialog.Modal
       size={{ base: 'full', sm: 'lg' }}
-      isOpen={dialog.isOpen}
-      closeOnOverlayClick={false}
-      onClose={dialog.onClose}
+      open={dialog.isOpen}
+      closeOnInteractOutside={false}
+      onOpenChange={dialog.onClose}
     >
       <Dialog.Header
         position="relative"
@@ -49,12 +49,12 @@ const CreateContactDialog = ({
 
         <Dialog.PrimaryAction
           type="submit"
-          leftIcon={<SquarePlusIcon />}
           onClick={isEdit ? form.handleUpdateContact : form.handleCreateContact}
-          isDisabled={isLoading || !form.formState.isValid}
-          isLoading={isLoading}
+          disabled={isLoading || !form.formState.isValid}
+          loading={isLoading}
           aria-label={isEdit ? 'Edit address book' : 'Create address book'}
         >
+          <SquarePlusIcon />
           {isEdit ? 'Edit' : 'Add it'}
         </Dialog.PrimaryAction>
       </Dialog.Actions>

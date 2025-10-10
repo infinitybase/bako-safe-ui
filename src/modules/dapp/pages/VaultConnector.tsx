@@ -3,26 +3,26 @@ import {
   Box,
   Button,
   Card,
-  Divider,
   Flex,
   Heading,
   HStack,
+  Separator,
   Spacer,
   Spinner,
   Text,
-  useDisclosure,
   VStack,
 } from '@chakra-ui/react';
 import { useFuel } from '@fuels/react';
-import { useEffect, useState } from 'react';
-import { RiLogoutBoxRLine } from 'react-icons/ri';
 import { AddressUtils as BakoAddressUtils } from 'bakosafe';
+import { useEffect } from 'react';
+import { RiLogoutBoxRLine } from 'react-icons/ri';
 
 import { CustomSkeleton, EmptyBox, LineCloseIcon } from '@/components';
 import { useQueryParams } from '@/modules/auth';
 import { TypeUser } from '@/modules/auth/services';
 import { AddressUtils } from '@/modules/core';
 import { EConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
+import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
 import { CreateVaultDialog } from '@/modules/vault';
 import { VaultItemBox } from '@/modules/vault/components/modal/box';
 import { useVaultDrawer } from '@/modules/vault/components/modal/hook';
@@ -33,7 +33,7 @@ import { useAuthSocket, useVerifyBrowserType } from '../hooks';
 
 const VaultConnector = () => {
   const { name, origin, sessionId, request_id } = useQueryParams();
-  const [dynamicHeight, setDynamicHeight] = useState(0);
+  // const [_, setDynamicHeight] = useState(0);
 
   const {
     authDetails: { userInfos, handlers },
@@ -50,7 +50,7 @@ const VaultConnector = () => {
   const { selectedVaultId, setSelectedVaultId, currentVault, send } =
     useAuthSocket();
 
-  const { isOpen, onClose, onOpen } = useDisclosure();
+  const { isOpen, onOpenChange, onOpen } = useDisclosure();
 
   const noVaultsAvailable = isSuccess && !vaults.length;
 
@@ -86,11 +86,11 @@ const VaultConnector = () => {
     // send,
   ]);
 
-  useEffect(() => {
-    const clientWindowHeight = window.innerHeight;
-    const dividedBy = clientWindowHeight >= 750 ? 1.64 : 1.8;
-    setDynamicHeight(clientWindowHeight / dividedBy);
-  }, []);
+  // useEffect(() => {
+  //   const clientWindowHeight = window.innerHeight;
+  //   const dividedBy = clientWindowHeight >= 750 ? 1.64 : 1.8;
+  //   setDynamicHeight(clientWindowHeight / dividedBy);
+  // }, []);
 
   const logout = async () => {
     try {
@@ -106,7 +106,10 @@ const VaultConnector = () => {
 
   const getUserAddress = () => {
     if (BakoAddressUtils.isEvm(userInfos?.address)) {
-      return AddressUtils.format(BakoAddressUtils.parseFuelAddressToEth(userInfos?.address), 15);
+      return AddressUtils.format(
+        BakoAddressUtils.parseFuelAddressToEth(userInfos?.address),
+        15,
+      );
     }
 
     return isWebAuthn
@@ -134,20 +137,21 @@ const VaultConnector = () => {
             scrollbarWidth: 'none',
           }}
         >
-          <CreateVaultDialog isOpen={isOpen} onClose={onClose} />
+          <CreateVaultDialog open={isOpen} onOpenChange={onOpenChange} />
 
           <HStack gap={3} paddingX={6} paddingTop={5} w="full">
-            <Avatar
-              variant="roundedSquare"
-              src={userInfos?.avatar}
+            <Avatar.Root
+              shape="rounded"
               boxSize={'40px'}
               border="2px solid #EBA312"
-            />
+            >
+              <Avatar.Image src={userInfos?.avatar} />
+            </Avatar.Root>
 
             <VStack w="full" alignItems={'flex-start'}>
               <Text
-                variant="subtitle"
-                isTruncated
+                // variant="subtitle"
+                truncate
                 w="full"
                 color="grey.75"
                 fontSize={12}
@@ -159,9 +163,9 @@ const VaultConnector = () => {
 
               {isWebAuthn && (
                 <Text
-                  variant="subtitle"
+                  // variant="subtitle"
                   fontWeight={400}
-                  isTruncated
+                  truncate
                   w="full"
                   color="grey.550"
                   fontSize={12}
@@ -178,7 +182,7 @@ const VaultConnector = () => {
             <Spacer />
 
             <Button
-              variant="primary"
+              colorPalette="primary"
               color="grey.75"
               bgColor="grey.825"
               size="xs"
@@ -186,14 +190,14 @@ const VaultConnector = () => {
               height={8}
               fontWeight={400}
               fontSize="12px"
-              rightIcon={<RiLogoutBoxRLine size={14} />}
               onClick={logout}
             >
+              <RiLogoutBoxRLine size={14} />
               Change account
             </Button>
           </HStack>
 
-          <Divider borderColor="grey.425" marginTop={5} />
+          <Separator borderColor="grey.425" marginTop={5} />
 
           <Box
             display="flex"
@@ -206,7 +210,7 @@ const VaultConnector = () => {
             //bgColor={'green.100'}
           >
             <HStack
-              spacing={2}
+              gap={2}
               justifyContent="space-between"
               alignItems="flex-start"
             >
@@ -225,12 +229,12 @@ const VaultConnector = () => {
               )}
             </HStack>
 
-            <CustomSkeleton isLoaded={!isLoading} mt={4}>
+            <CustomSkeleton loading={isLoading} mt={4}>
               {/* Result */}
               <VStack
                 w="full"
                 mt={0}
-                spacing={2}
+                gap={2}
                 overflowY="scroll"
                 css={{
                   '&::-webkit-scrollbar': { width: '0' },
@@ -289,7 +293,7 @@ const VaultConnector = () => {
               {/* No vaults */}
               {!isFetching && noVaultsAvailable && (
                 <VStack mb={6} h={'full'} gap={5}>
-                  <Card
+                  <Card.Root
                     w="full"
                     bgColor="transparent"
                     display="flex"
@@ -330,7 +334,7 @@ const VaultConnector = () => {
                         It seems like you {"haven't"} any Vault yet.
                       </Text>
                     </Flex>
-                  </Card>
+                  </Card.Root>
                   <Button bg="grey.75" fontSize={14} onClick={onOpen} w="full">
                     Create new Vault
                   </Button>
@@ -350,9 +354,9 @@ const VaultConnector = () => {
           maxH={195}
         >
           <DappTransaction.RequestingFrom name={name} origin={origin} />
-          <HStack w="full" justifyContent="center" spacing={5}>
+          <HStack w="full" justifyContent="center" gap={5}>
             <Button
-              variant="secondary"
+              colorPalette="secondary"
               borderColor="grey.75"
               paddingX={8}
               onClick={() => {
@@ -365,11 +369,11 @@ const VaultConnector = () => {
 
             {!noVaultsAvailable && (
               <Button
-                variant="primary"
+                colorPalette="primary"
                 width="100%"
                 fontWeight={700}
                 fontSize={16}
-                isDisabled={
+                disabled={
                   !selectedVaultId ||
                   !vaults.length ||
                   isLoading ||
@@ -386,7 +390,7 @@ const VaultConnector = () => {
                     userAddress: userInfos.address,
                   });
                 }}
-                isLoading={send.isPending}
+                loading={send.isPending}
               >
                 Connect
               </Button>

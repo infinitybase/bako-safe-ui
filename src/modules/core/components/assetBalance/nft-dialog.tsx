@@ -36,9 +36,9 @@ export const NftDialog = ({
 
   return (
     <Dialog.Modal
-      size="5xl"
-      onClose={onClose}
-      isOpen={isOpen}
+      size="xl"
+      onOpenChange={onClose}
+      open={isOpen}
       modalContentProps={{
         borderWidth: '1px',
         borderColor: 'gradients.transaction-border',
@@ -96,7 +96,7 @@ export const NftDialog = ({
           style={{ scrollbarWidth: 'none' }}
         >
           <Flex w="full" alignItems="center" justifyContent="space-between">
-            <Heading fontSize="xl" noOfLines={1}>
+            <Heading fontSize="xl" lineClamp={1}>
               {nftsInfo.name || nftsInfo.metadata?.name || 'NFT Details'}
             </Heading>
 
@@ -137,6 +137,7 @@ export const NftDialog = ({
                   icon={<BTCIcon />}
                   flex="1"
                   minW="200px"
+                  alignSelf="center"
                 />
                 <NFTText
                   value={nftsInfo.contractId ?? ''}
@@ -145,11 +146,12 @@ export const NftDialog = ({
                   icon={<ContractIcon />}
                   flex="1"
                   minW="200px"
+                  alignSelf="center"
                 />
               </Flex>
             </Box>
 
-            <Stack spacing={2} mt={6}>
+            <Stack gap={2} mt={6}>
               <Heading fontSize="md">Metadata</Heading>
               <Flex
                 maxH={{ base: 'none', md: '294px' }}
@@ -158,7 +160,7 @@ export const NftDialog = ({
                 wrap="wrap"
                 gap={3}
                 pr={2}
-                sx={{
+                css={{
                   '&::-webkit-scrollbar': {
                     width: '5px',
                     backgroundColor: 'grey.900',

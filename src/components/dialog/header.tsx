@@ -34,7 +34,7 @@ const DialogHeader = ({
     w="full"
     mb={{ base: 6, sm: 12 }}
     mt={{ base: 0, sm: 6 }}
-    spacing={3}
+    gap={3}
     alignItems="flex-start"
     {...stackProps}
   >
@@ -48,7 +48,7 @@ const DialogHeader = ({
       </Heading>
       {!hideCloseButton && (
         <LineCloseIcon
-          fontSize="24px"
+          w="24px"
           aria-label="Close window"
           cursor="pointer"
           onClick={onClose}
@@ -60,7 +60,7 @@ const DialogHeader = ({
         <Text
           color={descriptionColor}
           fontSize={{ base: 'sm', sm: descriptionFontSize }}
-          variant="description"
+          // variant="description"
         >
           {description}
         </Text>

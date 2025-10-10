@@ -1,4 +1,4 @@
-import { Card, FormControl, HStack, InputGroup, Text } from '@chakra-ui/react';
+import { Card, Field, HStack, InputGroup, Text } from '@chakra-ui/react';
 import { useCallback } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
@@ -41,7 +41,7 @@ export function SendInfoBridgeMobile({
   );
 
   return (
-    <Card padding={3} w="full" bgColor="grey.825" gap={4}>
+    <Card.Root padding={3} w="full" bgColor="grey.825" gap={4}>
       <Text color="grey.425" fontSize={12}>
         Send to
       </Text>
@@ -51,7 +51,7 @@ export function SendInfoBridgeMobile({
           control={control}
           name="selectNetworkToMobile"
           render={({ field }) => (
-            <FormControl>
+            <Field.Root>
               <InputGroup position="relative" overflow="visible" zIndex={1}>
                 <AssetSelect
                   {...field}
@@ -65,7 +65,7 @@ export function SendInfoBridgeMobile({
                   }}
                 />
               </InputGroup>
-            </FormControl>
+            </Field.Root>
           )}
         />
 
@@ -73,7 +73,7 @@ export function SendInfoBridgeMobile({
           control={control}
           name="selectAssetToMobile"
           render={({ field }) => (
-            <FormControl>
+            <Field.Root>
               <InputGroup position="relative" overflow="visible" zIndex={1}>
                 <AssetSelect
                   {...field}
@@ -96,12 +96,12 @@ export function SendInfoBridgeMobile({
                   }}
                 />
               </InputGroup>
-            </FormControl>
+            </Field.Root>
           )}
         />
       </HStack>
 
       <InputAddressBridge />
-    </Card>
+    </Card.Root>
   );
 }

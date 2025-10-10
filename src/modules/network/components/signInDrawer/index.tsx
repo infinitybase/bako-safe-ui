@@ -1,10 +1,6 @@
 import {
   Center,
   Drawer,
-  DrawerBody,
-  DrawerContent,
-  DrawerHeader,
-  DrawerOverlay,
   DrawerProps,
   Heading,
   HStack,
@@ -25,7 +21,7 @@ const NetworkSignInDrawer = ({ ...props }: NetworkDrawerProps) => {
   const { networks, mode, handleSelection } = useNetworks(props.onClose);
 
   return (
-    <Drawer
+    <Drawer.Root
       {...props}
       // onClose={handleClose}
       size="sm"
@@ -33,12 +29,12 @@ const NetworkSignInDrawer = ({ ...props }: NetworkDrawerProps) => {
       placement="bottom"
       closeOnOverlayClick={false}
     >
-      <DrawerOverlay />
-      <DrawerContent bg={'dark.950'} p={4}>
-        <DrawerHeader mb={4}>
-          <VStack alignItems="flex-start" spacing={4}>
+      <Drawer.Backdrop />
+      <Drawer.Content bg={'dark.950'} p={4}>
+        <Drawer.Header mb={4}>
+          <VStack alignItems="flex-start" gap={4}>
             <HStack
-              spacing={2}
+              gap={2}
               alignItems="center"
               justifyContent="space-between"
               w="full"
@@ -50,12 +46,12 @@ const NetworkSignInDrawer = ({ ...props }: NetworkDrawerProps) => {
               </Heading>
             </HStack>
           </VStack>
-        </DrawerHeader>
+        </Drawer.Header>
 
-        <DrawerBody>
+        <Drawer.Body>
           {networks && mode === NetworkDrawerMode.SELECT && (
-            <VStack spacing={4}>
-              <VStack spacing={2} w="full">
+            <VStack gap={4}>
+              <VStack gap={2} w="full">
                 {networks.map((net) => {
                   return (
                     <Center
@@ -73,7 +69,7 @@ const NetworkSignInDrawer = ({ ...props }: NetworkDrawerProps) => {
                         px={4}
                         bg={'dark.950'}
                         borderRadius={8}
-                        spacing={4}
+                        gap={4}
                       >
                         <Icon
                           as={
@@ -95,9 +91,9 @@ const NetworkSignInDrawer = ({ ...props }: NetworkDrawerProps) => {
               </VStack>
             </VStack>
           )}
-        </DrawerBody>
-      </DrawerContent>
-    </Drawer>
+        </Drawer.Body>
+      </Drawer.Content>
+    </Drawer.Root>
   );
 };
 

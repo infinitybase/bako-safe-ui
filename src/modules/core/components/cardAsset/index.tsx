@@ -1,7 +1,7 @@
 import {
   Box,
   Card,
-  CardProps,
+  CardRootProps,
   HStack,
   Icon,
   IconButton,
@@ -9,9 +9,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { css } from '@emotion/react';
 
-import UnknownNft from '/tokens/unknown.svg';
 import { UpRightArrow } from '@/components';
 import { BakoIcon } from '@/components/icons/assets/bakoIcon';
 import { NetworkService } from '@/modules/network/services';
@@ -46,7 +44,7 @@ interface AssetDetailsProps {
   usdAmount?: number | null;
 }
 
-interface AssetCardProps extends CardProps {
+interface AssetCardProps extends CardRootProps {
   asset: Asset & { image?: string };
   isNFT?: boolean;
   usdAmount?: number | null;
@@ -74,8 +72,8 @@ const AssetDetails = ({
 
   return (
     <Box maxW="full" w="full">
-      <HStack spacing={1} align="center">
-        <Text color="grey.100" fontSize="sm" isTruncated>
+      <HStack gap={1} align="center">
+        <Text color="grey.100" fontSize="sm" truncate>
           {isNFT
             ? AddressUtils.format(assetName ?? '', 5)
             : (assetName ?? defaultAsset.name)}
@@ -83,33 +81,31 @@ const AssetDetails = ({
 
         {isNFT && (
           <IconButton
-            icon={
-              <Icon
-                className="nft-icon-1"
-                as={UpRightArrow}
-                fontSize="md"
-                color="grey.75"
-              />
-            }
             aria-label="Explorer"
             size="xs"
             minW={2}
             bg="none"
             h={3}
             _hover={{ bg: 'none' }}
-            css={css`
+            css={`
               &:hover .nft-icon-1 {
                 animation: ${shakeAnimationY} 0.5s ease-in-out;
               }
             `}
             onClick={handleRedirect}
-          />
+          >
+            <UpRightArrow
+              className="nft-icon-1"
+              fontSize="md"
+              color="grey.75"
+            />
+          </IconButton>
         )}
       </HStack>
 
       {visibleBalance ? (
-        <VStack spacing={0} align="start" mt={0} minH={45}>
-          <Text color="white" fontWeight="bold" fontSize="sm" noOfLines={1}>
+        <VStack gap={0} align="start" mt={0} minH={45}>
+          <Text color="white" fontWeight="bold" fontSize="sm" lineClamp={1}>
             {isNFT ? (
               '1'
             ) : (
@@ -135,7 +131,7 @@ const AssetDetails = ({
         </VStack>
       ) : (
         <VStack
-          spacing={0}
+          gap={0}
           display={'flex'}
           align={'start'}
           justify={'center'}
@@ -193,14 +189,14 @@ const AssetCard = ({
         rounded="md"
         alt="Asset Icon"
         objectFit="cover"
-        fallback={<Image src={UnknownNft} w={10} h={10} />}
+        // fallback={<Image src={UnknownNft} w={10} h={10} />}
       />
     ) : (
       <Icon as={BakoIcon} w={10} h={10} />
     );
 
   return (
-    <Card
+    <Card.Root
       bgColor="grey.700"
       borderColor="grey.400"
       borderWidth="1px"
@@ -212,7 +208,7 @@ const AssetCard = ({
       aria-label={`${assetsInfo.slug} Asset Card`}
       {...rest}
     >
-      <VStack align="flex-start" justify="center" w="full" h="full" spacing={1}>
+      <VStack align="flex-start" justify="center" w="full" h="full" gap={1}>
         <Box mb={4}>
           {isNFT ? (
             nftImage
@@ -240,7 +236,7 @@ const AssetCard = ({
           />
         </Box>
       </VStack>
-    </Card>
+    </Card.Root>
   );
 };
 

@@ -87,7 +87,7 @@ const AddressBookPage = () => {
 
       <VStack
         w="full"
-        spacing={6}
+        gap={6}
         p={{ base: 1, sm: 1 }}
         px={{ base: 'auto', sm: 8 }}
       >
@@ -104,14 +104,9 @@ const AddressBookPage = () => {
           <HStack w={isExtraSmall ? 'full' : 'unset'}>
             <Button
               w={isExtraSmall ? 'full' : 'unset'}
-              variant="primary"
+              colorPalette="primary"
               fontWeight="semibold"
               fontSize={15}
-              leftIcon={
-                <Box mr={-1}>
-                  <IoChevronBack size={22} />
-                </Box>
-              }
               px={3}
               bg="dark.100"
               color="grey.200"
@@ -126,25 +121,27 @@ const AddressBookPage = () => {
                     )
               }
             >
+              <IoChevronBack size={22} />
               Back home
             </Button>
 
-            <Breadcrumb display={{ base: 'none', sm: 'initial' }} ml={8}>
-              <BreadcrumbItem>
-                <BreadcrumbLink
-                  fontSize="sm"
-                  color="grey.200"
-                  fontWeight="semibold"
-                  onClick={() => goHome()}
-                >
-                  <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
-                  Home
-                </BreadcrumbLink>
-              </BreadcrumbItem>
+            <Breadcrumb.Root display={{ base: 'none', sm: 'initial' }} ml={8}>
+              <Breadcrumb.List>
+                <BreadcrumbItem>
+                  <BreadcrumbLink
+                    fontSize="sm"
+                    color="grey.200"
+                    fontWeight="semibold"
+                    onClick={() => goHome()}
+                  >
+                    <Icon mr={2} as={HomeIcon} w={4} color="grey.200" />
+                    Home
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
 
-              {/* Commented out code to temporarily disable workspaces. */}
+                {/* Commented out code to temporarily disable workspaces. */}
 
-              {/* <BreadcrumbItem hidden={onSingleWorkspace}>
+                {/* <BreadcrumbItem hidden={onSingleWorkspace}>
                 {workspace?.id && (
                   <BreadcrumbLink
                     fontSize="sm"
@@ -165,18 +162,20 @@ const AddressBookPage = () => {
                   </BreadcrumbLink>
                 )}
               </BreadcrumbItem> */}
-              <BreadcrumbItem>
-                <BreadcrumbLink
-                  id="adressbookBread"
-                  fontSize="sm"
-                  color="grey.200"
-                  fontWeight="semibold"
-                  href="#"
-                >
-                  Address book
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-            </Breadcrumb>
+                <Breadcrumb.Separator />
+                <BreadcrumbItem>
+                  <BreadcrumbLink
+                    id="adressbookBread"
+                    fontSize="sm"
+                    color="grey.200"
+                    fontWeight="semibold"
+                    href="#"
+                  >
+                    Address book
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+              </Breadcrumb.List>
+            </Breadcrumb.Root>
           </HStack>
 
           {hasPermission([
@@ -187,25 +186,27 @@ const AddressBookPage = () => {
             <Box w={isExtraSmall ? 'full' : 'unset'}>
               <Button
                 w="full"
-                variant="primary"
+                colorPalette="primary"
                 fontWeight="bold"
-                leftIcon={<FaRegPlusSquare />}
                 onClick={() => handleOpenDialog({})}
               >
+                <FaRegPlusSquare />
                 Add new favorite
               </Button>
             </Box>
           )}
         </Box>
 
-        <Stack w="full" direction={{ base: 'column', md: 'row' }} spacing={6}>
+        <Stack w="full" direction={{ base: 'column', md: 'row' }} gap={6}>
           <ActionCard.Container
             flex={1}
             onClick={() =>
               navigate(Pages.userVaults({ workspaceId: workspace?.id }))
             }
           >
-            <ActionCard.Icon icon={VaultIcon} />
+            <ActionCard.Icon>
+              <VaultIcon boxSize={6} />
+            </ActionCard.Icon>
             <Box>
               <ActionCard.Title>Vaults</ActionCard.Title>
               <ActionCard.Description>
@@ -224,7 +225,9 @@ const AddressBookPage = () => {
               );
             }}
           >
-            <ActionCard.Icon icon={TransactionsIcon} />
+            <ActionCard.Icon>
+              <TransactionsIcon boxSize={6} />
+            </ActionCard.Icon>
             <Box>
               <ActionCard.Title>Transactions</ActionCard.Title>
               <ActionCard.Description>
@@ -239,7 +242,9 @@ const AddressBookPage = () => {
               navigate(Pages.addressBook({ workspaceId: workspace?.id }))
             }
           >
-            <ActionCard.Icon icon={AddressBookIcon} />
+            <ActionCard.Icon>
+              <AddressBookIcon boxSize={6} />
+            </ActionCard.Icon>
             <Box>
               <ActionCard.Title>Address book</ActionCard.Title>
               <ActionCard.Description>
@@ -258,7 +263,7 @@ const AddressBookPage = () => {
           gap={isExtraSmall ? 2 : 4}
           mt={6}
         >
-          <Text variant="subtitle" fontWeight="semibold" color="grey.75">
+          <Text fontWeight="semibold" color="grey.75">
             Address book
           </Text>
         </Box>
@@ -267,7 +272,7 @@ const AddressBookPage = () => {
           w="full"
           templateColumns={{
             base: 'repeat(1, 1fr)',
-            xs: 'repeat(2, 1fr)',
+            sm: 'repeat(2, 1fr)',
             md: 'repeat(3, 1fr)',
             xl: 'repeat(3, 1fr)',
             '2xl': 'repeat(4, 1fr)',

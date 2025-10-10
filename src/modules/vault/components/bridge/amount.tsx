@@ -38,7 +38,7 @@ export function AmountBrigde({
       exit={{ x: 50, opacity: 0 }}
       transition={{ duration: 0.4, ease: 'easeOut' }}
     >
-      <Card
+      <Card.Root
         variant="outline"
         padding={3}
         paddingBottom={1}
@@ -73,8 +73,8 @@ export function AmountBrigde({
           <Button
             maxH="28px"
             minW="48px"
-            isDisabled={false}
-            variant="secondary"
+            disabled={false}
+            colorPalette="secondary"
             borderRadius={6}
             padding={'4px 6px 4px 6px'}
             fontSize={10}
@@ -86,8 +86,8 @@ export function AmountBrigde({
           <Button
             maxH="28px"
             minW="48px"
-            isDisabled={false}
-            variant="secondary"
+            disabled={false}
+            colorPalette="secondary"
             onClick={() => handleMaxAmount()}
             borderRadius={6}
             padding={'4px 6px 4px 6px'}
@@ -110,7 +110,7 @@ export function AmountBrigde({
             </Text>
           )}
         </HStack>
-      </Card>
+      </Card.Root>
     </MotionBox>
   );
 }

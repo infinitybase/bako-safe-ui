@@ -1,4 +1,4 @@
-import { Button, Divider, HStack, Icon, VStack } from '@chakra-ui/react';
+import { Button, HStack, Icon, Separator, VStack } from '@chakra-ui/react';
 import { useMemo, useState } from 'react';
 
 import { SwapIcon } from '@/components';
@@ -46,9 +46,9 @@ export function FormMobilePageBrigde({
       />
 
       <HStack w="full" align="center" marginY={3}>
-        <Divider borderColor="grey.950" h="1px" flex="1" />
+        <Separator borderColor="grey.950" h="1px" flex="1" />
         <Icon as={SwapIcon} color="grey.550" fontSize="18px" />
-        <Divider borderColor="grey.950" h="1px" flex="1" />
+        <Separator borderColor="grey.950" h="1px" flex="1" />
       </HStack>
 
       <SendInfoBridgeMobile
@@ -59,14 +59,14 @@ export function FormMobilePageBrigde({
       <DetailsBridge />
 
       <Button
-        isDisabled={
+        disabled={
           !isFormComplete ||
           !!errorAmount ||
           !!errorForm ||
           isPendingSigner ||
           notEnoughBalanceETH
         }
-        variant="primary"
+        colorPalette="primary"
         type="submit"
         fontWeight={600}
         fontSize={14}

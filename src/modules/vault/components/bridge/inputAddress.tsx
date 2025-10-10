@@ -1,14 +1,4 @@
-import {
-  Card,
-  FormControl,
-  FormHelperText,
-  FormLabel,
-  Input,
-  InputGroup,
-  InputRightElement,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { Card, Field, Input, InputGroup, Text, VStack } from '@chakra-ui/react';
 import { useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
@@ -23,7 +13,7 @@ export function InputAddressBridge() {
   const { isMobile } = useScreenSize();
 
   return (
-    <Card
+    <Card.Root
       variant="outline"
       padding={isMobile ? 0 : 3}
       w="full"
@@ -46,9 +36,16 @@ export function InputAddressBridge() {
                 : field?.value;
 
             return (
-              <FormControl isInvalid={fieldState.invalid} paddingTop={0}>
+              <Field.Root invalid={fieldState.invalid} paddingTop={0}>
                 <InputGroup
-                  sx={{
+                  endElement={
+                    <LineCloseIcon
+                      color="grey.75"
+                      fontSize="16px"
+                      onClick={() => field.onChange('')}
+                    />
+                  }
+                  css={{
                     paddingTop: 0,
                     paddingBottom: 0,
                     '> input': {
@@ -58,49 +55,34 @@ export function InputAddressBridge() {
                     },
                   }}
                 >
-                  <InputRightElement
-                    top={'7%'}
-                    cursor="pointer"
-                    right={2}
-                    h="calc(100% - 6px)"
-                    w="fit-content"
-                    pl={2}
-                  >
-                    <LineCloseIcon
-                      color="grey.75"
-                      fontSize="16px"
-                      onClick={() => field.onChange('')}
-                    />
-                  </InputRightElement>
-
                   <Input
                     value={displayValue}
                     onChange={field.onChange}
                     placeholder=" "
-                    variant="dark"
+                    // variant="dark"
                     onFocus={() => setIsFocused(true)}
                     onBlur={() => setIsFocused(false)}
                     paddingTop={0}
                   />
-                  {!isFocused && !field.value && (
-                    <FormLabel
-                      id="destination_addr"
-                      fontSize={'14px !important'}
-                      color={'grey.250 !important'}
-                      paddingTop={0}
-                    >
-                      {'Enter address'}
-                    </FormLabel>
-                  )}
                 </InputGroup>
-                <FormHelperText paddingTop={0} color="error.500">
+                {!isFocused && !field.value && (
+                  <Field.Label
+                    id="destination_addr"
+                    fontSize={'14px !important'}
+                    color={'grey.250 !important'}
+                    paddingTop={0}
+                  >
+                    {'Enter address'}
+                  </Field.Label>
+                )}
+                <Field.HelperText paddingTop={0} color="error.500">
                   {fieldState.error?.message}
-                </FormHelperText>
-              </FormControl>
+                </Field.HelperText>
+              </Field.Root>
             );
           }}
         />
       </VStack>
-    </Card>
+    </Card.Root>
   );
 }

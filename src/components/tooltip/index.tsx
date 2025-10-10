@@ -1,15 +1,8 @@
-import {
-  Icon,
-  Popover,
-  PopoverBody,
-  PopoverCloseButton,
-  PopoverContent,
-  PopoverTrigger,
-  Tooltip as ChakraTooltip,
-  useDisclosure,
-} from '@chakra-ui/react';
+import { Icon, Popover } from '@chakra-ui/react';
 
 import { TooltipIcon } from '@/components/icons/tooltip';
+import { Tooltip as ChakraTooltip } from '@/components/ui/tooltip';
+import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
 import { useVerifyBrowserType } from '@/modules/dapp/hooks';
 
 export interface TooltipProps {
@@ -18,26 +11,26 @@ export interface TooltipProps {
 }
 
 const Tooltip = ({ text, placment }: TooltipProps) => {
-  const { isOpen, onToggle, onClose } = useDisclosure();
+  const { isOpen, onToggle, onOpenChange } = useDisclosure();
   const { isMobile } = useVerifyBrowserType();
 
   return (
     <div>
       {isMobile ? (
-        <Popover
-          placement={placment ?? 'top-start'}
-          isOpen={isOpen}
-          onClose={onClose}
+        <Popover.Root
+          positioning={{ placement: placment ?? 'top-start' }}
+          open={isOpen}
+          onOpenChange={onOpenChange}
         >
-          <PopoverTrigger>
+          <Popover.Trigger>
             <Icon
               color="grey.200"
               boxSize="14px"
               as={TooltipIcon}
               onClick={onToggle}
             />
-          </PopoverTrigger>
-          <PopoverContent
+          </Popover.Trigger>
+          <Popover.Content
             bg="grey.825"
             py={4}
             px={2}
@@ -46,26 +39,26 @@ const Tooltip = ({ text, placment }: TooltipProps) => {
             display={!isOpen ? 'none' : 'block'}
             _focus={{ ring: 'none' }}
           >
-            <PopoverCloseButton />
-            <PopoverBody color="white">
+            <Popover.CloseTrigger />
+            <Popover.Body color="white">
               {text ??
                 `Max Fee is the most that you might pay for the transaction. Only the actual fee will be deducted from your wallet. 100% of this fee goes to the network.`}
-            </PopoverBody>
-          </PopoverContent>
-        </Popover>
+            </Popover.Body>
+          </Popover.Content>
+        </Popover.Root>
       ) : (
         <ChakraTooltip
-          label={
+          content={
             text ??
             'Max Fee is the most that you might pay for the transaction. Only the actual fee will be deducted from your wallet. 100% of this fee goes to the network.'
           }
-          fontSize="xs"
-          bg="grey.825"
-          rounded={8}
-          maxW={270}
-          overflow="hidden"
-          placement={placment ?? 'top-start'}
-          padding={4}
+          // fontSize="xs"
+          // bg="grey.825"
+          // rounded={8}
+          // maxW={270}
+          // overflow="hidden"
+          positioning={{ placement: placment ?? 'top-start' }}
+          // padding={4}
           closeOnScroll
         >
           <Icon color="grey.200" boxSize="14px" as={TooltipIcon} />

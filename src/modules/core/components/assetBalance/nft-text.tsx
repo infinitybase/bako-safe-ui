@@ -27,7 +27,7 @@ export const NFTText = ({
     position="relative"
     {...rest}
   >
-    {icon && <Icon fontSize={25}>{icon}</Icon>}
+    {icon && <Icon boxSize="25px">{icon}</Icon>}
     <Box>
       <Text fontSize="xs" color="section.500">
         {title}

@@ -1,3 +1,4 @@
+import { DialogOpenChangeDetails } from '@chakra-ui/react';
 import { useMutation } from '@tanstack/react-query';
 import { IAssetGroupById } from 'bakosafe';
 import { BN, bn } from 'fuels';
@@ -27,8 +28,8 @@ const recipientMock =
   'fuel1tn37x48zw6e3tylz2p0r6h6ua4l6swanmt8jzzpqt4jxmmkgw3lszpcedp';
 
 interface UseCreateTransactionParams {
-  onClose: () => void;
-  isOpen: boolean;
+  onClose?: (e: DialogOpenChangeDetails) => void;
+  open?: boolean;
   assets: Asset[] | undefined;
   nfts?: NFT[];
   hasAssetBalance: (assetId: string, value: string) => boolean;
@@ -270,7 +271,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
   );
 
   const handleClose = () => {
-    props?.onClose();
+    props?.onClose?.({ open: false });
   };
 
   const transactionsForm = useWatch({

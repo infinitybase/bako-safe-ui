@@ -1,4 +1,3 @@
-import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import {
   Avatar,
   Box,
@@ -7,12 +6,14 @@ import {
   Grid,
   Heading,
   HStack,
+  Icon,
   Stack,
   Text,
   VStack,
 } from '@chakra-ui/react';
 import { QRCodeSVG } from 'qrcode.react';
 import { useMemo } from 'react';
+import { FiEye as ViewIcon, FiEyeOff as ViewOffIcon } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 
 import {
@@ -98,7 +99,7 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
             xl: isLarge ? 'repeat(1, 1fr)' : '3fr 1fr',
           }}
         >
-          <CustomSkeleton isLoaded={!vault.isLoading} w="full">
+          <CustomSkeleton loading={vault.isLoading} w="full">
             <Card
               p={{ base: 4, sm: 8 }}
               bg="gradients.transaction-card"
@@ -109,7 +110,7 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
             >
               <Stack direction={{ base: 'column', sm: 'row' }}>
                 <VStack
-                  spacing={{ base: 6, sm: 9 }}
+                  gap={{ base: 6, sm: 9 }}
                   w="full"
                   pr={{ base: 0, sm: 3 }}
                   justifyContent="space-between"
@@ -117,27 +118,27 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                   <Stack
                     direction={{ base: 'column', sm: 'row' }}
                     alignItems={{ base: 'flex-start', sm: 'center' }}
-                    spacing={{ base: 3, sm: 6 }}
+                    gap={{ base: 3, sm: 6 }}
                     w="full"
                     maxW={{ base: 'full', sm: '100%' }}
                   >
                     <Center>
-                      <Avatar
-                        variant="roundedSquare"
-                        name={vault.data?.name}
+                      <Avatar.Root
                         bg="grey.900"
                         color="white"
                         size={'lg'}
                         p={{ base: 10, sm: 10 }}
-                      />
+                      >
+                        <Avatar.Fallback name={vault.data?.name} />
+                      </Avatar.Root>
                     </Center>
                     <Box maxW="59%">
                       <Heading
                         mb={1}
-                        variant="title-xl"
+                        // variant="title-xl"
                         fontSize={{ base: 'md', sm: 'xl' }}
-                        isTruncated
-                        maxW={{ base: 250, xs: 400, md: 350, lg: 350 }}
+                        truncate
+                        maxW={{ base: 250, sm: 400, md: 350, lg: 350 }}
                       >
                         {isExtraSmall
                           ? limitCharacters(vault.data?.name ?? '', 10)
@@ -146,9 +147,9 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
 
                       <Box maxW={420}>
                         <Text
-                          maxW={{ base: '110px', xs: 'unset' }}
-                          variant="description"
-                          isTruncated
+                          maxW={{ base: '110px', sm: 'unset' }}
+                          // variant="description"
+                          truncate
                           textOverflow="ellipsis"
                         >
                           {vault?.data?.description}
@@ -157,7 +158,7 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                     </Box>
                   </Stack>
 
-                  <VStack w="full" spacing={5}>
+                  <VStack w="full" gap={5}>
                     <Box w="full" maxW="full">
                       <Stack
                         justifyContent={{
@@ -169,16 +170,16 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                         mb={2}
                       >
                         <Text
-                          variant="description"
-                          maxW={{ base: 20, xs: 'unset' }}
-                          noOfLines={2}
+                          // variant="description"
+                          maxW={{ base: 20, sm: 'unset' }}
+                          lineClamp={2}
                         >
                           Vault balance
                         </Text>
-                        <HStack spacing={2}>
-                          <HStack spacing={2}>
+                        <HStack gap={2}>
+                          <HStack gap={2}>
                             <Heading
-                              variant="title-xl"
+                              // variant="title-xl"
                               fontSize={{ base: 'md', sm: 'lg' }}
                             >
                               {assets.visibleBalance
@@ -196,9 +197,15 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                             }
                           >
                             {assets.visibleBalance ? (
-                              <ViewIcon boxSize={{ base: 5, sm: 6 }} />
+                              <Icon
+                                as={ViewIcon}
+                                boxSize={{ base: 5, sm: 6 }}
+                              />
                             ) : (
-                              <ViewOffIcon boxSize={{ base: 5, sm: 6 }} />
+                              <Icon
+                                as={ViewOffIcon}
+                                boxSize={{ base: 5, sm: 6 }}
+                              />
                             )}
                           </Box>
                         </HStack>
@@ -208,16 +215,16 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                     <HStack
                       w="full"
                       justifySelf="end"
-                      spacing={{ base: 8, sm: 40 }}
+                      gap={{ base: 8, sm: 40 }}
                       borderTopWidth={'1px'}
                       borderTopColor={'dark.100'}
                       justifyContent={'flex-start'}
                       pt={4}
                     >
-                      <VStack w="full" spacing={2} alignItems="flex-start">
+                      <VStack w="full" gap={2} alignItems="flex-start">
                         <Button
                           minW={isExtraSmall ? 110 : { base: 125, sm: 130 }}
-                          variant="primary"
+                          // variant="primary"
                           onClick={() =>
                             isTestnet
                               ? openFaucet(vault.data?.predicateAddress)
@@ -228,9 +235,9 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                           {isTestnet ? 'Faucet' : 'Add Assets'}
                         </Button>
                         <Text
-                          variant="description"
+                          // variant="description"
                           fontSize="xs"
-                          position={{ base: 'unset', xs: 'absolute' }}
+                          position={{ base: 'unset', sm: 'absolute' }}
                           bottom={{ base: -1, sm: 2 }}
                         >
                           Use the faucet to add assets to the vault
@@ -239,16 +246,16 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
 
                       <VStack
                         w="full"
-                        spacing={0}
-                        alignSelf={{ base: 'flex-start', xs: 'unset' }}
+                        gap={0}
+                        alignSelf={{ base: 'flex-start', sm: 'unset' }}
                         alignItems={'flex-end'}
                       >
                         <Button
                           minW={isExtraSmall ? 110 : { base: 125, sm: 130 }}
-                          variant="primary"
+                          colorPalette="primary"
                           alignSelf="end"
                           position={'relative'}
-                          isDisabled={
+                          disabled={
                             !assets?.hasBalance ||
                             blockedTransfers ||
                             !makeTransactionsPerm ||
@@ -269,13 +276,13 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                         {isEthBalanceLowerThanReservedAmount &&
                           !blockedTransfers && (
                             <Text
-                              variant="description"
+                              // variant="description"
                               textAlign={isExtraSmall ? 'left' : 'right'}
                               fontSize="xs"
                               flex={1}
                               mt={2}
                               color="error.500"
-                              position={{ base: 'unset', xs: 'absolute' }}
+                              position={{ base: 'unset', sm: 'absolute' }}
                               bottom={{ base: -1, sm: 2 }}
                             >
                               Not enough balance.
@@ -284,26 +291,26 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
 
                         {blockedTransfers ? (
                           <Text
-                            variant="description"
+                            // variant="description"
                             textAlign={isExtraSmall ? 'left' : 'right'}
                             fontSize="xs"
                             flex={1}
                             mt={2}
                             color="error.500"
-                            position={{ base: 'unset', xs: 'absolute' }}
+                            position={{ base: 'unset', sm: 'absolute' }}
                             bottom={{ base: -1, sm: 2 }}
                           >
                             Pending transactions
                           </Text>
                         ) : !makeTransactionsPerm ? (
                           <Text
-                            variant="description"
+                            // variant="description"
                             textAlign={isExtraSmall ? 'left' : 'right'}
                             fontSize="xs"
                             flex={1}
                             mt={2}
                             color="error.500"
-                            position={{ base: 'unset', xs: 'absolute' }}
+                            position={{ base: 'unset', sm: 'absolute' }}
                             bottom={{ base: -1, sm: 2 }}
                           >
                             {`You don't have permission to send transactions.`}
@@ -311,7 +318,7 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                         ) : (
                           <Text
                             hidden={true}
-                            variant="description"
+                            // variant="description"
                             fontSize="xs"
                           >
                             Send single or batch <br /> payments with multi
@@ -365,12 +372,12 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
             </Card>
           </CustomSkeleton>
 
-          <CustomSkeleton isLoaded={!vault.isLoading}>
+          <CustomSkeleton loading={vault.isLoading}>
             <Grid
               gap={2}
               templateColumns={{
                 base: '1fr',
-                xs: 'repeat(2, 1fr)',
+                sm: 'repeat(2, 1fr)',
                 md: '1fr',
                 lg: vaultRequiredSizeToColumnLayout
                   ? 'repeat(1, 1fr)'
@@ -404,7 +411,7 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
       {selectedFeature && (
         <CommingSoonDialog
           description={selectedFeature.dialogDescription}
-          isOpen={commingSoonDialog.isOpen}
+          isOpen={commingSoonDialog.open}
           onClose={commingSoonDialog.onClose}
           notifyHandler={selectedFeature.notifyHandler}
           title="Coming Soon"

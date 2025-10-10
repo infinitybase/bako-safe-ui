@@ -16,7 +16,7 @@ const NotificationCard = ({
   ...rest
 }: NotificationCardProps) => {
   return (
-    <Card
+    <Card.Root
       w="100%"
       bgColor="dark.300"
       cursor="pointer"
@@ -44,7 +44,7 @@ const NotificationCard = ({
       <Text color="grey.450" variant="description" fontSize={14}>
         {notificationDescription(title, summary)}
       </Text>
-    </Card>
+    </Card.Root>
   );
 };
 

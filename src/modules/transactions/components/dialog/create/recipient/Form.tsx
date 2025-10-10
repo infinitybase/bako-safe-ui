@@ -108,7 +108,7 @@ const RecipientFormField = (props: RecipientFormFieldProps) => {
         isLoading={createContactRequest.isPending}
         isEdit={false}
       />
-      <VStack spacing={5}>
+      <VStack gap={5}>
         <Controller
           name={`transactions.${index}.value`}
           control={control}

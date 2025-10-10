@@ -1,9 +1,9 @@
 import {
   Avatar,
   Card,
-  Divider,
   HStack,
   Icon,
+  Separator,
   Text,
   VStack,
 } from '@chakra-ui/react';
@@ -36,7 +36,7 @@ const ConnectorInfos = ({
         : txSummaryName;
 
   return (
-    <Card
+    <Card.Root
       bgColor="grey.825"
       borderColor="grey.925"
       borderRadius={10}
@@ -50,9 +50,9 @@ const ConnectorInfos = ({
         Requesting a transaction from:
       </Text>
 
-      <Divider borderColor="grey.950" my={4} />
+      <Separator borderColor="grey.950" my={4} />
 
-      <HStack width="100%" alignItems="center" spacing={4} h="32px">
+      <HStack width="100%" alignItems="center" gap={4} h="32px">
         <Avatar
           borderRadius="6.4px"
           color="white"
@@ -60,7 +60,7 @@ const ConnectorInfos = ({
           name={transaction?.predicate?.name}
           size="sm"
         />
-        <VStack alignItems="flex-start" spacing={0}>
+        <VStack alignItems="flex-start" gap={0}>
           <Text
             variant="subtitle"
             fontSize="14px"
@@ -89,7 +89,7 @@ const ConnectorInfos = ({
         >
           <Icon as={MinimalAlertIcon} color="warning.600" fontSize={28} />
 
-          <VStack spacing={0} alignItems="flex-start">
+          <VStack gap={0} alignItems="flex-start">
             <Text fontWeight="bold" color="#FFC010" fontSize="sm">
               Double check it!
             </Text>
@@ -100,7 +100,7 @@ const ConnectorInfos = ({
           </VStack>
         </HStack>
       )}
-    </Card>
+    </Card.Root>
   );
 };
 export { ConnectorInfos };

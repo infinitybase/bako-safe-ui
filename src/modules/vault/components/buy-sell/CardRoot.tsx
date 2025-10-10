@@ -2,7 +2,7 @@ import { Card, CardBody, CardBodyProps } from '@chakra-ui/react';
 
 export const CardRoot = ({ children, ...rest }: CardBodyProps) => {
   return (
-    <Card variant="outline">
+    <Card.Root variant="outline">
       <CardBody
         gap={2}
         display="flex"
@@ -12,6 +12,6 @@ export const CardRoot = ({ children, ...rest }: CardBodyProps) => {
       >
         {children}
       </CardBody>
-    </Card>
+    </Card.Root>
   );
 };

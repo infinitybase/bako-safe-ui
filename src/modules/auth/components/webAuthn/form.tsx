@@ -1,4 +1,4 @@
-import { FormControl, FormHelperText, Text, VStack } from '@chakra-ui/react';
+import { Field,  Text, VStack } from '@chakra-ui/react';
 import { Controller } from 'react-hook-form';
 
 import { AutocompleteBadge } from '@/components';
@@ -34,7 +34,7 @@ const WebAuthnForm = (props: WebAuthnFormProps) => {
   } = formData;
 
   return (
-    <VStack w="full" alignItems="flex-start" spacing={4}>
+    <VStack w="full" alignItems="flex-start" gap={4}>
       <Text
         color="grey.250"
         lineHeight="14.52px"
@@ -48,7 +48,7 @@ const WebAuthnForm = (props: WebAuthnFormProps) => {
         control={control}
         render={({ field, fieldState }) => {
           return (
-            <FormControl isInvalid={fieldState.invalid}>
+            <Field.Root invalid={fieldState.invalid}>
               <AutocompleteBadge
                 id="fixed_id"
                 label="Username"
@@ -65,13 +65,13 @@ const WebAuthnForm = (props: WebAuthnFormProps) => {
                 badgeStatus={inputBadge?.status}
                 badgeLabel={inputBadge?.label}
               />
-              <FormHelperText
+              <Field.HelperText
                 ml={2}
                 color={errors.username ? 'error.500' : 'grey.200'}
               >
                 {errors.username && errors.username?.message}
-              </FormHelperText>
-            </FormControl>
+              </Field.HelperText>
+            </Field.Root>
           );
         }}
       />

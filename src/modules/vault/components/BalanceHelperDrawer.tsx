@@ -1,21 +1,13 @@
-import {
-  Button,
-  Drawer,
-  DrawerContent,
-  DrawerOverlay,
-  DrawerProps,
-  Heading,
-  Text,
-} from '@chakra-ui/react';
+import { Button, Drawer, Heading, Text } from '@chakra-ui/react';
 
-interface BalanceHelperDrawerProps extends Omit<DrawerProps, 'children'> {}
+interface BalanceHelperDrawerProps extends Omit<Drawer.RootProps, 'children'> {}
 
 const BalanceHelperDrawer = (props: BalanceHelperDrawerProps) => {
   const { isOpen, onClose } = props;
   return (
-    <Drawer onClose={onClose} isOpen={isOpen} placement="bottom">
-      <DrawerOverlay bg="overlay" backdropFilter="auto" />
-      <DrawerContent pt={2} bg="dark.950">
+    <Drawer.Root onClose={onClose} isOpen={isOpen} placement="bottom">
+      <Drawer.Backdrop bg="overlay" backdropFilter="auto" />
+      <Drawer.Content pt={2} bg="dark.950">
         <Heading
           color="grey.50"
           fontWeight={700}
@@ -53,8 +45,8 @@ const BalanceHelperDrawer = (props: BalanceHelperDrawerProps) => {
         >
           Close
         </Button>
-      </DrawerContent>
-    </Drawer>
+      </Drawer.Content>
+    </Drawer.Root>
   );
 };
 

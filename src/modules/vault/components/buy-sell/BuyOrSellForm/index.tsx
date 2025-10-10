@@ -154,7 +154,7 @@ export const BuyOrSellForm = ({
 
   return (
     <FormProvider {...methods}>
-      <Stack as="form" onSubmit={handleSubmit(beforeSubmit)} spacing={2}>
+      <Stack as="form" onSubmit={handleSubmit(beforeSubmit)} gap={2}>
         <SourceCurrency
           maxAmount={limits?.maximumAmount}
           minAmount={limits?.minimumAmount}
@@ -173,11 +173,11 @@ export const BuyOrSellForm = ({
         {errorQuote && <QuoteError />}
         <SelectPaymentMethod />
         <Button
-          isDisabled={!!errorQuote || !provider}
+          disabled={!!errorQuote || !provider}
           type="submit"
-          variant="primary"
+          colorPalette="primary"
           mt={3}
-          isLoading={isSubmitting}
+          loading={isSubmitting}
         >
           {type === 'BUY' ? 'Buy' : 'Sell'}
           {' token'}

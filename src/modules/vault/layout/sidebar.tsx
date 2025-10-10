@@ -1,4 +1,4 @@
-import { Box, BoxProps, Divider, Icon, VStack } from '@chakra-ui/react';
+import { Box, BoxProps, Icon, Separator, VStack } from '@chakra-ui/react';
 import AutoPlay from 'embla-carousel-autoplay';
 import useEmblaCarousel from 'embla-carousel-react';
 import { useCallback } from 'react';
@@ -73,7 +73,7 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
       {...rest}
     >
       <VStack
-        position="fixed"
+        position="sticky"
         width={isLargerThan1210 ? '269px' : 'full'}
         pr={isLargerThan1210 ? 'unset' : 8}
         pb={4}
@@ -81,7 +81,7 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
         top={isLargerThan1210 ? '72px' : 14}
         bottom={0}
         overflowY="scroll"
-        __css={{
+        css={{
           '&::-webkit-scrollbar': {
             display: 'none',
           },
@@ -92,8 +92,8 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
       >
         {/* VAULT Modal LIST */}
         <VaultListModal
-          isOpen={drawer.isOpen}
-          onClose={drawer.onClose}
+          open={drawer.isOpen}
+          onOpenChange={drawer.onOpenChange}
           onCloseAll={() => {
             drawer.onClose();
             rest.onClose?.();
@@ -129,7 +129,7 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
           }}
         />
 
-        <Divider borderColor="dark.100" mt={8} mb={4} />
+        <Separator borderColor="dark.100" mt={8} mb={4} w="full" />
 
         {/* MENU */}
         <SidebarMenu.List w="100%" mb={4}>

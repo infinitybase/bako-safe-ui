@@ -33,7 +33,7 @@ const RecentVaultsItem = memo(
   }: RecentVaultsItemProps) => {
     const hasMore = extraCount > 0;
     return (
-      <CustomSkeleton isLoaded={!isLoading} maxH={{ base: 180, sm: 190 }}>
+      <CustomSkeleton loading={isLoading} maxH={{ base: 180, sm: 190 }}>
         <GridItem>
           {isLastVault && hasMore ? (
             <ExtraVaultCard

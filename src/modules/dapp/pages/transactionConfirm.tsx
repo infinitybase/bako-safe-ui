@@ -1,4 +1,4 @@
-import { TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
+import { Box } from '@chakra-ui/react';
 import { useState } from 'react';
 
 import { Dialog } from '@/components/dialog';
@@ -41,10 +41,12 @@ const TransactionConfirm = () => {
   } = useWorkspaceContext();
   const { data: wallet } = useMyWallet();
 
+  const currentView = tabs.tab;
+
   return (
-    <Tabs isLazy index={tabs.tab}>
-      <TabPanels>
-        <TabPanel p={0}>
+    <Box>
+      {currentView === 0 && (
+        <Box p={0}>
           <DappTransactionWrapper
             title="Create transaction"
             startTime={startTime}
@@ -67,7 +69,7 @@ const TransactionConfirm = () => {
               ) : (
                 <Dialog.PrimaryAction
                   size="md"
-                  isLoading={isSending}
+                  loading={isSending}
                   onClick={sendTransaction}
                   fontSize={14}
                 >
@@ -76,9 +78,11 @@ const TransactionConfirm = () => {
               )
             }
           />
-        </TabPanel>
+        </Box>
+      )}
 
-        <TabPanel p={0}>
+      {currentView === 1 && (
+        <Box p={0}>
           <DappTransactionWrapper
             title="Sign transaction"
             startTime={startTime}
@@ -91,7 +95,7 @@ const TransactionConfirm = () => {
             primaryActionButton={
               <Dialog.PrimaryAction
                 size="md"
-                isLoading={isSigning}
+                loading={isSigning}
                 onClick={() => signTransaction()}
                 fontSize={14}
               >
@@ -99,23 +103,27 @@ const TransactionConfirm = () => {
               </Dialog.PrimaryAction>
             }
           />
-        </TabPanel>
+        </Box>
+      )}
 
-        <TabPanel p={0}>
+      {currentView === 2 && (
+        <Box p={0}>
           <DappTransactionSuccess
             title="Transaction created!"
             description="Your transaction is pending to be signed. Sign at Bako Safe."
           />
-        </TabPanel>
+        </Box>
+      )}
 
-        <TabPanel p={0}>
+      {currentView === 3 && (
+        <Box p={0}>
           <DappTransactionSuccess
             title="Transaction created and signed!"
             description="Your transaction is pending to be signed by others. You can check the transaction status at Bako Safe."
           />
-        </TabPanel>
-      </TabPanels>
-    </Tabs>
+        </Box>
+      )}
+    </Box>
   );
 };
 

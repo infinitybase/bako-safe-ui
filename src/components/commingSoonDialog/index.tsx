@@ -20,9 +20,9 @@ const CommingSoonDialog = ({
   return (
     <Dialog.Modal
       id="coming-soon-toast"
-      isOpen={isOpen}
-      onClose={onClose}
-      closeOnOverlayClick={false}
+      open={isOpen}
+      onOpenChange={onClose}
+      closeOnInteractOutside={false}
       size={{
         base: 'full',
         sm: 'sm',
@@ -35,7 +35,7 @@ const CommingSoonDialog = ({
         description=""
         hidden={false}
         mb={0}
-        mt={{ base: 4, xs: 0 }}
+        mt={{ base: 4, sm: 0 }}
         maxW={385}
         h={6}
       />
@@ -50,15 +50,15 @@ const CommingSoonDialog = ({
         mb="18px"
         mt={{ base: 40, sm: '2px' }}
       >
-        <VStack w="full" spacing={8}>
+        <VStack w="full" gap={8}>
           <NotifyIcon w={24} h={24} />
 
-          <VStack spacing={6}>
+          <VStack gap={6}>
             <Heading fontSize="xl" color="grey.75">
               {title}
             </Heading>
             <Text
-              variant="description"
+              // variant="description"
               color="grey.250"
               fontSize="xs"
               textAlign="center"
@@ -81,7 +81,7 @@ const CommingSoonDialog = ({
         <Dialog.PrimaryAction
           flex={3}
           hidden={false}
-          variant="emptyState"
+          // variant="emptyState"
           onClick={notifyHandler}
           _hover={{
             opacity: 0.8,

@@ -1,4 +1,4 @@
-import { Avatar, Center, chakra, Divider, Text } from '@chakra-ui/react';
+import { Avatar, Center, chakra, Separator, Text } from '@chakra-ui/react';
 import { AddressType, ChainName } from 'fuels';
 
 import { AddressCopy } from '@/components/addressCopy';
@@ -17,7 +17,7 @@ interface RecipientProps {
 }
 
 export const RecipientCard = chakra(Card, {
-  baseStyle: {
+  base: {
     py: 4,
     w: 'full',
     display: 'flex',
@@ -48,23 +48,24 @@ const DappTransactionRecipient = ({
       h={149}
       w={174}
     >
-      <Text variant="description" textAlign="center" mt={-2} color="grey.250">
+      <Text textAlign="center" mt={-2} color="grey.250">
         {isSender ? 'From' : 'To'}
         {(!isSender && isContract && '(Contract)') ||
           (!isSender && isContract && !isVault && '(Contract)')}
         {isVault && '(Bako Safe)'}:
       </Text>
-      <Divider borderColor="dark.100" mt={1} mb="10px" />
+      <Separator borderColor="dark.100" mt={1} mb="10px" />
       <Center flexDirection="column" h={88}>
-        <Avatar
+        <Avatar.Root
           mb={2}
-          name={title}
           color="white"
           bgColor="grey.950"
-          variant="roundedSquare"
+          shape="rounded"
           boxSize="40px"
-        />
-        <Text textAlign="center" variant="title" mb={1} fontSize={14}>
+        >
+          <Avatar.Fallback name={title} />
+        </Avatar.Root>
+        <Text textAlign="center" mb={1} fontSize={14}>
           {title}
         </Text>
 

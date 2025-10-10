@@ -5,7 +5,6 @@ import {
   Icon,
   Stack,
   Text,
-  useDisclosure,
   VStack,
 } from '@chakra-ui/react';
 import { useMemo } from 'react';
@@ -15,6 +14,7 @@ import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
 import { AddressBookIcon } from '@/components/icons/address-book';
 import { TransactionsIcon } from '@/components/icons/transactions';
 import { HomeQueryKey } from '@/modules/core';
+import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
 import { Pages } from '@/modules/core/routes';
 import { useTransactionSocketListener } from '@/modules/transactions/hooks/events/useTransactionsSocketListener';
 import { CreateVaultDialog } from '@/modules/vault';
@@ -38,7 +38,7 @@ const HomePage = () => {
     [latestPredicates],
   );
 
-  const { isOpen, onClose, onOpen } = useDisclosure();
+  const { isOpen, setOpen, onOpen } = useDisclosure();
 
   const workspaceId = userInfos.workspace?.id;
 
@@ -51,11 +51,11 @@ const HomePage = () => {
       id="top"
       w="full"
       scrollMargin={20}
-      spacing={6}
+      gap={6}
       p={{ base: 1, sm: 1 }}
       px={{ base: 'auto', sm: 8 }}
     >
-      <CreateVaultDialog isOpen={isOpen} onClose={onClose} />
+      <CreateVaultDialog open={isOpen} onOpenChange={(e) => setOpen(e.open)} />
       <HStack w="full" h="10" justifyContent="space-between">
         <HStack visibility={{ base: 'hidden', sm: 'visible' }}>
           <Icon as={HomeIcon} fontSize="lg" color="grey.200" />
@@ -64,18 +64,14 @@ const HomePage = () => {
           </Text>
         </HStack>
         <Box>
-          <Button
-            variant="primary"
-            fontWeight="bold"
-            leftIcon={<FaRegPlusSquare />}
-            onClick={onOpen}
-          >
+          <Button colorPalette="primary" fontWeight="bold" onClick={onOpen}>
+            <FaRegPlusSquare />
             Create vault
           </Button>
         </Box>
       </HStack>
-      <Stack w="full" direction={{ base: 'column', md: 'row' }} spacing={6}>
-        <CustomSkeleton isLoaded={!latestPredicates.isLoading}>
+      <Stack w="full" direction={{ base: 'column', md: 'row' }} gap={6}>
+        <CustomSkeleton loading={latestPredicates.isLoading}>
           <ActionCard.Container
             data-testid="vaultstab"
             flex={1}
@@ -83,7 +79,9 @@ const HomePage = () => {
               navigate(Pages.userVaults({ workspaceId: workspaceId }))
             }
           >
-            <ActionCard.Icon icon={VaultIcon} />
+            <ActionCard.Icon>
+              <VaultIcon w={7} />
+            </ActionCard.Icon>
             <Box>
               <ActionCard.Title>Vaults</ActionCard.Title>
               <ActionCard.Description>
@@ -93,7 +91,7 @@ const HomePage = () => {
           </ActionCard.Container>
         </CustomSkeleton>
 
-        <CustomSkeleton isLoaded={!latestPredicates.isLoading}>
+        <CustomSkeleton loading={latestPredicates.isLoading}>
           <ActionCard.Container
             data-testid="transactionTab"
             flex={1}
@@ -105,10 +103,9 @@ const HomePage = () => {
               );
             }}
           >
-            <ActionCard.Icon
-              icon={TransactionsIcon}
-              //isUpcoming={hasTransactions ? false : true}
-            />
+            <ActionCard.Icon>
+              <TransactionsIcon w={7} />
+            </ActionCard.Icon>
             <Box>
               <ActionCard.Title>Transactions</ActionCard.Title>
               <ActionCard.Description>
@@ -118,7 +115,7 @@ const HomePage = () => {
           </ActionCard.Container>
         </CustomSkeleton>
 
-        <CustomSkeleton isLoaded={!latestPredicates.isLoading}>
+        <CustomSkeleton loading={latestPredicates.isLoading}>
           <ActionCard.Container
             data-testid="adressBookTab"
             flex={1}
@@ -126,7 +123,9 @@ const HomePage = () => {
               navigate(Pages.addressBook({ workspaceId: workspaceId }))
             }
           >
-            <ActionCard.Icon icon={AddressBookIcon} />
+            <ActionCard.Icon>
+              <AddressBookIcon w={7} />
+            </ActionCard.Icon>
             <Box>
               <ActionCard.Title>Address book</ActionCard.Title>
               <ActionCard.Description>
@@ -140,7 +139,7 @@ const HomePage = () => {
       {/* RECENT VAULTS */}
       <CustomSkeleton
         h="full"
-        isLoaded={!latestPredicates.isLoading}
+        loading={latestPredicates.isLoading}
         minH={latestPredicates.isLoading ? '$100vh' : 'fit-content'}
       >
         {!!recentVaults?.length && (

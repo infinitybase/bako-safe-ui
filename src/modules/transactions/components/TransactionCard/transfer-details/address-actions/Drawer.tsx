@@ -1,10 +1,4 @@
-import {
-  Divider,
-  Drawer,
-  DrawerContent,
-  DrawerOverlay,
-  useDisclosure,
-} from '@chakra-ui/react';
+import { Drawer, Separator, useDisclosure } from '@chakra-ui/react';
 
 import { AddressActionsProps } from './AddressActions';
 import { AddressActionsButton } from './Button';
@@ -13,25 +7,25 @@ import { AddToAddressBook, CopyAddress, GoToBakoId } from './options';
 const AddressActionsDrawer = (props: AddressActionsProps) => {
   const { address, handle, hasContact } = props;
 
-  const { isOpen, onClose, onOpen } = useDisclosure();
+  const { open, onClose, onOpen, setOpen } = useDisclosure();
 
   return (
     <>
       <AddressActionsButton onClick={onOpen} />
 
-      <Drawer
-        isOpen={isOpen}
-        onClose={onClose}
+      <Drawer.Root
+        open={open}
+        onOpenChange={(e) => setOpen(e.open)}
         size="sm"
-        variant="solid-dark"
+        // variant="solid-dark"
         placement="bottom"
       >
-        <DrawerOverlay zIndex={1400} />
-        <DrawerContent bg={'dark.950'} p={0} borderTopRadius={8}>
+        <Drawer.Backdrop zIndex={1400} />
+        <Drawer.Content bg={'dark.950'} p={0} borderTopRadius={8}>
           {!hasContact && (
             <>
               <AddToAddressBook address={address} />
-              <Divider borderColor="grey.825" />
+              <Separator borderColor="grey.825" />
             </>
           )}
           <CopyAddress
@@ -40,12 +34,12 @@ const AddressActionsDrawer = (props: AddressActionsProps) => {
           />
           {handle && (
             <>
-              <Divider borderColor="grey.825" />
+              <Separator borderColor="grey.825" />
               <GoToBakoId handle={handle} />
             </>
           )}
-        </DrawerContent>
-      </Drawer>
+        </Drawer.Content>
+      </Drawer.Root>
     </>
   );
 };

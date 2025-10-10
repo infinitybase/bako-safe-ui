@@ -1,4 +1,4 @@
-import { Box, Divider, HStack, Text, VStack } from '@chakra-ui/react';
+import { Box, Separator, HStack, Text, VStack } from '@chakra-ui/react';
 
 import { Dialog } from '@/components';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
@@ -64,14 +64,14 @@ const TermsOfUseDialog = (props: TermsOfUseDialogProps) => {
         descriptionFontSize="sm"
       />
 
-      <Divider maxW={585} borderColor={'grey.500'} mt={6} mb={6} />
+      <Separator maxW={585} borderColor={'grey.500'} mt={6} mb={6} />
 
       <Dialog.Body flex={1} maxH="100vh" maxW={585} pb={6}>
         <VStack
           h={textHeight()}
           flex={1}
           aria-label="Terms of Use"
-          spacing={0}
+          gap={0}
           overflowY={'scroll'}
           pr={4}
           sx={{
@@ -116,7 +116,7 @@ const TermsOfUseDialog = (props: TermsOfUseDialogProps) => {
             ))}
           </VStack>
 
-          <Divider my={10} borderColor={'grey.500'} />
+          <Separator my={10} borderColor={'grey.500'} />
 
           <Text fontSize={'lg'} fontWeight={'bold'}>
             Bako Safe Privacy Policy

@@ -1,18 +1,11 @@
-import {
-  Box,
-  Button,
-  HStack,
-  Icon,
-  Text,
-  Tooltip,
-  useDisclosure,
-  VStack,
-} from '@chakra-ui/react';
+import { Box, Button, HStack, Icon, Text, VStack } from '@chakra-ui/react';
 import { Vault } from 'bakosafe';
 import { useMemo, useState } from 'react';
 
 import { FuelIcon, RigIcon, TooltipNotEnoughBalance } from '@/components';
+import { Tooltip } from '@/components/ui/tooltip';
 import { useGetTokenInfos, useScreenSize } from '@/modules/core';
+import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
 import { tokensIDS } from '@/modules/core/utils/assets/address';
 import { useNetworks } from '@/modules/network/hooks';
 import { availableNetWorks, NetworkType } from '@/modules/network/services';
@@ -101,7 +94,7 @@ export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
     setModal('');
   };
 
-  const { isOpen: isOpenErrorBalance, onClose: onCloseErrorBalance } =
+  const { isOpen: isOpenErrorBalance, onOpenChange: onOpenChangeErrorBalance } =
     useDisclosure();
 
   const emptyEthOrFuel = useMemo(
@@ -111,7 +104,7 @@ export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
 
   const buttonStake = (
     <Button
-      variant="secondaryV2"
+      colorPalette="secondaryV2"
       color="grey.75"
       size="sm"
       opacity={isMainnet ? 1 : 0.3}
@@ -119,7 +112,7 @@ export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
       borderRadius={'6px'}
       fontSize={12}
       onClick={() => handleOpenModal('STAKE')}
-      isDisabled={
+      disabled={
         !isMainnet ||
         !assets.assets ||
         isPendingSigner ||
@@ -141,7 +134,7 @@ export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
         <VStack alignItems={'flex-end'} gap={0}>
           {emptyEthOrFuel || isPendingSigner ? (
             <Tooltip
-              label={
+              content={
                 isPendingSigner ? (
                   <TooltipPendingTx />
                 ) : (
@@ -150,10 +143,10 @@ export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
                   })
                 )
               }
-              hasArrow
-              placement="top"
-              bg="dark.700"
-              color="white"
+              showArrow
+              positioning={{ placement: 'top' }}
+              // bg="dark.700"
+              // color="white"
             >
               <Box display="inline-block" cursor="not-allowed">
                 {buttonStake}
@@ -171,7 +164,7 @@ export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
         isLoading={!assets.assets}
       >
         <Button
-          variant="secondaryV2"
+          colorPalette="secondaryV2"
           color="grey.75"
           opacity={isMainnet ? 1 : 0.3}
           size="sm"
@@ -179,9 +172,7 @@ export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
           borderRadius={'6px'}
           fontSize={12}
           onClick={() => window.open(WITHDRAW_URL, '_blank')}
-          isDisabled={
-            !isMainnet || !assets.assets || Number(stFuelTokens) === 0
-          }
+          disabled={!isMainnet || !assets.assets || Number(stFuelTokens) === 0}
         >
           Withdraw
         </Button>
@@ -207,19 +198,19 @@ export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
         borderRadius={9}
         height={{ base: '70px', sm: 16, md: 36 }}
         padding={{ base: 3, md: 4 }}
-        backgroundImage={'/bg-stake-card.png'}
+        bgImage="url('/bg-stake-card.png')"
         backgroundSize="cover"
         alignContent={{ base: 'center', md: 'flex-start' }}
       >
         {isMobile ? (
           <BalanceHelperDrawer
-            onClose={onCloseErrorBalance}
-            isOpen={isOpenErrorBalance}
+            onOpenChange={onOpenChangeErrorBalance}
+            open={isOpenErrorBalance}
           />
         ) : (
           <BalanceHelperDialog
-            onClose={onCloseErrorBalance}
-            isOpen={isOpenErrorBalance}
+            onOpenChange={onOpenChangeErrorBalance}
+            open={isOpenErrorBalance}
           />
         )}
 
@@ -228,7 +219,7 @@ export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
           height={{ base: 'none', md: 'flex' }}
           onClick={handleOpenMobileItem}
         >
-          <Icon as={FuelIcon} fontSize={{ base: 32, md: 33 }} />
+          <Icon as={FuelIcon} width="32px" />
 
           <Text fontWeight={500} fontSize={isMobile ? 12 : 14}>
             Liquid Stake FUEL
@@ -241,7 +232,7 @@ export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
             display={{ base: 'none', md: 'flex' }}
           >
             <Text fontSize={10}>powered by</Text>
-            <RigIcon fontSize={32} />
+            <RigIcon w="32px" />
           </HStack>
 
           {Number(stFuelTokens) > 0 ? (
@@ -272,7 +263,7 @@ export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
                 py="4px"
                 _hover={{ bg: '#f5f5f513' }}
                 onClick={() => handleOpenModal('STAKE')}
-                isDisabled={
+                disabled={
                   !isMainnet ||
                   !assets.assets ||
                   isPendingSigner ||

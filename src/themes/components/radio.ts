@@ -26,7 +26,7 @@ const baseStyle = defineStyle({
 const Radio = defineStyleConfig({
   baseStyle,
   defaultProps: {
-    colorScheme: 'dark',
+    colorPalette: 'dark',
   },
   variants: {
     custom: baseStyle,

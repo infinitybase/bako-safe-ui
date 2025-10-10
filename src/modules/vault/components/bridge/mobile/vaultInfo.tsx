@@ -15,22 +15,23 @@ export function VaultInfoBridgeMobile() {
   }, [vault]);
 
   return (
-    <Card padding={3} w="full" bgColor="grey.825" gap={3}>
+    <Card.Root padding={3} w="full" bgColor="grey.825" gap={3}>
       <Text color="grey.425" fontSize={12}>
         Vault
       </Text>
       <HStack w="full" align="center">
-        <Avatar
+        <Avatar.Root
           borderRadius={6}
           bgColor="grey.950"
           color="grey.75"
-          name={vault?.data?.name}
           boxShadow="0px 1.5px 1.5px 0px rgba(0, 0, 0, 0.4);"
           boxSize="30px"
           sx={{
             '& div': { fontSize: '12px' },
           }}
-        />
+        >
+          <Avatar.Fallback name={vault?.data?.name} />
+        </Avatar.Root>
 
         <VStack w="full" align="start" gap={0}>
           <Text color="grey.50" fontSize={12} fontWeight={500}>
@@ -55,6 +56,6 @@ export function VaultInfoBridgeMobile() {
           />
         </VStack>
       </HStack>
-    </Card>
+    </Card.Root>
   );
 }

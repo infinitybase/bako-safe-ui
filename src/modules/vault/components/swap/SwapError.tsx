@@ -1,9 +1,9 @@
-import { WarningIcon } from '@chakra-ui/icons';
 import { Card, Text } from '@chakra-ui/react';
+import { FiAlertTriangle as WarningIcon } from 'react-icons/fi';
 
 export const SwapError = ({ error }: { error: string }) => {
   return (
-    <Card
+    <Card.Root
       variant="outline"
       p={3}
       gap={2}
@@ -14,6 +14,6 @@ export const SwapError = ({ error }: { error: string }) => {
       <Text color="warning.500" fontSize="xs">
         {error}
       </Text>
-    </Card>
+    </Card.Root>
   );
 };

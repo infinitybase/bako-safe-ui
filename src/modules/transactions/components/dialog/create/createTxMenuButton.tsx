@@ -3,9 +3,7 @@ import {
   Heading,
   HStack,
   Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
+  MenuRoot,
   Text,
 } from '@chakra-ui/react';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -61,39 +59,42 @@ const CreateTxMenuButton = ({
   }, [updateMenuWidth]);
 
   return (
-    <Menu
-      styleConfig={{
-        bgColor: 'transparent',
-      }}
-      placement="top-end"
+    <MenuRoot
+      // styleConfig={{
+      //   bgColor: 'transparent',
+      // }}
+      positioning={{ placement: 'top-end' }}
     >
       <HStack w="full" ref={actionMenuRef}>
-        <HStack w="full" spacing={0.5}>
+        <HStack w="full" gap={0.5}>
           <Dialog.PrimaryAction
             aria-label="Create Transaction Primary Action"
-            isDisabled={isDisabled}
-            isLoading={isLoading}
+            disabled={isDisabled}
+            loading={isLoading}
             onClick={() => handleCreateTransactionByMethod()}
             _hover={{
-              opacity: !isDisabled && 0.8,
+              opacity: !isDisabled ? 0.8 : 1,
             }}
             borderRadius="8px 0px 0px 8px"
           >
             {createTxMethod}
           </Dialog.PrimaryAction>
-          <MenuButton
+          <Menu.Trigger
             aria-label={'Menu select mode create tx'}
-            as={Button}
-            rightIcon={<ChevronDownIcon fontSize="24px" color="dark.950" />}
-            variant="primary"
+            asChild
+            colorPalette="primary"
             w="20px"
             pl={2}
             borderRadius="0px 8px 8px 0px"
-            isDisabled={isDisabled || isLoading}
-          />
+            disabled={isDisabled || isLoading}
+          >
+            <Button>
+              <ChevronDownIcon fontSize="24px" color="dark.950" />
+            </Button>
+          </Menu.Trigger>
         </HStack>
 
-        <MenuList
+        <Menu.Content
           bg="dark.950"
           borderRadius="xl"
           overflow="hidden"
@@ -101,7 +102,8 @@ const CreateTxMenuButton = ({
           border="1px solid #2B2927"
           width={`${menuWidth}px`}
         >
-          <MenuItem
+          <Menu.Item
+            value="create-and-sing"
             display="flex"
             flexDir="column"
             alignItems="start"
@@ -125,15 +127,15 @@ const CreateTxMenuButton = ({
               {ECreateTransactionMethods.CREATE_AND_SIGN}
             </Heading>
             <Text
-              variant="description"
+              // variant="description"
               color={'grey.425'}
               fontSize="xs"
               lineHeight="12.1px"
             >
               Create and sign the transaction
             </Text>
-          </MenuItem>
-          <MenuItem
+          </Menu.Item>
+          <Menu.Item
             display="flex"
             flexDir="column"
             aria-label="Menu item create tx"
@@ -142,6 +144,7 @@ const CreateTxMenuButton = ({
             onClick={() => setCreateTxMethod(ECreateTransactionMethods.CREATE)}
             _hover={{ background: 'dark.150' }}
             padding="12px 4px 12px 16px"
+            value="create"
           >
             <Heading
               fontSize="sm"
@@ -156,17 +159,17 @@ const CreateTxMenuButton = ({
               {ECreateTransactionMethods.CREATE}
             </Heading>
             <Text
-              variant="description"
+              // variant="description"
               color={'grey.425'}
               fontSize="xs"
               lineHeight="12.1px"
             >
               Just create the transaction
             </Text>
-          </MenuItem>
-        </MenuList>
+          </Menu.Item>
+        </Menu.Content>
       </HStack>
-    </Menu>
+    </MenuRoot>
   );
 };
 

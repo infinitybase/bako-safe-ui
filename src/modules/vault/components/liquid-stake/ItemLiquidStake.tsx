@@ -16,12 +16,15 @@ export function ItemLiquidStake({
   isLoading = false,
 }: ItemLiquidStakeProps) {
   return (
-    <Card
+    <Card.Root
       flexDirection="row"
       borderRadius={9}
       flex={1}
       alignItems="center"
-      background={'var(--chakra-colors-dark-950)'}
+      bg="dark.950"
+      css={{
+        background: 'var(--chakra-colors-dark-950)',
+      }}
       width="full"
       minW={value.length > 9 ? '235px' : '140px'}
     >
@@ -35,7 +38,7 @@ export function ItemLiquidStake({
           <Text fontSize={12} color={'gray'}>
             {label}
           </Text>
-          <CustomSkeleton isLoaded={!isLoading}>
+          <CustomSkeleton loading={isLoading}>
             <Text fontSize={16} fontWeight={700} color="white">
               {value}
             </Text>
@@ -43,6 +46,6 @@ export function ItemLiquidStake({
         </VStack>
         {children}
       </HStack>
-    </Card>
+    </Card.Root>
   );
 }

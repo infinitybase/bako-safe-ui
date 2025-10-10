@@ -100,7 +100,7 @@ const Input = defineStyleConfig({
   baseStyle,
   defaultProps: {
     variant: 'default',
-    colorScheme: 'grey',
+    colorPalette: 'grey',
   },
   variants: {
     default: defaultStyle,

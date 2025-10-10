@@ -1,4 +1,4 @@
-import { Badge, CircularProgress, Icon } from '@chakra-ui/react';
+import { Badge, Spinner } from '@chakra-ui/react';
 
 import { PendingIcon } from '@/components';
 
@@ -15,11 +15,10 @@ const WaitingSignatureBadge = (props: WaitingSignatureBadgeProps) => {
 
   if (isLoading) {
     return (
-      <CircularProgress
-        size="20px"
-        trackColor="dark.100"
-        color="brand.500"
-        isIndeterminate
+      <Spinner
+        size="lg"
+        css={{ '--spinner-track-color': 'dark.100' }}
+        colorPalette="brand.500"
       />
     );
   }
@@ -29,8 +28,8 @@ const WaitingSignatureBadge = (props: WaitingSignatureBadgeProps) => {
   }
 
   return (
-    <Badge h={5} variant="yellow" fontSize="xs">
-      <Icon as={PendingIcon} fontSize={12} mr={1} />
+    <Badge h={5} colorPalette="yellow" variant="outline" fontSize="xs">
+      <PendingIcon w="12px" mr={1} />
       {`${quantity} ${label}`}
     </Badge>
   );

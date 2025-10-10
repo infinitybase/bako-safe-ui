@@ -3,16 +3,13 @@ import {
   Badge,
   Box,
   Button,
-  Divider,
   Drawer,
-  DrawerBody,
-  DrawerContent,
-  DrawerHeader,
-  DrawerOverlay,
-  DrawerProps,
+  DrawerRootProps,
   Flex,
   Heading,
   HStack,
+  Portal,
+  Separator,
   Text,
   VStack,
 } from '@chakra-ui/react';
@@ -33,7 +30,7 @@ import { useWorkspaceContext } from '../../WorkspaceProvider';
 import { WorkspaceCard } from '../card';
 
 interface WorkspaceSettingsDrawerProps
-  extends Pick<DrawerProps, 'isOpen' | 'onClose'> {}
+  extends Pick<DrawerRootProps, 'open' | 'onOpenChange'> {}
 
 interface MemberCardProps {
   member: Member;
@@ -65,12 +62,12 @@ const MemberCard = ({ member, workspace, onEdit }: MemberCardProps) => {
       PermissionRoles.OWNER,
     ]) && permission?.title?.toUpperCase() !== PermissionRoles.OWNER;
 
-  const contactNickname = contactByAddress(member?.address!)?.nickname;
+  const contactNickname = contactByAddress(member.address)?.nickname;
 
   return (
     <Card
-      alignSelf={{ base: 'start', xs: 'unset' }}
-      h={{ base: 24, xs: 20 }}
+      alignSelf={{ base: 'start', sm: 'unset' }}
+      h={{ base: 24, sm: 20 }}
       w="full"
       maxW="full"
       bg="gradients.transaction-card"
@@ -81,7 +78,7 @@ const MemberCard = ({ member, workspace, onEdit }: MemberCardProps) => {
         cursor: 'pointer',
         borderColor: 'brand.600',
       }}
-      px={{ base: 3, xs: 6 }}
+      px={{ base: 3, sm: 6 }}
       py={2}
     >
       <Box
@@ -89,21 +86,24 @@ const MemberCard = ({ member, workspace, onEdit }: MemberCardProps) => {
         w="full"
         h="full"
         justifyContent="space-between"
-        alignItems={{ base: 'start', xs: 'center' }}
-        flexDir={{ base: 'column', xs: 'row' }}
+        alignItems={{ base: 'start', sm: 'center' }}
+        flexDir={{ base: 'column', sm: 'row' }}
       >
         <Box display="flex" alignItems="center" justifyContent="center" gap={3}>
-          <Avatar
+          <Avatar.Root
             boxSize="40px"
             fontSize="md"
             color="white"
             bg="grey.900"
-            variant="roundedSquare"
-            name={
-              contactByAddress(member?.address!)?.nickname ?? member?.address
-            }
-            src={avatar}
-          />
+            shape="rounded"
+          >
+            <Avatar.Fallback
+              name={
+                contactByAddress(member?.address)?.nickname ?? member?.address
+              }
+            />
+            <Avatar.Image src={avatar} />
+          </Avatar.Root>
           <Box mr={1}>
             <Text fontWeight="semibold" color="grey.200">
               {contactNickname ?? ''}
@@ -118,16 +118,16 @@ const MemberCard = ({ member, workspace, onEdit }: MemberCardProps) => {
         </Box>
 
         <HStack
-          w={{ base: '100%', xs: '32%' }}
-          spacing={4}
+          w={{ base: '100%', sm: '32%' }}
+          gap={4}
           justifyContent="space-between"
         >
           <Badge
             rounded="xl"
             fontSize="xs"
-            py={{ base: 0.5, xs: 1 }}
-            px={{ base: 2, xs: 4 }}
-            variant={permission?.variant}
+            py={{ base: 0.5, sm: 1 }}
+            px={{ base: 2, sm: 4 }}
+            colorPalette={permission?.variant}
           >
             {permission?.title}
           </Badge>
@@ -139,7 +139,7 @@ const MemberCard = ({ member, workspace, onEdit }: MemberCardProps) => {
                 opacity: 0.8,
               }}
               onClick={() => onEdit(member?.id)}
-              boxSize={{ base: 5, xs: 6 }}
+              boxSize={{ base: 5, sm: 6 }}
             />
           )}
         </HStack>
@@ -164,26 +164,31 @@ const WorkspaceSettingsDrawer = ({
   const isEditingOrCreatingMember = pathname.includes('/members');
 
   return (
-    <Drawer {...drawerProps} size="md" variant="solid-dark" placement="right">
+    <Drawer.Root
+      {...drawerProps}
+      size="md"
+      // variant="solid-dark"
+      placement="end"
+    >
       {!isEditingOrCreatingMember && (
-        <>
-          <DrawerOverlay />
-          <DrawerContent>
+        <Portal>
+          <Drawer.Backdrop />
+          <Drawer.Content>
             <Flex mb={5} w="full" justifyContent="flex-end" zIndex={200}>
               <HStack
                 cursor="pointer"
-                onClick={drawerProps.onClose}
-                spacing={2}
+                onClick={() => drawerProps.onOpenChange?.({ open: false })}
+                gap={2}
               >
                 <LineCloseIcon fontSize="24px" aria-label="Close window" />
               </HStack>
             </Flex>
 
-            <DrawerHeader
+            <Drawer.Header
               position="relative"
               top={isExtraSmall ? '-42px' : -12}
             >
-              <VStack alignItems="flex-start" spacing={5}>
+              <VStack alignItems="flex-start" gap={5}>
                 <Heading
                   fontSize={isExtraSmall ? '18px' : 'xl'}
                   fontWeight="semibold"
@@ -195,9 +200,9 @@ const WorkspaceSettingsDrawer = ({
                   This is the workspace that you are seeing.
                 </Text>
               </VStack>
-            </DrawerHeader>
+            </Drawer.Header>
 
-            <DrawerBody
+            <Drawer.Body
               mt={-2}
               overflowY="scroll"
               css={{
@@ -206,7 +211,7 @@ const WorkspaceSettingsDrawer = ({
               }}
             >
               <WorkspaceCard
-                key={currentWorkspace?.id!}
+                // key={currentWorkspace?.id!}
                 workspace={currentWorkspace!}
                 counter={{
                   members: currentWorkspace?.members?.length ?? 0,
@@ -214,7 +219,7 @@ const WorkspaceSettingsDrawer = ({
                 }}
                 mb={10}
               />
-              <Divider mb={6} />
+              <Separator mb={6} />
               <Flex
                 w="full"
                 mb={4}
@@ -236,7 +241,7 @@ const WorkspaceSettingsDrawer = ({
                 <Button
                   size="md"
                   h={10}
-                  variant="primary"
+                  // variant="primary"
                   bgColor="grey.200"
                   border="none"
                   gap={2}
@@ -273,11 +278,11 @@ const WorkspaceSettingsDrawer = ({
                     />
                   ))}
               </VStack>
-            </DrawerBody>
-          </DrawerContent>
-        </>
+            </Drawer.Body>
+          </Drawer.Content>
+        </Portal>
       )}
-    </Drawer>
+    </Drawer.Root>
   );
 };
 

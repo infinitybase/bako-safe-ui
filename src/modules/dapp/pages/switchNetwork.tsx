@@ -33,7 +33,7 @@ const SwitchNetwork = () => {
           scrollbarWidth: 'none',
         }}
       >
-        <VStack maxWidth={404} w="full" spacing={6} pb={6}>
+        <VStack maxWidth={404} w="full" gap={6} pb={6}>
           <VStack alignItems="flex-start" gap={3}>
             <Text fontSize={16} fontWeight={700} color="grey.50">
               {'Switch Network'}

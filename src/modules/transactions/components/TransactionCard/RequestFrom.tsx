@@ -1,28 +1,31 @@
 import {
   Card,
-  CardProps,
-  ComponentWithAs,
-  Divider,
+  CardRootProps,
   HStack,
   Icon,
   IconProps,
+  Separator,
   Text,
   VStack,
 } from '@chakra-ui/react';
 
 import { Nullable } from '@/modules/core';
 
-interface TransactionRequestFromProps extends CardProps {
+interface TransactionRequestFromProps extends CardRootProps {
   name: Nullable<string>;
   origin: Nullable<string>;
-  icon?: ComponentWithAs<'svg', IconProps>;
+  icon?:
+    | IconProps
+    | React.ForwardRefExoticComponent<
+        IconProps & React.RefAttributes<SVGSVGElement>
+      >;
 }
 
 const TransactionRequestFrom = (props: TransactionRequestFromProps) => {
   const { name, origin, icon, ...rest } = props;
 
   return (
-    <Card
+    <Card.Root
       {...rest}
       bgColor="grey.825"
       borderColor="grey.925"
@@ -35,11 +38,11 @@ const TransactionRequestFrom = (props: TransactionRequestFromProps) => {
         Requesting a transaction from:
       </Text>
 
-      <Divider borderColor="grey.950" my={1} />
+      <Separator borderColor="grey.950" my={1} />
 
-      <HStack width="100%" spacing={3.5}>
+      <HStack width="100%" gap={3.5}>
         {icon && <Icon as={icon} fontSize={28} />}
-        <VStack alignItems="flex-start" spacing={0.5}>
+        <VStack alignItems="flex-start" gap={0.5}>
           <Text color="grey.250" fontSize={12} fontWeight={500}>
             {name}
           </Text>
@@ -48,7 +51,7 @@ const TransactionRequestFrom = (props: TransactionRequestFromProps) => {
           </Text>
         </VStack>
       </HStack>
-    </Card>
+    </Card.Root>
   );
 };
 

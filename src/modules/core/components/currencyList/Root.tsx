@@ -1,8 +1,8 @@
-import { List, ListProps } from '@chakra-ui/react';
+import { ListRoot, ListRootProps } from '@chakra-ui/react';
 
-export const Root = ({ children, ...props }: ListProps) => {
+export const Root = ({ children, ...props }: ListRootProps) => {
   return (
-    <List
+    <ListRoot
       maxH={{
         base: 'full',
         sm: '300px',
@@ -11,9 +11,9 @@ export const Root = ({ children, ...props }: ListProps) => {
         base: 'auto',
         sm: 'scroll',
       }}
-      spacing={2}
+      gap={2}
       pr={1}
-      sx={{
+      css={{
         '&::-webkit-scrollbar': {
           width: '8px',
         },
@@ -28,6 +28,6 @@ export const Root = ({ children, ...props }: ListProps) => {
       {...props}
     >
       {children}
-    </List>
+    </ListRoot>
   );
 };

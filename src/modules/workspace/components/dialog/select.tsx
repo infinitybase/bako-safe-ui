@@ -1,4 +1,4 @@
-import { Divider, HStack, VStack } from '@chakra-ui/react';
+import { HStack, Separator, VStack } from '@chakra-ui/react';
 
 import { Dialog, SquarePlusIcon } from '@/components';
 import { DialogActions } from '@/components/dialog/actions';
@@ -6,8 +6,8 @@ import { Workspace } from '@/modules/core';
 
 import { UseWorkspaceReturn } from '../../hooks';
 import { useWorkspaceContext } from '../../WorkspaceProvider';
-import { SelectionEmptyState } from '../';
 import { WorkspaceCard } from '../card';
+import { SelectionEmptyState } from '../index';
 
 interface SelectWorkspaceDialogProps {
   dialog: UseWorkspaceReturn['workspaceDialog'];
@@ -39,9 +39,9 @@ const SelectWorkspaceDialog = ({
   return (
     <Dialog.Modal
       size={{ base: 'full', sm: !listIsEmpty ? 'xl' : 'xl' }}
-      onClose={dialog.onClose}
-      isOpen={openDialog}
-      closeOnOverlayClick={false}
+      onOpenChange={dialog.onOpenChange}
+      open={openDialog}
+      closeOnInteractOutside={false}
     >
       <VStack
         position={{ base: 'fixed', sm: 'unset' }}
@@ -94,14 +94,13 @@ const SelectWorkspaceDialog = ({
         <VStack
           marginTop={{ base: 24, sm: 8 }}
           minH={300}
-          maxH={{ base: 605, xs: 555, sm: 380 }}
-          spacing={5}
+          maxH={{ base: 605, sm: 380 }}
           w="full"
           overflowY="scroll"
           py={4}
           gap={4}
           borderColor="grey.100"
-          sx={{
+          css={{
             '&::-webkit-scrollbar': {
               display: 'none',
               width: '5px',
@@ -135,7 +134,7 @@ const SelectWorkspaceDialog = ({
                   }}
                 />
               ))}
-              <Divider
+              <Separator
                 position="absolute"
                 top={{ base: 24, sm: 8 }}
                 w="full"
@@ -147,20 +146,20 @@ const SelectWorkspaceDialog = ({
         </VStack>
       </Dialog.Body>
       <DialogActions
-        position={{ base: 'absolute', xs: 'unset' }}
+        position={{ base: 'absolute', sm: 'unset' }}
         bg="dark.950"
-        bottom={{ base: 2, xs: 'unset' }}
-        px={{ base: 6, xs: 'unset' }}
-        mt={{ base: 'unset', xs: 'auto' }}
+        bottom={{ base: 2, sm: 'unset' }}
+        px={{ base: 6, sm: 'unset' }}
+        mt={{ base: 'unset', sm: 'auto' }}
         maxW={480}
         hideDivider={listIsEmpty}
-        sx={{
+        css={{
           '& > hr': {
             marginTop: '0',
           },
         }}
       >
-        <HStack w="full" spacing={4} h={12} mt={listIsEmpty ? 9 : 'unset'}>
+        <HStack w="full" gap={4} h={12} mt={listIsEmpty ? 9 : 'unset'}>
           {listIsEmpty && (
             <Dialog.SecondaryAction
               h="full"
@@ -181,12 +180,12 @@ const SelectWorkspaceDialog = ({
             h="full"
             w="full"
             type="submit"
-            leftIcon={<SquarePlusIcon fontSize={18} />}
             onClick={onCreate}
             _hover={{
               opacity: 0.8,
             }}
           >
+            <SquarePlusIcon w={5} />
             Create workspace
           </Dialog.PrimaryAction>
         </HStack>

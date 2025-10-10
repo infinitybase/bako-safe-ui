@@ -1,4 +1,4 @@
-import { HStack, TabPanels, Tabs } from '@chakra-ui/react';
+import { HStack, Tabs } from '@chakra-ui/react';
 
 import { Dialog } from '@/components';
 import { UseAPITokenReturn } from '@/modules/cli/hooks';
@@ -20,9 +20,9 @@ const CreateAPITokenDialog = (props: CreateAPITokenDialogProps) => {
 
   return (
     <Dialog.Modal
-      isOpen={control.isOpen}
-      onClose={control.onClose}
-      closeOnOverlayClick={false}
+      open={control.isOpen}
+      onOpenChange={control.onOpenChange}
+      closeOnInteractOutside={false}
       size={{
         base: 'full',
         sm: 'lg',
@@ -34,21 +34,25 @@ const CreateAPITokenDialog = (props: CreateAPITokenDialogProps) => {
         description={steps.step.description}
         hidden={steps.step.hideHeader}
         mb={0}
-        mt={{ base: 4, xs: 0 }}
+        mt={{ base: 4, sm: 0 }}
         maxW={440}
       />
 
       <Dialog.Body w="full" maxW={440} flex={1} display="flex">
-        <Tabs index={tabs.tab} flex={1}>
-          <TabPanels h="full">
+        <Tabs.Root value={String(tabs.tab)} flex={1}>
+          <Tabs.Content value="0">
             <APITokensList tabs={tabs} request={list.request} />
+          </Tabs.Content>
+          <Tabs.Content value="1">
             <CreateAPITokenForm form={create.form} />
+          </Tabs.Content>
+          <Tabs.Content value="2">
             <CreateAPITokenSuccess
               step={steps.step}
               createdAPIKey={create.createdAPIKey.value}
             />
-          </TabPanels>
-        </Tabs>
+          </Tabs.Content>
+        </Tabs.Root>
       </Dialog.Body>
 
       <Dialog.Actions
@@ -57,7 +61,7 @@ const CreateAPITokenDialog = (props: CreateAPITokenDialogProps) => {
         dividerBorderColor="grey.425"
         position="relative"
       >
-        <HStack w="full" justifyContent="space-between" spacing={6}>
+        <HStack w="full" justifyContent="space-between" gap={6}>
           <Dialog.SecondaryAction
             flex={1}
             bgColor="transparent"
@@ -75,11 +79,11 @@ const CreateAPITokenDialog = (props: CreateAPITokenDialogProps) => {
             flex={3}
             hidden={steps.step.primaryAction.hide}
             onClick={steps.step.primaryAction.handler}
-            isDisabled={steps.step.primaryAction.disabled}
+            disabled={steps.step.primaryAction.disabled}
             _hover={{
-              opacity: !steps.step.primaryAction.disabled && 0.8,
+              opacity: !steps.step.primaryAction.disabled ? 0.8 : 1,
             }}
-            isLoading={steps.step.primaryAction.isLoading}
+            loading={steps.step.primaryAction.isLoading}
             aria-label={'Primary action create api token'}
           >
             {steps.step.primaryAction.label}

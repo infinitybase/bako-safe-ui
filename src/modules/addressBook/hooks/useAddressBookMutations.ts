@@ -1,10 +1,10 @@
-import { UseDisclosureProps } from '@chakra-ui/react';
 import { UseQueryResult } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { Address } from 'fuels';
 import { UseFormReturn } from 'react-hook-form';
 
 import { IApiError } from '@/config';
+import { UseDisclosureReturn } from '@/modules/core/hooks/useDisclosure';
 
 import { ListContactsResponse } from '../services';
 import { useContactToast } from './useContactToast';
@@ -19,8 +19,8 @@ export type IUseAddressBookMutationsProps = {
     handle?: string;
     resolver?: string;
   }>;
-  deleteContactDialog: UseDisclosureProps;
-  contactDialog: UseDisclosureProps;
+  deleteContactDialog: UseDisclosureReturn;
+  contactDialog: UseDisclosureReturn;
   listContactsRequest: UseQueryResult<ListContactsResponse, Error>;
   contactToEdit: {
     id: string;

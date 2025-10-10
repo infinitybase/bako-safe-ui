@@ -15,10 +15,10 @@ const SigninContainerMobile = (props: SigninContainerProps) => {
       backgroundColor="dark.50"
       backdropFilter="blur(6px)"
       w="100%"
-      minH="$100vh"
-      spacing={0}
+      minH="100vh"
+      gap={0}
       overflow="hidden"
-      __css={{
+      css={{
         '&::-webkit-scrollbar': {
           display: 'none',
         },
@@ -62,10 +62,10 @@ const SigninContainer = (props: SigninContainerProps) => {
   return (
     <Box
       display="flex"
-      minH="$100vh"
+      minH="100vh"
       w="100%"
       overflow="hidden"
-      __css={{
+      css={{
         '&::-webkit-scrollbar': {
           display: 'none',
         },

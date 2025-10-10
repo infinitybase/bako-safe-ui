@@ -1,19 +1,15 @@
 import {
+  Accordion,
   Badge,
-  BoxProps,
   Button,
   HStack,
   Icon,
   Spacer,
-  useAccordionItemState,
+  StackProps,
 } from '@chakra-ui/react';
 import { TransactionType } from 'bakosafe';
 import { memo, useCallback, useMemo } from 'react';
-import {
-  IoIosArrowDown,
-  IoIosArrowForward,
-  IoIosArrowUp,
-} from 'react-icons/io';
+import { IoIosArrowForward } from 'react-icons/io';
 
 import { ErrorIcon, SuccessIcon } from '@/components';
 import { TransactionState } from '@/modules/core';
@@ -26,7 +22,7 @@ interface ActionsMobileProps {
   isPossibleToSign: boolean;
 }
 
-interface TransactionActionsProps extends BoxProps {
+interface TransactionActionsProps extends StackProps {
   status: TransactionState;
   transaction?: ITransactionWithType;
   isInTheVaultPage?: boolean;
@@ -40,7 +36,7 @@ const ActionsMobile = ({ isPossibleToSign }: ActionsMobileProps) => {
   } = useWorkspaceContext();
 
   return (
-    <HStack justifyContent="end" spacing={1}>
+    <HStack justifyContent="end" gap={1}>
       <Button
         color={isPossibleToSign ? 'black' : 'grey.75'}
         bgColor={isPossibleToSign ? 'brand.500' : '#F5F5F50D'}
@@ -49,12 +45,10 @@ const ActionsMobile = ({ isPossibleToSign }: ActionsMobileProps) => {
         fontSize="xs"
         letterSpacing=".5px"
         alignSelf={{ base: 'stretch', sm: 'flex-end' }}
-        variant="secondary"
-        rightIcon={
-          <Icon as={IoIosArrowForward} fontSize="md" ml={isSmall ? -1 : 0} />
-        }
+        colorPalette="secondary"
         px={isExtraSmall ? 3 : 4}
       >
+        <Icon as={IoIosArrowForward} fontSize="md" ml={isSmall ? -1 : 0} />
         {isPossibleToSign ? 'Sign' : isSmall ? 'Details' : 'View Details'}
       </Button>
     </HStack>
@@ -72,7 +66,6 @@ const Actions = memo(
     const {
       screenSizes: { isMobile },
     } = useWorkspaceContext();
-    const { isOpen } = useAccordionItemState();
     const {
       signTransaction: {
         confirmTransaction,
@@ -165,22 +158,22 @@ const Actions = memo(
             h={6}
             rounded="full"
             px={2}
-            variant={isCanceled ? 'grey' : 'success'}
+            colorPalette={isCanceled ? 'grey' : 'success'}
           >
             You {isCanceled ? 'canceled' : 'signed'}
-            {!isCanceled && <Icon as={SuccessIcon} color="success.700" />}
+            {!isCanceled && <Icon as={SuccessIcon} w={4} color="success.700" />}
           </Badge>
         )}
 
         {isDeclined && (
-          <Badge h={6} rounded="full" px={2} variant="error">
+          <Badge h={6} rounded="full" px={2} colorPalette="error">
             You declined
-            <Icon as={ErrorIcon} fontSize={17} />
+            <Icon as={ErrorIcon} w={4} />
           </Badge>
         )}
 
         {!isDeposit && notAnswered && (
-          <Badge h={6} rounded="full" px={2} variant="info">
+          <Badge h={6} rounded="full" px={2} colorPalette="info">
             {`You didn't sign`}
           </Badge>
         )}
@@ -191,11 +184,11 @@ const Actions = memo(
               h={9}
               px={3}
               aria-label={'Sign btn tx card'}
-              variant="primary"
+              colorPalette="primary"
               size={{ base: 'sm', sm: 'xs', lg: 'sm' }}
               fontSize={{ base: 'unset', sm: 14, lg: 'unset' }}
-              isLoading={isTxActionsInLoading}
-              isDisabled={disableActionButtons}
+              loading={isTxActionsInLoading}
+              disabled={disableActionButtons}
               onClick={handleConfirm}
             >
               Sign
@@ -206,10 +199,10 @@ const Actions = memo(
               aria-label={'Decline btn tx card'}
               size={{ base: 'sm', sm: 'xs', lg: 'sm' }}
               fontSize={{ base: 'unset', sm: 14, lg: 'unset' }}
-              variant="secondary"
+              colorPalette="secondary"
               onClick={handleDecline}
-              isLoading={isTxActionsInLoading}
-              isDisabled={disableActionButtons}
+              loading={isTxActionsInLoading}
+              disabled={disableActionButtons}
             >
               Decline
             </Button>
@@ -218,12 +211,13 @@ const Actions = memo(
           <Spacer />
         )}
 
-        <Icon
-          as={isOpen ? IoIosArrowUp : IoIosArrowDown}
+        <Accordion.ItemIndicator />
+        {/* <Icon
+          as={expanded ? IoIosArrowUp : IoIosArrowDown}
           fontSize="md"
           color="grey.200"
           cursor="pointer"
-        />
+        /> */}
       </HStack>
     );
   },

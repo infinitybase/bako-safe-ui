@@ -1,18 +1,17 @@
-import { PlusSquareIcon } from '@chakra-ui/icons';
 import {
+  Box,
   Button,
-  FormControl,
-  FormHelperText,
+  Field,
   Heading,
   HStack,
   Icon,
-  TabPanel,
   VStack,
 } from '@chakra-ui/react';
+import { AddressUtils as BakoAddressUtils } from 'bakosafe';
 import { Address, isB256, isEvmAddress } from 'fuels';
 import { useRef, useState } from 'react';
 import { Controller } from 'react-hook-form';
-import { AddressUtils as BakoAddressUtils } from 'bakosafe';
+import { FiPlusSquare as PlusSquareIcon } from 'react-icons/fi';
 
 import { Autocomplete, Dialog, RemoveIcon, Select } from '@/components';
 import {
@@ -111,12 +110,12 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
         isEdit={false}
       />
 
-      <TabPanel p={0} maxH={500}>
+      <Box p={0} maxH={500}>
         <VStack
           w="full"
           overflowY="scroll"
           aria-label="Scroll vault form"
-          sx={{
+          css={{
             '&::-webkit-scrollbar': {
               display: 'none',
               width: '5px',
@@ -131,7 +130,7 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
           onWheel={(e) => {
             e.stopPropagation();
           }}
-          h={{ base: '60vh', xs: 500 }}
+          h={{ base: '60vh', sm: 500 }}
         >
           <CreateVaultWarning
             mb={2}
@@ -158,7 +157,7 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
             <VStack
               mt={4}
               w="full"
-              spacing={2}
+              gap={2}
               minH={120}
               position="relative"
               onClick={() => {
@@ -206,8 +205,8 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
                           );
 
                       return (
-                        <FormControl
-                          isInvalid={fieldState.invalid}
+                        <Field.Root
+                          invalid={fieldState.invalid}
                           id={`Address ${index + 1}`}
                         >
                           <Autocomplete
@@ -219,7 +218,7 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
                                 setCurrentInputIndex(index);
                               }
                             }}
-                            variant="dark"
+                            // variant="dark"
                             optionsRef={optionRef}
                             value={field.value}
                             onChange={field.onChange}
@@ -294,9 +293,9 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
                             }
                           />
 
-                          <FormHelperText color="error.500">
+                          <Field.HelperText color="error.500">
                             {fieldState.error?.message}
-                          </FormHelperText>
+                          </Field.HelperText>
 
                           <AddToAddressBook
                             visible={showAddToAddressBook}
@@ -305,7 +304,8 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
 
                               if (BakoAddressUtils.isEvm(_address)) {
                                 _address =
-                                  'eth:' + BakoAddressUtils.parseFuelAddressToEth(
+                                  'eth:' +
+                                  BakoAddressUtils.parseFuelAddressToEth(
                                     _address,
                                   );
                               }
@@ -315,7 +315,7 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
                               });
                             }}
                           />
-                        </FormControl>
+                        </Field.Root>
                       );
                     }}
                   />
@@ -327,9 +327,9 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
                 border="none"
                 color="dark.300"
                 bgColor="grey.200"
-                variant="secondary"
+                colorPalette="secondary"
                 mt="auto"
-                isDisabled={isDisable}
+                disabled={isDisable}
                 aria-label={'Add more addresses vault form'}
                 onClick={() => {
                   addresses.append();
@@ -338,11 +338,11 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
                     0,
                   );
                 }}
-                leftIcon={<PlusSquareIcon w={5} h={5} />}
                 _hover={{
                   opacity: 0.8,
                 }}
               >
+                <Icon as={PlusSquareIcon} w={5} h={5} />
                 Add more addresses
               </Button>
             </VStack>
@@ -350,18 +350,18 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
 
           <HStack
             position="relative"
-            mt={{ base: 2, xs: 8 }}
+            mt={{ base: 2, sm: 8 }}
             border="1px solid"
             borderColor="grey.925"
             borderRadius="xl"
-            py={{ base: 2, xs: 4 }}
+            py={{ base: 2, sm: 4 }}
             px={4}
-            mb={{ base: 12, xs: 4 }}
+            mb={{ base: 12, sm: 4 }}
           >
             <Dialog.Section
               w="full"
               maxW={350}
-              mb={{ base: 0, xs: 5, sm: 'unset' }}
+              mb={{ base: 0, sm: 5 }}
               title={
                 <Heading fontSize="sm" color="grey.200">
                   Min signatures required?
@@ -375,7 +375,7 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
               name="minSigners"
               control={form.control}
               render={({ field }) => (
-                <FormControl position="relative" maxW={'full'} w="24">
+                <Field.Root position="relative" maxW={'full'} w="24">
                   <Select
                     aria-label={'Select min signatures vault form'}
                     needShowOptionsAbove={hasTwoOrMoreAddresses}
@@ -391,21 +391,21 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
                         value: index + 1,
                       }))}
                   />
-                </FormControl>
+                </Field.Root>
               )}
             />
           </HStack>
-          <FormControl>
-            <FormHelperText
+          <Field.Root>
+            <Field.HelperText
               color="error.500"
               maxW={{ base: 'full', sm: 'full' }}
               minW={{ base: '300', sm: 'full' }}
             >
               {minSigners}
-            </FormHelperText>
-          </FormControl>
+            </Field.HelperText>
+          </Field.Root>
         </VStack>
-      </TabPanel>
+      </Box>
     </>
   );
 };

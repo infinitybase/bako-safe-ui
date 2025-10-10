@@ -1,12 +1,12 @@
-import { CheckIcon } from '@chakra-ui/icons';
 import {
+  Box,
   HStack,
   Icon,
-  TabPanel,
   Text,
   useClipboard,
   VStack,
 } from '@chakra-ui/react';
+import { FiCheck as CheckIcon } from 'react-icons/fi';
 
 import { CopyIcon } from '@/components';
 import { DoneIcon } from '@/components/icons/done-icon';
@@ -22,21 +22,16 @@ interface CreateAPITokenSuccessProps {
 const CreateAPITokenSuccess = (props: CreateAPITokenSuccessProps) => {
   const { step, createdAPIKey } = props;
 
-  const clipboard = useClipboard(createdAPIKey);
+  const clipboard = useClipboard({ value: createdAPIKey });
   const toast = useNotification();
 
   return (
-    <TabPanel p={0} h="full">
+    <Box p={0} h="full">
       <VStack h="full" minH={400}>
-        <VStack
-          spacing={5}
-          flex={1}
-          alignItems="center"
-          justifyContent="center"
-        >
-          <Icon fontSize={100} as={DoneIcon} />
+        <VStack gap={5} flex={1} alignItems="center" justifyContent="center">
+          <Icon boxSize="100px" as={DoneIcon} />
 
-          <VStack maxW={276} spacing={4}>
+          <VStack maxW={276} gap={4}>
             <Text fontWeight={700} fontSize={20} color="grey.75">
               {step.title}
             </Text>
@@ -44,7 +39,7 @@ const CreateAPITokenSuccess = (props: CreateAPITokenSuccessProps) => {
               fontWeight="normal"
               color="grey.400"
               fontSize="xs"
-              variant="description"
+              // variant="description"
             >
               {step.description}
             </Text>
@@ -66,7 +61,7 @@ const CreateAPITokenSuccess = (props: CreateAPITokenSuccessProps) => {
           </Text>
 
           <HStack gap={2} maxW="60%">
-            <Text fontSize="xs" color="grey.75" isTruncated>
+            <Text fontSize="xs" color="grey.75" truncate>
               {AddressUtils.format(createdAPIKey, 25)}
             </Text>
             <Icon
@@ -76,7 +71,7 @@ const CreateAPITokenSuccess = (props: CreateAPITokenSuccessProps) => {
               cursor="pointer"
               id={'copy_form_api_token'}
               onClick={() => {
-                clipboard.onCopy();
+                clipboard.copy();
                 toast({
                   position: 'top-right',
                   duration: 2000,
@@ -91,7 +86,7 @@ const CreateAPITokenSuccess = (props: CreateAPITokenSuccessProps) => {
           </HStack>
         </HStack>
       </VStack>
-    </TabPanel>
+    </Box>
   );
 };
 

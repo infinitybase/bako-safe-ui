@@ -28,7 +28,7 @@ export interface AmountDetailsProps {
 }
 
 const AssetCard = chakra(Card, {
-  baseStyle: {
+  base: {
     w: 'full',
     py: 5,
     px: 6,
@@ -50,9 +50,9 @@ const AmountDetails = (props: AmountDetailsProps) => {
           Balance
         </Text>
       </Box>
-      <VStack spacing={5} justifyContent="space-between">
+      <VStack gap={5} justifyContent="space-between">
         {!assets.hasAssets && (
-          <CustomSkeleton isLoaded={!isLoading}>
+          <CustomSkeleton loading={isLoading}>
             <AssetCard
               w="full"
               p={5}
@@ -68,9 +68,7 @@ const AmountDetails = (props: AmountDetailsProps) => {
                 <NotFoundIcon w={70} h={70} />
               </Box>
               <Box mb={5}>
-                <Heading color="grey.200" variant="title-xl">
-                  No assets
-                </Heading>
+                <Heading color="grey.200">No assets</Heading>
               </Box>
               <Box mb={8}>
                 <Text
@@ -83,7 +81,7 @@ const AmountDetails = (props: AmountDetailsProps) => {
                 </Text>
               </Box>
               <Button
-                variant="primary"
+                colorPalette="primary"
                 onClick={() => openFaucet(vaultAddress)}
               >
                 Use the faucet
@@ -97,11 +95,11 @@ const AmountDetails = (props: AmountDetailsProps) => {
             if (isBig > 0 && index > 3) return;
             if (isBig > 0 && index == 3) {
               return (
-                <CustomSkeleton isLoaded={!isLoading} key={index}>
+                <CustomSkeleton loading={isLoading} key={index}>
                   <AssetCard w="full" borderStyle="dashed">
                     <HStack
                       w="100%"
-                      spacing={0}
+                      gap={0}
                       justifyContent="center"
                       alignItems="center"
                       display="flex"
@@ -109,15 +107,13 @@ const AmountDetails = (props: AmountDetailsProps) => {
                       cursor="pointer"
                     >
                       <Text
-                        variant="description"
+                        // variant="description"
                         fontSize="20px"
                         fontWeight="bold"
                       >
                         +{isBig + 1}
                       </Text>
-                      <Text variant="description" fontSize="15px">
-                        View all
-                      </Text>
+                      <Text fontSize="15px">View all</Text>
                     </HStack>
                   </AssetCard>
                 </CustomSkeleton>
@@ -129,9 +125,9 @@ const AmountDetails = (props: AmountDetailsProps) => {
             });
 
             return (
-              <CustomSkeleton isLoaded={!isLoading} key={index}>
+              <CustomSkeleton loading={isLoading} key={index}>
                 <AssetCard>
-                  <HStack w="full" spacing={4}>
+                  <HStack w="full" gap={4}>
                     {/* This code is probably not being used, just to fix a build issue */}
                     <Image
                       w={{ base: 8, sm: 10 }}
@@ -149,7 +145,7 @@ const AmountDetails = (props: AmountDetailsProps) => {
                       >
                         {visibleBalance ? balance : '*****'}
                       </Text>
-                      <Text variant="description" fontSize="md">
+                      <Text fontSize="md">
                         {assetsMap?.[asset.assetId].slug}
                       </Text>
                     </Box>

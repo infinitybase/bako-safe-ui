@@ -1,10 +1,9 @@
 import {
-  CircularProgress,
-  FormLabel,
+  Field,
   Input,
   InputGroup,
   InputProps,
-  InputRightElement,
+  Spinner,
 } from '@chakra-ui/react';
 import { isB256 } from 'fuels';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -129,31 +128,25 @@ const AddressInput = (props: AddressInputProps) => {
   }, [fetchResolveAddress.isLoading, fetchResolverName.isLoading, value]);
 
   return (
-    <InputGroup>
-      <InputRightElement
-        pr={1}
-        hidden={!fetchResolveAddress.isLoading && !fetchResolverName.isLoading}
-        top="1px"
-        right="2"
-        borderRadius={10}
-        bgColor={'grey.825'}
-        h="calc(100% - 3px)"
+    <Field.Root>
+      <InputGroup
+        endAddonProps={
+          <Spinner
+            css={{ '--spinner-track-color': 'dark.100' }}
+            size="md"
+            color="brand.500"
+          />
+        }
       >
-        <CircularProgress
-          trackColor="dark.100"
-          size={18}
-          isIndeterminate
-          color="brand.500"
+        <Input
+          {...rest}
+          value={inputValue}
+          onChange={handleInputChange}
+          placeholder=" "
         />
-      </InputRightElement>
-      <Input
-        {...rest}
-        value={inputValue}
-        onChange={handleInputChange}
-        placeholder=" "
-      />
-      <FormLabel>Address</FormLabel>
-    </InputGroup>
+      </InputGroup>
+      <Field.Label>Address</Field.Label>
+    </Field.Root>
   );
 };
 

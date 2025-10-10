@@ -1,4 +1,4 @@
-import { FormControl, FormHelperText, HStack } from '@chakra-ui/react';
+import { Field, HStack } from '@chakra-ui/react';
 import { AddressUtils as BakoSafeUtils } from 'bakosafe';
 import { Address, isB256 } from 'fuels';
 import { memo, useCallback, useMemo, useState } from 'react';
@@ -156,8 +156,8 @@ const RecipientFormAddress = ({
   }, [inputValue, isHandleInputted]);
 
   return (
-    <HStack align="start" spacing={2} position="relative" width="100%">
-      <FormControl isInvalid={!!error?.message} flex="1">
+    <HStack align="start" gap={2} position="relative" width="100%">
+      <Field.Root invalid={!!error?.message} flex="1">
         <AddressAutocomplete
           label={`Recipient ${index + 1} address`}
           aria-label={`Autocomplete Recipient Address ${index + 1}`}
@@ -170,14 +170,14 @@ const RecipientFormAddress = ({
           onSelect={handleSelectOption}
           optionsRef={optionsRef}
           emptyOptionsText={emptyOptionsText}
-          variant="dark"
+          colorPalette="dark"
         />
-        <FormHelperText color="error.500">{error?.message}</FormHelperText>
+        <Field.HelperText color="error.500">{error?.message}</Field.HelperText>
         <AddToAddressBook
           visible={showAddToAddressBook}
           onAdd={() => handleOpenDialog?.(value)}
         />
-      </FormControl>
+      </Field.Root>
     </HStack>
   );
 };

@@ -1,13 +1,10 @@
 import {
   Box,
   Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  CircularProgress,
   HStack,
   Icon,
+  Spinner,
   Text,
-  useDisclosure,
   VStack,
 } from '@chakra-ui/react';
 import { TransactionStatus } from 'bakosafe';
@@ -23,6 +20,7 @@ import {
 import { EmptyState } from '@/components/emptyState';
 import { Drawer } from '@/layouts/dashboard/drawer';
 import { Pages } from '@/modules/core';
+import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
 import {
   TransactionCard,
   TransactionFilter,
@@ -87,7 +85,7 @@ const TransactionsVaultPage = () => {
 
   return (
     <Box w="full" h="100%" maxH="100%">
-      <Drawer isOpen={menuDrawer.isOpen} onClose={menuDrawer.onClose} />
+      <Drawer open={menuDrawer.isOpen} onOpenChange={menuDrawer.onOpenChange} />
       <Box mb={10}>
         {vaultRequiredSizeToColumnLayout ? (
           <HStack mt={2} gap={1.5} w="fit-content" onClick={menuDrawer.onOpen}>
@@ -97,22 +95,24 @@ const TransactionsVaultPage = () => {
             </Text>
           </HStack>
         ) : (
-          <Breadcrumb>
-            <BreadcrumbItem>
-              <BreadcrumbLink
-                fontSize="sm"
-                color="grey.200"
-                fontWeight="semibold"
-                onClick={() => goHome()}
-              >
-                <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
-                Home
-              </BreadcrumbLink>
-            </BreadcrumbItem>
+          <Breadcrumb.Root>
+            <Breadcrumb.List>
+              <Breadcrumb.Item>
+                <Breadcrumb.Link
+                  fontSize="sm"
+                  color="grey.200"
+                  fontWeight="semibold"
+                  onClick={() => goHome()}
+                >
+                  <Icon mr={2} as={HomeIcon} w={3} color="grey.200" />
+                  Home
+                </Breadcrumb.Link>
+              </Breadcrumb.Item>
+              <Breadcrumb.Separator />
 
-            {/* Commented out code to temporarily disable workspaces. */}
+              {/* Commented out code to temporarily disable workspaces. */}
 
-            {/* {!userInfos.onSingleWorkspace && (
+              {/* {!userInfos.onSingleWorkspace && (
               <BreadcrumbItem>
                 <BreadcrumbLink
                   fontSize="sm"
@@ -134,55 +134,59 @@ const TransactionsVaultPage = () => {
               </BreadcrumbItem>
             )} */}
 
-            <BreadcrumbItem>
-              <BreadcrumbLink
-                data-testid="vaultbreadCrumb"
-                fontSize="sm"
-                color="grey.200"
-                fontWeight="semibold"
-                href="#"
-                onClick={() =>
-                  navigate(
-                    Pages.userVaults({
-                      workspaceId,
-                    }),
-                  )
-                }
-              >
-                Vaults
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbItem>
-              <BreadcrumbLink
-                fontSize="sm"
-                color="grey.200"
-                fontWeight="semibold"
-                onClick={() =>
-                  navigate(
-                    Pages.detailsVault({
-                      vaultId: vault.data?.id,
-                      workspaceId: userInfos.workspace?.id ?? '',
-                    }),
-                  )
-                }
-                isTruncated
-                maxW={640}
-              >
-                {vault?.data?.name}
-              </BreadcrumbLink>
-            </BreadcrumbItem>
+              <Breadcrumb.Item>
+                <Breadcrumb.Link
+                  data-testid="vaultbreadCrumb"
+                  fontSize="sm"
+                  color="grey.200"
+                  fontWeight="semibold"
+                  href="#"
+                  onClick={() =>
+                    navigate(
+                      Pages.userVaults({
+                        workspaceId,
+                      }),
+                    )
+                  }
+                >
+                  Vaults
+                </Breadcrumb.Link>
+              </Breadcrumb.Item>
+              <Breadcrumb.Separator />
 
-            <BreadcrumbItem>
-              <BreadcrumbLink
-                fontSize="sm"
-                color="grey.200"
-                fontWeight="semibold"
-                href="#"
-              >
-                Transactions
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-          </Breadcrumb>
+              <Breadcrumb.Item>
+                <Breadcrumb.Link
+                  fontSize="sm"
+                  color="grey.200"
+                  fontWeight="semibold"
+                  onClick={() =>
+                    navigate(
+                      Pages.detailsVault({
+                        vaultId: vault.data?.id,
+                        workspaceId: userInfos.workspace?.id ?? '',
+                      }),
+                    )
+                  }
+                  truncate
+                  maxW={640}
+                >
+                  {vault?.data?.name}
+                </Breadcrumb.Link>
+              </Breadcrumb.Item>
+              <Breadcrumb.Separator />
+
+              <Breadcrumb.Item>
+                <Breadcrumb.Link
+                  fontSize="sm"
+                  color="grey.200"
+                  fontWeight="semibold"
+                  href="#"
+                >
+                  Transactions
+                </Breadcrumb.Link>
+              </Breadcrumb.Item>
+            </Breadcrumb.List>
+          </Breadcrumb.Root>
         )}
       </Box>
       {/* TITLE */}
@@ -193,21 +197,20 @@ const TransactionsVaultPage = () => {
         w="full"
         flexDir={isSmall ? 'column' : 'row'}
       >
-        <HStack spacing={5}>
+        <HStack gap={5}>
           <Text
-            variant="subtitle"
+            // variant="subtitle"
             fontWeight="bold"
             fontSize={{ base: 'sm', sm: 'unset' }}
             color="grey.50"
           >
             Transactions
           </Text>
-          <CircularProgress
+          <Spinner
             hidden={!isFetching}
-            size="20px"
+            size="md"
             color="brand.500"
-            trackColor="dark.100"
-            isIndeterminate
+            css={{ '--spinner-track-color': 'dark.100' }}
           />
         </HStack>
 
@@ -244,7 +247,7 @@ const TransactionsVaultPage = () => {
           />
 
           {selectedTransaction.id && (
-            <HStack spacing={2}>
+            <HStack gap={2}>
               <Text color="brand.500">{selectedTransaction.name}</Text>
               <Box
                 onClick={() => {
@@ -269,13 +272,13 @@ const TransactionsVaultPage = () => {
         />
       )}
       {/* TRANSACTION LIST */}
-      <CustomSkeleton h="100%" isLoaded={!isLoading}>
+      <CustomSkeleton h="100%" loading={isLoading}>
         {hasTransactions ? (
           <VStack
             maxH="77.5vh"
             overflowY="scroll"
             scrollBehavior="smooth"
-            sx={{
+            css={{
               '&::-webkit-scrollbar': {
                 display: 'none',
                 width: '5px',
@@ -298,11 +301,7 @@ const TransactionsVaultPage = () => {
                   monthYear={grouped.monthYear}
                   mb={2}
                 />
-                <TransactionCard.List
-                  w="full"
-                  spacing={0}
-                  openIndex={defaultIndex}
-                >
+                <TransactionCard.List w="full" gap={0} openIndex={defaultIndex}>
                   {grouped?.transactions?.map((transaction) => {
                     return (
                       <TransactionCard.Item

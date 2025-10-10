@@ -34,7 +34,7 @@ const CreateVaultDialog = (props: CreateVaultDialogProps) => {
     setSearch,
     validateAddress,
   } = useCreateVaultDialog({
-    onClose: props.onClose,
+    onOpenChange: props.onOpenChange,
     onCreate: props.onCreate,
   });
 
@@ -47,15 +47,14 @@ const CreateVaultDialog = (props: CreateVaultDialogProps) => {
 
   return (
     <Dialog.Modal
-      size={{ base: 'full', md: 'xl' }}
+      size={{ base: 'full', md: 'md' }}
       {...props}
-      onClose={handleCancel}
-      closeOnOverlayClick={false}
+      closeOnInteractOutside={false}
       modalContentProps={{
-        maxH: '$100vh',
+        maxH: '100vh',
       }}
       modalBodyProps={{
-        maxH: '$100vh',
+        maxH: '100vh',
       }}
     >
       <Dialog.Header
@@ -98,7 +97,7 @@ const CreateVaultDialog = (props: CreateVaultDialogProps) => {
         w="full"
         maxW={450}
         mt={isSecondTab ? 'unset' : 'auto'}
-        sx={{
+        css={{
           '&>hr': {
             mt: 0,
             mb: isSecondTab ? 0 : 8,
@@ -113,12 +112,10 @@ const CreateVaultDialog = (props: CreateVaultDialogProps) => {
         <VStack w="full" alignItems="center" bg="dark.950" zIndex={999}>
           {isSecondTab && (
             <HStack my={6} w="full" justifyContent="space-between">
-              <Text variant="description" fontSize="xs">
-                Estimated Fee
-              </Text>
+              <Text fontSize="xs">Estimated Fee</Text>
               <Text
                 color="white"
-                variant="description"
+                // variant="description"
                 display="flex"
                 gap={2}
                 fontSize="xs"
@@ -159,15 +156,13 @@ Bako Safe leverages Fuel predicates to manage vault permissions off-chain. There
               aria-label="Create Vault Primary Action"
               hidden={steps.step?.hide}
               onClick={steps.step?.onContinue}
-              leftIcon={
-                tabs.tab === TabState.ADDRESSES ? <SquarePlusIcon /> : undefined
-              }
-              isDisabled={steps.step?.disable}
-              isLoading={bakoSafeVault.isPending || form.formState.isSubmitting}
+              disabled={steps.step?.disable}
+              loading={bakoSafeVault.isPending || form.formState.isSubmitting}
               _hover={{
-                opacity: !steps.step?.disable && 0.8,
+                opacity: !steps.step?.disable ? 0.8 : 1,
               }}
             >
+              {tabs.tab === TabState.ADDRESSES && <SquarePlusIcon />}
               {steps.step?.nextStepText}
             </Dialog.PrimaryAction>
           </HStack>

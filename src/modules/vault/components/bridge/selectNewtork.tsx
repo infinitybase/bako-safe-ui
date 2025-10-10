@@ -1,14 +1,13 @@
 import {
   Box,
   Card,
-  Divider,
-  FormControl,
+  Field,
   HStack,
   IconButton,
   Image,
   InputGroup,
+  Separator,
   Text,
-  useDisclosure,
   VStack,
 } from '@chakra-ui/react';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -16,6 +15,7 @@ import { useCallback } from 'react';
 import { Controller, useFormContext, useWatch } from 'react-hook-form';
 
 import { AssetSelect, ChevronDownIcon, SwapIcon } from '@/components';
+import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
 import { useNetworks } from '@/modules/network/hooks';
 import { limitCharacters } from '@/utils';
 
@@ -79,7 +79,7 @@ export function SelectBridgeNetwork({
       w={stepsForm === 0 ? '456px' : '430px'}
       transition="width 0.3s ease"
     >
-      <Card variant="outline" padding={3} w="full" zIndex={1}>
+      <Card.Root variant="outline" padding={3} w="full" zIndex={1}>
         <AnimatePresence mode="wait">
           {stepsForm < 2 && (
             <MotionBox
@@ -104,7 +104,7 @@ export function SelectBridgeNetwork({
             control={control}
             name="selectNetworkFrom"
             render={({ field }) => (
-              <FormControl>
+              <Field.Root>
                 <InputGroup position="relative" overflow="visible" zIndex={1}>
                   <AssetSelect
                     {...field}
@@ -117,7 +117,7 @@ export function SelectBridgeNetwork({
                     boxProps={{ bg: 'grey.925', h: '45px' }}
                   />
                 </InputGroup>
-              </FormControl>
+              </Field.Root>
             )}
           />
 
@@ -125,7 +125,7 @@ export function SelectBridgeNetwork({
             control={control}
             name="selectAssetFrom"
             render={({ field }) => (
-              <FormControl>
+              <Field.Root>
                 <InputGroup position="relative" overflow="visible" zIndex={1}>
                   <AssetSelect
                     {...field}
@@ -147,16 +147,15 @@ export function SelectBridgeNetwork({
                     }}
                   />
                 </InputGroup>
-              </FormControl>
+              </Field.Root>
             )}
           />
         </HStack>
 
         <HStack marginY={4}>
-          <Divider w="full" borderColor="grey.950" />
+          <Separator w="full" borderColor="grey.950" />
           <IconButton
-            icon={<SwapIcon />}
-            variant="unstyled"
+            variant="ghost"
             display="flex"
             alignItems="center"
             justifyContent="center"
@@ -166,8 +165,10 @@ export function SelectBridgeNetwork({
             minW="24px"
             px={0}
             aria-label="Bridge"
-          />
-          <Divider w="full" borderColor="grey.950" />
+          >
+            <SwapIcon />
+          </IconButton>
+          <Separator w="full" borderColor="grey.950" />
         </HStack>
 
         <HStack mb={2}>
@@ -181,7 +182,7 @@ export function SelectBridgeNetwork({
             control={control}
             name="selectNetworkTo"
             render={({ field }) => (
-              <FormControl>
+              <Field.Root>
                 <Box
                   position="relative"
                   w="full"
@@ -238,7 +239,7 @@ export function SelectBridgeNetwork({
                     }}
                   />
                 </Box>
-              </FormControl>
+              </Field.Root>
             )}
           />
 
@@ -246,7 +247,7 @@ export function SelectBridgeNetwork({
             control={control}
             name="selectAssetTo"
             render={({ field }) => (
-              <FormControl>
+              <Field.Root>
                 <Box
                   position="relative"
                   w="full"
@@ -292,7 +293,7 @@ export function SelectBridgeNetwork({
                   <ModalSelectAssetsBridge
                     title="Select Asset"
                     isOpen={dialogSelectAsset.isOpen}
-                    onClose={dialogSelectAsset.onClose}
+                    onOpenChange={dialogSelectAsset.onOpenChange}
                     options={toAssetOptions}
                     onSelect={(value) => {
                       field.onChange(value);
@@ -304,11 +305,11 @@ export function SelectBridgeNetwork({
                     }}
                   />
                 </Box>
-              </FormControl>
+              </Field.Root>
             )}
           />
         </HStack>
-      </Card>
+      </Card.Root>
     </VStack>
   );
 }

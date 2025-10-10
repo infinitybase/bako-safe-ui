@@ -1,9 +1,16 @@
-import { Icon } from '@chakra-ui/icons';
-import { ToastPosition } from '@chakra-ui/react';
+import { Icon } from '@chakra-ui/react';
 import { IoIosCheckmarkCircle, IoIosWarning } from 'react-icons/io';
 import { RiCloseCircleFill } from 'react-icons/ri';
 
 import { useNotification } from '@/modules/notification';
+
+type ToastPosition =
+  | 'top'
+  | 'top-right'
+  | 'top-left'
+  | 'bottom'
+  | 'bottom-right'
+  | 'bottom-left';
 
 interface ToastParams {
   description?: string;

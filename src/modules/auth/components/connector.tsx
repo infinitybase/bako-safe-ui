@@ -1,10 +1,10 @@
 import {
   Avatar,
   Box,
-  Divider,
   Heading,
   HStack,
   Icon,
+  Separator,
   Stack,
   Text,
   VStack,
@@ -40,19 +40,15 @@ const CardConnector = (props: CardConnectorProps) => {
   const ConnectorIcon = useMemo(() => {
     if (connector.imageUrl) {
       return (
-        <Avatar
-          color="white"
-          size="sm"
-          bgColor="transparent"
-          variant="roundedSquare"
-          src={connector.imageUrl}
-          name={connector.name}
-        />
+        <Avatar.Root color="white" w={9} bgColor="transparent" shape="rounded">
+          <Avatar.Fallback name={connector.name} />
+          <Avatar.Image src={connector.imageUrl} />
+        </Avatar.Root>
       );
     }
 
     if (connector.icon) {
-      return <Icon as={connector.icon} fontSize="4xl" />;
+      return <Icon as={connector.icon} w={9} />;
     }
 
     return null;
@@ -95,7 +91,12 @@ const CardConnector = (props: CardConnectorProps) => {
       />
       {ConnectorIcon}
       <Box flex={1}>
-        <Heading fontSize="sm" fontWeight="semibold" color="grey.200">
+        <Heading
+          fontSize="sm"
+          fontWeight="semibold"
+          color="grey.200"
+          lineHeight={1.2}
+        >
           {connector.label}
         </Heading>
       </Box>
@@ -112,20 +113,16 @@ const ConnectorsList = ({
   const { isLitteSmall } = useScreenSize();
 
   return (
-    <VStack hidden={hidden} spacing={{ base: 6, md: 8 }} w="full">
-      <HStack w="full" spacing={5}>
-        <Divider borderColor="grey.500" />
+    <VStack hidden={hidden} gap={{ base: 6, md: 8 }} w="full">
+      <HStack w="full" gap={5}>
+        <Separator borderColor="grey.500" />
         <Text color="grey.250" fontSize="xs" fontWeight="light">
           OR
         </Text>
-        <Divider borderColor="grey.500" />
+        <Separator borderColor="grey.500" />
       </HStack>
 
-      <Stack
-        flexDirection={isLitteSmall ? 'column' : 'row'}
-        w="full"
-        spacing={2}
-      >
+      <Stack flexDirection={isLitteSmall ? 'column' : 'row'} w="full" gap={2}>
         {connectors.map((connector) => (
           <CardConnector
             isAnyWalletConnectorOpen={isAnyWalletConnectorOpen}

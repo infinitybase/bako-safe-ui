@@ -1,9 +1,4 @@
-import {
-  CircularProgress,
-  FormHelperText,
-  HStack,
-  Text,
-} from '@chakra-ui/react';
+import { Field, HStack, Spinner, Text } from '@chakra-ui/react';
 import { bn } from 'fuels';
 import { memo, useCallback, useMemo } from 'react';
 import { FieldError, useFormContext } from 'react-hook-form';
@@ -64,7 +59,7 @@ const RecipientFormAsset = ({
   return (
     <HStack
       align="start"
-      spacing={2}
+      gap={2}
       position="relative"
       width="100%"
       data-testid="transaction_asset"
@@ -78,7 +73,7 @@ const RecipientFormAsset = ({
           handleUpdateAmount(isNFTAsset(e), e);
         }}
         helperText={
-          <FormHelperText color={error?.message ? 'error.500' : 'grey.425'}>
+          <Field.HelperText color={error?.message ? 'error.500' : 'grey.425'}>
             {!isNFT && (
               <Text display="flex" alignItems="center" mt={1}>
                 {!value ? (
@@ -87,10 +82,9 @@ const RecipientFormAsset = ({
                   isFeeCalcLoading ? (
                     <>
                       Balance (available):{' '}
-                      <CircularProgress
-                        trackColor="dark.100"
-                        size={3}
-                        isIndeterminate
+                      <Spinner
+                        css={{ '--spinner-track-color': 'dark.100' }}
+                        size="xs"
                         color="grey.425"
                         ml={1}
                       />
@@ -103,7 +97,7 @@ const RecipientFormAsset = ({
                 ) : null}
               </Text>
             )}
-          </FormHelperText>
+          </Field.HelperText>
         }
       />
       {!!value && <Clear top={isNFT ? '47%' : '38%'} onClear={onClearValue} />}

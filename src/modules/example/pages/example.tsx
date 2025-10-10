@@ -1,13 +1,10 @@
 import {
   Accordion,
-  AccordionButton,
   AccordionItem,
-  AccordionPanel,
   Badge,
   Box,
   Button,
-  FormControl,
-  FormLabel,
+  Field,
   Heading,
   HStack,
   Icon,
@@ -15,11 +12,10 @@ import {
   Input,
   Select,
   Text,
-  useAccordionItemState,
+  useAccordionItemContext,
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
-import React from 'react';
 import { BsBoxArrowUpRight } from 'react-icons/bs';
 import { FaRegClone } from 'react-icons/fa';
 import { HiQrCode } from 'react-icons/hi2';
@@ -35,11 +31,12 @@ import {
 } from '@/components';
 
 const AccordionTEste = () => {
-  const { isOpen, onClose, onOpen } = useAccordionItemState();
+  const accordionContext = useAccordionItemContext();
+  const isOpen = accordionContext.open;
 
   return (
     <Button onClick={() => (isOpen ? onClose() : onOpen())}>
-      Open <AccordionButton />
+      Open <AccordionItemTrigger />
     </Button>
   );
 };
@@ -53,7 +50,7 @@ const ExamplePage = () => {
       <Box width="100%" mb={10}>
         <Heading size="lg">Card</Heading>
         <Box mt={4}>
-          <HStack spacing={2}>
+          <HStack gap={2}>
             <Card w="100%">
               <Box mb={3}>
                 <Heading variant="title-xl">Infinitybase</Heading>
@@ -90,10 +87,10 @@ const ExamplePage = () => {
           </HStack>
         </Box>
         <Box mt={4}>
-          <VStack spacing={4}>
+          <VStack gap={4}>
             <Card w="100%">
-              <HStack alignItems="center" spacing={10}>
-                <HStack alignItems="center" spacing={2}>
+              <HStack alignItems="center" gap={10}>
+                <HStack alignItems="center" gap={2}>
                   <Icon as={SiBitcoinsv} fontSize="lg" />
                   <Text color="grey.500">BTC</Text>
                 </HStack>
@@ -111,8 +108,8 @@ const ExamplePage = () => {
               </HStack>
             </Card>
             <Card w="100%" bgColor="warning.900" borderColor="warning.500">
-              <HStack alignItems="center" spacing={10}>
-                <HStack alignItems="center" spacing={2}>
+              <HStack alignItems="center" gap={10}>
+                <HStack alignItems="center" gap={2}>
                   <Icon as={SiBitcoinsv} fontSize="lg" />
                   <Text color="grey.500">BTC</Text>
                 </HStack>
@@ -130,8 +127,8 @@ const ExamplePage = () => {
               </HStack>
             </Card>
             <Card w="100%">
-              <HStack alignItems="center" spacing={10}>
-                <HStack alignItems="center" spacing={2}>
+              <HStack alignItems="center" gap={10}>
+                <HStack alignItems="center" gap={2}>
                   <Icon as={SiBitcoinsv} fontSize="lg" />
                   <Text color="grey.500">BTC</Text>
                 </HStack>
@@ -156,7 +153,7 @@ const ExamplePage = () => {
       <Box width="100%" mb={10}>
         <Heading size="lg">Button</Heading>
         <Box mt={4}>
-          <HStack mb={2} spacing={2}>
+          <HStack mb={2} gap={2}>
             <Card w="100%">
               <Box mb={3}>
                 <Heading variant="title-xl">Primary</Heading>
@@ -182,7 +179,7 @@ const ExamplePage = () => {
               </Box>
             </Card>
           </HStack>
-          <HStack mb={2} spacing={2}>
+          <HStack mb={2} gap={2}>
             <Card w="100%">
               <Box mb={3}>
                 <Heading variant="title-xl">Secondary</Heading>
@@ -195,7 +192,7 @@ const ExamplePage = () => {
               <Box mb={3}>
                 <Heading variant="title-xl">Button icon</Heading>
               </Box>
-              <HStack spacing={2}>
+              <HStack gap={2}>
                 <IconButton
                   aria-label="Copy"
                   variant="icon"
@@ -221,9 +218,9 @@ const ExamplePage = () => {
       <Box width="100%" mb={10}>
         <Heading size="lg">Icons</Heading>
         <Box mt={4}>
-          <HStack mb={2} spacing={2}>
+          <HStack mb={2} gap={2}>
             <Card w="100%">
-              <HStack spacing={2}>
+              <HStack gap={2}>
                 <Icon as={PendingIcon} fontSize="xl" color="warning.500" />
                 <Icon as={ErrorIcon} fontSize="xl" color="error.500" />
                 <Icon as={SuccessIcon} fontSize="xl" color="success.500" />
@@ -237,9 +234,9 @@ const ExamplePage = () => {
       <Box width="100%" mb={10}>
         <Heading size="lg">Badge</Heading>
         <Box mt={4}>
-          <HStack mb={2} spacing={2}>
+          <HStack mb={2} gap={2}>
             <Card w="100%">
-              <HStack spacing={2}>
+              <HStack gap={2}>
                 <Badge variant="success">
                   You signed
                   <Icon as={SuccessIcon} />
@@ -264,24 +261,24 @@ const ExamplePage = () => {
       <Box width="100%" mb={10}>
         <Heading size="lg">Form</Heading>
         <Box mt={4}>
-          <HStack mb={2} spacing={2}>
+          <HStack mb={2} gap={2}>
             <Card flex={1}>
               <Box mb={3}>
                 <Heading variant="title-xl">Input</Heading>
               </Box>
               <Box w="100%" py={2}>
-                <FormControl>
+                <Field.Root>
                   <Input placeholder=" " />
                   <FormLabel>First name</FormLabel>
                   {/* It is important that the Label comes after the Control due to css selectors */}
-                </FormControl>
+                </Field.Root>
               </Box>
               <Box w="100%" py={2}>
-                <FormControl>
+                <Field.Root>
                   <Input placeholder=" " />
                   <FormLabel>First name</FormLabel>
                   {/* It is important that the Label comes after the Control due to css selectors */}
-                </FormControl>
+                </Field.Root>
               </Box>
             </Card>
             <Card flex={1}>
@@ -289,7 +286,7 @@ const ExamplePage = () => {
                 <Heading variant="title-xl">Select</Heading>
               </Box>
               <Box w="100%" py={2}>
-                <FormControl>
+                <Field.Root>
                   <Select placeholder=" ">
                     <option value="option1">Option 1</option>
                     <option value="option2">Option 2</option>
@@ -297,7 +294,7 @@ const ExamplePage = () => {
                   </Select>
                   <FormLabel>First name</FormLabel>
                   {/* It is important that the Label comes after the Control due to css selectors */}
-                </FormControl>
+                </Field.Root>
               </Box>
             </Card>
           </HStack>
@@ -308,19 +305,19 @@ const ExamplePage = () => {
       <Box width="100%" mb={10}>
         <Heading size="lg">Accordion</Heading>
         <Box mt={4}>
-          <HStack mb={2} spacing={2}>
+          <HStack mb={2} gap={2}>
             <Card flex={1}>
               <Accordion allowToggle>
                 <AccordionItem>
                   <h2>
                     <AccordionTEste />
                   </h2>
-                  <AccordionPanel pb={4}>
+                  <AccordionItemContent pb={4}>
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
                     do eiusmod tempor incididunt ut labore et dolore magna
                     aliqua. Ut enim ad minim veniam, quis nostrud exercitation
                     ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                  </AccordionPanel>
+                  </AccordionItemContent>
                 </AccordionItem>
               </Accordion>
             </Card>
@@ -343,14 +340,14 @@ const ExamplePage = () => {
 
         <Dialog.Body maxW={420}>
           <VStack>
-            <FormControl>
+            <Field.Root>
               <Input placeholder=" " />
               <FormLabel>First name</FormLabel>
-            </FormControl>
-            <FormControl>
+            </Field.Root>
+            <Field.Root>
               <Input placeholder=" " />
               <FormLabel>First name</FormLabel>
-            </FormControl>
+            </Field.Root>
           </VStack>
         </Dialog.Body>
 

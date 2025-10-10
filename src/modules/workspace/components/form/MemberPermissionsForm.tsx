@@ -2,11 +2,10 @@ import {
   Badge,
   Box,
   Center,
-  Divider,
   Flex,
   Heading,
-  Radio,
   RadioGroup,
+  Separator,
   Stack,
   Text,
 } from '@chakra-ui/react';
@@ -42,7 +41,7 @@ export const MemberPermissionForm = ({
   return (
     <Center>
       <Box w="full" maxW={480}>
-        <Divider mb={5} />
+        <Separator mb={5} />
         <Dialog.Section
           title={
             <Heading fontSize="md" color="grey.200">
@@ -56,9 +55,9 @@ export const MemberPermissionForm = ({
           name="permission"
           control={form.control}
           render={({ field }) => (
-            <RadioGroup
+            <RadioGroup.Root
               value={field.value}
-              onChange={field.onChange}
+              onValueChange={field.onChange}
               defaultValue={field.value}
             >
               <Stack>
@@ -78,7 +77,7 @@ export const MemberPermissionForm = ({
                       }
                       key={permission.value}
                     >
-                      <Radio
+                      <RadioGroup.Item
                         my={1}
                         border="none"
                         display="flow"
@@ -116,12 +115,12 @@ export const MemberPermissionForm = ({
                             </Text>
                           </Flex>
                         </Box>
-                      </Radio>
+                      </RadioGroup.Item>
                     </RadioCard>
                   ),
                 )}
               </Stack>
-            </RadioGroup>
+            </RadioGroup.Root>
           )}
         />
       </Box>

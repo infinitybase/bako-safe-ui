@@ -2,7 +2,7 @@ import {
   Box,
   Button,
   Center,
-  Divider,
+  Separator,
   Heading,
   HStack,
   Icon,
@@ -30,8 +30,8 @@ const SuccesStep = (props: SuccessStepProps) => (
         your workflow!
       </Heading>
     </Box>
-    <Divider m={4} borderColor="dark.100" />
-    <HStack spacing={4} justifyContent="center">
+    <Separator m={4} borderColor="dark.100" />
+    <HStack gap={4} justifyContent="center">
       <Button
         border="none"
         bgColor="dark.100"

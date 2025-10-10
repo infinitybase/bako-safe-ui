@@ -1,4 +1,4 @@
-import { Box, FormControl, FormHelperText } from '@chakra-ui/react';
+import { Box, Field } from '@chakra-ui/react';
 import { Address, isB256 } from 'fuels';
 import { Controller } from 'react-hook-form';
 
@@ -67,7 +67,7 @@ export const MemberAddressForm = ({ form, addressBook }: MemberAddressForm) => {
 
           return (
             <>
-              <FormControl isInvalid={fieldState.invalid}>
+              <Field.Root invalid={fieldState.invalid}>
                 <Autocomplete
                   label="Name or address"
                   value={field.value}
@@ -81,10 +81,10 @@ export const MemberAddressForm = ({ form, addressBook }: MemberAddressForm) => {
                   variant={'dark'}
                 />
 
-                <FormHelperText color="error.500">
+                <Field.HelperText color="error.500">
                   {fieldState.error?.message}
-                </FormHelperText>
-              </FormControl>
+                </Field.HelperText>
+              </Field.Root>
 
               <AddToAddressBook
                 visible={showAddToAddressBook}

@@ -1,8 +1,8 @@
 import {
   Badge,
-  BoxProps,
-  CircularProgress,
   HStack,
+  Spinner,
+  StackProps,
   Text,
   VStack,
 } from '@chakra-ui/react';
@@ -10,7 +10,7 @@ import { WitnessStatus } from 'bakosafe';
 
 import { TransactionState } from '@/modules/core';
 
-interface TransactionCardStatusProps extends BoxProps {
+interface TransactionCardStatusProps extends StackProps {
   status: TransactionState;
   transaction: ITransaction;
   showDescription?: boolean;
@@ -59,17 +59,16 @@ const Status = ({
       {...rest}
     >
       {isCurrentTxLoading && (
-        <CircularProgress
-          trackColor="dark.100"
-          size={30}
-          isIndeterminate
+        <Spinner
+          css={{ '--spinner-track-color': 'dark.100' }}
+          size="lg"
           color="brand.500"
         />
       )}
       <VStack
         hidden={isCurrentTxLoading}
         minW={100}
-        spacing={0}
+        gap={0}
         w="full"
         direction={{ base: 'row', sm: 'column' }}
         alignItems={{ base: 'flex-end', md: 'center' }}
@@ -84,7 +83,8 @@ const Status = ({
             justifyContent={'center'}
             h={6}
             borderRadius="20px"
-            variant={badgeColor}
+            colorPalette={badgeColor}
+            // variant={badgeColor}
           >
             {isError && 'Error'}
             {isReproved && 'Declined'}
@@ -102,7 +102,7 @@ const Status = ({
 
         {showDescription && (
           <Text
-            variant="description"
+            // variant="description"
             fontSize={{ base: 'xs', sm: 'sm' }}
             color="grey.500"
           >

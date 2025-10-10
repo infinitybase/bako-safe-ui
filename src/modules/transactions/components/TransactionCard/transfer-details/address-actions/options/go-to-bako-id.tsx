@@ -18,7 +18,7 @@ const GoToBakoId = ({ handle }: GoToBakoIdProps) => {
 
   return (
     <HStack
-      spacing={4}
+      gap={4}
       px={4}
       py={3}
       cursor="pointer"
@@ -27,7 +27,7 @@ const GoToBakoId = ({ handle }: GoToBakoIdProps) => {
       }
     >
       <UpRightArrow color="grey.50" fontSize="lg" />
-      <VStack alignItems="flex-start" spacing={0} fontSize="xs">
+      <VStack alignItems="flex-start" gap={0} fontSize="xs">
         <Text color="grey.50">Go to Bako ID</Text>
         <Text
           isTruncated

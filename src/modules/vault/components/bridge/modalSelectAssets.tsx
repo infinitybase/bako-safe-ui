@@ -1,12 +1,11 @@
 import {
-  Divider,
-  FormControl,
-  FormLabel,
+  DialogOpenChangeDetails,
+  Field,
   HStack,
   Image,
   Input,
   InputGroup,
-  InputRightElement,
+  Separator,
   Skeleton,
   Text,
   VStack,
@@ -37,7 +36,7 @@ export interface ModalSelectAssetsProps {
   title: string;
   isOpen?: boolean;
   options?: AssetItem[];
-  onClose: () => void;
+  onOpenChange?: (open: DialogOpenChangeDetails) => void;
   onSelect: (asset: AssetItem) => void;
 }
 
@@ -56,7 +55,7 @@ const AssetItem = ({ asset, onSelect }: AssetItemBrigdeProps) => {
       w="100%"
       onClick={() => onSelect(asset)}
     >
-      <Skeleton isLoaded={loaded} boxSize={6} borderRadius="full">
+      <Skeleton loading={!loaded} boxSize={6} borderRadius="full">
         <Image
           src={image}
           boxSize={6}
@@ -79,7 +78,7 @@ export function ModalSelectAssetsBridge({
   title,
   isOpen = false,
   options,
-  onClose,
+  onOpenChange,
   onSelect,
 }: ModalSelectAssetsProps) {
   const { control } = useFormContext<ITransferBridgePayload>();
@@ -101,7 +100,7 @@ export function ModalSelectAssetsBridge({
 
     form.resetField('searchAsset');
     setSearchValue('');
-    onClose();
+    onOpenChange?.({ open: false });
   };
 
   const orderOptions = useCallback(
@@ -146,16 +145,16 @@ export function ModalSelectAssetsBridge({
       onSelect(asset);
       setAssetSelected(asset);
       getOperationLimits(asset);
-      onClose();
+      onOpenChange?.({ open: false });
     },
-    [onSelect, onClose, getOperationLimits],
+    [onSelect, onOpenChange, getOperationLimits],
   );
 
   return (
     <Dialog.Modal
-      isOpen={isOpen}
-      onClose={handleClose}
-      closeOnOverlayClick={false}
+      open={isOpen}
+      onOpenChange={handleClose}
+      closeOnInteractOutside={false}
       size={'md'}
     >
       <Dialog.Body minH={650} maxH={650} flex={1}>
@@ -179,12 +178,8 @@ export function ModalSelectAssetsBridge({
           control={control}
           render={({ field, fieldState }) => {
             return (
-              <FormControl isInvalid={fieldState.invalid} marginY={4}>
-                <InputGroup>
-                  <InputRightElement pr={3} top="35%">
-                    <SearchIcon color="grey.75" fontSize={'16px'} />
-                  </InputRightElement>
-
+              <Field.Root invalid={fieldState.invalid} marginY={4}>
+                <InputGroup endElement={<SearchIcon color="grey.500" />}>
                   <Input
                     placeholder=""
                     bgColor="dark.950"
@@ -194,21 +189,20 @@ export function ModalSelectAssetsBridge({
                       handleSearch(e.target.value);
                     }}
                   />
-
-                  <FormLabel>Search asset</FormLabel>
                 </InputGroup>
-              </FormControl>
+                <Field.Label>Search asset</Field.Label>
+              </Field.Root>
             );
           }}
         />
-        <Divider marginTop={6} borderColor="grey.950" />
+        <Separator marginTop={6} borderColor="grey.950" />
         <VStack
           maxH={523}
           overflowY="auto"
           m={0}
           p={0}
           pt={6}
-          sx={{
+          css={{
             '&::-webkit-scrollbar': {
               display: 'none',
               width: '5px',

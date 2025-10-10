@@ -1,5 +1,5 @@
-import { InfoIcon } from '@chakra-ui/icons';
 import { Stack, Text } from '@chakra-ui/react';
+import { FiInfo as InfoIcon } from 'react-icons/fi';
 
 import { CardRoot } from './CardRoot';
 

@@ -15,8 +15,8 @@ const WebAuthnAccountCreated = (props: WebAuthnAccountCreatedProps) => {
   const { title, formState, showDescription } = props;
 
   return (
-    <VStack h="full" spacing={8} justifyContent="center">
-      <VStack spacing={0}>
+    <VStack h="full" gap={8} justifyContent="center">
+      <VStack gap={0}>
         <SignInHeader title={title} showDescription={showDescription} />
 
         <Text fontSize="xs" color="grey.250">

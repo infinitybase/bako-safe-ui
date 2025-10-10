@@ -38,7 +38,7 @@ export function FormPageBrigde({
 
   return (
     <VStack w={'full'} justifyContent="center" align="center">
-      <VStack alignItems="center" w="full" spacing={2}>
+      <VStack alignItems="center" w="full" gap={2}>
         <SelectBridgeNetwork
           stepsForm={stepsForm}
           setStepsForm={setStepsForm}
@@ -67,13 +67,13 @@ export function FormPageBrigde({
             <DetailsBridge />
             <InputAddressBridge />
             <Button
-              isDisabled={
+              disabled={
                 !isFormComplete ||
                 !!errorForm ||
                 isPendingSigner ||
                 notEnoughBalanceETH
               }
-              variant="primary"
+              colorPalette="primary"
               fontWeight={600}
               fontSize={16}
               letterSpacing={'2%'}

@@ -29,7 +29,7 @@ const WebAuthnSignIn = (props: WebAuthnSignInProps) => {
   const { isMobile } = useScreenSize();
 
   return (
-    <VStack w="full" spacing={isMobile ? 4 : 6}>
+    <VStack w="full" gap={isMobile ? 4 : 6}>
       <TermsOfUseDialog actionHandler={handleRegister} />
 
       <WebAuthnForm

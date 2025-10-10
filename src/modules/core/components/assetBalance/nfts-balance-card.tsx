@@ -59,7 +59,7 @@ const NftBalanceCard = ({ nft }: { nft: NFT }) => {
             fontSize={isLitteSmall ? 'xs' : 'sm'}
             color="grey.50"
             maxW="full"
-            isTruncated
+            truncate
           >
             {nftsInfo.symbol || nftsInfo.name || nftsInfo.metadata.name
               ? `${nftsInfo.symbol || ''} ${nftsInfo.name || nftsInfo.metadata.name || ''}`.trim()

@@ -16,7 +16,7 @@ const StepProgress = ({ value, length }: StepProgressProps) => {
       bgColor="dark.200"
       justifyContent="space-between"
       rounded="full"
-      spacing={2}
+      gap={2}
     >
       {Array(length)
         .fill('')

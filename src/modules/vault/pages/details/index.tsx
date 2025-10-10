@@ -1,18 +1,19 @@
 import {
   Box,
-  Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbRoot,
+  BreadcrumbSeparator,
   Button,
   HStack,
   Icon,
   Spacer,
   Spinner,
   Text,
-  useDisclosure,
 } from '@chakra-ui/react';
 import { useQueryClient } from '@tanstack/react-query';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { CustomSkeleton, HomeIcon, TransactionTypeFilters } from '@/components';
@@ -25,6 +26,7 @@ import { Drawer } from '@/layouts/dashboard/drawer';
 import { CardLiquidStake } from '@/modules';
 import { PermissionRoles } from '@/modules/core';
 import { useBakoSafeVault, useGetParams } from '@/modules/core/hooks';
+import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
 import { Pages } from '@/modules/core/routes';
 import { useTemplateStore } from '@/modules/template/store/useTemplateStore';
 import { TransactionCard, WaitingSignatureBadge } from '@/modules/transactions';
@@ -39,9 +41,18 @@ import { vaultInfinityQueryKey } from '../../hooks/list/useVaultTransactionsRequ
 import { useVaultInfosContext } from '../../VaultInfosProvider';
 
 const VaultDetailsPage = () => {
-  const [welcomeDialogState, setWelcomeDialogState] = useState(true);
-  const [addAssetsDialogState, setAddAssetsDialogState] = useState(false);
-  const [depositDialogState, setDepositDialogState] = useState(false);
+  const { isOpen: welcomeDialogState, onOpenChange: setWelcomeDialogState } =
+    useDisclosure(true);
+  const {
+    isOpen: addAssetsDialogState,
+    onOpenChange: setAddAssetsDialogState,
+    setOpen: setIsAddAssetDialogOpen,
+  } = useDisclosure();
+  const {
+    isOpen: depositDialogState,
+    onOpenChange: setDepositDialogState,
+    setOpen: setOpenDepositDialog,
+  } = useDisclosure();
   const menuDrawer = useDisclosure();
   const navigate = useNavigate();
   const { vaultPageParams } = useGetParams();
@@ -110,51 +121,56 @@ const VaultDetailsPage = () => {
 
   return (
     <Box w="full">
-      <Drawer isOpen={menuDrawer.isOpen} onClose={menuDrawer.onClose} />
+      <Drawer
+        open={menuDrawer.isOpen}
+        onOpenChange={(e) => menuDrawer.setOpen(e.open)}
+      />
 
       <WelcomeDialog
         isOpen={welcomeDialogState}
-        setIsWelcomeDialogOpen={setWelcomeDialogState}
-        setIsDepositDialogOpen={setDepositDialogState}
+        onOpenChange={setWelcomeDialogState}
+        setIsDepositDialogOpen={setOpenDepositDialog}
       />
 
       <DepositDialog
         isOpen={depositDialogState}
-        setIsDepositDialogOpen={setDepositDialogState}
+        onOpenChange={setDepositDialogState}
         vault={vault.data}
       />
 
       <AddAssetsDialog
         isOpen={addAssetsDialogState}
-        setIsAddAssetDialogOpen={setAddAssetsDialogState}
-        setIsDepositDialogOpen={setDepositDialogState}
+        onOpenChange={setAddAssetsDialogState}
+        setIsDepositDialogOpen={setOpenDepositDialog}
       />
 
       <HStack mb={9} w="full" justifyContent="space-between">
         {vaultRequiredSizeToColumnLayout ? (
           <HStack gap={4} onClick={menuDrawer.onOpen}>
-            <Icon as={MenuIcon} fontSize="md" color="grey.200" />
+            <Icon as={MenuIcon} w={6} color="grey.200" />
             <Text fontSize="sm" fontWeight="normal" color="grey.100">
               Menu
             </Text>
           </HStack>
         ) : (
-          <Breadcrumb>
-            <BreadcrumbItem>
-              <BreadcrumbLink
-                fontSize="sm"
-                color="grey.200"
-                fontWeight="semibold"
-                onClick={() => goHome()}
-              >
-                <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
-                Home
-              </BreadcrumbLink>
-            </BreadcrumbItem>
+          <BreadcrumbRoot>
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink
+                  fontSize="sm"
+                  color="grey.200"
+                  fontWeight="semibold"
+                  onClick={() => goHome()}
+                >
+                  <Icon mr={2} as={HomeIcon} w={3} color="grey.200" />
+                  Home
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
 
-            {/* Commented out code to temporarily disable workspaces. */}
+              {/* Commented out code to temporarily disable workspaces. */}
 
-            {/* {!userInfos.onSingleWorkspace && (
+              {/* {!userInfos.onSingleWorkspace && (
               <BreadcrumbItem>
                 <BreadcrumbLink
                   fontSize="sm"
@@ -177,36 +193,39 @@ const VaultDetailsPage = () => {
               </BreadcrumbItem>
             )} */}
 
-            <BreadcrumbItem>
-              <BreadcrumbLink
-                fontSize="sm"
-                color="grey.200"
-                fontWeight="semibold"
-                onClick={() =>
-                  navigate(
-                    Pages.userVaults({
-                      workspaceId,
-                    }),
-                  )
-                }
-              >
-                Vaults
-              </BreadcrumbLink>
-            </BreadcrumbItem>
+              <BreadcrumbItem>
+                <BreadcrumbLink
+                  fontSize="sm"
+                  color="grey.200"
+                  fontWeight="semibold"
+                  onClick={() =>
+                    navigate(
+                      Pages.userVaults({
+                        workspaceId,
+                      }),
+                    )
+                  }
+                >
+                  Vaults
+                </BreadcrumbLink>
+              </BreadcrumbItem>
 
-            <BreadcrumbItem>
-              <BreadcrumbLink
-                fontSize="sm"
-                color="grey.200"
-                fontWeight="semibold"
-                href="#"
-                isTruncated
-                maxW={640}
-              >
-                {limitCharacters(vault?.data?.name ?? '', 25)}
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-          </Breadcrumb>
+              <BreadcrumbSeparator />
+
+              <BreadcrumbItem>
+                <BreadcrumbLink
+                  fontSize="sm"
+                  color="grey.200"
+                  fontWeight="semibold"
+                  href="#"
+                  truncate
+                  maxW={640}
+                >
+                  {limitCharacters(vault?.data?.name ?? '', 25)}
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </BreadcrumbRoot>
         )}
         {!hideSetTemplateButton && (
           <Button
@@ -215,7 +234,7 @@ const VaultDetailsPage = () => {
             fontWeight="medium"
             fontSize={{ base: 'sm', sm: 'md' }}
             border="none"
-            isDisabled={!canSetTemplate || true} // todo: fix this
+            disabled={!canSetTemplate || true} // todo: fix this
             onClick={() => {
               if (
                 !vault.data?.id ||
@@ -255,25 +274,25 @@ const VaultDetailsPage = () => {
           vault={vault}
           assets={assets}
           isPendingSigner={isPendingSigner}
-          setAddAssetsDialogState={setAddAssetsDialogState}
+          setAddAssetsDialogState={setIsAddAssetDialogOpen}
         />
 
         <SignersDetails
           vault={vault}
-          display={{ base: 'none', xs: !isLarge ? 'block' : 'none' }}
+          display={{ base: 'none', sm: !isLarge ? 'block' : 'none' }}
         />
       </HStack>
       <Box
         w="full"
         display="flex"
-        flexDir={{ base: 'column', xs: isSmall ? 'column' : 'row' }}
+        flexDir={{ base: 'column', sm: isSmall ? 'column' : 'row' }}
         gap={4}
         mb={4}
       >
         <Box
           display="flex"
-          flexDir={{ base: 'column', xs: isSmall ? 'column' : 'row' }}
-          alignItems={{ base: 'start', xs: isSmall ? 'unset' : 'center' }}
+          flexDir={{ base: 'column', sm: isSmall ? 'column' : 'row' }}
+          alignItems={{ base: 'start', sm: isSmall ? 'unset' : 'center' }}
           gap={isSmall ? 2 : 4}
         >
           <Text fontWeight={700} fontSize="md" color="grey.50">
@@ -296,7 +315,7 @@ const VaultDetailsPage = () => {
 
       <CustomSkeleton
         minH="30vh"
-        isLoaded={!vault.isLoading && !isLoading}
+        loading={vault.isLoading && isLoading}
         h={!vault.isLoading && !isLoading ? 'unset' : '100px'}
       >
         {hasTransactions
@@ -312,7 +331,7 @@ const VaultDetailsPage = () => {
                   <TransactionCard.List
                     w="full"
                     maxH={{ base: undefined, sm: 'calc(100% - 72px)' }}
-                    spacing={0}
+                    gap={0}
                   >
                     {grouped?.transactions?.map((transaction) => (
                       <TransactionCard.Item

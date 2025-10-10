@@ -29,7 +29,7 @@ const DappTransactionSuccess = (props: DappTransactionSuccessProps) => {
   return (
     <Container flex={1}>
       <VStack h="full" justifyContent="center" w="full" px={6} py={8}>
-        <VStack mt="auto" textAlign="center" spacing={4}>
+        <VStack mt="auto" textAlign="center" gap={4}>
           <Icon fontSize={98} as={DoneIcon} />
           <Text ref={titleRef} fontWeight={700} fontSize="20px" color="grey.75">
             {title}

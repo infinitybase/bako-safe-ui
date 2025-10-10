@@ -1,7 +1,7 @@
 import {
   Box,
   Button,
-  CircularProgress,
+  Spinner,
   Icon,
   Text,
   ToastId,
@@ -47,7 +47,7 @@ const useTransactionToast = () => {
       isClosable: true,
       title: 'Sending your transaction',
       icon: (
-        <CircularProgress
+        <Spinner
           trackColor="dark.100"
           size={5}
           isIndeterminate

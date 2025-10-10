@@ -1,4 +1,4 @@
-import { Avatar, Box, Divider, HStack, Text } from '@chakra-ui/react';
+import { Avatar, Box, HStack, Separator, Text } from '@chakra-ui/react';
 
 import { Card } from '@/components';
 
@@ -15,18 +15,15 @@ const DappConnectionDetail = ({
 }: DappConnectionDetailProps) => {
   return (
     <Card py={4}>
-      <Text variant="description">Requesting a transaction from:</Text>
-      <Divider borderColor="dark.100" my={4} />
-      <HStack alignItems="flex-start" spacing={4}>
-        <Avatar
-          variant="roundedSquare"
-          bgColor="dark.150"
-          color="white"
-          name={title}
-          src={faviconUrl}
-        />
+      <Text>Requesting a transaction from:</Text>
+      <Separator borderColor="dark.100" my={4} />
+      <HStack alignItems="flex-start" gap={4}>
+        <Avatar.Root shape="rounded" bgColor="dark.150" color="white">
+          <Avatar.Fallback name={title} />
+          <Avatar.Image src={faviconUrl} />
+        </Avatar.Root>
         <Box w="full">
-          <Text variant="subtitle">{title}</Text>
+          <Text>{title}</Text>
           <Text fontSize="sm" fontWeight="normal" color="brand.500">
             {origin}
           </Text>

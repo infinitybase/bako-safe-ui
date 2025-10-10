@@ -1,13 +1,12 @@
 import {
   Box,
   Button,
-  Divider,
   HStack,
   Icon,
+  Separator,
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { css } from '@emotion/react';
 import { type ITransferAsset, TransactionStatus } from 'bakosafe';
 
 import { SuccessIcon, UpRightArrow } from '@/components';
@@ -62,14 +61,14 @@ const DepositDetails = ({ transaction }: DepositDetailsProps) => {
   return (
     <Box
       display="flex"
-      flexDirection={{ base: 'row', xs: 'column' }}
+      flexDirection={{ base: 'row', md: 'column' }}
       w="full"
       minW={{ base: 200, sm: '476px' }}
       flexWrap="wrap"
-      minH={{ base: 560, xs: 400, sm: 'unset' }}
+      minH={{ base: 560, md: 400, sm: 'unset' }}
     >
       <VStack w="full" mt={isMobile ? 'unset' : 5}>
-        {isMobile && <Divider my={5} borderColor="grey.425" />}
+        {isMobile && <Separator my={5} borderColor="grey.425" />}
 
         {isFuelFriday && (
           <Box w="full">
@@ -85,9 +84,9 @@ const DepositDetails = ({ transaction }: DepositDetailsProps) => {
               py={4}
               px={4}
             >
-              <Icon as={SuccessIcon} color="#00E65C" mt={1} fontSize={27} />
+              <Icon as={SuccessIcon} color="#00E65C" mt={1} w="27px" />
 
-              <VStack spacing={0} alignItems="flex-start">
+              <VStack gap={0} alignItems="flex-start">
                 <Text fontWeight="bold" color="#00E65C" fontSize="sm">
                   Fuel the Future of Scalable Payments
                 </Text>
@@ -129,17 +128,15 @@ const DepositDetails = ({ transaction }: DepositDetailsProps) => {
               w={isMobile ? 'full' : 'unset'}
               alignSelf={{ base: 'stretch', sm: 'flex-end' }}
               size={{ base: 'sm', sm: 'xs', lg: 'sm' }}
-              variant="secondaryV2"
+              colorPalette="secondaryV2"
               onClick={handleViewInExplorer}
-              css={css`
+              css={`
                 &:hover .btn-icon {
                   animation: ${shakeAnimationY} 0.5s ease-in-out;
                 }
               `}
-              rightIcon={
-                <Icon as={UpRightArrow} fontSize="lg" className="btn-icon" />
-              }
             >
+              <UpRightArrow w={5} className="btn-icon" />
               View on Explorer
             </Button>
           )}

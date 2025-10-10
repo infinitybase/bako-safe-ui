@@ -6,12 +6,12 @@ import {
   IconButton,
   Image,
   Text,
-  useDisclosure,
   VStack,
 } from '@chakra-ui/react';
 
 import { LeftAndRightArrow } from '@/components';
 import { Asset } from '@/modules/core';
+import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
 import { useAmountBridge, useFormBridge } from '@/modules/vault/hooks/bridge';
 
 import { InputAmount } from '../inputAmount';
@@ -44,7 +44,7 @@ export function AmountBrigdeMobile({
   } = useAmountBridge({ stepsForm, setStepsForm, assets, setErrorAmount });
 
   return (
-    <Card
+    <Card.Root
       variant="outline"
       padding={3}
       paddingBottom={1}
@@ -142,6 +142,6 @@ export function AmountBrigdeMobile({
           </Text>
         )}
       </HStack>
-    </Card>
+    </Card.Root>
   );
 }

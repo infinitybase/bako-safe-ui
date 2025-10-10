@@ -5,13 +5,8 @@ import {
   Flex,
   HStack,
   Icon,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
   Tabs,
   Text,
-  useDisclosure,
 } from '@chakra-ui/react';
 import { RiMenuUnfoldLine } from 'react-icons/ri';
 import { useNavigate } from 'react-router-dom';
@@ -20,6 +15,7 @@ import { CustomSkeleton, HomeIcon } from '@/components';
 import { EmptyState } from '@/components/emptyState';
 import { Drawer } from '@/layouts/dashboard/drawer';
 import { AssetsBalanceList, NFT, NftsBalanceList, Pages } from '@/modules/core';
+import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { NFTsEmptyState } from '../../components/NFTsEmptyState';
@@ -45,7 +41,7 @@ const VaultBalancePage = () => {
 
   return (
     <Flex w="full" direction="column">
-      <Drawer isOpen={menuDrawer.isOpen} onClose={menuDrawer.onClose} />
+      <Drawer open={menuDrawer.isOpen} onOpenChange={menuDrawer.onOpenChange} />
 
       <HStack mb={8} w="full" justifyContent="space-between">
         {vaultRequiredSizeToColumnLayout ? (
@@ -56,22 +52,24 @@ const VaultBalancePage = () => {
             </Text>
           </HStack>
         ) : (
-          <Breadcrumb>
-            <BreadcrumbItem>
-              <BreadcrumbLink
-                fontSize="sm"
-                color="grey.200"
-                fontWeight="semibold"
-                onClick={() => goHome()}
-              >
-                <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
-                Home
-              </BreadcrumbLink>
-            </BreadcrumbItem>
+          <Breadcrumb.Root>
+            <Breadcrumb.List>
+              <BreadcrumbItem>
+                <BreadcrumbLink
+                  fontSize="sm"
+                  color="grey.200"
+                  fontWeight="semibold"
+                  onClick={() => goHome()}
+                >
+                  <Icon mr={2} as={HomeIcon} w={3} color="grey.200" />
+                  Home
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <Breadcrumb.Separator />
 
-            {/* Commented out code to temporarily disable workspaces. */}
+              {/* Commented out code to temporarily disable workspaces. */}
 
-            {/* {!userInfos.onSingleWorkspace && (
+              {/* {!userInfos.onSingleWorkspace && (
               <BreadcrumbItem>
                 <BreadcrumbLink
                   fontSize="sm"
@@ -94,59 +92,64 @@ const VaultBalancePage = () => {
               </BreadcrumbItem>
             )} */}
 
-            <BreadcrumbItem>
-              <BreadcrumbLink
-                fontSize="sm"
-                color="grey.200"
-                fontWeight="semibold"
-                onClick={() =>
-                  navigate(
-                    Pages.userVaults({
-                      workspaceId,
-                    }),
-                  )
-                }
-              >
-                Vaults
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbItem>
-              <BreadcrumbLink
-                fontSize="sm"
-                color="grey.200"
-                fontWeight="semibold"
-                onClick={() =>
-                  navigate(
-                    Pages.detailsVault({
-                      vaultId: vault?.data?.id,
-                      workspaceId: userInfos.workspace?.id ?? '',
-                    }),
-                  )
-                }
-                isTruncated
-                maxW={640}
-              >
-                {vault.data?.name}
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbItem>
-              <BreadcrumbLink
-                fontSize="sm"
-                color="grey.200"
-                fontWeight="semibold"
-                href="#"
-              >
-                Balance
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-          </Breadcrumb>
+              <BreadcrumbItem>
+                <BreadcrumbLink
+                  fontSize="sm"
+                  color="grey.200"
+                  fontWeight="semibold"
+                  onClick={() =>
+                    navigate(
+                      Pages.userVaults({
+                        workspaceId,
+                      }),
+                    )
+                  }
+                >
+                  Vaults
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <Breadcrumb.Separator />
+
+              <BreadcrumbItem>
+                <BreadcrumbLink
+                  fontSize="sm"
+                  color="grey.200"
+                  fontWeight="semibold"
+                  onClick={() =>
+                    navigate(
+                      Pages.detailsVault({
+                        vaultId: vault?.data?.id,
+                        workspaceId: userInfos.workspace?.id ?? '',
+                      }),
+                    )
+                  }
+                  truncate
+                  maxW={640}
+                >
+                  {vault.data?.name}
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <Breadcrumb.Separator />
+              <BreadcrumbItem>
+                <BreadcrumbLink
+                  fontSize="sm"
+                  color="grey.200"
+                  fontWeight="semibold"
+                  href="#"
+                >
+                  Balance
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+            </Breadcrumb.List>
+          </Breadcrumb.Root>
         )}
       </HStack>
 
       <Flex w="full" direction="column" flex={1}>
-        <Tabs isLazy>
-          <TabList borderBottom="1px solid #333" paddingBottom={'2px'}>
-            <Tab
+        <Tabs.Root defaultValue="tokens" lazyMount>
+          <Tabs.List borderBottom="1px solid #333" paddingBottom={'2px'}>
+            <Tabs.Trigger
+              value="tokens"
               _selected={{
                 bg: 'white',
                 color: 'black',
@@ -157,8 +160,9 @@ const VaultBalancePage = () => {
               borderTopRightRadius="lg"
             >
               Tokens
-            </Tab>
-            <Tab
+            </Tabs.Trigger>
+            <Tabs.Trigger
+              value="nft"
               _selected={{
                 bg: 'white',
                 color: 'black',
@@ -169,42 +173,40 @@ const VaultBalancePage = () => {
               borderTopRightRadius="lg"
             >
               NFT
-            </Tab>
-          </TabList>
+            </Tabs.Trigger>
+          </Tabs.List>
 
-          <TabPanels>
-            <TabPanel px={-4}>
-              <CustomSkeleton
-                isLoaded={!userInfos.isLoading && !assets.isLoading}
-                flex={1}
-              >
-                {assets.hasAssets ? (
-                  <AssetsBalanceList assets={assets.assets!} />
-                ) : (
-                  <EmptyState
-                    showAction={false}
-                    title="No Data available"
-                    subTitle="Currently, there is no available data to display in this section."
-                    h="full"
-                  />
-                )}
-              </CustomSkeleton>
-            </TabPanel>
+          <Tabs.Content value="tokens" px={-4}>
+            <CustomSkeleton
+              loading={userInfos.isLoading && assets.isLoading}
+              flex={1}
+            >
+              {assets.hasAssets ? (
+                <AssetsBalanceList assets={assets.assets!} />
+              ) : (
+                <EmptyState
+                  showAction={false}
+                  title="No Data available"
+                  subTitle="Currently, there is no available data to display in this section."
+                  h="full"
+                />
+              )}
+            </CustomSkeleton>
+          </Tabs.Content>
 
-            <TabPanel px={-4}>
-              <CustomSkeleton
-                isLoaded={!userInfos.isLoading && !assets.isLoading}
-                flex={1}
-              >
-                {assets.nfts?.length ? (
-                  <NftsBalanceList nfts={assets.nfts as NFT[]} />
-                ) : (
-                  <NFTsEmptyState />
-                )}
-              </CustomSkeleton>
-            </TabPanel>
-          </TabPanels>
-        </Tabs>
+          <Tabs.Content value="nft" px={-4}>
+            <CustomSkeleton
+              loading={userInfos.isLoading && assets.isLoading}
+              flex={1}
+            >
+              {assets.nfts?.length ? (
+                <NftsBalanceList nfts={assets.nfts as NFT[]} />
+              ) : (
+                <NFTsEmptyState />
+              )}
+            </CustomSkeleton>
+          </Tabs.Content>
+        </Tabs.Root>
       </Flex>
     </Flex>
   );

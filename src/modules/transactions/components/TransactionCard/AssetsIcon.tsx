@@ -37,7 +37,7 @@ export const AssetsIcon = memo(
 
     return (
       <AvatarGroup
-        max={showOnlyOneAsset ? 1 : 2}
+        // max={showOnlyOneAsset ? 1 : 2}
         size="md"
         borderRadius="md"
         justifyContent={isMobile ? 'start' : 'end'}
@@ -46,7 +46,7 @@ export const AssetsIcon = memo(
         {assetsWithImage.map((asset) => (
           <Skeleton
             key={asset.assetId}
-            isLoaded={!isLoading}
+            loading={isLoading}
             borderRadius="md"
             w={{ base: '30.5px', sm: 7 }}
             h={{ base: 'full', sm: 7 }}
@@ -54,9 +54,8 @@ export const AssetsIcon = memo(
             <Image
               w={{ base: '30.5px', sm: 7 }}
               h={{ base: 'full', sm: 7 }}
-              fallbackSrc={assetsMap?.['UNKNOWN'].icon}
-              fallbackStrategy="onError"
-              src={asset.image}
+              // fallbackStrategy="onError"
+              src={asset.image || assetsMap?.['UNKNOWN'].icon}
               borderRadius="md"
               alt="Asset Icon"
               objectFit="cover"

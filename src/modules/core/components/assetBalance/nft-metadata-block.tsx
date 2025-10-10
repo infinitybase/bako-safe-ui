@@ -49,7 +49,7 @@ export const NftMetadataBlock = ({
               backgroundSize: 'cover',
               borderRadius: 'md',
             }
-          : ''
+          : {}
       }
       {...rest}
     >

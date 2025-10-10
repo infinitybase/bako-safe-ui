@@ -1,8 +1,8 @@
-import { Icon } from '@chakra-ui/icons';
 import {
   Box,
   BoxProps,
   Flex,
+  Icon,
   Image,
   Stack,
   Text,
@@ -396,9 +396,9 @@ const AssetSelect = ({
                   id={`option-${index}`}
                 >
                   <Image
-                    src={image ?? ''}
-                    fallbackSrc={UNKNOWN_ASSET.icon}
-                    fallbackStrategy="onError"
+                    src={image ?? UNKNOWN_ASSET.icon}
+                    // fallbackSrc={}
+                    // fallbackStrategy="onError"
                     boxSize={8}
                     rounded={'lg'}
                     flexShrink={0}

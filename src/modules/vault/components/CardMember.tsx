@@ -1,4 +1,3 @@
-import { WarningTwoIcon } from '@chakra-ui/icons';
 import {
   Avatar,
   Badge,
@@ -10,6 +9,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
+import { FiAlertCircle as WarningTwoIcon } from 'react-icons/fi';
 
 import { AddAddressBook, AddressWithCopyBtn, Handle } from '@/components';
 import { Card } from '@/components/card';
@@ -37,7 +37,7 @@ interface CardMemberProps {
 }
 
 const SignerCard = chakra(Card, {
-  baseStyle: {
+  base: {
     w: 'full',
     p: 3,
     bg: 'dark.600',
@@ -47,7 +47,7 @@ const SignerCard = chakra(Card, {
 
 const CardMemberBagde = () => {
   return (
-    <Badge py={0} variant="success" alignSelf="flex-start" fontSize="2xs">
+    <Badge py={0} colorPalette="success" alignSelf="flex-start" fontSize="2xs">
       Owner
     </Badge>
   );
@@ -79,7 +79,7 @@ const CardMember = ({
   return (
     <SignerCard
       w="full"
-      minW={{ base: 'unset', xs: 320 }}
+      minW={{ base: 'unset', sm: 320 }}
       bg="gradients.transaction-card"
       borderColor="gradients.transaction-border"
       backdropFilter="blur(6px)"
@@ -89,39 +89,36 @@ const CardMember = ({
     >
       <Flex flexDir="row" gap={2} w="full" alignItems="center">
         <Skeleton
-          isLoaded={!isLoadingAvatar}
-          boxSize={{ base: '32px', xs: '40px' }}
+          loading={isLoadingAvatar}
+          boxSize={{ base: '32px', sm: '40px' }}
         >
-          <Avatar
+          <Avatar.Root
             borderRadius={8}
-            src={avatar || member?.avatar}
             boxSize="full"
             border={avatar ? 'none' : '1px solid'}
+            shape={avatar ? 'full' : 'rounded'}
             borderColor="grey.75"
-          />
+          >
+            <Avatar.Image src={avatar || member?.avatar} />
+          </Avatar.Root>
         </Skeleton>
 
         <HStack
           w="full"
-          spacing={2}
+          gap={2}
           justifyContent="space-between"
           alignItems="center"
           flex={1}
         >
-          <VStack
-            align="flex-start"
-            spacing={0}
-            justifyContent="center"
-            flex={1}
-          >
-            <HStack w="full" justifyContent="space-between" spacing={2}>
+          <VStack align="flex-start" gap={0} justifyContent="center" flex={1}>
+            <HStack w="full" justifyContent="space-between" gap={2}>
               {hasNickname ? (
                 <Text
                   fontSize="xs"
                   color="grey.200"
                   fontWeight="medium"
                   maxW={isOwner ? 180 : 180}
-                  isTruncated
+                  truncate
                 >
                   {member?.nickname}
                 </Text>
@@ -132,18 +129,18 @@ const CardMember = ({
               {isOwner && <CardMemberBagde />}
             </HStack>
 
-            <HStack w="full" justifyContent="flex-start" spacing={2}>
+            <HStack w="full" justifyContent="flex-start" gap={2}>
               {member.handle && (
                 <Handle
                   value={member.handle}
                   fontSize="xs"
-                  isTruncated
+                  truncate
                   textOverflow="ellipsis"
                   maxW={
                     isGrid
                       ? {
                           base: isLitteSmall ? '70px' : '140px',
-                          xs: isLargerThan680 ? '85px' : '140px',
+                          sm: isLargerThan680 ? '85px' : '140px',
                           md: isExtraLarge ? '85px' : '140px',
                           '2xl': isLargerThan1700 ? '90px' : '140px',
                         }

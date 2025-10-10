@@ -1,15 +1,15 @@
 import {
   Card,
-  CardProps,
-  Divider,
+  CardRootProps,
   HStack,
+  Separator,
   Text,
   VStack,
 } from '@chakra-ui/react';
 
 import { Nullable } from '@/modules/core';
 
-interface DappRequestingFromProps extends CardProps {
+interface DappRequestingFromProps extends CardRootProps {
   name: Nullable<string>;
   origin: Nullable<string>;
 }
@@ -18,7 +18,7 @@ const DappRequestingFrom = (props: DappRequestingFromProps) => {
   const { name, origin, ...rest } = props;
 
   return (
-    <Card
+    <Card.Root
       {...rest}
       bgColor="grey.825"
       borderColor="grey.925"
@@ -31,10 +31,10 @@ const DappRequestingFrom = (props: DappRequestingFromProps) => {
         Requesting a transaction from:
       </Text>
 
-      <Divider borderColor="grey.950" my={1} />
+      <Separator borderColor="grey.950" my={1} />
 
-      <HStack width="100%" spacing={3.5}>
-        <VStack alignItems="flex-start" spacing={0.5}>
+      <HStack width="100%" gap={3.5}>
+        <VStack alignItems="flex-start" gap={0.5}>
           <Text color="grey.250" fontSize={12} fontWeight={500}>
             {name}
           </Text>
@@ -44,7 +44,7 @@ const DappRequestingFrom = (props: DappRequestingFromProps) => {
           </Text>
         </VStack>
       </HStack>
-    </Card>
+    </Card.Root>
   );
 };
 

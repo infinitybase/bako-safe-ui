@@ -1,10 +1,10 @@
-import { Icon } from '@chakra-ui/icons';
+import { Icon } from '@chakra-ui/react';
 import {
   As,
   Box,
   Button,
   Center,
-  Divider,
+  Separator,
   Heading,
   HStack,
   Image,
@@ -72,7 +72,7 @@ const FeedbackSuccess = ({
         position={{ base: 'absolute', sm: 'unset' }}
         bottom={4}
       >
-        <Divider
+        <Separator
           maxW={440}
           hidden={!showAction}
           mb={8}
@@ -81,7 +81,7 @@ const FeedbackSuccess = ({
         <HStack
           w="full"
           hidden={!showAction}
-          spacing={{ base: 2, xs: 4 }}
+          gap={{ base: 2, xs: 4 }}
           justifyContent="center"
         >
           <Button

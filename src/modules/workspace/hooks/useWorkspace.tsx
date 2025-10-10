@@ -1,9 +1,9 @@
-import { useDisclosure } from '@chakra-ui/react';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { queryClient } from '@/config';
 import { IUserInfos } from '@/modules/auth/services';
+import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
 import { useHomeDataRequest } from '@/modules/home/hooks/useHomeDataRequest';
 
 // import { useNotification } from '@/modules/notification';

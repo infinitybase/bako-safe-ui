@@ -3,10 +3,10 @@ import {
   AvatarGroup,
   Badge,
   Box,
-  CardProps,
-  Divider,
+  Card,
   Heading,
   HStack,
+  Separator,
   Spacer,
   Spinner,
   Text,
@@ -16,7 +16,6 @@ import { useMutation } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
-import { Card } from '@/components';
 import { usePermissions } from '@/modules/core/hooks/usePermissions';
 import { PredicateMember } from '@/modules/core/models/predicate';
 import {
@@ -28,7 +27,7 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { PredicateWorkspace, VaultService } from '../services';
 import VaultCardMemberAvatar from './VaultCardMemberAvatar';
 
-interface VaultCardProps extends CardProps {
+interface VaultCardProps extends Card.RootProps {
   ownerId: string;
   name: string;
   members: PredicateMember[];
@@ -78,7 +77,7 @@ export const VaultCard = ({
   if (inHome && isHidden) return null;
 
   return (
-    <Card
+    <Card.Root
       borderColor="gradients.transaction-border"
       bg="gradients.transaction-card"
       borderWidth={1}
@@ -110,7 +109,12 @@ export const VaultCard = ({
           onClick={isPending ? undefined : handleToggle}
         >
           {isPending ? (
-            <Spinner size="xs" color="grey.400" thickness="2px" speed="0.5s" />
+            <Spinner
+              size="xs"
+              color="grey.400"
+              borderWidth="2px"
+              animationDuration="0.5s"
+            />
           ) : localHidden ? (
             <FaEyeSlash size={16} color="#fff" />
           ) : (
@@ -121,13 +125,10 @@ export const VaultCard = ({
       <VStack alignItems="flex-start">
         <HStack maxW="80%" justifyContent="space-between" mb={1}>
           <HStack maxW="full">
-            <Avatar
-              variant="roundedSquare"
-              name={name}
-              color="white"
-              bg="grey.600"
-            />
-            <VStack ml={2} maxW="full" alignItems="flex-start" spacing={1}>
+            <Avatar.Root shape="rounded" color="white" bg="grey.600">
+              <Avatar.Fallback name={name} />
+            </Avatar.Root>
+            <VStack ml={2} maxW="full" alignItems="flex-start" gap={1}>
               {/* Commented out code to temporarily disable workspaces. */}
 
               {/* {!workspace.single && (
@@ -158,9 +159,9 @@ export const VaultCard = ({
                   base: 150,
                   lg: !workspace.single ? 140 : 200,
                 }}
-                variant="title-md"
+                // variant="title-md"
                 color="grey.200"
-                isTruncated
+                truncate
               >
                 {name}
               </Heading>
@@ -168,18 +169,17 @@ export const VaultCard = ({
           </HStack>
         </HStack>
 
-        <Divider borderColor="grey.600" my={1} />
+        <Separator borderColor="grey.600" my={1} />
 
         <HStack w="full">
           <Box>
-            <Text variant="description">Signers</Text>
+            <Text>Signers</Text>
             <AvatarGroup
-              variant="roundedSquare"
-              max={5}
+              shape="rounded"
               mt={1}
               size="sm"
-              spacing={-2}
-              sx={{
+              gap={-2}
+              css={{
                 '&>span': {
                   height: '38px',
                   width: '38px',
@@ -194,12 +194,13 @@ export const VaultCard = ({
 
           <Spacer />
 
-          <VStack spacing={1} alignItems="flex-end">
-            <Text variant="description">Role</Text>
+          <VStack gap={1} alignItems="flex-end">
+            <Text>Role</Text>
             <Badge
               h={6}
               rounded="full"
-              variant={
+              variant="outline"
+              colorPalette={
                 WorkspacePermissionUtils.permissions[
                   role as keyof PermissionDetails
                 ].variant ?? 'warning'
@@ -212,6 +213,6 @@ export const VaultCard = ({
           </VStack>
         </HStack>
       </VStack>
-    </Card>
+    </Card.Root>
   );
 };

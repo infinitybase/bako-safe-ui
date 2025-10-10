@@ -27,7 +27,7 @@ const CreateVaultWarning = (props: ICreateVaultWarningProps) => {
       {...rest}
     >
       <HStack>
-        <Icon as={TriangleWarning} fontSize="md" />
+        <Icon as={TriangleWarning} w={4} />
         <Heading
           color="brand.500"
           fontWeight={600}

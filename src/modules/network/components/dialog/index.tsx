@@ -1,12 +1,4 @@
-import {
-  Button,
-  FormControl,
-  FormHelperText,
-  FormLabel,
-  Input,
-  Spinner,
-  VStack,
-} from '@chakra-ui/react';
+import { Button, Field, Input, Spinner, VStack } from '@chakra-ui/react';
 import { Controller } from 'react-hook-form';
 
 import { Dialog, DialogModalProps } from '@/components';
@@ -41,13 +33,13 @@ const NetworkDialog = ({ ...props }: NetworkDialogProps) => {
       />
 
       <Dialog.Body maxW={420} mt={{ base: -4, sm: -8 }}>
-        <VStack spacing={10}>
-          <VStack spacing={2} w="full">
+        <VStack gap={10}>
+          <VStack gap={2} w="full">
             <Controller
               control={networkForm.control}
               name="name"
               render={({ field, fieldState }) => (
-                <FormControl isInvalid={fieldState.invalid}>
+                <Field.Root invalid={fieldState.invalid}>
                   <Input
                     value={field.value}
                     onChange={field.onChange}
@@ -59,10 +51,10 @@ const NetworkDialog = ({ ...props }: NetworkDialogProps) => {
                     disabled={true}
                   />
                   <FormLabel>Name</FormLabel>
-                  <FormHelperText color="error.500">
+                  <Field.HelperText color="error.500">
                     {fieldState.error?.message}
-                  </FormHelperText>
-                </FormControl>
+                  </Field.HelperText>
+                </Field.Root>
               )}
             />
 
@@ -71,7 +63,7 @@ const NetworkDialog = ({ ...props }: NetworkDialogProps) => {
               name="url"
               rules={{ required: 'URL is required' }}
               render={({ field, fieldState }) => (
-                <FormControl isInvalid={fieldState.invalid}>
+                <Field.Root invalid={fieldState.invalid}>
                   <Input
                     value={field.value}
                     onChange={(e) => {
@@ -86,10 +78,10 @@ const NetworkDialog = ({ ...props }: NetworkDialogProps) => {
                     borderColor={validNetwork ? 'brand.500' : 'grey.125'}
                   />
                   <FormLabel>URL</FormLabel>
-                  <FormHelperText color="error.500">
+                  <Field.HelperText color="error.500">
                     {fieldState.error?.message}
-                  </FormHelperText>
-                </FormControl>
+                  </Field.HelperText>
+                </Field.Root>
               )}
             />
 

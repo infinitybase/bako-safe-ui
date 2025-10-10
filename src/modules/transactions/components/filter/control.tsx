@@ -20,7 +20,7 @@ const TransactionFilterControl = (props: TransactionFilterControl) => {
     }
   });
 
-  return <HStack spacing={7}>{childrens}</HStack>;
+  return <HStack gap={7}>{childrens}</HStack>;
 };
 
 export { TransactionFilterControl };

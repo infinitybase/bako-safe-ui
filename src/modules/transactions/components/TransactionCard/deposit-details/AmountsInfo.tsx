@@ -23,7 +23,7 @@ const AmountsInfo = ({ asset, txUSDAmount, isNFT }: AmountsInfoProps) => {
     <VStack mt={0.5} w={{ base: '105px' }}>
       <Text
         textAlign={isMobile ? 'end' : 'center'}
-        variant={isMobile ? 'title-sm' : 'title-md'}
+        // variant={isMobile ? 'title-sm' : 'title-md'}
         color="grey.75"
         fontSize="sm"
       >
@@ -39,7 +39,7 @@ const AmountsInfo = ({ asset, txUSDAmount, isNFT }: AmountsInfoProps) => {
       </Text>
       <Text
         textAlign={isMobile ? 'end' : 'center'}
-        variant="description"
+        // variant="description"
         fontSize="xs"
         color="grey.500"
       >

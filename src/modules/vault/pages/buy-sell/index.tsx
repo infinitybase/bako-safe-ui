@@ -1,18 +1,15 @@
 import {
-  Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbRoot,
+  BreadcrumbSeparator,
   Flex,
   HStack,
   Icon,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
   Tabs,
   Text,
   Tooltip,
-  useDisclosure,
 } from '@chakra-ui/react';
 import { RiMenuUnfoldLine } from 'react-icons/ri';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -20,6 +17,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { HomeIcon } from '@/components';
 import { Drawer } from '@/layouts/dashboard/drawer';
 import { Pages } from '@/modules/core';
+import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { Container } from '../../components/buy-sell';
@@ -40,7 +38,7 @@ export const VaultBuySellPage = () => {
     screenSizes: { vaultRequiredSizeToColumnLayout },
   } = useWorkspaceContext();
 
-  const currentTabIndex = (params.get('type') || 'buy') === 'buy' ? 0 : 1;
+  const currentTab = params.get('type') || 'buy';
 
   const handleTabChange = (i: number) => {
     const tab = i === 0 ? 'buy' : 'sell';
@@ -49,97 +47,105 @@ export const VaultBuySellPage = () => {
 
   return (
     <Flex w="full" direction="column">
-      <Drawer isOpen={menuDrawer.isOpen} onClose={menuDrawer.onClose} />
+      <Drawer open={menuDrawer.isOpen} onOpenChange={menuDrawer.onOpenChange} />
 
       <HStack mb={8} w="full" justifyContent="space-between">
         {vaultRequiredSizeToColumnLayout ? (
           <HStack gap={1.5} onClick={menuDrawer.onOpen}>
-            <Icon as={RiMenuUnfoldLine} fontSize="xl" color="grey.200" />
+            <Icon as={RiMenuUnfoldLine} w={6} color="grey.200" />
             <Text fontSize="sm" fontWeight="normal" color="grey.100">
               Menu
             </Text>
           </HStack>
         ) : (
-          <Breadcrumb>
-            <BreadcrumbItem>
-              <BreadcrumbLink
-                fontSize="sm"
-                color="grey.200"
-                fontWeight="semibold"
-                onClick={() => goHome()}
-              >
-                <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
-                Home
-              </BreadcrumbLink>
-            </BreadcrumbItem>
+          <BreadcrumbRoot>
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink
+                  fontSize="sm"
+                  color="grey.200"
+                  fontWeight="semibold"
+                  onClick={() => goHome()}
+                >
+                  <Icon mr={2} as={HomeIcon} w={3} color="grey.200" />
+                  Home
+                </BreadcrumbLink>
+              </BreadcrumbItem>
 
-            <BreadcrumbItem>
-              <BreadcrumbLink
-                fontSize="sm"
-                color="grey.200"
-                fontWeight="semibold"
-                href="#"
-              >
-                Vaults
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbItem>
-              <BreadcrumbLink
-                fontSize="sm"
-                color="grey.200"
-                fontWeight="semibold"
-                onClick={() =>
-                  navigate(
-                    Pages.detailsVault({
-                      vaultId: vault?.data?.id,
-                      workspaceId: userInfos.workspace?.id ?? '',
-                    }),
-                  )
-                }
-                isTruncated
-                maxW={640}
-              >
-                {vault.data?.name}
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbItem>
-              <BreadcrumbLink
-                fontSize="sm"
-                color="grey.200"
-                fontWeight="semibold"
-                href="#"
-              >
-                Buy & Sell
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-          </Breadcrumb>
+              <BreadcrumbItem>
+                <BreadcrumbLink
+                  fontSize="sm"
+                  color="grey.200"
+                  fontWeight="semibold"
+                  href="#"
+                >
+                  Vaults
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+
+              <BreadcrumbItem>
+                <BreadcrumbLink
+                  fontSize="sm"
+                  color="grey.200"
+                  fontWeight="semibold"
+                  onClick={() =>
+                    navigate(
+                      Pages.detailsVault({
+                        vaultId: vault?.data?.id,
+                        workspaceId: userInfos.workspace?.id ?? '',
+                      }),
+                    )
+                  }
+                  truncate
+                  maxW={640}
+                >
+                  {vault.data?.name}
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbLink
+                  fontSize="sm"
+                  color="grey.200"
+                  fontWeight="semibold"
+                  href="#"
+                >
+                  Buy & Sell
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </BreadcrumbRoot>
         )}
       </HStack>
 
       <Container>
-        <Tabs
-          variant="solid"
-          index={currentTabIndex}
-          onChange={handleTabChange}
-          isLazy
+        <Tabs.Root
+          // variant="solid"
+          value={currentTab}
+          onValueChange={(e) => handleTabChange(Number(e.value))}
+          lazyMount
         >
-          <TabList>
-            <Tab w="full">Buy</Tab>
-            <Tab w="full" isDisabled>
-              <Tooltip label="Coming soon" hasArrow>
-                Sell
-              </Tooltip>
-            </Tab>
-          </TabList>
-          <TabPanels>
-            <TabPanel>
-              <BuyTabPanel vault={vault.data} isLoading={vault.isLoading} />
-            </TabPanel>
-            <TabPanel>
-              <SellTabPanel vault={vault.data} isLoading={vault.isLoading} />
-            </TabPanel>
-          </TabPanels>
-        </Tabs>
+          <Tabs.List>
+            <Tabs.Trigger value="buy" w="full">
+              Buy
+            </Tabs.Trigger>
+            <Tabs.Trigger value="sell" w="full" disabled>
+              <Tooltip.Root>
+                <Tooltip.Trigger asChild>
+                  <span>Sell</span>
+                </Tooltip.Trigger>
+                <Tooltip.Content>Coming soon</Tooltip.Content>
+              </Tooltip.Root>
+            </Tabs.Trigger>
+          </Tabs.List>
+          <Tabs.Content value="buy">
+            <BuyTabPanel vault={vault.data} isLoading={vault.isLoading} />
+          </Tabs.Content>
+          <Tabs.Content value="sell">
+            <SellTabPanel vault={vault.data} isLoading={vault.isLoading} />
+          </Tabs.Content>
+        </Tabs.Root>
       </Container>
     </Flex>
   );

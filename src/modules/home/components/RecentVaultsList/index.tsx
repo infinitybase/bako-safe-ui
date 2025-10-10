@@ -26,7 +26,7 @@ const RecentVaultsList = memo(
         <Box pb={9} alignSelf="flex-start">
           <Text
             color="grey.400"
-            variant="subtitle"
+            // variant="subtitle"
             fontWeight="semibold"
             fontSize="md"
           >
@@ -40,7 +40,7 @@ const RecentVaultsList = memo(
           gap={6}
           templateColumns={{
             base: 'repeat(1, 1fr)',
-            xs: 'repeat(2, 1fr)',
+            sm: 'repeat(2, 1fr)',
             md: 'repeat(3, 1fr)',
             '2xl': 'repeat(4, 1fr)',
           }}

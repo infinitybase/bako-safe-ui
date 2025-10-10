@@ -108,6 +108,7 @@ const RecipientItem = ({
 
   return (
     <AccordionItem
+      value={index.toString()}
       mb={6}
       borderWidth={1}
       borderColor={
@@ -124,12 +125,12 @@ const RecipientItem = ({
         title={`Recipient ${index + 1}`}
         actions={
           <TransactionAccordion.Actions>
-            <HStack spacing={4}>
+            <HStack gap={4}>
               <TransactionAccordion.EditAction
                 onClick={() => accordion.open(index)}
               />
               <TransactionAccordion.DeleteAction
-                isDisabled={isFirstField}
+                disabled={isFirstField}
                 onClick={() => {
                   onDelete(index);
                   handleCloseAccordion();
@@ -138,8 +139,8 @@ const RecipientItem = ({
             </HStack>
             <TransactionAccordion.ConfirmAction
               onClick={() => handleCloseAccordion()}
-              isDisabled={isDisabled}
-              isLoading={!isCurrentAmountZero ? isFeeCalcLoading : false}
+              disabled={isDisabled}
+              loading={!isCurrentAmountZero ? isFeeCalcLoading : false}
             />
           </TransactionAccordion.Actions>
         }

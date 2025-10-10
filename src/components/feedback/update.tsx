@@ -2,7 +2,7 @@ import {
   Box,
   Button,
   Center,
-  Divider,
+  Separator,
   Heading,
   HStack,
   Icon,
@@ -68,7 +68,7 @@ const FeedbackUpdate = ({
         position={{ base: 'absolute', sm: 'unset' }}
         bottom={4}
       >
-        <Divider
+        <Separator
           maxW={440}
           hidden={!showAction}
           mb={8}
@@ -77,7 +77,7 @@ const FeedbackUpdate = ({
         <HStack
           w="full"
           hidden={!showAction}
-          spacing={4}
+          gap={4}
           justifyContent="center"
         >
           <Button

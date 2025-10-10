@@ -1,4 +1,4 @@
-import { Box, InputGroup, InputRightAddon } from '@chakra-ui/react';
+import { Box, InputGroup } from '@chakra-ui/react';
 import { useEffect, useRef, useState } from 'react';
 
 import { CurrencyField } from '@/components';
@@ -64,13 +64,13 @@ export const InputAmount = ({
           {formatMaxDecimals(value, 9) || '0'}
         </Box>
 
-        <InputRightAddon
+        <Box
           alignSelf="end"
           color={disabled ? 'grey.75' : 'section.200'}
           opacity={disabled ? 0.5 : 1}
         >
           {symbol}
-        </InputRightAddon>
+        </Box>
       </InputGroup>
     </Box>
   );

@@ -1,4 +1,4 @@
-import { Icon } from '@chakra-ui/icons';
+import { Icon } from '@chakra-ui/react';
 import {
   ComponentWithAs,
   HStack,
@@ -37,7 +37,7 @@ export function AlertsBrigde({
       }
     >
       <Icon as={icon} fontSize="18px" />
-      <VStack w="full" align="start" spacing={0}>
+      <VStack w="full" align="start" gap={0}>
         {title && (
           <Text
             fontSize={14}

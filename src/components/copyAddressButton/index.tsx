@@ -1,4 +1,3 @@
-import { CheckIcon } from '@chakra-ui/icons';
 import {
   Icon,
   IconButton,
@@ -6,6 +5,7 @@ import {
   IconProps,
   useClipboard,
 } from '@chakra-ui/react';
+import { FiCheck as CheckIcon } from 'react-icons/fi';
 
 import { CopyTopMenuIcon } from '../icons/copy-top-menu';
 
@@ -19,23 +19,22 @@ const CopyAddressButton = ({
   iconProps,
   ...rest
 }: CopyAddressButtonProps) => {
-  const clipboard = useClipboard(addressToCopy);
+  const clipboard = useClipboard({ value: addressToCopy });
   return (
     <IconButton
       {...rest}
-      variant="icon"
+      variant="ghost"
       bgColor="none"
       fontSize="xs"
-      icon={
-        <Icon
-          as={clipboard.hasCopied ? CheckIcon : CopyTopMenuIcon}
-          color={clipboard.hasCopied ? 'success.700' : 'grey.200'}
-          fontSize={rest.fontSize || 20}
-          {...iconProps}
-        />
-      }
-      onClick={clipboard.onCopy}
-    />
+      onClick={clipboard.copy}
+    >
+      <Icon
+        as={clipboard.copied ? CheckIcon : CopyTopMenuIcon}
+        color={clipboard.copied ? 'success.700' : 'grey.200'}
+        fontSize={rest.fontSize || 20}
+        {...iconProps}
+      />
+    </IconButton>
   );
 };
 

@@ -1,16 +1,10 @@
-import {
-  Avatar,
-  Card,
-  CardProps,
-  HStack,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { Avatar, Card, HStack, Text, VStack } from '@chakra-ui/react';
 
 import { Workspace } from '@/modules/core';
+
 import { useWorkspaceContext } from '../../WorkspaceProvider';
 
-interface NotificationCardProps extends CardProps {
+interface NotificationCardProps extends Card.RootProps {
   workspace: Workspace;
   counter: {
     vaults: number | [];
@@ -30,7 +24,7 @@ const WorkspaceCard = ({
   } = useWorkspaceContext();
 
   return (
-    <Card
+    <Card.Root
       w="100%"
       bgColor="grey.825"
       cursor="pointer"
@@ -40,16 +34,14 @@ const WorkspaceCard = ({
       alignItems="flex-start"
       justifyContent="center"
       maxH={88}
-      px={{ base: 3, xs: 6 }}
+      px={{ base: 3, sm: 6 }}
       py={4}
       {...rest}
     >
-      <HStack spacing={4} alignItems="center" h="56px">
-        <Avatar
-          variant="roundedSquare"
-          src={avatar}
-          boxSize={isExtraSmall ? '40px' : '56px'}
-        />
+      <HStack gap={4} alignItems="center" h="56px">
+        <Avatar.Root shape="rounded" boxSize={isExtraSmall ? '40px' : '56px'}>
+          <Avatar.Image src={avatar} />
+        </Avatar.Root>
 
         <VStack
           flex={1}
@@ -65,8 +57,8 @@ const WorkspaceCard = ({
             <Text
               fontWeight="bold"
               color="grey.200"
-              maxW={{ base: 150, xs: 360 }}
-              isTruncated
+              maxW={{ base: 150, sm: 360 }}
+              truncate
               fontSize={14}
               height="fit-content"
               lineHeight="17px"
@@ -77,9 +69,9 @@ const WorkspaceCard = ({
               color="grey.500"
               fontWeight="normal"
               fontSize={14}
-              isTruncated
+              truncate
               lineHeight="19px"
-              maxW={{ base: 130, xs: 340 }}
+              maxW={{ base: 130, sm: 340 }}
             >
               {description}
             </Text>
@@ -94,7 +86,7 @@ const WorkspaceCard = ({
           </Text>
         </VStack>
       </HStack>
-    </Card>
+    </Card.Root>
   );
 };
 

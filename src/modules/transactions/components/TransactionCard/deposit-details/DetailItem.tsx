@@ -80,7 +80,7 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
       pb={2}
     >
       {isMobile ? (
-        <VStack w="full" spacing="7px">
+        <VStack w="full" gap="7px">
           <HStack w="100%" justifyContent="space-between" pr="2px">
             <TokenInfos asset={asset} />
             <AmountsInfo
@@ -93,13 +93,13 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
             <HStack
               alignItems="center"
               justifyContent="flex-start"
-              spacing={{ base: 1, xs: 2 }}
+              gap={{ base: 1, sm: 2 }}
               flex={2}
             >
-              <VStack alignItems="start" spacing={2}>
+              <VStack alignItems="start" gap={2}>
                 {from?.contact && (
                   <Text
-                    isTruncated
+                    truncate
                     textOverflow="ellipsis"
                     maxW={{
                       base: isExtraSmall
@@ -107,12 +107,12 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
                         : isLitteSmall
                           ? '90px'
                           : '125px',
-                      xs: '180px',
+                      sm: '180px',
                       xl: 'full',
                     }}
                     fontSize={isExtraSmall ? 'xs' : 'sm'}
                     textAlign="start"
-                    textColor="grey.75"
+                    color="grey.75"
                   >
                     {from.contact}
                   </Text>
@@ -131,11 +131,11 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
                 {from?.handle && (
                   <Handle
                     value={from.handle}
-                    isTruncated
+                    truncate
                     textOverflow="ellipsis"
                     maxW={{
                       base: isExtraSmall ? '55px' : '65px',
-                      xs: '155px',
+                      sm: '155px',
                       lg: 'full',
                     }}
                   />
@@ -164,13 +164,13 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
             <HStack
               alignItems="center"
               justifyContent="flex-end"
-              spacing={{ base: 1, xs: 2 }}
+              gap={{ base: 1, sm: 2 }}
               flex={2}
             >
-              <VStack alignItems="end" spacing={2}>
+              <VStack alignItems="end" gap={2}>
                 {to?.contact && (
                   <Text
-                    isTruncated
+                    truncate
                     textOverflow="ellipsis"
                     maxW={{
                       base: isExtraSmall
@@ -178,12 +178,12 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
                         : isLitteSmall
                           ? '90px'
                           : '125px',
-                      xs: '180px',
+                      sm: '180px',
                       xl: 'full',
                     }}
                     fontSize={isExtraSmall ? 'xs' : 'sm'}
                     textAlign="end"
-                    textColor="grey.75"
+                    color="grey.75"
                   >
                     {to.contact}
                   </Text>
@@ -200,11 +200,11 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
                 {to?.handle && (
                   <Handle
                     value={to.handle}
-                    isTruncated
+                    truncate
                     textOverflow="ellipsis"
                     maxW={{
                       base: isExtraSmall ? '55px' : '65px',
-                      xs: '155px',
+                      sm: '155px',
                       xl: 'full',
                     }}
                   />
@@ -227,17 +227,17 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
           <HStack
             alignItems="center"
             justifyContent="flex-end"
-            spacing={{ base: 1, xs: 2 }}
+            gap={{ base: 1, sm: 2 }}
             minW={220}
           >
-            <VStack alignItems="end" spacing={1}>
+            <VStack alignItems="end" gap={1}>
               {from?.contact && (
                 <Text
-                  isTruncated
+                  truncate
                   textOverflow="ellipsis"
                   maxW="180px"
                   fontSize="sm"
-                  textColor="grey.75"
+                  color="grey.75"
                 >
                   {from.contact}
                 </Text>
@@ -254,7 +254,7 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
               {from?.handle && (
                 <Handle
                   value={from.handle}
-                  isTruncated
+                  truncate
                   textOverflow="ellipsis"
                   maxW="155px"
                 />
@@ -283,17 +283,17 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
           <HStack
             alignItems="center"
             justifyContent="flex-end"
-            spacing={{ base: 1, xs: 2 }}
+            gap={{ base: 1, sm: 2 }}
             minW={220}
           >
-            <VStack alignItems="end" spacing={1}>
+            <VStack alignItems="end" gap={1}>
               {to?.contact && (
                 <Text
-                  isTruncated
+                  truncate
                   textOverflow="ellipsis"
                   maxW="180px"
                   fontSize="sm"
-                  textColor="grey.75"
+                  color="grey.75"
                 >
                   {to.contact}
                 </Text>
@@ -310,7 +310,7 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
               {to?.handle && (
                 <Handle
                   value={to.handle}
-                  isTruncated
+                  truncate
                   textOverflow="ellipsis"
                   maxW="155px"
                 />

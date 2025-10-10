@@ -1,22 +1,14 @@
-import {
-  Modal,
-  ModalBody,
-  ModalBodyProps,
-  ModalContent,
-  ModalContentProps,
-  ModalOverlay,
-  ModalOverlayProps,
-  ModalProps,
-} from '@chakra-ui/react';
+import { Dialog, DialogRootProps, Portal } from '@chakra-ui/react';
 
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
-export interface DialogModalProps extends ModalProps {
+export interface DialogModalProps extends Omit<DialogRootProps, 'children'> {
   contentPadding?: number;
-  modalContentProps?: ModalContentProps;
-  modalBodyProps?: ModalBodyProps;
+  modalContentProps?: Dialog.ContentProps;
+  modalBodyProps?: Dialog.BodyProps;
   xsBreakPointPy?: number;
-  overlayProps?: ModalOverlayProps;
+  overlayProps?: Dialog.BackdropProps;
+  children?: React.ReactNode;
 }
 
 const DialogModal = (props: DialogModalProps) => {
@@ -26,48 +18,52 @@ const DialogModal = (props: DialogModalProps) => {
   } = useWorkspaceContext();
 
   return (
-    <Modal
-      variant="glassmorphic"
-      size={{ base: 'full', xs: 'xl' }}
-      blockScrollOnMount={true}
-      isCentered
-      scrollBehavior={isMobile ? 'inside' : 'outside'}
+    <Dialog.Root
+      size={{ base: 'full', sm: 'xl' }}
+      placement="center"
+      motionPreset={isMobile ? 'slide-in-bottom' : 'scale'}
       {...rest}
     >
-      <ModalOverlay {...props.overlayProps} />
-      <ModalContent
-        rounded="3xl"
-        bg="dark.950"
-        py={{ base: 2, xs: props.xsBreakPointPy ?? 8 }}
-        {...props.modalContentProps}
-      >
-        <ModalBody
-          overflowY="auto"
-          zIndex={400}
-          sx={{
-            '&::-webkit-scrollbar': {
-              display: 'none',
-              width: '5px',
-              maxHeight: '330px',
-              backgroundColor: 'transparent',
-              borderRadius: '30px',
-            },
-            '&::-webkit-scrollbar-thumb': {
-              backgroundColor: '#2C2C2C',
-              borderRadius: '30px',
-              height: '10px',
-            },
-          }}
-          w="full"
-          display="flex"
-          alignItems="center"
-          flexDirection="column"
-          {...rest.modalBodyProps}
-        >
-          {children}
-        </ModalBody>
-      </ModalContent>
-    </Modal>
+      <Portal>
+        <Dialog.Backdrop {...props.overlayProps} />
+        <Dialog.Positioner>
+          <Dialog.Content
+            rounded="3xl"
+            bg="dark.950"
+            py={{ base: 2, sm: props.xsBreakPointPy ?? 8 }}
+            minH="auto"
+            {...props.modalContentProps}
+          >
+            <Dialog.Body
+              overflowY="auto"
+              // zIndex={400}
+              css={{
+                '&::-webkit-scrollbar': {
+                  display: 'none',
+                  width: '5px',
+                  maxHeight: '330px',
+                  backgroundColor: 'transparent',
+                  borderRadius: '30px',
+                },
+                '&::-webkit-scrollbar-thumb': {
+                  backgroundColor: '#2C2C2C',
+                  borderRadius: '30px',
+                  height: '10px',
+                },
+              }}
+              w="full"
+              display="flex"
+              alignItems="center"
+              flexDirection="column"
+              p={0}
+              {...rest.modalBodyProps}
+            >
+              {children}
+            </Dialog.Body>
+          </Dialog.Content>
+        </Dialog.Positioner>
+      </Portal>
+    </Dialog.Root>
   );
 };
 

@@ -1,7 +1,7 @@
 import {
-  type BoxProps,
   Flex,
   HStack,
+  type StackProps,
   Text,
   useMediaQuery,
 } from '@chakra-ui/react';
@@ -22,7 +22,7 @@ import {
 import { AssetsIcon } from './AssetsIcon';
 import { AmountUSD } from './transfer-details';
 
-interface TransactionCardAmountProps extends BoxProps {
+interface TransactionCardAmountProps extends StackProps {
   transaction: TransactionWithVault;
   showAmount: boolean;
 }
@@ -36,7 +36,7 @@ const Amount = ({
     transaction,
     transaction.predicate?.predicateAddress,
   );
-  const [showOnlyOneAsset] = useMediaQuery('(max-width: 400px)');
+  const [showOnlyOneAsset] = useMediaQuery(['(max-width: 400px)']);
   const {
     tokensUSD,
     screenSizes: { isMobile, isExtraSmall },
@@ -139,11 +139,11 @@ const Amount = ({
               </Text>
             )}
             <Text
-              variant="description"
+              // variant="description"
               fontSize={isMultiToken ? 'sm' : 'xs'}
               color={isMultiToken ? ' grey.75' : 'grey.425'}
             >
-              <CustomSkeleton isLoaded={!tokensUSD?.isLoading}>
+              <CustomSkeleton loading={tokensUSD?.isLoading}>
                 <AmountUSD amount={txUSDAmount} isNFT={isNFT} />
               </CustomSkeleton>
             </Text>

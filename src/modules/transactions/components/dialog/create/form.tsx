@@ -1,12 +1,10 @@
 import {
   Box,
   BoxProps,
-  Divider,
-  FormControl,
-  FormHelperText,
-  FormLabel,
+  Field,
   Heading,
   Input,
+  Separator,
 } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
 import { bn } from 'fuels';
@@ -83,25 +81,25 @@ const CreateTransactionForm = (props: CreateTransactionFormProps) => {
   return (
     <FormProvider {...form}>
       <Box w="full" {...props}>
-        <Divider mt={2} mb={7} borderColor={'grey.425'} />
+        <Separator mt={2} mb={7} borderColor={'grey.425'} />
 
         <Controller
           control={form.control}
           name="name"
           render={({ field, fieldState }) => (
-            <FormControl isInvalid={fieldState.invalid}>
+            <Field.Root invalid={fieldState.invalid}>
               <Input
                 maxLength={27}
                 value={field.value?.trimStart()}
                 onChange={field.onChange}
                 placeholder=" "
-                variant="dark"
+                // variant="dark"
               />
-              <FormLabel id="transaction_name">Transaction name</FormLabel>
-              <FormHelperText color="error.500">
+              <Field.Label id="transaction_name">Transaction name</Field.Label>
+              <Field.HelperText color="error.500">
                 {fieldState.error?.message}
-              </FormHelperText>
-            </FormControl>
+              </Field.HelperText>
+            </Field.Root>
           )}
         />
 

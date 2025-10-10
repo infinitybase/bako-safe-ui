@@ -2,10 +2,10 @@ import {
   HStack,
   Icon,
   Popover,
-  PopoverBody,
-  PopoverCloseButton,
-  PopoverContent,
-  PopoverTrigger,
+  
+  
+  
+  
   Text,
   Tooltip,
   useDisclosure,
@@ -47,15 +47,15 @@ const DappTransactionFee = ({ fee, isLoading, closePopover }: FeeProps) => {
         Max Fee
         {isMobile ? (
           <Popover placement="top-start" isOpen={isOpen} onClose={onClose}>
-            <PopoverTrigger>
+            <Popover.Trigger>
               <Icon
                 color="grey.200"
                 boxSize="14px"
                 as={TooltipIcon}
                 onClick={onToggle}
               />
-            </PopoverTrigger>
-            <PopoverContent
+            </Popover.Trigger>
+            <Popover.Content
               bg="grey.825"
               p={4}
               borderColor="dark.100"
@@ -63,12 +63,12 @@ const DappTransactionFee = ({ fee, isLoading, closePopover }: FeeProps) => {
               display={!isOpen ? 'none' : 'block'}
               _focus={{ ring: 'none' }}
             >
-              <PopoverCloseButton />
-              <PopoverBody>
+              <Popover.CloseTrigger />
+              <Popover.Body>
                 {`The amount shown is the maximum fee you will be charged for
                   this transaction. There won't be any extra costs.`}
-              </PopoverBody>
-            </PopoverContent>
+              </Popover.Body>
+            </Popover.Content>
           </Popover>
         ) : (
           <Tooltip

@@ -1,14 +1,4 @@
-import {
-  Drawer,
-  DrawerBody,
-  DrawerContent,
-  DrawerHeader,
-  DrawerOverlay,
-  HStack,
-  Icon,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { Drawer, HStack, Icon, Text, VStack } from '@chakra-ui/react';
 
 import { FuelIcon, RigIcon } from '@/components';
 
@@ -24,10 +14,16 @@ export function MobileDropdownLiquidStake({
   children,
 }: MobileItemLiquidStakeProps) {
   return (
-    <Drawer placement="bottom" onClose={onClose} isOpen={isOpen}>
-      <DrawerOverlay />
-      <DrawerContent padding={4} bg={'dark.950'}>
-        <DrawerHeader>
+    <Drawer.Root
+      placement="bottom"
+      onOpenChange={(e) => {
+        e.open ? null : onClose();
+      }}
+      open={isOpen}
+    >
+      <Drawer.Backdrop />
+      <Drawer.Content padding={4} bg={'dark.950'}>
+        <Drawer.Header>
           <HStack marginBottom={4} fontWeight="normal">
             <Icon as={FuelIcon} fontSize={24} />
             <Text fontSize={12}>Liquid Stake FUEL</Text>
@@ -41,11 +37,11 @@ export function MobileDropdownLiquidStake({
               <RigIcon fontSize={32} />
             </HStack>
           </HStack>
-        </DrawerHeader>
-        <DrawerBody>
+        </Drawer.Header>
+        <Drawer.Body>
           <VStack alignItems="flex-start">{children}</VStack>
-        </DrawerBody>
-      </DrawerContent>
-    </Drawer>
+        </Drawer.Body>
+      </Drawer.Content>
+    </Drawer.Root>
   );
 }

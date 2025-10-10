@@ -1,19 +1,14 @@
-import {
-  Box,
-  ComponentWithAs,
-  Icon,
-  IconProps,
-  Image,
-  Skeleton,
-} from '@chakra-ui/react';
-import { memo, useMemo } from 'react';
+import { Box, Icon, IconProps, Image, Skeleton } from '@chakra-ui/react';
+import { ForwardRefExoticComponent, memo, useMemo } from 'react';
 
 import { BakoIcon, UnknownIcon } from '@/components/icons';
 import { useBakoIdAvatar } from '@/modules/core/hooks/bako-id';
 import { useNetworks } from '@/modules/network/hooks';
 
 interface InputValueImageProps {
-  image?: ComponentWithAs<'svg', IconProps>;
+  image?: ForwardRefExoticComponent<
+    IconProps & React.RefAttributes<SVGSVGElement>
+  >;
   label: string;
   boxSize?: string | number;
 }
@@ -30,7 +25,7 @@ const InputValueImage = memo(
     return (
       <>
         {isHandle ? (
-          <Skeleton isLoaded={!isLoading} boxSize={boxSize} borderRadius="full">
+          <Skeleton loading={isLoading} boxSize={boxSize} borderRadius="full">
             {avatar && (
               <Image
                 src={avatar}

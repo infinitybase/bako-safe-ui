@@ -1,4 +1,4 @@
-import { Divider, HStack, StackProps, Text } from '@chakra-ui/react';
+import { HStack, Separator, StackProps, Text } from '@chakra-ui/react';
 import { memo } from 'react';
 
 interface GroupMonthProps extends StackProps {
@@ -18,7 +18,7 @@ export const GroupMonth = memo(
           {monthYear}
         </Text>
 
-        <Divider w="full" borderColor="grey.950" />
+        <Separator w="full" borderColor="grey.950" />
       </HStack>
     );
   },

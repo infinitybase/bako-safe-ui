@@ -1,10 +1,10 @@
 import {
   Card,
-  CardProps,
-  Divider,
+  CardRootProps,
   Flex,
   HStack,
   Icon,
+  Separator,
   VStack,
 } from '@chakra-ui/react';
 import { useMemo } from 'react';
@@ -16,7 +16,7 @@ import { getTransactionIconComponent, transactionStatus } from '../../utils';
 import { TransactionCard } from '../TransactionCard';
 import { DetailsDialog } from '../TransactionCard/DetailsDialog';
 
-interface TransactionCardMobileProps extends CardProps {
+interface TransactionCardMobileProps extends CardRootProps {
   transaction: TransactionWithVault;
   account: string;
   isSigner: boolean;
@@ -36,6 +36,7 @@ const TransactionCardMobile = (props: TransactionCardMobileProps) => {
     isFromCLI,
     showAmountInformations,
     isMint,
+    isSwap,
   } = useVerifyTransactionInformations(transaction);
 
   const IconComponent = useMemo(
@@ -46,8 +47,9 @@ const TransactionCardMobile = (props: TransactionCardMobileProps) => {
         isDeposit,
         isLiquidStake,
         isFromCLI,
+        isSwap,
       }),
-    [isDeploy, isFromConnector, isDeposit, isFromCLI, isLiquidStake],
+    [isDeploy, isFromConnector, isDeposit, isFromCLI, isLiquidStake, isSwap],
   );
 
   const status = useMemo(
@@ -95,7 +97,7 @@ const TransactionCardMobile = (props: TransactionCardMobileProps) => {
         isContract={isContract}
       />
 
-      <Card
+      <Card.Root
         borderColor={
           missingSignature ? 'warning.500' : 'gradients.transaction-border'
         }
@@ -107,55 +109,56 @@ const TransactionCardMobile = (props: TransactionCardMobileProps) => {
         bg="gradients.transaction-card"
         boxShadow="0px 8px 6px 0px #00000026"
         {...rest}
-        variant={isFuelFriday ? 'green-gradient' : 'default'}
       >
-        <HStack>
-          <Flex
-            alignItems="center"
-            justifyContent="center"
-            bgColor="grey.925"
-            w="32px"
-            borderRadius="5px 0 0 5px"
-            minH="140px"
-          >
-            <Icon
-              as={IconComponent}
-              fontSize={isDeploy || isFromConnector ? 'inherit' : '12px'}
-            />
-          </Flex>
-          <VStack w="full">
-            <HStack justifyContent="space-between" w="full">
-              {transaction.predicate && (
-                <TransactionCard.BasicInfos
-                  vault={transaction.predicate}
-                  transactionName={
-                    isFuelFriday ? 'Fuel Friday' : transaction.name
-                  }
+        <Card.Body>
+          <HStack>
+            <Flex
+              alignItems="center"
+              justifyContent="center"
+              bgColor="grey.925"
+              w="32px"
+              borderRadius="5px 0 0 5px"
+              minH="140px"
+            >
+              <Icon
+                as={IconComponent}
+                fontSize={isDeploy || isFromConnector ? 'inherit' : '12px'}
+              />
+            </Flex>
+            <VStack w="full">
+              <HStack justifyContent="space-between" w="full">
+                {transaction.predicate && (
+                  <TransactionCard.BasicInfos
+                    vault={transaction.predicate}
+                    transactionName={
+                      isFuelFriday ? 'Fuel Friday' : transaction.name
+                    }
+                  />
+                )}
+
+                <TransactionCard.Status
+                  transaction={transaction}
+                  status={status}
+                  showDescription={false}
                 />
-              )}
+              </HStack>
 
-              <TransactionCard.Status
-                transaction={transaction}
-                status={status}
-                showDescription={false}
-              />
-            </HStack>
+              <Separator borderColor="grey.950" />
 
-            <Divider borderColor="grey.950" />
+              <HStack justifyContent="space-between" w="full">
+                <TransactionCard.Amount
+                  transaction={transaction}
+                  showAmount={!showAmountInformations || isDeposit || isMint}
+                />
 
-            <HStack justifyContent="space-between" w="full">
-              <TransactionCard.Amount
-                transaction={transaction}
-                showAmount={!showAmountInformations || isDeposit || isMint}
-              />
-
-              <TransactionCard.ActionsMobile
-                isPossibleToSign={awaitingAnswer}
-              />
-            </HStack>
-          </VStack>
-        </HStack>
-      </Card>
+                <TransactionCard.ActionsMobile
+                  isPossibleToSign={awaitingAnswer}
+                />
+              </HStack>
+            </VStack>
+          </HStack>
+        </Card.Body>
+      </Card.Root>
     </>
   );
 };

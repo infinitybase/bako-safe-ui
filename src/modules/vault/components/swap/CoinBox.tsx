@@ -4,11 +4,9 @@ import {
   Card,
   Flex,
   InputGroup,
-  InputRightAddon,
   Spinner,
   Stack,
   Text,
-  useDisclosure,
 } from '@chakra-ui/react';
 import { BN, bn } from 'fuels';
 import {
@@ -24,6 +22,7 @@ import {
 import { CurrencyField } from '@/components';
 import { ETH_SLUG, MinEthValue } from '@/config/swap';
 import { Asset, SelectedCurrency } from '@/modules';
+import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
 import { CRYPTO_CONFIG, formatCurrencyValue, formatMaxDecimals } from '@/utils';
 import { moneyFormat } from '@/utils/money-format';
 
@@ -119,7 +118,7 @@ export const CoinBox = memo(
     }, [balance, coin, onChangeAmount]);
 
     return (
-      <Card variant="outline" p={3} pb={12}>
+      <Card.Root variant="outline" p={3} pb={12}>
         <Flex alignItems="center" justifyContent="space-between">
           <Flex alignItems="center" gap={2}>
             <Text color="section.500" fontSize="xs">
@@ -140,7 +139,7 @@ export const CoinBox = memo(
 
           <AssetsModal
             isOpen={assetsModal.isOpen}
-            onClose={assetsModal.onClose}
+            onOpenChange={assetsModal.onOpenChange}
             assets={assets}
             onSelect={onChangeAsset}
           />
@@ -166,41 +165,7 @@ export const CoinBox = memo(
               coinInputRef.current?.focus();
             }}
             gap={2}
-          >
-            <CurrencyField
-              name={`amount-${mode}`}
-              id={`amount-${mode}`}
-              borderBottomWidth="0"
-              ref={coinInputRef}
-              value={value}
-              type="crypto"
-              px={0}
-              placeholder="0"
-              _placeholder={{ opacity: 0.5 }}
-              _focus={{ _placeholder: { color: 'grey.50' } }}
-              isDisabled={isLoadingAmount || isLoadingPreview}
-              fontSize="3xl"
-              decimalScale={coin.units}
-              w={inputWidth ? `${inputWidth}px` : undefined}
-              minW={'20px'}
-              maxW="450px"
-              onChange={onChangeAmount}
-            />
-            <Box
-              position="absolute"
-              visibility="hidden"
-              fontSize="3xl"
-              ref={mirrorRef}
-              whiteSpace="nowrap"
-            >
-              {formatCurrencyValue(value || '0', config, false)}
-            </Box>
-            <InputRightAddon
-              as="label"
-              htmlFor={`amount-${mode}`}
-              px={0}
-              alignSelf="end"
-            >
+            endElement={
               <Text
                 color="grey.500"
                 _groupFocusWithin={{
@@ -213,7 +178,38 @@ export const CoinBox = memo(
               >
                 {coin.slug}
               </Text>
-            </InputRightAddon>
+            }
+          >
+            <>
+              <CurrencyField
+                name={`amount-${mode}`}
+                id={`amount-${mode}`}
+                borderBottomWidth="0"
+                ref={coinInputRef}
+                value={value}
+                type="crypto"
+                px={0}
+                placeholder="0"
+                _placeholder={{ opacity: 0.5 }}
+                _focus={{ _placeholder: { color: 'grey.50' } }}
+                disabled={isLoadingAmount || isLoadingPreview}
+                fontSize="3xl"
+                decimalScale={coin.units}
+                w={inputWidth ? `${inputWidth}px` : undefined}
+                minW={'20px'}
+                maxW="450px"
+                onChange={onChangeAmount}
+              />
+              <Box
+                position="absolute"
+                visibility="hidden"
+                fontSize="3xl"
+                ref={mirrorRef}
+                whiteSpace="nowrap"
+              >
+                {formatCurrencyValue(value || '0', config, false)}
+              </Box>
+            </>
           </InputGroup>
 
           <Text color="grey.500" fontSize="xs" minH="20px" maxW={'450px'}>
@@ -225,7 +221,7 @@ export const CoinBox = memo(
 
           {mode === 'sell' && (
             <Button
-              variant="secondary"
+              colorPalette="secondary"
               size="xs"
               fontSize="2xs"
               onClick={handleChangeMaxBalance}
@@ -237,7 +233,7 @@ export const CoinBox = memo(
             </Button>
           )}
         </Stack>
-      </Card>
+      </Card.Root>
     );
   },
 );

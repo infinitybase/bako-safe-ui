@@ -17,7 +17,9 @@ export const VaultInfo = ({
         Vault
       </Text>
       <Flex gap={3} alignItems="center">
-        <Avatar size="sm" bg="grey.950" borderRadius="lg" name={name} />
+        <Avatar.Root size="sm" bg="grey.950" borderRadius="lg">
+          <Avatar.Fallback name={name} />
+        </Avatar.Root>
         <Box>
           <Text color="section.200">{name}</Text>
 

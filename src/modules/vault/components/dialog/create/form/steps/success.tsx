@@ -1,4 +1,4 @@
-import { Icon, TabPanel, Text, VStack } from '@chakra-ui/react';
+import { Box, Icon, Text, VStack } from '@chakra-ui/react';
 
 import { DoneIcon } from '@/components/icons/done-icon';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
@@ -8,14 +8,14 @@ const VaultSuccessStep = () => {
     screenSizes: { isMdHeight },
   } = useWorkspaceContext();
   return (
-    <TabPanel p={0} minH={450} h="full" placeContent="center">
-      <VStack mt={{ base: isMdHeight ? 50 : 60, xs: 30 }}>
-        <Icon fontSize={100} as={DoneIcon} />
+    <Box p={0} minH={450} h="full" placeContent="center">
+      <VStack mt={{ base: isMdHeight ? 50 : 60, sm: 30 }}>
+        <Icon w="100px" as={DoneIcon} />
         <Text fontWeight={700} fontSize={16} color="grey.50">
           The vault has been created!
         </Text>
       </VStack>
-    </TabPanel>
+    </Box>
   );
 };
 
