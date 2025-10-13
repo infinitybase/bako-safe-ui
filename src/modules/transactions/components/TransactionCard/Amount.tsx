@@ -50,8 +50,10 @@ const Amount = ({
   );
 
   const isBridge = useMemo(
-    () => transaction.name.includes(BRIDGE_TRANSACTION_TYPES),
-    [transaction.name],
+    () =>
+      transaction.name.includes(BRIDGE_TRANSACTION_TYPES) &&
+      !!transaction.resume?.bridge?.id,
+    [transaction.name, transaction.resume?.bridge?.id],
   );
 
   const totalAmoutSent = useMemo(
@@ -67,16 +69,19 @@ const Amount = ({
   const oneAssetOfEach = useMemo(() => {
     if (isBridge) {
       const assetsBridge = [] as ITransferAsset[];
+      const bridge = transaction.resume?.bridge;
 
-      transaction.summary?.operations.map((op) => {
-        const asset = op?.assetsSent?.[0];
-
+      if (bridge?.sourceToken)
         assetsBridge.push({
-          assetId: asset?.assetId ?? '',
-          amount: bn(asset?.amount).toString() ?? '',
-          to: op.to?.address ?? '',
+          ...bridge.sourceToken,
+          amount: bridge.sourceToken.amount?.toString(),
         });
-      });
+
+      if (bridge?.destinationToken)
+        assetsBridge.push({
+          ...bridge.destinationToken,
+          amount: bridge.destinationToken.amount?.toString(),
+        });
 
       return assetsBridge;
     }
@@ -87,7 +92,7 @@ const Amount = ({
 
       return uniqueAssets;
     }, [] as ITransferAsset[]);
-  }, [transaction.assets, transaction.summary?.operations, isBridge]);
+  }, [transaction.assets, transaction.resume?.bridge, isBridge]);
 
   const isMultiToken = useMemo(
     () => oneAssetOfEach.length >= 2 && !isOnOffRamp && !isBridge,
