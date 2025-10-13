@@ -5,3 +5,4 @@ export * from './useGetDestinationsBridge';
 export * from './useGetLimits';
 export * from './useGetQuoteBridge';
 export * from './useStepsBridge';
+export * from './useUpdateSwapTxBridge';

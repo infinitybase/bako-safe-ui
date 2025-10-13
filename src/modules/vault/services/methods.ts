@@ -10,6 +10,7 @@ import {
   IGetDestinationsResponse,
   IGetLimitsResponse,
   IGetQuotesResponse,
+  IUpdateSwapBridgeTxPayload,
   Predicate,
   Workspace,
 } from '@/modules/core/models';
@@ -26,7 +27,10 @@ import {
   IServiceProviderResponse,
 } from '@/modules/core/models/meld';
 import { IPagination, PaginationParams } from '@/modules/core/utils/pagination';
-import { SortOption } from '@/modules/transactions/services';
+import {
+  GetTransactionResponse,
+  SortOption,
+} from '@/modules/transactions/services';
 
 export interface GetAllPredicatesPayload extends PaginationParams {
   q?: string;
@@ -272,6 +276,17 @@ export class VaultService {
     const { data } = await api.post<ICreateSwapBridgeResponse>(
       `/layer-swap/swap`,
       payload,
+    );
+
+    return data;
+  }
+
+  static async updateSwapBridgeTransaction(
+    payload: IUpdateSwapBridgeTxPayload,
+  ): Promise<GetTransactionResponse> {
+    const { data } = await api.put<GetTransactionResponse>(
+      `/layer-swap/swap/${payload.hash}`,
+      payload.swap,
     );
 
     return data;

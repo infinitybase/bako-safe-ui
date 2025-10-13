@@ -10,7 +10,9 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
   ICreateSwapBridgePayload,
+  ICreateSwapBridgeResponse,
   IGetDestinationsResponse,
+  IInfoBridgeSwap,
   IQuoteFormLayersSwap,
   useBakoSafeVault,
   useScreenSize,
@@ -38,6 +40,7 @@ import { useCreateSwapBridge } from './useCreateSwapBridge';
 import { useGetDestinationsBridge } from './useGetDestinationsBridge';
 import { useGetLimitsBridge } from './useGetLimits';
 import { useGetQuoteBridge } from './useGetQuoteBridge';
+import { useUpdateSwapTxBridge } from './useUpdateSwapTxBridge';
 
 const useFormBridge = () => {
   const {
@@ -88,6 +91,7 @@ const useFormBridge = () => {
   const { assets } = useVaultInfosContext();
   const { isMobile } = useScreenSize();
   const { createSwapBridgeAsync, isPending } = useCreateSwapBridge();
+  const { updateSwapBridgeAsync } = useUpdateSwapTxBridge();
   const { getDestinationsBridgeAsync, isPending: isLoadingDestinations } =
     useGetDestinationsBridge();
   const { getLimitsBridgeAsync } = useGetLimitsBridge();
@@ -393,7 +397,7 @@ const useFormBridge = () => {
   );
 
   const sendTx = useCallback(
-    async (tx: TransactionRequest) => {
+    async (tx: TransactionRequest, swapResponse: ICreateSwapBridgeResponse) => {
       try {
         if (!vault) return;
 
@@ -404,6 +408,39 @@ const useFormBridge = () => {
         const transaction = await TransactionService.getByHash(hashTxId, [
           TransactionStatus.AWAIT_REQUIREMENTS,
         ]);
+
+        const depositActions = swapResponse.depositActions[0];
+        const quote = swapResponse.quote;
+        const swap = swapResponse.swap;
+        const defaultDecimals = 9;
+        const isAssetToEth = assetTo?.value === tokensIDS.ETH;
+
+        const swapInfo: IInfoBridgeSwap = {
+          id: swap.id,
+          createdDate: swap.createdDate,
+          sourceNetwork: swap.sourceNetwork,
+          sourceToken: {
+            assetId: assetFrom?.value ?? '',
+            amount: swap.requestedAmount,
+            to: depositActions.toAddress,
+            decimals: swap?.sourceToken?.decimals ?? defaultDecimals,
+          },
+          destinationNetwork: swap.destinationNetwork,
+          destinationToken: {
+            assetId: assetTo?.value ?? '',
+            amount: quote.receiveAmount,
+            to: swap.destinationAddress,
+            decimals: isAssetToEth
+              ? defaultDecimals
+              : (swap?.destinationToken?.decimals ?? defaultDecimals),
+          },
+          status: swap.status,
+        };
+
+        await updateSwapBridgeAsync({
+          hash: transaction.hash,
+          swap: swapInfo,
+        });
 
         await confirmTransaction(
           transaction.id,
@@ -422,11 +459,14 @@ const useFormBridge = () => {
     },
     [
       networkTo,
+      vault,
+      assetFrom?.value,
+      assetTo?.value,
       confirmTransaction,
       refetchHomeTransactionsList,
       refetchTransactionsList,
       refetchVaultTransactionsList,
-      vault,
+      updateSwapBridgeAsync,
     ],
   );
 
@@ -458,8 +498,7 @@ const useFormBridge = () => {
       await vault.fund(tx, txCost);
 
       //tx.addCoinOutput(new Address(WALLET_BAKO), bn(175), tokensIDS.ETH);
-
-      await sendTx(tx);
+      await sendTx(tx, response);
     } catch (err) {
       console.info('error submit brigde', err);
       if (
