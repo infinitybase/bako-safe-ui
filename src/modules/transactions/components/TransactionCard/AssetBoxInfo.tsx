@@ -185,7 +185,7 @@ const AssetBoxInfo = ({
                 <Image
                   w="full"
                   h="full"
-                  src={parseURI(bridgeImgNet)}
+                  src={parseURI(imgUrl)}
                   alt="Asset Icon"
                   objectFit="cover"
                   borderRadius="full"
@@ -194,7 +194,7 @@ const AssetBoxInfo = ({
                 <Image
                   w={4}
                   h={4}
-                  src={parseURI(imgUrl)}
+                  src={parseURI(bridgeImgNet)}
                   borderRadius="full"
                   objectFit="cover"
                   position="absolute"
