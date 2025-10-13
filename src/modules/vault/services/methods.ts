@@ -12,6 +12,7 @@ import {
   IGetQuotesResponse,
   IUpdateSwapBridgeTxPayload,
   Predicate,
+  PredicateUpdatePayload,
   Workspace,
 } from '@/modules/core/models';
 import {
@@ -108,8 +109,13 @@ export class VaultService {
     return data;
   }
 
-  static async getByName(name: string) {
-    const { data } = await api.get<boolean>(`/predicate/by-name/${name}`);
+  static async getByName(name: string, ignoreId?: string) {
+    const params = new URLSearchParams();
+    if (ignoreId !== undefined) {
+      params.append('ignoreId', ignoreId);
+    }
+    const url = `/predicate/by-name/${name}${params.toString() ? '?' + params.toString() : ''}`;
+    const { data } = await api.get<boolean>(url);
     return data;
   }
 
@@ -289,6 +295,11 @@ export class VaultService {
       payload.swap,
     );
 
+    return data;
+  }
+
+  static async updatePredicate(id: string, payload: PredicateUpdatePayload) {
+    const { data } = await api.put<Predicate>(`/predicate/${id}`, payload);
     return data;
   }
 }

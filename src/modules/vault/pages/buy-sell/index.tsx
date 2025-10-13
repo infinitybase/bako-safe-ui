@@ -41,6 +41,7 @@ export const VaultBuySellPage = () => {
   } = useWorkspaceContext();
 
   const currentTabIndex = (params.get('type') || 'buy') === 'buy' ? 0 : 1;
+  const workspaceId = userInfos.workspace?.id ?? '';
 
   const handleTabChange = (i: number) => {
     const tab = i === 0 ? 'buy' : 'sell';
@@ -79,6 +80,13 @@ export const VaultBuySellPage = () => {
                 color="grey.200"
                 fontWeight="semibold"
                 href="#"
+                onClick={() =>
+                  navigate(
+                    Pages.userVaults({
+                      workspaceId,
+                    }),
+                  )
+                }
               >
                 Vaults
               </BreadcrumbLink>
@@ -125,11 +133,11 @@ export const VaultBuySellPage = () => {
         >
           <TabList>
             <Tab w="full">Buy</Tab>
-            <Tab w="full" isDisabled>
-              <Tooltip label="Coming soon" hasArrow>
+            <Tooltip label="Coming soon" hasArrow>
+              <Tab w="full" isDisabled>
                 Sell
-              </Tooltip>
-            </Tab>
+              </Tab>
+            </Tooltip>
           </TabList>
           <TabPanels>
             <TabPanel>

@@ -5,7 +5,7 @@ import { components } from '@/themes/components';
 import { fonts } from '@/themes/fonts';
 
 const breakpoints = {
-  mxs: '30', //480px
+  mxs: '26.25em', //420px
   xs: '37.5em', //600px
   sm: '52em', //832px
   md: '62em', // 992px

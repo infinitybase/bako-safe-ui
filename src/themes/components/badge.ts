@@ -54,6 +54,14 @@ const grey = defineStyle({
   borderColor: 'rgba(73,248,174,0.1)',
 });
 
+const filled = defineStyle({
+  bgColor: 'rgba(245, 245, 245, 0.05)',
+  color: 'grey.425',
+  borderColor: 'transparent',
+  borderWidth: 0,
+  fontSize: { base: 'xs', xs: 'sm' },
+});
+
 const baseStyle = defineStyle({
   fontSize: 'xs',
   fontWeight: 'normal',
@@ -79,6 +87,7 @@ const Badge = defineStyleConfig({
     yellow,
     grey,
     darkWarning,
+    filled,
   },
 });
 

@@ -2,7 +2,13 @@ import { Divider, Flex, IconButton } from '@chakra-ui/react';
 
 import { SwapIcon } from '@/components';
 
-export const SwapDivider = ({ onSwap }: { onSwap: () => void }) => {
+export const SwapDivider = ({
+  onSwap,
+  disabled = false,
+}: {
+  onSwap: () => void;
+  disabled?: boolean;
+}) => {
   return (
     <Flex alignItems="center" gap={2}>
       <Divider borderColor="grey.950" />
@@ -19,6 +25,7 @@ export const SwapDivider = ({ onSwap }: { onSwap: () => void }) => {
         px={0}
         aria-label="Invert Assets"
         onClick={onSwap}
+        isDisabled={disabled}
       />
       <Divider borderColor="grey.950" />
     </Flex>
