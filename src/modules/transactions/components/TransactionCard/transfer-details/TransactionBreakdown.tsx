@@ -12,6 +12,7 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { TransactionCard } from '..';
 import { AssetBoxInfo, type TransactionUI } from '../Details';
+import BridgeCardDetail from './bridge/bridge';
 import { ConnectorInfos } from './ConnectorInfos';
 import { ContractAddresses } from './contract-call/ContractAddresses';
 import MintTokenInfos from './mint-token/MintToken';
@@ -104,7 +105,8 @@ const TransactionBreakdown = ({
             borderBottomWidth={1}
           />
         )}
-        {isMint && <MintTokenInfos transaction={transaction} />}
+        {isBridge && <BridgeCardDetail transaction={transaction} />}
+        {isMint && !isBridge && <MintTokenInfos transaction={transaction} />}
       </Box>
 
       {isFromConnector && !isDeploy && !isMobile && (

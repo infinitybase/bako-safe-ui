@@ -16,7 +16,9 @@ const useVerifyTransactionInformations = (
   const isLiquidStake =
     transaction.name === 'Liquid Stake' &&
     transaction.assets[0].assetId === tokensIDS.FUEL;
-  const isBridge = transaction.name.includes(BRIDGE_TRANSACTION_TYPES);
+  const isBridge =
+    transaction.name.includes(BRIDGE_TRANSACTION_TYPES) &&
+    !!transaction.resume?.bridge?.id;
 
   const isContract = useMemo(
     () =>
