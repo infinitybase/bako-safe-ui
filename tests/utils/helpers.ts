@@ -19,7 +19,7 @@ export enum TestAssets {
 }
 
 export async function modalCloseTest(page: Page, element: Locator) {
-  await page.getByLabel('Close window').nth(1).click();
+  await page.getByLabel('Close modal').nth(1).click();
   await element.click();
   await page.getByText('Cancel').nth(1).click();
   await element.click();

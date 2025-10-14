@@ -16,7 +16,7 @@ export class E2ETestUtils {
   static buildProvider = () => {
     const provider = new Provider(process.env.TEST_NETWORK!);
     const genesisWallet = Wallet.fromPrivateKey(
-      '0x5ac4a3075cfeb0a1238efc082978aa6a7a2efe11e6f2ce2b564d708807fab6ad'!,
+      process.env.TEST_WALLET_PRIVATE_KEY!,
       provider,
     );
 

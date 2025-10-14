@@ -5,6 +5,7 @@ export default defineConfig({
   testDir: './tests',
   workers: 2,
   timeout: 220000,
+  fullyParallel: true,
   expect: {
     timeout: 8000,
   },
@@ -25,4 +26,45 @@ export default defineConfig({
     reuseExistingServer: !process.env.CI,
     timeout: 120000,
   },
+  projects: [
+    {
+      name: 'login',
+      testMatch: ['**/login.spec.ts'],
+    },
+    {
+      name: 'home-page',
+      testMatch: ['**/home-page.spec.ts'],
+      dependencies: ['login'],
+    },
+    {
+      name: 'vault',
+      testMatch: ['**/vault.spec.ts'],
+      dependencies: ['home-page'],
+    },
+    {
+      name: 'addressBook',
+      testMatch: ['**/addressBook.spec.ts'],
+      dependencies: ['vault'],
+    },
+    {
+      name: 'transaction',
+      testMatch: ['**/transaction.spec.ts'],
+      dependencies: ['addressBook'],
+    },
+    {
+      name: 'api-token',
+      testMatch: ['**/api-token.spec.ts'],
+      dependencies: ['transaction'],
+    },
+    {
+      name: 'swap',
+      testMatch: ['**/swap.spec.ts'],
+      dependencies: ['api-token'],
+    },
+    {
+      name: 'bridge',
+      testMatch: ['**/bridge.spec.ts'],
+      dependencies: ['swap'],
+    },
+  ],
 });
