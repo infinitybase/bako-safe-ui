@@ -1,4 +1,4 @@
-import { Card, Flex, Spinner, Stack, Text } from '@chakra-ui/react';
+import { Card, Flex, Loader, Stack, Text } from 'bako-ui';
 import { TransactionCost } from 'fuels';
 import { PoolId } from 'mira-dex-ts';
 import { memo } from 'react';
@@ -42,7 +42,7 @@ export const SwapCost = memo(function SwapCost({
           </Text>
           <Flex alignItems="center" gap={1}>
             {isLoadingCost && (
-              <Spinner size="xs" ml="auto" color="section.500" />
+              <Loader size="xs" ml="auto" color="section.500" />
             )}
             {!isLoadingCost &&
               pools.map((pool, i) => (
@@ -64,7 +64,7 @@ export const SwapCost = memo(function SwapCost({
           </Text>
           <Text color="grey.75" fontSize="xs">
             {isLoadingCost && (
-              <Spinner size="xs" ml="auto" color="section.500" />
+              <Loader size="xs" ml="auto" color="section.500" />
             )}
             {!isLoadingCost && swapState.fee?.formatUnits(9)}{' '}
             {!isLoadingCost && mode === 'buy'
@@ -74,7 +74,7 @@ export const SwapCost = memo(function SwapCost({
         </Flex>
 
         <Flex alignItems="center" justifyContent="space-between">
-          {isLoadingCost && <Spinner size="xs" ml="auto" color="section.500" />}
+          {isLoadingCost && <Loader size="xs" ml="auto" color="section.500" />}
 
           {!isLoadingCost && txCost?.gasPrice && (
             <>

@@ -9,7 +9,7 @@ import {
   Separator,
   Stack,
   Text,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 import { BN } from 'fuels';
 import debounce from 'lodash.debounce';
 import { useCallback, useEffect, useMemo, useState } from 'react';

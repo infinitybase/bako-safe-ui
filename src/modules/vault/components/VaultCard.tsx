@@ -1,18 +1,19 @@
+import { useMutation } from '@tanstack/react-query';
 import {
   Avatar,
   AvatarGroup,
   Badge,
   Box,
   Card,
+  CardRootProps,
   Heading,
   HStack,
+  Loader,
   Separator,
   Spacer,
-  Spinner,
   Text,
   VStack,
-} from '@chakra-ui/react';
-import { useMutation } from '@tanstack/react-query';
+} from 'bako-ui';
 import { useEffect, useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
@@ -27,7 +28,7 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { PredicateWorkspace, VaultService } from '../services';
 import VaultCardMemberAvatar from './VaultCardMemberAvatar';
 
-interface VaultCardProps extends Card.RootProps {
+interface VaultCardProps extends CardRootProps {
   ownerId: string;
   name: string;
   members: PredicateMember[];
@@ -109,7 +110,7 @@ export const VaultCard = ({
           onClick={isPending ? undefined : handleToggle}
         >
           {isPending ? (
-            <Spinner
+            <Loader
               size="xs"
               color="grey.400"
               borderWidth="2px"
@@ -125,9 +126,7 @@ export const VaultCard = ({
       <VStack alignItems="flex-start">
         <HStack maxW="80%" justifyContent="space-between" mb={1}>
           <HStack maxW="full">
-            <Avatar.Root shape="rounded" color="white" bg="grey.600">
-              <Avatar.Fallback name={name} />
-            </Avatar.Root>
+            <Avatar shape="rounded" name={name} color="white" bg="grey.600" />
             <VStack ml={2} maxW="full" alignItems="flex-start" gap={1}>
               {/* Commented out code to temporarily disable workspaces. */}
 
@@ -175,9 +174,9 @@ export const VaultCard = ({
           <Box>
             <Text>Signers</Text>
             <AvatarGroup
-              shape="rounded"
+              // shape="rounded"
               mt={1}
-              size="sm"
+              // size="sm"
               gap={-2}
               css={{
                 '&>span': {

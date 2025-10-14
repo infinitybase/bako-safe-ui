@@ -1,4 +1,4 @@
-import { Button, Drawer, HStack, Text, VStack } from '@chakra-ui/react';
+import { Button, Drawer, HStack, Text, VStack } from 'bako-ui';
 
 import { Dialog, MiraIcon, SwapStakeIcon, WalletStakeIcon } from '@/components';
 import { useScreenSize } from '@/modules/core';

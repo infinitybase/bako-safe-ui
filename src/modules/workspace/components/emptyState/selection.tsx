@@ -1,4 +1,4 @@
-import { Box, Separator, Heading, Text, VStack } from '@chakra-ui/react';
+import { Box, Separator, Heading, Text, VStack } from 'bako-ui';
 
 import { UserWorkspaceIcon } from '@/components/icons/user-workspace-icon';
 import { useWorkspaceContext } from '../../WorkspaceProvider';

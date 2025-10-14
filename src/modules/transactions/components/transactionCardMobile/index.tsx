@@ -6,7 +6,7 @@ import {
   Icon,
   Separator,
   VStack,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 import { useMemo } from 'react';
 
 import { useDetailsDialog } from '../../hooks/details';

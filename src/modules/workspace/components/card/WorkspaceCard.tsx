@@ -1,10 +1,10 @@
-import { Avatar, Card, HStack, Text, VStack } from '@chakra-ui/react';
+import { Avatar, Card, CardRootProps, HStack, Text, VStack } from 'bako-ui';
 
 import { Workspace } from '@/modules/core';
 
 import { useWorkspaceContext } from '../../WorkspaceProvider';
 
-interface NotificationCardProps extends Card.RootProps {
+interface NotificationCardProps extends CardRootProps {
   workspace: Workspace;
   counter: {
     vaults: number | [];
@@ -39,9 +39,11 @@ const WorkspaceCard = ({
       {...rest}
     >
       <HStack gap={4} alignItems="center" h="56px">
-        <Avatar.Root shape="rounded" boxSize={isExtraSmall ? '40px' : '56px'}>
-          <Avatar.Image src={avatar} />
-        </Avatar.Root>
+        <Avatar
+          shape="rounded"
+          boxSize={isExtraSmall ? '40px' : '56px'}
+          src={avatar}
+        />
 
         <VStack
           flex={1}

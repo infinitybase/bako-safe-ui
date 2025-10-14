@@ -1,10 +1,7 @@
 import {
   Avatar,
   Box,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbRoot,
+  Breadcrumb,
   Button,
   Center,
   Grid,
@@ -12,12 +9,12 @@ import {
   Heading,
   HStack,
   Icon,
+  Loader,
   Separator,
-  Spinner,
   Stack,
   Text,
   VStack,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 import { useRef } from 'react';
 import { FaRegPlusSquare } from 'react-icons/fa';
 import { IoChevronBack } from 'react-icons/io5';
@@ -123,7 +120,7 @@ const WorkspacePage = () => {
           balanceUSD ? (
             `${balanceUSD} USD`
           ) : (
-            <Spinner w={5} h={5} />
+            <Loader w={5} h={5} />
           )
         ) : (
           '----'
@@ -152,8 +149,8 @@ const WorkspacePage = () => {
       {/* This outlet components is used to display a blur background */}
       <Outlet />
       <WorkspaceSettingsDrawer
-        isOpen={workspaceDialog.isOpen}
-        onClose={workspaceDialog.onClose}
+        open={workspaceDialog.isOpen}
+        onOpenChange={workspaceDialog.onOpenChange}
       />
       <HStack w="full" h="10" justifyContent="space-between" my={2}>
         <HStack>
@@ -171,10 +168,10 @@ const WorkspacePage = () => {
             Back home
           </Button>
 
-          <BreadcrumbRoot display={{ base: 'none', sm: 'initial' }} ml={8}>
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbLink
+          <Breadcrumb.Root display={{ base: 'none', sm: 'initial' }} ml={8}>
+            <Breadcrumb.List>
+              <Breadcrumb.Item>
+                <Breadcrumb.Link
                   fontSize="sm"
                   color="grey.200"
                   fontWeight="semibold"
@@ -182,13 +179,13 @@ const WorkspacePage = () => {
                 >
                   <Icon mr={2} as={HomeIcon} w={6} color="grey.200" />
                   Home
-                </BreadcrumbLink>
-              </BreadcrumbItem>
+                </Breadcrumb.Link>
+              </Breadcrumb.Item>
 
               {/* Commented out code to temporarily disable workspaces. */}
 
-              {/* <BreadcrumbItem>
-              <BreadcrumbLink
+              {/* <Breadcrumb.Item>
+              <Breadcrumb.Link
                 fontSize="sm"
                 color="grey.200"
                 fontWeight="semibold"
@@ -202,10 +199,10 @@ const WorkspacePage = () => {
                 }
               >
                 {limitCharacters(userInfos.workspace?.name ?? '', 10)}
-              </BreadcrumbLink>
-            </BreadcrumbItem> */}
-            </BreadcrumbList>
-          </BreadcrumbRoot>
+              </Breadcrumb.Link>
+            </Breadcrumb.Item> */}
+            </Breadcrumb.List>
+          </Breadcrumb.Root>
         </HStack>
         <HStack gap={3}>
           {hasPermission([OWNER, ADMIN]) && (
@@ -286,7 +283,7 @@ const WorkspacePage = () => {
                   gap={6}
                   alignItems="flex-start"
                 >
-                  <Avatar.Root
+                  <Avatar
                     position="relative"
                     shape="rounded"
                     size={{ base: 'md', sm: 'lg' }}
@@ -294,9 +291,8 @@ const WorkspacePage = () => {
                     bgColor="grey.600"
                     color="grey.450"
                     fontWeight="bold"
-                  >
-                    <Avatar.Fallback name={userInfos.workspace?.name} />
-                  </Avatar.Root>
+                    name={userInfos.workspace?.name}
+                  />
                   <Box>
                     <Heading
                       // variant="title-xl"

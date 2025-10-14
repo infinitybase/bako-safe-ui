@@ -8,7 +8,7 @@ import {
   Image,
   Text,
   VStack,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 
 import { UpRightArrow } from '@/components';
 import { BakoIcon } from '@/components/icons/assets/bakoIcon';

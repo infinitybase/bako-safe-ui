@@ -1,4 +1,4 @@
-import { DialogOpenChangeDetails } from '@chakra-ui/react';
+import { DialogOpenChangeDetails } from 'bako-ui';
 import { useMutation } from '@tanstack/react-query';
 import { IAssetGroupById } from 'bakosafe';
 import { BN, bn } from 'fuels';

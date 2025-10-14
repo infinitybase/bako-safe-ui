@@ -1,4 +1,4 @@
-import { BoxProps, StackProps, Text, VStack } from '@chakra-ui/react';
+import { BoxProps, StackProps, Text, VStack } from 'bako-ui';
 
 import { PredicateAndWorkspace } from '@/modules/vault/services/methods';
 import { limitCharacters } from '@/utils';

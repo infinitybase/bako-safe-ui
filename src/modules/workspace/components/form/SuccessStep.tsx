@@ -1,12 +1,4 @@
-import {
-  Box,
-  Button,
-  Center,
-  Separator,
-  Heading,
-  HStack,
-  Icon,
-} from '@chakra-ui/react';
+import { Box, Button, Center, Separator, Heading, HStack, Icon } from 'bako-ui';
 
 import { SquarePlusIcon } from '@/components';
 import { TransactionsBoxIcon } from '@/components/icons/transactions-box-icon';

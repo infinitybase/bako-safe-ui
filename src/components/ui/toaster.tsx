@@ -1,13 +1,6 @@
 'use client';
 
-import {
-  createToaster,
-  Portal,
-  Spinner,
-  Stack,
-  Toast,
-  Toaster as ChakraToaster,
-} from '@chakra-ui/react';
+import { createToaster, Loader, Portal, Stack, Toast } from 'bako-ui';
 
 export const toaster = createToaster({
   placement: 'bottom-end',
@@ -17,11 +10,11 @@ export const toaster = createToaster({
 export const Toaster = () => {
   return (
     <Portal>
-      <ChakraToaster toaster={toaster} insetInline={{ mdDown: '4' }}>
+      <Toast.Toaster toaster={toaster} insetInline={{ mdDown: '4' }}>
         {(toast) => (
           <Toast.Root width={{ md: 'sm' }}>
             {toast.type === 'loading' ? (
-              <Spinner size="sm" color="blue.solid" />
+              <Loader size="sm" color="blue.solid" />
             ) : (
               <Toast.Indicator />
             )}
@@ -37,7 +30,7 @@ export const Toaster = () => {
             {toast.closable && <Toast.CloseTrigger />}
           </Toast.Root>
         )}
-      </ChakraToaster>
+      </Toast.Toaster>
     </Portal>
   );
 };

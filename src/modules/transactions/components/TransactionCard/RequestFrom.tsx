@@ -7,7 +7,7 @@ import {
   Separator,
   Text,
   VStack,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 
 import { Nullable } from '@/modules/core';
 

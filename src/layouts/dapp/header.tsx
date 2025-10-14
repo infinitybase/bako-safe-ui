@@ -1,4 +1,4 @@
-import { Box, Heading, StackProps, Text, VStack } from '@chakra-ui/react';
+import { Box, Heading, StackProps, Text, VStack } from 'bako-ui';
 import React from 'react';
 
 interface HeaderProps extends StackProps {
@@ -20,10 +20,7 @@ const Header = ({
       {title}
     </Heading>
     <Box maxW={345}>
-      <Text
-        variant="description"
-        fontSize={descriptionFontSize ? descriptionFontSize : 'unset'}
-      >
+      <Text fontSize={descriptionFontSize ? descriptionFontSize : 'unset'}>
         {description}
       </Text>
     </Box>

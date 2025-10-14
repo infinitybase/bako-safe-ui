@@ -1,13 +1,4 @@
-import {
-  Box,
-  Center,
-  Flex,
-  Grid,
-  HStack,
-  Icon,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { Box, Center, Flex, Grid, HStack, Icon, Text, VStack } from 'bako-ui';
 import type { ITransferAsset } from 'bakosafe';
 import { bn } from 'fuels';
 import { useMemo } from 'react';

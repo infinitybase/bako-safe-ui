@@ -1,4 +1,4 @@
-import { Popover, Separator } from '@chakra-ui/react';
+import { Popover, Separator } from 'bako-ui';
 import { Address } from 'fuels';
 
 import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
@@ -18,7 +18,7 @@ const AddressActionsPopover = (props: AddressActionsProps) => {
       positioning={{ placement: 'top-start' }}
       onOpenChange={(e) => setOpen(e.open)}
     >
-      <Popover.Trigger>
+      <Popover.Trigger asChild>
         <AddressActionsButton
           onClick={onToggle}
           bgColor={isOpen ? 'dark.950' : 'grey.825'}

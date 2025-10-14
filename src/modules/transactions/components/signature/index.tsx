@@ -1,4 +1,4 @@
-import { Badge, Spinner } from '@chakra-ui/react';
+import { Badge, Loader } from 'bako-ui';
 
 import { PendingIcon } from '@/components';
 
@@ -15,7 +15,7 @@ const WaitingSignatureBadge = (props: WaitingSignatureBadgeProps) => {
 
   if (isLoading) {
     return (
-      <Spinner
+      <Loader
         size="lg"
         css={{ '--spinner-track-color': 'dark.100' }}
         colorPalette="brand.500"

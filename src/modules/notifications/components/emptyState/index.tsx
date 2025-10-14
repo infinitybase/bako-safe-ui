@@ -1,4 +1,4 @@
-import { Box, Card, Heading, Text } from '@chakra-ui/react';
+import { Box, Card, Heading, Text } from 'bako-ui';
 
 import { EmptyBoxOutline } from '@/components';
 

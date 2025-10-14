@@ -1,12 +1,4 @@
-import {
-  Box,
-  Button,
-  HStack,
-  Icon,
-  Stack,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { Box, Button, HStack, Icon, Stack, Text, VStack } from 'bako-ui';
 import { useMemo } from 'react';
 import { FaRegPlusSquare } from 'react-icons/fa';
 

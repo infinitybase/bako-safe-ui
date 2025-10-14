@@ -1,3 +1,4 @@
+import { keyframes } from '@emotion/react';
 import {
   Avatar,
   Box,
@@ -9,11 +10,11 @@ import {
   Separator,
   Text,
   TextProps,
+  Tooltip,
   VStack,
-} from '@chakra-ui/react';
-import { keyframes } from '@emotion/react';
+} from 'bako-ui';
 import { bn } from 'fuels';
-import { useMemo, useRef } from 'react';
+import { JSX, useMemo, useRef } from 'react';
 import { FiPlusSquare as PlusSquareIcon } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 
@@ -27,7 +28,7 @@ import {
 import { EyeCloseIcon } from '@/components/icons/eye-close';
 import { EyeOpenIcon } from '@/components/icons/eye-open';
 import { RefreshIcon } from '@/components/icons/refresh-icon';
-import { Tooltip } from '@/components/ui/tooltip';
+// import { Tooltip } from '@/components/ui/tooltip';
 import { Pages, PermissionRoles } from '@/modules/core';
 import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
 import { useNetworks } from '@/modules/network/hooks';
@@ -192,7 +193,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                 display="flex"
                 flex={1}
               >
-                <Avatar.Root
+                <Avatar
                   position="relative"
                   size={{ base: 'md', sm: 'lg' }}
                   p={{ base: 8, sm: 14 }}
@@ -201,9 +202,8 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                   fontWeight="bold"
                   shape="rounded"
                   boxShadow="0px 6.5px 6.5px 0px rgba(0, 0, 0, 0.4);"
-                >
-                  <Avatar.Fallback name={vault.data?.name} />
-                </Avatar.Root>
+                  name={vault.data?.name}
+                />
                 <Box alignItems="center" justifyContent="center" w="full">
                   <HStack justifyContent="space-between" gap={2} maxW="full">
                     <Heading

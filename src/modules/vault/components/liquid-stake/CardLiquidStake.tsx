@@ -1,4 +1,4 @@
-import { Box, Button, HStack, Icon, Text, VStack } from '@chakra-ui/react';
+import { Box, Button, HStack, Icon, Text, VStack } from 'bako-ui';
 import { Vault } from 'bakosafe';
 import { useMemo, useState } from 'react';
 

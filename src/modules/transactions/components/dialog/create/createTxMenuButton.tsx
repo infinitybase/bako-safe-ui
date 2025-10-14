@@ -1,11 +1,4 @@
-import {
-  Button,
-  Heading,
-  HStack,
-  Menu,
-  MenuRoot,
-  Text,
-} from '@chakra-ui/react';
+import { Button, Heading, HStack, Menu, Text } from 'bako-ui';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { Dialog } from '@/components';
@@ -59,7 +52,7 @@ const CreateTxMenuButton = ({
   }, [updateMenuWidth]);
 
   return (
-    <MenuRoot
+    <Menu.Root
       // styleConfig={{
       //   bgColor: 'transparent',
       // }}
@@ -169,7 +162,7 @@ const CreateTxMenuButton = ({
           </Menu.Item>
         </Menu.Content>
       </HStack>
-    </MenuRoot>
+    </Menu.Root>
   );
 };
 

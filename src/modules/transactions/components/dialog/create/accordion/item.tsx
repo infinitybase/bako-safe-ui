@@ -1,10 +1,10 @@
 import {
-  AccordionItemContent,
+  Accordion,
   Box,
   Heading,
   useAccordionItemContext,
   VStack,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 import React, { useMemo } from 'react';
 
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
@@ -53,7 +53,9 @@ const AccordionItem = ({
           </Box>
         </VStack>
       </Box>
-      {isOpen && <AccordionItemContent px={5}>{children}</AccordionItemContent>}
+      {isOpen && (
+        <Accordion.ItemContent px={5}>{children}</Accordion.ItemContent>
+      )}
     </>
   );
 };

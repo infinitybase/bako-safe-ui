@@ -1,4 +1,4 @@
-import { Box, BoxProps, Button, Flex, Text } from '@chakra-ui/react';
+import { Box, BoxProps, Button, Flex, Text } from 'bako-ui';
 import { ReactNode } from 'react';
 
 import { UpRightArrow } from '../icons';
@@ -37,13 +37,13 @@ const Banner = (props: BannerProps) => {
         variant="outline"
         color="grey.75"
         fontSize={['xs', 'sm']}
-        rightIcon={<UpRightArrow w={4} h={4} />}
         _hover={{
           bgColor: 'initial',
           color: 'white',
           borderColor: 'brand.500',
         }}
       >
+        <UpRightArrow w={4} h={4} />
         Try now
       </Button>
     </Box>

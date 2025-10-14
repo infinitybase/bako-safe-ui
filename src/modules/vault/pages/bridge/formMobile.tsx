@@ -1,4 +1,4 @@
-import { Button, HStack, Icon, Separator, VStack } from '@chakra-ui/react';
+import { Button, HStack, Icon, Separator, VStack } from 'bako-ui';
 import { useMemo, useState } from 'react';
 
 import { SwapIcon } from '@/components';

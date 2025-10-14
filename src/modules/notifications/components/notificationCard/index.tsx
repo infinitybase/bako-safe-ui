@@ -1,4 +1,4 @@
-import { Box, Card, CardProps, HStack, Text } from '@chakra-ui/react';
+import { Box, Card, CardProps, HStack, Text } from 'bako-ui';
 import { format, parseISO } from 'date-fns';
 
 import { Notification, NotificationSummary } from '@/modules/core';

@@ -10,7 +10,7 @@ import {
   Text,
   useClipboard,
   VStack,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 import { FiCheck as CheckIcon } from 'react-icons/fi';
 
 import { Card, CopyIcon, EditIcon, RemoveIcon } from '@/components';
@@ -54,10 +54,12 @@ const ContactCard = ({
       <VStack flex={1} alignItems="flex-start">
         <HStack flex={1} justifyContent="space-between" mb={1}>
           <HStack>
-            <Avatar.Root shape="rounded" key={address}>
-              <Avatar.Fallback name={nickname || address} />
-              <Avatar.Image src={avatar} alt={address} />
-            </Avatar.Root>
+            <Avatar
+              shape="rounded"
+              key={address}
+              src={avatar}
+              name={nickname || address}
+            />
             <Box ml={2}>
               <Heading
                 // variant="title-md"

@@ -1,4 +1,4 @@
-import { Box, Separator, Text, VStack } from '@chakra-ui/react';
+import { Box, Separator, Text, VStack } from 'bako-ui';
 import { ReactNode, useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 

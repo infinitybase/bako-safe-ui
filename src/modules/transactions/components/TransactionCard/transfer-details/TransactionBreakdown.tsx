@@ -1,4 +1,4 @@
-import { Box, HStack, Separator, Text } from '@chakra-ui/react';
+import { Box, HStack, Separator, Text } from 'bako-ui';
 import { TransactionStatus } from 'bakosafe';
 
 import { RigContractIcon } from '@/components';

@@ -1,4 +1,4 @@
-import { Box, HStack, Image, Text, VStack } from '@chakra-ui/react';
+import { Box, HStack, Image, Text, VStack } from 'bako-ui';
 import { useMemo } from 'react';
 
 import { Card } from '@/components';

@@ -1,4 +1,4 @@
-import { GridItem } from '@chakra-ui/react';
+import { GridItem } from 'bako-ui';
 import { memo } from 'react';
 import { NavigateFunction } from 'react-router-dom';
 

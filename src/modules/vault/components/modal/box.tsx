@@ -1,12 +1,4 @@
-import {
-  Avatar,
-  Badge,
-  Flex,
-  HStack,
-  Icon,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { Avatar, Badge, Flex, HStack, Icon, Text, VStack } from 'bako-ui';
 import { memo, useMemo } from 'react';
 import { LuUser2, LuUsers2 } from 'react-icons/lu';
 
@@ -105,7 +97,7 @@ const VaultItemBoxComponent = ({
     >
       <Flex w="100%" align="center" justify="space-between">
         <HStack gap={4} align="center">
-          <Avatar.Root
+          <Avatar
             shape="rounded"
             color="grey.250"
             bgColor="grey.950"
@@ -118,9 +110,8 @@ const VaultItemBoxComponent = ({
                 lineHeight: 'normal',
               },
             }}
-          >
-            <Avatar.Fallback name={name} />
-          </Avatar.Root>
+            name={name}
+          />
           <VStack gap={2} align="flex-start">
             <Text
               // variant="subtitle"

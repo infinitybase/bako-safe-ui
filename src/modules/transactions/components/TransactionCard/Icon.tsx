@@ -1,4 +1,4 @@
-import { Flex, Icon as ChackraIcon } from '@chakra-ui/react';
+import { Flex, Icon as ChackraIcon } from 'bako-ui';
 import { memo, useMemo } from 'react';
 
 import { useVerifyTransactionInformations } from '../../hooks';

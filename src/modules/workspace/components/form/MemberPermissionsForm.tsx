@@ -8,7 +8,7 @@ import {
   Separator,
   Stack,
   Text,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 import { Controller } from 'react-hook-form';
 
 import { Dialog } from '@/components';

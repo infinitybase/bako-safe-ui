@@ -1,4 +1,4 @@
-import { AccordionItem, HStack, Text } from '@chakra-ui/react';
+import { Accordion, HStack, Text } from 'bako-ui';
 import { memo, useCallback, useMemo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
@@ -54,26 +54,26 @@ const RecipientItem = ({
   const transaction = useWatch({ control, name: `transactions.${index}` });
 
   const assetSlug = useMemo(
-    () => assets.getAssetInfo(transaction.asset)?.slug,
-    [assets, transaction.asset],
+    () => assets.getAssetInfo(transaction?.asset || '')?.slug,
+    [assets, transaction?.asset],
   );
 
   const fieldState = getFieldState(`transactions.${index}`);
 
   const resolvedLabel = useMemo(() => {
-    const label = transaction.resolvedLabel;
+    const label = transaction?.resolvedLabel;
     return label?.startsWith('@') ? label?.split(' ')[0] : label;
   }, [transaction]);
 
   const hasEmptyField = useMemo(() => {
-    return Object.entries(transaction)
+    return Object.entries(transaction || {})
       .filter(([key]) => key !== 'resolvedLabel')
       .some(([, value]) => value === '');
   }, [transaction]);
 
   const isCurrentAmountZero = useMemo(
-    () => Number(transaction.amount) === 0,
-    [transaction.amount],
+    () => Number(transaction?.amount || 0) === 0,
+    [transaction?.amount],
   );
 
   const isDisabled = useMemo(
@@ -83,22 +83,24 @@ const RecipientItem = ({
 
   const contact = useMemo(
     () =>
-      nicks.find((nick) => nick.user.address === transaction.value)?.nickname,
-    [nicks, transaction.value],
+      nicks.find((nick) => nick.user.address === transaction?.value)?.nickname,
+    [nicks, transaction?.value],
   );
 
-  const resolverName = getResolverName(transaction.value);
+  const resolverName = getResolverName(transaction?.value || '');
 
   const recipientLabel = useMemo(() => {
     if (resolvedLabel?.startsWith('@')) {
       return resolvedLabel;
     }
-    return contact ?? resolverName ?? AddressUtils.format(transaction.value);
-  }, [contact, resolverName, transaction.value, resolvedLabel]);
+    return (
+      contact ?? resolverName ?? AddressUtils.format(transaction?.value || '')
+    );
+  }, [contact, resolverName, transaction?.value, resolvedLabel]);
 
   const isNFT = useMemo(
-    () => isNFTAsset(transaction.asset),
-    [isNFTAsset, transaction.asset],
+    () => isNFTAsset(transaction?.asset || ''),
+    [isNFTAsset, transaction?.asset],
   );
 
   const handleCloseAccordion = useCallback(
@@ -107,13 +109,13 @@ const RecipientItem = ({
   );
 
   return (
-    <AccordionItem
+    <Accordion.Item
       value={index.toString()}
       mb={6}
       borderWidth={1}
       borderColor={
         !hasEthForFee &&
-        transaction.asset === ethAssetId &&
+        transaction?.asset === ethAssetId &&
         !isCurrentAmountZero
           ? 'red.500'
           : 'grey.925'
@@ -148,7 +150,7 @@ const RecipientItem = ({
           !hasEmptyField && (
             <Text fontSize="sm" color="grey.500" mt={2}>
               <b>
-                {isNFT ? 'NFT' : transaction.amount} {isNFT ? '' : assetSlug}
+                {isNFT ? 'NFT' : transaction?.amount} {isNFT ? '' : assetSlug}
               </b>{' '}
               to <b> {recipientLabel}</b>
             </Text>
@@ -162,7 +164,7 @@ const RecipientItem = ({
           getBalanceAvailable={getBalanceAvailable}
         />
       </TransactionAccordion.Item>
-    </AccordionItem>
+    </Accordion.Item>
   );
 };
 

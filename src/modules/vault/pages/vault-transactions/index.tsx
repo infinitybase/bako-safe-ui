@@ -1,12 +1,4 @@
-import {
-  Box,
-  Breadcrumb,
-  HStack,
-  Icon,
-  Spinner,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { Box, Breadcrumb, HStack, Icon, Loader, Text, VStack } from 'bako-ui';
 import { TransactionStatus } from 'bakosafe';
 import { useEffect } from 'react';
 import { RiMenuUnfoldLine } from 'react-icons/ri';
@@ -206,7 +198,7 @@ const TransactionsVaultPage = () => {
           >
             Transactions
           </Text>
-          <Spinner
+          <Loader
             hidden={!isFetching}
             size="md"
             color="brand.500"

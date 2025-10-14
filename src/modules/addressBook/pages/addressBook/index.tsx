@@ -1,8 +1,6 @@
 import {
   Box,
   Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
   Button,
   Grid,
   GridItem,
@@ -11,7 +9,7 @@ import {
   Stack,
   Text,
   VStack,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 import { FaRegPlusSquare } from 'react-icons/fa';
 import { IoChevronBack } from 'react-icons/io5';
 
@@ -127,8 +125,8 @@ const AddressBookPage = () => {
 
             <Breadcrumb.Root display={{ base: 'none', sm: 'initial' }} ml={8}>
               <Breadcrumb.List>
-                <BreadcrumbItem>
-                  <BreadcrumbLink
+                <Breadcrumb.Item>
+                  <Breadcrumb.Link
                     fontSize="sm"
                     color="grey.200"
                     fontWeight="semibold"
@@ -136,8 +134,8 @@ const AddressBookPage = () => {
                   >
                     <Icon mr={2} as={HomeIcon} w={4} color="grey.200" />
                     Home
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
+                  </Breadcrumb.Link>
+                </Breadcrumb.Item>
 
                 {/* Commented out code to temporarily disable workspaces. */}
 
@@ -163,8 +161,8 @@ const AddressBookPage = () => {
                 )}
               </BreadcrumbItem> */}
                 <Breadcrumb.Separator />
-                <BreadcrumbItem>
-                  <BreadcrumbLink
+                <Breadcrumb.Item>
+                  <Breadcrumb.Link
                     id="adressbookBread"
                     fontSize="sm"
                     color="grey.200"
@@ -172,8 +170,8 @@ const AddressBookPage = () => {
                     href="#"
                   >
                     Address book
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
+                  </Breadcrumb.Link>
+                </Breadcrumb.Item>
               </Breadcrumb.List>
             </Breadcrumb.Root>
           </HStack>

@@ -9,7 +9,7 @@ import {
   InputGroup,
   Stack,
   Text,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 import debounce from 'lodash.debounce';
 import { useCallback, useEffect, useState } from 'react';
 import { FiSearch as SearchIcon } from 'react-icons/fi';

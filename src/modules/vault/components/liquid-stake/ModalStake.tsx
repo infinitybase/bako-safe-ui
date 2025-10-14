@@ -1,4 +1,4 @@
-import { Button, Card, HStack, Image, Text, VStack } from '@chakra-ui/react';
+import { Button, Card, HStack, Image, Text, VStack } from 'bako-ui';
 import { useEffect } from 'react';
 
 import { Dialog, FuelIcon } from '@/components';

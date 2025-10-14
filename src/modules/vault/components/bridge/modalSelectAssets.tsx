@@ -9,7 +9,7 @@ import {
   Skeleton,
   Text,
   VStack,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 import { useCallback, useEffect, useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 

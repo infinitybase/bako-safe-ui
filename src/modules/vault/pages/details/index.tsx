@@ -1,18 +1,14 @@
+import { useQueryClient } from '@tanstack/react-query';
 import {
   Box,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbRoot,
-  BreadcrumbSeparator,
+  Breadcrumb,
   Button,
   HStack,
   Icon,
+  Loader,
   Spacer,
-  Spinner,
   Text,
-} from '@chakra-ui/react';
-import { useQueryClient } from '@tanstack/react-query';
+} from 'bako-ui';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -121,10 +117,7 @@ const VaultDetailsPage = () => {
 
   return (
     <Box w="full">
-      <Drawer
-        open={menuDrawer.isOpen}
-        onOpenChange={(e) => menuDrawer.setOpen(e.open)}
-      />
+      <Drawer open={menuDrawer.isOpen} onOpenChange={menuDrawer.onOpenChange} />
 
       <WelcomeDialog
         isOpen={welcomeDialogState}
@@ -153,10 +146,10 @@ const VaultDetailsPage = () => {
             </Text>
           </HStack>
         ) : (
-          <BreadcrumbRoot>
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbLink
+          <Breadcrumb.Root>
+            <Breadcrumb.List>
+              <Breadcrumb.Item>
+                <Breadcrumb.Link
                   fontSize="sm"
                   color="grey.200"
                   fontWeight="semibold"
@@ -164,15 +157,15 @@ const VaultDetailsPage = () => {
                 >
                   <Icon mr={2} as={HomeIcon} w={3} color="grey.200" />
                   Home
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
+                </Breadcrumb.Link>
+              </Breadcrumb.Item>
+              <Breadcrumb.Separator />
 
               {/* Commented out code to temporarily disable workspaces. */}
 
               {/* {!userInfos.onSingleWorkspace && (
-              <BreadcrumbItem>
-                <BreadcrumbLink
+              <Breadcrumb.Item>
+                <Breadcrumb.Link
                   fontSize="sm"
                   color="grey.200"
                   fontWeight="semibold"
@@ -189,12 +182,12 @@ const VaultDetailsPage = () => {
                   isTruncated
                 >
                   {userInfos.workspace?.name}
-                </BreadcrumbLink>
-              </BreadcrumbItem>
+                </Breadcrumb.Link>
+              </Breadcrumb.Item>
             )} */}
 
-              <BreadcrumbItem>
-                <BreadcrumbLink
+              <Breadcrumb.Item>
+                <Breadcrumb.Link
                   fontSize="sm"
                   color="grey.200"
                   fontWeight="semibold"
@@ -207,13 +200,13 @@ const VaultDetailsPage = () => {
                   }
                 >
                   Vaults
-                </BreadcrumbLink>
-              </BreadcrumbItem>
+                </Breadcrumb.Link>
+              </Breadcrumb.Item>
 
-              <BreadcrumbSeparator />
+              <Breadcrumb.Separator />
 
-              <BreadcrumbItem>
-                <BreadcrumbLink
+              <Breadcrumb.Item>
+                <Breadcrumb.Link
                   fontSize="sm"
                   color="grey.200"
                   fontWeight="semibold"
@@ -222,10 +215,10 @@ const VaultDetailsPage = () => {
                   maxW={640}
                 >
                   {limitCharacters(vault?.data?.name ?? '', 25)}
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </BreadcrumbRoot>
+                </Breadcrumb.Link>
+              </Breadcrumb.Item>
+            </Breadcrumb.List>
+          </Breadcrumb.Root>
         )}
         {!hideSetTemplateButton && (
           <Button
@@ -347,7 +340,7 @@ const VaultDetailsPage = () => {
                     {isLastGroup &&
                       grouped.transactions.length >= 5 &&
                       isFetching && (
-                        <Spinner alignSelf="center" mt={4} color="brand.500" />
+                        <Loader alignSelf="center" mt={4} color="brand.500" />
                       )}
                   </TransactionCard.List>
                 </Box>

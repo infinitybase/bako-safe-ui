@@ -1,4 +1,4 @@
-import { Card, CardRootProps, HStack, Icon, Text } from '@chakra-ui/react';
+import { Card, CardRootProps, HStack, Icon, Text } from 'bako-ui';
 import { ElementType, useCallback } from 'react';
 
 interface CLISettingsCardProps extends CardRootProps {

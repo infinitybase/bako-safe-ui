@@ -1,4 +1,4 @@
-import { Box, BoxProps, Image } from '@chakra-ui/react';
+import { Box, BoxProps, Image } from 'bako-ui';
 
 import GarageBanner from '@/assets/garage-new-place-banner.png';
 

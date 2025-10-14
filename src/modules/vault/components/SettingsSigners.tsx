@@ -1,4 +1,4 @@
-import { Badge, Box, Grid, HStack, Text } from '@chakra-ui/react';
+import { Badge, Box, Grid, HStack, Text } from 'bako-ui';
 
 import { CustomSkeleton } from '@/components';
 import { useScreenSize } from '@/modules/core';

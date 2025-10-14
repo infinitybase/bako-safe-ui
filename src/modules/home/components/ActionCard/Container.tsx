@@ -1,4 +1,4 @@
-import { CardRootProps, HStack } from '@chakra-ui/react';
+import { CardRootProps, HStack } from 'bako-ui';
 import { ReactNode } from 'react';
 
 import { Card } from '@/components';

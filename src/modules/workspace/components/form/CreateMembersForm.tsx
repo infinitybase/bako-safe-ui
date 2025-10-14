@@ -1,4 +1,4 @@
-import { Box, Field } from '@chakra-ui/react';
+import { Box, Field } from 'bako-ui';
 import { Address, isB256 } from 'fuels';
 import { Controller } from 'react-hook-form';
 

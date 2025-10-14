@@ -1,4 +1,4 @@
-import { Heading, HStack, Icon, Link, Text, VStack } from '@chakra-ui/react';
+import { Heading, HStack, Icon, Link, Text, VStack } from 'bako-ui';
 import { FiArrowUpRight } from 'react-icons/fi';
 
 import { FeedbackIcon } from '@/components/icons/feedback';

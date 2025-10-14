@@ -1,4 +1,4 @@
-import { Card, Text } from '@chakra-ui/react';
+import { Card, Text } from 'bako-ui';
 import { memo } from 'react';
 import { FiAlertTriangle as WarningIcon } from 'react-icons/fi';
 

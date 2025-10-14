@@ -1,4 +1,4 @@
-import { Card, HStack, Icon, Spinner, Text, VStack } from '@chakra-ui/react';
+import { Card, HStack, Icon, Loader, Text, VStack } from 'bako-ui';
 import { useEffect } from 'react';
 
 import { DoubtIcon } from '@/components/icons/doubt';
@@ -43,7 +43,7 @@ export function DetailsBridge({
             justifyContent={'flex-end'}
           >
             {isLoadingQuote ? (
-              <Spinner color="grey.500" size="xs" />
+              <Loader color="grey.500" size="xs" />
             ) : (
               <Text color="grey.250" fontSize={12} flex={1} textAlign="right">
                 {dataQuote?.quote?.avgCompletionTime ?? '-'}
@@ -65,7 +65,7 @@ export function DetailsBridge({
             justifyContent={'flex-end'}
           >
             {isLoadingQuote ? (
-              <Spinner color="grey.500" size="xs" />
+              <Loader color="grey.500" size="xs" />
             ) : (
               <Text color="grey.250" fontSize={12} flex={1} textAlign="right">
                 {dataQuote?.quote?.totalFee
@@ -87,7 +87,7 @@ export function DetailsBridge({
             minH={'21px'}
           >
             {isLoadingQuote ? (
-              <Spinner color="grey.500" size="xs" />
+              <Loader color="grey.500" size="xs" />
             ) : (
               <>
                 <Text

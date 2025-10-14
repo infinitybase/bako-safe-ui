@@ -1,4 +1,4 @@
-import { AvatarGroup, Image, Skeleton } from '@chakra-ui/react';
+import { AvatarGroup, Image, Skeleton } from 'bako-ui';
 import { ITransferAsset } from 'bakosafe';
 import { memo, useMemo } from 'react';
 

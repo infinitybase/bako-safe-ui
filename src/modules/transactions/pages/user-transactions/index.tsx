@@ -1,16 +1,14 @@
 import {
   Box,
   Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
   Button,
   HStack,
   Icon,
-  Spinner,
+  Loader,
   Stack,
   Text,
   VStack,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 import { useEffect } from 'react';
 import { FaRegPlusSquare } from 'react-icons/fa';
 import { IoChevronBack } from 'react-icons/io5';
@@ -107,8 +105,8 @@ const UserTransactionsPage = () => {
             <>
               <Breadcrumb.Root ml={8}>
                 <Breadcrumb.List>
-                  <BreadcrumbItem>
-                    <BreadcrumbLink
+                  <Breadcrumb.Item>
+                    <Breadcrumb.Link
                       fontSize="sm"
                       color="grey.200"
                       fontWeight="semibold"
@@ -116,8 +114,8 @@ const UserTransactionsPage = () => {
                     >
                       <Icon mr={2} as={HomeIcon} w={3} color="grey.200" />
                       Home
-                    </BreadcrumbLink>
-                  </BreadcrumbItem>
+                    </Breadcrumb.Link>
+                  </Breadcrumb.Item>
                   <Breadcrumb.Separator />
 
                   {/* Commented out code to temporarily disable workspaces. */}
@@ -143,16 +141,16 @@ const UserTransactionsPage = () => {
                     </BreadcrumbLink>
                   </BreadcrumbItem>
                 )} */}
-                  <BreadcrumbItem>
-                    <BreadcrumbLink
+                  <Breadcrumb.Item>
+                    <Breadcrumb.Link
                       fontSize="sm"
                       color="grey.200"
                       fontWeight="semibold"
                       href="#"
                     >
                       My Transactions
-                    </BreadcrumbLink>
-                  </BreadcrumbItem>
+                    </Breadcrumb.Link>
+                  </Breadcrumb.Item>
                 </Breadcrumb.List>
               </Breadcrumb.Root>
             </>
@@ -313,7 +311,7 @@ const UserTransactionsPage = () => {
             ))}
             {hasNextPage && (
               <Box w="full" display={'flex'} justifyContent={'center'} pb={5}>
-                <Spinner alignSelf="center" mt={2} color="brand.500" />
+                <Loader alignSelf="center" mt={2} color="brand.500" />
               </Box>
             )}
           </VStack>

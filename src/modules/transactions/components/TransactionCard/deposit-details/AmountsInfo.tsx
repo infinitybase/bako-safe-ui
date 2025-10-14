@@ -1,4 +1,4 @@
-import { Text, VStack } from '@chakra-ui/react';
+import { Text, VStack } from 'bako-ui';
 import { bn } from 'fuels';
 
 import type { AssetModel } from '@/modules/core';

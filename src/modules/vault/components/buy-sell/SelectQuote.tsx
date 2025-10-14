@@ -1,4 +1,4 @@
-import { Badge, Flex, Icon, Image, Skeleton, Text } from '@chakra-ui/react';
+import { Badge, Flex, Icon, Image, Skeleton, Text } from 'bako-ui';
 import { useMemo } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 

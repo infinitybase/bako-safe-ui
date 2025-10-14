@@ -9,7 +9,7 @@ import {
   Separator,
   Stack,
   Text,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 import debounce from 'lodash.debounce';
 import { useMemo, useState } from 'react';
 import { FiSearch as SearchIcon } from 'react-icons/fi';

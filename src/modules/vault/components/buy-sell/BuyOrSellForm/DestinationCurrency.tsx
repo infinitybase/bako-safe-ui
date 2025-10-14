@@ -1,12 +1,4 @@
-import {
-  Box,
-  Flex,
-  Input,
-  InputGroup,
-  Spinner,
-  Stack,
-  Text,
-} from '@chakra-ui/react';
+import { Box, Flex, Input, InputGroup, Loader, Stack, Text } from 'bako-ui';
 import { bn } from 'fuels';
 import { useMemo, useRef } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
@@ -90,7 +82,7 @@ export const DestinationCurrency = ({
           <Text color="section.500" fontSize="sm">
             You receive
           </Text>
-          {isLoadingQuotes && <Spinner size="xs" color="grey.200" />}
+          {isLoadingQuotes && <Loader size="xs" color="grey.200" />}
         </Flex>
 
         <Flex gap={2} alignItems="center">

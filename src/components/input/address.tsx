@@ -1,10 +1,4 @@
-import {
-  Field,
-  Input,
-  InputGroup,
-  InputProps,
-  Spinner,
-} from '@chakra-ui/react';
+import { Field, Input, InputGroup, InputProps, Loader } from 'bako-ui';
 import { isB256 } from 'fuels';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
@@ -131,7 +125,7 @@ const AddressInput = (props: AddressInputProps) => {
     <Field.Root>
       <InputGroup
         endAddonProps={
-          <Spinner
+          <Loader
             css={{ '--spinner-track-color': 'dark.100' }}
             size="md"
             color="brand.500"

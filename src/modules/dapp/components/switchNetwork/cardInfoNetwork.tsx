@@ -1,11 +1,4 @@
-import {
-  HStack,
-  Icon,
-  IconButton,
-  Text,
-  useClipboard,
-  VStack,
-} from '@chakra-ui/react';
+import { HStack, Icon, IconButton, Text, useClipboard, VStack } from 'bako-ui';
 import { IconType } from 'react-icons';
 
 type IconProps = {

@@ -4,7 +4,7 @@ import {
   IconButtonProps,
   IconProps,
   useClipboard,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 import { FiCheck as CheckIcon } from 'react-icons/fi';
 
 import { CopyTopMenuIcon } from '../icons/copy-top-menu';

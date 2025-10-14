@@ -6,7 +6,7 @@ import {
   Icon,
   Spacer,
   StackProps,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 import { TransactionType } from 'bakosafe';
 import { memo, useCallback, useMemo } from 'react';
 import { IoIosArrowForward } from 'react-icons/io';

@@ -9,7 +9,7 @@ import {
   Separator,
   Text,
   VStack,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback } from 'react';
 import { Controller, useFormContext, useWatch } from 'react-hook-form';

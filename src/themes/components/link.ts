@@ -1,12 +1,12 @@
-import { defineStyle, defineStyleConfig } from '@chakra-ui/react';
+// import { defineStyle, defineStyleConfig } from 'bako-ui';
 
-const baseStyle = defineStyle({
-  textDecoration: 'underline',
-  fontWeight: 'semibold',
-});
+// const baseStyle = defineStyle({
+//   textDecoration: 'underline',
+//   fontWeight: 'semibold',
+// });
 
-const Link = defineStyleConfig({
-  baseStyle,
-});
+// const Link = defineStyleConfig({
+//   baseStyle,
+// });
 
-export { Link };
+// export { Link };

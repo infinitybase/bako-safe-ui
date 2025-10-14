@@ -1,13 +1,4 @@
-import {
-  Box,
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  HStack,
-  Icon,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { Box, Breadcrumb, HStack, Icon, Text, VStack } from 'bako-ui';
 import { RiMenuUnfoldLine } from 'react-icons/ri';
 import { useNavigate } from 'react-router-dom';
 
@@ -74,8 +65,8 @@ const VaultSettingsPage = () => {
         ) : (
           <Breadcrumb.Root>
             <Breadcrumb.List>
-              <BreadcrumbItem>
-                <BreadcrumbLink
+              <Breadcrumb.Item>
+                <Breadcrumb.Link
                   fontSize="sm"
                   color="grey.200"
                   fontWeight="semibold"
@@ -83,16 +74,16 @@ const VaultSettingsPage = () => {
                 >
                   <Icon mr={2} as={HomeIcon} w={3} color="grey.200" />
                   Home
-                </BreadcrumbLink>
-              </BreadcrumbItem>
+                </Breadcrumb.Link>
+              </Breadcrumb.Item>
 
               <Breadcrumb.Separator />
 
               {/* Commented out code to temporarily disable workspaces. */}
 
               {/* {!userInfos.onSingleWorkspace && (
-              <BreadcrumbItem>
-                <BreadcrumbLink
+              <Breadcrumb.Item>
+                <Breadcrumb.Link
                   fontSize="sm"
                   color="grey.200"
                   fontWeight="semibold"
@@ -108,11 +99,11 @@ const VaultSettingsPage = () => {
                   isTruncated
                 >
                   {userInfos?.workspace?.name}
-                </BreadcrumbLink>
-              </BreadcrumbItem>
+                </Breadcrumb.Link>
+              </Breadcrum.bItem>
             )} */}
-              <BreadcrumbItem>
-                <BreadcrumbLink
+              <Breadcrumb.Item>
+                <Breadcrumb.Link
                   fontSize="sm"
                   color="grey.200"
                   fontWeight="semibold"
@@ -126,12 +117,12 @@ const VaultSettingsPage = () => {
                   }
                 >
                   Vaults
-                </BreadcrumbLink>
-              </BreadcrumbItem>
+                </Breadcrumb.Link>
+              </Breadcrumb.Item>
               <Breadcrumb.Separator />
 
-              <BreadcrumbItem>
-                <BreadcrumbLink
+              <Breadcrumb.Item>
+                <Breadcrumb.Link
                   fontSize="sm"
                   color="grey.200"
                   fontWeight="semibold"
@@ -147,20 +138,20 @@ const VaultSettingsPage = () => {
                   maxW={640}
                 >
                   {vault?.data?.name}
-                </BreadcrumbLink>
-              </BreadcrumbItem>
+                </Breadcrumb.Link>
+              </Breadcrumb.Item>
               <Breadcrumb.Separator />
 
-              <BreadcrumbItem>
-                <BreadcrumbLink
+              <Breadcrumb.Item>
+                <Breadcrumb.Link
                   fontSize="sm"
                   color="grey.200"
                   fontWeight="semibold"
                   href="#"
                 >
                   Settings
-                </BreadcrumbLink>
-              </BreadcrumbItem>
+                </Breadcrumb.Link>
+              </Breadcrumb.Item>
             </Breadcrumb.List>
           </Breadcrumb.Root>
         )}

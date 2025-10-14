@@ -8,7 +8,7 @@ import {
   Text,
   TextProps,
   VStack,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { UNKNOWN_ASSET } from '@/modules';

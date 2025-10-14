@@ -1,4 +1,4 @@
-import { Box, IconProps, InputGroupProps, Stack, Text } from '@chakra-ui/react';
+import { Box, IconProps, InputGroupProps, Stack, Text } from 'bako-ui';
 import {
   forwardRef,
   ForwardRefExoticComponent,

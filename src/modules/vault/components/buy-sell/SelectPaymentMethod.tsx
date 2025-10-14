@@ -1,4 +1,4 @@
-import { Field, InputGroup, Text } from '@chakra-ui/react';
+import { Field, InputGroup, Text } from 'bako-ui';
 import { useMemo } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { FiChevronRight as ChevronRightIcon } from 'react-icons/fi';

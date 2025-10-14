@@ -1,4 +1,4 @@
-import { Avatar as AvatarUI } from '@chakra-ui/react';
+import { Avatar as AvatarUI } from 'bako-ui';
 
 interface AvatarInfoProps {
   size: string;

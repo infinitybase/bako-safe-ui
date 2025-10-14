@@ -4,12 +4,12 @@ import {
   Image,
   Input,
   InputGroup,
+  Loader,
   Separator,
   Skeleton,
-  Spinner,
   Text,
   VStack,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
@@ -134,9 +134,9 @@ export function ModalSelectNetworkBridge({
 
   return (
     <Dialog.Modal
-      isOpen={isOpen}
-      onClose={handleClose}
-      closeOnOverlayClick={false}
+      open={isOpen}
+      onOpenChange={handleClose}
+      closeOnInteractOutside={false}
       size={'md'}
     >
       <Dialog.Body minH={650} maxH={650} flex={1}>
@@ -171,9 +171,8 @@ export function ModalSelectNetworkBridge({
                       handleSearch(e.target.value);
                     }}
                   />
-
-                  <Field.Label>Search Network</Field.Label>
                 </InputGroup>
+                <Field.Label>Search Network</Field.Label>
               </Field.Root>
             );
           }}
@@ -196,7 +195,7 @@ export function ModalSelectNetworkBridge({
           }}
         >
           {isLoadingOptions ? (
-            <Spinner color="grey.500" size="md" />
+            <Loader color="grey.500" size="md" />
           ) : filteredNetworks.length > 0 ? (
             filteredNetworks.map((net) => (
               /* eslint-disable react/prop-types */

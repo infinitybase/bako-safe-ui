@@ -1,3 +1,4 @@
+import { keyframes } from '@emotion/react';
 import {
   Badge,
   BadgeProps,
@@ -8,11 +9,10 @@ import {
   Input,
   InputGroup,
   InputProps,
-  Spinner,
+  Loader,
   Text,
   VStack,
-} from '@chakra-ui/react';
-import { keyframes } from '@emotion/react';
+} from 'bako-ui';
 import { useState } from 'react';
 
 import { AutocompleteOption, LineCloseIcon } from '@/components';
@@ -92,7 +92,7 @@ const AutocompleteBadge = ({
       case AutocompleteBadgeStatus.SEARCHING:
         return (
           <InputBadge colorPalette="grey">
-            {badgeLabel} <Spinner w={3} h={3} />
+            {badgeLabel} <Loader w={3} h={3} />
           </InputBadge>
         );
       case AutocompleteBadgeStatus.INFO:

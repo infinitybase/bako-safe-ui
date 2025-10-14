@@ -1,11 +1,4 @@
-import {
-  Badge,
-  HStack,
-  Spinner,
-  StackProps,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { Badge, HStack, Loader, StackProps, Text, VStack } from 'bako-ui';
 import { WitnessStatus } from 'bakosafe';
 
 import { TransactionState } from '@/modules/core';
@@ -59,7 +52,7 @@ const Status = ({
       {...rest}
     >
       {isCurrentTxLoading && (
-        <Spinner
+        <Loader
           css={{ '--spinner-track-color': 'dark.100' }}
           size="lg"
           color="brand.500"

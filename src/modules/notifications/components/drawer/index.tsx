@@ -7,7 +7,7 @@ import {
   Portal,
   Text,
   VStack,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 
 import { CustomSkeleton, LineCloseIcon } from '@/components';
 

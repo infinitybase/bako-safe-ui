@@ -1,12 +1,4 @@
-import {
-  Box,
-  Button,
-  Center,
-  Separator,
-  Heading,
-  Icon,
-  
-} from '@chakra-ui/react';
+import { Box, Button, Center, Separator, Heading, Icon } from 'bako-ui';
 
 import { VaultSuccessIcon } from '@/components';
 import { ITemplatePayload } from '@/modules/core';

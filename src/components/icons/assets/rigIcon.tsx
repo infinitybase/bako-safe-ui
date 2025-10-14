@@ -1,4 +1,4 @@
-import { createIcon } from '@chakra-ui/react';
+import { createIcon } from 'bako-ui';
 
 export const RigIcon = createIcon({
   displayName: 'RigIcon',

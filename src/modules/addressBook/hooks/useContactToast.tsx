@@ -1,4 +1,4 @@
-import { Icon } from '@chakra-ui/react';
+import { Icon } from 'bako-ui';
 import { IoIosCheckmarkCircle, IoIosWarning } from 'react-icons/io';
 import { RiCloseCircleFill } from 'react-icons/ri';
 

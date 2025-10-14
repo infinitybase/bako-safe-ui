@@ -1,4 +1,4 @@
-import { Text, VStack } from '@chakra-ui/react';
+import { Text, VStack } from 'bako-ui';
 
 import { ProgressButton } from '@/components/progressButton';
 
@@ -27,14 +27,14 @@ const WebAuthnAccountCreated = (props: WebAuthnAccountCreatedProps) => {
       <ProgressButton
         w="full"
         maxW={{ base: 292, md: 390 }}
-        variant="primary"
+        // variant="primary"
         fontSize="sm"
         aria-label={formState.label}
         onClick={formState.handleAction}
         _hover={{
-          opacity: formState.isDisabled && 0.8,
+          opacity: formState.isDisabled ? 0.8 : 1,
         }}
-        isDisabled={formState.isDisabled}
+        disabled={formState.isDisabled}
         progress={formState.actionProgress}
       >
         {formState.label}

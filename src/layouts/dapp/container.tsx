@@ -1,4 +1,4 @@
-import { Box, BoxProps, Flex } from '@chakra-ui/react';
+import { Box, BoxProps, Flex } from 'bako-ui';
 
 export const DAPP_CONTAINER_SIZES = {
   width: 500,

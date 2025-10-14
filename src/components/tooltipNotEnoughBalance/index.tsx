@@ -1,4 +1,4 @@
-import { Box, Separator, Heading, Text } from '@chakra-ui/react';
+import { Box, Separator, Heading, Text } from 'bako-ui';
 
 interface TooltipNotEnoughBalanceProps {
   asset?: 'ETH' | 'FUEL';

@@ -1,4 +1,4 @@
-import { HStack, Icon, Text, useClipboard, VStack } from '@chakra-ui/react';
+import { HStack, Icon, Text, useClipboard, VStack } from 'bako-ui';
 
 import { CheckIcon, CopyIcon } from '@/components/icons';
 import { AddressUtils } from '@/modules/core/utils/address';

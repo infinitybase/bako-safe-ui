@@ -7,7 +7,7 @@ import {
   Image,
   Text,
   VStack,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 
 import { LeftAndRightArrow } from '@/components';
 import { Asset } from '@/modules/core';
@@ -68,8 +68,7 @@ export function AmountBrigdeMobile({
               {'Fuel Ignition'}
             </Text>
             <IconButton
-              icon={<LeftAndRightArrow />}
-              variant="unstyled"
+              variant="plain"
               display="flex"
               alignItems="center"
               justifyContent="center"
@@ -80,7 +79,9 @@ export function AmountBrigdeMobile({
               px={0}
               aria-label="Bridge"
               onClick={() => selectNetworkDrawer.onOpen()}
-            />
+            >
+              <LeftAndRightArrow />
+            </IconButton>
           </HStack>
           <Text color="grey.425" fontSize={12} fontWeight={400}>
             Balance:{' '}
@@ -107,8 +108,8 @@ export function AmountBrigdeMobile({
         <Button
           maxH="28px"
           minW="48px"
-          isDisabled={!dataLimits.minAmount}
-          variant="secondary"
+          disabled={!dataLimits.minAmount}
+          variant="outline"
           borderRadius={6}
           padding={'4px 6px 4px 6px'}
           fontSize={10}
@@ -120,8 +121,8 @@ export function AmountBrigdeMobile({
         <Button
           maxH="28px"
           minW="48px"
-          isDisabled={!dataLimits.maxAmount}
-          variant="secondary"
+          disabled={!dataLimits.maxAmount}
+          variant="outline"
           onClick={handleMaxAmount}
           borderRadius={6}
           padding={'4px 6px 4px 6px'}

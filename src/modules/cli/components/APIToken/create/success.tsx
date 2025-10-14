@@ -1,11 +1,4 @@
-import {
-  Box,
-  HStack,
-  Icon,
-  Text,
-  useClipboard,
-  VStack,
-} from '@chakra-ui/react';
+import { Box, HStack, Icon, Text, useClipboard, VStack } from 'bako-ui';
 import { FiCheck as CheckIcon } from 'react-icons/fi';
 
 import { CopyIcon } from '@/components';

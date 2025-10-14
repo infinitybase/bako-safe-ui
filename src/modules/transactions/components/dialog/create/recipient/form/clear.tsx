@@ -1,4 +1,4 @@
-import { Icon, IconButton, IconButtonProps } from '@chakra-ui/react';
+import { Icon, IconButton, IconButtonProps } from 'bako-ui';
 import { FiX as CloseIcon } from 'react-icons/fi';
 
 interface ClearProps extends Omit<IconButtonProps, 'onClick' | 'aria-label'> {

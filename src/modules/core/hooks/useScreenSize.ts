@@ -1,4 +1,4 @@
-import { useMediaQuery } from '@chakra-ui/react';
+import { useMediaQuery } from 'bako-ui';
 
 const useScreenSize = () => {
   // Widths

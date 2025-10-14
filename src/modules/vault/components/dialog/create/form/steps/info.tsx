@@ -1,4 +1,4 @@
-import { Box, Field, Input, Textarea, VStack } from '@chakra-ui/react';
+import { Box, Field, Input, TextArea, VStack } from 'bako-ui';
 import { ChangeEvent, useEffect } from 'react';
 import { Controller } from 'react-hook-form';
 
@@ -68,12 +68,12 @@ const VaultInfosStep = ({ form, vaultName }: VaultInfoStepProps) => {
         />
         <Field.Root
           css={{
-            'textarea::placeholder': {
+            'Aa::placeholder': {
               color: 'grey.500',
             },
           }}
         >
-          <Textarea
+          <TextArea
             {...form.register('description')}
             id="vault_description"
             maxLength={199}

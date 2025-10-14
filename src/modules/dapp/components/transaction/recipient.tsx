@@ -1,8 +1,8 @@
-import { Avatar, Center, chakra, Separator, Text } from '@chakra-ui/react';
+import { Avatar, Center, Separator, Text } from 'bako-ui';
 import { AddressType, ChainName } from 'fuels';
 
 import { AddressCopy } from '@/components/addressCopy';
-import { Card } from '@/components/card';
+import { Card, CardProps } from '@/components/card';
 import { AddressUtils } from '@/modules/core';
 import { PredicateAndWorkspace } from '@/modules/vault';
 
@@ -16,17 +16,22 @@ interface RecipientProps {
   fullBorderRadius?: boolean;
 }
 
-export const RecipientCard = chakra(Card, {
-  base: {
-    py: 4,
-    w: 'full',
-    display: 'flex',
-    alignItems: 'center',
-    flexDirection: 'column',
-    minH: '100%',
-    alignSelf: 'stretch',
-  },
-});
+export const RecipientCard = (props: CardProps) => {
+  return (
+    <Card
+      css={{
+        py: 4,
+        w: 'full',
+        display: 'flex',
+        alignItems: 'center',
+        flexDirection: 'column',
+        minH: '100%',
+        alignSelf: 'stretch',
+      }}
+      {...props}
+    />
+  );
+};
 
 const DappTransactionRecipient = ({
   type,
@@ -56,15 +61,14 @@ const DappTransactionRecipient = ({
       </Text>
       <Separator borderColor="dark.100" mt={1} mb="10px" />
       <Center flexDirection="column" h={88}>
-        <Avatar.Root
+        <Avatar
           mb={2}
           color="white"
           bgColor="grey.950"
           shape="rounded"
           boxSize="40px"
-        >
-          <Avatar.Fallback name={title} />
-        </Avatar.Root>
+          name={title}
+        />
         <Text textAlign="center" mb={1} fontSize={14}>
           {title}
         </Text>

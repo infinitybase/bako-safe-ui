@@ -1,4 +1,4 @@
-import { Field } from '@chakra-ui/react';
+import { Field } from 'bako-ui';
 import React from 'react';
 
 import { AssetSelect as Select, AssetSelectProps } from '@/components';

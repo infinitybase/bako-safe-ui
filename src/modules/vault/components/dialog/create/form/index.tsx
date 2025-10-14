@@ -1,4 +1,4 @@
-import { Box, Tabs } from '@chakra-ui/react';
+import { Box, Tabs } from 'bako-ui';
 
 import { StepProgress } from '@/components';
 import { useFindTemplate } from '@/modules/template/hooks';

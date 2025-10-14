@@ -1,4 +1,4 @@
-import { Skeleton, SkeletonProps } from '@chakra-ui/react';
+import { Skeleton, SkeletonProps } from 'bako-ui';
 import { ReactNode } from 'react';
 
 interface CustomSkeletonProps extends SkeletonProps {

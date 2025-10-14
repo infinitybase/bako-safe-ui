@@ -1,7 +1,7 @@
 'use client';
 
-import type { IconButtonProps, SpanProps } from '@chakra-ui/react';
-import { ClientOnly, IconButton, Skeleton, Span } from '@chakra-ui/react';
+import type { IconButtonProps, SpanProps } from 'bako-ui';
+import { ClientOnly, IconButton, Skeleton, Span } from 'bako-ui';
 import type { ThemeProviderProps } from 'next-themes';
 import { ThemeProvider, useTheme } from 'next-themes';
 import * as React from 'react';

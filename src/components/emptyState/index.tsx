@@ -1,12 +1,4 @@
-import {
-  Box,
-  BoxProps,
-  Button,
-  Card,
-  Heading,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { Box, BoxProps, Button, Card, Heading, Text, VStack } from 'bako-ui';
 
 import { EmptyBoxOutline } from '@/components';
 
@@ -19,6 +11,7 @@ interface EmptyStateProps extends BoxProps {
   buttonActionTitle?: string;
 }
 
+// TODO: refactor to use EmptyState component from bako-ui
 const EmptyState = ({
   isDisabled,
   buttonAction,

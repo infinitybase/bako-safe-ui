@@ -1,4 +1,4 @@
-import { Button, DialogOpenChangeDetails, VStack } from '@chakra-ui/react';
+import { Button, DialogOpenChangeDetails, VStack } from 'bako-ui';
 
 import { useUpdateSettingsRequest } from '@/modules/settings/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';

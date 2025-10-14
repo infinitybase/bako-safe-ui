@@ -1,12 +1,4 @@
-import {
-  Center,
-  Flex,
-  HStack,
-  Icon,
-  StackProps,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { Center, Flex, HStack, Icon, StackProps, Text, VStack } from 'bako-ui';
 import { FaPlay } from 'react-icons/fa';
 
 import { Address, Handle } from '@/components';

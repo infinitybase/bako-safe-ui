@@ -1,7 +1,7 @@
-import { Box, VStack } from '@chakra-ui/react';
+import { Box, Image, VStack } from 'bako-ui';
 import React from 'react';
 
-import bakoSymbol from '@/assets/bakoSymbol.svg';
+import bakoSymbol from '@/assets/images/bako-safe.png';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface SigninContainerProps {
@@ -88,7 +88,7 @@ const SigninContainer = (props: SigninContainerProps) => {
           flex={1}
           maxW="35rem"
         >
-          <img
+          <Image
             src={bakoSymbol}
             alt=""
             style={{
@@ -96,8 +96,6 @@ const SigninContainer = (props: SigninContainerProps) => {
               top: '50%',
               left: '97.75%',
               transform: 'translate(-50%, -50%)',
-              height: '200%',
-              maxHeight: '45rem',
             }}
           />
         </Box>

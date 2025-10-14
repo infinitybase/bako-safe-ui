@@ -12,7 +12,7 @@ import {
   Separator,
   Text,
   VStack,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 import { useNavigate } from 'react-router-dom';
 
 import { Card, LineCloseIcon, UserAddIcon } from '@/components';
@@ -90,20 +90,17 @@ const MemberCard = ({ member, workspace, onEdit }: MemberCardProps) => {
         flexDir={{ base: 'column', sm: 'row' }}
       >
         <Box display="flex" alignItems="center" justifyContent="center" gap={3}>
-          <Avatar.Root
+          <Avatar
             boxSize="40px"
             fontSize="md"
             color="white"
             bg="grey.900"
             shape="rounded"
-          >
-            <Avatar.Fallback
-              name={
-                contactByAddress(member?.address)?.nickname ?? member?.address
-              }
-            />
-            <Avatar.Image src={avatar} />
-          </Avatar.Root>
+            name={
+              contactByAddress(member?.address)?.nickname ?? member?.address
+            }
+            src={avatar}
+          />
           <Box mr={1}>
             <Text fontWeight="semibold" color="grey.200">
               {contactNickname ?? ''}

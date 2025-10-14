@@ -1,16 +1,4 @@
-import {
-  Box,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbRoot,
-  BreadcrumbSeparator,
-  Button,
-  Flex,
-  HStack,
-  Icon,
-  Text,
-} from '@chakra-ui/react';
+import { Box, Breadcrumb, Button, Flex, HStack, Icon, Text } from 'bako-ui';
 import { IoChevronBack } from 'react-icons/io5';
 
 import { CustomSkeleton, HomeIcon } from '@/components';
@@ -52,10 +40,10 @@ const WorkspaceBalancePage = () => {
             Back home
           </Button>
 
-          <BreadcrumbRoot display={{ base: 'none', sm: 'initial' }} ml={8}>
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbLink
+          <Breadcrumb.Root display={{ base: 'none', sm: 'initial' }} ml={8}>
+            <Breadcrumb.List>
+              <Breadcrumb.Item>
+                <Breadcrumb.Link
                   fontSize="sm"
                   color="grey.200"
                   fontWeight="semibold"
@@ -63,14 +51,14 @@ const WorkspaceBalancePage = () => {
                 >
                   <Icon mr={2} as={HomeIcon} w={6} color="grey.200" />
                   Home
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
+                </Breadcrumb.Link>
+              </Breadcrumb.Item>
+              <Breadcrumb.Separator />
 
               {/* Commented out code to temporarily disable workspaces. */}
 
-              {/* <BreadcrumbItem>
-              <BreadcrumbLink
+              {/* <Breadcrumb.Item>
+              <Breadcrumb.Link
                 fontSize="sm"
                 color="grey.200"
                 fontWeight="semibold"
@@ -84,21 +72,21 @@ const WorkspaceBalancePage = () => {
                 }
               >
                 {limitCharacters(userInfos.workspace?.name ?? '', 10)}
-              </BreadcrumbLink>
-            </BreadcrumbItem> */}
+              </Breadcrumb.Link>
+            </Breadcrumb.Item> */}
 
-              <BreadcrumbItem>
-                <BreadcrumbLink
+              <Breadcrumb.Item>
+                <Breadcrumb.Link
                   fontSize="sm"
                   color="grey.200"
                   fontWeight="semibold"
                   href="#"
                 >
                   Balance
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </BreadcrumbRoot>
+                </Breadcrumb.Link>
+              </Breadcrumb.Item>
+            </Breadcrumb.List>
+          </Breadcrumb.Root>
         </HStack>
       </HStack>
 

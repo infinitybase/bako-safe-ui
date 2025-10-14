@@ -1,4 +1,4 @@
-import { Box, Steps, Text, useSteps } from '@chakra-ui/react';
+import { Box, Steps, Text, useSteps } from 'bako-ui';
 import { AddressUtils as BakoAddressUtils } from 'bakosafe';
 import { parseISO } from 'date-fns';
 import { enUS } from 'date-fns/locale';

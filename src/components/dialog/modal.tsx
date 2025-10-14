@@ -1,13 +1,20 @@
-import { Dialog, DialogRootProps, Portal } from '@chakra-ui/react';
+import {
+  Dialog,
+  DialogBackdropProps,
+  DialogBodyProps,
+  DialogContentProps,
+  DialogRootProps,
+  Portal,
+} from 'bako-ui';
 
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 export interface DialogModalProps extends Omit<DialogRootProps, 'children'> {
   contentPadding?: number;
-  modalContentProps?: Dialog.ContentProps;
-  modalBodyProps?: Dialog.BodyProps;
+  modalContentProps?: DialogContentProps;
+  modalBodyProps?: DialogBodyProps;
   xsBreakPointPy?: number;
-  overlayProps?: Dialog.BackdropProps;
+  overlayProps?: DialogBackdropProps;
   children?: React.ReactNode;
 }
 

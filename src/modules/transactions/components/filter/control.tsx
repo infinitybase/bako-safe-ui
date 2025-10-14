@@ -1,4 +1,4 @@
-import { HStack } from '@chakra-ui/react';
+import { HStack } from 'bako-ui';
 import React from 'react';
 
 import { TransactionFilterFieldProps } from './field';

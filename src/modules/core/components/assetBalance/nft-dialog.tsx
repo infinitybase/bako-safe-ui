@@ -1,12 +1,4 @@
-import {
-  Box,
-  CloseButton,
-  Flex,
-  Heading,
-  Stack,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { Box, CloseIcon, Flex, Heading, Stack, Text, VStack } from 'bako-ui';
 
 import { Dialog } from '@/components';
 import { BTCIcon } from '@/components/icons/btc-icon';
@@ -74,7 +66,7 @@ export const NftDialog = ({
           borderRadius="lg"
         >
           <NftImage src={imageSrc} />
-          <CloseButton
+          <CloseIcon
             onClick={onClose}
             display={{ base: 'block', md: 'none' }}
             ml="auto"
@@ -100,7 +92,7 @@ export const NftDialog = ({
               {nftsInfo.name || nftsInfo.metadata?.name || 'NFT Details'}
             </Heading>
 
-            <CloseButton
+            <CloseIcon
               onClick={onClose}
               display={{ base: 'none', md: 'block' }}
             />

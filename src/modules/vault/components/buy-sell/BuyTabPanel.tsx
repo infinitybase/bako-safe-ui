@@ -1,4 +1,4 @@
-import { Stack } from '@chakra-ui/react';
+import { Stack } from 'bako-ui';
 
 import { useCreateWidget, useListOnRampPurchaseLimits } from '../../hooks';
 import { BuyOrSellForm } from './BuyOrSellForm';

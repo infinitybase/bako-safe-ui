@@ -10,9 +10,9 @@ import {
   Stack,
   Text,
   VStack,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 import { QRCodeSVG } from 'qrcode.react';
-import { useMemo } from 'react';
+import { JSX, useMemo } from 'react';
 import { FiEye as ViewIcon, FiEyeOff as ViewOffIcon } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 
@@ -123,14 +123,13 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                     maxW={{ base: 'full', sm: '100%' }}
                   >
                     <Center>
-                      <Avatar.Root
+                      <Avatar
                         bg="grey.900"
                         color="white"
                         size={'lg'}
                         p={{ base: 10, sm: 10 }}
-                      >
-                        <Avatar.Fallback name={vault.data?.name} />
-                      </Avatar.Root>
+                        name={vault.data?.name}
+                      />
                     </Center>
                     <Box maxW="59%">
                       <Heading

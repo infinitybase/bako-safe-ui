@@ -7,7 +7,7 @@ import {
   Skeleton,
   Text,
   VStack,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 import { useMemo, useState } from 'react';
 
 import { AddressUtils } from '@/modules/core';
@@ -45,7 +45,7 @@ const SectionItem = ({
   return (
     <HStack w="full" align="center">
       {avatar ? (
-        <Avatar.Root
+        <Avatar
           borderRadius={6}
           bgColor="grey.950"
           color="grey.75"
@@ -54,9 +54,8 @@ const SectionItem = ({
           css={{
             '& div': { fontSize: '12px' },
           }}
-        >
-          <Avatar.Fallback name={title} />
-        </Avatar.Root>
+          name={title}
+        />
       ) : (
         <Box
           position="relative"

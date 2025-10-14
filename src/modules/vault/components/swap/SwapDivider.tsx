@@ -1,4 +1,4 @@
-import { Separator, Flex, IconButton } from '@chakra-ui/react';
+import { Separator, Flex, IconButton } from 'bako-ui';
 
 import { SwapIcon } from '@/components';
 

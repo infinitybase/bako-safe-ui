@@ -1,4 +1,4 @@
-import { Flex, Icon, Image, Skeleton, Text, VStack } from '@chakra-ui/react';
+import { Flex, Icon, Image, Skeleton, Text, VStack } from 'bako-ui';
 
 import { LeftAndRightArrow } from '@/components';
 

@@ -1,14 +1,13 @@
 import {
   Avatar,
   Badge,
-  chakra,
   Flex,
   HStack,
   Icon,
   Skeleton,
   Text,
   VStack,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 import { FiAlertCircle as WarningTwoIcon } from 'react-icons/fi';
 
 import { AddAddressBook, AddressWithCopyBtn, Handle } from '@/components';
@@ -35,15 +34,6 @@ interface CardMemberProps {
   isGrid?: boolean;
   hasAdd?: boolean;
 }
-
-const SignerCard = chakra(Card, {
-  base: {
-    w: 'full',
-    p: 3,
-    bg: 'dark.600',
-    flex: 1,
-  },
-});
 
 const CardMemberBagde = () => {
   return (
@@ -77,7 +67,13 @@ const CardMember = ({
       : member.address;
 
   return (
-    <SignerCard
+    <Card
+      css={{
+        w: 'full',
+        p: 3,
+        bg: 'dark.600',
+        flex: 1,
+      }}
       w="full"
       minW={{ base: 'unset', sm: 320 }}
       bg="gradients.transaction-card"
@@ -92,15 +88,14 @@ const CardMember = ({
           loading={isLoadingAvatar}
           boxSize={{ base: '32px', sm: '40px' }}
         >
-          <Avatar.Root
+          <Avatar
             borderRadius={8}
             boxSize="full"
             border={avatar ? 'none' : '1px solid'}
             shape={avatar ? 'full' : 'rounded'}
             borderColor="grey.75"
-          >
-            <Avatar.Image src={avatar || member?.avatar} />
-          </Avatar.Root>
+            src={avatar || member?.avatar}
+          />
         </Skeleton>
 
         <HStack
@@ -195,7 +190,7 @@ const CardMember = ({
           </VStack>
         </HStack>
       </Flex>
-    </SignerCard>
+    </Card>
   );
 };
 

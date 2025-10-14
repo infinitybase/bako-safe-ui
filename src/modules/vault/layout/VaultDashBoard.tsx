@@ -1,4 +1,4 @@
-import { Flex } from '@chakra-ui/react';
+import { Flex } from 'bako-ui';
 import { Outlet } from 'react-router-dom';
 
 import { Container } from '@/layouts/dashboard/container';

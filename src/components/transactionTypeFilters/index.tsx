@@ -1,4 +1,4 @@
-import { Button, HStack, StackProps } from '@chakra-ui/react';
+import { Button, HStack, StackProps } from 'bako-ui';
 import { TransactionType } from 'bakosafe';
 
 import { shakeAnimationY } from '@/modules';

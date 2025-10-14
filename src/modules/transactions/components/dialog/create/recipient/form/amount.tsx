@@ -1,4 +1,4 @@
-import { Box, Button, Field, HStack, Text } from '@chakra-ui/react';
+import { Box, Button, Field, HStack, Text } from 'bako-ui';
 import { memo, useMemo } from 'react';
 import { FieldError, useFormContext } from 'react-hook-form';
 
@@ -8,7 +8,7 @@ import Clear from './clear';
 
 interface RecipientFormAmountProps {
   index: number;
-  value: string;
+  value: string | undefined;
   onChange: (value: string) => void;
   isNFT: boolean;
   getAssetPrice: (assetId: string) => number;

@@ -1,13 +1,4 @@
-import {
-  Badge,
-  Box,
-  BoxProps,
-  chakra,
-  Grid,
-  HStack,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { Badge, Box, BoxProps, Grid, HStack, Text, VStack } from 'bako-ui';
 import { useNavigate } from 'react-router-dom';
 
 import { Card, CustomSkeleton } from '@/components';
@@ -22,16 +13,6 @@ import { CardMember } from './CardMember';
 interface SignersListProps extends SignersDetailsProps {
   isGrid?: boolean;
 }
-
-const SignerCard = chakra(Card, {
-  base: {
-    w: 'full',
-    h: 'full',
-    p: 3,
-    bgColor: 'dark.300',
-    flex: 1,
-  },
-});
 
 const SignersList = ({ vault, isGrid }: SignersListProps) => {
   const navigate = useNavigate();
@@ -73,7 +54,14 @@ const SignersList = ({ vault, isGrid }: SignersListProps) => {
         if (isBig > 0 && index == maxItems) {
           return (
             <CustomSkeleton loading={vault.isLoading && isLoading} key={index}>
-              <SignerCard
+              <Card
+                css={{
+                  w: 'full',
+                  h: 'full',
+                  p: 3,
+                  bgColor: 'dark.300',
+                  flex: 1,
+                }}
                 borderStyle="dashed"
                 bg="gradients.transaction-card"
                 borderColor="gradients.transaction-border"
@@ -102,7 +90,7 @@ const SignersList = ({ vault, isGrid }: SignersListProps) => {
                   </Text>
                   <Text fontSize={{ base: 'sm', sm: 'md' }}>View all</Text>
                 </VStack>
-              </SignerCard>
+              </Card>
             </CustomSkeleton>
           );
         }

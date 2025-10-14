@@ -3,13 +3,11 @@ import {
   Button,
   Separator,
   Field,
-  
   Heading,
   HStack,
   Icon,
-  
   VStack,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 import { Address, isB256 } from 'fuels';
 import { useEffect, useRef, useState } from 'react';
 import {

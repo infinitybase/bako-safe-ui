@@ -1,4 +1,4 @@
-import { Stack, Text } from '@chakra-ui/react';
+import { Stack, Text } from 'bako-ui';
 import { FiInfo as InfoIcon } from 'react-icons/fi';
 
 import { CardRoot } from './CardRoot';

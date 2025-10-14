@@ -1,4 +1,4 @@
-import { Drawer as ChakraDrawer, Portal } from '@chakra-ui/react';
+import { Drawer as ChakraDrawer, Portal } from 'bako-ui';
 
 import { LineCloseIcon } from '@/components';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';

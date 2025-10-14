@@ -1,8 +1,8 @@
-import { ListRoot, ListRootProps } from '@chakra-ui/react';
+import { List, ListRootProps } from 'bako-ui';
 
 export const Root = ({ children, ...props }: ListRootProps) => {
   return (
-    <ListRoot
+    <List.Root
       maxH={{
         base: 'full',
         sm: '300px',
@@ -28,6 +28,6 @@ export const Root = ({ children, ...props }: ListRootProps) => {
       {...props}
     >
       {children}
-    </ListRoot>
+    </List.Root>
   );
 };

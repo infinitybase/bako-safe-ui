@@ -1,11 +1,4 @@
-import {
-  Box,
-  BoxProps,
-  Button,
-  ButtonProps,
-  HStack,
-  Separator,
-} from '@chakra-ui/react';
+import { Box, BoxProps, Button, ButtonProps, HStack, Separator } from 'bako-ui';
 
 export interface DialogActionsProps extends BoxProps {
   hideDivider?: boolean;

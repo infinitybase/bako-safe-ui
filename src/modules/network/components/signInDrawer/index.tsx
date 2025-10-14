@@ -7,7 +7,7 @@ import {
   Icon,
   Text,
   VStack,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 
 import { UnknownIcon } from '@/components';
 import { BakoIcon } from '@/components/icons/assets/bakoIcon';

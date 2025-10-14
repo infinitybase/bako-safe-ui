@@ -1,4 +1,4 @@
-import { HStack, Text, TextProps } from '@chakra-ui/react';
+import { HStack, Text, TextProps } from 'bako-ui';
 import { useMemo } from 'react';
 
 import { useScreenSize } from '@/modules/core/hooks';

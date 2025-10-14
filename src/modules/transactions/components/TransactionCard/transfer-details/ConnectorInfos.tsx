@@ -1,12 +1,4 @@
-import {
-  Avatar,
-  Card,
-  HStack,
-  Icon,
-  Separator,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { Avatar, Card, HStack, Icon, Separator, Text, VStack } from 'bako-ui';
 
 import { MinimalAlertIcon } from '@/components';
 import { TransactionWithVault } from '@/modules/transactions/services';

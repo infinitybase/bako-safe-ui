@@ -1,11 +1,11 @@
-import { Button, Drawer, Heading, Text } from '@chakra-ui/react';
+import { Button, Drawer, DrawerRootProps, Heading, Text } from 'bako-ui';
 
-interface BalanceHelperDrawerProps extends Omit<Drawer.RootProps, 'children'> {}
+interface BalanceHelperDrawerProps extends Omit<DrawerRootProps, 'children'> {}
 
 const BalanceHelperDrawer = (props: BalanceHelperDrawerProps) => {
-  const { isOpen, onClose } = props;
+  const { open, onOpenChange } = props;
   return (
-    <Drawer.Root onClose={onClose} isOpen={isOpen} placement="bottom">
+    <Drawer.Root onOpenChange={onOpenChange} open={open} placement="bottom">
       <Drawer.Backdrop bg="overlay" backdropFilter="auto" />
       <Drawer.Content pt={2} bg="dark.950">
         <Heading
@@ -33,18 +33,19 @@ const BalanceHelperDrawer = (props: BalanceHelperDrawerProps) => {
           add more ETH to your vault.
         </Text>
 
-        <Button
-          borderColor="grey.75"
-          w="full"
-          mt={6}
-          variant="outline"
-          color="grey.75"
-          fontSize="sm"
-          fontWeight={500}
-          onClick={onClose}
-        >
-          Close
-        </Button>
+        <Drawer.ActionTrigger asChild>
+          <Button
+            borderColor="grey.75"
+            w="full"
+            mt={6}
+            variant="outline"
+            color="grey.75"
+            fontSize="sm"
+            fontWeight={500}
+          >
+            Close
+          </Button>
+        </Drawer.ActionTrigger>
       </Drawer.Content>
     </Drawer.Root>
   );

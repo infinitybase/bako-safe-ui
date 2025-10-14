@@ -1,4 +1,4 @@
-import { Button, Card, HStack, Text, VStack } from '@chakra-ui/react';
+import { Button, Card, HStack, Text, VStack } from 'bako-ui';
 import { motion } from 'framer-motion';
 
 import { Asset } from '@/modules/core';

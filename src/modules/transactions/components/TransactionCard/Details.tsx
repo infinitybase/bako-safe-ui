@@ -1,12 +1,4 @@
-import {
-  Box,
-  Button,
-  Flex,
-  HStack,
-  Stack,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { Box, Button, Flex, HStack, Stack, Text, VStack } from 'bako-ui';
 import { TransactionStatus, TransactionType } from 'bakosafe';
 import { parseISO } from 'date-fns';
 import { enUS } from 'date-fns/locale';

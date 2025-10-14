@@ -1,11 +1,4 @@
-import {
-  Box,
-  BoxProps,
-  Field,
-  Heading,
-  Input,
-  Separator,
-} from '@chakra-ui/react';
+import { Box, BoxProps, Field, Heading, Input, Separator } from 'bako-ui';
 import { useQuery } from '@tanstack/react-query';
 import { bn } from 'fuels';
 import { useMemo } from 'react';

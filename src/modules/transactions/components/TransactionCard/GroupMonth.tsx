@@ -1,4 +1,4 @@
-import { HStack, Separator, StackProps, Text } from '@chakra-ui/react';
+import { HStack, Separator, StackProps, Text } from 'bako-ui';
 import { memo } from 'react';
 
 interface GroupMonthProps extends StackProps {

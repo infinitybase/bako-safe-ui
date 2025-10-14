@@ -1,4 +1,4 @@
-import { VStack } from '@chakra-ui/react';
+import { VStack } from 'bako-ui';
 import { memo, useCallback, useMemo } from 'react';
 import { Controller, useFormContext, useWatch } from 'react-hook-form';
 

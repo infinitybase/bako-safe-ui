@@ -1,4 +1,4 @@
-import { Flex, Icon, Spinner, Text } from '@chakra-ui/react';
+import { Flex, Icon, Loader, Text } from 'bako-ui';
 
 import { Item, ItemProps } from './Item';
 
@@ -8,7 +8,7 @@ interface LoadingProps extends Omit<ItemProps, 'children'> {
 }
 
 export const Loading = ({
-  LoadingIcon = Spinner,
+  LoadingIcon = Loader,
   loadingLabel = 'Loading...',
   ...props
 }: LoadingProps) => {

@@ -1,4 +1,4 @@
-import { Box, Icon } from '@chakra-ui/react';
+import { Box, Icon } from 'bako-ui';
 
 import { FuelIcon } from '@/components';
 

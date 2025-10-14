@@ -1,12 +1,4 @@
-import {
-  Button,
-  Card,
-  HStack,
-  Icon,
-  Separator,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { Button, Card, HStack, Icon, Separator, Text, VStack } from 'bako-ui';
 
 import { SwapIcon } from '@/components';
 import { AddressUtils } from '@/modules/core';

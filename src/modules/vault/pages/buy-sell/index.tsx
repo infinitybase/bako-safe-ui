@@ -1,16 +1,4 @@
-import {
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbRoot,
-  BreadcrumbSeparator,
-  Flex,
-  HStack,
-  Icon,
-  Tabs,
-  Text,
-  Tooltip,
-} from '@chakra-ui/react';
+import { Breadcrumb, Flex, HStack, Icon, Tabs, Text, Tooltip } from 'bako-ui';
 import { RiMenuUnfoldLine } from 'react-icons/ri';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
@@ -58,10 +46,10 @@ export const VaultBuySellPage = () => {
             </Text>
           </HStack>
         ) : (
-          <BreadcrumbRoot>
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbLink
+          <Breadcrumb.Root>
+            <Breadcrumb.List>
+              <Breadcrumb.Item>
+                <Breadcrumb.Link
                   fontSize="sm"
                   color="grey.200"
                   fontWeight="semibold"
@@ -69,23 +57,23 @@ export const VaultBuySellPage = () => {
                 >
                   <Icon mr={2} as={HomeIcon} w={3} color="grey.200" />
                   Home
-                </BreadcrumbLink>
-              </BreadcrumbItem>
+                </Breadcrumb.Link>
+              </Breadcrumb.Item>
 
-              <BreadcrumbItem>
-                <BreadcrumbLink
+              <Breadcrumb.Item>
+                <Breadcrumb.Link
                   fontSize="sm"
                   color="grey.200"
                   fontWeight="semibold"
                   href="#"
                 >
                   Vaults
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
+                </Breadcrumb.Link>
+              </Breadcrumb.Item>
+              <Breadcrumb.Separator />
 
-              <BreadcrumbItem>
-                <BreadcrumbLink
+              <Breadcrumb.Item>
+                <Breadcrumb.Link
                   fontSize="sm"
                   color="grey.200"
                   fontWeight="semibold"
@@ -101,21 +89,21 @@ export const VaultBuySellPage = () => {
                   maxW={640}
                 >
                   {vault.data?.name}
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbLink
+                </Breadcrumb.Link>
+              </Breadcrumb.Item>
+              <Breadcrumb.Separator />
+              <Breadcrumb.Item>
+                <Breadcrumb.Link
                   fontSize="sm"
                   color="grey.200"
                   fontWeight="semibold"
                   href="#"
                 >
                   Buy & Sell
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </BreadcrumbRoot>
+                </Breadcrumb.Link>
+              </Breadcrumb.Item>
+            </Breadcrumb.List>
+          </Breadcrumb.Root>
         )}
       </HStack>
 
@@ -131,12 +119,7 @@ export const VaultBuySellPage = () => {
               Buy
             </Tabs.Trigger>
             <Tabs.Trigger value="sell" w="full" disabled>
-              <Tooltip.Root>
-                <Tooltip.Trigger asChild>
-                  <span>Sell</span>
-                </Tooltip.Trigger>
-                <Tooltip.Content>Coming soon</Tooltip.Content>
-              </Tooltip.Root>
+              <Tooltip content="Coming soon">Sell</Tooltip>
             </Tabs.Trigger>
           </Tabs.List>
           <Tabs.Content value="buy">

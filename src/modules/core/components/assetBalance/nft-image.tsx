@@ -1,4 +1,4 @@
-import { Box, Center, Image, Spinner } from '@chakra-ui/react';
+import { Box, Center, Image, Loader } from 'bako-ui';
 import { useEffect, useRef, useState } from 'react';
 
 import { CustomSkeleton } from '@/components';
@@ -78,7 +78,7 @@ export const NftImage = ({
           left={0}
           zIndex={1}
         >
-          <Spinner
+          <Loader
             borderWidth="3px"
             animationDelay="0.5s"
             color="grey.400"

@@ -2,7 +2,7 @@ import {
   Box,
   Container as ContainerChakra,
   ContainerProps as ContainerChakraProps,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 
 export interface ContainerProps extends ContainerChakraProps {}
 

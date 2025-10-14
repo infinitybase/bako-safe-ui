@@ -1,4 +1,4 @@
-import { Text, TextProps } from '@chakra-ui/react';
+import { Text, TextProps } from 'bako-ui';
 import { AddressUtils as BakoAddressUtils } from 'bakosafe';
 import { Address as FuelsAddress } from 'fuels';
 
@@ -55,7 +55,7 @@ const Address = (props: AddressProps) => {
     <Text
       color={isDetailDialog ? 'white' : 'grey.75'}
       textOverflow="ellipsis"
-      isTruncated
+      truncate
       textAlign={isExtraSmall ? 'start' : 'end'}
       fontSize={isLowerThanFourHundredAndThirty ? 'xs' : 'sm'}
       maxW={

@@ -1,11 +1,9 @@
-import { Box, BoxProps } from '@chakra-ui/react';
+import { Box, BoxProps } from 'bako-ui';
 
 export interface CardProps extends BoxProps {}
 
 const Card = (props: CardProps) => {
   const { children, ...rest } = props;
-
-  // const variantStyle = variants[type || 'default'];
 
   return (
     <Box
@@ -14,7 +12,6 @@ const Card = (props: CardProps) => {
       bg="dark.300"
       borderRadius={10}
       padding={6}
-      // css={variantStyle}
       {...rest}
     >
       {children}

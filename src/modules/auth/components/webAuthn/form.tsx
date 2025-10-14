@@ -1,4 +1,4 @@
-import { Field,  Text, VStack } from '@chakra-ui/react';
+import { Field, Text, VStack } from 'bako-ui';
 import { Controller } from 'react-hook-form';
 
 import { AutocompleteBadge } from '@/components';

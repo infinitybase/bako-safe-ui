@@ -1,4 +1,4 @@
-import { DialogRootProps } from '@chakra-ui/react';
+import { DialogRootProps } from 'bako-ui';
 import { useCallback } from 'react';
 
 import { queryClient } from '@/config';

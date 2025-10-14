@@ -1,4 +1,6 @@
-import { Drawer, Separator, useDisclosure } from '@chakra-ui/react';
+import { Drawer, Separator } from 'bako-ui';
+
+import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
 
 import { AddressActionsProps } from './AddressActions';
 import { AddressActionsButton } from './Button';
@@ -7,15 +9,15 @@ import { AddToAddressBook, CopyAddress, GoToBakoId } from './options';
 const AddressActionsDrawer = (props: AddressActionsProps) => {
   const { address, handle, hasContact } = props;
 
-  const { open, onClose, onOpen, setOpen } = useDisclosure();
+  const { isOpen, onClose, onOpen, onOpenChange } = useDisclosure();
 
   return (
     <>
       <AddressActionsButton onClick={onOpen} />
 
       <Drawer.Root
-        open={open}
-        onOpenChange={(e) => setOpen(e.open)}
+        open={isOpen}
+        onOpenChange={onOpenChange}
         size="sm"
         // variant="solid-dark"
         placement="bottom"

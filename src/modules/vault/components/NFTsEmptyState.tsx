@@ -1,4 +1,4 @@
-import { Button, Card, Image, Stack, Text, VStack } from '@chakra-ui/react';
+import { Button, Card, Image, Stack, Text, VStack } from 'bako-ui';
 import { Link } from 'react-router-dom';
 
 import Empty from '@/assets/nft-empty.png';

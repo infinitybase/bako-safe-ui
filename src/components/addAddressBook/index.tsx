@@ -7,7 +7,7 @@ import {
   StackProps,
   Text,
   TextProps,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 
 import { CreateContactDialog } from '@/modules/addressBook/components/dialog';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
@@ -52,18 +52,19 @@ const AddAddressBook = ({
         <HStack gap={1} {...rest}>
           <IconButton
             aria-label="Add to Address Book"
-            variant="icon"
+            variant="plain"
             bgColor="none"
             fontSize="2xs"
             size="2xs"
-            icon={<Icon as={PlusIcon} color="grey.75" {...iconProps} />}
             onClick={() => {
               handleOpenDialog?.({
                 address,
               });
             }}
             {...iconButtonProps}
-          />
+          >
+            <Icon as={PlusIcon} color="grey.75" {...iconProps} />
+          </IconButton>
           <Text color="grey.75" fontSize="xs" {...textProps}>
             Add to Address Book
           </Text>

@@ -1,4 +1,4 @@
-import { Avatar, Card, HStack, Text, VStack } from '@chakra-ui/react';
+import { Avatar, Card, HStack, Text, VStack } from 'bako-ui';
 import { useMemo } from 'react';
 
 import { AddressWithCopyBtn } from '@/components';
@@ -20,18 +20,17 @@ export function VaultInfoBridgeMobile() {
         Vault
       </Text>
       <HStack w="full" align="center">
-        <Avatar.Root
+        <Avatar
           borderRadius={6}
           bgColor="grey.950"
           color="grey.75"
           boxShadow="0px 1.5px 1.5px 0px rgba(0, 0, 0, 0.4);"
           boxSize="30px"
-          sx={{
+          css={{
             '& div': { fontSize: '12px' },
           }}
-        >
-          <Avatar.Fallback name={vault?.data?.name} />
-        </Avatar.Root>
+          name={vault?.data?.name}
+        />
 
         <VStack w="full" align="start" gap={0}>
           <Text color="grey.50" fontSize={12} fontWeight={500}>
@@ -47,8 +46,8 @@ export function VaultInfoBridgeMobile() {
               textAlign: 'start',
               maxW: 'full',
               wordBreak: 'break-all',
-              noOfLines: 1,
-              isTruncated: false,
+              lineClamp: 1,
+              truncate: false,
               fontSize: 'xs',
             }}
             justifyContent="start"

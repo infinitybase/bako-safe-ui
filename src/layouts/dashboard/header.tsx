@@ -1,3 +1,4 @@
+import { useFuel } from '@fuels/react';
 import {
   Avatar,
   Box,
@@ -5,14 +6,12 @@ import {
   HStack,
   Icon,
   Image,
+  Loader,
   Popover,
   Skeleton,
-  Spacer,
-  Spinner,
   Text,
   VStack,
-} from '@chakra-ui/react';
-import { useFuel } from '@fuels/react';
+} from 'bako-ui';
 import { AddressUtils as BakoAddressUtils } from 'bakosafe';
 import { Address, Network } from 'fuels';
 import React, { useEffect, useState } from 'react';
@@ -201,7 +200,7 @@ const UserBox = () => {
               mr={6}
             >
               {selectNetworkRequest.isPending ? (
-                <Spinner w={4} h={4} color="brand.500" />
+                <Loader w={4} h={4} color="brand.500" />
               ) : (
                 <>
                   <HStack>
@@ -347,14 +346,13 @@ const UserBox = () => {
                 boxSize={isMobile ? '32px' : '40px'}
                 loading={isLoadingAvatar}
               >
-                <Avatar.Root
+                <Avatar
                   boxSize="full"
                   shape={avatar ? 'full' : 'rounded'}
                   border={avatar ? 'none' : '1px solid #CFCCC9'}
-                >
-                  <Avatar.Fallback name={authDetails.userInfos.address} />
-                  <Avatar.Image src={avatar || authDetails.userInfos?.avatar} />
-                </Avatar.Root>
+                  src={avatar || authDetails.userInfos?.avatar}
+                  name={authDetails.userInfos?.address}
+                />
               </Skeleton>
 
               {!isMobile && (
@@ -605,9 +603,8 @@ const UserBox = () => {
                   <Text color="grey.75" fontWeight={500}>
                     Disconnect
                   </Text>
-                  <Spacer />
                   {isLoggingOut && (
-                    <Spinner
+                    <Loader
                       borderWidth="3px"
                       animationDelay="0.5s"
                       css={{ '--spinner-track-color': 'gray.200' }}

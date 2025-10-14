@@ -1,4 +1,4 @@
-import { Box } from '@chakra-ui/react';
+import { Box } from 'bako-ui';
 import { useState } from 'react';
 
 import { Dialog } from '@/components/dialog';

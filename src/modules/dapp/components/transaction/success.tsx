@@ -1,4 +1,4 @@
-import { Button, Flex, Icon, Text, VStack } from '@chakra-ui/react';
+import { Button, Flex, Icon, Text, VStack } from 'bako-ui';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { DoneIcon } from '@/components/icons/done-icon';

@@ -1,4 +1,4 @@
-import { Flex, Image, Text } from '@chakra-ui/react';
+import { Flex, Image, Text } from 'bako-ui';
 import { PoolId } from 'mira-dex-ts';
 import { memo } from 'react';
 

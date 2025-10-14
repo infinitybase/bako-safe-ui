@@ -1,4 +1,4 @@
-import { Center, Text } from '@chakra-ui/react';
+import { Center, Text } from 'bako-ui';
 import { ReactNode } from 'react';
 
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';

@@ -1,4 +1,4 @@
-import { Text, VStack } from '@chakra-ui/react';
+import { Text, VStack } from 'bako-ui';
 import { Fragment, MutableRefObject, useMemo } from 'react';
 import { To, useNavigate } from 'react-router-dom';
 

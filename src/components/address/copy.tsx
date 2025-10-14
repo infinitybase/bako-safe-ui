@@ -1,4 +1,4 @@
-import { Flex, FlexProps, TextProps } from '@chakra-ui/react';
+import { Flex, FlexProps, TextProps } from 'bako-ui';
 import { AddressUtils as BakoAddressUtils } from 'bakosafe';
 import { Address as FuelsAddress, isB256 } from 'fuels';
 import { useMemo } from 'react';

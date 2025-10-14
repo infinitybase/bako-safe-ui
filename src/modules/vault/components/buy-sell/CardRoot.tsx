@@ -1,9 +1,9 @@
-import { Card, CardBody, CardBodyProps } from '@chakra-ui/react';
+import { Card, CardBodyProps } from 'bako-ui';
 
 export const CardRoot = ({ children, ...rest }: CardBodyProps) => {
   return (
     <Card.Root variant="outline">
-      <CardBody
+      <Card.Body
         gap={2}
         display="flex"
         flexDirection="column"
@@ -11,7 +11,7 @@ export const CardRoot = ({ children, ...rest }: CardBodyProps) => {
         {...rest}
       >
         {children}
-      </CardBody>
+      </Card.Body>
     </Card.Root>
   );
 };

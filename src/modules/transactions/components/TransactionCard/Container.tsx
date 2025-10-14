@@ -1,9 +1,4 @@
-import {
-  Accordion,
-  AccordionItem,
-  CardRootProps,
-  VStack,
-} from '@chakra-ui/react';
+import { Accordion, CardRootProps, VStack } from 'bako-ui';
 import { memo, ReactNode, useMemo } from 'react';
 
 import { TransactionState } from '@/modules/core';
@@ -72,7 +67,7 @@ const Container = memo(
           />
         )}
 
-        <AccordionItem
+        <Accordion.Item
           pl={0}
           pr={{ base: 2, sm: 4, md: isInTheVaultPage ? 4 : 0, lg: 4 }}
           py={0}
@@ -111,7 +106,7 @@ const Container = memo(
               <Accordion.ItemBody>{details}</Accordion.ItemBody>
             </Accordion.ItemContent>
           </VStack>
-        </AccordionItem>
+        </Accordion.Item>
       </>
     );
   },

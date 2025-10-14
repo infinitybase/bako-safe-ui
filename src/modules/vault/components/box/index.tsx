@@ -10,7 +10,7 @@ import {
   SkeletonText,
   Text,
   VStack,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 import { useMemo } from 'react';
 import { FiPlusSquare } from 'react-icons/fi';
 
@@ -116,15 +116,14 @@ const VaultBox = (props: VaultBoxPropx) => {
       {/* Vault Avatar and Address */}
       <HStack width="100%" alignItems="center" gap={4} my={6}>
         <CustomSkeleton w="min-content" loading={isLoading}>
-          <Avatar.Root
+          <Avatar
             shape="rounded"
             bgColor="dark.150"
             color="grey.75"
             boxShadow="0px 3.5px 3.5px 0px rgba(0, 0, 0, 0.4);"
             boxSize="56px"
-          >
-            <Avatar.Fallback name={name} />
-          </Avatar.Root>
+            name={name}
+          />
         </CustomSkeleton>
         <VStack
           alignItems="start"

@@ -1,4 +1,4 @@
-import { Box, BoxProps, Icon, Separator, VStack } from '@chakra-ui/react';
+import { Box, BoxProps, Icon, Separator, VStack } from 'bako-ui';
 import AutoPlay from 'embla-carousel-autoplay';
 import useEmblaCarousel from 'embla-carousel-react';
 import { useCallback } from 'react';

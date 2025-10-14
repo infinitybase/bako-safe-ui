@@ -1,4 +1,4 @@
-import { Drawer, HStack, Icon, Text, VStack } from '@chakra-ui/react';
+import { Drawer, HStack, Icon, Text, VStack } from 'bako-ui';
 
 import { FuelIcon, RigIcon } from '@/components';
 

@@ -1,4 +1,4 @@
-import { Box, Button, Spacer, Text } from '@chakra-ui/react';
+import { Box, Button, Spacer, Text } from 'bako-ui';
 import { useEffect, useState } from 'react';
 import { MdKeyboardArrowRight } from 'react-icons/md';
 

@@ -1,4 +1,4 @@
-import { Box, BoxProps } from '@chakra-ui/react';
+import { Box, BoxProps } from 'bako-ui';
 import { memo, ReactNode } from 'react';
 
 interface AutocompleteRightElementProps extends BoxProps {

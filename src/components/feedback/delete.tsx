@@ -1,15 +1,15 @@
 import {
   Box,
   Button,
-  Center,
-  Separator,
+  Flex,
   Heading,
   HStack,
   Icon,
   Link,
+  Separator,
   Text,
   VStack,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 
 import { RemoveUser } from '../icons/remove-user';
 
@@ -33,7 +33,7 @@ const FeedbackDelete = ({
   onSecondaryAction,
 }: DeleteStepProps) => {
   return (
-    <Center
+    <Flex
       flexDirection="column"
       mb={5}
       pt={{ xs: 40, sm: 'unset' }}
@@ -56,7 +56,7 @@ const FeedbackDelete = ({
           {description ? (
             description
           ) : (
-            <Text variant="description">
+            <Text>
               Are you sure you want to{' '}
               <Text textDecor="none" as={Link} color="white">
                 remove this member
@@ -87,9 +87,9 @@ const FeedbackDelete = ({
         >
           <Button
             w="50%"
-            border="1px solid white"
-            bgColor="transparent"
-            variant="secondary"
+            // border="1px solid white"
+            // bgColor="transparent"
+            variant="outline"
             onClick={onSecondaryAction}
             _hover={{
               opacity: 0.8,
@@ -101,7 +101,6 @@ const FeedbackDelete = ({
             w="50%"
             border="none"
             bgColor="error.500"
-            variant="primary"
             onClick={onPrimaryAction}
             _hover={{
               opacity: 0.8,
@@ -111,7 +110,7 @@ const FeedbackDelete = ({
           </Button>
         </HStack>
       </VStack>
-    </Center>
+    </Flex>
   );
 };
 

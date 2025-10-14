@@ -1,10 +1,4 @@
-import {
-  AlertStatus,
-  Box,
-  HStack,
-  Text,
-  UseToastOptions,
-} from '@chakra-ui/react';
+import { AlertStatus, Box, HStack, Text, UseToastOptions } from 'bako-ui';
 import React, { useState } from 'react';
 
 interface ContainerProps {

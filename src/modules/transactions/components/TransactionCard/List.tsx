@@ -1,4 +1,4 @@
-import { Accordion, AccordionRootProps } from '@chakra-ui/react';
+import { Accordion, AccordionRootProps } from 'bako-ui';
 import { useMemo } from 'react';
 
 interface TransactionCardListProps extends AccordionRootProps {

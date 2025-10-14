@@ -8,7 +8,7 @@ import {
   HStack,
   Tabs,
   Text,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 import { FiPlusSquare as PlusSquareIcon } from 'react-icons/fi';
 import { useParams } from 'react-router-dom';
 
@@ -69,16 +69,15 @@ const MemberTab = () => {
     >
       <HStack w="full" justifyContent="space-between">
         <Center w="full" gap={4}>
-          <Avatar.Root
+          <Avatar
             size="md"
             fontSize="md"
             color="white"
             bg="grey.900"
             shape="rounded"
-          >
-            <Avatar.Fallback name={contactNickname ?? member?.address} />
-            <Avatar.Image src={member?.avatar} />
-          </Avatar.Root>
+            src={member?.avatar}
+            name={contactNickname ?? member?.address}
+          />
           <Flex
             w="full"
             mr={1}

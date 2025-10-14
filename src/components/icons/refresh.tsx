@@ -1,4 +1,4 @@
-import { createIcon } from '@chakra-ui/react';
+import { createIcon } from 'bako-ui';
 
 const Refresh = createIcon({
   viewBox: '0 0 12 12',

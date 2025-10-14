@@ -1,11 +1,4 @@
-import {
-  Box,
-  CardRootProps,
-  Heading,
-  Separator,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { Box, CardRootProps, Heading, Separator, Text, VStack } from 'bako-ui';
 
 import { Card } from '@/components';
 

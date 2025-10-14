@@ -1,4 +1,4 @@
-import { Icon, Popover } from '@chakra-ui/react';
+import { Icon, Popover } from 'bako-ui';
 
 import { TooltipIcon } from '@/components/icons/tooltip';
 import { Tooltip as ChakraTooltip } from '@/components/ui/tooltip';

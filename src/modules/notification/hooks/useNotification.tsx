@@ -18,10 +18,7 @@ interface UseToastOptions {
   icon?: React.ReactNode;
 }
 
-const useNotification = (
-  options?: UseToastOptions,
-  createdAccountNotification?: boolean,
-) => {
+const useNotification = (options?: UseToastOptions) => {
   return (toastOptions: UseToastOptions) => {
     toaster.create({
       title: toastOptions.title || options?.title,

@@ -1,12 +1,4 @@
-import {
-  Flex,
-  Icon,
-  Popover,
-  PopoverRoot,
-  Separator,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { Flex, Icon, Popover, Separator, Text, VStack } from 'bako-ui';
 import { useMemo, useState } from 'react';
 import { useWatch } from 'react-hook-form';
 
@@ -164,7 +156,7 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
           >
             Max fee:{' '}
             {isMobile ? (
-              <PopoverRoot
+              <Popover.Root
                 positioning={{ placement: 'top-start' }}
                 open={isOpen}
                 onOpenChange={onOpenChange}
@@ -190,7 +182,7 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
                     {`Max Fee is the most that you might pay for the transaction. Only the actual fee will be deducted from your wallet. 100% of this fee goes to the network.`}
                   </Popover.Body>
                 </Popover.Content>
-              </PopoverRoot>
+              </Popover.Root>
             ) : (
               <Tooltip
                 content="Max Fee is the most that you might pay for the transaction. Only the actual fee will be deducted from your wallet. 100% of this fee goes to the network."

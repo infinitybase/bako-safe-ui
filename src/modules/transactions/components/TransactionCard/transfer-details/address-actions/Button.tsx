@@ -1,4 +1,4 @@
-import { IconButton, IconButtonProps } from '@chakra-ui/react';
+import { IconButton, IconButtonProps } from 'bako-ui';
 import { forwardRef } from 'react';
 
 import { OptionsIcon } from '@/components/icons';
@@ -29,9 +29,10 @@ const AddressActionsButton = forwardRef<
       p={isMobile ? 0 : 1}
       size={isMobile ? '2xs' : 'sm'}
       _hover={{ bgColor: 'dark.950' }}
-      icon={<OptionsIcon color="grey.75" fontSize="xl" />}
       {...props}
-    />
+    >
+      <OptionsIcon color="grey.75" fontSize="xl" />
+    </IconButton>
   );
 });
 

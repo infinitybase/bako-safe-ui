@@ -1,4 +1,4 @@
-import { Button, Flex, Stack } from '@chakra-ui/react';
+import { Button, Flex, Stack } from 'bako-ui';
 import { Vault } from 'bakosafe';
 import { BN, bn } from 'fuels';
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';

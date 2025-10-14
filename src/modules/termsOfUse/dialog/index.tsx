@@ -1,4 +1,4 @@
-import { Box, Separator, HStack, Text, VStack } from '@chakra-ui/react';
+import { Box, HStack, Separator, Text, VStack } from 'bako-ui';
 
 import { Dialog } from '@/components';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
@@ -28,7 +28,7 @@ const TermsOfUseDialog = (props: TermsOfUseDialogProps) => {
     inView,
     handleClose,
     modalIsOpen,
-    onClose,
+    onOpenChange,
   } = useTermsDialog();
 
   const textHeight = () => {
@@ -44,11 +44,11 @@ const TermsOfUseDialog = (props: TermsOfUseDialogProps) => {
 
   return (
     <Dialog.Modal
-      size={{ base: 'full', md: '2xl' }}
+      size={{ base: 'full', md: 'xl' }}
       {...props}
-      isOpen={modalIsOpen}
-      onClose={onClose}
-      closeOnOverlayClick={false}
+      open={modalIsOpen}
+      onOpenChange={onOpenChange}
+      closeOnInteractOutside={false}
     >
       <Dialog.Header
         hideCloseButton={isSafariBrowser && isMobile}
@@ -74,7 +74,7 @@ const TermsOfUseDialog = (props: TermsOfUseDialogProps) => {
           gap={0}
           overflowY={'scroll'}
           pr={4}
-          sx={{
+          css={{
             '&::-webkit-scrollbar': {
               width: '6px',
               maxHeight: '330px',
@@ -157,7 +157,7 @@ const TermsOfUseDialog = (props: TermsOfUseDialogProps) => {
       <Dialog.Actions
         w="full"
         maxW={585}
-        sx={{ '&>hr': { mt: 0, mb: 8 } }}
+        css={{ '&>hr': { mt: 0, mb: 8 } }}
         bgColor="dark.950"
         position={isMobile ? 'absolute' : 'unset'}
         bottom={2}
@@ -179,7 +179,7 @@ const TermsOfUseDialog = (props: TermsOfUseDialogProps) => {
               w="50%"
               aria-label="Accept Terms of Use"
               onClick={props.actionHandler}
-              isDisabled={!read}
+              disabled={!read}
               _hover={{ opacity: 0.8 }}
             >
               Accept

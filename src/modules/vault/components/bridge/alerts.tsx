@@ -1,11 +1,5 @@
-import { Icon } from '@chakra-ui/react';
-import {
-  ComponentWithAs,
-  HStack,
-  IconProps,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { Icon } from 'bako-ui';
+import { ComponentWithAs, HStack, IconProps, Text, VStack } from 'bako-ui';
 
 interface AlertsBrigdeProps {
   title?: string;

@@ -1,4 +1,4 @@
-import { Box, HStack } from '@chakra-ui/react';
+import { Box, HStack } from 'bako-ui';
 import { useMemo } from 'react';
 
 export interface StepProgressProps {

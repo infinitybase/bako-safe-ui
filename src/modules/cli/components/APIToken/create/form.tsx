@@ -1,4 +1,4 @@
-import { Box, Field, Input, Separator, VStack } from '@chakra-ui/react';
+import { Box, Field, Input, Separator, VStack } from 'bako-ui';
 import { Controller } from 'react-hook-form';
 
 import { UseCreateAPITokenReturn } from '@/modules/cli/hooks';

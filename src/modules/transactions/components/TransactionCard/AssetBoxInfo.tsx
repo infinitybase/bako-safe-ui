@@ -7,7 +7,7 @@ import {
   type StackProps,
   Text,
   VStack,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 import { bn } from 'fuels';
 import { useMemo } from 'react';
 import { FaPlay } from 'react-icons/fa';

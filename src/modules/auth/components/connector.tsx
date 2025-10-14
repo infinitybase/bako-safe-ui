@@ -8,7 +8,7 @@ import {
   Stack,
   Text,
   VStack,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 import React, { useCallback, useMemo } from 'react';
 
 import { Card } from '@/components';
@@ -40,10 +40,14 @@ const CardConnector = (props: CardConnectorProps) => {
   const ConnectorIcon = useMemo(() => {
     if (connector.imageUrl) {
       return (
-        <Avatar.Root color="white" w={9} bgColor="transparent" shape="rounded">
-          <Avatar.Fallback name={connector.name} />
-          <Avatar.Image src={connector.imageUrl} />
-        </Avatar.Root>
+        <Avatar
+          color="white"
+          w={9}
+          bgColor="transparent"
+          shape="rounded"
+          name={connector.name}
+          src={connector.imageUrl}
+        />
       );
     }
 

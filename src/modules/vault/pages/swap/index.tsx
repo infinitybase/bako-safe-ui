@@ -1,15 +1,4 @@
-import {
-  Box,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbRoot,
-  BreadcrumbSeparator,
-  Container,
-  HStack,
-  Icon,
-  Text,
-} from '@chakra-ui/react';
+import { Box, Breadcrumb, Container, HStack, Icon, Text } from 'bako-ui';
 import { RiMenuUnfoldLine } from 'react-icons/ri';
 import { useNavigate } from 'react-router-dom';
 
@@ -60,10 +49,10 @@ export const VaultSwapPage = () => {
             </Text>
           </HStack>
         ) : (
-          <BreadcrumbRoot>
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbLink
+          <Breadcrumb.Root>
+            <Breadcrumb.List>
+              <Breadcrumb.Item>
+                <Breadcrumb.Link
                   fontSize="sm"
                   color="grey.200"
                   fontWeight="semibold"
@@ -71,13 +60,13 @@ export const VaultSwapPage = () => {
                 >
                   <Icon mr={2} as={HomeIcon} w={3} color="grey.200" />
                   Home
-                </BreadcrumbLink>
-              </BreadcrumbItem>
+                </Breadcrumb.Link>
+              </Breadcrumb.Item>
 
-              <BreadcrumbSeparator />
+              <Breadcrumb.Separator />
 
-              <BreadcrumbItem>
-                <BreadcrumbLink
+              <Breadcrumb.Item>
+                <Breadcrumb.Link
                   fontSize="sm"
                   color="grey.200"
                   fontWeight="semibold"
@@ -91,11 +80,11 @@ export const VaultSwapPage = () => {
                   }
                 >
                   Vaults
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbLink
+                </Breadcrumb.Link>
+              </Breadcrumb.Item>
+              <Breadcrumb.Separator />
+              <Breadcrumb.Item>
+                <Breadcrumb.Link
                   fontSize="sm"
                   color="grey.200"
                   fontWeight="semibold"
@@ -111,21 +100,21 @@ export const VaultSwapPage = () => {
                   maxW={640}
                 >
                   {vault?.data?.name}
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbLink
+                </Breadcrumb.Link>
+              </Breadcrumb.Item>
+              <Breadcrumb.Separator />
+              <Breadcrumb.Item>
+                <Breadcrumb.Link
                   fontSize="sm"
                   color="grey.200"
                   fontWeight="semibold"
                   href="#"
                 >
                   Swap
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </BreadcrumbRoot>
+                </Breadcrumb.Link>
+              </Breadcrumb.Item>
+            </Breadcrumb.List>
+          </Breadcrumb.Root>
         )}
       </HStack>
 

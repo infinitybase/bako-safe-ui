@@ -6,7 +6,7 @@ import {
   InputGroup,
   Stack,
   Text,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 import { bn } from 'fuels';
 import { useMemo, useRef } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';

@@ -1,12 +1,4 @@
-import {
-  Box,
-  Button,
-  Field,
-  Heading,
-  HStack,
-  Icon,
-  VStack,
-} from '@chakra-ui/react';
+import { Box, Button, Field, Heading, HStack, Icon, VStack } from 'bako-ui';
 import { AddressUtils as BakoAddressUtils } from 'bakosafe';
 import { Address, isB256, isEvmAddress } from 'fuels';
 import { useRef, useState } from 'react';

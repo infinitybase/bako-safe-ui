@@ -4,10 +4,10 @@ import {
   Card,
   Flex,
   InputGroup,
-  Spinner,
+  Loader,
   Stack,
   Text,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 import { BN, bn } from 'fuels';
 import {
   memo,
@@ -124,7 +124,7 @@ export const CoinBox = memo(
             <Text color="section.500" fontSize="xs">
               {mode === 'buy' ? 'Buy' : 'Sell'}
             </Text>
-            {isLoadingAmount && <Spinner color="grey.500" size="xs" />}
+            {isLoadingAmount && <Loader color="grey.500" size="xs" />}
           </Flex>
           <Box>
             <SelectedCurrency

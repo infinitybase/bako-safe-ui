@@ -1,4 +1,4 @@
-import { Field, HStack } from '@chakra-ui/react';
+import { Field, HStack } from 'bako-ui';
 import { AddressUtils as BakoSafeUtils } from 'bakosafe';
 import { Address, isB256 } from 'fuels';
 import { memo, useCallback, useMemo, useState } from 'react';
@@ -24,7 +24,7 @@ import Clear from './clear';
 
 interface RecipientFormAddressProps {
   index: number;
-  value: string;
+  value: string | undefined;
   onChange: (value: string) => void;
   handleOpenDialog: (addr: string) => void;
   isLoading: boolean;
@@ -121,6 +121,7 @@ const RecipientFormAddress = ({
   const showAddToAddressBook = useMemo(
     () =>
       canAddMember &&
+      !!value &&
       !error?.message &&
       AddressUtils.isValid(value) &&
       !BakoSafeUtils.isEvm(value) &&
@@ -175,7 +176,7 @@ const RecipientFormAddress = ({
         <Field.HelperText color="error.500">{error?.message}</Field.HelperText>
         <AddToAddressBook
           visible={showAddToAddressBook}
-          onAdd={() => handleOpenDialog?.(value)}
+          onAdd={() => handleOpenDialog?.(value!)}
         />
       </Field.Root>
     </HStack>

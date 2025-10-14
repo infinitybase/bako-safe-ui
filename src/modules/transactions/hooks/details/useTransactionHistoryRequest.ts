@@ -1,5 +1,5 @@
-import { useAccordionItemContext } from '@chakra-ui/react';
 import { QueryState, useQuery } from '@tanstack/react-query';
+import { useAccordionItemContext } from 'bako-ui';
 
 import { queryClient } from '@/config';
 import {

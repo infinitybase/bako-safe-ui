@@ -1,4 +1,4 @@
-import { Box, Tabs, Text, VStack } from '@chakra-ui/react';
+import { Box, Tabs, Text, VStack } from 'bako-ui';
 import { useEffect } from 'react';
 
 import { useQueryParams } from '@/modules';

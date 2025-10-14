@@ -1,4 +1,4 @@
-import { Button, DialogOpenChangeDetails, VStack } from '@chakra-ui/react';
+import { Button, DialogOpenChangeDetails, VStack } from 'bako-ui';
 
 import { useNetworks } from '@/modules/network/hooks';
 import { NetworkType } from '@/modules/network/services';

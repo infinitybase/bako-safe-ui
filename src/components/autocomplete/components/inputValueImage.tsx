@@ -1,4 +1,4 @@
-import { Box, Icon, IconProps, Image, Skeleton } from '@chakra-ui/react';
+import { Box, Icon, IconProps, Image, Skeleton } from 'bako-ui';
 import { ForwardRefExoticComponent, memo, useMemo } from 'react';
 
 import { BakoIcon, UnknownIcon } from '@/components/icons';

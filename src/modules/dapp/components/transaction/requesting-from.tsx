@@ -1,11 +1,4 @@
-import {
-  Card,
-  CardRootProps,
-  HStack,
-  Separator,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { Card, CardRootProps, HStack, Separator, Text, VStack } from 'bako-ui';
 
 import { Nullable } from '@/modules/core';
 

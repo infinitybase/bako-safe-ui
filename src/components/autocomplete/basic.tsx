@@ -6,15 +6,16 @@ import {
   Input,
   InputGroup,
   InputGroupProps,
-  Spinner,
+  Loader,
   Text,
   VStack,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 import {
   ChangeEvent,
   CSSProperties,
   LegacyRef,
   ReactNode,
+  Ref,
   useCallback,
   useEffect,
   useRef,
@@ -52,7 +53,7 @@ interface AutocompleteProps
   actionOnSelect?: () => void;
   actionOnRemoveInput?: () => void;
   actionOnBlur?: () => void;
-  inputRef?: LegacyRef<HTMLInputElement>;
+  inputRef?: Ref<HTMLInputElement>;
 }
 
 const Autocomplete = ({
@@ -181,7 +182,7 @@ const Autocomplete = ({
         endElement={
           <>
             {isLoading && isFocused ? (
-              <Spinner
+              <Loader
                 css={{ '--spinner-track-color': 'dark.100' }}
                 w={18}
                 color="brand.500"
@@ -214,6 +215,7 @@ const Autocomplete = ({
           onPaste={handlePaste}
           onFocus={handleFocus}
           style={inputStyle}
+          // @ts-expect-error - TODO CHECK THIS
           ref={inputRef}
           paddingInlineEnd={'2.2rem !important'}
         />

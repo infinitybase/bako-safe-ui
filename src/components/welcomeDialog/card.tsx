@@ -1,4 +1,4 @@
-import { HStack, Icon, IconProps, Text, VStack } from '@chakra-ui/react';
+import { HStack, Icon, IconProps, Text, VStack } from 'bako-ui';
 import { ForwardRefExoticComponent } from 'react';
 
 interface IWelcomeCardProps {

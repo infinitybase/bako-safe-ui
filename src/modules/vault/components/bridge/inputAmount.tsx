@@ -1,4 +1,4 @@
-import { Box, InputGroup } from '@chakra-ui/react';
+import { Box, InputGroup } from 'bako-ui';
 import { useEffect, useRef, useState } from 'react';
 
 import { CurrencyField } from '@/components';

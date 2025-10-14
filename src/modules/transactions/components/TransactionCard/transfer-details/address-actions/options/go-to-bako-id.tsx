@@ -1,4 +1,4 @@
-import { HStack, Text, VStack } from '@chakra-ui/react';
+import { HStack, Text, VStack } from 'bako-ui';
 import { useMemo } from 'react';
 
 import { UpRightArrow } from '@/components/icons';

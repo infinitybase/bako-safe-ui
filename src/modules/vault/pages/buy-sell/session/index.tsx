@@ -1,21 +1,11 @@
-import {
-  Box,
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  Flex,
-  HStack,
-  Icon,
-  Stack,
-  Text,
-  useDisclosure,
-} from '@chakra-ui/react';
+import { Box, Breadcrumb, Flex, HStack, Icon, Stack, Text } from 'bako-ui';
 import { RiMenuUnfoldLine } from 'react-icons/ri';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 
 import { HomeIcon } from '@/components';
 import { Drawer } from '@/layouts/dashboard/drawer';
 import { Pages } from '@/modules/core';
+import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
 import { useGetWidgetUrl } from '@/modules/vault/hooks';
 import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
@@ -47,9 +37,9 @@ export const VaultBuySellSessionPage = () => {
             </Text>
           </HStack>
         ) : (
-          <Breadcrumb>
-            <BreadcrumbItem>
-              <BreadcrumbLink
+          <Breadcrumb.Root>
+            <Breadcrumb.Item>
+              <Breadcrumb.Link
                 fontSize="sm"
                 color="grey.200"
                 fontWeight="semibold"
@@ -57,21 +47,21 @@ export const VaultBuySellSessionPage = () => {
               >
                 <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
                 Home
-              </BreadcrumbLink>
-            </BreadcrumbItem>
+              </Breadcrumb.Link>
+            </Breadcrumb.Item>
 
-            <BreadcrumbItem>
-              <BreadcrumbLink
+            <Breadcrumb.Item>
+              <Breadcrumb.Link
                 fontSize="sm"
                 color="grey.200"
                 fontWeight="semibold"
                 href="#"
               >
                 Vaults
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbItem>
-              <BreadcrumbLink
+              </Breadcrumb.Link>
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              <Breadcrumb.Link
                 fontSize="sm"
                 color="grey.200"
                 fontWeight="semibold"
@@ -83,14 +73,14 @@ export const VaultBuySellSessionPage = () => {
                     }),
                   )
                 }
-                isTruncated
+                truncate
                 maxW={640}
               >
                 {vault.data?.name}
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbItem>
-              <BreadcrumbLink
+              </Breadcrumb.Link>
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              <Breadcrumb.Link
                 fontSize="sm"
                 color="grey.200"
                 fontWeight="semibold"
@@ -102,12 +92,12 @@ export const VaultBuySellSessionPage = () => {
                     }),
                   )
                 }
-                isTruncated
+                truncate
               >
                 Buy & Sell
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-          </Breadcrumb>
+              </Breadcrumb.Link>
+            </Breadcrumb.Item>
+          </Breadcrumb.Root>
         )}
       </HStack>
 

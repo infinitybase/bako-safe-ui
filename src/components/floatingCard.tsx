@@ -1,4 +1,4 @@
-import { Box, Flex, HStack, IconButton, Text } from '@chakra-ui/react';
+import { Box, Flex, HStack, IconButton, Text } from 'bako-ui';
 import React from 'react';
 import { FiStar as StarIcon, FiX as CloseIcon } from 'react-icons/fi';
 

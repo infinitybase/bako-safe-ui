@@ -1,4 +1,4 @@
-import { Image, Text, VStack } from '@chakra-ui/react';
+import { Image, Text, VStack } from 'bako-ui';
 
 import { Card } from '@/components';
 import { Asset } from '@/modules/core/utils';

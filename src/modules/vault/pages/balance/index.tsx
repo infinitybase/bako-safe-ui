@@ -1,13 +1,4 @@
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  Flex,
-  HStack,
-  Icon,
-  Tabs,
-  Text,
-} from '@chakra-ui/react';
+import { Breadcrumb, Flex, HStack, Icon, Tabs, Text } from 'bako-ui';
 import { RiMenuUnfoldLine } from 'react-icons/ri';
 import { useNavigate } from 'react-router-dom';
 
@@ -54,8 +45,8 @@ const VaultBalancePage = () => {
         ) : (
           <Breadcrumb.Root>
             <Breadcrumb.List>
-              <BreadcrumbItem>
-                <BreadcrumbLink
+              <Breadcrumb.Item>
+                <Breadcrumb.Link
                   fontSize="sm"
                   color="grey.200"
                   fontWeight="semibold"
@@ -63,15 +54,15 @@ const VaultBalancePage = () => {
                 >
                   <Icon mr={2} as={HomeIcon} w={3} color="grey.200" />
                   Home
-                </BreadcrumbLink>
-              </BreadcrumbItem>
+                </Breadcrumb.Link>
+              </Breadcrumb.Item>
               <Breadcrumb.Separator />
 
               {/* Commented out code to temporarily disable workspaces. */}
 
               {/* {!userInfos.onSingleWorkspace && (
-              <BreadcrumbItem>
-                <BreadcrumbLink
+              <Breadcrumb.Item>
+                <Breadcrumb.Link
                   fontSize="sm"
                   color="grey.200"
                   fontWeight="semibold"
@@ -88,12 +79,12 @@ const VaultBalancePage = () => {
                   isTruncated
                 >
                   {userInfos.workspace?.name}
-                </BreadcrumbLink>
-              </BreadcrumbItem>
+                </Breadcrumb.Link>
+              </Breadcrumb.Item>
             )} */}
 
-              <BreadcrumbItem>
-                <BreadcrumbLink
+              <Breadcrumb.Item>
+                <Breadcrumb.Link
                   fontSize="sm"
                   color="grey.200"
                   fontWeight="semibold"
@@ -106,12 +97,12 @@ const VaultBalancePage = () => {
                   }
                 >
                   Vaults
-                </BreadcrumbLink>
-              </BreadcrumbItem>
+                </Breadcrumb.Link>
+              </Breadcrumb.Item>
               <Breadcrumb.Separator />
 
-              <BreadcrumbItem>
-                <BreadcrumbLink
+              <Breadcrumb.Item>
+                <Breadcrumb.Link
                   fontSize="sm"
                   color="grey.200"
                   fontWeight="semibold"
@@ -127,19 +118,19 @@ const VaultBalancePage = () => {
                   maxW={640}
                 >
                   {vault.data?.name}
-                </BreadcrumbLink>
-              </BreadcrumbItem>
+                </Breadcrumb.Link>
+              </Breadcrumb.Item>
               <Breadcrumb.Separator />
-              <BreadcrumbItem>
-                <BreadcrumbLink
+              <Breadcrumb.Item>
+                <Breadcrumb.Link
                   fontSize="sm"
                   color="grey.200"
                   fontWeight="semibold"
                   href="#"
                 >
                   Balance
-                </BreadcrumbLink>
-              </BreadcrumbItem>
+                </Breadcrumb.Link>
+              </Breadcrumb.Item>
             </Breadcrumb.List>
           </Breadcrumb.Root>
         )}

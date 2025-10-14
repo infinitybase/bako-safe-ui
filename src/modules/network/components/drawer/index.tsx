@@ -3,16 +3,17 @@ import {
   Button,
   Center,
   Drawer,
+  DrawerRootProps,
   Field,
   Heading,
   HStack,
   Icon,
   Input,
+  Loader,
   Portal,
-  Spinner,
   Text,
   VStack,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 import { Controller } from 'react-hook-form';
 
 import { PlusIcon, RemoveIcon, UnknownIcon } from '@/components';
@@ -23,7 +24,7 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { NetworkDrawerMode, useNetworks } from '../../hooks';
 import { NetworkType } from '../../services';
 
-interface NetworkDrawerProps extends Omit<Drawer.RootProps, 'children'> {}
+interface NetworkDrawerProps extends Omit<DrawerRootProps, 'children'> {}
 
 const NetworkDrawer = ({ ...props }: NetworkDrawerProps) => {
   const {
@@ -247,7 +248,7 @@ const NetworkDrawer = ({ ...props }: NetworkDrawerProps) => {
                       disabled={loadingCheck}
                     >
                       {loadingCheck ? (
-                        <Spinner w={4} h={4} />
+                        <Loader w={4} h={4} />
                       ) : (
                         'Test connection'
                       )}

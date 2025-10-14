@@ -6,10 +6,10 @@ import {
   Input,
   InputGroup,
   InputProps,
-  Spinner,
+  Loader,
   Text,
   VStack,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 import { useEffect, useRef, useState } from 'react';
 
 import { ArrowDownIcon } from '../icons';
@@ -150,7 +150,7 @@ const Select = ({
         endElement={
           <>
             {isLoading ? (
-              <Spinner
+              <Loader
                 css={{ '--spinner-track-color': 'dark.100' }}
                 size="lg"
                 color="brand.500"

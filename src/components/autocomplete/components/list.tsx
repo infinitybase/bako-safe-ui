@@ -1,4 +1,4 @@
-import { Box, Flex, VStack } from '@chakra-ui/react';
+import { Box, Flex, VStack } from 'bako-ui';
 import React, { LegacyRef, memo } from 'react';
 
 interface AutocompleteOptionListProps {

@@ -1,4 +1,4 @@
-import { Card, HStack, Text, VStack } from '@chakra-ui/react';
+import { Card, HStack, Text, VStack } from 'bako-ui';
 
 import { CustomSkeleton } from '@/components';
 

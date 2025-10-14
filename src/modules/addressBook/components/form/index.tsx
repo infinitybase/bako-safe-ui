@@ -1,4 +1,4 @@
-import { Field, Input, VStack } from '@chakra-ui/react';
+import { Field, Input, VStack } from 'bako-ui';
 import { Controller } from 'react-hook-form';
 
 import { AddressInput } from '@/components/input';

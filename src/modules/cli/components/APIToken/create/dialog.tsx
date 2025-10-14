@@ -1,4 +1,4 @@
-import { HStack, Tabs } from '@chakra-ui/react';
+import { HStack, Tabs } from 'bako-ui';
 
 import { Dialog } from '@/components';
 import { UseAPITokenReturn } from '@/modules/cli/hooks';

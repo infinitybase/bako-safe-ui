@@ -7,11 +7,12 @@ import {
   HStack,
   Input,
   Portal,
+  Radio,
   RadioGroup,
   Separator,
   Text,
   VStack,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 import { useEffect } from 'react';
 import { Controller } from 'react-hook-form';
 
@@ -209,25 +210,17 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
                   control={form.control}
                   name="notify"
                   render={({ field }) => (
-                    <RadioGroup.Root
+                    <RadioGroup
                       name={field.name}
                       value={field.value ?? 'no'}
                       onValueChange={(e) => field.onChange(e.value)}
                       size="md"
                     >
                       <VStack>
-                        <RadioGroup.Item value="yes">
-                          <RadioGroup.ItemHiddenInput />
-                          <RadioGroup.ItemIndicator />
-                          <RadioGroup.ItemText>Yes</RadioGroup.ItemText>
-                        </RadioGroup.Item>
-                        <RadioGroup.Item value="no">
-                          <RadioGroup.ItemHiddenInput />
-                          <RadioGroup.ItemIndicator />
-                          <RadioGroup.ItemText>No</RadioGroup.ItemText>
-                        </RadioGroup.Item>
+                        <Radio value="yes">Yes</Radio>
+                        <Radio value="no">No</Radio>
                       </VStack>
-                    </RadioGroup.Root>
+                    </RadioGroup>
                   )}
                 />
 

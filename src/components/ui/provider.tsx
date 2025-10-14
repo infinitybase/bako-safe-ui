@@ -1,15 +1,13 @@
-import { ChakraProvider } from '@chakra-ui/react';
+import { theme, ThemeProvider } from 'bako-ui';
 
-import { defaultTheme } from '@/themes';
-
-import { ColorModeProvider, type ColorModeProviderProps } from './color-mode';
+import { ColorModeProvider, ColorModeProviderProps } from './color-mode';
 import { Toaster } from './toaster';
 
 export function Provider(props: ColorModeProviderProps) {
   return (
-    <ChakraProvider value={defaultTheme}>
+    <ThemeProvider value={theme}>
       <ColorModeProvider {...props} />
       <Toaster />
-    </ChakraProvider>
+    </ThemeProvider>
   );
 }

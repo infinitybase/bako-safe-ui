@@ -1,6 +1,10 @@
-import { Icon, useDisclosure, UseDisclosureReturn } from '@chakra-ui/react';
+import { Icon } from 'bako-ui';
 import { IoIosCheckmarkCircle } from 'react-icons/io';
 
+import {
+  useDisclosure,
+  UseDisclosureReturn,
+} from '@/modules/core/hooks/useDisclosure';
 import { useNotification } from '@/modules/notification/hooks/useNotification';
 import { createGTMCustomEvent } from '@/utils';
 

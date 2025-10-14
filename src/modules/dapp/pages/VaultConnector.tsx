@@ -1,3 +1,4 @@
+import { useFuel } from '@fuels/react';
 import {
   Avatar,
   Box,
@@ -6,13 +7,12 @@ import {
   Flex,
   Heading,
   HStack,
+  Loader,
   Separator,
   Spacer,
-  Spinner,
   Text,
   VStack,
-} from '@chakra-ui/react';
-import { useFuel } from '@fuels/react';
+} from 'bako-ui';
 import { AddressUtils as BakoAddressUtils } from 'bakosafe';
 import { useEffect } from 'react';
 import { RiLogoutBoxRLine } from 'react-icons/ri';
@@ -140,13 +140,12 @@ const VaultConnector = () => {
           <CreateVaultDialog open={isOpen} onOpenChange={onOpenChange} />
 
           <HStack gap={3} paddingX={6} paddingTop={5} w="full">
-            <Avatar.Root
+            <Avatar
               shape="rounded"
               boxSize={'40px'}
               border="2px solid #EBA312"
-            >
-              <Avatar.Image src={userInfos?.avatar} />
-            </Avatar.Root>
+              src={userInfos?.avatar}
+            />
 
             <VStack w="full" alignItems={'flex-start'}>
               <Text
@@ -279,7 +278,7 @@ const VaultConnector = () => {
 
                 {isFetching && vaults.length && (
                   <Flex justifyContent="center" alignItems="center">
-                    <Spinner color="brand.500" size="md" />
+                    <Loader color="brand.500" size="md" />
                   </Flex>
                 )}
 

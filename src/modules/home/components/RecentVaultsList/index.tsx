@@ -1,4 +1,4 @@
-import { Box, Grid, Text } from '@chakra-ui/react';
+import { Box, Grid, Text } from 'bako-ui';
 import { Fragment, memo } from 'react';
 
 import { PredicateAndWorkspace } from '@/modules/vault';

@@ -1,13 +1,13 @@
 import {
   Box,
   Button,
-  Drawer,
+  DrawerRootProps,
   Field,
   Input,
-  Spinner,
+  Loader,
   Text,
   VStack,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 
 import { CustomSkeleton, Dialog } from '@/components';
 import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
@@ -17,7 +17,7 @@ import { CreateVaultDialog } from '../dialog';
 import { useVaultDrawer } from './hook';
 import { VaultList } from './VaultList';
 
-interface VaultListModalProps extends Omit<Drawer.RootProps, 'children'> {
+interface VaultListModalProps extends Omit<DrawerRootProps, 'children'> {
   vaultId: string;
   onSelect?: (vaultId: string) => void;
   onCloseAll?: () => void;
@@ -128,7 +128,7 @@ const VaultListModal = ({
             <VStack marginBottom={4} w="full">
               {isLoadingVaults && vaults.length === 0 && (
                 <VStack gap={4} w="full" pt={4}>
-                  <Spinner size="md" borderWidth="4px" color="brand.500" />
+                  <Loader size="md" borderWidth="4px" color="brand.500" />
                 </VStack>
               )}
               <CustomSkeleton loading={isLoadingVaults}>
@@ -141,7 +141,7 @@ const VaultListModal = ({
               <Box ref={inView.ref} />
               {isFetching && vaults.length > 0 && (
                 <Box py={4}>
-                  <Spinner size="sm" borderWidth="3px" color="brand.500" />
+                  <Loader size="sm" borderWidth="3px" color="brand.500" />
                 </Box>
               )}
             </VStack>

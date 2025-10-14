@@ -1,10 +1,4 @@
-import {
-  Flex,
-  HStack,
-  type StackProps,
-  Text,
-  useMediaQuery,
-} from '@chakra-ui/react';
+import { Flex, HStack, type StackProps, Text, useMediaQuery } from 'bako-ui';
 import type { ITransferAsset } from 'bakosafe';
 import { bn } from 'fuels';
 import { useMemo } from 'react';
@@ -139,6 +133,7 @@ const Amount = ({
               </Text>
             )}
             <Text
+              as="div"
               // variant="description"
               fontSize={isMultiToken ? 'sm' : 'xs'}
               color={isMultiToken ? ' grey.75' : 'grey.425'}

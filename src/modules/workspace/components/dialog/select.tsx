@@ -1,4 +1,4 @@
-import { HStack, Separator, VStack } from '@chakra-ui/react';
+import { HStack, Separator, VStack } from 'bako-ui';
 
 import { Dialog, SquarePlusIcon } from '@/components';
 import { DialogActions } from '@/components/dialog/actions';

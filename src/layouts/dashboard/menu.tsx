@@ -2,7 +2,6 @@ import {
   Badge as ChakraBadge,
   BadgeProps,
   Box,
-  chakra,
   Flex,
   FlexProps,
   Icon as ChakraIcon,
@@ -10,18 +9,7 @@ import {
   Text,
   TextProps,
   VStack,
-} from '@chakra-ui/react';
-
-const MenuItem = chakra(Flex, {
-  base: {
-    w: '100%',
-    justifyContent: 'flex-start',
-    gap: 4,
-    alignItems: 'center',
-    pb: 5,
-    pt: 5,
-  },
-});
+} from 'bako-ui';
 
 const Container = ({
   children,
@@ -35,7 +23,19 @@ const Container = ({
     borderBottomWidth={1}
     borderColor={isActive ? 'brand.500' : 'transparent'}
   >
-    <MenuItem {...props}>{children}</MenuItem>
+    <Flex
+      css={{
+        w: '100%',
+        justifyContent: 'flex-start',
+        gap: 4,
+        alignItems: 'center',
+        pb: 5,
+        pt: 5,
+      }}
+      {...props}
+    >
+      {children}
+    </Flex>
   </Box>
 );
 
@@ -63,7 +63,7 @@ const SidebarMenu = {
   Title,
   Badge,
   Container,
-  List: chakra(VStack),
+  List: VStack,
 };
 
 export { SidebarMenu };

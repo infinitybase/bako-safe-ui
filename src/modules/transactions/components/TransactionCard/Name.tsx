@@ -1,4 +1,4 @@
-import { Center, Heading, HStack, Text } from '@chakra-ui/react';
+import { Center, Heading, HStack, Text } from 'bako-ui';
 
 import { limitCharacters } from '@/utils';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';

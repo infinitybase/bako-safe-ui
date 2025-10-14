@@ -6,7 +6,8 @@ import {
   StackProps,
   Text,
   VStack,
-} from '@chakra-ui/react';
+} from 'bako-ui';
+import { JSX } from 'react';
 
 import { LineCloseIcon } from '../icons';
 

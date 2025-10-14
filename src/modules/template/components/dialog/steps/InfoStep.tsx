@@ -1,4 +1,4 @@
-import { Field, Input, Textarea, VStack } from '@chakra-ui/react';
+import { Box, Field, Input, TextArea, VStack } from 'bako-ui';
 import { Controller, UseFormReturn } from 'react-hook-form';
 
 import { ITemplatePayload } from '@/modules/core';
@@ -16,7 +16,7 @@ const InfoStep = ({ form }: { form: UseFormReturn<ITemplatePayload> }) => {
                 onChange={field.onChange}
                 placeholder=" "
               />
-              <FormLabel>Template name</FormLabel>
+              <Field.Label>Template name</Field.Label>
               <Field.HelperText color="error.500">
                 {fieldState.error?.message}
               </Field.HelperText>
@@ -36,7 +36,7 @@ const InfoStep = ({ form }: { form: UseFormReturn<ITemplatePayload> }) => {
                   },
                 }}
               >
-                <Textarea
+                <TextArea
                   value={field.value}
                   onChange={field.onChange}
                   placeholder="Description"

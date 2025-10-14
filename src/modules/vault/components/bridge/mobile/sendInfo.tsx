@@ -1,4 +1,4 @@
-import { Card, Field, HStack, InputGroup, Text } from '@chakra-ui/react';
+import { Card, Field, HStack, InputGroup, Text } from 'bako-ui';
 import { useCallback } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 

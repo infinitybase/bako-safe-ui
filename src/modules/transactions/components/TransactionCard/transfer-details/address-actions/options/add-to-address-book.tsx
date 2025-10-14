@@ -1,4 +1,4 @@
-import { HStack, Icon, Text, VStack } from '@chakra-ui/react';
+import { HStack, Icon, Text, VStack } from 'bako-ui';
 
 import { PlusIcon } from '@/components';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';

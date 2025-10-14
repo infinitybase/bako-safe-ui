@@ -1,4 +1,4 @@
-import { Grid } from '@chakra-ui/react';
+import { Grid } from 'bako-ui';
 import { useMemo } from 'react';
 
 import { Asset, NFT } from '@/modules/core/utils';

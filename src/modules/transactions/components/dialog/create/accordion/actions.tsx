@@ -1,5 +1,5 @@
 import {
-  AccordionItemTrigger,
+  Accordion,
   Button,
   ButtonProps,
   HStack,
@@ -8,7 +8,7 @@ import {
   IconButtonProps,
   StackProps,
   useAccordionItemContext,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 import { memo } from 'react';
 
 import { CheckIcon, RemoveIcon } from '@/components';
@@ -61,9 +61,9 @@ const AccordionConfirmAction = memo((props: AccordionActionProp) => {
       hidden={!expanded}
       {...props}
     >
-      <AccordionItemTrigger asChild>
+      <Accordion.ItemTrigger asChild>
         <Icon fontSize="sm" color="dark.950" as={CheckIcon} />
-      </AccordionItemTrigger>
+      </Accordion.ItemTrigger>
     </Button>
   );
 });

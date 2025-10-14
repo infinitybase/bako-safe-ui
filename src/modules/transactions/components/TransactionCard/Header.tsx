@@ -1,4 +1,4 @@
-import { Accordion, Box, Grid } from '@chakra-ui/react';
+import { Accordion, Box, Grid } from 'bako-ui';
 import { memo } from 'react';
 
 import { TransactionState } from '@/modules/core';

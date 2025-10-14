@@ -1,4 +1,4 @@
-import { AccordionRoot, Button, Center, Text } from '@chakra-ui/react';
+import { Accordion, Button, Center, Text } from 'bako-ui';
 import { memo, useCallback } from 'react';
 
 import { UserAddIcon } from '@/components';
@@ -38,7 +38,7 @@ export const RecipientList = ({
   }, [transactions, ethAssetId, accordion]);
 
   return (
-    <AccordionRoot
+    <Accordion.Root
       value={[accordion.index.toString()]}
       overflowY="auto"
       pb={isMobile ? 10 : 0}
@@ -98,7 +98,7 @@ export const RecipientList = ({
           </Tooltip>
         )}
       </Center>
-    </AccordionRoot>
+    </Accordion.Root>
   );
 };
 

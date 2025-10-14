@@ -1,4 +1,4 @@
-import { VStack } from '@chakra-ui/react';
+import { VStack } from 'bako-ui';
 
 import { ProgressButton } from '@/components';
 import { useScreenSize } from '@/modules/core/hooks';
@@ -44,12 +44,12 @@ const WebAuthnSignIn = (props: WebAuthnSignInProps) => {
 
       <ProgressButton
         w="full"
-        variant="primary"
+        // variant="primary"
         fontSize="sm"
         aria-label={formState.label}
         onClick={formState.handleAction}
-        _hover={{ opacity: formState.isDisabled && 0.8 }}
-        isDisabled={formState.isDisabled}
+        _hover={{ opacity: formState.isDisabled ? 0.8 : 1 }}
+        disabled={formState.isDisabled}
         progress={formState.actionProgress}
       >
         {formState.label}

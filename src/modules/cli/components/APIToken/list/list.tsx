@@ -8,7 +8,7 @@ import {
   Stack,
   Text,
   VStack,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 import { format } from 'date-fns';
 
 import { CustomSkeleton, LineCloseIcon, RemoveIcon } from '@/components';

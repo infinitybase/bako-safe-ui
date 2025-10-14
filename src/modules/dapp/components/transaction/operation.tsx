@@ -1,4 +1,4 @@
-import { Box, HStack, VStack } from '@chakra-ui/react';
+import { Box, HStack, VStack } from 'bako-ui';
 import { Operation } from 'fuels';
 
 import { CustomSkeleton } from '@/components';

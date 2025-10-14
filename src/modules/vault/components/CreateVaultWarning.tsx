@@ -1,11 +1,4 @@
-import {
-  Heading,
-  HStack,
-  Icon,
-  StackProps,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { Heading, HStack, Icon, StackProps, Text, VStack } from 'bako-ui';
 
 import { TriangleWarning } from '@/components';
 

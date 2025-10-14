@@ -7,7 +7,7 @@ import {
   HStack,
   Text,
   VStack,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 import { QRCodeSVG } from 'qrcode.react';
 
 import { AddressUtils, PredicateAndWorkspace } from '@/modules';
@@ -105,19 +105,18 @@ const DepositDialog = ({
           </VStack>
 
           <HStack h="40px" mb={6} gap={4} w="full">
-            <Avatar.Root
+            <Avatar
               color="grey.75"
               bgColor="grey.925"
               boxSize="40px"
               borderRadius="4px"
+              name={vault.name ?? ''}
               css={{
                 '&>div': {
                   fontSize: '14px',
                 },
               }}
-            >
-              <Avatar.Fallback name={vault?.name ?? ''} />
-            </Avatar.Root>
+            />
             <VStack alignItems="start" w="full">
               <Heading
                 fontSize="xs"

@@ -4,9 +4,9 @@ import {
   IconProps,
   InputGroup,
   InputGroupProps,
-  Spinner,
+  Loader,
   Text,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 import { forwardRef, ForwardRefExoticComponent, memo } from 'react';
 
 import { AddressUtils } from '@/modules';
@@ -42,7 +42,7 @@ const AutocompleteRoot = memo(
             endElement={
               <>
                 {isLoading ? (
-                  <Spinner
+                  <Loader
                     position="absolute"
                     transform="translateY(-50%)"
                     top="50%"

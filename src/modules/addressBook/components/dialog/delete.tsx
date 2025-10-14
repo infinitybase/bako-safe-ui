@@ -1,12 +1,4 @@
-import {
-  Box,
-  Center,
-  Flex,
-  Heading,
-  Icon,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { Box, Center, Flex, Heading, Icon, Text, VStack } from 'bako-ui';
 
 import { AlertIcon, Dialog } from '@/components';
 

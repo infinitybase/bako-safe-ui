@@ -1,12 +1,4 @@
-import {
-  Avatar,
-  Button,
-  Center,
-  Heading,
-  HStack,
-  Icon,
-  VStack,
-} from '@chakra-ui/react';
+import { Avatar, Button, Center, Heading, HStack, Icon, VStack } from 'bako-ui';
 import { format } from 'date-fns';
 
 import {
@@ -165,7 +157,7 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
 
             <HStack w="full" justifyContent="space-between" h="38px">
               <HStack w="75%">
-                <Avatar.Root
+                <Avatar
                   color="grey.425"
                   bgColor="grey.925"
                   boxSize={6}
@@ -175,16 +167,14 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
                       fontSize: '10px',
                     },
                   }}
-                >
-                  <Avatar.Fallback name={transaction.predicate?.name ?? ''} />
-                </Avatar.Root>
+                  name={transaction.predicate?.name ?? ''}
+                />
 
                 <Heading
                   color="grey.200"
                   textAlign="left"
                   lineClamp={1}
                   wordBreak="break-all"
-                  // variant={'title-sm'}
                 >
                   {transaction.predicate?.name}
                 </Heading>

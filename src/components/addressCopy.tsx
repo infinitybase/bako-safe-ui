@@ -1,12 +1,6 @@
+import { Box, HStack, Icon, StackProps, Text, useClipboard } from 'bako-ui';
+import { JSX } from 'react';
 import { FiCheck as CheckIcon } from 'react-icons/fi';
-import {
-  Box,
-  HStack,
-  Icon,
-  StackProps,
-  Text,
-  useClipboard,
-} from '@chakra-ui/react';
 
 import { CopyIcon } from '@/components/icons';
 import { useNotification } from '@/modules/notification';
@@ -23,7 +17,7 @@ function AddressCopy({
   addressColor,
   ...rest
 }: Props): JSX.Element | null {
-  const clipboard = useClipboard(addressToCopy);
+  const clipboard = useClipboard({ value: addressToCopy });
   const toast = useNotification();
 
   const isValid = !!address && address.length > 0;
@@ -39,7 +33,7 @@ function AddressCopy({
       justifyContent="center"
       backgroundColor="dark.100"
       onClick={() => {
-        clipboard.onCopy();
+        clipboard.copy();
         toast({
           position: 'top-right',
           duration: 3000,
@@ -52,7 +46,7 @@ function AddressCopy({
     >
       <Icon color="grey.200" fontSize="md" as={CopyIcon} />
       <Box maxWidth="145px" w="full">
-        <Text noOfLines={1} color={addressColor ?? 'grey.500'}>
+        <Text lineClamp={1} color={addressColor ?? 'grey.500'}>
           {address}
         </Text>
       </Box>

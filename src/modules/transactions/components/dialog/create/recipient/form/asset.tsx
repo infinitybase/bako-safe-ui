@@ -1,4 +1,4 @@
-import { Field, HStack, Spinner, Text } from '@chakra-ui/react';
+import { Field, HStack, Loader, Text } from 'bako-ui';
 import { bn } from 'fuels';
 import { memo, useCallback, useMemo } from 'react';
 import { FieldError, useFormContext } from 'react-hook-form';
@@ -82,7 +82,7 @@ const RecipientFormAsset = ({
                   isFeeCalcLoading ? (
                     <>
                       Balance (available):{' '}
-                      <Spinner
+                      <Loader
                         css={{ '--spinner-track-color': 'dark.100' }}
                         size="xs"
                         color="grey.425"

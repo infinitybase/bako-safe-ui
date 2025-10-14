@@ -1,4 +1,4 @@
-import { Box, Flex, FlexProps, Icon, Text } from '@chakra-ui/react';
+import { Box, Flex, FlexProps, Icon, Text } from 'bako-ui';
 import { isB256 } from 'fuels';
 import { ReactNode } from 'react';
 

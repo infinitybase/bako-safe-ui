@@ -1,12 +1,4 @@
-import {
-  Box,
-  Button,
-  HStack,
-  Icon,
-  Separator,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { Box, Button, HStack, Icon, Separator, Text, VStack } from 'bako-ui';
 import { type ITransferAsset, TransactionStatus } from 'bakosafe';
 
 import { SuccessIcon, UpRightArrow } from '@/components';
