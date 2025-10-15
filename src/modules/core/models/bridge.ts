@@ -1,3 +1,5 @@
+import { TransactionRequest } from 'fuels';
+
 export interface TokenLayersSwap {
   symbol: string;
   displayAsset: string;
@@ -107,6 +109,13 @@ export interface ICreateSwapBridgePayload {
   slippage?: null;
 }
 
+export interface IInfoBridgeSwapPayload {
+  swap: ICreateSwapBridgeResponse;
+  sourceAddress: string;
+  sourceAsset: string;
+  destinationAsset: string;
+}
+
 export interface IInfoBridgeSwap {
   id: string;
   createdDate: Date;
@@ -127,9 +136,10 @@ export interface IInfoBridgeSwap {
   status: string;
 }
 
-export interface IUpdateSwapBridgeTxPayload {
-  hash: string;
-  swap: IInfoBridgeSwap;
+export interface ICreateBridgeTransactionPayload {
+  txData: TransactionRequest;
+  swap: IInfoBridgeSwapPayload;
+  name?: string;
 }
 
 export interface ISwapResponse {

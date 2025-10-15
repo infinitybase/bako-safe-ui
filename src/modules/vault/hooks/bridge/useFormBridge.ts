@@ -1,5 +1,4 @@
 import { AxiosError } from 'axios';
-import { TransactionStatus } from 'bakosafe';
 import {
   bn,
   randomBytes,
@@ -12,7 +11,7 @@ import {
   ICreateSwapBridgePayload,
   ICreateSwapBridgeResponse,
   IGetDestinationsResponse,
-  IInfoBridgeSwap,
+  IInfoBridgeSwapPayload,
   IQuoteFormLayersSwap,
   useBakoSafeVault,
   useScreenSize,
@@ -22,7 +21,6 @@ import { useNetworks } from '@/modules/network/hooks';
 import { availableNetWorks, NetworkType } from '@/modules/network/services';
 import { useTransactionToast } from '@/modules/transactions/providers/toast';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
-import { TransactionService } from '@/modules/transactions/services';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { AssetItem } from '../../components/bridge';
@@ -37,10 +35,10 @@ import {
 } from '../../components/bridge/utils';
 import { useVaultInfosContext } from '../../VaultInfosProvider';
 import { useCreateSwapBridge } from './useCreateSwapBridge';
+import { useCreateBridgeTransaction } from './useCreateTransactionBridge';
 import { useGetDestinationsBridge } from './useGetDestinationsBridge';
 import { useGetLimitsBridge } from './useGetLimits';
 import { useGetQuoteBridge } from './useGetQuoteBridge';
-import { useUpdateSwapTxBridge } from './useUpdateSwapTxBridge';
 
 const useFormBridge = () => {
   const {
@@ -91,7 +89,7 @@ const useFormBridge = () => {
   const { assets } = useVaultInfosContext();
   const { isMobile } = useScreenSize();
   const { createSwapBridgeAsync, isPending } = useCreateSwapBridge();
-  const { updateSwapBridgeAsync } = useUpdateSwapTxBridge();
+  const { createTransactionBridgeAsync } = useCreateBridgeTransaction();
   const { getDestinationsBridgeAsync, isPending: isLoadingDestinations } =
     useGetDestinationsBridge();
   const { getLimitsBridgeAsync } = useGetLimitsBridge();
@@ -401,45 +399,19 @@ const useFormBridge = () => {
       try {
         if (!vault) return;
 
-        const { hashTxId } = await vault.BakoTransfer(tx, {
-          name: `Bridge Fuel Network to ${networkTo?.name}`,
-        });
+        const txData = await vault.prepareTransaction(tx);
 
-        const transaction = await TransactionService.getByHash(hashTxId, [
-          TransactionStatus.AWAIT_REQUIREMENTS,
-        ]);
-
-        const depositActions = swapResponse.depositActions[0];
-        const quote = swapResponse.quote;
-        const swap = swapResponse.swap;
-        const defaultDecimals = 9;
-        const isAssetToEth = assetTo?.value === tokensIDS.ETH;
-
-        const swapInfo: IInfoBridgeSwap = {
-          id: swap.id,
-          createdDate: swap.createdDate,
-          sourceNetwork: swap.sourceNetwork,
-          sourceToken: {
-            assetId: assetFrom?.value ?? '',
-            amount: swap.requestedAmount,
-            to: depositActions.toAddress,
-            decimals: swap?.sourceToken?.decimals ?? defaultDecimals,
-          },
-          destinationNetwork: swap.destinationNetwork,
-          destinationToken: {
-            assetId: assetTo?.value ?? '',
-            amount: quote.receiveAmount,
-            to: swap.destinationAddress,
-            decimals: isAssetToEth
-              ? defaultDecimals
-              : (swap?.destinationToken?.decimals ?? defaultDecimals),
-          },
-          status: swap.status,
+        const swapInfo: IInfoBridgeSwapPayload = {
+          swap: swapResponse,
+          sourceAddress: predicateAddress,
+          sourceAsset: assetFrom?.value ?? '',
+          destinationAsset: assetTo?.value ?? '',
         };
 
-        await updateSwapBridgeAsync({
-          hash: transaction.hash,
+        const transaction = await createTransactionBridgeAsync({
+          txData,
           swap: swapInfo,
+          name: `Bridge Fuel Network to ${networkTo?.name}`,
         });
 
         await confirmTransaction(
@@ -462,11 +434,12 @@ const useFormBridge = () => {
       vault,
       assetFrom?.value,
       assetTo?.value,
+      predicateAddress,
       confirmTransaction,
       refetchHomeTransactionsList,
       refetchTransactionsList,
       refetchVaultTransactionsList,
-      updateSwapBridgeAsync,
+      createTransactionBridgeAsync,
     ],
   );
 
@@ -503,7 +476,7 @@ const useFormBridge = () => {
       console.info('error submit brigde', err);
       if (
         err instanceof AxiosError &&
-        err?.response?.data?.detail === 'Invalid address'
+        err?.response?.data?.title.includes('Invalid address')
       ) {
         toast.generalError(
           randomBytes.toString(),

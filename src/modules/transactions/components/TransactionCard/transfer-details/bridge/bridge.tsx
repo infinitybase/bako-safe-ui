@@ -28,12 +28,12 @@ const BridgeCardDetail = ({ transaction }: BridgeCardDetailProps) => {
   );
 
   const sourceTokenAmount = useMemo(
-    () => bridgeInfo?.sourceToken?.amount.toString(),
+    () => bridgeInfo?.sourceToken?.amount?.toString(),
     [bridgeInfo?.sourceToken?.amount],
   );
 
   const destinationTokenAmount = useMemo(
-    () => bridgeInfo?.destinationToken?.amount.toString(),
+    () => bridgeInfo?.destinationToken?.amount?.toString(),
     [bridgeInfo?.destinationToken?.amount],
   );
 
@@ -58,7 +58,7 @@ const BridgeCardDetail = ({ transaction }: BridgeCardDetailProps) => {
         isDeposit={isDeposit}
         asset={{
           assetId: bridgeInfo?.sourceToken?.assetId ?? '',
-          amount: `${bn(parseUnits(sourceTokenAmount ?? '', sourceTokenDecimals).toString())}`,
+          amount: `${bn(parseUnits(sourceTokenAmount ?? '', sourceTokenDecimals)?.toString())}`,
           to: bridgeInfo?.sourceToken?.to ?? '',
           transactionID: transaction.id,
         }}
@@ -72,7 +72,7 @@ const BridgeCardDetail = ({ transaction }: BridgeCardDetailProps) => {
         isDeposit={isDeposit}
         asset={{
           assetId: bridgeInfo?.destinationToken?.assetId ?? '',
-          amount: `${bn(parseUnits(destinationTokenAmount ?? '', destinationTokenDecimals).toString())}`,
+          amount: `${bn(parseUnits(destinationTokenAmount ?? '', destinationTokenDecimals)?.toString())}`,
           to: bridgeInfo?.destinationToken?.to ?? '',
           transactionID: transaction.id,
         }}
