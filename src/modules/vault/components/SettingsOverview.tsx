@@ -410,7 +410,7 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
       {selectedFeature && (
         <CommingSoonDialog
           description={selectedFeature.dialogDescription}
-          isOpen={commingSoonDialog.open}
+          isOpen={commingSoonDialog.isOpen}
           onClose={commingSoonDialog.onClose}
           notifyHandler={selectedFeature.notifyHandler}
           title="Coming Soon"

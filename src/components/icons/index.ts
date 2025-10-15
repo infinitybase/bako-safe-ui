@@ -12,6 +12,7 @@ export * from './bridge';
 export * from './chart-bullet';
 export * from './check-icon';
 export * from './chevron-down';
+export * from './close-circle';
 export * from './coins';
 export * from './connectors';
 export * from './copy';
