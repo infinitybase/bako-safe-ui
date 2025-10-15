@@ -50,28 +50,24 @@ export function InputAddressBridge() {
               <FormControl isInvalid={fieldState.invalid} paddingTop={0}>
                 <InputGroup
                   sx={{
-                    paddingTop: 0,
-                    paddingBottom: 0,
                     '> input': {
+                      height: '46px',
                       paddingTop: 0,
                       paddingBottom: 0,
-                      height: '46px',
+                      paddingRight: '2rem',
                     },
                   }}
                 >
                   <InputRightElement
-                    top={'7%'}
+                    w="2rem"
+                    h="full"
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
                     cursor="pointer"
-                    right={2}
-                    h="calc(100% - 6px)"
-                    w="fit-content"
-                    pl={2}
+                    onClick={() => field.onChange('')}
                   >
-                    <LineCloseIcon
-                      color="grey.75"
-                      fontSize="16px"
-                      onClick={() => field.onChange('')}
-                    />
+                    <LineCloseIcon color="grey.75" fontSize="16px" />
                   </InputRightElement>
 
                   <Input
@@ -81,19 +77,21 @@ export function InputAddressBridge() {
                     variant="dark"
                     onFocus={() => setIsFocused(true)}
                     onBlur={() => setIsFocused(false)}
-                    paddingTop={0}
+                    w="100%"
                   />
+
                   {!isFocused && !field.value && (
                     <FormLabel
                       id="destination_addr"
-                      fontSize={'14px !important'}
-                      color={'grey.250 !important'}
+                      fontSize="14px !important"
+                      color="grey.250 !important"
                       paddingTop={0}
                     >
                       {'Enter address'}
                     </FormLabel>
                   )}
                 </InputGroup>
+
                 <FormHelperText paddingTop={0} color="error.500">
                   {fieldState.error?.message}
                 </FormHelperText>
