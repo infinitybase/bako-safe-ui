@@ -68,8 +68,20 @@ export function AmountBrigde({
           disabled={false}
         />
 
-        <HStack justifyContent="center" mb={{ base: 2, md: 4 }}>
-          <Text color="grey.425" fontSize={12} fontWeight={400}>
+        <HStack
+          justifyContent="center"
+          mb={{ base: 2, md: 4 }}
+          w="full"
+          textAlign="center"
+        >
+          <Text
+            maxW={'400px'}
+            color="grey.425"
+            fontSize={12}
+            fontWeight={400}
+            isTruncated
+            noOfLines={1}
+          >
             {assetFromUSD}
           </Text>
         </HStack>
