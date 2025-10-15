@@ -14,7 +14,10 @@ import {
 import { Network, TransactionRequest } from 'fuels';
 
 import { IRampTransaction } from '@/modules/core/models';
-import { TransactionTypeWithRamp } from '@/modules/transactions/services';
+import {
+  TransactionTypeBridge,
+  TransactionTypeWithRamp,
+} from '@/modules/transactions/services';
 
 export interface BakoSafeAuthParams {
   auth: IBakoSafeAuth;
@@ -63,7 +66,7 @@ export interface ITransaction extends ICreateTransactionPayload {
   createdAt: string;
   updatedAt: string;
   predicateId: string;
-  type: TransactionType | TransactionTypeWithRamp;
+  type: TransactionType | TransactionTypeWithRamp | TransactionTypeBridge;
   resume: ITransactionResume; // RESULT
   assets: ITransferAsset[];
   summary?: ITransactionSummary;

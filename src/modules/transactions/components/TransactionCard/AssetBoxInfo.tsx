@@ -1,5 +1,6 @@
 import { Icon } from '@chakra-ui/icons';
 import {
+  Box,
   Center,
   HStack,
   Image,
@@ -36,6 +37,7 @@ interface AssetBoxInfoProps extends StackProps {
   resolver?: string;
   rampTransaction?: IRampTransaction;
   isFiatCurrency?: boolean;
+  bridgeImgNet?: string;
 }
 
 const AssetBoxInfo = ({
@@ -48,6 +50,7 @@ const AssetBoxInfo = ({
   resolver,
   rampTransaction,
   isFiatCurrency = false,
+  bridgeImgNet,
   ...props
 }: AssetBoxInfoProps) => {
   const {
@@ -177,14 +180,40 @@ const AssetBoxInfo = ({
       >
         {assetInfo && (
           <VStack alignItems="start" minW="40px">
-            <Image
-              w={7}
-              h={7}
-              src={parseURI(imgUrl)}
-              borderRadius="md"
-              alt="Asset Icon"
-              objectFit="cover"
-            />
+            {bridgeImgNet ? (
+              <Box position="relative" w={7} h={7}>
+                <Image
+                  w="full"
+                  h="full"
+                  src={parseURI(imgUrl)}
+                  alt="Asset Icon"
+                  objectFit="cover"
+                  borderRadius="full"
+                />
+
+                <Image
+                  w={4}
+                  h={4}
+                  src={parseURI(bridgeImgNet)}
+                  borderRadius="full"
+                  objectFit="cover"
+                  position="absolute"
+                  bottom={-1}
+                  right={-1}
+                  border="2px solid"
+                  borderColor="gray.900"
+                />
+              </Box>
+            ) : (
+              <Image
+                w={7}
+                h={7}
+                src={parseURI(imgUrl)}
+                borderRadius="md"
+                alt="Asset Icon"
+                objectFit="cover"
+              />
+            )}
 
             <Text fontSize="sm" color="grey.500">
               {assetInfo?.slug}
