@@ -2,8 +2,12 @@ import { BN, CoinQuantity } from 'fuels';
 
 import { api } from '@/config';
 import { Asset, NFT } from '@/modules/core';
-import { IPredicate } from '@/modules/core/hooks/bakosafe/utils/types';
 import {
+  IPredicate,
+  ITransaction,
+} from '@/modules/core/hooks/bakosafe/utils/types';
+import {
+  ICreateBridgeTransactionPayload,
   ICreateSwapBridgePayload,
   ICreateSwapBridgeResponse,
   IGetDestinationPayload,
@@ -224,7 +228,7 @@ export class VaultService {
     const { fromNetwork, fromToken } = payload;
 
     const { data } = await api.get<IGetDestinationsResponse[]>(
-      `/layer-swap/destinations?fromNetwork=${fromNetwork}&fromToken=${fromToken}`,
+      `/bridge/destinations?fromNetwork=${fromNetwork}&fromToken=${fromToken}`,
     );
 
     return data;
@@ -244,7 +248,7 @@ export class VaultService {
     });
 
     const { data } = await api.get<IGetLimitsResponse>(
-      `/layer-swap/limits?${params}`,
+      `/bridge/limits?${params}`,
     );
 
     return data;
@@ -266,7 +270,7 @@ export class VaultService {
     });
 
     const { data } = await api.get<IGetQuotesResponse>(
-      `/layer-swap/quote?${params}`,
+      `/bridge/quote?${params}`,
     );
 
     return data;
@@ -276,9 +280,17 @@ export class VaultService {
     payload: ICreateSwapBridgePayload,
   ): Promise<ICreateSwapBridgeResponse> {
     const { data } = await api.post<ICreateSwapBridgeResponse>(
-      `/layer-swap/swap`,
+      `/bridge/swap`,
       payload,
     );
+
+    return data;
+  }
+
+  static async createBridgeTransaction(
+    payload: ICreateBridgeTransactionPayload,
+  ): Promise<ITransaction> {
+    const { data } = await api.post<ITransaction>(`/bridge`, payload);
 
     return data;
   }

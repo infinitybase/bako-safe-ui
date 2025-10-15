@@ -33,6 +33,7 @@ export * from './file-code';
 export * from './forward-icon';
 export * from './home';
 export * from './information';
+export * from './layerswap-icon';
 export * from './left-and-right-arrow';
 export * from './line-close-icon';
 export * from './liquid-stake';
