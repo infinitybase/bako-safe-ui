@@ -44,7 +44,9 @@ export const ON_OFF_RAMP_TRANSACTION_TYPES: string[] = [
   TransactionTypeWithRamp.OFF_RAMP_WITHDRAW,
 ];
 
-export const BRIDGE_TRANSACTION_TYPES = 'Bridge Fuel Network to';
+export enum TransactionTypeBridge {
+  BRIDGE = 'BRIDGE',
+}
 
 export type ITransactionStatusFilter = TransactionStatus[] | string[] | string;
 
@@ -158,7 +160,10 @@ export type OperationWithAssets = Operation & {
   assetsSent?: { assetId?: string; amount?: string }[];
 };
 
-type TTransactionType = TransactionType | TransactionTypeWithRamp;
+type TTransactionType =
+  | TransactionType
+  | TransactionTypeWithRamp
+  | TransactionTypeBridge;
 
 export type TransactionWithVault = ITransaction & {
   predicate?: PredicateAndWorkspace;

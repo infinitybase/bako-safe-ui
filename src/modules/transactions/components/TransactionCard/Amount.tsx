@@ -16,8 +16,8 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useGetAssetsByOperations } from '../../hooks';
 import {
-  BRIDGE_TRANSACTION_TYPES,
   ON_OFF_RAMP_TRANSACTION_TYPES,
+  TransactionTypeBridge,
   type TransactionWithVault,
 } from '../../services';
 import { AssetsIcon } from './AssetsIcon';
@@ -50,10 +50,8 @@ const Amount = ({
   );
 
   const isBridge = useMemo(
-    () =>
-      transaction.name.includes(BRIDGE_TRANSACTION_TYPES) &&
-      !!transaction.resume?.bridge?.id,
-    [transaction.name, transaction.resume?.bridge?.id],
+    () => transaction.type === TransactionTypeBridge.BRIDGE,
+    [transaction.type],
   );
 
   const totalAmoutSent = useMemo(
