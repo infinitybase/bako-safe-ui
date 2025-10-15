@@ -42,6 +42,7 @@ export function FormPageBrigde({
         <SelectBridgeNetwork
           stepsForm={stepsForm}
           setStepsForm={setStepsForm}
+          setErrorAmount={setErrorAmount}
         />
         <AnimatePresence mode="wait">
           {stepsForm > 0 && (

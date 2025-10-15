@@ -56,6 +56,8 @@ export function AmountBrigdeMobile({
         isOpen={selectNetworkDrawer.isOpen}
         onClose={selectNetworkDrawer.onClose}
         form={form}
+        setErrorAmount={setErrorAmount}
+        assetFrom={assetFrom}
       />
       <HStack w="full" justifyContent={'space-between'} align="start">
         <Text color="grey.425" fontSize={12} fontWeight={400}>

@@ -28,6 +28,7 @@ import { getFuelAssetsByNetwork, optionsNets } from './utils';
 export interface SelectNetworkProps {
   stepsForm: number;
   setStepsForm: React.Dispatch<React.SetStateAction<number>>;
+  setErrorAmount: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
 export interface NetworkOptionItem {
@@ -42,6 +43,7 @@ const MotionBox = motion(Box);
 export function SelectBridgeNetwork({
   stepsForm,
   setStepsForm,
+  setErrorAmount,
 }: SelectNetworkProps) {
   const { control } = useFormContext<ITransferBridgePayload>();
   const dialogSelectNetwork = useDisclosure();
@@ -50,6 +52,7 @@ export function SelectBridgeNetwork({
     toNetworkOptions,
     toAssetOptions,
     form,
+    assetFrom,
     isLoadingDestinations,
     getDestinations,
   } = useFormBridge();
@@ -114,7 +117,14 @@ export function SelectBridgeNetwork({
                         ?.value
                     }
                     isDisabled={true}
-                    boxProps={{ bg: 'grey.925', h: '45px' }}
+                    boxProps={{
+                      h: '45px',
+                      verticalAlign: 'middle',
+                    }}
+                    selectedOptionBoxProps={{
+                      h: 'full',
+                      px: 1,
+                    }}
                   />
                 </InputGroup>
               </FormControl>
@@ -132,6 +142,10 @@ export function SelectBridgeNetwork({
                     options={getFuelAssetsByNetwork(currentNetwork)}
                     label={!field.value ? 'Asset' : undefined}
                     boxProps={{ bg: 'grey.925', h: '45px' }}
+                    selectedOptionBoxProps={{
+                      h: 'full',
+                      px: 1,
+                    }}
                     textValueProps={{ color: 'grey.50' }}
                     onChange={(e) => {
                       field.onChange(e);
@@ -143,6 +157,10 @@ export function SelectBridgeNetwork({
                       const asset = getFuelAssetsByNetwork(currentNetwork).find(
                         (a) => a.value === e,
                       );
+
+                      if (asset?.value !== assetFrom?.value) {
+                        setErrorAmount(null);
+                      }
                       getDestinations(asset);
                     }}
                   />
@@ -201,7 +219,12 @@ export function SelectBridgeNetwork({
                   }
                   {...field}
                 >
-                  <HStack w="100%" justify="space-between">
+                  <HStack
+                    w="100%"
+                    h="full"
+                    justify="space-between"
+                    align="center"
+                  >
                     <HStack>
                       {field?.value && (
                         <Image src={field?.value.image} boxSize={6} />
@@ -266,7 +289,12 @@ export function SelectBridgeNetwork({
                   }
                   {...field}
                 >
-                  <HStack w="100%" justify="space-between">
+                  <HStack
+                    w="100%"
+                    h="full"
+                    justify="space-between"
+                    align="center"
+                  >
                     <HStack>
                       {field?.value && (
                         <Image src={field?.value.image} boxSize={6} />
