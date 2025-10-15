@@ -1,7 +1,5 @@
-import { Card, HStack, Icon, Spinner, Text, VStack } from '@chakra-ui/react';
+import { Card, HStack, Spinner, Text, VStack } from '@chakra-ui/react';
 import { useEffect } from 'react';
-
-import { DoubtIcon } from '@/components/icons/doubt';
 
 import { useFormBridge } from '../../hooks/bridge';
 
@@ -56,7 +54,6 @@ export function DetailsBridge({
             <Text color="grey.250" fontSize={12}>
               Fee
             </Text>
-            <Icon color="grey.75" fontSize="14px" as={DoubtIcon} />
           </HStack>
           <HStack
             w={'full'}
