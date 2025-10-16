@@ -6,8 +6,7 @@ import { HomeIcon } from '@/components';
 import { Drawer } from '@/layouts/dashboard/drawer';
 import { Pages } from '@/modules/core';
 import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
-import { useGetWidgetUrl } from '@/modules/vault/hooks';
-import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
+import { useGetWidgetUrl, useVaultInfosContext } from '@/modules/vault/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 export const VaultBuySellSessionPage = () => {

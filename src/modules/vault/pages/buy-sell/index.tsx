@@ -11,7 +11,7 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { Container } from '../../components/buy-sell';
 import { BuyTabPanel } from '../../components/buy-sell/BuyTabPanel';
 import { SellTabPanel } from '../../components/buy-sell/SellTabPanel';
-import { useVaultInfosContext } from '../../VaultInfosProvider';
+import { useVaultInfosContext } from '../../hooks';
 
 export const VaultBuySellPage = () => {
   const navigate = useNavigate();

@@ -7,7 +7,7 @@ import { TooltipIcon } from '@/components/icons/tooltip';
 import { Tooltip } from '@/components/ui/tooltip';
 import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
 import { useCreateTransaction } from '@/modules/transactions/hooks';
-import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
+import { useVaultInfosContext } from '@/modules/vault/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import CreateTxMenuButton, {

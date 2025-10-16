@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 
 import { AddressWithCopyBtn } from '@/components';
 import { AddressUtils } from '@/modules/core';
-import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
+import { useVaultInfosContext } from '@/modules/vault/hooks';
 
 export function VaultInfoBridgeMobile() {
   const { vault } = useVaultInfosContext();

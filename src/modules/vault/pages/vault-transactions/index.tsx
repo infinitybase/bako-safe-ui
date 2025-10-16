@@ -19,7 +19,7 @@ import {
 } from '@/modules/transactions/components';
 import { useTransactionSocketListener } from '@/modules/transactions/hooks/events/useTransactionsSocketListener';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
-import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
+import { useVaultInfosContext } from '@/modules/vault/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { StatusFilter } from '../../../transactions/hooks';

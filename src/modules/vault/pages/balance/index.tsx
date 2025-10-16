@@ -10,7 +10,7 @@ import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { NFTsEmptyState } from '../../components/NFTsEmptyState';
-import { useVaultInfosContext } from '../../VaultInfosProvider';
+import { useVaultInfosContext } from '../../hooks';
 
 const VaultBalancePage = () => {
   const navigate = useNavigate();

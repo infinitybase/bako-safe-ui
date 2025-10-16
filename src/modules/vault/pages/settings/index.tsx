@@ -13,7 +13,7 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { SettingsOverview } from '../../components/SettingsOverview';
 import { SettingsSigners } from '../../components/SettingsSigners';
-import { useVaultInfosContext } from '../../VaultInfosProvider';
+import { useVaultInfosContext } from '../../hooks';
 
 const VaultSettingsPage = () => {
   const navigate = useNavigate();

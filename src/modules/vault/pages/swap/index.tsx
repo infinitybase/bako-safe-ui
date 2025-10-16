@@ -9,8 +9,7 @@ import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { RootSwap } from '../../components/swap/Root';
-import { useAssetsList } from '../../hooks';
-import { useVaultInfosContext } from '../../VaultInfosProvider';
+import { useAssetsList, useVaultInfosContext } from '../../hooks';
 
 export const VaultSwapPage = () => {
   const navigate = useNavigate();

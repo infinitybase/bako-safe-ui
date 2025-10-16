@@ -10,9 +10,9 @@ import { ICreateWidgetPayload } from '@/modules/core/models/meld';
 import {
   useListCryptoCurrencies,
   useListFiatCurrencies,
+  useVaultInfosContext,
 } from '@/modules/vault/hooks';
 import { formatMeldEthSlug } from '@/modules/vault/utils';
-import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
 
 import { CardRoot } from '../CardRoot';
 import { CurrencyOptionsModal } from '../CurrencyOptionsModal';

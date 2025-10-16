@@ -33,8 +33,8 @@ import { limitCharacters } from '@/utils/limit-characters';
 
 import { CardDetails } from '../../components/CardDetails';
 import { SignersDetails } from '../../components/SignersDetails';
+import { useVaultInfosContext } from '../../hooks';
 import { vaultInfinityQueryKey } from '../../hooks/list/useVaultTransactionsRequest';
-import { useVaultInfosContext } from '../../VaultInfosProvider';
 
 const VaultDetailsPage = () => {
   const { isOpen: welcomeDialogState, onOpenChange: setWelcomeDialogState } =

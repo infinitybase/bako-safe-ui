@@ -13,7 +13,7 @@ import {
 import { UpRightArrow } from '@/components';
 import { BakoIcon } from '@/components/icons/assets/bakoIcon';
 import { NetworkService } from '@/modules/network/services';
-import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
+import { useVaultInfosContext } from '@/modules/vault/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useGetTokenInfos } from '../../hooks';

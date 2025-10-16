@@ -18,13 +18,13 @@ import { ICreateWidgetPayload } from '@/modules/core/models/meld';
 import {
   useListCryptoCurrencies,
   useListFiatCurrencies,
+  useVaultInfosContext,
 } from '@/modules/vault/hooks';
 import {
   formatMeldEthSlug,
   parseToBN,
   splitToFiat,
 } from '@/modules/vault/utils';
-import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
 import { moneyFormat } from '@/utils';
 import { FUEL_ETH_ID } from '@/utils/constants';
 import mergeRefs from '@/utils/merge-refs';

@@ -9,8 +9,8 @@ import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { FormBridgeProvider } from '../../components/bridge/providers/FormBridgeProvider';
+import { useVaultInfosContext } from '../../hooks';
 import { useStepsBridge } from '../../hooks/bridge';
-import { useVaultInfosContext } from '../../VaultInfosProvider';
 import { FormPageBrigde } from './form';
 import { FormMobilePageBrigde } from './formMobile';
 import { ResumePageBrigde } from './resumePage';

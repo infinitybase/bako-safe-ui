@@ -30,9 +30,9 @@ import { NetworkType } from '@/modules/network/services';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { limitCharacters } from '@/utils';
 
+import { useVaultInfosContext } from '../hooks';
 import { UseVaultDetailsReturn } from '../hooks/details';
 import { openFaucet } from '../utils';
-import { useVaultInfosContext } from '../VaultInfosProvider';
 
 export interface CardDetailsProps {
   assets: UseVaultDetailsReturn['assets'];

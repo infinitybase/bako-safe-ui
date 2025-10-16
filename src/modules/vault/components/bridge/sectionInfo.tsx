@@ -12,7 +12,7 @@ import { useMemo, useState } from 'react';
 
 import { AddressUtils } from '@/modules/core';
 
-import { useVaultInfosContext } from '../../VaultInfosProvider';
+import { useVaultInfosContext } from '../../hooks';
 import { AssetItem } from './modalSelectAssets';
 
 export interface SectionInfoBridgeProps {

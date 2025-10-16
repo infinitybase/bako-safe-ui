@@ -10,7 +10,7 @@ import { useTransactionsContext } from '@/modules/transactions/providers/Transac
 import { TransactionService } from '@/modules/transactions/services';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
-import { useVaultInfosContext } from '../../VaultInfosProvider';
+import { useVaultInfosContext } from '../../hooks';
 import { DECIMALS } from './useTotalFuelTokens';
 
 const RIG_ID_CONTRACT = import.meta.env.VITE_RIG_ID_CONTRACT!;

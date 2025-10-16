@@ -33,7 +33,7 @@ import {
   formatEstimativeTime,
   optionsAssetsFuel,
 } from '../../components/bridge/utils';
-import { useVaultInfosContext } from '../../VaultInfosProvider';
+import { useVaultInfosContext } from '../../hooks';
 import { useCreateSwapBridge } from './useCreateSwapBridge';
 import { useGetDestinationsBridge } from './useGetDestinationsBridge';
 import { useGetLimitsBridge } from './useGetLimits';
