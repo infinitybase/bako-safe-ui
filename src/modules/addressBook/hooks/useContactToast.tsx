@@ -18,14 +18,8 @@ interface ToastParams {
   position?: ToastPosition;
 }
 
-interface UseContactToastProps {
-  createdAccountNotification?: boolean;
-}
-
-const useContactToast = ({
-  createdAccountNotification = false,
-}: UseContactToastProps = {}) => {
-  const toast = useNotification(undefined, createdAccountNotification);
+const useContactToast = () => {
+  const toast = useNotification(undefined);
 
   const successToast = ({ description, title, position }: ToastParams) =>
     toast({
