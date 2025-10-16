@@ -88,10 +88,10 @@ const WelcomeDialog = ({
             fontWeight: 700,
             lineHeight: '19.36px',
           }}
-          pb={6}
+          pb={3}
         />
 
-        <HStack w="full" my={6} gap={4}>
+        <HStack w="full" my={3} gap={4}>
           <WelcomeCard
             title="Bridge"
             description="Crypto from Ethereum network to Fuel mainnet."

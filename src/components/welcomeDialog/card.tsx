@@ -29,7 +29,7 @@ const WelcomeCard = ({
     <Card.Root
       w="full"
       h="full"
-      minH={130}
+      minH={140}
       variant="subtle"
       onClick={onClick}
       opacity={0.6}
@@ -56,25 +56,23 @@ const WelcomeCard = ({
           w="full"
           gap={2}
           animate={{
-            y: isHovered ? -12 : 0,
+            y: isHovered ? -10 : 0,
           }}
           transition={{
             type: 'spring',
-            stiffness: 300,
+            stiffness: 200,
             damping: 25,
           }}
         >
           <Icon as={icon} color="textPrimary" w={iconSize} />
-          <VStack alignItems="center" w="full" gap={1}>
-            <Heading
-              fontSize="sm"
-              color="textPrimary"
-              textAlign="center"
-              lineHeight="short"
-            >
-              {title}
-            </Heading>
-          </VStack>
+          <Heading
+            fontSize="sm"
+            color="textPrimary"
+            textAlign="center"
+            lineHeight="short"
+          >
+            {title}
+          </Heading>
         </MotionVStack>
 
         <MotionText
@@ -82,17 +80,17 @@ const WelcomeCard = ({
           color="textSecondary"
           textAlign="center"
           lineHeight="short"
-          initial={{ opacity: 0, y: 10 }}
+          initial={{ opacity: 0, y: -10 }}
           hidden={!isHovered}
           animate={{
             opacity: isHovered ? 1 : 0,
-            y: isHovered ? 0 : 10,
+            y: isHovered ? -10 : 0,
           }}
           transition={{
             opacity: { duration: 0.2, ease: 'easeInOut' },
             y: {
               type: 'spring',
-              stiffness: 300,
+              stiffness: 200,
               damping: 25,
             },
           }}

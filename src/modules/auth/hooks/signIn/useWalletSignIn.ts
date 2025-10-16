@@ -18,9 +18,12 @@ const useWalletSignIn = (
 ) => {
   const [isAnyWalletConnectorOpen, setIsAnyWalletConnectorOpen] =
     useState(false);
+  const [currentOpenConnector, setCurrentOpenConnector] = useState<
+    string | null
+  >(null);
 
   const { fuel } = useFuel();
-  const { authDetails, invalidateGifAnimationRequest } = useWorkspaceContext();
+  const { authDetails } = useWorkspaceContext();
   const { errorToast } = useContactToast();
   const { fromConnector } = useNetworks();
   const {
@@ -103,6 +106,7 @@ const useWalletSignIn = (
 
   const handleSelectWallet = async (connector: string) => {
     if (handler[connector]) {
+      setCurrentOpenConnector(connector);
       handler[connector](connector);
     }
   };
@@ -147,12 +151,12 @@ const useWalletSignIn = (
         first_login: result.first_login,
       });
 
-      invalidateGifAnimationRequest();
       callback(result.rootWallet, result.workspace.id);
     } catch (e) {
       authDetails.handlers.setInvalidAccount?.(true);
     } finally {
       setIsAnyWalletConnectorOpen(false);
+      setCurrentOpenConnector(null);
     }
   };
 
@@ -201,6 +205,7 @@ const useWalletSignIn = (
   return {
     handleSelectWallet,
     isAnyWalletConnectorOpen,
+    currentOpenConnector,
   };
 };
 

@@ -1,5 +1,5 @@
 import { Box, Tabs, Text, VStack } from 'bako-ui';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 
 import { useQueryParams } from '@/modules';
 import { useContactToast } from '@/modules/addressBook/hooks';
@@ -35,6 +35,7 @@ interface SignInWrapperProps {
   handleInputChange: UseWebAuthnSignIn['handleInputChange'];
   handleSelectWallet: UseWalletSignIn['handleSelectWallet'];
   handleRegister: UseWebAuthnSignIn['handleRegister'];
+  currentOpenConnector: UseWalletSignIn['currentOpenConnector'];
 }
 
 const SignInWrapper = (props: SignInWrapperProps) => {
@@ -51,6 +52,7 @@ const SignInWrapper = (props: SignInWrapperProps) => {
     handleRegister,
     mode,
     setMode,
+    currentOpenConnector,
   } = props;
 
   const { byConnector } = useQueryParams();
@@ -72,6 +74,12 @@ const SignInWrapper = (props: SignInWrapperProps) => {
       });
     auth.handlers.setInvalidAccount?.(false);
   }, [auth.invalidAccount]);
+
+  const isLoading = useMemo(
+    () => formState.isLoading || isAnyWalletConnectorOpen,
+    [formState.isLoading, isAnyWalletConnectorOpen],
+  );
+  const Root = isMobile ? SigninContainerMobile : SigninContainer;
 
   if (isSafariBrowser && byConnector) {
     return (
@@ -97,8 +105,6 @@ const SignInWrapper = (props: SignInWrapperProps) => {
     );
   }
 
-  const Root = isMobile ? SigninContainerMobile : SigninContainer;
-
   return (
     <Root>
       <NetworkSignInDrawer
@@ -121,17 +127,24 @@ const SignInWrapper = (props: SignInWrapperProps) => {
               alignItems="center"
               justifyContent="center"
             >
-              {formState.isLoading && (
+              {isLoading && (
                 <Box maxW={{ md: 440, base: 'unset' }} w="full" spaceY={8}>
                   <LoadingCard
                     title={
-                      mode === WebAuthnModeState.LOGIN
-                        ? 'Logging in...'
-                        : 'Creating new user...'
+                      isAnyWalletConnectorOpen
+                        ? 'Connecting wallet...'
+                        : mode === WebAuthnModeState.LOGIN
+                          ? 'Logging in...'
+                          : 'Creating new user...'
                     }
-                    subtitle={formData.form.getValues('username') || ''}
+                    subtitle={
+                      currentOpenConnector ||
+                      formData.form.getValues('username') ||
+                      ''
+                    }
                   />
 
+                  {/* Show with hidden for prevent flick in the box */}
                   <ConnectorsList
                     connectors={connectors}
                     hidden
@@ -140,7 +153,7 @@ const SignInWrapper = (props: SignInWrapperProps) => {
                   />
                 </Box>
               )}
-              {!formState.isLoading && (
+              {!isLoading && (
                 <VStack w="full" gap={8} maxW={{ md: 440, base: 'unset' }}>
                   <WebAuthnSignIn
                     formData={formData}
@@ -165,18 +178,21 @@ const SignInWrapper = (props: SignInWrapperProps) => {
             </VStack>
           </Box>
         </Tabs.Content>
-        <Tabs.Content value="1" flex={1}>
+        <Tabs.Content value="1" flex={1} display="flex" justifyContent="center">
           <Box
             h="full"
             display="flex"
             alignItems="center"
             justifyContent="center"
+            w="full"
             maxW={{ md: 440 }}
           >
             <WebAuthnAccountCreated
-              username={createdAcccountUsername || 'vitorsoaresp'}
+              username={createdAcccountUsername}
               formState={formState}
             />
+
+            <SignInFooter />
           </Box>
         </Tabs.Content>
       </Tabs.Root>

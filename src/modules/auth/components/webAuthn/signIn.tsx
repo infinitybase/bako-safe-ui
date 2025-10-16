@@ -47,12 +47,12 @@ const WebAuthnSignIn = (props: WebAuthnSignInProps) => {
 
   return (
     <Card.Root w="full" variant="subtle" bg="gray.600" rounded="2xl">
-      <Card.Body>
+      <Card.Body maxH={250}>
         <AnimatedSignInCard mode={mode}>
           <Stack
             display="flex"
             flexDirection="column"
-            gap={{ base: 6, md: 10 }}
+            gap={{ base: 6, md: 14 }}
           >
             <WebAuthnForm
               formData={formData}

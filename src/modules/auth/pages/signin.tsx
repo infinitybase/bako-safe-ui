@@ -15,6 +15,7 @@ const WebSignInPage = () => {
     handleInputChange,
     mode,
     setMode,
+    currentOpenConnector,
   } = useWebSignIn();
 
   return (
@@ -31,6 +32,7 @@ const WebSignInPage = () => {
       handleSelectWallet={handleSelectWallet}
       handleRegister={handleRegister}
       setMode={setMode}
+      currentOpenConnector={currentOpenConnector}
     />
   );
 };

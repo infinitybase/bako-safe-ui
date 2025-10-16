@@ -13,7 +13,7 @@ const WebAuthnAccountCreated = (props: WebAuthnAccountCreatedProps) => {
   return (
     <Card.Root variant="subtle" bg="gray.600" rounded="2xl" w="full" h="250px">
       <Card.Header />
-      <Card.Body flex={1} display="flex" justifyContent="center">
+      <Card.Body flex={1} display="flex" justifyContent="center" pb={0}>
         <VStack
           h="full"
           w="full"
@@ -21,7 +21,7 @@ const WebAuthnAccountCreated = (props: WebAuthnAccountCreatedProps) => {
           alignItems="start"
           justifyContent="flex-end"
         >
-          <VStack gap={0} alignItems="start">
+          <VStack gap={2} alignItems="start">
             <Heading fontSize="3xl" color="textPrimary">
               Account created!
             </Heading>
