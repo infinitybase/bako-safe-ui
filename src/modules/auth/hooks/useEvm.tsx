@@ -21,14 +21,13 @@ export interface EIP1193Provider extends EventEmitter {
 
 const wagmiConfig: Config = createWagmiConfig();
 
-let modal = createWeb3ModalInstance({
+const modal = createWeb3ModalInstance({
   wagmiConfig,
 });
 
 export const useEvm = () => {
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [address, setAddress] = useState<string>('');
-  const [isReconnecting, setIsReconnecting] = useState<boolean>(true);
   const unwatchRef = useRef<(() => void) | null>(null);
 
   const connect = async () => {
@@ -72,34 +71,30 @@ export const useEvm = () => {
   };
 
   const signAndValidate = async (message: string, _address?: string) => {
-    try {
-      const ethProvider = await getProviders();
-      if (!ethProvider) {
-        throw new Error('Invalid eth provider');
-      }
-
-      if (_address && !_address.startsWith('0x')) {
-        throw new Error('Invalid account address');
-      }
-      const currentAddress = _address || (await getCurrentAccount());
-
-      if (!currentAddress) {
-        throw new Error('No Ethereum account selected');
-      }
-
-      const signature = (await ethProvider.request({
-        method: 'personal_sign',
-        params: [stringToHex(message), currentAddress],
-      })) as string;
-
-      if (!validateSignature(currentAddress, message, signature)) {
-        throw new Error('Signature address validation failed');
-      }
-
-      return signature;
-    } catch (error) {
-      throw error;
+    const ethProvider = await getProviders();
+    if (!ethProvider) {
+      throw new Error('Invalid eth provider');
     }
+
+    if (_address && !_address.startsWith('0x')) {
+      throw new Error('Invalid account address');
+    }
+    const currentAddress = _address || (await getCurrentAccount());
+
+    if (!currentAddress) {
+      throw new Error('No Ethereum account selected');
+    }
+
+    const signature = (await ethProvider.request({
+      method: 'personal_sign',
+      params: [stringToHex(message), currentAddress],
+    })) as string;
+
+    if (!validateSignature(currentAddress, message, signature)) {
+      throw new Error('Signature address validation failed');
+    }
+
+    return signature;
   };
 
   const validateSignature = (
@@ -148,8 +143,6 @@ export const useEvm = () => {
         setAddress(account.address || '');
       } catch (error) {
         console.error('Failed to reconnect:', error);
-      } finally {
-        setIsReconnecting(false);
       }
     };
 
