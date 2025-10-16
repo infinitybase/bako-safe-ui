@@ -6,13 +6,6 @@ interface UseToastOptions {
   status?: 'success' | 'error' | 'warning' | 'info';
   duration?: number;
   isClosable?: boolean;
-  position?:
-    | 'top'
-    | 'top-right'
-    | 'top-left'
-    | 'bottom'
-    | 'bottom-right'
-    | 'bottom-left';
   title?: string;
   description?: string;
   icon?: React.ReactNode;
@@ -25,6 +18,7 @@ const useNotification = (options?: UseToastOptions) => {
       description: toastOptions.description || options?.description,
       type: toastOptions.status || options?.status || 'info',
       duration: toastOptions.duration || options?.duration || 5000,
+      closable: toastOptions.isClosable || options?.isClosable || false,
       ...options,
       ...toastOptions,
     });
