@@ -1,12 +1,13 @@
-import { getAccount, Config, reconnect, watchAccount } from '@wagmi/core';
+import type EventEmitter from 'node:events';
+
 import {
   ecrecover,
   fromRpcSig,
   hashPersonalMessage,
   pubToAddress,
 } from '@ethereumjs/util';
+import { Config, getAccount, reconnect, watchAccount } from '@wagmi/core';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import type EventEmitter from 'node:events';
 import { stringToHex } from 'viem';
 
 import { createWagmiConfig, createWeb3ModalInstance } from '@/config/web3Modal';

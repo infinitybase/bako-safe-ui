@@ -42,7 +42,7 @@ const useWalletSignIn = (
     await connect();
   };
 
-  const evmWalletConnect = async (_connector: string) => {
+  const evmWalletConnect = async () => {
     if (!evmModalIsOpen) {
       setEvmModalIsOpen(true);
       await evmConnect();
@@ -171,7 +171,6 @@ const useWalletSignIn = (
   useEffect(() => {
     const unsub = evmModal.subscribeEvents(
       async (event: { data: { event: string } }) => {
-        console.log('event.data.event', event.data.event);
         switch (event.data.event) {
           case 'MODAL_OPEN':
             setEvmModalIsOpen(true);

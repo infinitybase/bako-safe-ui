@@ -1,6 +1,5 @@
-import { SignInWrapper } from '@/modules/auth/components';
-
-import { useWebSignIn } from '../hooks/signIn/useWebSignIn';
+import { SignInWrapper } from '../components';
+import { useWebSignIn } from '../hooks';
 
 const WebSignInPage = () => {
   const {
@@ -15,6 +14,7 @@ const WebSignInPage = () => {
     handleSelectWallet,
     handleInputChange,
     mode,
+    setMode,
   } = useWebSignIn();
 
   return (
@@ -30,6 +30,7 @@ const WebSignInPage = () => {
       handleInputChange={handleInputChange}
       handleSelectWallet={handleSelectWallet}
       handleRegister={handleRegister}
+      setMode={setMode}
     />
   );
 };

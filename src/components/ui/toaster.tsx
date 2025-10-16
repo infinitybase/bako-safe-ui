@@ -3,7 +3,7 @@
 import { createToaster, Loader, Portal, Stack, Toast } from 'bako-ui';
 
 export const toaster = createToaster({
-  placement: 'bottom-end',
+  placement: 'top-end',
   pauseOnPageIdle: true,
 });
 
