@@ -12,11 +12,12 @@ const DialogActions = ({
   flexWrap,
   flexDir,
   flexDirection,
+  hideDivider,
   ...rest
 }: DialogActionsProps) => (
   <Box w="full" {...rest}>
     <Separator
-      // hidden={hideDivider}
+      hidden={hideDivider}
       my={{ base: 3, sm: 6 }}
       borderColor={dividerBorderColor ?? 'unset'}
     />
@@ -37,17 +38,7 @@ const DialogPrimaryAction = (props: DialogActionProps) => (
 );
 
 const DialogSecondaryAction = (props: DialogActionProps) => (
-  <Button
-    w="25%"
-    colorPalette="secondary"
-    bgColor="transparent"
-    border="1px solid white"
-    _hover={{
-      borderColor: 'brand.500',
-      color: 'brand.500',
-    }}
-    {...props}
-  />
+  <Button w="25%" variant="subtle" {...props} />
 );
 
 const DialogTertiaryAction = (props: DialogActionProps) => (
