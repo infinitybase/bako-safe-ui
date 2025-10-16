@@ -42,7 +42,7 @@ const AnimatedSignInCard = ({ mode, children }: AnimatedSignInCardProps) => {
           transition={{
             x: {
               type: 'spring',
-              stiffness: 130,
+              stiffness: 200,
               damping: 26,
               mass: 0.8,
             },
