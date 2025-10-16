@@ -1,45 +1,51 @@
-import { Text, VStack } from 'bako-ui';
-
-import { ProgressButton } from '@/components/progressButton';
+import { Button, Card, Heading, Text, VStack } from 'bako-ui';
 
 import { UseDappSignIn, UseWebSignIn } from '../../hooks';
-import { SignInHeader } from '../header';
 
 interface WebAuthnAccountCreatedProps {
-  title: string;
   formState: UseWebSignIn['formState'] | UseDappSignIn['formState'];
-  showDescription: boolean;
+  username: string;
 }
 
 const WebAuthnAccountCreated = (props: WebAuthnAccountCreatedProps) => {
-  const { title, formState, showDescription } = props;
+  const { formState, username } = props;
 
   return (
-    <VStack h="full" gap={8} justifyContent="center">
-      <VStack gap={0}>
-        <SignInHeader title={title} showDescription={showDescription} />
+    <Card.Root variant="subtle" bg="gray.600" rounded="2xl" w="full" h="250px">
+      <Card.Header />
+      <Card.Body flex={1} display="flex" justifyContent="center">
+        <VStack
+          h="full"
+          w="full"
+          gap={8}
+          alignItems="start"
+          justifyContent="flex-end"
+        >
+          <VStack gap={0} alignItems="start">
+            <Heading fontSize="3xl" color="textPrimary">
+              Account created!
+            </Heading>
+            <Text color="textSecondary" fontSize="sm">
+              {username}
+            </Text>
+          </VStack>
 
-        <Text fontSize="xs" color="grey.250">
-          Account created!
-        </Text>
-      </VStack>
-
-      <ProgressButton
-        w="full"
-        maxW={{ base: 292, md: 390 }}
-        // variant="primary"
-        fontSize="sm"
-        aria-label={formState.label}
-        onClick={formState.handleAction}
-        _hover={{
-          opacity: formState.isDisabled ? 0.8 : 1,
-        }}
-        disabled={formState.isDisabled}
-        progress={formState.actionProgress}
-      >
-        {formState.label}
-      </ProgressButton>
-    </VStack>
+          <Button
+            alignSelf="flex-start"
+            fontSize="sm"
+            aria-label={formState.label}
+            onClick={formState.handleAction}
+            _hover={{
+              opacity: formState.isDisabled ? 0.8 : 1,
+            }}
+            disabled={formState.isDisabled}
+          >
+            {formState.label}
+          </Button>
+        </VStack>
+      </Card.Body>
+      <Card.Footer />
+    </Card.Root>
   );
 };
 

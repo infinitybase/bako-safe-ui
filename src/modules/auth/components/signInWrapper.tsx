@@ -19,11 +19,12 @@ import {
 import { ConnectorsList } from './connector';
 import { SigninContainer, SigninContainerMobile } from './container';
 import { SignInFooter } from './footer';
-import { SignInHeader } from './header';
 import { WebAuthnAccountCreated, WebAuthnSignIn } from './webAuthn';
+import { LoadingCard } from './webAuthn/loading';
 
 interface SignInWrapperProps {
   mode: WebAuthnModeState;
+  setMode: (mode: WebAuthnModeState) => void;
   isAnyWalletConnectorOpen: UseWalletSignIn['isAnyWalletConnectorOpen'];
   tabs: UseWebAuthnSignIn['tabs'];
   formData: UseWebAuthnSignIn['formData'];
@@ -35,8 +36,6 @@ interface SignInWrapperProps {
   handleSelectWallet: UseWalletSignIn['handleSelectWallet'];
   handleRegister: UseWebAuthnSignIn['handleRegister'];
 }
-
-const title = 'Welcome to Bako Safe';
 
 const SignInWrapper = (props: SignInWrapperProps) => {
   const {
@@ -51,6 +50,7 @@ const SignInWrapper = (props: SignInWrapperProps) => {
     handleSelectWallet,
     handleRegister,
     mode,
+    setMode,
   } = props;
 
   const { byConnector } = useQueryParams();
@@ -85,8 +85,6 @@ const SignInWrapper = (props: SignInWrapperProps) => {
           px={6}
           gap={14}
         >
-          <SignInHeader title={title} showDescription={false} />
-
           <VStack w="full" maxW={390} gap={6}>
             <Text textAlign="center">
               Safari is not yet supported on external connectors.
@@ -99,32 +97,51 @@ const SignInWrapper = (props: SignInWrapperProps) => {
     );
   }
 
-  if (isMobile) {
-    return (
-      <SigninContainerMobile>
-        <NetworkSignInDrawer
-          isOpen={loginDrawer.isOpen}
-          onClose={loginDrawer.onClose}
-        />
+  const Root = isMobile ? SigninContainerMobile : SigninContainer;
 
-        <Tabs.Root value={tabs.tab.toString()} flex={1} w="full" display="flex">
-          <Tabs.List>
-            <Box h="full" p={0}>
-              <VStack
-                justifyContent="center"
-                h="full"
-                w="full"
-                pt={20}
-                pb={6}
-                px={6}
-                gap={14}
-              >
-                <SignInHeader
-                  title={title}
-                  showDescription={mode !== WebAuthnModeState.ACCOUNT_CREATED}
-                />
+  return (
+    <Root>
+      <NetworkSignInDrawer
+        isOpen={loginDrawer.isOpen}
+        onClose={loginDrawer.onClose}
+      />
 
-                <VStack w="full" maxW={390} gap={6}>
+      <Tabs.Root
+        value={tabs.tab.toString()}
+        flex={1}
+        w="full"
+        display="flex"
+        px={4}
+      >
+        <Tabs.Content value="0" flex={1}>
+          <Box h="full" p={0}>
+            <VStack
+              h="full"
+              gap={20}
+              alignItems="center"
+              justifyContent="center"
+            >
+              {formState.isLoading && (
+                <Box maxW={{ md: 440, base: 'unset' }} w="full" spaceY={8}>
+                  <LoadingCard
+                    title={
+                      mode === WebAuthnModeState.LOGIN
+                        ? 'Logging in...'
+                        : 'Creating new user...'
+                    }
+                    subtitle={formData.form.getValues('username') || ''}
+                  />
+
+                  <ConnectorsList
+                    connectors={connectors}
+                    hidden
+                    onConnectorSelect={handleSelectWallet}
+                    isAnyWalletConnectorOpen={isAnyWalletConnectorOpen}
+                  />
+                </Box>
+              )}
+              {!formState.isLoading && (
+                <VStack w="full" gap={8} maxW={{ md: 440, base: 'unset' }}>
                   <WebAuthnSignIn
                     formData={formData}
                     formState={formState}
@@ -132,6 +149,7 @@ const SignInWrapper = (props: SignInWrapperProps) => {
                     inputBadge={inputBadge}
                     handleInputChange={handleInputChange}
                     handleRegister={handleRegister}
+                    onModeChange={setMode}
                   />
 
                   <ConnectorsList
@@ -141,77 +159,28 @@ const SignInWrapper = (props: SignInWrapperProps) => {
                     isAnyWalletConnectorOpen={isAnyWalletConnectorOpen}
                   />
                 </VStack>
-
-                <SignInFooter />
-              </VStack>
-            </Box>
-
-            <Box h="full">
-              <WebAuthnAccountCreated
-                showDescription={mode !== WebAuthnModeState.ACCOUNT_CREATED}
-                title={createdAcccountUsername}
-                formState={formState}
-              />
-            </Box>
-          </Tabs.List>
-        </Tabs.Root>
-      </SigninContainerMobile>
-    );
-  }
-
-  return (
-    <SigninContainer>
-      <NetworkSignInDrawer
-        isOpen={loginDrawer.isOpen}
-        onClose={loginDrawer.onClose}
-      />
-
-      <Tabs.Root value={tabs.tab.toString()} flex={1} w="full">
-        <Box h="full">
-          <Box h="full" p={0}>
-            <VStack
-              h="full"
-              gap={20}
-              alignItems="center"
-              justifyContent="center"
-            >
-              <SignInHeader
-                title={title}
-                showDescription={mode !== WebAuthnModeState.ACCOUNT_CREATED}
-              />
-
-              <VStack w="full" gap={8} maxW={390}>
-                <WebAuthnSignIn
-                  formData={formData}
-                  formState={formState}
-                  accountsOptions={accountsOptions}
-                  inputBadge={inputBadge}
-                  handleInputChange={handleInputChange}
-                  handleRegister={handleRegister}
-                />
-
-                <ConnectorsList
-                  connectors={connectors}
-                  hidden={isSafariBrowser}
-                  onConnectorSelect={handleSelectWallet}
-                  isAnyWalletConnectorOpen={isAnyWalletConnectorOpen}
-                />
-              </VStack>
+              )}
 
               <SignInFooter />
             </VStack>
           </Box>
-
-          <Box h="full">
+        </Tabs.Content>
+        <Tabs.Content value="1" flex={1}>
+          <Box
+            h="full"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            maxW={{ md: 440 }}
+          >
             <WebAuthnAccountCreated
-              title={createdAcccountUsername}
+              username={createdAcccountUsername || 'vitorsoaresp'}
               formState={formState}
-              showDescription={mode !== WebAuthnModeState.ACCOUNT_CREATED}
             />
           </Box>
-        </Box>
+        </Tabs.Content>
       </Tabs.Root>
-    </SigninContainer>
+    </Root>
   );
 };
 

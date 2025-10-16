@@ -1,54 +1,48 @@
-import { Heading, HStack, Icon, Link, Text, VStack } from 'bako-ui';
+import { HStack, Icon, Link, Text } from 'bako-ui';
 import { FiArrowUpRight } from 'react-icons/fi';
 
 import { FeedbackIcon } from '@/components/icons/feedback';
-import { useScreenSize } from '@/modules/core/hooks';
 
 const SignInFooter = () => {
-  const { isMobile } = useScreenSize();
-
   const feedbackForm = () =>
     window.open(import.meta.env.VITE_FEEDBACK_FORM, '_BLANK');
 
   return (
-    <VStack gap={1} textAlign="center" mt={isMobile ? 6 : 0}>
-      <Heading fontSize="sm" color="grey.75">
-        New to Fuel Network?
-      </Heading>
-
+    <HStack
+      gap={6}
+      textAlign="center"
+      position="fixed"
+      bottom={4}
+      left={0}
+      right={0}
+      justifyContent="center"
+    >
       <Link
         fontSize="xs"
-        color="grey.250"
+        color="textSecondary"
         href="https://www.fuel.network/"
         target="_blank"
         display="flex"
-        gap={1}
+        gap={2}
         textDecoration="none"
         fontWeight="medium"
-        borderRadius={8}
         _hover={{
           textDecoration: 'none',
-          color: 'grey.75',
         }}
       >
-        <Text fontSize="xs" fontWeight="normal">
-          Learn more
+        <Text fontSize="sm" color="textSecondary">
+          New to Fuel Network?
         </Text>
-        <Icon as={FiArrowUpRight} fontSize="md" />
+        <Icon as={FiArrowUpRight} boxSize="14px" />
       </Link>
 
-      <HStack cursor="pointer" onClick={feedbackForm} gap={3} mt={6}>
-        <Text
-          color="grey.250"
-          fontWeight={400}
-          lineHeight="13.58px"
-          fontSize="xs"
-        >
+      <HStack cursor="pointer" onClick={feedbackForm} gap={2}>
+        <Icon boxSize="14px" color="textSecondary" as={FeedbackIcon} />
+        <Text color="textSecondary" fontSize="sm">
           Send feedback
         </Text>
-        <Icon w={3} h={3} color="grey.250" fontSize={12} as={FeedbackIcon} />
       </HStack>
-    </VStack>
+    </HStack>
   );
 };
 

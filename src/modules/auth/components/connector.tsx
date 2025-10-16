@@ -4,7 +4,6 @@ import {
   Heading,
   HStack,
   Icon,
-  Separator,
   Stack,
   Text,
   VStack,
@@ -42,7 +41,7 @@ const CardConnector = (props: CardConnectorProps) => {
       return (
         <Avatar
           color="white"
-          w={9}
+          boxSize="16px"
           bgColor="transparent"
           shape="rounded"
           name={connector.name}
@@ -52,7 +51,7 @@ const CardConnector = (props: CardConnectorProps) => {
     }
 
     if (connector.icon) {
-      return <Icon as={connector.icon} w={9} />;
+      return <Icon as={connector.icon} boxSize="16px" />;
     }
 
     return null;
@@ -68,19 +67,19 @@ const CardConnector = (props: CardConnectorProps) => {
       as={HStack}
       w="100%"
       h="100%"
-      gap={4}
-      justifyContent="space-between"
-      p={2}
+      gap={2}
+      p={4}
+      flexDirection="column"
+      alignItems="center"
       aria-label={`Connect ${connector.label}`}
       cursor={connector.isEnabled ? 'pointer' : 'initial'}
-      bgColor="grey.825"
-      borderColor="grey.550"
+      border="none"
       onClick={selectConnector}
       position="relative"
       transition="0.5s"
       pointerEvents={isAnyWalletConnectorOpen ? 'none' : 'auto'}
       _hover={{
-        borderColor: 'grey.75',
+        bg: 'gray.500',
       }}
     >
       <Box
@@ -91,15 +90,17 @@ const CardConnector = (props: CardConnectorProps) => {
         hidden={connector.isEnabled}
         position="absolute"
         borderRadius={10}
-        backgroundColor="#121212a8"
+        backgroundColor="#121212d7"
       />
       {ConnectorIcon}
       <Box flex={1}>
         <Heading
-          fontSize="sm"
+          fontSize="xs"
           fontWeight="semibold"
-          color="grey.200"
+          color="gray.50"
           lineHeight={1.2}
+          letterSpacing="wider"
+          textTransform="uppercase"
         >
           {connector.label}
         </Heading>
@@ -117,13 +118,11 @@ const ConnectorsList = ({
   const { isLitteSmall } = useScreenSize();
 
   return (
-    <VStack hidden={hidden} gap={{ base: 6, md: 8 }} w="full">
+    <VStack hidden={hidden} gap={{ base: 6, md: 8 }} w="full" px={6}>
       <HStack w="full" gap={5}>
-        <Separator borderColor="grey.500" />
-        <Text color="grey.250" fontSize="xs" fontWeight="light">
-          OR
+        <Text color="gray.200" fontSize="sm" fontWeight="light">
+          Or connect wallet
         </Text>
-        <Separator borderColor="grey.500" />
       </HStack>
 
       <Stack flexDirection={isLitteSmall ? 'column' : 'row'} w="full" gap={2}>
