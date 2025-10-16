@@ -20,6 +20,7 @@ export * from './dapp-right-arrow';
 export * from './dapp-warning';
 export * from './double-arrow-right';
 export * from './down-left-arrow';
+export * from './down-left-arrow-2';
 export * from './down-left-arrow-green';
 export * from './edit';
 export * from './empty-box';

@@ -1,4 +1,4 @@
-import { Button, DialogOpenChangeDetails, VStack } from 'bako-ui';
+import { Button, DialogOpenChangeDetails, Flex, HStack } from 'bako-ui';
 
 import { useNetworks } from '@/modules/network/hooks';
 import { NetworkType } from '@/modules/network/services';
@@ -6,7 +6,7 @@ import { useUpdateSettingsRequest } from '@/modules/settings/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { Dialog } from '../dialog';
-import { BridgeIcon, CoinsIcon, DownLeftArrow } from '../icons';
+import { BridgeIcon, CoinsIcon, DownLeftArrow2 } from '../icons';
 import WelcomeCard from './card';
 
 interface IWelcomeDialogProps {
@@ -21,12 +21,7 @@ const WelcomeDialog = ({
   onOpenChange,
 }: IWelcomeDialogProps) => {
   const {
-    screenSizes: {
-      isMobile,
-      isSmall,
-      isLitteSmall,
-      isLowerThanFourHundredAndThirty,
-    },
+    screenSizes: { isMobile, isSmall },
     authDetails: {
       userInfos: { first_login, id, refetch },
     },
@@ -69,11 +64,12 @@ const WelcomeDialog = ({
       onOpenChange={onOpenChange}
       open={(first_login && first_login && isOpen) ?? false}
       closeOnEscape={false}
+      trapFocus={false}
       closeOnInteractOutside={false}
       size={{ base: 'full', sm: 'lg' }}
       modalContentProps={{
-        px: 10,
-        py: 10,
+        px: 6,
+        py: 6,
       }}
     >
       <Dialog.Body>
@@ -86,30 +82,29 @@ const WelcomeDialog = ({
           title="Welcome to Bako Safe!"
           description={`Let's start by adding some funds to your personal vault.`}
           descriptionFontSize="12px"
+          descriptionColor="textSecondary"
           titleSxProps={{
             fontSize: '16px',
             fontWeight: 700,
             lineHeight: '19.36px',
           }}
-          borderBottomWidth={1}
-          borderColor="grey.425"
           pb={6}
         />
 
-        <VStack w="full" my={6} pb={isMobile ? 8 : 0} gap={4}>
-          <WelcomeCard
-            title="Deposit"
-            description="Deposit using QR Code or vault adress."
-            icon={DownLeftArrow}
-            iconSize="22px"
-            onClick={() => handleOpenDepositDialog()}
-          />
+        <HStack w="full" my={6} gap={4}>
           <WelcomeCard
             title="Bridge"
-            description="Transfer between different networks."
+            description="Crypto from Ethereum network to Fuel mainnet."
             icon={BridgeIcon}
             commingSoon={isTestnet}
             onClick={isTestnet ? undefined : () => handleRedirectToMainNet()}
+          />
+          <WelcomeCard
+            title="Deposit"
+            description="Deposit using QR Code or vault address"
+            icon={DownLeftArrow2}
+            iconSize="22px"
+            onClick={handleOpenDepositDialog}
           />
           <WelcomeCard
             title="Purchase"
@@ -118,8 +113,7 @@ const WelcomeDialog = ({
             commingSoon
             iconSize="22px"
           />
-        </VStack>
-
+        </HStack>
         <Dialog.Actions
           position={isMobile ? 'absolute' : 'relative'}
           bottom={0}
@@ -129,29 +123,14 @@ const WelcomeDialog = ({
           bg={isMobile ? 'dark.950' : 'unset'}
           borderRadius={isMobile && !isSmall ? '20px' : 'unset'}
           pb={isMobile && !isSmall ? 5 : 'unset'}
-          css={{
-            '&>hr': {
-              marginTop: '0',
-              borderColor: '#868079',
-            },
-          }}
+          hideDivider
+          justifyContent="flex-end"
         >
-          <Button
-            fontSize={isLitteSmall ? '12px' : '14px'}
-            lineHeight="15.85px"
-            fontWeight="normal"
-            letterSpacing={isLowerThanFourHundredAndThirty ? 0 : '.5px'}
-            variant="outline"
-            color="grey.75"
-            borderColor="grey.75"
-            w="full"
-            _hover={{
-              bg: '#f5f5f513',
-            }}
-            onClick={() => handleClose()}
-          >
-            Skip this step and take a look into bako
-          </Button>
+          <Flex w="full" justifyContent="flex-end">
+            <Button variant="ghost" onClick={handleClose}>
+              Skip
+            </Button>
+          </Flex>
         </Dialog.Actions>
       </Dialog.Body>
     </Dialog.Modal>

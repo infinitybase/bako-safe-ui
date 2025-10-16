@@ -1,4 +1,6 @@
-import { HStack, Icon, IconProps, Text, VStack } from 'bako-ui';
+import { Badge, Card, Heading, Icon, IconProps, Text, VStack } from 'bako-ui';
+import { motion } from 'framer-motion';
+import { useState } from 'react';
 
 interface IWelcomeCardProps {
   title: string;
@@ -9,6 +11,10 @@ interface IWelcomeCardProps {
   commingSoon?: boolean;
 }
 
+const MotionVStack = motion(VStack);
+const MotionText = motion(Text);
+const MotionBadge = motion(Badge);
+
 const WelcomeCard = ({
   description,
   icon,
@@ -17,44 +23,104 @@ const WelcomeCard = ({
   iconSize,
   commingSoon,
 }: IWelcomeCardProps) => {
+  const [isHovered, setIsHovered] = useState(false);
+
   return (
-    <HStack
+    <Card.Root
       w="full"
-      gap={4}
-      p={4}
-      borderRadius="md"
-      border="1px solid #35302F"
-      boxShadow="0px 8px 6px 0px #00000026"
-      background="linear-gradient(0deg, rgba(245, 245, 245, 0.03), rgba(245, 245, 245, 0.03)),linear-gradient(180deg, rgba(21, 20, 19, 0.0375) 0%, rgba(21, 20, 19, 0.0625) 28.5%, rgba(21, 20, 19, 0.125) 72%, rgba(21, 20, 19, 0.25) 100%)"
+      h="full"
+      minH={130}
+      variant="subtle"
       onClick={onClick}
-      opacity={commingSoon ? 0.5 : 'initial'}
-      pointerEvents={commingSoon ? 'none' : 'auto'}
+      opacity={0.6}
+      _hover={{
+        opacity: 1,
+      }}
       cursor={commingSoon ? 'auto' : 'pointer'}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
-      <Icon as={icon} color="grey.250" w={iconSize} />
-      <VStack alignItems="start" w="full" gap={1}>
-        <Text fontSize="sm" color="grey.250" lineHeight="15.85px">
-          {title}
-        </Text>
-        <Text fontSize="xs" color="grey.250" lineHeight="13.58px">
-          {description}
-        </Text>
-      </VStack>
-      {commingSoon && (
-        <Text
-          fontSize="xs"
-          color="grey.250"
-          truncate
-          minW="fit-content"
-          p="4px 6px 4px 6px"
-          borderRadius="xl"
-          border="1px solid rgba(245, 245, 245, 0.25)"
-          lineHeight="12.1px"
+      <Card.Body
+        w="full"
+        display="flex"
+        flexDirection="column"
+        gap={2}
+        p={4}
+        alignItems="center"
+        justifyContent="center"
+        position="relative"
+        overflow="hidden"
+      >
+        <MotionVStack
+          alignItems="center"
+          w="full"
+          gap={2}
+          animate={{
+            y: isHovered ? -12 : 0,
+          }}
+          transition={{
+            type: 'spring',
+            stiffness: 300,
+            damping: 25,
+          }}
         >
-          Comming soon
-        </Text>
-      )}
-    </HStack>
+          <Icon as={icon} color="textPrimary" w={iconSize} />
+          <VStack alignItems="center" w="full" gap={1}>
+            <Heading
+              fontSize="sm"
+              color="textPrimary"
+              textAlign="center"
+              lineHeight="short"
+            >
+              {title}
+            </Heading>
+          </VStack>
+        </MotionVStack>
+
+        <MotionText
+          fontSize="xs"
+          color="textSecondary"
+          textAlign="center"
+          lineHeight="short"
+          initial={{ opacity: 0, y: 10 }}
+          hidden={!isHovered}
+          animate={{
+            opacity: isHovered ? 1 : 0,
+            y: isHovered ? 0 : 10,
+          }}
+          transition={{
+            opacity: { duration: 0.2, ease: 'easeInOut' },
+            y: {
+              type: 'spring',
+              stiffness: 300,
+              damping: 25,
+            },
+          }}
+        >
+          {description}
+        </MotionText>
+
+        {commingSoon && (
+          <MotionBadge
+            variant="solid"
+            colorPalette="yellow"
+            position="absolute"
+            top={2}
+            right={2}
+            size="xs"
+            initial={{ opacity: 0 }}
+            animate={{
+              opacity: isHovered ? 1 : 0,
+            }}
+            transition={{
+              opacity: { duration: 0.2, ease: 'easeInOut', delay: 0.05 },
+            }}
+          >
+            Coming soon
+          </MotionBadge>
+        )}
+      </Card.Body>
+    </Card.Root>
   );
 };
 
