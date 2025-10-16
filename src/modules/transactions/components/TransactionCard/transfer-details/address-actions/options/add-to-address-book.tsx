@@ -1,7 +1,7 @@
 import { HStack, Icon, Text, VStack } from 'bako-ui';
 
 import { PlusIcon } from '@/components';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 interface AddToAddressBookProps {
   address: string;

@@ -13,7 +13,7 @@ import { memo } from 'react';
 
 import { CheckIcon, RemoveIcon } from '@/components';
 import { EditIcon } from '@/components/icons/edit-icon';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 type AccordionActionProp = Pick<
   ButtonProps,

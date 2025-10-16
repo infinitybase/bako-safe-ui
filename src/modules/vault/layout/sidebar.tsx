@@ -23,7 +23,7 @@ import { Pages, PermissionRoles } from '@/modules/core';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 import { VaultBox, VaultListModal } from '@/modules/vault/components';
 import { useVaultInfosContext } from '@/modules/vault/hooks';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 import { getBakoIDURL, getGarageURL } from '@/utils/enviroment';
 
 interface SidebarProps extends BoxProps {

@@ -8,7 +8,7 @@ import {
   useGetAssetsByOperations,
   useVerifyTransactionInformations,
 } from '@/modules/transactions/hooks';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import type { TransactionWithVault } from '../../../services';
 import DetailItem from './DetailItem';

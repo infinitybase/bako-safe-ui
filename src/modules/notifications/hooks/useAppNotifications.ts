@@ -14,11 +14,11 @@ import {
 } from '@/modules/core';
 import { useTransactionState } from '@/modules/transactions/states';
 
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 import { useNotificationsStore } from '../store/useNotificationsStore';
 import { useListNotificationsRequest } from './useListNotificationsRequest';
 import { useSetNotificationsAsReadRequest } from './useSetNotificationsAsReadRequest';
 import { useUnreadNotificationsCounterRequest } from './useUnreadNotificationsCounterRequest';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface UseAppNotificationsParams {
   onClose?: () => void;

@@ -18,7 +18,7 @@ import {
   TransactionCard,
   useVerifyTransactionInformations,
 } from '@/modules/transactions';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { useTransactionsContext } from '../../providers/TransactionsProvider';
 import { TransactionWithVault } from '../../services/types';

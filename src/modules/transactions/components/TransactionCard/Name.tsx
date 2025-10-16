@@ -1,7 +1,7 @@
 import { Center, Heading, HStack, Text } from 'bako-ui';
 
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 import { limitCharacters } from '@/utils';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface TransactionCardNameProps {
   showTransaction?: boolean;

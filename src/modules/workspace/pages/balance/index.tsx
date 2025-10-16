@@ -5,7 +5,7 @@ import { CustomSkeleton, HomeIcon } from '@/components';
 import { EmptyState } from '@/components/emptyState';
 import { AssetsBalanceList } from '@/modules/core';
 
-import { useWorkspaceContext } from '../../WorkspaceProvider';
+import { useWorkspaceContext } from '../../hooks';
 
 const WorkspaceBalancePage = () => {
   const {

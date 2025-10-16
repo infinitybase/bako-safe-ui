@@ -2,7 +2,7 @@ import { Image, Text, VStack } from 'bako-ui';
 
 import { Card } from '@/components';
 import { Asset } from '@/modules/core/utils';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { useGetTokenInfos } from '../../hooks';
 

@@ -25,7 +25,7 @@ import {
 } from '@/components';
 import { Tooltip } from '@/components/ui/tooltip';
 import { NetworkService } from '@/modules/network/services';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { TooltipPendingTx } from '../TooltipPendingTx';
 

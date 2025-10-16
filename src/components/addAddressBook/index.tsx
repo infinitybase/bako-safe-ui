@@ -10,7 +10,7 @@ import {
 } from 'bako-ui';
 
 import { CreateContactDialog } from '@/modules/addressBook/components/dialog';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { PlusIcon } from '../icons';
 

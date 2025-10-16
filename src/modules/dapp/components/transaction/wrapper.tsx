@@ -12,11 +12,11 @@ import { Dapp } from '@/layouts/dapp';
 import { Container } from '@/layouts/dapp/container';
 import { useQueryParams } from '@/modules/auth/hooks';
 import { VaultItemBox } from '@/modules/vault/components/modal/box';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
+import { DappTransaction } from '.';
 import { UseTransactionSocket, useVerifyBrowserType } from '../../hooks';
 import { DappError } from '../connection';
-import { DappTransaction } from '.';
 
 interface DappTransactionWrapperProps {
   title: string;

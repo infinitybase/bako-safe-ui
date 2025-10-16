@@ -14,7 +14,7 @@ import { UpRightArrow } from '@/components';
 import { BakoIcon } from '@/components/icons/assets/bakoIcon';
 import { NetworkService } from '@/modules/network/services';
 import { useVaultInfosContext } from '@/modules/vault/hooks';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { useGetTokenInfos } from '../../hooks';
 import {

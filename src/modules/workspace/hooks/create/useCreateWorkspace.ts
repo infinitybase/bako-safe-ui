@@ -2,9 +2,9 @@ import { Pages } from '@/modules/core';
 import { useTab } from '@/modules/core/hooks';
 import { EnumUtils } from '@/modules/core/utils';
 
+import { useWorkspaceContext } from '../../hooks';
 import { useCreateWorkspaceForm } from './useCreateWorkspaceForm';
 import { useCreateWorkspaceRequest } from './useCreateWorkspaceRequest';
-import { useWorkspaceContext } from '../../WorkspaceProvider';
 
 export type UseCreateWorkspace = ReturnType<typeof useCreateWorkspace>;
 

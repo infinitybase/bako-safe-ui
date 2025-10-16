@@ -6,7 +6,7 @@ import { HomeIcon } from '@/components';
 import { Drawer } from '@/layouts/dashboard/drawer';
 import { Pages } from '@/modules/core';
 import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { Container } from '../../components/buy-sell';
 import { BuyTabPanel } from '../../components/buy-sell/BuyTabPanel';

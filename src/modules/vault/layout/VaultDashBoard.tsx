@@ -5,7 +5,7 @@ import { Container } from '@/layouts/dashboard/container';
 import { Content } from '@/layouts/dashboard/content';
 import { Header } from '@/layouts/dashboard/header';
 import { CreateContactDialog } from '@/modules/addressBook';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { Sidebar } from './sidebar';
 

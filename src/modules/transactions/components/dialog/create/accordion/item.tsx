@@ -7,7 +7,7 @@ import {
 } from 'bako-ui';
 import React, { useMemo } from 'react';
 
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 interface AccordionItemProps {
   title: string;

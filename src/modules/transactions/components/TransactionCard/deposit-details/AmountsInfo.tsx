@@ -2,7 +2,7 @@ import { Text, VStack } from 'bako-ui';
 import { bn } from 'fuels';
 
 import type { AssetModel } from '@/modules/core';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 import { isHex } from '@/utils';
 
 import { AmountUSD } from '../transfer-details';

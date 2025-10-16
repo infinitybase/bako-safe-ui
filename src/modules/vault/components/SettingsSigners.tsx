@@ -4,7 +4,7 @@ import { CustomSkeleton } from '@/components';
 import { useScreenSize } from '@/modules/core';
 import { useAddressNicknameResolver } from '@/modules/core/hooks/useAddressNicknameResolver';
 import { SignersDetailsProps } from '@/modules/core/models/predicate';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { CardMember } from './CardMember';
 

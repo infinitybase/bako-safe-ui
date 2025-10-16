@@ -13,7 +13,7 @@ import {
   ModalLiquidStake,
   ModalWithdrawalsLiquidStake,
 } from '@/modules/vault/components';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import {
   useAPY,

@@ -1,8 +1,8 @@
 import { Box, Button, Flex, HStack, Stack, Text, VStack } from 'bako-ui';
 import { TransactionStatus, TransactionType } from 'bakosafe';
 import { parseISO } from 'date-fns';
-import { enUS } from 'date-fns/locale';
 import { formatInTimeZone } from 'date-fns-tz';
+import { enUS } from 'date-fns/locale';
 import { memo, useCallback, useMemo, useState } from 'react';
 
 import { CustomSkeleton, FileCodeIcon, UpRightArrow } from '@/components';
@@ -12,7 +12,7 @@ import { type TransactionState } from '@/modules/core';
 import type { ITransaction } from '@/modules/core/hooks/bakosafe/utils/types';
 import { NetworkService } from '@/modules/network/services';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import {
   ON_OFF_RAMP_TRANSACTION_TYPES,

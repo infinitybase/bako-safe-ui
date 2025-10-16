@@ -2,7 +2,7 @@ import { Box, Button, Heading, HStack, Image, Text, VStack } from 'bako-ui';
 import { bn } from 'fuels';
 
 import { Card, CustomSkeleton, NotFoundIcon } from '@/components';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { Asset } from '../../core/utils/assets/types';
 import { UseVaultDetailsReturn } from '../hooks/details';

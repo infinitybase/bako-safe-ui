@@ -26,12 +26,12 @@ import { CreateContactDialog } from '@/modules/addressBook';
 import { AddressUtils } from '@/modules/core';
 import { MemberAddressForm } from '@/modules/workspace/components';
 import { MemberPermissionForm } from '@/modules/workspace/components/form/MemberPermissionsForm';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 import {
   MemberTabState,
   useChangeMember,
 } from '@/modules/workspace/hooks/members';
 import { WorkspacePermissionUtils } from '@/modules/workspace/utils';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const MemberTab = () => {
   const { memberId } = useParams();

@@ -26,7 +26,7 @@ import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
 import { CreateVaultDialog } from '@/modules/vault';
 import { VaultItemBox } from '@/modules/vault/components/modal/box';
 import { useVaultDrawer } from '@/modules/vault/components/modal/hook';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { DappTransaction } from '../components';
 import { useAuthSocket, useVerifyBrowserType } from '../hooks';

@@ -21,7 +21,7 @@ import { availableNetWorks, NetworkType } from '@/modules/network/services';
 import { useTransactionToast } from '@/modules/transactions/providers/toast';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 import { TransactionService } from '@/modules/transactions/services';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { AssetItem } from '../../components/bridge';
 import {

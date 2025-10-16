@@ -7,7 +7,7 @@ import {
   Portal,
 } from 'bako-ui';
 
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 export interface DialogModalProps extends Omit<DialogRootProps, 'children'> {
   contentPadding?: number;

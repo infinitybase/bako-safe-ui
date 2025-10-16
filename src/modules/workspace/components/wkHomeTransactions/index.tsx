@@ -8,7 +8,7 @@ import { Pages, shakeAnimationX } from '@/modules/core';
 import { TransactionCard, WaitingSignatureBadge } from '@/modules/transactions';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 
-import { useWorkspaceContext } from '../../WorkspaceProvider';
+import { useWorkspaceContext } from '../../hooks';
 
 const WkHomeTransactions = () => {
   const [hasTransactions, setHasTransactions] = useState(false);

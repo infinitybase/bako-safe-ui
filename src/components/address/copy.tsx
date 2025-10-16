@@ -7,7 +7,7 @@ import {
   CopyAddressButton,
   CopyAddressButtonProps,
 } from '@/components/copyAddressButton';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { Address } from '.';
 

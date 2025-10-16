@@ -21,7 +21,7 @@ import { useAddressNicknameResolver } from '@/modules/core/hooks/useAddressNickn
 import { FIAT_CURRENCIES_ASSET_IDS } from '@/modules/core/utils/fiat-currencies';
 import { parseURI } from '@/modules/core/utils/formatter';
 import { useNetworks } from '@/modules/network/hooks';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 import { moneyFormat } from '@/utils/money-format';
 
 import { AmountUSD } from './transfer-details';

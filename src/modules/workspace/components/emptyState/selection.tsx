@@ -1,7 +1,8 @@
-import { Box, Separator, Heading, Text, VStack } from 'bako-ui';
+import { Box, Heading, Separator, Text, VStack } from 'bako-ui';
 
 import { UserWorkspaceIcon } from '@/components/icons/user-workspace-icon';
-import { useWorkspaceContext } from '../../WorkspaceProvider';
+
+import { useWorkspaceContext } from '../../hooks';
 
 export const SelectionEmptyState = () => {
   const {

@@ -6,7 +6,7 @@ import { useMemo } from 'react';
 import { CustomSkeleton } from '@/components';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
 import { FIAT_CURRENCIES } from '@/modules/core/utils/fiat-currencies';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { useGetAssetsByOperations } from '../../hooks';
 import {

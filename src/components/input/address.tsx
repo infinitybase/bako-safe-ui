@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { UseAddressBookReturn } from '@/modules/addressBook/hooks';
 import { useBakoIDClient } from '@/modules/core/hooks/bako-id';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 import { AddressBookUtils } from '@/utils';
 
 interface AddressInputProps

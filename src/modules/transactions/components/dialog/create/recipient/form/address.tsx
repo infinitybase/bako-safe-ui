@@ -18,7 +18,7 @@ import {
   useResolverAddressQuery,
   useResolverNameQuery,
 } from '@/modules/core/hooks/bako-id';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import Clear from './clear';
 

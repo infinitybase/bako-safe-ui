@@ -26,7 +26,7 @@ import {
 } from '@/modules/core';
 import { WorkspacePermissionUtils } from '@/modules/workspace/utils';
 
-import { useWorkspaceContext } from '../../WorkspaceProvider';
+import { useWorkspaceContext } from '../../hooks';
 import { WorkspaceCard } from '../card';
 
 interface WorkspaceSettingsDrawerProps

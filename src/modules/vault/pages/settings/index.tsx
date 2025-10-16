@@ -9,7 +9,7 @@ import { Drawer } from '@/layouts/dashboard/drawer';
 import { Pages } from '@/modules/core';
 import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { SettingsOverview } from '../../components/SettingsOverview';
 import { SettingsSigners } from '../../components/SettingsSigners';

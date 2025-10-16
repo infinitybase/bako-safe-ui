@@ -14,7 +14,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
 import { Dialog, SearchIcon } from '@/components';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { useFormBridge } from '../../hooks/bridge';
 import { ITransferBridgePayload } from './providers/FormBridgeProvider';

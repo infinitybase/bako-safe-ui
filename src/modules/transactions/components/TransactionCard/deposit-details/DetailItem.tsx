@@ -6,7 +6,7 @@ import { useMemo } from 'react';
 import { Address, DoubleArrowIcon, Handle } from '@/components';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
 import { useAddressNicknameResolver } from '@/modules/core/hooks/useAddressNicknameResolver';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 import { isHex } from '@/utils';
 
 import { AddressActions } from '../transfer-details/address-actions';

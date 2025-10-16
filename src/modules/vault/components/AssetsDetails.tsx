@@ -5,7 +5,7 @@ import { To, useNavigate } from 'react-router-dom';
 import { useOrderAssetsByUSD } from '@/modules/core';
 import { AssetCard } from '@/modules/core/components';
 import { Asset, NFT } from '@/modules/core/utils';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { useVaultAssetsList } from '../hooks';
 

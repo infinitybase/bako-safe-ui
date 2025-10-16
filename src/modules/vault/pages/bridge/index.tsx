@@ -6,7 +6,7 @@ import { HomeIcon } from '@/components';
 import { Drawer } from '@/layouts/dashboard/drawer';
 import { Pages, useScreenSize } from '@/modules/core';
 import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { FormBridgeProvider } from '../../components/bridge/providers/FormBridgeProvider';
 import { useVaultInfosContext } from '../../hooks';

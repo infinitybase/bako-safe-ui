@@ -10,7 +10,7 @@ import {
   UseCreateTransaction,
 } from '@/modules/transactions/hooks';
 import { UseVaultDetailsReturn } from '@/modules/vault';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { TransactionAccordion } from '../accordion';
 import { Recipient } from './index';

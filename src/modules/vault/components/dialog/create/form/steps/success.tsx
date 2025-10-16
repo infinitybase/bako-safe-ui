@@ -1,7 +1,7 @@
 import { Box, Icon, Text, VStack } from 'bako-ui';
 
 import { DoneIcon } from '@/components/icons/done-icon';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 const VaultSuccessStep = () => {
   const {

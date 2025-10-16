@@ -16,7 +16,7 @@ import { EmptyState } from '@/components/emptyState';
 import { TabState, UseAPITokenReturn } from '@/modules/cli/hooks';
 import { useRemoveAPIToken } from '@/modules/cli/hooks/APIToken/remove';
 import { APIToken } from '@/modules/cli/services';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 interface APITokenCardProps {
   apiToken: APIToken;

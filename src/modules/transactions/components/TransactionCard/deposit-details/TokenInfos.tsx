@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 
 import { AssetModel } from '@/modules/core';
 import { parseURI } from '@/modules/core/utils/formatter';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 interface TokenInfosProps {
   asset: AssetModel;

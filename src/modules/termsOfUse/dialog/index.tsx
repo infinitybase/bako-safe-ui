@@ -2,7 +2,7 @@ import { Box, HStack, Separator, Text, VStack } from 'bako-ui';
 import { useMemo } from 'react';
 
 import { Dialog } from '@/components';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { useTermsDialog } from '../hooks/useTermsDialog';
 import { privacyPolicy, termsOfUse } from '../utils/data';

@@ -4,7 +4,7 @@ import { Address as FuelsAddress } from 'fuels';
 
 import { useGetParams } from '@/modules/core/hooks';
 import { AddressUtils } from '@/modules/core/utils';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 export interface AddressProps extends TextProps {
   value: string;

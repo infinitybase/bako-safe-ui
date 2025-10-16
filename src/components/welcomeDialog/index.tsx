@@ -3,7 +3,7 @@ import { Button, DialogOpenChangeDetails, VStack } from 'bako-ui';
 import { useNetworks } from '@/modules/network/hooks';
 import { NetworkType } from '@/modules/network/services';
 import { useUpdateSettingsRequest } from '@/modules/settings/hooks';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { Dialog } from '../dialog';
 import { BridgeIcon, CoinsIcon, DownLeftArrow } from '../icons';

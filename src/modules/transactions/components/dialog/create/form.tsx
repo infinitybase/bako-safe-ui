@@ -1,5 +1,5 @@
-import { Box, BoxProps, Field, Heading, Input, Separator } from 'bako-ui';
 import { useQuery } from '@tanstack/react-query';
+import { Box, BoxProps, Field, Heading, Input, Separator } from 'bako-ui';
 import { bn } from 'fuels';
 import { useMemo } from 'react';
 import { Controller, FormProvider } from 'react-hook-form';
@@ -7,7 +7,7 @@ import { Controller, FormProvider } from 'react-hook-form';
 import { Dialog } from '@/components';
 import { UseCreateTransaction } from '@/modules/transactions/hooks';
 import { UseVaultDetailsReturn } from '@/modules/vault';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { Recipient } from './recipient';
 

@@ -53,7 +53,7 @@ import { useAppNotifications } from '@/modules/notifications/hooks';
 import { SettingsDrawer } from '@/modules/settings/components/drawer';
 import { useMySettingsRequest } from '@/modules/settings/hooks/useMySettingsRequest';
 import { SelectWorkspaceDialog } from '@/modules/workspace/components';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 import { limitCharacters } from '@/utils';
 
 const UserBox = () => {
@@ -455,7 +455,6 @@ const UserBox = () => {
                   onClick={() => {
                     if (authDetails.userInfos.type.type === TypeUser.EVM) {
                       toast({
-                        position: 'top-right',
                         duration: 3000,
                         isClosable: false,
                         title: 'Copied!',

@@ -12,7 +12,7 @@ import { QRCodeSVG } from 'qrcode.react';
 
 import { AddressUtils, PredicateAndWorkspace } from '@/modules';
 import { openFaucet } from '@/modules/vault/utils';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 import { ENetworks } from '@/utils/constants';
 
 import { AddressWithCopyBtn } from '../address/copy';

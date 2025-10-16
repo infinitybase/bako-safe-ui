@@ -7,7 +7,7 @@ import { AddressUtils, type TransactionState } from '@/modules/core';
 import { tokensIDS } from '@/modules/core/utils/assets/address';
 import { FIAT_CURRENCIES } from '@/modules/core/utils/fiat-currencies';
 import { useVerifyTransactionInformations } from '@/modules/transactions/hooks/details/useVerifyTransactionInformations';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { TransactionCard } from '..';
 import { AssetBoxInfo, type TransactionUI } from '../Details';

@@ -6,7 +6,7 @@ import { useMyWallet } from '@/modules/core/hooks/fuel';
 import CreateTxMenuButton, {
   ECreateTransactionMethods,
 } from '@/modules/transactions/components/dialog/create/createTxMenuButton';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { DappTransactionSuccess } from '../components/transaction/success';
 import { DappTransactionWrapper } from '../components/transaction/wrapper';

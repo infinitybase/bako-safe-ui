@@ -10,7 +10,7 @@ import {
   AssetMap,
   NativeAssetId,
 } from '@/modules/core/utils';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 export interface ITransactionField {
   asset: string;

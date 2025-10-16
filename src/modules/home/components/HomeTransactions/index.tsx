@@ -7,7 +7,7 @@ import { EmptyState } from '@/components/emptyState';
 import { Pages } from '@/modules/core';
 import { TransactionCard, WaitingSignatureBadge } from '@/modules/transactions';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 const HomeTransactions = () => {
   const [hasTransactions, setHasTransactions] = useState(false);

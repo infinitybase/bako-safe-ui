@@ -28,7 +28,7 @@ import { useTemplateStore } from '@/modules/template/store/useTemplateStore';
 import { TransactionCard, WaitingSignatureBadge } from '@/modules/transactions';
 import { useTransactionSocketListener } from '@/modules/transactions/hooks/events/useTransactionsSocketListener';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 import { limitCharacters } from '@/utils/limit-characters';
 
 import { CardDetails } from '../../components/CardDetails';

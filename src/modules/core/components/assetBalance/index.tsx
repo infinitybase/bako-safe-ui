@@ -2,7 +2,7 @@ import { Grid } from 'bako-ui';
 import { useMemo } from 'react';
 
 import { Asset, NFT } from '@/modules/core/utils';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { useOrderAssetsByUSD } from '../../hooks';
 import { AssetsBalanceCard } from './assets-balance-card';

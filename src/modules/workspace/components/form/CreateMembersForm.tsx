@@ -10,8 +10,7 @@ import {
 } from '@/modules/addressBook/hooks';
 import { AddressUtils } from '@/modules/core/utils/address';
 
-import { UseChangeMember } from '../../hooks';
-import { useWorkspaceContext } from '../../WorkspaceProvider';
+import { UseChangeMember, useWorkspaceContext } from '../../hooks';
 
 interface MemberAddressForm {
   form: UseChangeMember['form']['memberForm'];
@@ -78,7 +77,6 @@ export const MemberAddressForm = ({ form, addressBook }: MemberAddressForm) => {
                   isLoading={!optionsRequests[0].isSuccess}
                   inView={addressBook.inView}
                   clearable={false}
-                  variant={'dark'}
                 />
 
                 <Field.HelperText color="error.500">

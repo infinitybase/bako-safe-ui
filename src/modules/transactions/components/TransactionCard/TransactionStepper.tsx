@@ -1,12 +1,12 @@
 import { Box, Steps, Text, useSteps } from 'bako-ui';
 import { AddressUtils as BakoAddressUtils } from 'bakosafe';
 import { parseISO } from 'date-fns';
-import { enUS } from 'date-fns/locale';
 import { formatInTimeZone } from 'date-fns-tz';
+import { enUS } from 'date-fns/locale';
 import { memo, useEffect, useMemo } from 'react';
 
 import { AddressUtils } from '@/modules/core';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { ITransactionHistory, TransactionHistoryType } from '../../services';
 interface TransactionStepperProps {

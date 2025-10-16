@@ -10,7 +10,7 @@ import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
 import { Pages } from '@/modules/core/routes';
 import { useTransactionSocketListener } from '@/modules/transactions/hooks/events/useTransactionsSocketListener';
 import { CreateVaultDialog } from '@/modules/vault';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { ActionCard } from '../components/ActionCard';
 import HomeTransactions from '../components/HomeTransactions';

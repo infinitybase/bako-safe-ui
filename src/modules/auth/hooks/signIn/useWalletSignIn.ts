@@ -5,7 +5,7 @@ import { useEvm } from '@/modules';
 import { useContactToast } from '@/modules/addressBook';
 import { EConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
 import { useNetworks } from '@/modules/network/hooks';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 import { ENetworks } from '@/utils/constants';
 
 import { Encoder, localStorageKeys, TypeUser } from '../../services';

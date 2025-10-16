@@ -2,7 +2,7 @@ import { Box, Grid, Text } from 'bako-ui';
 import { Fragment, memo } from 'react';
 
 import { PredicateAndWorkspace } from '@/modules/vault';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import RecentVaultsItem from '../RecentVaultsItem';
 

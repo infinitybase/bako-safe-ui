@@ -45,7 +45,7 @@ import {
 import { WorkspaceSettingsDrawer } from '@/modules/workspace/components';
 
 import WkHomeTransactions from '../../components/wkHomeTransactions';
-import { useWorkspaceContext } from '../../WorkspaceProvider';
+import { useWorkspaceContext } from '../../hooks';
 
 const { OWNER, ADMIN, MANAGER } = PermissionRoles;
 

@@ -13,7 +13,7 @@ import { BakoSafeQueryClientProvider } from '@/config';
 
 import { SocketProvider } from './config/socket';
 import TransactionsProvider from './modules/transactions/providers/TransactionsProvider';
-import WorkspaceProvider from './modules/workspace/WorkspaceProvider';
+import { WorkspaceProvider } from './modules/workspace/WorkspaceProvider';
 import { getEnvironment } from './utils/enviroment';
 
 const { VITE_SENTRY_DNS } = import.meta.env;

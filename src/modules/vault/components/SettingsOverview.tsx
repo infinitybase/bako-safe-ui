@@ -27,7 +27,7 @@ import { CreateAPITokenDialog } from '@/modules/cli/components/APIToken/create';
 import { Pages, PermissionRoles } from '@/modules/core';
 import { useNetworks } from '@/modules/network/hooks';
 import { NetworkType } from '@/modules/network/services';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 import { limitCharacters } from '@/utils';
 
 import { useVaultInfosContext } from '../hooks';

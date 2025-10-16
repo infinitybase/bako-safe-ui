@@ -11,7 +11,7 @@ import {
 
 import { CustomSkeleton, Dialog } from '@/components';
 import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { CreateVaultDialog } from '../dialog';
 import { useVaultDrawer } from './hook';

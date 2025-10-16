@@ -5,7 +5,7 @@ import { UserAddIcon } from '@/components';
 import { Tooltip } from '@/components/ui/tooltip';
 import { delay } from '@/modules/core';
 import { UseCreateTransaction } from '@/modules/transactions/hooks';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 interface RecipientListProps {
   accordion: UseCreateTransaction['accordion'];

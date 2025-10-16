@@ -19,7 +19,7 @@ import { Controller } from 'react-hook-form';
 import { LineCloseIcon } from '@/components';
 import { useWebAuthnInput } from '@/modules/auth/hooks/webAuthn';
 import { AddressUtils } from '@/modules/core/utils/address';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 import {
   ActionKeys,
   handleActionUsingKeys,

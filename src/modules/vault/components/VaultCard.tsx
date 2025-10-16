@@ -19,11 +19,11 @@ import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 import { usePermissions } from '@/modules/core/hooks/usePermissions';
 import { PredicateMember } from '@/modules/core/models/predicate';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 import {
   PermissionDetails,
   WorkspacePermissionUtils,
 } from '@/modules/workspace/utils';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { PredicateWorkspace, VaultService } from '../services';
 import VaultCardMemberAvatar from './VaultCardMemberAvatar';

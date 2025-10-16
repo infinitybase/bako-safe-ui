@@ -8,7 +8,7 @@ import { tokensIDS } from '@/modules/core/utils/assets/address';
 import { availableNetWorks, NetworkType } from '@/modules/network/services';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 import { TransactionService } from '@/modules/transactions/services';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { useVaultInfosContext } from '../../hooks';
 import { DECIMALS } from './useTotalFuelTokens';

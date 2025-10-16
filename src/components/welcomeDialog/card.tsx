@@ -1,12 +1,9 @@
 import { HStack, Icon, IconProps, Text, VStack } from 'bako-ui';
-import { ForwardRefExoticComponent } from 'react';
 
 interface IWelcomeCardProps {
   title: string;
   description: string;
-  icon: ForwardRefExoticComponent<
-    IconProps & React.RefAttributes<SVGSVGElement>
-  >;
+  icon: React.ComponentType<IconProps>;
   onClick?: () => void;
   iconSize?: string;
   commingSoon?: boolean;

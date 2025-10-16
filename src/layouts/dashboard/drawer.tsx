@@ -1,7 +1,7 @@
 import { Drawer as ChakraDrawer, Portal } from 'bako-ui';
 
 import { LineCloseIcon } from '@/components';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { Sidebar } from '../../modules/vault/layout/sidebar';
 

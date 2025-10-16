@@ -1,11 +1,11 @@
 import {
   Box,
   Button,
-  Separator,
   Field,
   Heading,
   HStack,
   Icon,
+  Separator,
   VStack,
 } from 'bako-ui';
 import { Address, isB256 } from 'fuels';
@@ -31,7 +31,7 @@ import {
   useAddressBookInputValue,
 } from '@/modules/addressBook/hooks';
 import { AddressUtils, ITemplatePayload } from '@/modules/core';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 import { keepOptionsNearToInput } from '@/utils/keep-options-near-to-container';
 import { scrollToBottom } from '@/utils/scroll-to-bottom';
 

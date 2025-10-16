@@ -7,7 +7,7 @@ import { EmptyState } from '@/components/emptyState';
 import { Drawer } from '@/layouts/dashboard/drawer';
 import { AssetsBalanceList, NFT, NftsBalanceList, Pages } from '@/modules/core';
 import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { NFTsEmptyState } from '../../components/NFTsEmptyState';
 import { useVaultInfosContext } from '../../hooks';

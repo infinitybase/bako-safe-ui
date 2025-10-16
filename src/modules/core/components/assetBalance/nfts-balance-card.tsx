@@ -3,7 +3,7 @@ import { useState } from 'react';
 
 import { Card } from '@/components';
 import { AddressUtils, NFT } from '@/modules/core/utils';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { useGetNftsInfos } from '../../hooks';
 import { NftDialog } from './nft-dialog';

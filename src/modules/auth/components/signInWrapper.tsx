@@ -7,7 +7,7 @@ import { useListConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
 import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
 import { useVerifyBrowserType } from '@/modules/dapp/hooks';
 import { NetworkSignInDrawer } from '@/modules/network/components/signInDrawer';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import {
   UseDappSignIn,

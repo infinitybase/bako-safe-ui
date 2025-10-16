@@ -20,7 +20,7 @@ import {
 import { useTransactionSocketListener } from '@/modules/transactions/hooks/events/useTransactionsSocketListener';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 import { useVaultInfosContext } from '@/modules/vault/hooks';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { StatusFilter } from '../../../transactions/hooks';
 import { vaultInfinityQueryKey } from '../../hooks/list/useVaultTransactionsRequest';

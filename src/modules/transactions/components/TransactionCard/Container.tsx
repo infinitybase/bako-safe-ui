@@ -2,7 +2,7 @@ import { Accordion, CardRootProps, VStack } from 'bako-ui';
 import { memo, ReactNode, useMemo } from 'react';
 
 import { TransactionState } from '@/modules/core';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { TransactionCard } from '../..';
 import { useDetailsDialog } from '../../hooks/details';

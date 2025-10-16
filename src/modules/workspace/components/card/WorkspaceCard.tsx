@@ -2,7 +2,7 @@ import { Avatar, Card, CardRootProps, HStack, Text, VStack } from 'bako-ui';
 
 import { Workspace } from '@/modules/core';
 
-import { useWorkspaceContext } from '../../WorkspaceProvider';
+import { useWorkspaceContext } from '../../hooks';
 
 interface NotificationCardProps extends CardRootProps {
   workspace: Workspace;
