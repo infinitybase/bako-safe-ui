@@ -1,4 +1,5 @@
 import { Box, HStack, Separator, Text, VStack } from 'bako-ui';
+import { useMemo } from 'react';
 
 import { Dialog } from '@/components';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
@@ -31,7 +32,7 @@ const TermsOfUseDialog = (props: TermsOfUseDialogProps) => {
     onOpenChange,
   } = useTermsDialog();
 
-  const textHeight = () => {
+  const textHeight = useMemo(() => {
     if (isMobile) {
       if (isLargerThan900) return 600;
       if (isLargerThan768) return 460;
@@ -40,11 +41,17 @@ const TermsOfUseDialog = (props: TermsOfUseDialogProps) => {
       return 200;
     }
     return 420;
-  };
+  }, [
+    isLargerThan600,
+    isLargerThan660,
+    isLargerThan768,
+    isLargerThan900,
+    isMobile,
+  ]);
 
   return (
     <Dialog.Modal
-      size={{ base: 'full', md: 'xl' }}
+      size={{ base: 'full', md: 'lg' }}
       {...props}
       open={modalIsOpen}
       onOpenChange={onOpenChange}
@@ -53,22 +60,22 @@ const TermsOfUseDialog = (props: TermsOfUseDialogProps) => {
       <Dialog.Header
         hideCloseButton={isSafariBrowser && isMobile}
         onClose={handleClose}
-        maxW={585}
+        maxW={617}
+        px={6}
         mb={0}
         mt={isMobile ? 10 : 0}
         pt={isSafariBrowser && isMobile ? 6 : isMobile ? 0 : 'unset'}
         title="Terms of Use"
+        titleSxProps={{ fontSize: 'sm' }}
         description={
           'You must accept the Terms of Use before you finish creating your account.'
         }
-        descriptionFontSize="sm"
+        descriptionFontSize="xs"
       />
 
-      <Separator maxW={585} borderColor={'grey.500'} mt={6} mb={6} />
-
-      <Dialog.Body flex={1} maxH="100vh" maxW={585} pb={6}>
+      <Dialog.Body flex={1} maxH="100vh" maxW={617} p={6}>
         <VStack
-          h={textHeight()}
+          h={textHeight}
           flex={1}
           aria-label="Terms of Use"
           gap={0}
@@ -92,20 +99,20 @@ const TermsOfUseDialog = (props: TermsOfUseDialogProps) => {
             {termsOfUse.map(({ title, paragraphs }, index) => (
               <Box key={title}>
                 <Text
-                  fontSize={'sm'}
-                  color={'grey.75'}
-                  fontWeight={'bold'}
+                  fontSize="sm"
+                  color="textPrimary"
+                  fontWeight="bold"
                   mb={4}
                   mt={!index ? 0 : 4}
                 >
                   {title}
                 </Text>
-                <VStack alignItems={'flex-start'}>
+                <VStack alignItems="flex-start">
                   {paragraphs.map((paragraph) => (
                     <Text
                       key={paragraph}
-                      fontSize={'sm'}
-                      color={'grey.75'}
+                      fontSize="sm"
+                      color="textPrimary"
                       fontWeight={400}
                     >
                       {paragraph}
@@ -116,13 +123,13 @@ const TermsOfUseDialog = (props: TermsOfUseDialogProps) => {
             ))}
           </VStack>
 
-          <Separator my={10} borderColor={'grey.500'} />
+          <Separator my={10} w="full" />
 
-          <Text fontSize={'lg'} fontWeight={'bold'}>
+          <Text fontSize="sm" fontWeight={'bold'}>
             Bako Safe Privacy Policy
           </Text>
 
-          <VStack w="full" alignItems={'flex-start'}>
+          <VStack w="full" alignItems="flex-start">
             {privacyPolicy.map(({ title, paragraphs }, index) => (
               <Box
                 key={title}
@@ -156,23 +163,17 @@ const TermsOfUseDialog = (props: TermsOfUseDialogProps) => {
 
       <Dialog.Actions
         w="full"
-        maxW={585}
+        hideDivider
+        maxW={617}
         css={{ '&>hr': { mt: 0, mb: 8 } }}
-        bgColor="dark.950"
         position={isMobile ? 'absolute' : 'unset'}
         bottom={2}
-        px={isMobile ? 6 : 'unset'}
+        px={6}
         mb={2}
       >
-        <VStack w="full" alignItems="center" bg="dark.950" zIndex={999}>
+        <VStack w="full" alignItems="center" zIndex={999}>
           <HStack w="full" justifyContent="space-between">
-            <Dialog.SecondaryAction
-              bgColor="transparent"
-              border="1px solid white"
-              w={'50%'}
-              onClick={handleClose}
-              _hover={{ borderColor: 'brand.500', color: 'brand.500' }}
-            >
+            <Dialog.SecondaryAction w="50%" onClick={handleClose}>
               Decline
             </Dialog.SecondaryAction>
             <Dialog.PrimaryAction
