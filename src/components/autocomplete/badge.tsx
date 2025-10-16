@@ -33,6 +33,7 @@ enum AutocompleteBadgeStatus {
   SUCCESS = 1,
   ERROR = 2,
   INFO = 3,
+  CONFLICT = 4,
 }
 
 interface AutocompleteBadgeProps
@@ -126,9 +127,9 @@ const AutocompleteBadge = ({
         }
       >
         <Input
-          colorPalette="dark"
           value={value}
           placeholder=" "
+          variant="subtle"
           autoComplete="off"
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
