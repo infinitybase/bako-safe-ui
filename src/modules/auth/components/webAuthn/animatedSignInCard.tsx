@@ -14,7 +14,7 @@ const MotionBox = motion(Box);
 const slideVariants = {
   enter: (direction: number) => ({
     x: direction > 0 ? 300 : -300,
-    opacity: 0,
+    opacity: 0.5,
   }),
   center: {
     x: 0,
@@ -22,7 +22,7 @@ const slideVariants = {
   },
   exit: (direction: number) => ({
     x: direction > 0 ? -300 : 300,
-    opacity: 0,
+    opacity: 0.5,
   }),
 };
 
@@ -42,7 +42,7 @@ const AnimatedSignInCard = ({ mode, children }: AnimatedSignInCardProps) => {
           transition={{
             x: {
               type: 'spring',
-              stiffness: 300,
+              stiffness: 350,
               damping: 26,
               mass: 0.8,
             },
