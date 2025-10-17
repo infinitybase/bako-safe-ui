@@ -56,42 +56,45 @@ const useWorkspace = (
 
   const vaultsCounter = latestPredicates?.data?.predicates?.total ?? 0;
 
-  const handleWorkspaceSelection = async (
-    selectedWorkspace: string,
-    redirect?: string,
-    // needUpdateWorkspaceBalance?: boolean,
-  ) => {
-    // All this logic is to handle workspace authentication
-    // const isValid = selectedWorkspace !== userInfos?.workspace?.id;
-    // if (!isValid) {
-    //   console.log(!!redirect);
-    //   !!redirect && navigate(redirect);
-    //   if (redirect?.includes('vault')) {
-    //     // That' means he's accessing a vault, then it should show the gif.
-    //     invalidateGifAnimationRequest();
-    //   }
-    //   needUpdateWorkspaceBalance && workspaceBalance.refetch();
-    //   return;
-    // }
-    // workspaceDialog.onClose();
+  const handleWorkspaceSelection = useCallback(
+    async (
+      selectedWorkspace: string,
+      redirect?: string,
+      // needUpdateWorkspaceBalance?: boolean,
+    ) => {
+      // All this logic is to handle workspace authentication
+      // const isValid = selectedWorkspace !== userInfos?.workspace?.id;
+      // if (!isValid) {
+      //   console.log(!!redirect);
+      //   !!redirect && navigate(redirect);
+      //   if (redirect?.includes('vault')) {
+      //     // That' means he's accessing a vault, then it should show the gif.
+      //     invalidateGifAnimationRequest();
+      //   }
+      //   needUpdateWorkspaceBalance && workspaceBalance.refetch();
+      //   return;
+      // }
+      // workspaceDialog.onClose();
 
-    redirect && navigate(redirect);
+      redirect && navigate(redirect);
 
-    // This logic below is to show the gif animation when the user enters in some vault
-    // if (redirect) {
-    //   if (redirect.includes('vault')) {
-    //     invalidateGifAnimationRequest();
-    //   }
-    //   navigate(redirect);
-    // }
-  };
+      // This logic below is to show the gif animation when the user enters in some vault
+      // if (redirect) {
+      //   if (redirect.includes('vault')) {
+      //     invalidateGifAnimationRequest();
+      //   }
+      //   navigate(redirect);
+      // }
+    },
+    [navigate],
+  );
 
-  const goHome = () => {
+  const goHome = useCallback(() => {
     queryClient.invalidateQueries({
       queryKey: WorkspacesQueryKey.LIST_BY_USER(),
     });
     handleWorkspaceSelection(userInfos.singleWorkspaceId, Pages.home());
-  };
+  }, [userInfos.singleWorkspaceId, handleWorkspaceSelection]);
 
   const hasPermission = useCallback(
     (requiredRoles: PermissionRoles[]) => {
