@@ -2,7 +2,7 @@ import { createIcon } from 'bako-ui';
 
 const LeftAndRightArrow = createIcon({
   displayName: 'LeftAndRightArrow',
-  viewBox: '0 0 16 16',
+  viewBox: '0 0 12 14',
   path: (
     <svg
       width="12"
@@ -12,8 +12,8 @@ const LeftAndRightArrow = createIcon({
       xmlns="http://www.w3.org/2000/svg"
     >
       <path
-        d="M8.7 7.03288L12 10.3329L8.7 13.6329L7.75733 12.6902L9.448 10.9989L0.666667 10.9995V9.66621H9.448L7.75733 7.97554L8.7 7.03288ZM3.3 0.366211L4.24267 1.30888L2.552 2.99954H11.3333V4.33288H2.552L4.24267 6.02354L3.3 6.96621L0 3.66621L3.3 0.366211Z"
-        fill="#CFCCC9"
+        d="M8.7 6.93913L12 10.2391L8.7 13.5391L7.75733 12.5965L9.448 10.9051L0.666667 10.9058V9.57246H9.448L7.75733 7.88179L8.7 6.93913ZM3.3 0.272461L4.24267 1.21513L2.552 2.90579H11.3333V4.23913H2.552L4.24267 5.92979L3.3 6.87246L0 3.57246L3.3 0.272461Z"
+        fill="currentColor"
       />
     </svg>
   ),
