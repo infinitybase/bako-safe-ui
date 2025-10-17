@@ -15,14 +15,17 @@ const slideVariants = {
   enter: (direction: number) => ({
     x: direction > 0 ? 300 : -300,
     opacity: 0,
+    position: 'absolute' as const,
   }),
   center: {
     x: 0,
     opacity: 1,
+    position: 'relative' as const,
   },
   exit: (direction: number) => ({
     x: direction > 0 ? -300 : 300,
     opacity: 0,
+    position: 'absolute' as const,
   }),
 };
 
@@ -30,8 +33,8 @@ const AnimatedSignInCard = ({ mode, children }: AnimatedSignInCardProps) => {
   const direction = mode === WebAuthnModeState.REGISTER ? 1 : -1;
 
   return (
-    <Box position="relative" w="full" overflow="hidden">
-      <AnimatePresence initial={false} mode="wait" custom={direction}>
+    <Box position="relative" w="full" overflow="hidden" minH="200px">
+      <AnimatePresence initial={false} mode="popLayout" custom={direction}>
         <MotionBox
           key={mode}
           custom={direction}
@@ -39,14 +42,21 @@ const AnimatedSignInCard = ({ mode, children }: AnimatedSignInCardProps) => {
           initial="enter"
           animate="center"
           exit="exit"
+          inset={0}
           transition={{
             x: {
               type: 'spring',
-              stiffness: 350,
+              stiffness: 280,
               damping: 20,
-              mass: 0.8,
+              mass: 0.9,
             },
-            opacity: { duration: 0.25, ease: 'easeInOut' },
+            opacity: {
+              duration: 0.3,
+              ease: 'easeInOut',
+            },
+            position: {
+              delay: 0.3,
+            },
           }}
           w="full"
         >
