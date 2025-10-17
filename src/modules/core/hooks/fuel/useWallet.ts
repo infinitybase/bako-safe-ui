@@ -4,7 +4,7 @@ import {
   UseMutationOptions,
   useQuery,
 } from '@tanstack/react-query';
-import { bakoCoder, SignatureType } from 'bakosafe';
+import { CoderUtils } from 'bakosafe';
 import { Account } from 'fuels';
 
 import { CookieName, CookiesConfig } from '@/config/cookies';
@@ -34,7 +34,10 @@ const useMyWallet = () => {
 };
 
 //sign by webauthn
-const signAccountWebAuthn = async (sign: SignWebAuthnPayload) => {
+const signAccountWebAuthn = async (
+  address: string,
+  sign: SignWebAuthnPayload,
+) => {
   const signature = await signChallange(
     sign.id,
     `0x${sign.challenge}`,
@@ -52,43 +55,36 @@ const signAccountWebAuthn = async (sign: SignWebAuthnPayload) => {
     throw new Error('Invalid signature');
   }
 
-  //todo: validate signature if is valid
-  return bakoCoder.encode({
-    type: SignatureType.WebAuthn,
-    ...(signature as Required<typeof signature>),
-  });
+  return CoderUtils.encodeSignature(
+    address,
+    signature as Required<typeof signature>,
+  );
 };
 
 const signAccountFuel = async (account: Account, message: string) => {
   const signature = await account.signMessage(message);
-  return bakoCoder.encode({
-    type: SignatureType.Fuel,
-    signature,
-  });
+  return CoderUtils.encodeSignature(account.address.toB256(), signature);
 };
 
 const useWalletSignMessage = (
   options?: UseMutationOptions<string, unknown, string>,
 ) => {
   const { data: wallet } = useMyWallet();
-  const { signAndValidate } = useEvm();
+  const { signAndValidate, address: evmAddress } = useEvm();
   const {
-    userInfos: { type, webauthn },
+    userInfos: { type, webauthn, address },
   } = useAuth();
 
   const signAccountEvm = async (message: string) => {
     const signature = await signAndValidate(message);
-    return bakoCoder.encode({
-      type: SignatureType.Evm,
-      signature,
-    });
+    return CoderUtils.encodeSignature(evmAddress, signature);
   };
 
   return useMutation({
     mutationFn: async (message: string) => {
       switch (type.type) {
         case TypeUser.WEB_AUTHN:
-          return signAccountWebAuthn({
+          return signAccountWebAuthn(address, {
             challenge: message,
             id: webauthn!.id,
             publicKey: webauthn!.publicKey,

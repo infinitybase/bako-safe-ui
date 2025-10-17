@@ -31,7 +31,7 @@ export class AddressUtils {
     return BakoAddressUtils.isPasskey(value);
   }
 
-  static toBech32 = BakoAddressUtils.toBech32;
+  static toBech32 = BakoAddressUtils.toPasskey;
 
   static fromBech32 = (address: Batch32) => {
     return BakoAddressUtils.fromBech32(address);
