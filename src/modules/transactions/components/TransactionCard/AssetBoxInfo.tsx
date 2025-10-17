@@ -158,10 +158,11 @@ const AssetBoxInfo = ({
 
   return (
     <Stack
-      py={2}
+      p={4}
       justifyContent={{ base: 'space-between' }}
       w="full"
-      borderTopWidth={1}
+      rounded="lg"
+      bg="gray.600"
       direction={{
         base: !rampTransaction ? 'row' : 'column',
         sm: 'row',
@@ -243,7 +244,7 @@ const AssetBoxInfo = ({
         >
           <Icon
             color="grey.250"
-            fontSize={isDeploy ? '12.8px' : !isContract ? '18px' : '12.8px'}
+            boxSize={isDeploy ? '12.8px' : !isContract ? '18px' : '12.8px'}
             as={isDeploy ? DeployIcon : !isContract ? DoubleArrowIcon : FaPlay}
           />
         </Center>

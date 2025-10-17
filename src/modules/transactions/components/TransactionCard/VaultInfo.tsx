@@ -22,9 +22,9 @@ const BasicInfos = ({
   return (
     <VStack alignItems="flex-start" gap={0} {...rest} w="full">
       <Text
-        color="grey.75"
+        color="textSecondary"
         mt={0}
-        fontSize="sm"
+        fontSize="xs"
         wordBreak="break-all"
         lineClamp={1}
         {...nameSxProps}
@@ -33,7 +33,7 @@ const BasicInfos = ({
         {limitCharacters(transactionName, 28)}
       </Text>
       <Text
-        color="grey.425"
+        color="gray.400"
         mt={0}
         wordBreak="break-all"
         lineClamp={1}

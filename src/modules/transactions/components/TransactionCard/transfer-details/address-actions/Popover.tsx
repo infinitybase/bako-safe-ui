@@ -15,42 +15,41 @@ const AddressActionsPopover = (props: AddressActionsProps) => {
   return (
     <Popover.Root
       open={isOpen}
-      positioning={{ placement: 'top-start' }}
+      positioning={{ placement: 'right-start' }}
       onOpenChange={(e) => setOpen(e.open)}
     >
       <Popover.Trigger asChild>
-        <AddressActionsButton
-          onClick={onToggle}
-          bgColor={isOpen ? 'dark.950' : 'grey.825'}
-        />
+        <AddressActionsButton onClick={onToggle} />
       </Popover.Trigger>
-
-      <Popover.Content
-        bg="dark.950"
-        p={0}
-        borderRadius={8}
-        borderColor="dark.100"
-        _focus={{ ring: 'none' }}
-      >
-        <Popover.Body p={0}>
-          {!hasContact && (
-            <>
-              <AddToAddressBook address={address} />
-              <Separator borderColor="grey.825" />
-            </>
-          )}
-          <CopyAddress
-            address={Address.fromString(address).toString()}
-            onClose={hasContact && !handle ? onClose : undefined}
-          />
-          {handle && (
-            <>
-              <Separator borderColor="grey.825" />
-              <GoToBakoId handle={handle} />
-            </>
-          )}
-        </Popover.Body>
-      </Popover.Content>
+      <Popover.Portal>
+        <Popover.Positioner>
+          <Popover.Content
+            bg="gray.550"
+            p={0}
+            borderRadius={8}
+            css={{ boxShadow: '0px 4px 24px 0px #00000040' }}
+          >
+            <Popover.Body p={0}>
+              {!hasContact && (
+                <>
+                  <AddToAddressBook address={address} />
+                  <Separator borderColor="grey.825" />
+                </>
+              )}
+              <CopyAddress
+                address={Address.fromString(address).toString()}
+                onClose={hasContact && !handle ? onClose : undefined}
+              />
+              {handle && (
+                <>
+                  <Separator borderColor="grey.825" />
+                  <GoToBakoId handle={handle} />
+                </>
+              )}
+            </Popover.Body>
+          </Popover.Content>
+        </Popover.Positioner>
+      </Popover.Portal>
     </Popover.Root>
   );
 };

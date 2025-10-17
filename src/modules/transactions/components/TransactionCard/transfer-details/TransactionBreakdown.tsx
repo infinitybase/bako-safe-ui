@@ -55,11 +55,11 @@ const TransactionBreakdown = ({
         />
       )}
 
-      {isMobile && <Separator my={6} borderColor="grey.425" />}
+      {isMobile && <Separator my={6} borderColor="gray.400" />}
 
-      <Box mb={isMobile ? 6 : 4}>
+      <Box mb={4}>
         <Text
-          color="grey.425"
+          color="gray.400"
           fontSize={isLowerThanFourHundredAndThirty ? 'xs' : 'sm'}
         >
           Transaction breakdown
@@ -67,10 +67,11 @@ const TransactionBreakdown = ({
       </Box>
 
       <Box
-        alignItems="flex-start"
-        flexWrap="wrap"
         mb={isFromConnector ? 4 : 0}
         w={{ base: 'full', sm: 'unset' }}
+        display="flex"
+        flexDirection="column"
+        gap={1}
       >
         {!isContract &&
           transaction.assets.map((asset, index) => (
@@ -85,21 +86,13 @@ const TransactionBreakdown = ({
                   asset?.recipientNickname ?? '',
                 ),
               }}
-              borderColor="grey.950"
-              borderBottomWidth={
-                index === transaction.assets.length - 1 ? 1 : 0
-              }
               isFiatCurrency={FIAT_CURRENCIES.has(asset.assetId)}
               rampTransaction={transaction.rampTransaction}
             />
           ))}
 
         {showContractAddresses && (
-          <ContractAddresses
-            transaction={transaction}
-            borderColor="grey.950"
-            borderBottomWidth={1}
-          />
+          <ContractAddresses transaction={transaction} borderColor="grey.950" />
         )}
         {isMint && <MintTokenInfos transaction={transaction} />}
       </Box>

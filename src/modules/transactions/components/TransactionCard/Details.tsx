@@ -166,7 +166,7 @@ const Details = memo(
                       <Box
                         alignSelf="flex-start"
                         w="full"
-                        minW={{ base: 200, sm: 'full' }}
+                        minW={{ base: 200 }}
                         mt={isMobile ? 3 : 'unset'}
                       >
                         <TransactionStepper steps={transactionHistory ?? []} />
@@ -203,7 +203,7 @@ const Details = memo(
                           style={{ textDecoration: 'none' }}
                         >
                           <Button
-                            // variant="secondaryV2"
+                            variant="subtle"
                             alignSelf="flex-end"
                             size={{ base: 'sm', sm: 'xs', lg: 'sm' }}
                           >
@@ -216,7 +216,7 @@ const Details = memo(
                       {!isMobile &&
                         transaction.status === TransactionStatus.SUCCESS && (
                           <Button
-                            // variant="secondaryV2"
+                            variant="subtle"
                             onClick={handleViewInExplorer}
                             size={{ base: 'sm', sm: 'xs', lg: 'sm' }}
                           >

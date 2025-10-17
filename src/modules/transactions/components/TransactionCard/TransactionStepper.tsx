@@ -1,8 +1,8 @@
-import { Box, Steps, Text, useSteps } from 'bako-ui';
+import { Box, Separator, Steps, Text, useSteps } from 'bako-ui';
 import { AddressUtils as BakoAddressUtils } from 'bakosafe';
 import { parseISO } from 'date-fns';
-import { formatInTimeZone } from 'date-fns-tz';
 import { enUS } from 'date-fns/locale';
+import { formatInTimeZone } from 'date-fns-tz';
 import { memo, useEffect, useMemo } from 'react';
 
 import { AddressUtils } from '@/modules/core';
@@ -54,7 +54,7 @@ const TransactionStepper = memo(({ steps }: TransactionStepperProps) => {
     addressBookInfos: {
       handlers: { contactByAddress },
     },
-    screenSizes: { isMobile, isLowerThanFourHundredAndThirty },
+    screenSizes: { isLowerThanFourHundredAndThirty },
   } = useWorkspaceContext();
 
   const { value: activeStep, setStep: setActiveStep } = useSteps({
@@ -72,16 +72,14 @@ const TransactionStepper = memo(({ steps }: TransactionStepperProps) => {
     if (lastStep && isDeclined) {
       setActiveStep(lastStep + 1);
     }
-    // eslint-disable-next-line react-compiler/react-compiler
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [steps?.length]);
 
   return (
-    <Box display="flex" flexDirection="column" gap={8}>
+    <Box display="flex" flexDirection="column" gap={4}>
       <Text
-        color="grey.425"
+        color="gray.400"
         fontSize={isLowerThanFourHundredAndThirty ? 'xs' : 'sm'}
-        ml={isMobile ? 0 : 8}
         mb="7px"
       >
         Transaction History
@@ -92,11 +90,11 @@ const TransactionStepper = memo(({ steps }: TransactionStepperProps) => {
         orientation="vertical"
         h="full"
         w="full"
-        minW="full"
         size="xs"
-        maxH="full"
         gap={0}
-        colorScheme="grey"
+        bg="gray.600"
+        rounded="lg"
+        p={4}
       >
         <Steps.List w="full">
           {steps?.map((step, index) => {
@@ -114,128 +112,122 @@ const TransactionStepper = memo(({ steps }: TransactionStepperProps) => {
                 index={index}
                 css={{
                   display: 'flex',
-                  alignItems: 'flex-start',
+                  alignItems: 'center',
                   justifyContent: 'center',
                   width: '100%',
+                  '--steps-size': '8px',
                 }}
               >
-                <Steps.Indicator rounded={5} />
-                <Steps.Status
-                  key={index}
-                  complete={
-                    badOptions ? (
-                      <Box bgColor="error.500" boxSize={4} rounded={5} />
-                    ) : sended && lastStep ? (
-                      <Box bgColor="brand.500" boxSize={4} rounded={5} />
-                    ) : (
-                      <Box bgColor="grey.400" boxSize={4} rounded={5} />
-                    )
-                  }
-                  incomplete={
-                    <Box bgColor="grey.400" boxSize={4} rounded={5} />
-                  }
-                />
-
-                <Steps.Separator />
+                <Steps.Indicator rounded="2xs">
+                  <Steps.Status
+                    complete={
+                      badOptions ? (
+                        <Box bgColor="error.500" boxSize="8px" />
+                      ) : sended && lastStep ? (
+                        <Box bgColor="primary.default" boxSize="8px" />
+                      ) : (
+                        <Box bgColor="gray.500" boxSize="8px" />
+                      )
+                    }
+                    incomplete={<Box bgColor="gray.500" boxSize="8px" />}
+                  />
+                </Steps.Indicator>
                 <Box
-                  pos="relative"
-                  top={-6}
                   display="flex"
                   ml={2}
-                  flexDir="column"
-                  justifyContent="center"
-                  borderColor="grey.950"
-                  borderBottomWidth={1}
-                  borderTopWidth={index === 0 ? 1 : 0}
-                  pb={'7px'}
+                  alignItems="center"
                   w="100%"
+                  py={4}
+                  gap={4}
+                  justifyContent="space-between"
                 >
-                  <Box py={2}>
-                    <Steps.Title
-                      style={{
-                        fontSize: '16px',
-                        display: 'flex',
-                        gap: '4px',
-                      }}
+                  <Steps.Title
+                    style={{
+                      fontSize: '16px',
+                      display: 'flex',
+                      gap: '4px',
+                    }}
+                  >
+                    {nickname && step.owner.address !== userInfos.address && (
+                      <Text
+                        fontSize="sm"
+                        color="gray.200"
+                        truncate
+                        textOverflow="ellipsis"
+                        maxW={{ base: '150px', sm: '95px', xl: 'full' }}
+                      >
+                        {step.type !== TransactionHistoryType.SEND && nickname}
+                      </Text>
+                    )}
+                    <Text
+                      color={
+                        failed
+                          ? 'error.500'
+                          : step.type === TransactionHistoryType.SEND
+                            ? 'brand.500'
+                            : 'gray.200'
+                      }
+                      fontSize="sm"
                     >
-                      {nickname && step.owner.address !== userInfos.address && (
-                        <Text
-                          fontSize="sm"
-                          color="grey.75"
-                          truncate
-                          textOverflow="ellipsis"
-                          maxW={{ base: '150px', sm: '95px', xl: 'full' }}
-                        >
-                          {step.type !== TransactionHistoryType.SEND &&
-                            nickname}
+                      {TransactionTypeFormatter(step, userInfos.address)}
+                    </Text>
+                    {!nickname &&
+                      step.type !== TransactionHistoryType.SEND &&
+                      step.owner.type === 'WEB_AUTHN' && (
+                        <Text fontSize="sm" color="grey.425">
+                          {step.owner.address !== userInfos.address
+                            ? `(${AddressUtils.format(AddressUtils.toBech32(step.owner.address))})`
+                            : null}
                         </Text>
                       )}
-                      <Text
-                        color={
-                          failed
-                            ? 'error.500'
-                            : step.type === TransactionHistoryType.SEND
-                              ? 'brand.500'
-                              : 'grey.75'
-                        }
-                        fontSize="sm"
-                      >
-                        {TransactionTypeFormatter(step, userInfos.address)}
-                      </Text>
-                      {!nickname &&
-                        step.type !== TransactionHistoryType.SEND &&
-                        step.owner.type === 'WEB_AUTHN' && (
-                          <Text fontSize="sm" color="grey.425">
-                            {step.owner.address !== userInfos.address
-                              ? `(${AddressUtils.format(AddressUtils.toBech32(step.owner.address))})`
-                              : null}
-                          </Text>
-                        )}
-                      {!nickname &&
-                        step.type !== TransactionHistoryType.SEND &&
-                        step.owner.type === 'EVM' && (
-                          <Text fontSize="sm" color="grey.425">
-                            {step.owner.address !== userInfos.address
-                              ? AddressUtils.format(
-                                  `(eth:${BakoAddressUtils.parseFuelAddressToEth(step.owner.address)})`,
-                                )
-                              : null}
-                          </Text>
-                        )}
+                    {!nickname &&
+                      step.type !== TransactionHistoryType.SEND &&
+                      step.owner.type === 'EVM' && (
+                        <Text fontSize="sm" color="grey.425">
+                          {step.owner.address !== userInfos.address
+                            ? AddressUtils.format(
+                                `(eth:${BakoAddressUtils.parseFuelAddressToEth(step.owner.address)})`,
+                              )
+                            : null}
+                        </Text>
+                      )}
 
-                      {!nickname &&
-                        step.type !== TransactionHistoryType.SEND &&
-                        step.owner.type !== 'WEB_AUTHN' &&
-                        step.owner.type !== 'EVM' && (
-                          <Text fontSize="sm" color="grey.425">
-                            {step.owner.address !== userInfos.address
-                              ? `(${AddressUtils.format(step.owner.address)})`
-                              : null}
-                          </Text>
-                        )}
-                    </Steps.Title>
-                    <Steps.Description
-                      style={{
-                        fontSize: '14px',
-                        color: 'grey.425',
-                        marginTop: '16px',
-                      }}
-                    >
-                      <Text
-                        // variant="description"
-                        color="grey.425"
-                        fontSize="xs"
-                      >
-                        {formatInTimeZone(
-                          parseISO(step.date),
-                          Intl.DateTimeFormat().resolvedOptions().timeZone,
-                          'EEE, do MMM, hh:mm a',
-                          { locale: enUS },
-                        )}
-                      </Text>
-                    </Steps.Description>
-                  </Box>
+                    {!nickname &&
+                      step.type !== TransactionHistoryType.SEND &&
+                      step.owner.type !== 'WEB_AUTHN' &&
+                      step.owner.type !== 'EVM' && (
+                        <Text fontSize="sm" color="grey.425">
+                          {step.owner.address !== userInfos.address
+                            ? `(${AddressUtils.format(step.owner.address)})`
+                            : null}
+                        </Text>
+                      )}
+                  </Steps.Title>
+
+                  <Separator borderColor="gray.550" flex={1} />
+
+                  <Steps.Description flex={2}>
+                    <Text color="gray.400" fontSize="xs">
+                      {formatInTimeZone(
+                        parseISO(step.date),
+                        Intl.DateTimeFormat().resolvedOptions().timeZone,
+                        'EEE, do MMM, hh:mm a',
+                        { locale: enUS },
+                      )}
+                    </Text>
+                  </Steps.Description>
                 </Box>
+
+                <Steps.Separator
+                  css={{
+                    position: 'absolute',
+                    width: '2px',
+                    top: 'calc(30px)',
+                    maxHeight: 'calc(100% - 8px)',
+                    left: 'calc(4px - 1px)',
+                    backgroundColor: 'gray.500',
+                  }}
+                />
               </Steps.Item>
             );
           })}

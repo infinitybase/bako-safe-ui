@@ -39,11 +39,12 @@ const ContractAddresses = ({
 
   return (
     <HStack
-      py={2}
+      p={4}
+      bg="gray.600"
+      rounded="lg"
       gap={{ base: 1, sm: 10 }}
       w="full"
       justifyContent="space-between"
-      borderTopWidth={1}
       {...props}
     >
       {from?.address && (

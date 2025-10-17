@@ -38,10 +38,10 @@ const Status = ({
     transaction.id === isCurrentTxPending.transactionId;
 
   const badgeColor = useMemo(() => {
-    if (isReproved || isError) return 'error';
-    if (isCompleted) return 'success';
+    if (isReproved || isError) return 'red';
+    if (isCompleted) return 'green';
     if (isCanceled) return 'grey';
-    return 'warning';
+    return 'yellow';
   }, [isReproved, isCompleted, isError, isCanceled]);
 
   return (
@@ -75,6 +75,7 @@ const Status = ({
             fontSize="xs"
             justifyContent={'center'}
             h={6}
+            variant="surface"
             borderRadius="20px"
             colorPalette={badgeColor}
             // variant={badgeColor}

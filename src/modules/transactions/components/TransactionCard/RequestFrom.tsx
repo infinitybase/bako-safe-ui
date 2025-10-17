@@ -8,17 +8,14 @@ import {
   Text,
   VStack,
 } from 'bako-ui';
+import React from 'react';
 
 import { Nullable } from '@/modules/core';
 
 interface TransactionRequestFromProps extends CardRootProps {
   name: Nullable<string>;
   origin: Nullable<string>;
-  icon?:
-    | IconProps
-    | React.ForwardRefExoticComponent<
-        IconProps & React.RefAttributes<SVGSVGElement>
-      >;
+  icon?: React.ComponentType<IconProps>;
 }
 
 const TransactionRequestFrom = (props: TransactionRequestFromProps) => {

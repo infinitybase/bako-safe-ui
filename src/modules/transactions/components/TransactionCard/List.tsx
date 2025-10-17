@@ -11,6 +11,7 @@ const List = ({ children, openIndex, ...props }: TransactionCardListProps) => {
     <Accordion.Root
       w="full"
       alignItems="flex-start"
+      variant="subtle"
       multiple
       defaultValue={value}
       {...props}
