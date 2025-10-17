@@ -6,7 +6,7 @@ const Card = (props: CardProps) => {
   const { children, ...rest } = props;
 
   return (
-    <Box borderWidth={1} bg="gray.600" borderRadius={10} padding={6} {...rest}>
+    <Box borderWidth={1} bg="gray.700" borderRadius={10} padding={6} {...rest}>
       {children}
     </Box>
   );

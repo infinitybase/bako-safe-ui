@@ -10,7 +10,7 @@ export const LoadingCard = ({ title, subtitle }: LoadingCardProps) => {
     <Card.Root
       w="full"
       variant="subtle"
-      bg="gray.600"
+      bg="gray.700"
       rounded="2xl"
       height="250px"
     >

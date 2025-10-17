@@ -79,7 +79,7 @@ const CardConnector = (props: CardConnectorProps) => {
       transition="0.5s"
       pointerEvents={isAnyWalletConnectorOpen ? 'none' : 'auto'}
       _hover={{
-        bg: 'gray.500',
+        bg: 'gray.600',
       }}
     >
       <Box

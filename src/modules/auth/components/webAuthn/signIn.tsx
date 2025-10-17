@@ -46,7 +46,7 @@ const WebAuthnSignIn = (props: WebAuthnSignInProps) => {
     : WebAuthnModeState.LOGIN;
 
   return (
-    <Card.Root w="full" variant="subtle" bg="gray.600" rounded="2xl">
+    <Card.Root w="full" variant="subtle" bg="gray.700" rounded="2xl">
       <Card.Body maxH={250}>
         <AnimatedSignInCard mode={mode}>
           <Stack

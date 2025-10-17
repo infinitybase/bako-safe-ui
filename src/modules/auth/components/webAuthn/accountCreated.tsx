@@ -11,7 +11,7 @@ const WebAuthnAccountCreated = (props: WebAuthnAccountCreatedProps) => {
   const { formState, username } = props;
 
   return (
-    <Card.Root variant="subtle" bg="gray.600" rounded="2xl" w="full" h="250px">
+    <Card.Root variant="subtle" bg="gray.700" rounded="2xl" w="full" h="250px">
       <Card.Header />
       <Card.Body flex={1} display="flex" justifyContent="center" pb={0}>
         <VStack
