@@ -19,6 +19,7 @@ const Content = (props: ContentProps) => {
       }}
       maxW="1500px"
       mx="auto"
+      {...props}
     >
       {props.children}
     </Flex>
