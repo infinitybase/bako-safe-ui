@@ -3,6 +3,7 @@ import {
   Box,
   BoxProps,
   Flex,
+  FlexProps,
   Image,
   Stack,
   Text,
@@ -36,6 +37,7 @@ interface AssetSelectProps {
   needShowOptionsAbove?: boolean;
   maxOptionsHeight?: number;
   boxProps?: BoxSelectProps;
+  selectedOptionBoxProps?: FlexProps;
   textLabelProps?: TextProps;
   textValueProps?: TextProps;
 }
@@ -52,6 +54,7 @@ const AssetSelect = ({
   maxOptionsHeight,
   name,
   boxProps,
+  selectedOptionBoxProps,
   textLabelProps,
   textValueProps,
 }: AssetSelectProps) => {
@@ -293,7 +296,11 @@ const AssetSelect = ({
         )}
 
         {selectedOption && (
-          <Flex align="center" justify="space-between">
+          <Flex
+            align="center"
+            justify="space-between"
+            {...selectedOptionBoxProps}
+          >
             <Flex align="center" gap={2} flex={1} pt={label ? 2 : 0}>
               <Image
                 src={selectedOption.image ?? ''}

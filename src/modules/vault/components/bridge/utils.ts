@@ -33,7 +33,7 @@ export const optionsAssetsFuel = [
     name: 'USDC',
     image:
       'https://prodlslayerswapbridgesa.blob.core.windows.net/layerswap/currencies/usdc.png',
-    value: '0xc26c91055de37528492e7e97d91c6f4abe34aae26f2c4d25cff6bfe45b5dc9a9',
+    value: '0x286c479da40dc953bddc3bb4c453b608bba2e0ac483b077bd475174115395e6b',
     decimals: 6,
   },
   {

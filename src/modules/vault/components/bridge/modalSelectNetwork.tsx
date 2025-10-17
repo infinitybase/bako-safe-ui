@@ -129,9 +129,11 @@ export function ModalSelectNetworkBridge({
     (asset: AssetItem) => {
       onSelect(asset);
       setAssetSelected(asset);
+      setFilteredNetworks(options ?? []);
+      form.resetField('searchNetwork');
       onClose();
     },
-    [onSelect, onClose],
+    [form, options, setFilteredNetworks, onSelect, onClose],
   );
 
   return (
