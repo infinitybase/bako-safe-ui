@@ -14,6 +14,7 @@ export const Icon = memo(
       isDeposit,
       isSwap,
       isLiquidStake,
+      isBridge,
     } = useVerifyTransactionInformations(transaction);
 
     const IconComponent = useMemo(
@@ -25,8 +26,17 @@ export const Icon = memo(
           isDeposit,
           isSwap,
           isLiquidStake,
+          isBridge,
         }),
-      [isDeploy, isFromConnector, isFromCLI, isDeposit, isSwap, isLiquidStake],
+      [
+        isDeploy,
+        isFromConnector,
+        isFromCLI,
+        isDeposit,
+        isSwap,
+        isLiquidStake,
+        isBridge,
+      ],
     );
 
     const size = useMemo(

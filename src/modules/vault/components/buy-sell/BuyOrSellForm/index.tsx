@@ -178,6 +178,7 @@ export const BuyOrSellForm = ({
           variant="primary"
           mt={3}
           isLoading={isSubmitting}
+          position="unset"
         >
           {type === 'BUY' ? 'Buy' : 'Sell'}
           {' token'}

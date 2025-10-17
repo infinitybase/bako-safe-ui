@@ -1,5 +1,4 @@
 import { AxiosError } from 'axios';
-import { TransactionStatus } from 'bakosafe';
 import {
   bn,
   randomBytes,
@@ -10,7 +9,9 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
   ICreateSwapBridgePayload,
+  ICreateSwapBridgeResponse,
   IGetDestinationsResponse,
+  IInfoBridgeSwapPayload,
   IQuoteFormLayersSwap,
   useBakoSafeVault,
   useScreenSize,
@@ -20,7 +21,6 @@ import { useNetworks } from '@/modules/network/hooks';
 import { availableNetWorks, NetworkType } from '@/modules/network/services';
 import { useTransactionToast } from '@/modules/transactions/providers/toast';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
-import { TransactionService } from '@/modules/transactions/services';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { AssetItem } from '../../components/bridge';
@@ -35,6 +35,7 @@ import {
 } from '../../components/bridge/utils';
 import { useVaultInfosContext } from '../../VaultInfosProvider';
 import { useCreateSwapBridge } from './useCreateSwapBridge';
+import { useCreateBridgeTransaction } from './useCreateTransactionBridge';
 import { useGetDestinationsBridge } from './useGetDestinationsBridge';
 import { useGetLimitsBridge } from './useGetLimits';
 import { useGetQuoteBridge } from './useGetQuoteBridge';
@@ -88,11 +89,11 @@ const useFormBridge = () => {
   const { assets } = useVaultInfosContext();
   const { isMobile } = useScreenSize();
   const { createSwapBridgeAsync, isPending } = useCreateSwapBridge();
+  const { createTransactionBridgeAsync } = useCreateBridgeTransaction();
   const { getDestinationsBridgeAsync, isPending: isLoadingDestinations } =
     useGetDestinationsBridge();
   const { getLimitsBridgeAsync } = useGetLimitsBridge();
-  const { getQuoteBridgeAsync, isPending: isPendingQuote } =
-    useGetQuoteBridge();
+  const { getQuoteBridgeAsync } = useGetQuoteBridge();
   const [toAssetOptions, setToAssetOptions] = useState<AssetFormItem[]>([]);
   const [isSendingTx, setIsSendingTx] = useState<boolean>(false);
 
@@ -103,12 +104,6 @@ const useFormBridge = () => {
   const networkToValueForm = watch('selectNetworkTo');
   const destinationAddress = watch('destinationAddress');
   const amount = watch('amount');
-
-  useEffect(() => {
-    if (isPendingQuote !== isLoadingQuote) {
-      setLoadingQuote(isPendingQuote);
-    }
-  }, [isPendingQuote]);
 
   const assetFrom =
     useMemo(
@@ -376,7 +371,13 @@ const useFormBridge = () => {
           receiveInUsd: receiveInUsd,
         });
         if (ErrorBridgeForm.QUOTE) saveErrorForm(null);
+        setTimeout(() => {
+          setLoadingQuote(false);
+        }, 1000);
+
+        return data;
       } catch (error) {
+        setLoadingQuote(false);
         saveQuote({} as IQuoteFormLayersSwap);
         saveErrorForm(ErrorBridgeForm.QUOTE);
       }
@@ -389,21 +390,29 @@ const useFormBridge = () => {
       prepareCreateSwapPayload,
       saveQuote,
       saveErrorForm,
+      setLoadingQuote,
     ],
   );
 
   const sendTx = useCallback(
-    async (tx: TransactionRequest) => {
+    async (tx: TransactionRequest, swapResponse: ICreateSwapBridgeResponse) => {
       try {
         if (!vault) return;
 
-        const { hashTxId } = await vault.BakoTransfer(tx, {
-          name: 'Transfer Bridge',
-        });
+        const txData = await vault.prepareTransaction(tx);
 
-        const transaction = await TransactionService.getByHash(hashTxId, [
-          TransactionStatus.AWAIT_REQUIREMENTS,
-        ]);
+        const swapInfo: IInfoBridgeSwapPayload = {
+          swap: swapResponse,
+          sourceAddress: predicateAddress,
+          sourceAsset: assetFrom?.value ?? '',
+          destinationAsset: assetTo?.value ?? '',
+        };
+
+        const transaction = await createTransactionBridgeAsync({
+          txData,
+          swap: swapInfo,
+          name: `Bridge Fuel Network to ${networkTo?.name}`,
+        });
 
         await confirmTransaction(
           transaction.id,
@@ -421,11 +430,16 @@ const useFormBridge = () => {
       }
     },
     [
+      networkTo,
+      vault,
+      assetFrom?.value,
+      assetTo?.value,
+      predicateAddress,
       confirmTransaction,
       refetchHomeTransactionsList,
       refetchTransactionsList,
       refetchVaultTransactionsList,
-      vault,
+      createTransactionBridgeAsync,
     ],
   );
 
@@ -457,13 +471,12 @@ const useFormBridge = () => {
       await vault.fund(tx, txCost);
 
       //tx.addCoinOutput(new Address(WALLET_BAKO), bn(175), tokensIDS.ETH);
-
-      await sendTx(tx);
+      await sendTx(tx, response);
     } catch (err) {
       console.info('error submit brigde', err);
       if (
         err instanceof AxiosError &&
-        err?.response?.data?.detail === 'Invalid address'
+        err?.response?.data?.title.includes('Invalid address')
       ) {
         toast.generalError(
           randomBytes.toString(),
@@ -494,6 +507,7 @@ const useFormBridge = () => {
     isLoadingQuote,
     isSendingTx,
     errorForm,
+    setLoadingQuote,
     getDestinations,
     getOperationLimits,
     getOperationQuotes,

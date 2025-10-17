@@ -2,8 +2,12 @@ import { BN, CoinQuantity } from 'fuels';
 
 import { api } from '@/config';
 import { Asset, NFT } from '@/modules/core';
-import { IPredicate } from '@/modules/core/hooks/bakosafe/utils/types';
 import {
+  IPredicate,
+  ITransaction,
+} from '@/modules/core/hooks/bakosafe/utils/types';
+import {
+  ICreateBridgeTransactionPayload,
   ICreateSwapBridgePayload,
   ICreateSwapBridgeResponse,
   IGetDestinationPayload,
@@ -11,6 +15,7 @@ import {
   IGetLimitsResponse,
   IGetQuotesResponse,
   Predicate,
+  PredicateUpdatePayload,
   Workspace,
 } from '@/modules/core/models';
 import {
@@ -104,8 +109,13 @@ export class VaultService {
     return data;
   }
 
-  static async getByName(name: string) {
-    const { data } = await api.get<boolean>(`/predicate/by-name/${name}`);
+  static async getByName(name: string, ignoreId?: string) {
+    const params = new URLSearchParams();
+    if (ignoreId !== undefined) {
+      params.append('ignoreId', ignoreId);
+    }
+    const url = `/predicate/by-name/${name}${params.toString() ? '?' + params.toString() : ''}`;
+    const { data } = await api.get<boolean>(url);
     return data;
   }
 
@@ -218,7 +228,7 @@ export class VaultService {
     const { fromNetwork, fromToken } = payload;
 
     const { data } = await api.get<IGetDestinationsResponse[]>(
-      `/layer-swap/destinations?fromNetwork=${fromNetwork}&fromToken=${fromToken}`,
+      `/bridge/destinations?fromNetwork=${fromNetwork}&fromToken=${fromToken}`,
     );
 
     return data;
@@ -238,7 +248,7 @@ export class VaultService {
     });
 
     const { data } = await api.get<IGetLimitsResponse>(
-      `/layer-swap/limits?${params}`,
+      `/bridge/limits?${params}`,
     );
 
     return data;
@@ -260,7 +270,7 @@ export class VaultService {
     });
 
     const { data } = await api.get<IGetQuotesResponse>(
-      `/layer-swap/quote?${params}`,
+      `/bridge/quote?${params}`,
     );
 
     return data;
@@ -270,10 +280,23 @@ export class VaultService {
     payload: ICreateSwapBridgePayload,
   ): Promise<ICreateSwapBridgeResponse> {
     const { data } = await api.post<ICreateSwapBridgeResponse>(
-      `/layer-swap/swap`,
+      `/bridge/swap`,
       payload,
     );
 
+    return data;
+  }
+
+  static async createBridgeTransaction(
+    payload: ICreateBridgeTransactionPayload,
+  ): Promise<ITransaction> {
+    const { data } = await api.post<ITransaction>(`/bridge`, payload);
+
+    return data;
+  }
+
+  static async updatePredicate(id: string, payload: PredicateUpdatePayload) {
+    const { data } = await api.put<Predicate>(`/predicate/${id}`, payload);
     return data;
   }
 }

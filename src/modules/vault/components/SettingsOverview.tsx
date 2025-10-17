@@ -1,14 +1,17 @@
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import {
   Avatar,
+  Badge,
   Box,
   Button,
   Center,
+  Flex,
   Grid,
   Heading,
   HStack,
   Stack,
   Text,
+  useDisclosure,
   VStack,
 } from '@chakra-ui/react';
 import { QRCodeSVG } from 'qrcode.react';
@@ -20,10 +23,11 @@ import {
   Card,
   CommingSoonDialog,
   CustomSkeleton,
+  EditIcon2,
 } from '@/components';
 import { CLISettingsCard } from '@/modules/cli/components';
 import { CreateAPITokenDialog } from '@/modules/cli/components/APIToken/create';
-import { Pages, PermissionRoles } from '@/modules/core';
+import { AddressUtils, Pages, PermissionRoles } from '@/modules/core';
 import { useNetworks } from '@/modules/network/hooks';
 import { NetworkType } from '@/modules/network/services';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
@@ -32,6 +36,7 @@ import { limitCharacters } from '@/utils';
 import { UseVaultDetailsReturn } from '../hooks/details';
 import { openFaucet } from '../utils';
 import { useVaultInfosContext } from '../VaultInfosProvider';
+import { UpdateVaultDialog } from './dialog/update';
 
 export interface CardDetailsProps {
   assets: UseVaultDetailsReturn['assets'];
@@ -45,6 +50,7 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
   const { vault, assets, blockedTransfers, setAddAssetsDialogState } = props;
   const { balanceUSD, isEthBalanceLowerThanReservedAmount } = assets;
   const { checkNetwork } = useNetworks();
+  const updateVaultDisclosure = useDisclosure();
 
   const isTestnet = checkNetwork(NetworkType.TESTNET);
 
@@ -78,7 +84,15 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
     return as;
   }, [vault.data?.id]);
 
+  const canEdit = useMemo(
+    () => hasPermission([PermissionRoles.OWNER]),
+    [hasPermission],
+  );
+
   if (!vault) return null;
+
+  const predicateVersion = vault.data?.configurable?.version;
+  const predicateAddress = vault.data?.predicateAddress;
 
   return (
     <>
@@ -118,7 +132,8 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                     direction={{ base: 'column', sm: 'row' }}
                     alignItems={{ base: 'flex-start', sm: 'center' }}
                     spacing={{ base: 3, sm: 6 }}
-                    w="full"
+                    w={{ mxs: 'full', base: 'auto' }}
+                    mr="auto"
                     maxW={{ base: 'full', sm: '100%' }}
                   >
                     <Center>
@@ -132,17 +147,33 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                       />
                     </Center>
                     <Box maxW="59%">
-                      <Heading
-                        mb={1}
-                        variant="title-xl"
-                        fontSize={{ base: 'md', sm: 'xl' }}
-                        isTruncated
-                        maxW={{ base: 250, xs: 400, md: 350, lg: 350 }}
-                      >
-                        {isExtraSmall
-                          ? limitCharacters(vault.data?.name ?? '', 10)
-                          : vault.data?.name}
-                      </Heading>
+                      <Flex alignItems="center" gap={2} mb={1}>
+                        <Heading
+                          variant="title-xl"
+                          fontSize={{ base: 'md', sm: 'xl' }}
+                          isTruncated
+                          maxW={{ base: 250, xs: 400, md: 350, lg: 350 }}
+                        >
+                          {isExtraSmall
+                            ? limitCharacters(vault.data?.name ?? '', 10)
+                            : vault.data?.name}
+                        </Heading>
+                        <Button
+                          variant="unstyled"
+                          p={0}
+                          m={0}
+                          boxSize={5}
+                          minW="0"
+                          aria-label="Edit vault"
+                          visibility={canEdit ? 'visible' : 'hidden'}
+                          display="flex"
+                          alignItems="center"
+                          justifyContent="center"
+                          onClick={updateVaultDisclosure.onOpen}
+                        >
+                          <EditIcon2 boxSize={5} />
+                        </Button>
+                      </Flex>
 
                       <Box maxW={420}>
                         <Text
@@ -348,18 +379,42 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                       }}
                     />
                   </Box>
-                  <AddressWithCopyBtn
-                    mt="auto"
-                    value={vault?.data?.predicateAddress ?? ''}
-                    p={2}
-                    px={3}
-                    flexDir="row-reverse"
-                    cursor="pointer"
-                    borderRadius={10}
-                    backgroundColor="dark.100"
-                    isSidebarAddress
-                    textProps={{ color: 'grey.500' }}
-                  />
+                  {predicateAddress && (
+                    <Badge
+                      variant="filled"
+                      gap={{ base: 2, sm: 3 }}
+                      maxW={180}
+                      w="full"
+                      justifyContent="space-between"
+                    >
+                      Address
+                      <AddressWithCopyBtn
+                        value={predicateAddress}
+                        customValue={AddressUtils.format(predicateAddress, 4)}
+                        minW="0"
+                        gap={1}
+                        copyBtnProps={{ fontSize: 'md' }}
+                      />
+                    </Badge>
+                  )}
+                  {predicateVersion && (
+                    <Badge
+                      variant="filled"
+                      gap={{ base: 2, sm: 3 }}
+                      maxW={180}
+                      w="full"
+                      justifyContent="space-between"
+                    >
+                      Predicate
+                      <AddressWithCopyBtn
+                        value={predicateVersion}
+                        customValue={AddressUtils.format(predicateVersion, 4)}
+                        gap={1}
+                        copyBtnProps={{ fontSize: 'md' }}
+                        minW="0"
+                      />
+                    </Badge>
+                  )}
                 </VStack>
               </Stack>
             </Card>
@@ -408,6 +463,15 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
           onClose={commingSoonDialog.onClose}
           notifyHandler={selectedFeature.notifyHandler}
           title="Coming Soon"
+        />
+      )}
+
+      {updateVaultDisclosure.isOpen && vault.data && (
+        <UpdateVaultDialog
+          isOpen={updateVaultDisclosure.isOpen}
+          onClose={updateVaultDisclosure.onClose}
+          initialValues={vault.data}
+          workspaceId={workspaceId}
         />
       )}
     </>
