@@ -54,13 +54,7 @@ const EmptyState = ({
           </Text>
         </VStack>
         {showAction && (
-          <Button
-            mt={10}
-            colorPalette="emptyState"
-            disabled={isDisabled}
-            onClick={buttonAction}
-            w="full"
-          >
+          <Button mt={10} disabled={isDisabled} onClick={buttonAction} w="full">
             {buttonActionTitle ?? 'Create transaction'}
           </Button>
         )}
