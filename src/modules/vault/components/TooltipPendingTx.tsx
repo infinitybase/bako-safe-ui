@@ -2,8 +2,8 @@ import { Box, Heading } from 'bako-ui';
 
 export const TooltipPendingTx = () => {
   return (
-    <Box bg="grey.825" p={2} borderColor="dark.100" borderRadius={4}>
-      <Heading fontSize="xs" color="grey.75">
+    <Box bg="bg.muted" p={2} borderRadius="lg">
+      <Heading fontSize="xs" color="gray.50">
         This vault has pending transactions.
       </Heading>
     </Box>

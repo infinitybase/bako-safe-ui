@@ -124,7 +124,7 @@ const TransactionStepper = memo(({ steps }: TransactionStepperProps) => {
                       badOptions ? (
                         <Box bgColor="error.500" boxSize="8px" />
                       ) : sended && lastStep ? (
-                        <Box bgColor="primary.default" boxSize="8px" />
+                        <Box bgColor="primary.main" boxSize="8px" />
                       ) : (
                         <Box bgColor="gray.500" boxSize="8px" />
                       )
