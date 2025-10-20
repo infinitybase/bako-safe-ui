@@ -203,7 +203,7 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
               Transactions
             </SidebarMenu.Title>
             <SidebarMenu.Badge hidden={!isPendingSigner}>
-              <Icon as={PendingIcon} />{' '}
+              <Icon as={PendingIcon} w={3} />{' '}
               {isPendingSigner && pendingSignerTransactionsLength}
             </SidebarMenu.Badge>
           </SidebarMenu.Container>
@@ -231,7 +231,7 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
           <Carousel.Slide>
             <Carousel.SlideItem>
               <Banner
-                icon={<Icon as={BakoIdIcon} h={10} w={102.5} />}
+                icon={<Icon as={BakoIdIcon} h="auto" w="60px" />}
                 title="Register your Handles"
                 onClick={() => window.open(getBakoIDURL(), '_blank')}
               />
