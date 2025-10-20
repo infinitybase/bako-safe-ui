@@ -1,4 +1,4 @@
-import { Card, HStack, Text, VStack } from 'bako-ui';
+import { Card, GridItem, HStack, Text, VStack } from 'bako-ui';
 
 import { CustomSkeleton } from '@/components';
 
@@ -17,35 +17,28 @@ export function ItemLiquidStake({
 }: ItemLiquidStakeProps) {
   return (
     <Card.Root
-      flexDirection="row"
-      borderRadius={9}
+      as={GridItem}
+      borderRadius="lg"
       flex={1}
-      alignItems="center"
-      bg="dark.950"
-      css={{
-        background: 'var(--chakra-colors-dark-950)',
-      }}
+      borderColor="bg.muted"
       width="full"
-      minW={value.length > 9 ? '235px' : '140px'}
+      minW={value.length > 9 ? '190px' : '140px'}
     >
-      <HStack
-        flex={1}
-        padding={3}
-        borderRadius={9}
-        background={'var(--chakra-colors-gradients-transaction-card)'}
-      >
-        <VStack flex={1} alignItems="flex-start" gap={0}>
-          <Text fontSize={12} color={'gray'}>
-            {label}
-          </Text>
-          <CustomSkeleton loading={isLoading}>
-            <Text fontSize={16} fontWeight={700} color="white">
-              {value}
+      <Card.Body padding={3}>
+        <HStack flex={1} borderRadius={9}>
+          <VStack flex={1} alignItems="flex-start" gap={0}>
+            <Text fontSize="xs" color="textSecondary">
+              {label}
             </Text>
-          </CustomSkeleton>
-        </VStack>
-        {children}
-      </HStack>
+            <CustomSkeleton loading={isLoading}>
+              <Text fontSize="xs" fontWeight={500} color="textPrimary">
+                {value}
+              </Text>
+            </CustomSkeleton>
+          </VStack>
+          {children}
+        </HStack>
+      </Card.Body>
     </Card.Root>
   );
 }

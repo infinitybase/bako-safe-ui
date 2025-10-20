@@ -22,7 +22,6 @@ export const InputField = ({
   useEffect(() => {
     if (mirrorRef.current && ref?.current) {
       const mirrorWidth = mirrorRef.current.offsetWidth;
-      // eslint-disable-next-line react-compiler/react-compiler
       ref.current.style.width = `${mirrorWidth}px`;
     }
   }, [value, ref]);
@@ -35,9 +34,9 @@ export const InputField = ({
         alignItems="center"
         justifyContent="center"
         borderBottom="1px solid"
-        borderColor="grey.950"
+        borderColor="gray.500"
         _hover={{
-          borderColor: 'grey.200',
+          borderColor: 'gray.600',
         }}
         px={0}
         minW="150px"
@@ -45,8 +44,11 @@ export const InputField = ({
       >
         <CurrencyField
           type="crypto"
+          bg="transparent"
+          border="none"
+          outline="none"
           textAlign="center"
-          borderBottomWidth="0"
+          color="gray.50"
           minW={0}
           px={0}
           fontSize="3xl"
@@ -67,8 +69,8 @@ export const InputField = ({
         </Box>
 
         <Box
-          alignSelf="end"
-          color={`${disabled ? 'grey.75' : 'section.200'}`}
+          alignSelf="center"
+          color="gray.50"
           opacity={disabled ? 0.5 : 1}
           px={2}
         >

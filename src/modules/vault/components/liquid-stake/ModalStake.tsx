@@ -57,8 +57,9 @@ export function ModalLiquidStake({
       open={isOpen}
       onOpenChange={handleClose}
       closeOnInteractOutside={false}
+      size="md"
     >
-      <Dialog.Body>
+      <Dialog.Body px={4}>
         <Dialog.Header
           position={{ base: 'static', sm: 'relative' }}
           title="Stake to validator"
@@ -67,21 +68,21 @@ export function ModalLiquidStake({
           titleSxProps={{ fontSize: 16, marginTop: { base: 5, md: 0 } }}
           onClose={handleClose}
         />
-        <VStack marginTop={{ base: 5 }} marginBottom={{ base: 10 }}>
-          <Card.Root variant="outline" padding={3}>
+        <VStack marginTop={{ base: 5 }} marginBottom={{ base: 10 }} w="full">
+          <Card.Root borderColor="bg.muted" padding={3} w="full">
             <HStack>
-              <Text color="grey.250" fontSize={12}>
+              <Text color="textSecondary" fontSize={12}>
                 Stake amount
               </Text>
               <HStack flex={1} justifyContent="flex-end" marginBottom={2}>
                 <FuelIcon borderRadius="full" boxSize="16px" />
-                <Text color="white" fontSize={12}>
+                <Text color="textPrimary" fontSize={12}>
                   FUEL
                 </Text>
               </HStack>
             </HStack>
             <HStack justifyContent="flex-end">
-              <Text color="grey.425" fontSize={12}>
+              <Text color="textSecondary" fontSize={12}>
                 Balance: {balance}
               </Text>
             </HStack>
@@ -94,28 +95,28 @@ export function ModalLiquidStake({
             <HStack justifyContent="center">
               <Button
                 disabled={maxFee === 0 || maxFee == undefined}
-                colorPalette="secondary"
+                variant="subtle"
                 onClick={() => handleSetCurrencyAmount(25, balance)}
               >
                 <Text color="white">25%</Text>
               </Button>
               <Button
                 disabled={maxFee === 0 || maxFee == undefined}
-                colorPalette="secondary"
+                variant="subtle"
                 onClick={() => handleSetCurrencyAmount(50, balance)}
               >
                 <Text color="white">50%</Text>
               </Button>
               <Button
                 disabled={maxFee === 0 || maxFee == undefined}
-                colorPalette="secondary"
+                variant="subtle"
                 onClick={() => handleSetCurrencyAmount(75, balance)}
               >
                 <Text color="white">75%</Text>
               </Button>
               <Button
                 disabled={maxFee === 0 || maxFee == undefined}
-                colorPalette="secondary"
+                variant="subtle"
                 onClick={() => handleSetCurrencyAmount(100, balance)}
               >
                 <Text color="white">Stake Max</Text>
@@ -135,9 +136,9 @@ export function ModalLiquidStake({
               )}
             </HStack>
           </Card.Root>
-          <Card.Root variant="outline" padding={3}>
+          <Card.Root borderColor="bg.muted" padding={3} w="full">
             <HStack>
-              <Text color="grey.250" fontSize={12}>
+              <Text color="textSecondary" fontSize={12}>
                 You receive
               </Text>
               <HStack flex={1} justifyContent="flex-end" marginBottom={2}>
@@ -146,7 +147,7 @@ export function ModalLiquidStake({
                   boxSize="16px"
                   alt="stFUEL Icon"
                 />
-                <Text color="white" fontSize={12}>
+                <Text color="textPrimary" fontSize={12}>
                   stFUEL
                 </Text>
               </HStack>
@@ -158,34 +159,49 @@ export function ModalLiquidStake({
               disabled={maxFee === 0 || maxFee == undefined}
             />
           </Card.Root>
-          <Card.Root variant="outline" padding={3}>
-            <Text color="grey.250" fontSize={12} marginBottom={6}>
+          <Card.Root borderColor="bg.muted" padding={3} w="full">
+            <Text color="textSecondary" fontSize={12} marginBottom={6}>
               Summary
             </Text>
             <VStack p={0} gap={1}>
               <HStack width="full">
                 <HStack gap={2} align={'center'}>
-                  <Text color="grey.250" fontSize={12} flex={1}>
+                  <Text color="textSecondary" fontSize={12} flex={1}>
                     Conversion Ratio
                   </Text>
                 </HStack>
-                <Text color="grey.250" fontSize={12} flex={1} textAlign="right">
+                <Text
+                  color="textSecondary"
+                  fontSize={12}
+                  flex={1}
+                  textAlign="right"
+                >
                   1 FUEL ~ {price} stFUEL
                 </Text>
               </HStack>
               <HStack width="full">
-                <Text color="grey.250" fontSize={12} flex={1}>
+                <Text color="textSecondary" fontSize={12} flex={1}>
                   Reference APY
                 </Text>
-                <Text color="grey.250" fontSize={12} flex={1} textAlign="right">
+                <Text
+                  color="textSecondary"
+                  fontSize={12}
+                  flex={1}
+                  textAlign="right"
+                >
                   {`${apyValue}%`}
                 </Text>
               </HStack>
               <HStack width="full">
-                <Text color="grey.250" fontSize={12} flex={1}>
+                <Text color="textSecondary" fontSize={12} flex={1}>
                   Max Transaction cost
                 </Text>
-                <Text color="grey.250" fontSize={12} flex={1} textAlign="right">
+                <Text
+                  color="textSecondary"
+                  fontSize={12}
+                  flex={1}
+                  textAlign="right"
+                >
                   {`${maxFee} ETH`}
                 </Text>
               </HStack>
@@ -194,7 +210,6 @@ export function ModalLiquidStake({
         </VStack>
         <Dialog.Actions hideDivider={true} onClick={createTxLiquidStake}>
           <Button
-            colorPalette="primary"
             width="full"
             loading={isDepositing}
             disabled={
