@@ -300,12 +300,7 @@ const UserBox = () => {
             position="relative"
             borderRadius="lg"
           >
-            <Text
-              color="textPrimary"
-              pl={isMobile ? 4 : 0}
-              fontSize="xs"
-              lineClamp={1}
-            >
+            <Text color="textPrimary" fontSize="xs" lineClamp={1}>
               {hasNickName
                 ? limitCharacters(name, 16)
                 : AddressUtils.format(b256UserAddress, 4)}

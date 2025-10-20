@@ -68,7 +68,13 @@ const Title = ({ isActive, ...props }: TextProps & { isActive?: boolean }) => (
 );
 
 const Badge = (props: BadgeProps) => (
-  <ChakraBadge colorPalette="warning" fontWeight="normal" {...props} />
+  <ChakraBadge
+    colorPalette="yellow"
+    size="xs"
+    variant="outline"
+    fontWeight="normal"
+    {...props}
+  />
 );
 
 const SidebarMenu = {
