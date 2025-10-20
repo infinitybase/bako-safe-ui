@@ -41,8 +41,13 @@ const VaultBox = (props: VaultBoxPropx) => {
       handlers: { goHome },
     },
     vaultDetails: {
-      assets: { balanceUSD, visibleBalance, setVisibleBalance },
-      vaultRequest: { isLoading },
+      assets: {
+        balanceUSD,
+        visibleBalance,
+        setVisibleBalance,
+        isLoading: isLoadingAssets,
+      },
+      vaultRequest: { isLoading: isLoadingVault },
     },
   } = useWorkspaceContext();
 
@@ -58,6 +63,10 @@ const VaultBox = (props: VaultBoxPropx) => {
     );
 
   const EyeIcon = visibleBalance ? EyeOpenIcon : EyeCloseIcon;
+  const isLoading = useMemo(
+    () => isLoadingAssets || isLoadingVault,
+    [isLoadingAssets, isLoadingVault],
+  );
 
   return (
     <Stack w="100%" gap={4}>
@@ -102,7 +111,7 @@ const VaultBox = (props: VaultBoxPropx) => {
         >
           <Icon as={LeftAndRightArrow} w={4} color="gray.50" opacity={0.6} />
           <Text opacity={0.6} textTransform="uppercase" fontSize="xs">
-            Vault
+            Account
           </Text>
         </Button>
       </HStack>
