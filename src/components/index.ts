@@ -23,5 +23,5 @@ export * from './skeleton';
 export * from './tooltip';
 export * from './tooltipNotEnoughBalance';
 export * from './transactionExpire';
-export * from './transactionTypeFilters';
+export * from './transactionFilters';
 export * from './welcomeDialog';
