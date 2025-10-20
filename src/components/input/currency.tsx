@@ -173,7 +173,6 @@ const Field = forwardRef<HTMLInputElement, CurrencyFieldProps>(
               }
             }}
             autoComplete="off"
-            variant="filled"
             inputMode="decimal"
             borderColor={isInvalid ? 'error' : undefined}
             _focusVisible={{
