@@ -26,34 +26,35 @@ const AssetsBalanceCard = ({
 
   return (
     <Card
-      p={4}
-      borderRadius={8}
-      borderWidth="1px"
-      borderColor="grey.950"
-      backgroundColor="dark.50"
-      backdropFilter="blur(6px)"
-      boxShadow="lg"
+      p={6}
+      borderRadius="2xl"
+      border="none"
+      backgroundColor="bg.panel"
+      transition="background-color 0.3s ease"
+      _hover={{
+        bg: 'bg.muted',
+      }}
     >
       <VStack alignItems="flex-start" gap={4}>
         <Image
-          w={{ base: 8, sm: 10 }}
-          h={{ base: 8, sm: 10 }}
+          w={7}
+          h={7}
           src={assetsInfo?.icon}
-          borderRadius={100}
+          borderRadius="full"
           alt="Asset Icon"
           objectFit="cover"
         />
         <VStack alignItems="flex-start" gap={0} w="full">
-          <Text fontSize="sm" color="grey.50" maxW="full" truncate>
+          <Text fontSize="xs" color="textSecondary" maxW="full" truncate>
             {assetsInfo?.name}
           </Text>
-          <Text fontSize="sm" color="grey.50" maxW="full" truncate>
+          <Text fontSize="xs" color="textSecondary" maxW="full" truncate>
             {assetAmount}{' '}
-            <Text as="span" color="grey.400" fontSize="xs">
+            <Text as="span" color="textSecondary" fontSize="xs">
               {assetsInfo?.slug?.toUpperCase() ?? ''}
             </Text>
           </Text>
-          <Text fontSize="xs" color="grey.400" minH="1em">
+          <Text fontSize="sm" color="gray.50" mt={4}>
             {transactionAmount > 0 ? formattedAmount : ''}
           </Text>
         </VStack>
