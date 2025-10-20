@@ -1,5 +1,5 @@
 import { useQueryClient } from '@tanstack/react-query';
-import { Box, Grid, GridItem, Loader, Spacer, Text } from 'bako-ui';
+import { Box, Grid, GridItem, Loader, Text } from 'bako-ui';
 import { useEffect } from 'react';
 
 import { CustomSkeleton, TransactionFilters } from '@/components';
@@ -143,6 +143,7 @@ const VaultDetailsPage = () => {
         gap={4}
         mt={{ md: 10, base: 4 }}
         mb={{ base: 4, md: 6 }}
+        justifyContent="space-between"
       >
         <Box
           display="flex"
@@ -158,7 +159,6 @@ const VaultDetailsPage = () => {
             quantity={pendingSignerTransactions.data?.ofUser ?? 0}
           />
         </Box>
-        <Spacer />
 
         <TransactionFilters
           currentFilter={txFilterType}
@@ -168,6 +168,7 @@ const VaultDetailsPage = () => {
           status={status}
           isPendingSignerTransaction={isPendingSigner}
           onPendingFilter={handlePendingStatusChange}
+          justifyContent="flex-end"
         />
       </Box>
 
