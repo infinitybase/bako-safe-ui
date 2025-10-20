@@ -14,33 +14,33 @@ const Banner = (props: BannerProps) => {
   return (
     <Box
       w="full"
-      bgColor="grey.825"
-      borderRadius="xl"
+      bgColor="bg.muted"
+      borderRadius="lg"
       display="flex"
       alignItems="center"
-      justifyContent="center"
+      justifyContent="space-between"
       h="full"
-      p={4}
-      gap={2}
+      p={1}
+      gap={1}
       _hover={{
         cursor: 'pointer',
       }}
       {...rest}
     >
-      <Flex gap={2} w="75%" flexDir="column">
+      <Flex gap={1} w="75%" flexDir="column">
         {icon}
-        <Text w="full" fontSize="xs" color="grey.50" whiteSpace="pretty">
+        <Text w="full" fontSize="8px" color="gray.50" whiteSpace="pretty">
           {title}
         </Text>
       </Flex>
       <Button
         variant="outline"
-        color="grey.75"
-        fontSize={['xs', 'sm']}
+        size="2xs"
+        py={4}
         _hover={{
           bgColor: 'initial',
           color: 'white',
-          borderColor: 'brand.500',
+          borderColor: 'primary.main',
         }}
       >
         <UpRightArrow w={4} h={4} />

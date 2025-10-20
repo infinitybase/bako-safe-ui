@@ -10,7 +10,9 @@ export const BakoGarageBanner = ({ ...rest }: BoxProps) => {
         alt="Bako Garage Banner"
         borderRadius="lg"
         width="full"
-        height="101px"
+        height="auto"
+        objectFit="inherit"
+        aspectRatio={16 / 9}
       />
     </Box>
   );
