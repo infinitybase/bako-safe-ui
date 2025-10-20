@@ -42,16 +42,10 @@ export const NFTsEmptyState = () => {
           </Text>
         </Stack>
 
-        <Button
-          variant="primary"
-          as={Link}
-          to={GARAGE_APP_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          size="lg"
-          px={8}
-        >
-          Go to marketplace
+        <Button size="lg" px={8} asChild>
+          <Link to={GARAGE_APP_URL} target="_blank" rel="noopener noreferrer">
+            Go to marketplace
+          </Link>
         </Button>
       </VStack>
     </Card.Root>
