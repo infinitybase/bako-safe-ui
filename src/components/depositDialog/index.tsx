@@ -169,6 +169,7 @@ const DepositDialog = ({
           right={0}
           px={isMobile ? 10 : 'unset'}
           bg={isMobile ? 'dark.950' : 'unset'}
+          hideDivider
           css={{
             '&>hr': {
               display: 'none',
@@ -181,10 +182,7 @@ const DepositDialog = ({
               lineHeight="15.85px"
               letterSpacing=".5px"
               variant="outline"
-              color="dark.950"
-              bg="grey.75"
               fontWeight={600}
-              _hover={{ bg: 'grey.75' }}
               w="full"
               onClick={() => openFaucet(vault.predicateAddress)}
             >
