@@ -3,7 +3,7 @@ import { IconButton, IconButtonProps, Tooltip } from 'bako-ui';
 interface VaultIconInfoProps {
   children: React.ReactNode;
   onClick?: IconButtonProps['onClick'];
-  tooltipContent: string;
+  tooltipContent: React.ReactNode;
   placement?:
     | 'top'
     | 'bottom'
@@ -31,11 +31,23 @@ export const VaultIconInfo = ({
       contentProps={{
         bg: 'bg.muted',
         color: 'textPrimary',
+        borderRadius: 'lg',
       }}
       positioning={{ placement }}
       showArrow={false}
     >
-      <IconButton variant="ghost" size="xs" onClick={onClick}>
+      <IconButton
+        variant="solid"
+        bg="bg.muted"
+        _hover={{
+          bg: 'gray.550',
+        }}
+        size="xs"
+        boxSize="20px"
+        minW="20px"
+        rounded="sm"
+        onClick={onClick}
+      >
         {children}
       </IconButton>
     </Tooltip>
