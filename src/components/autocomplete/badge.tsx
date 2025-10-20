@@ -16,6 +16,7 @@ import {
 import { useState } from 'react';
 
 import { AutocompleteOption, LineCloseIcon } from '@/components';
+import { AutocompleteBadgeStatus } from '@/modules/core';
 
 const slideToPosition = keyframes`
   from {
@@ -27,14 +28,6 @@ const slideToPosition = keyframes`
     opacity: 1; 
   }
 `;
-
-enum AutocompleteBadgeStatus {
-  SEARCHING = 0,
-  SUCCESS = 1,
-  ERROR = 2,
-  INFO = 3,
-  CONFLICT = 4,
-}
 
 interface AutocompleteBadgeProps
   extends Omit<InputProps, 'value' | 'onChange'> {

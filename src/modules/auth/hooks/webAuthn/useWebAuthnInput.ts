@@ -1,8 +1,8 @@
 import { useCallback, useMemo, useState } from 'react';
 
-import { AutocompleteBadgeStatus } from '@/components/autocomplete';
 import { LocalStorageConfig } from '@/config';
 import { useDebounce } from '@/modules/core';
+import { AutocompleteBadgeStatus } from '@/modules/core/utils/enum';
 
 import { localStorageKeys, TypeUser } from '../../services/methods';
 import { WebAuthnModeState } from '../signIn';
