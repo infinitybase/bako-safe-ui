@@ -36,7 +36,6 @@ export const VaultLayoutHeader = () => {
       top={0}
       zIndex={10}
       py={3}
-      px={{ lg: 8, base: 3 }}
       style={{
         background: isScrolled
           ? 'linear-gradient(180deg, #0D0D0C 0%, rgba(13, 13, 12, 0.6) 60%, rgba(13, 13, 12, 0) 100%)'
@@ -52,6 +51,10 @@ export const VaultLayoutHeader = () => {
         maxW="1500px"
         w="full"
         mx="auto"
+        px={{
+          base: 3,
+          sm: 6,
+        }}
         justifyContent={
           vaultRequiredSizeToColumnLayout ? 'space-between' : 'flex-end'
         }
