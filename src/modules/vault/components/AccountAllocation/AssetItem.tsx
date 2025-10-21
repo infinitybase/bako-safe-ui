@@ -50,10 +50,10 @@ const AssetItem = memo(({ asset }: AssetItemProps) => {
         </Text>
       </Flex>
       <Stack gap={3} align="end">
-        <Text color="textPrimary" fontSize="sm">
+        <Text color="textPrimary" fontSize="sm" lineHeight="shorter">
           {assetAmount}
         </Text>
-        <Text fontSize="sm" color="textSecondary">
+        <Text fontSize="sm" color="textSecondary" lineHeight="shorter">
           {balanceInCurrency}
         </Text>
       </Stack>
