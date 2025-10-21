@@ -1,4 +1,4 @@
-import { Card, CardRootProps, HStack, Icon, Text } from 'bako-ui';
+import { Card, CardRootProps, Icon, Text } from 'bako-ui';
 import { ElementType, useCallback } from 'react';
 
 interface CLISettingsCardProps extends CardRootProps {
@@ -8,9 +8,13 @@ interface CLISettingsCardProps extends CardRootProps {
   onClick: () => void;
 }
 
-const CLISettingsCard = (props: CLISettingsCardProps) => {
-  const { label, icon, disabled, onClick, ...rest } = props;
-
+const CLISettingsCard = ({
+  label,
+  icon,
+  disabled,
+  onClick,
+  ...rest
+}: CLISettingsCardProps) => {
   const handleClick = useCallback(() => {
     if (disabled) return;
     onClick();
@@ -19,33 +23,31 @@ const CLISettingsCard = (props: CLISettingsCardProps) => {
   return (
     <Card.Root
       onClick={handleClick}
+      variant="subtle"
+      rounded="lg"
       w="full"
       cursor={disabled ? 'not-allowed' : 'pointer'}
-      p={3}
-      bg={disabled ? 'dark.225' : 'gradients.transaction-card'}
-      backdropFilter="blur(6px)"
-      borderRadius={10}
-      borderWidth={1}
-      borderColor={disabled ? 'grey.800' : 'gradients.transaction-border'}
-      color={disabled ? 'grey.400' : 'grey.250'}
-      _hover={
-        !disabled
-          ? {
-              bg: 'gradients.transaction-card-hover',
-              borderColor: 'grey.50',
-              color: 'grey.50',
-            }
-          : {}
-      }
-      boxShadow="lg"
+      minH="104px"
+      bg="bg.panel"
+      opacity={0.6}
+      _hover={{
+        bg: 'bg.muted',
+        opacity: !disabled ? 1 : 0.6,
+      }}
       {...rest}
     >
-      <HStack gap={2}>
-        <Icon as={icon} w={5} />
-        <Text fontSize="sm" fontWeight={500}>
+      <Card.Body gap={2} alignItems="center" justifyContent="center">
+        <Icon as={icon} w={5} color="gray.50" />
+        <Text
+          fontSize="2xs"
+          fontWeight={600}
+          textTransform="uppercase"
+          letterSpacing="widest"
+          color="gray.50"
+        >
           {label}
         </Text>
-      </HStack>
+      </Card.Body>
     </Card.Root>
   );
 };
