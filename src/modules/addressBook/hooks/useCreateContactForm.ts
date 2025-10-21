@@ -13,7 +13,11 @@ const useCreateContactForm = (
 ) => {
   const assetIdsAndAddresses = fuelsTokens?.flatMap((item) => {
     return item.networks
-      ?.map((network) => network['assetId'] ?? network['address'])
+      ?.map(
+        (network) =>
+          ('assetId' in network && network['assetId']) ||
+          ('address' in network && network['address']),
+      )
       .filter(Boolean);
   });
 
@@ -66,6 +70,13 @@ const useCreateContactForm = (
   return {
     form,
   };
+};
+
+export type ICreateContactFormData = {
+  nickname: string;
+  address: string;
+  handle?: string;
+  resolver?: string;
 };
 
 export { useCreateContactForm };

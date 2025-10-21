@@ -12,13 +12,19 @@ import { useCreateContactRequest } from './useCreateContactRequest';
 import { useDeleteContactRequest } from './useDeleteContactRequest';
 import { useUpdateContactRequest } from './useUpdateContactRequest';
 
+type IContactFormData = {
+  nickname: string;
+  address: string;
+  handle: string | undefined;
+  resolver: string | undefined;
+};
+
 export type IUseAddressBookMutationsProps = {
-  form: UseFormReturn<{
-    nickname: string;
-    address: string;
-    handle?: string;
-    resolver?: string;
-  }>;
+  form: UseFormReturn<
+    IContactFormData,
+    unknown,
+    IContactFormData & { handle?: string; resolver?: string }
+  >;
   deleteContactDialog: UseDisclosureReturn;
   contactDialog: UseDisclosureReturn;
   listContactsRequest: UseQueryResult<ListContactsResponse, Error>;

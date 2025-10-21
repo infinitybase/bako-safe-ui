@@ -1,46 +1,40 @@
-import { Field, Input, VStack } from 'bako-ui';
-import { Controller } from 'react-hook-form';
+import { Field, RhfInput, VStack } from 'bako-ui';
+import { Controller, useFormContext } from 'react-hook-form';
 
 import { AddressInput } from '@/components/input';
-import { UseAddressBookReturn } from '@/modules/addressBook/hooks';
+import { ICreateContactFormData } from '@/modules';
 
 export interface CreateContactFormProps {
-  form: UseAddressBookReturn['form'];
   address?: string;
 }
 
-const CreateContactForm = ({ form }: CreateContactFormProps) => {
+const CreateContactForm = ({ address }: CreateContactFormProps) => {
+  const form = useFormContext<ICreateContactFormData>();
+  const {
+    control,
+    formState: { errors },
+  } = form;
+
   return (
     <VStack gap={6}>
-      <Controller
-        control={form.control}
+      <RhfInput
+        label="Name or Label"
         name="nickname"
-        render={({ field, fieldState }) => (
-          <Field.Root invalid={fieldState.invalid}>
-            <Input
-              value={field.value}
-              onChange={field.onChange}
-              placeholder=" "
-              // variant="dark"
-              maxLength={27}
-            />
-            <Field.Label>Name or Label</Field.Label>
-            <Field.HelperText color="error.500">
-              {fieldState.error?.message}
-            </Field.HelperText>
-          </Field.Root>
-        )}
+        control={control}
+        defaultValue=""
+        error={errors.nickname}
       />
 
       <Controller
-        control={form.control}
+        control={control}
         name="address"
+        defaultValue={address || ''}
         render={({ field, fieldState }) => (
           <Field.Root invalid={fieldState.invalid}>
             <AddressInput
-              // variant="dark"
               value={field.value}
               onChange={field.onChange}
+              // @ts-expect-error - AddressInput expects the full form object
               adbForm={form}
             />
             <Field.HelperText color="error.500">

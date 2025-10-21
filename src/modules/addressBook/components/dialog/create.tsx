@@ -1,3 +1,5 @@
+import { FormProvider } from 'react-hook-form';
+
 import { Dialog, SquarePlusIcon } from '@/components';
 
 import { CreateContactForm } from '../../components';
@@ -8,6 +10,7 @@ interface CreateContactDialogProps {
   dialog: UseAddressBookReturn['dialog']['contactDialog'];
   isLoading: boolean;
   isEdit: boolean;
+  address?: string;
 }
 
 const CreateContactDialog = ({
@@ -15,12 +18,14 @@ const CreateContactDialog = ({
   dialog,
   isLoading,
   isEdit,
+  address,
 }: CreateContactDialogProps) => {
   return (
     <Dialog.Modal
-      size={{ base: 'full', sm: 'lg' }}
+      size={{ base: 'full', sm: 'md' }}
       open={dialog.isOpen}
       closeOnInteractOutside={false}
+      trapFocus={false}
       onOpenChange={dialog.onClose}
     >
       <Dialog.Header
@@ -35,11 +40,13 @@ const CreateContactDialog = ({
         }
       />
 
-      <Dialog.Body maxW={420} mt={{ base: -4, sm: -8 }}>
-        <CreateContactForm form={form} />
+      <Dialog.Body maxW={420}>
+        <FormProvider {...form}>
+          <CreateContactForm address={address} />
+        </FormProvider>
       </Dialog.Body>
 
-      <Dialog.Actions mt="auto" maxW={420}>
+      <Dialog.Actions mt={5} hideDivider w="full" maxW={420}>
         <Dialog.SecondaryAction
           aria-label="Cancel address book"
           onClick={dialog.onClose}
@@ -49,6 +56,8 @@ const CreateContactDialog = ({
 
         <Dialog.PrimaryAction
           type="submit"
+          w="auto"
+          flex={1}
           onClick={isEdit ? form.handleUpdateContact : form.handleCreateContact}
           disabled={isLoading || !form.formState.isValid}
           loading={isLoading}

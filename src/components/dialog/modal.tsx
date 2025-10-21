@@ -36,14 +36,13 @@ const DialogModal = (props: DialogModalProps) => {
         <Dialog.Positioner>
           <Dialog.Content
             rounded="3xl"
-            bg="dark.950"
             py={{ base: 2, sm: props.xsBreakPointPy ?? 8 }}
-            minH="auto"
+            px={{ base: 4, sm: props.contentPadding ?? 0 }}
+            minH={{ sm: 'auto' }}
             {...props.modalContentProps}
           >
             <Dialog.Body
               overflowY="auto"
-              // zIndex={400}
               css={{
                 '&::-webkit-scrollbar': {
                   display: 'none',
