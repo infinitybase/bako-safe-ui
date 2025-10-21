@@ -1,47 +1,40 @@
-import { Box, Breadcrumb, HStack, Icon, Text, VStack } from 'bako-ui';
-import { RiMenuUnfoldLine } from 'react-icons/ri';
-import { useNavigate } from 'react-router-dom';
+import { Box, Grid, GridItem, HStack, Stack } from 'bako-ui';
 
-import { HomeIcon } from '@/components';
+import { CommingSoonDialog } from '@/components';
 import AddAssetsDialog from '@/components/addAssetsDialog';
 import DepositDialog from '@/components/depositDialog';
-import { Drawer } from '@/layouts/dashboard/drawer';
-import { Pages } from '@/modules/core';
+import { CLISettingsCard } from '@/modules/cli/components';
+import { CreateAPITokenDialog } from '@/modules/cli/components/APIToken/create';
 import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
-import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
-import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
-import { SettingsOverview } from '../../components/SettingsOverview';
-import { SettingsSigners } from '../../components/SettingsSigners';
+import {
+  SettingsOverview,
+  SettingsOverviewSkeleton,
+  SettingsQrCode,
+  SettingsSigners,
+  SettingsSignersSkeleton,
+} from '../../components/settings';
 import { useVaultInfosContext } from '../../hooks';
 
 const VaultSettingsPage = () => {
-  const navigate = useNavigate();
-  const menuDrawer = useDisclosure();
   const depositDialog = useDisclosure();
   const addAssetsDialog = useDisclosure();
-  const { vault, assets } = useVaultInfosContext();
-  const { isPendingSigner } = useTransactionsContext();
-
   const {
-    authDetails: { userInfos },
-    workspaceInfos: {
-      handlers: {
-        // handleWorkspaceSelection,
-        goHome,
-      },
+    vault,
+    assets,
+    CLIInfos: {
+      CLISettings,
+      APIToken: { dialog, list, create, steps, tabs },
+      commingSoonFeatures: { commingSoonDialog, selectedFeature },
     },
-    screenSizes: { vaultRequiredSizeToColumnLayout },
-  } = useWorkspaceContext();
+  } = useVaultInfosContext();
 
-  const workspaceId = userInfos.workspace?.id ?? '';
+  const isLoading = vault?.isLoading || assets.isLoading;
 
   if (!vault) return null;
 
   return (
-    <Box w="full">
-      <Drawer open={menuDrawer.isOpen} onOpenChange={menuDrawer.onOpenChange} />
-
+    <Box w="full" flex={1}>
       <DepositDialog
         isOpen={depositDialog.isOpen}
         onOpenChange={depositDialog.onOpenChange}
@@ -54,118 +47,87 @@ const VaultSettingsPage = () => {
         setIsDepositDialogOpen={depositDialog.setOpen}
       />
 
-      <HStack mb={8} w="full" justifyContent="space-between">
-        {vaultRequiredSizeToColumnLayout ? (
-          <HStack gap={1.5} onClick={menuDrawer.onOpen}>
-            <Icon as={RiMenuUnfoldLine} fontSize="xl" color="grey.200" />
-            <Text fontSize="sm" fontWeight="normal" color="grey.100">
-              Menu
-            </Text>
+      <HStack
+        w="100%"
+        gap={10}
+        alignItems="start"
+        flexWrap={{
+          '2xlDown': 'wrap',
+        }}
+      >
+        <Stack
+          gap={10}
+          flex={{
+            '2xlDown': 1,
+          }}
+        >
+          <HStack
+            gap={10}
+            flexDirection={{
+              base: 'column',
+              sm: 'row',
+            }}
+          >
+            {isLoading && <SettingsOverviewSkeleton />}
+
+            {!isLoading && (
+              <>
+                {/* Settings Overview */}
+                <SettingsOverview vault={vault} assets={assets} />
+
+                {/* Settings QR Code */}
+                <SettingsQrCode address={vault.data.predicateAddress} />
+              </>
+            )}
           </HStack>
+
+          {/* CLI settings */}
+          <Grid
+            templateColumns={{
+              md: 'repeat(4, 1fr)',
+              sm: 'repeat(2, 1fr)',
+              base: 'repeat(1, 1fr)',
+            }}
+            gap={3}
+          >
+            {CLISettings.map((setting) => (
+              <GridItem key={setting.label}>
+                <CLISettingsCard
+                  onClick={setting.onClick}
+                  icon={setting.icon}
+                  label={setting.label}
+                  aria-label={setting.label}
+                  disabled={setting.disabled}
+                />
+              </GridItem>
+            ))}
+          </Grid>
+          <CreateAPITokenDialog
+            control={dialog}
+            steps={steps}
+            tabs={tabs}
+            create={create}
+            list={list}
+          />
+
+          {selectedFeature && (
+            <CommingSoonDialog
+              description={selectedFeature.dialogDescription}
+              isOpen={commingSoonDialog.isOpen}
+              onClose={commingSoonDialog.onClose}
+              notifyHandler={selectedFeature.notifyHandler}
+              title="Coming Soon"
+            />
+          )}
+        </Stack>
+
+        {/** Signers Section */}
+        {vault.isLoading ? (
+          <SettingsSignersSkeleton />
         ) : (
-          <Breadcrumb.Root>
-            <Breadcrumb.List>
-              <Breadcrumb.Item>
-                <Breadcrumb.Link
-                  fontSize="sm"
-                  color="grey.200"
-                  fontWeight="semibold"
-                  onClick={() => goHome()}
-                >
-                  <Icon mr={2} as={HomeIcon} w={3} color="grey.200" />
-                  Home
-                </Breadcrumb.Link>
-              </Breadcrumb.Item>
-
-              <Breadcrumb.Separator />
-
-              {/* Commented out code to temporarily disable workspaces. */}
-
-              {/* {!userInfos.onSingleWorkspace && (
-              <Breadcrumb.Item>
-                <Breadcrumb.Link
-                  fontSize="sm"
-                  color="grey.200"
-                  fontWeight="semibold"
-                  onClick={() =>
-                    handleWorkspaceSelection(
-                      userInfos.workspace?.id,
-                      Pages.workspace({
-                        workspaceId: userInfos.workspace?.id,
-                      }),
-                    )
-                  }
-                  maxW={40}
-                  isTruncated
-                >
-                  {userInfos?.workspace?.name}
-                </Breadcrumb.Link>
-              </Breadcrum.bItem>
-            )} */}
-              <Breadcrumb.Item>
-                <Breadcrumb.Link
-                  fontSize="sm"
-                  color="grey.200"
-                  fontWeight="semibold"
-                  href="#"
-                  onClick={() =>
-                    navigate(
-                      Pages.userVaults({
-                        workspaceId,
-                      }),
-                    )
-                  }
-                >
-                  Vaults
-                </Breadcrumb.Link>
-              </Breadcrumb.Item>
-              <Breadcrumb.Separator />
-
-              <Breadcrumb.Item>
-                <Breadcrumb.Link
-                  fontSize="sm"
-                  color="grey.200"
-                  fontWeight="semibold"
-                  onClick={() =>
-                    navigate(
-                      Pages.detailsVault({
-                        vaultId: vault.data?.id,
-                        workspaceId: userInfos.workspace?.id ?? '',
-                      }),
-                    )
-                  }
-                  truncate
-                  maxW={640}
-                >
-                  {vault?.data?.name}
-                </Breadcrumb.Link>
-              </Breadcrumb.Item>
-              <Breadcrumb.Separator />
-
-              <Breadcrumb.Item>
-                <Breadcrumb.Link
-                  fontSize="sm"
-                  color="grey.200"
-                  fontWeight="semibold"
-                  href="#"
-                >
-                  Settings
-                </Breadcrumb.Link>
-              </Breadcrumb.Item>
-            </Breadcrumb.List>
-          </Breadcrumb.Root>
+          <SettingsSigners vault={vault} />
         )}
       </HStack>
-
-      <VStack mb={14} alignItems="flex-start" w="100%" maxW="full" gap={12}>
-        <SettingsOverview
-          vault={vault}
-          assets={assets}
-          blockedTransfers={isPendingSigner}
-          setAddAssetsDialogState={addAssetsDialog.setOpen}
-        />
-        <SettingsSigners vault={vault} />
-      </VStack>
     </Box>
   );
 };
