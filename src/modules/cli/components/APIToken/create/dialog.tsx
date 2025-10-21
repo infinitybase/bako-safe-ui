@@ -23,9 +23,10 @@ const CreateAPITokenDialog = (props: CreateAPITokenDialogProps) => {
       open={control.isOpen}
       onOpenChange={control.onOpenChange}
       closeOnInteractOutside={false}
+      trapFocus={false}
       size={{
         base: 'full',
-        sm: 'lg',
+        md: 'md',
       }}
     >
       <Dialog.Header
@@ -60,17 +61,14 @@ const CreateAPITokenDialog = (props: CreateAPITokenDialogProps) => {
         maxW={440}
         dividerBorderColor="grey.425"
         position="relative"
+        hideDivider
+        mt={4}
       >
         <HStack w="full" justifyContent="space-between" gap={6}>
           <Dialog.SecondaryAction
             flex={1}
-            bgColor="transparent"
-            border="1px solid white"
+            variant="subtle"
             onClick={steps.step.secondaryAction.handler}
-            _hover={{
-              borderColor: 'brand.500',
-              color: 'brand.500',
-            }}
             aria-label={'Secundary action create api token'}
           >
             {steps.step.secondaryAction.label}

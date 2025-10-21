@@ -1,14 +1,4 @@
-import {
-  Box,
-  Button,
-  Card,
-  HStack,
-  Icon,
-  Separator,
-  Stack,
-  Text,
-  VStack,
-} from 'bako-ui';
+import { Box, Button, Card, HStack, Icon, Stack, Text, VStack } from 'bako-ui';
 import { format } from 'date-fns';
 
 import { CustomSkeleton, LineCloseIcon, RemoveIcon } from '@/components';
@@ -69,8 +59,7 @@ const APITokenCard = (props: APITokenCardProps) => {
           </Text>
           <Text color="grey.250" fontSize="xs">
             Creation date: {format(new Date(apiToken.createdAt), 'yyyy/MM/dd')}
-          </Text>{' '}
-          d
+          </Text>
         </VStack>
 
         <Stack
@@ -144,8 +133,6 @@ const APITokensList = (props: APITokensListProps) => {
 
   return (
     <Box p={0} display="flex" flexDirection="column" flex={1} minH="full">
-      <Separator my={{ base: 3, sm: 6 }} borderColor="grey.425" />
-
       <VStack gap={{ base: 4, sm: 6 }} pt={{ base: 2, sm: 0 }} flex={1}>
         <CustomSkeleton loading={request.isLoading} flex={1} display="flex">
           {request.data && request.data?.length > 0 ? (
@@ -189,7 +176,7 @@ const APITokensList = (props: APITokensListProps) => {
         </CustomSkeleton>
 
         <Button
-          colorPalette="emptyState"
+          variant="outline"
           onClick={handleAddMoreAPITokens}
           w="full"
           mt="auto"
