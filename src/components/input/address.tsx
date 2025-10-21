@@ -1,4 +1,11 @@
-import { Field, Input, InputGroup, InputProps, Loader } from 'bako-ui';
+import {
+  Field,
+  floatingStyles,
+  Input,
+  InputGroup,
+  InputProps,
+  Loader,
+} from 'bako-ui';
 import { isB256 } from 'fuels';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
@@ -137,9 +144,18 @@ const AddressInput = (props: AddressInputProps) => {
           value={inputValue}
           onChange={handleInputChange}
           placeholder=" "
+          pt={2}
+          px={3}
         />
       </InputGroup>
-      <Field.Label>Address</Field.Label>
+      <Field.Label
+        css={floatingStyles({
+          withStartIcon: false,
+          hasValue: inputValue.length > 0,
+        })}
+      >
+        Address
+      </Field.Label>
     </Field.Root>
   );
 };
