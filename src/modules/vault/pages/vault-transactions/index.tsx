@@ -87,6 +87,7 @@ const TransactionsVaultPage = () => {
           isPendingSignerTransaction={isPendingSigner}
           onAllFilter={handleAllAction}
           onPendingFilter={handlePendingStatusChange}
+          inverse
         />
         {selectedTransaction.id && (
           <HStack gap={2}>
