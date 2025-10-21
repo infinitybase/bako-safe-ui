@@ -3,6 +3,7 @@ import {
   Button,
   DrawerRootProps,
   Field,
+  floatingStyles,
   Input,
   Loader,
   Text,
@@ -101,10 +102,18 @@ const VaultListModal = ({
               <Input
                 placeholder=" "
                 bg="transparent"
-                colorScheme="dark"
                 onChange={search.handler}
+                pt={2}
+                px={3}
               />
-              <Field.Label>Search</Field.Label>
+              <Field.Label
+                css={floatingStyles({
+                  withStartIcon: false,
+                  hasValue: search.value.length > 0,
+                })}
+              >
+                Search
+              </Field.Label>
             </Field.Root>
           </Box>
 
