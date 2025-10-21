@@ -200,7 +200,7 @@ export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
   return (
     <>
       <Card.Root
-        borderRadius="lg"
+        borderRadius="2xl"
         bg="bg.panel"
         variant="subtle"
         alignContent={{ base: 'center', md: 'flex-start' }}

@@ -115,7 +115,7 @@ export const AccountOverview = memo(
     }, [isPendingSigner, isEthBalanceLowerThanReservedAmount]);
 
     return (
-      <Card.Root variant="subtle" bg="bg.panel" rounded="lg" flex={1} h="full">
+      <Card.Root variant="subtle" bg="bg.panel" rounded="2xl" flex={1} h="full">
         {/* Overview Skeleton */}
         {isLoading && <OverviewSkeleton />}
 

@@ -23,7 +23,7 @@ export const AssetsList = ({ assets }: { assets: Asset[] }) => {
   }, [assets, tokensUSD]);
 
   return (
-    <Card.Body>
+    <Card.Body pt={4}>
       {topThreeAssets.map((asset) => (
         <AssetItem key={asset.assetId} asset={asset} />
       ))}

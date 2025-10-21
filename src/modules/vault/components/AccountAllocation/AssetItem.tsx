@@ -37,7 +37,7 @@ const AssetItem = memo(({ asset }: AssetItemProps) => {
       }}
       borderColor="bg.muted"
     >
-      <Flex gap={2}>
+      <Flex gap={2} align="center">
         <Image
           src={assetInfo?.icon}
           alt={assetInfo?.name}
@@ -45,15 +45,15 @@ const AssetItem = memo(({ asset }: AssetItemProps) => {
           h={5}
           rounded="full"
         />
-        <Text fontSize="sm" color="textSecondary" lineHeight="1">
+        <Text fontSize="xs" color="textSecondary" lineHeight="1">
           {assetInfo?.slug}
         </Text>
       </Flex>
       <Stack gap={3} align="end">
-        <Text color="textPrimary" fontSize="sm" lineHeight="1">
+        <Text color="textPrimary" fontSize="xs" lineHeight="1">
           {assetAmount}
         </Text>
-        <Text fontSize="sm" color="textSecondary" lineHeight="1">
+        <Text fontSize="xs" color="textSecondary" lineHeight="1">
           {balanceInCurrency}
         </Text>
       </Stack>

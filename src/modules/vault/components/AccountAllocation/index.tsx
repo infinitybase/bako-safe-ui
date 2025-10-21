@@ -37,7 +37,7 @@ export const AccountAllocation = memo(
       <Card.Root
         variant="subtle"
         bg="bg.panel"
-        rounded="lg"
+        rounded="2xl"
         minW="240px"
         h="full"
       >
@@ -46,7 +46,7 @@ export const AccountAllocation = memo(
           <>
             <Card.Header>
               <Flex justify="space-between" align="center">
-                <Heading color="textPrimary" fontSize="sm">
+                <Heading color="textPrimary" fontSize="sm" lineHeight="shorter">
                   Allocation
                 </Heading>
 
