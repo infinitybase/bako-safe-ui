@@ -8,6 +8,7 @@ export * from './assets/unknown';
 export * from './bako';
 export * from './bako-id';
 export * from './bit-coin';
+export * from './bookmark';
 export * from './bridge';
 export * from './chart-bullet';
 export * from './check-icon';
