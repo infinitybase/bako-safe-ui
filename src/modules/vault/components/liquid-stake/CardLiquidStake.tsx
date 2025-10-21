@@ -221,7 +221,6 @@ export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
 
           <HStack
             marginBottom={{ base: 0, md: 4 }}
-            display={{ base: 'flex', md: 'none' }}
             onClick={handleOpenMobileItem}
           >
             <Text
