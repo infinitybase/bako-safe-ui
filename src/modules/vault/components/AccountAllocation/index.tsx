@@ -38,7 +38,7 @@ export const AccountAllocation = memo(
         variant="subtle"
         bg="bg.panel"
         rounded="lg"
-        minW={{ md: '280px' }}
+        minW="240px"
         h="full"
       >
         {isLoading && <AllocationSkeleton />}
@@ -62,7 +62,7 @@ export const AccountAllocation = memo(
             <AssetsList assets={assets.assets || []} />
           </>
         )}
-        <Card.Footer />
+        {/* <Card.Footer /> */}
       </Card.Root>
     );
   },

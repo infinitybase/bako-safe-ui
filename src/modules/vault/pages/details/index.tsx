@@ -108,13 +108,13 @@ const VaultDetailsPage = () => {
         templateColumns={{
           base: 'repeat(1, 1fr)',
           md: 'repeat(2, 1fr)',
-          lg: 'repeat(3, 1fr)',
+          lg: 'repeat(8, 1fr)',
         }}
       >
         <GridItem
           colSpan={{
             md: 2,
-            lg: 1,
+            lg: 3,
           }}
         >
           <AccountOverview
@@ -124,14 +124,14 @@ const VaultDetailsPage = () => {
             isPendingSigner={isPendingSigner}
           />
         </GridItem>
-        <GridItem>
+        <GridItem colSpan={{ lg: 2 }}>
           <AccountAllocation
             assets={assets}
             vault={vault}
             workspaceId={workspaceId}
           />
         </GridItem>
-        <GridItem>
+        <GridItem colSpan={{ lg: 3 }}>
           <CardLiquidStake assets={assets} vault={vaultSafe} />
         </GridItem>
       </Grid>

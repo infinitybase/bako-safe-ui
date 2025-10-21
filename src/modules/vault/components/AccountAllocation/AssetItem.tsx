@@ -45,15 +45,15 @@ const AssetItem = memo(({ asset }: AssetItemProps) => {
           h={5}
           rounded="full"
         />
-        <Text fontSize="sm" color="textSecondary">
+        <Text fontSize="sm" color="textSecondary" lineHeight="1">
           {assetInfo?.slug}
         </Text>
       </Flex>
       <Stack gap={3} align="end">
-        <Text color="textPrimary" fontSize="sm" lineHeight="shorter">
+        <Text color="textPrimary" fontSize="sm" lineHeight="1">
           {assetAmount}
         </Text>
-        <Text fontSize="sm" color="textSecondary" lineHeight="shorter">
+        <Text fontSize="sm" color="textSecondary" lineHeight="1">
           {balanceInCurrency}
         </Text>
       </Stack>
