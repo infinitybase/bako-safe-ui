@@ -203,7 +203,6 @@ export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
         borderRadius="2xl"
         bg="bg.panel"
         variant="subtle"
-        alignContent={{ base: 'center', md: 'flex-start' }}
         flex={1}
         h="full"
       >
@@ -222,7 +221,7 @@ export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
 
           <HStack
             marginBottom={{ base: 0, md: 4 }}
-            height={{ base: 'none', md: 'flex' }}
+            display={{ base: 'flex', md: 'none' }}
             onClick={handleOpenMobileItem}
           >
             <Text
@@ -291,6 +290,7 @@ export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
           <Grid
             templateColumns={{ base: 'repeat(1, 1fr)', lg: 'repeat(2, 1fr)' }}
             gap={6}
+            flex={1}
             display={{ base: 'none', md: 'grid' }}
           >
             {createItems()}
