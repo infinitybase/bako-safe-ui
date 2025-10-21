@@ -43,6 +43,7 @@ const TransactionFilters = ({
           onClick={onPendingFilter}
           alignSelf={{ base: 'stretch', sm: 'flex-end' }}
           variant="subtle"
+          px={3}
         >
           Pending
         </Button>
@@ -57,6 +58,7 @@ const TransactionFilters = ({
         onClick={onIncomingFilter}
         alignSelf={{ base: 'stretch', sm: 'flex-end' }}
         variant="subtle"
+        px={3}
         order={1}
       >
         Incoming
@@ -71,6 +73,7 @@ const TransactionFilters = ({
         onClick={onOutgoingFilter}
         alignSelf={{ base: 'stretch', sm: 'flex-end' }}
         order={1}
+        px={3}
         variant="subtle"
       >
         Outgoing
@@ -85,6 +88,7 @@ const TransactionFilters = ({
         onClick={onAllFilter}
         alignSelf={{ base: 'stretch', sm: 'flex-end' }}
         variant="subtle"
+        px={3}
         order={inverse ? 0 : 2}
       >
         All
