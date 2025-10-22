@@ -32,7 +32,7 @@
     "@web3modal/core": "^5.1.11",
     "@web3modal/wagmi": "5.0.0",
     "axios": "^1.5.0",
-    "bako-ui": "0.2.3",
+    "bako-ui": "0.2.4",
     "bakosafe": "0.2.3-beta.1",
     "bech32": "^2.0.0",
     "crypto-js": "4.2.0",
