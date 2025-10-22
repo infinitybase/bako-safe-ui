@@ -85,7 +85,6 @@ const useWalletSignIn = (
         provider_url: result.provider,
         first_login: result.first_login,
       });
-      invalidateGifAnimationRequest();
       callback(result.rootWallet, result.workspace.id);
     } catch (e) {
       console.error(e);
