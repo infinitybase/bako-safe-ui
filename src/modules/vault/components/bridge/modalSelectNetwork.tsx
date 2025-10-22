@@ -1,5 +1,7 @@
 import {
+  DialogOpenChangeDetails,
   Field,
+  floatingStyles,
   HStack,
   Image,
   Input,
@@ -15,7 +17,6 @@ import { Controller, useFormContext } from 'react-hook-form';
 
 import { Dialog, SearchIcon } from '@/components';
 
-import { useFormBridge } from '../../hooks/bridge';
 import { ITransferBridgePayload } from './providers/FormBridgeProvider';
 
 export interface AssetItem {
@@ -36,6 +37,7 @@ export interface ModalSelectAssetsProps {
   options?: AssetItem[];
   isLoadingOptions: boolean;
   onClose: () => void;
+  onOpenChange?: (details: DialogOpenChangeDetails) => void;
   onSelect: (asset: AssetItem) => void;
 }
 
@@ -49,11 +51,11 @@ const AssetItem = React.memo(function AssetItemMemo({
   return (
     <HStack
       border="1px solid"
-      borderColor="grey.950"
+      borderColor="bg.panel"
       padding={4}
       borderRadius={8}
       cursor="pointer"
-      _hover={{ bgColor: 'grey.925' }}
+      _hover={{ bgColor: 'bg.muted' }}
       w="100%"
       onClick={() => onSelect(asset)}
     >
@@ -67,7 +69,7 @@ const AssetItem = React.memo(function AssetItemMemo({
         />
       </Skeleton>
 
-      <Text fontSize={12} fontWeight={500} color="grey.50">
+      <Text fontSize="sm" fontWeight="normal" color="textPrimary">
         {name}
       </Text>
     </HStack>
@@ -80,9 +82,9 @@ export function ModalSelectNetworkBridge({
   isLoadingOptions,
   onClose,
   onSelect,
+  onOpenChange,
 }: ModalSelectAssetsProps) {
-  const { control } = useFormContext<ITransferBridgePayload>();
-  const { form } = useFormBridge();
+  const { control, resetField } = useFormContext<ITransferBridgePayload>();
 
   const [filteredNetworks, setFilteredNetworks] = useState<AssetItem[]>([]);
   const [assetSelected, setAssetSelected] = useState<AssetItem>(
@@ -94,10 +96,10 @@ export function ModalSelectNetworkBridge({
     if (assetSelected?.value) {
       onSelect(assetSelected);
     } else {
-      form.resetField('selectNetworkTo');
+      resetField('selectNetworkTo');
     }
 
-    form.resetField('searchNetwork');
+    resetField('searchNetwork');
     onClose();
   };
 
@@ -135,9 +137,9 @@ export function ModalSelectNetworkBridge({
   return (
     <Dialog.Modal
       open={isOpen}
-      onOpenChange={handleClose}
+      onOpenChange={onOpenChange}
       closeOnInteractOutside={false}
-      size={'md'}
+      size={{ base: 'full', sm: 'md' }}
     >
       <Dialog.Body minH={650} maxH={650} flex={1}>
         <Dialog.Header
@@ -146,10 +148,11 @@ export function ModalSelectNetworkBridge({
           description={`Select the network of your choice.`}
           mb={0}
           mt={0}
+          px={3}
           titleSxProps={{
             fontSize: 16,
             fontWeight: 700,
-            color: 'grey.50',
+            color: 'gray.50',
             marginTop: { base: 5, md: 0 },
           }}
           descriptionFontSize="12px"
@@ -160,11 +163,10 @@ export function ModalSelectNetworkBridge({
           control={control}
           render={({ field, fieldState }) => {
             return (
-              <Field.Root invalid={fieldState.invalid} marginY={4}>
-                <InputGroup endElement={<SearchIcon color="grey.500" />}>
+              <Field.Root invalid={fieldState.invalid} marginY={4} px={3}>
+                <InputGroup endElement={<SearchIcon color="textPrimary" />}>
                   <Input
-                    placeholder=""
-                    bgColor="dark.950"
+                    placeholder=" "
                     value={field.value}
                     onChange={(e) => {
                       field.onChange(e);
@@ -172,12 +174,16 @@ export function ModalSelectNetworkBridge({
                     }}
                   />
                 </InputGroup>
-                <Field.Label>Search Network</Field.Label>
+                <Field.Label
+                  css={floatingStyles({ hasValue: field.value.length > 0 })}
+                >
+                  Search Network
+                </Field.Label>
               </Field.Root>
             );
           }}
         />
-        <Separator marginTop={6} borderColor="grey.950" />
+        <Separator marginTop={6} borderColor="bg.muted" />
         <VStack
           maxH={523}
           overflowY="auto"
@@ -198,7 +204,6 @@ export function ModalSelectNetworkBridge({
             <Loader color="grey.500" size="md" />
           ) : filteredNetworks.length > 0 ? (
             filteredNetworks.map((net) => (
-              /* eslint-disable react/prop-types */
               <AssetItem
                 key={net.value}
                 asset={net}
@@ -206,8 +211,8 @@ export function ModalSelectNetworkBridge({
               />
             ))
           ) : (
-            <Text color="grey.50" fontSize={12}>
-              No netwoks found
+            <Text color="gray.50" fontSize="xs">
+              No networks found
             </Text>
           )}
         </VStack>
