@@ -1,7 +1,7 @@
-import { Box } from '@chakra-ui/react';
+import { Box } from 'bako-ui';
 import { parseUnits } from 'ethers';
 import { bn } from 'fuels';
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 
 import { useVerifyTransactionInformations } from '@/modules/transactions/hooks';
 import { TransactionWithVault } from '@/modules/transactions/services';

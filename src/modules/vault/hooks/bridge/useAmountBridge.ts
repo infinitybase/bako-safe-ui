@@ -7,7 +7,7 @@ import {
   ICreateSwapBridgePayload,
   IGetQuotesResponse,
 } from '@/modules/core';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { ErrorBridgeForm } from '../../components/bridge/utils';
 import { useFormBridge } from './useFormBridge';
@@ -25,7 +25,7 @@ const useAmountBridge = ({
   assets,
   setErrorAmount,
 }: UseAmountBridgeProps) => {
-  const debouncedGetQuotesRef = useRef<ReturnType<typeof debounce>>();
+  const debouncedGetQuotesRef = useRef<ReturnType<typeof debounce>>(null);
 
   const {
     assetFrom,

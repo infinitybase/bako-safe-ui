@@ -1,4 +1,4 @@
-import { createIcon } from '@chakra-ui/icons';
+import { createIcon } from 'bako-ui';
 
 export const EditIcon2 = createIcon({
   displayName: 'EditIcon2',

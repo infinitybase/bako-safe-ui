@@ -39,6 +39,15 @@ export const InputAmount = ({
         px={0}
         minW="150px"
         w="fit-content"
+        endElement={
+          <Box
+            alignSelf="end"
+            color={disabled ? 'grey.75' : 'section.200'}
+            opacity={disabled ? 0.5 : 1}
+          >
+            {symbol}
+          </Box>
+        }
       >
         <CurrencyField
           type="crypto"
@@ -52,26 +61,17 @@ export const InputAmount = ({
           onChange={(e) => onChange?.(e)}
           width={`${inputWidth}px`}
         />
-
-        <Box
-          ref={mirrorRef}
-          position="absolute"
-          visibility="hidden"
-          whiteSpace="pre"
-          fontSize="3xl"
-          px={0}
-        >
-          {formatMaxDecimals(value, 9) || '0'}
-        </Box>
-
-        <Box
-          alignSelf="end"
-          color={disabled ? 'grey.75' : 'section.200'}
-          opacity={disabled ? 0.5 : 1}
-        >
-          {symbol}
-        </Box>
       </InputGroup>
+      <Box
+        ref={mirrorRef}
+        position="absolute"
+        visibility="hidden"
+        whiteSpace="pre"
+        fontSize="3xl"
+        px={0}
+      >
+        {formatMaxDecimals(value, 9) || '0'}
+      </Box>
     </Box>
   );
 };

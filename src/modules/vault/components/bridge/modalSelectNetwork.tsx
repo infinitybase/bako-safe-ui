@@ -75,6 +75,7 @@ const AssetItem = React.memo(function AssetItemMemo({
     </HStack>
   );
 });
+
 export function ModalSelectNetworkBridge({
   title,
   isOpen = false,
@@ -130,10 +131,10 @@ export function ModalSelectNetworkBridge({
       onSelect(asset);
       setAssetSelected(asset);
       setFilteredNetworks(options ?? []);
-      form.resetField('searchNetwork');
+      resetField('searchNetwork');
       onClose();
     },
-    [form, options, setFilteredNetworks, onSelect, onClose],
+    [resetField, options, setFilteredNetworks, onSelect, onClose],
   );
 
   return (
