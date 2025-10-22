@@ -3,12 +3,15 @@ import { Address } from 'fuels';
 import { JSX } from 'react';
 import { RiFileCopyFill } from 'react-icons/ri';
 
-import { UpRightArrow } from '@/components';
+import { EditIcon2, UpRightArrow } from '@/components';
 import { CopyTopMenuIcon } from '@/components/icons/copy-top-menu';
+import { useWorkspaceContext } from '@/modules';
 import { AddressUtils } from '@/modules/core';
+import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
 import { NetworkService } from '@/modules/network/services';
 
 import { UseVaultDetailsReturn } from '../../hooks/details';
+import { UpdateVaultDialog } from '../dialog/update';
 import { VaultIconInfo } from '../vaultIconInfo';
 
 export interface CardDetailsProps {
@@ -16,9 +19,16 @@ export interface CardDetailsProps {
   vault: UseVaultDetailsReturn['vault'];
 }
 
-const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
-  const { vault, assets } = props;
+const SettingsOverview = ({
+  vault,
+  assets,
+}: CardDetailsProps): JSX.Element | null => {
+  const updateDialog = useDisclosure();
+  const {
+    authDetails: { userInfos },
+  } = useWorkspaceContext();
   const { balanceUSD, visibleBalance } = assets;
+  const workspaceId = userInfos?.workspace.id || '';
 
   const redirectToNetwork = () =>
     window.open(
@@ -49,6 +59,13 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
           {vault.data?.name}
         </Heading>
         <Flex alignItems="center" gap={2}>
+          <VaultIconInfo
+            onClick={updateDialog.onOpen}
+            tooltipContent="Update Account"
+            placement="top"
+          >
+            <Icon as={EditIcon2} color="gray.200" w="12px" />
+          </VaultIconInfo>
           <VaultIconInfo
             onClick={redirectToNetwork}
             tooltipContent="View on Explorer"
@@ -150,6 +167,19 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
           </Clipboard.Trigger>
         </Clipboard.Root>
       </Card.Footer>
+
+      {/* UPDATE ACCOUNT DIALOG */}
+      <UpdateVaultDialog
+        isOpen={updateDialog.isOpen}
+        onClose={updateDialog.onClose}
+        onOpenChange={updateDialog.onOpenChange}
+        initialValues={{
+          name: vault.data.name,
+          description: vault.data.description,
+          id: vault.data.id,
+        }}
+        workspaceId={workspaceId}
+      />
     </Card.Root>
   );
 };
