@@ -53,6 +53,7 @@ export function FormPageBrigde({
               assets={assets?.assets}
               errorAmount={errorAmount}
               setErrorAmount={setErrorAmount}
+              decimals={assetFrom?.decimals}
             />
           )}
         </AnimatePresence>
