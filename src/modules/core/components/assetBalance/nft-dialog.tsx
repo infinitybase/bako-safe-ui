@@ -28,13 +28,10 @@ export const NftDialog = ({
 
   return (
     <Dialog.Modal
-      size="xl"
+      size={{ sm: 'xl', base: 'full' }}
       onOpenChange={onClose}
       open={isOpen}
-      modalContentProps={{
-        borderWidth: '1px',
-        borderColor: 'gradients.transaction-border',
-      }}
+      trapFocus={false}
     >
       <Dialog.Body
         h="full"
@@ -43,16 +40,30 @@ export const NftDialog = ({
         alignItems={{ base: 'center', md: 'stretch' }}
         justifyContent="space-between"
         gap={6}
-        pl={3}
-        pr={3}
-        maxH="480px"
+        px={{ sm: 3 }}
+        maxH={{ sm: '480px' }}
         overflowY={{
-          base: 'scroll',
           md: 'hidden',
         }}
-        style={{ scrollbarWidth: 'none' }}
+        scrollbarWidth="none"
         position="relative"
       >
+        <Flex
+          w="full"
+          alignItems="center"
+          justifyContent="space-between"
+          mt={300}
+          display={{
+            base: 'flex',
+            sm: 'none',
+          }}
+        >
+          <Heading fontSize="lg" color="textPrimary" lineClamp={1}>
+            {nftsInfo.name || nftsInfo.metadata?.name || 'NFT Details'}
+          </Heading>
+
+          <CloseIcon onClick={onClose} />
+        </Flex>
         <Box
           boxSize={{
             base: 'full',
@@ -65,15 +76,7 @@ export const NftDialog = ({
           mx="auto"
           borderRadius="lg"
         >
-          <NftImage src={imageSrc} />
-          <CloseIcon
-            onClick={onClose}
-            display={{ base: 'block', md: 'none' }}
-            ml="auto"
-            position="absolute"
-            top={0}
-            right={4}
-          />
+          <NftImage src={imageSrc} rounded="16px" aspectRatio="1/1" />
         </Box>
 
         <VStack
@@ -81,27 +84,37 @@ export const NftDialog = ({
           justifyContent="space-between"
           alignItems="flex-start"
           maxH={{ md: '490px' }}
-          overflowY={{
-            base: 'unset',
-            md: 'scroll',
-          }}
-          style={{ scrollbarWidth: 'none' }}
         >
-          <Flex w="full" alignItems="center" justifyContent="space-between">
-            <Heading fontSize="xl" lineClamp={1}>
+          <Flex
+            w="full"
+            alignItems="center"
+            justifyContent="space-between"
+            display={{
+              base: 'none',
+              sm: 'flex',
+            }}
+          >
+            <Heading fontSize="lg" color="textPrimary" lineClamp={1}>
               {nftsInfo.name || nftsInfo.metadata?.name || 'NFT Details'}
             </Heading>
 
-            <CloseIcon
-              onClick={onClose}
-              display={{ base: 'none', md: 'block' }}
-            />
+            <CloseIcon onClick={onClose} />
           </Flex>
 
-          <Box flex={1} mt={6} maxH="calc(100vh - 300px)" pr={3}>
+          <Box
+            flex={1}
+            mt={6}
+            maxH={{ sm: 'calc(100vh - 300px)' }}
+            overflowY={{
+              md: 'scroll',
+            }}
+            scrollbarWidth="none"
+          >
             <Box mb={3}>
-              <Heading fontSize="md">Description</Heading>
-              <Text mt={3} fontSize="sm" color="section.500">
+              <Heading fontSize="md" color="textPrimary">
+                Description
+              </Heading>
+              <Text mt={3} fontSize="xs" color="textSecondary">
                 {nftsInfo.description ||
                   nftsInfo.metadata?.description ||
                   'Description not provided.'}
@@ -109,18 +122,15 @@ export const NftDialog = ({
             </Box>
             <Box
               w="full"
-              maxW="432px"
-              flexShrink={0}
-              position="relative"
+              maxW={{ md: '432px' }}
               borderRadius="xl"
               overflow="hidden"
             >
               <Flex
-                wrap="wrap"
                 gap={3}
                 mt={3}
-                justifyContent="space-between"
                 w="full"
+                wrap={{ base: 'wrap', sm: 'nowrap' }}
               >
                 <NFTText
                   value={nftsInfo.assetId ?? ''}
@@ -144,25 +154,14 @@ export const NftDialog = ({
             </Box>
 
             <Stack gap={2} mt={6}>
-              <Heading fontSize="md">Metadata</Heading>
+              <Heading fontSize="md" color="textPrimary">
+                Metadata
+              </Heading>
               <Flex
                 maxH={{ base: 'none', md: '294px' }}
-                overflowY={{ base: 'hidden', md: 'auto' }}
                 direction="row"
                 wrap="wrap"
                 gap={3}
-                pr={2}
-                css={{
-                  '&::-webkit-scrollbar': {
-                    width: '5px',
-                    backgroundColor: 'grey.900',
-                    borderRadius: '30px',
-                  },
-                  '&::-webkit-scrollbar-thumb': {
-                    backgroundColor: 'brand.500',
-                    borderRadius: '30px',
-                  },
-                }}
               >
                 {metadataArray.map(([key, value]) => (
                   <NftMetadataBlock

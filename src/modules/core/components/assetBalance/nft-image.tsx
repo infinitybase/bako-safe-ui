@@ -1,4 +1,4 @@
-import { Box, Center, Image, Loader } from 'bako-ui';
+import { Box, Center, Image, ImageProps, Loader } from 'bako-ui';
 import { useEffect, useRef, useState } from 'react';
 
 import { CustomSkeleton } from '@/components';
@@ -15,7 +15,8 @@ export const NftImage = ({
   src,
   fallback = '/nft-empty.svg',
   timeout = DEFAULT_TIMEOUT,
-}: NftImageProps) => {
+  ...rest
+}: NftImageProps & ImageProps) => {
   const [state, setState] = useState({
     isLoading: true,
     isError: false,
@@ -95,10 +96,11 @@ export const NftImage = ({
       h="full"
       src={state.isError ? fallback : src}
       alt="NFT"
-      borderRadius={5}
+      className="nftImage"
       objectFit="cover"
       opacity={state.isLoading ? 0 : 1}
-      transition="opacity 0.3s ease"
+      transition="all 0.3s ease"
+      {...rest}
     />
   );
 };

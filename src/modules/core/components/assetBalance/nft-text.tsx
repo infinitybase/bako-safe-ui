@@ -22,14 +22,14 @@ export const NFTText = ({
     p={2}
     gap={3}
     alignItems="center"
-    borderRadius="md"
-    bg="grey.925"
+    borderRadius="lg"
+    bg="bg.muted"
     position="relative"
     {...rest}
   >
     {icon && <Icon boxSize="25px">{icon}</Icon>}
     <Box>
-      <Text fontSize="xs" color="section.500">
+      <Text fontSize="sm" color="textSecondary">
         {title}
       </Text>
       <Flex gap={2}>
