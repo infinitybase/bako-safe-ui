@@ -1,4 +1,5 @@
 import { Flex, Icon, Image, Skeleton, Text, VStack } from 'bako-ui';
+import { useCallback } from 'react';
 
 import { LeftAndRightArrow } from '@/components';
 
@@ -9,6 +10,7 @@ interface SelectedCurrencyProps {
   isLoadingCurrencies?: boolean;
   balance?: string;
   symbol?: string;
+  disabled?: boolean;
 }
 
 export const SelectedCurrency = ({
@@ -18,7 +20,16 @@ export const SelectedCurrency = ({
   isLoadingCurrencies = false,
   balance,
   symbol,
+  disabled = false,
 }: SelectedCurrencyProps) => {
+  const handleClick = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      if (disabled) return;
+      if (onClick) onClick(e);
+    },
+    [disabled, onClick],
+  );
+
   return (
     <Skeleton minW="130px" minH="30px" loading={isLoadingCurrencies}>
       <VStack p={0} gap={0} align="end">
@@ -28,7 +39,7 @@ export const SelectedCurrency = ({
           gap={2}
           cursor="pointer"
           align="center"
-          onClick={onClick}
+          onClick={handleClick}
         >
           {!imageUrl && !name && (
             <Text color="section.200" fontSize="sm">

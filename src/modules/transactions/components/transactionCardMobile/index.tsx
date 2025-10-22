@@ -25,6 +25,7 @@ interface TransactionCardMobileProps extends CardRootProps {
 
 const TransactionCardMobile = (props: TransactionCardMobileProps) => {
   const { transaction, account, isSigner, ...rest } = props;
+  const { isOpen, onOpen, onOpenChange } = useDetailsDialog();
 
   const {
     isFromConnector,
@@ -33,6 +34,7 @@ const TransactionCardMobile = (props: TransactionCardMobileProps) => {
     isContract,
     isFuelFriday,
     isLiquidStake,
+    isBridge,
     isFromCLI,
     showAmountInformations,
     isMint,
@@ -46,10 +48,19 @@ const TransactionCardMobile = (props: TransactionCardMobileProps) => {
         isFromConnector,
         isDeposit,
         isLiquidStake,
+        isBridge,
         isFromCLI,
         isSwap,
       }),
-    [isDeploy, isFromConnector, isDeposit, isFromCLI, isLiquidStake, isSwap],
+    [
+      isDeploy,
+      isFromConnector,
+      isDeposit,
+      isFromCLI,
+      isLiquidStake,
+      isBridge,
+      isSwap,
+    ],
   );
 
   const status = useMemo(
@@ -83,13 +94,11 @@ const TransactionCardMobile = (props: TransactionCardMobileProps) => {
     !isPendingProvider &&
     !isError;
 
-  const { isOpen, onOpen, onClose } = useDetailsDialog();
-
   return (
     <>
       <DetailsDialog
-        isOpen={isOpen}
-        onClose={onClose}
+        open={isOpen}
+        onOpenChange={onOpenChange}
         transaction={transaction}
         status={status}
         isSigner={isSigner}

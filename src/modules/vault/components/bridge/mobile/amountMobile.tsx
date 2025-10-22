@@ -39,13 +39,13 @@ export function AmountBrigdeMobile({
     balance,
     fuelImg,
     handleSourceChange,
-    handleMaxAmount,
+    handleGetFeeBeforeMaxAmount,
     handleMinAmount,
   } = useAmountBridge({ stepsForm, setStepsForm, assets, setErrorAmount });
 
   return (
     <Card.Root
-      variant="outline"
+      variant="subtle"
       padding={3}
       paddingBottom={1}
       w={'full'}
@@ -56,9 +56,11 @@ export function AmountBrigdeMobile({
         isOpen={selectNetworkDrawer.isOpen}
         onClose={selectNetworkDrawer.onClose}
         form={form}
+        setErrorAmount={setErrorAmount}
+        assetFrom={assetFrom}
       />
       <HStack w="full" justifyContent={'space-between'} align="start">
-        <Text color="grey.425" fontSize={12} fontWeight={400}>
+        <Text color="textPrimary" fontSize={12} fontWeight={400}>
           From
         </Text>
         <VStack justifyContent="flex-end" gap={0} p={1}>
@@ -99,8 +101,16 @@ export function AmountBrigdeMobile({
         />
       </Box>
 
-      <HStack justifyContent="center">
-        <Text color="grey.425" fontSize={12} fontWeight={400}>
+      <HStack justifyContent="center" w="full" textAlign="center">
+        <Text
+          maxW="300px"
+          textAlign="center"
+          color="grey.425"
+          fontSize={12}
+          fontWeight={400}
+          truncate
+          lineClamp={1}
+        >
           {assetFromUSD}
         </Text>
       </HStack>
@@ -123,13 +133,13 @@ export function AmountBrigdeMobile({
           minW="48px"
           disabled={!dataLimits.maxAmount}
           variant="outline"
-          onClick={handleMaxAmount}
+          onClick={handleGetFeeBeforeMaxAmount}
           borderRadius={6}
           padding={'4px 6px 4px 6px'}
           fontSize={10}
           fontWeight={500}
         >
-          <Text color="grey.425">MAX</Text>
+          <Text color="textPrimary">MAX</Text>
         </Button>
       </HStack>
       <HStack

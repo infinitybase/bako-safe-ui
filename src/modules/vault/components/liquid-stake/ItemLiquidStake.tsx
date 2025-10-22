@@ -1,6 +1,8 @@
 import { Card, GridItem, HStack, Text, VStack } from 'bako-ui';
 
 import { CustomSkeleton } from '@/components';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
+import { limitCharacters } from '@/utils';
 
 export interface ItemLiquidStakeProps {
   label: string;
@@ -15,6 +17,12 @@ export function ItemLiquidStake({
   children,
   isLoading = false,
 }: ItemLiquidStakeProps) {
+  const {
+    screenSizes: { isMobile, isLargerThan1600 },
+  } = useWorkspaceContext();
+
+  const charLimit = isLargerThan1600 || isMobile ? 20 : 13;
+
   return (
     <Card.Root
       as={GridItem}
@@ -32,7 +40,7 @@ export function ItemLiquidStake({
             </Text>
             <CustomSkeleton loading={isLoading}>
               <Text fontSize="xs" fontWeight={500} color="textPrimary">
-                {value}
+                {limitCharacters(value, charLimit)}
               </Text>
             </CustomSkeleton>
           </VStack>

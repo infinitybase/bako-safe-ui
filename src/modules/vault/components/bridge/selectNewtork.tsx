@@ -7,6 +7,7 @@ import { ToFormStep } from './form/ToStep';
 export interface SelectNetworkProps {
   stepsForm: number;
   setStepsForm: React.Dispatch<React.SetStateAction<number>>;
+  setErrorAmount: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
 export interface NetworkOptionItem {
@@ -21,6 +22,7 @@ const MotionBox = motion(Box);
 export function SelectBridgeNetwork({
   stepsForm,
   setStepsForm,
+  setErrorAmount,
 }: SelectNetworkProps) {
   return (
     <VStack

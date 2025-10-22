@@ -1,7 +1,5 @@
-import { Card, HStack, Icon, Loader, Text, VStack } from 'bako-ui';
+import { Card, HStack, Loader, Text, VStack } from 'bako-ui';
 import { useEffect } from 'react';
-
-import { DoubtIcon } from '@/components/icons/doubt';
 
 import { useFormBridge } from '../../hooks/bridge';
 
@@ -28,7 +26,7 @@ export function DetailsBridge({
   }, [dataQuote.receiveInUsd, getReceiveQuoteMobile]);
 
   return (
-    <Card.Root variant="outline" padding={padding} bgColor={bgColor}>
+    <Card.Root variant="subtle" padding={padding} bgColor={bgColor}>
       <VStack p={0} gap={0}>
         <HStack width="full">
           <HStack gap={2} align={'center'}>
@@ -56,7 +54,6 @@ export function DetailsBridge({
             <Text color="grey.250" fontSize={12}>
               Fee
             </Text>
-            <Icon color="grey.75" fontSize="14px" as={DoubtIcon} />
           </HStack>
           <HStack
             w={'full'}

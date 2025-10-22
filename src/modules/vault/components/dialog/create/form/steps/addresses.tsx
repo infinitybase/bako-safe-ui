@@ -167,7 +167,7 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
                     control={form.control}
                     render={({ field, fieldState }) => {
                       const appliedOptions = handleFieldOptions(
-                        field.value,
+                        field.value || '',
                         optionsRequests[index]?.options ?? [],
                         first,
                       );
@@ -179,11 +179,12 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
                       const isLoading =
                         !optionsRequests[index].isSuccess ||
                         validateAddress.isLoading;
+                      const value = field.value || '';
 
                       const showAddToAddressBook =
                         !first &&
                         !fieldState.invalid &&
-                        AddressUtils.isValid(field.value) &&
+                        AddressUtils.isValid(value) &&
                         optionsRequests[index].isSuccess &&
                         listContactsRequest.data &&
                         !listContactsRequest.data
@@ -191,9 +192,9 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
                             Address.fromString(o.user.address).toString(),
                           )
                           .includes(
-                            isB256(field.value)
-                              ? Address.fromString(field.value).toString()
-                              : field.value,
+                            isB256(value)
+                              ? Address.fromString(value).toString()
+                              : value,
                           );
 
                       return (
@@ -223,7 +224,10 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
                                     value.split(' - ').at(0)!,
                                   );
                                 if (address) {
-                                  result.value = address;
+                                  // address without checksum
+                                  // is required to validate if it's not a vault address
+                                  result.value = new Address(address).toB256();
+
                                   result.label =
                                     AddressBookUtils.formatForAutocomplete(
                                       value,
@@ -292,7 +296,7 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
                           <AddToAddressBook
                             visible={showAddToAddressBook}
                             onAdd={() => {
-                              let _address = field.value;
+                              let _address = field.value || '';
 
                               if (BakoAddressUtils.isEvm(_address)) {
                                 _address =

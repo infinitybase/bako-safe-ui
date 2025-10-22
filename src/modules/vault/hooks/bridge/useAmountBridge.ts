@@ -2,7 +2,12 @@ import { bn } from 'fuels';
 import debounce from 'lodash.debounce';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 
-import { Asset, ICreateSwapBridgePayload } from '@/modules/core';
+import {
+  Asset,
+  ICreateSwapBridgePayload,
+  IGetQuotesResponse,
+} from '@/modules/core';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { ErrorBridgeForm } from '../../components/bridge/utils';
 import { useFormBridge } from './useFormBridge';
@@ -20,7 +25,6 @@ const useAmountBridge = ({
   assets,
   setErrorAmount,
 }: UseAmountBridgeProps) => {
-  //const [errorAmount, setErrorAmount] = useState<string | null>(null);
   const debouncedGetQuotesRef = useRef<ReturnType<typeof debounce>>();
 
   const {
@@ -28,8 +32,11 @@ const useAmountBridge = ({
     form,
     dataLimits,
     getOperationQuotes,
+    setLoadingQuote,
     prepareCreateSwapPayload,
   } = useFormBridge();
+
+  const { assetsMap } = useWorkspaceContext();
 
   const fuelImg = 'https://verified-assets.fuel.network/images/fuel.svg';
 
@@ -37,15 +44,24 @@ const useAmountBridge = ({
     const asset = assets?.find((a) => a.assetId === assetFrom?.value);
     if (!asset?.amount) return '0';
 
+    const assetsInfo = assetsMap?.[asset.assetId] ?? assetsMap?.['UNKNOWN'];
+
     return bn(asset.amount)?.format({
-      units: asset.units,
+      units: assetsInfo?.units ?? assetsMap.UNKNOWN.units,
     });
-  }, [assets, assetFrom?.value]);
+  }, [assets, assetFrom?.value, assetsMap]);
 
   useEffect(() => {
     debouncedGetQuotesRef.current = debounce(
-      (payload: ICreateSwapBridgePayload) => {
-        getOperationQuotes(payload.amount?.toString(), payload);
+      async (payload: ICreateSwapBridgePayload, getMaxAmount = false) => {
+        const quotes = await getOperationQuotes(
+          payload.amount?.toString(),
+          payload,
+        );
+
+        if (getMaxAmount && quotes) {
+          handleMaxAmount(quotes, payload.amount?.toString(), payload);
+        }
       },
       700,
     );
@@ -77,7 +93,6 @@ const useAmountBridge = ({
         return;
       }
 
-      //if (!isMobile) {
       const removeStep =
         (valueTreated === 0 || insufficientBalance) && stepsForm > 1;
       if (removeStep) {
@@ -88,7 +103,6 @@ const useAmountBridge = ({
       const addNewStep =
         valueTreated > 0 && !insufficientBalance && stepsForm === 1;
       if (addNewStep) setStepsForm(2);
-      //}
 
       if (valueTreated > 0 && !insufficientBalance) {
         const payload = prepareCreateSwapPayload();
@@ -99,7 +113,6 @@ const useAmountBridge = ({
     [
       form,
       balance,
-      //isMobile,
       dataLimits.minAmount,
       stepsForm,
       setStepsForm,
@@ -125,6 +138,7 @@ const useAmountBridge = ({
     const payload = prepareCreateSwapPayload();
     payload.amount = dataLimits.minAmount;
     debouncedGetQuotesRef.current?.(payload);
+    setLoadingQuote(true);
   }, [
     form,
     balance,
@@ -134,35 +148,83 @@ const useAmountBridge = ({
     setErrorAmount,
     prepareCreateSwapPayload,
     debouncedGetQuotesRef,
+    setLoadingQuote,
   ]);
 
-  const handleMaxAmount = useCallback(() => {
-    setErrorAmount(null);
+  const handleMaxAmount = useCallback(
+    (
+      quotes: IGetQuotesResponse,
+      amount: string | undefined,
+      payload: ICreateSwapBridgePayload | undefined,
+    ) => {
+      setErrorAmount(null);
+      const fee = quotes?.quote?.totalFee;
+      if (!fee) return;
+
+      let balanceUser = balance;
+
+      if (Number(balanceUser) <= 0) {
+        balanceUser = amount ?? '0';
+      }
+
+      const balanceTreated = Number(balanceUser.replace(/,/g, ''));
+
+      let maxAmount = Number(balanceUser) - fee * 2;
+
+      if (maxAmount > dataLimits.maxAmount) maxAmount = dataLimits.maxAmount;
+
+      form.setValue('amount', maxAmount.toString());
+
+      if (maxAmount > balanceTreated) {
+        setErrorAmount(ErrorBridgeForm.INSUFFICIENT_BALANCE);
+        if (stepsForm > 1) setStepsForm(1);
+        return;
+      }
+
+      const payloadSwap = payload ?? prepareCreateSwapPayload();
+      payloadSwap.amount = maxAmount;
+
+      debouncedGetQuotesRef.current?.(payload);
+    },
+    [
+      form,
+      balance,
+      dataLimits.maxAmount,
+      stepsForm,
+      setStepsForm,
+      setErrorAmount,
+      debouncedGetQuotesRef,
+      prepareCreateSwapPayload,
+    ],
+  );
+
+  const handleGetFeeBeforeMaxAmount = useCallback(async () => {
+    setLoadingQuote(true);
 
     const balanceTreated = Number(balance.replace(/,/g, ''));
-
-    form.setValue('amount', dataLimits.maxAmount.toString());
-
-    if (dataLimits.maxAmount > balanceTreated) {
-      setErrorAmount(ErrorBridgeForm.INSUFFICIENT_BALANCE);
+    if (dataLimits.minAmount > balanceTreated) {
+      setErrorAmount(ErrorBridgeForm.INSUFFICIENT_AMOUNT);
+      form.setValue('amount', balance);
       if (stepsForm > 1) setStepsForm(1);
       return;
     }
 
-    if (stepsForm === 1) setStepsForm(2);
-
     const payload = prepareCreateSwapPayload();
-    payload.amount = dataLimits.maxAmount;
-    debouncedGetQuotesRef.current?.(payload);
+    payload.amount = Number(balance);
+
+    if (stepsForm === 1) setStepsForm(2);
+    const getMaxAmount = true;
+    await debouncedGetQuotesRef.current?.(payload, getMaxAmount);
   }, [
-    form,
     balance,
-    dataLimits.maxAmount,
+    debouncedGetQuotesRef,
+    form,
+    dataLimits.minAmount,
     stepsForm,
     setStepsForm,
     setErrorAmount,
-    debouncedGetQuotesRef,
     prepareCreateSwapPayload,
+    setLoadingQuote,
   ]);
 
   return {
@@ -171,6 +233,7 @@ const useAmountBridge = ({
     handleSourceChange,
     handleMinAmount,
     handleMaxAmount,
+    handleGetFeeBeforeMaxAmount,
   };
 };
 

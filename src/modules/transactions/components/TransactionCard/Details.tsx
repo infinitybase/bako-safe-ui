@@ -16,6 +16,7 @@ import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import {
   ON_OFF_RAMP_TRANSACTION_TYPES,
+  TransactionTypeBridge,
   TransactionTypeWithRamp,
 } from '../../services';
 import { AssetBoxInfo } from './AssetBoxInfo';
@@ -31,7 +32,7 @@ export type TransactionUI = Omit<ITransaction, 'assets'> & {
     to: string;
     recipientNickname?: string;
   }[];
-  type: TransactionType | TransactionTypeWithRamp;
+  type: TransactionType | TransactionTypeWithRamp | TransactionTypeBridge;
 };
 
 interface CancelTransactionButtonProps {

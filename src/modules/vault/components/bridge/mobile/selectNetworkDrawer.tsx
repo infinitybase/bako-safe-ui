@@ -11,16 +11,26 @@ export interface SelectNetworkDrawerProps {
   isOpen: boolean;
   onClose: () => void;
   form: UseFormReturn<ITransferBridgePayload>;
+  setErrorAmount: React.Dispatch<React.SetStateAction<string | null>>;
+  assetFrom: AssetItem | null;
   children?: React.ReactNode;
 }
 
 interface AssetItemBrigdeProps {
   asset: AssetItem;
   form: UseFormReturn<ITransferBridgePayload>;
+  setErrorAmount: React.Dispatch<React.SetStateAction<string | null>>;
+  assetFrom: AssetItem | null;
   onClose: () => void;
 }
 
-const AssetItemMobile = ({ asset, form, onClose }: AssetItemBrigdeProps) => {
+const AssetItemMobile = ({
+  asset,
+  form,
+  assetFrom,
+  setErrorAmount,
+  onClose,
+}: AssetItemBrigdeProps) => {
   const { image, name } = asset;
 
   return (
@@ -36,6 +46,10 @@ const AssetItemMobile = ({ asset, form, onClose }: AssetItemBrigdeProps) => {
         form.setValue('selectAssetFrom', asset.value);
         form.resetField('selectAssetToMobile');
         form.resetField('selectNetworkToMobile');
+        if (asset.value !== assetFrom?.value) {
+          setErrorAmount(null);
+          form.setValue('amount', '0.000');
+        }
         onClose();
       }}
     >
@@ -51,6 +65,8 @@ export function SelectNetworkDrawerBridge({
   isOpen,
   onClose,
   form,
+  setErrorAmount,
+  assetFrom,
 }: SelectNetworkDrawerProps) {
   const { currentNetwork } = useNetworks();
 
@@ -92,6 +108,8 @@ export function SelectNetworkDrawerBridge({
                 asset={asset}
                 form={form}
                 onClose={onClose}
+                setErrorAmount={setErrorAmount}
+                assetFrom={assetFrom}
               />
             ))}
           </VStack>

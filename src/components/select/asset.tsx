@@ -1,12 +1,10 @@
 import {
   Avatar,
-  BoxProps,
   createListCollection,
   Flex,
   floatingStyles,
   HStack,
   Select,
-  TextProps,
   useSelectContext,
 } from 'bako-ui';
 
@@ -17,11 +15,9 @@ interface AssetSelectOption {
   symbol: string | null;
 }
 
-interface BoxSelectProps extends BoxProps {}
-
 interface AssetSelectProps {
   value?: string;
-  options?: AssetSelectOption[];
+  options: AssetSelectOption[];
   label?: string;
   isLoading?: boolean;
   isDisabled?: boolean;
@@ -29,11 +25,6 @@ interface AssetSelectProps {
   name?: string;
   readonly?: boolean;
   onChange: (value: string) => void;
-  needShowOptionsAbove?: boolean;
-  maxOptionsHeight?: number;
-  boxProps?: BoxSelectProps;
-  textLabelProps?: TextProps;
-  textValueProps?: TextProps;
 }
 
 const AssetSelectValue = () => {
@@ -68,12 +59,7 @@ const AssetSelect = ({
   onChange,
   isInvalid,
   readonly,
-  // needShowOptionsAbove,
-  // maxOptionsHeight,
   name,
-  // boxProps,
-  // textLabelProps,
-  // textValueProps,
 }: AssetSelectProps) => {
   const collection = createListCollection({
     items: options || [],

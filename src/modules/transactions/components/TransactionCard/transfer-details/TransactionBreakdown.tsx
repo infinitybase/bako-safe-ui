@@ -1,16 +1,19 @@
 import { Box, HStack, Separator, Text } from 'bako-ui';
 import { TransactionStatus } from 'bakosafe';
+import { useMemo } from 'react';
 
-import { RigContractIcon } from '@/components';
+import { LayerSwapIcon, RigContractIcon } from '@/components';
 import { miraData } from '@/config/swap';
 import { AddressUtils, type TransactionState } from '@/modules/core';
 import { tokensIDS } from '@/modules/core/utils/assets/address';
 import { FIAT_CURRENCIES } from '@/modules/core/utils/fiat-currencies';
 import { useVerifyTransactionInformations } from '@/modules/transactions/hooks/details/useVerifyTransactionInformations';
+import { TransactionTypeBridge } from '@/modules/transactions/services';
 import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { TransactionCard } from '..';
 import { AssetBoxInfo, type TransactionUI } from '../Details';
+import BridgeCardDetail from './bridge/bridge';
 import { ConnectorInfos } from './ConnectorInfos';
 import { ContractAddresses } from './contract-call/ContractAddresses';
 import MintTokenInfos from './mint-token/MintToken';
@@ -38,6 +41,11 @@ const TransactionBreakdown = ({
   const isLiquidStake =
     transaction.name === 'Liquid Stake' &&
     transaction.assets[0].assetId === tokensIDS.FUEL;
+
+  const isBridge = useMemo(
+    () => transaction.type === TransactionTypeBridge.BRIDGE,
+    [transaction.type],
+  );
 
   return (
     <Box
@@ -94,7 +102,8 @@ const TransactionBreakdown = ({
         {showContractAddresses && (
           <ContractAddresses transaction={transaction} borderColor="grey.950" />
         )}
-        {isMint && <MintTokenInfos transaction={transaction} />}
+        {isBridge && <BridgeCardDetail transaction={transaction} />}
+        {isMint && !isBridge && <MintTokenInfos transaction={transaction} />}
       </Box>
 
       {isFromConnector && !isDeploy && !isMobile && (
@@ -120,6 +129,16 @@ const TransactionBreakdown = ({
             name={'Liquid stake via RIG'}
             origin={'https://rig.st/'}
             icon={RigContractIcon}
+          />
+        </Box>
+      )}
+
+      {isBridge && (
+        <Box mt={4} w={'full'}>
+          <TransactionCard.TransactionRequestFrom
+            name={'Layerswap.app'}
+            origin={'https://layerswap.io/'}
+            icon={LayerSwapIcon}
           />
         </Box>
       )}

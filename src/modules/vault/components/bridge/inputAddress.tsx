@@ -14,7 +14,7 @@ export function InputAddressBridge() {
 
   return (
     <Card.Root
-      variant="outline"
+      variant="subtle"
       padding={isMobile ? 0 : 3}
       w="full"
       boxShadow="none"
@@ -30,8 +30,9 @@ export function InputAddressBridge() {
           name="destinationAddress"
           render={({ field, fieldState }) => {
             const minLengthAddress = 40;
+
             const displayValue =
-              field?.value?.length > minLengthAddress
+              !isFocused && field?.value?.length > minLengthAddress
                 ? AddressUtils.format(field?.value ?? '')
                 : field?.value;
 
@@ -49,20 +50,21 @@ export function InputAddressBridge() {
                     paddingTop: 0,
                     paddingBottom: 0,
                     '> input': {
+                      height: '46px',
                       paddingTop: 0,
                       paddingBottom: 0,
-                      height: '46px',
+                      paddingRight: '2rem',
                     },
                   }}
                 >
                   <Input
                     value={displayValue}
-                    onChange={field.onChange}
+                    onChange={(e) => field.onChange(e.target.value)}
                     placeholder=" "
                     // variant="dark"
                     onFocus={() => setIsFocused(true)}
                     onBlur={() => setIsFocused(false)}
-                    paddingTop={0}
+                    w="100%"
                   />
                 </InputGroup>
                 {!isFocused && !field.value && (

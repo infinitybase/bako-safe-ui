@@ -11,6 +11,7 @@ import { useWorkspaceContext } from '@/modules/workspace/hooks';
 import { useGetAssetsByOperations } from '../../hooks';
 import {
   ON_OFF_RAMP_TRANSACTION_TYPES,
+  TransactionTypeBridge,
   type TransactionWithVault,
 } from '../../services';
 import { AssetsIcon } from './AssetsIcon';
@@ -42,6 +43,11 @@ const Amount = ({
     [transaction.type],
   );
 
+  const isBridge = useMemo(
+    () => transaction.type === TransactionTypeBridge.BRIDGE,
+    [transaction.type],
+  );
+
   const totalAmoutSent = useMemo(
     () =>
       transaction.assets
@@ -52,21 +58,37 @@ const Amount = ({
     [transaction.assets],
   );
 
-  const oneAssetOfEach = useMemo(
-    () =>
-      transaction.assets.reduce((uniqueAssets, current) => {
-        if (!uniqueAssets.find((asset) => asset.assetId === current.assetId)) {
-          uniqueAssets.push(current);
-        }
+  const oneAssetOfEach = useMemo(() => {
+    if (isBridge) {
+      const assetsBridge = [] as ITransferAsset[];
+      const bridge = transaction.resume?.bridge;
 
-        return uniqueAssets;
-      }, [] as ITransferAsset[]),
-    [transaction.assets],
-  );
+      if (bridge?.sourceToken)
+        assetsBridge.push({
+          ...bridge.sourceToken,
+          amount: bridge.sourceToken.amount?.toString(),
+        });
+
+      if (bridge?.destinationToken)
+        assetsBridge.push({
+          ...bridge.destinationToken,
+          amount: bridge.destinationToken.amount?.toString(),
+        });
+
+      return assetsBridge;
+    }
+    return transaction.assets.reduce((uniqueAssets, current) => {
+      if (!uniqueAssets.find((asset) => asset.assetId === current.assetId)) {
+        uniqueAssets.push(current);
+      }
+
+      return uniqueAssets;
+    }, [] as ITransferAsset[]);
+  }, [transaction.assets, transaction.resume?.bridge, isBridge]);
 
   const isMultiToken = useMemo(
-    () => oneAssetOfEach.length >= 2 && !isOnOffRamp,
-    [oneAssetOfEach.length, isOnOffRamp],
+    () => oneAssetOfEach.length >= 2 && !isOnOffRamp && !isBridge,
+    [oneAssetOfEach.length, isOnOffRamp, isBridge],
   );
 
   const formattedAssets = useMemo(() => {

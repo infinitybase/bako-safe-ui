@@ -145,9 +145,20 @@ export function ModalSelectAssetsBridge({
       onSelect(asset);
       setAssetSelected(asset);
       getOperationLimits(asset);
+      setFilteredAssets(options ?? []);
+      form.resetField('searchAsset');
+      setSearchValue('');
       onOpenChange?.({ open: false });
     },
-    [onSelect, onOpenChange, getOperationLimits],
+    [
+      form,
+      options,
+      setFilteredAssets,
+      setSearchValue,
+      onSelect,
+      onOpenChange,
+      getOperationLimits,
+    ],
   );
 
   return (

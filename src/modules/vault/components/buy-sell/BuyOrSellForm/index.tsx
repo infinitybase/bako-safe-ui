@@ -178,6 +178,7 @@ export const BuyOrSellForm = ({
           colorPalette="primary"
           mt={3}
           loading={isSubmitting}
+          position="unset"
         >
           {type === 'BUY' ? 'Buy' : 'Sell'}
           {' token'}

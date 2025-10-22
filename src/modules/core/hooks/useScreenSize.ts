@@ -15,6 +15,7 @@ const useScreenSize = () => {
     '(max-width: 75.62em)',
   ]); //1210px
 
+  const [isLargerThan1600] = useMediaQuery(['(min-width: 100em)']); //1600px
   const [isLargerThan1700] = useMediaQuery(['(min-width: 106.25em)']); //1700px
   const [isLargerThan1210] = useMediaQuery(['(min-width: 75.625em)']); //1210px
   const [isLargerThan680] = useMediaQuery(['(min-width: 42.5em)']); //680px
@@ -53,6 +54,7 @@ const useScreenSize = () => {
     isExtraSmallDevice,
     isExtraLarge,
     isLowerThanFourHundredAndThirty,
+    isLargerThan1600,
     isLargerThan1700,
     isLargerThan1210,
     isLargerThan680,

@@ -63,8 +63,8 @@ importers:
         specifier: 0.2.4
         version: 0.2.4(@chakra-ui/react@3.28.0(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       bakosafe:
-        specifier: 0.2.3-beta.1
-        version: 0.2.3-beta.1(fuels@0.101.3(vitest@3.0.9(@types/debug@4.1.12)(@types/node@20.5.1)(terser@5.43.1)))
+        specifier: 0.3.0-beta.1
+        version: 0.3.0-beta.1(fuels@0.101.3(vitest@3.0.9(@types/debug@4.1.12)(@types/node@20.5.1)(terser@5.43.1)))
       bech32:
         specifier: ^2.0.0
         version: 2.0.0
@@ -2917,8 +2917,8 @@ packages:
       react: ^18.0.0 || ^19.0.0
       react-dom: ^18.0.0 || ^19.0.0
 
-  bakosafe@0.2.3-beta.1:
-    resolution: {integrity: sha512-eetYk+a+q/fF1LCBElJRR53YtF5S+8nW3OhfBi4Je1dao7J0f0XZV9uE/1Towg5zIrgAS61xeeLmMa9JEYUo8w==}
+  bakosafe@0.3.0-beta.1:
+    resolution: {integrity: sha512-riXa2dsTJHefbFecuAVP9NNM/kHLMOw+hD2kmZJF3Y2i5fgJGqoJZAi7Q/VGn2qtewv8cFAzEja6iH+H1W402A==}
     peerDependencies:
       fuels: ^0.101.0
 
@@ -4805,6 +4805,9 @@ packages:
 
   lodash.mergewith@4.6.2:
     resolution: {integrity: sha512-GK3g5RPZWTRSeLSpgP8Xhra+pnjBC56q9FZYe1d5RN3TJ35dbkGy3YqBSMbyCrlbi+CM9Z3Jk5yTL7RCsqboyQ==}
+
+  lodash.partition@4.6.0:
+    resolution: {integrity: sha512-35L3dSF3Q6V1w5j6V3NhNlQjzsRDC/pYKCTdYTmwqSib+Q8ponkAmt/PwEOq3EmI38DSCl+SkIVwLd+uSlVdrg==}
 
   lodash.snakecase@4.1.1:
     resolution: {integrity: sha512-QZ1d4xoBHYUeuouhEq3lk3Uq7ldgyFXGBhg04+oRLnIz8o9T65Eh+8YdroUwn846zchkA9yDsDl5CVVaV2nqYw==}
@@ -11857,13 +11860,14 @@ snapshots:
       react-hook-form: 7.65.0(react@19.2.0)
       use-mask-input: 3.5.2(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
 
-  bakosafe@0.2.3-beta.1(fuels@0.101.3(vitest@3.0.9(@types/debug@4.1.12)(@types/node@20.5.1)(terser@5.43.1))):
+  bakosafe@0.3.0-beta.1(fuels@0.101.3(vitest@3.0.9(@types/debug@4.1.12)(@types/node@20.5.1)(terser@5.43.1))):
     dependencies:
       '@ethereumjs/util': 9.0.3
       '@ethersproject/bytes': 5.7.0
       '@noble/curves': 1.9.6
       axios: 1.11.0
       fuels: 0.101.3(vitest@3.0.9(@types/debug@4.1.12)(@types/node@20.5.1)(terser@5.43.1))
+      lodash.partition: 4.6.0
       uuid: 9.0.1
     transitivePeerDependencies:
       - debug
@@ -14019,6 +14023,8 @@ snapshots:
   lodash.merge@4.6.2: {}
 
   lodash.mergewith@4.6.2: {}
+
+  lodash.partition@4.6.0: {}
 
   lodash.snakecase@4.1.1: {}
 

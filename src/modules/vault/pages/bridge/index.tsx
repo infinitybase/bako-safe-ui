@@ -38,7 +38,10 @@ const VaultBridgePage = () => {
             />
           )}
           {screenBridge === 'resume' && (
-            <ResumePageBrigde setScreenBridge={setScreenBridge} />
+            <ResumePageBrigde
+              setScreenBridge={setScreenBridge}
+              assets={assets.assets}
+            />
           )}
         </FormBridgeProvider>
       </HStack>

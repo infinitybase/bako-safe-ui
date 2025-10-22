@@ -1,17 +1,28 @@
 import { Button, Card, HStack, Icon, Separator, Text, VStack } from 'bako-ui';
+import { bn } from 'fuels';
+import { useCallback, useMemo } from 'react';
 
-import { SwapIcon } from '@/components';
-import { AddressUtils } from '@/modules/core';
+import { MinimalAlertIcon, SwapIcon } from '@/components';
+import { AddressUtils, Asset } from '@/modules/core';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
-import { DetailsBridge, SectionInfo } from '../../components/bridge';
+import {
+  AlertsBrigde,
+  DetailsBridge,
+  SectionInfo,
+} from '../../components/bridge';
 import { TitleButtonsForm } from '../../components/bridge/utils';
 import { useFormBridge } from '../../hooks/bridge';
 
 interface ResumePageBrigdeProps {
+  assets?: Required<Asset>[];
   setScreenBridge: React.Dispatch<React.SetStateAction<'form' | 'resume'>>;
 }
 
-export function ResumePageBrigde({ setScreenBridge }: ResumePageBrigdeProps) {
+export function ResumePageBrigde({
+  assets,
+  setScreenBridge,
+}: ResumePageBrigdeProps) {
   const {
     assetFrom,
     assetTo,
@@ -24,6 +35,34 @@ export function ResumePageBrigde({ setScreenBridge }: ResumePageBrigdeProps) {
     isPendingSigner,
     onSubmit,
   } = useFormBridge();
+
+  const { assetsMap } = useWorkspaceContext();
+
+  const balance = useMemo(() => {
+    const asset = assets?.find((a) => a.assetId === assetFrom?.value);
+    if (!asset?.amount) return '0';
+
+    const assetsInfo = assetsMap?.[asset.assetId] ?? assetsMap?.['UNKNOWN'];
+
+    return bn(asset.amount)?.format({
+      units: assetsInfo?.units ?? assetsMap.UNKNOWN.units,
+    });
+  }, [assets, assetFrom?.value, assetsMap]);
+
+  const checkEnoughETH = useCallback(() => {
+    const fee = dataQuote?.quote?.totalFee * 2;
+    if (!fee) return true;
+
+    const maxAmount = Number(balance) - fee;
+
+    return maxAmount > Number(amount);
+  }, [balance, amount, dataQuote?.quote?.totalFee]);
+
+  const feeReserved = useMemo(() => {
+    const fee = dataQuote?.quote?.totalFee * 2;
+    if (!fee) return 0;
+    return fee;
+  }, [dataQuote?.quote?.totalFee]);
 
   return (
     <VStack
@@ -67,18 +106,27 @@ export function ResumePageBrigde({ setScreenBridge }: ResumePageBrigdeProps) {
           dataQuote?.receiveInUsd ? `(${dataQuote?.receiveInUsd})` : '-'
         }
       />
-      <Card.Root variant="outline" mt={3} padding={3} paddingY={2} w="full">
+      <Card.Root variant="subtle" mt={3} padding={3} paddingY={2} w="full">
         <HStack w="full" justifyContent="space-between">
           <Text color="grey.250" fontSize={12}>
             On wallet
           </Text>
           <Text color="grey.50" fontSize={12} fontWeight={500}>
-            {AddressUtils.format(destinationAddress ?? '', 4)}
+            {AddressUtils.format(destinationAddress ?? '', 6)}
           </Text>
         </HStack>
       </Card.Root>
       <Separator borderColor="grey.950" h="1px" flex="1" marginY={3} />
       <DetailsBridge bgColor={'dark.850'} padding={0} />
+
+      {!checkEnoughETH() && (
+        <AlertsBrigde
+          type={'warning'}
+          title={'Insufficient ETH for gas'}
+          description={`You might not be able to complete the transaction. Reserve ${feeReserved} ETH for gas`}
+          icon={MinimalAlertIcon}
+        />
+      )}
 
       <HStack w={'full'} gap={4}>
         <Button
@@ -94,7 +142,7 @@ export function ResumePageBrigde({ setScreenBridge }: ResumePageBrigdeProps) {
         </Button>
 
         <Button
-          disabled={isSendingTx || isPendingSigner}
+          disabled={isSendingTx || isPendingSigner || !checkEnoughETH()}
           loading={isSendingTx}
           colorPalette="primary"
           type="submit"

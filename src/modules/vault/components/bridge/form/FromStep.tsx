@@ -13,7 +13,7 @@ import { getFuelAssetsByNetwork, optionsNets } from '../utils';
 export const FromFormStep = ({
   setStepsForm,
   stepsForm,
-}: SelectNetworkProps) => {
+}: Omit<SelectNetworkProps, 'setErrorAmount'>) => {
   const { control, resetField, setValue } =
     useFormContext<ITransferBridgePayload>();
   const { currentNetwork } = useNetworks();
@@ -54,7 +54,6 @@ export const FromFormStep = ({
                         ?.value
                     }
                     readonly
-                    boxProps={{ bg: 'grey.925', h: '45px' }}
                   />
                 </InputGroup>
               </Field.Root>

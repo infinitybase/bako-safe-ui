@@ -27,8 +27,12 @@ export function AmountBrigde({
 }: AmountBridgeProps) {
   const { amount, assetFromUSD } = useFormBridge();
 
-  const { balance, handleSourceChange, handleMaxAmount, handleMinAmount } =
-    useAmountBridge({ stepsForm, setStepsForm, assets, setErrorAmount });
+  const {
+    balance,
+    handleSourceChange,
+    handleGetFeeBeforeMaxAmount,
+    handleMinAmount,
+  } = useAmountBridge({ stepsForm, setStepsForm, assets, setErrorAmount });
 
   return (
     <MotionBox
@@ -39,7 +43,7 @@ export function AmountBrigde({
       transition={{ duration: 0.4, ease: 'easeOut' }}
     >
       <Card.Root
-        variant="outline"
+        variant="subtle"
         padding={3}
         paddingBottom={1}
         w={'full'}
@@ -64,8 +68,20 @@ export function AmountBrigde({
           disabled={false}
         />
 
-        <HStack justifyContent="center" mb={{ base: 2, md: 4 }}>
-          <Text color="grey.425" fontSize={12} fontWeight={400}>
+        <HStack
+          justifyContent="center"
+          mb={{ base: 2, md: 4 }}
+          w="full"
+          textAlign="center"
+        >
+          <Text
+            maxW={'400px'}
+            color="textSecondary"
+            fontSize={12}
+            fontWeight={400}
+            truncate
+            lineClamp={1}
+          >
             {assetFromUSD}
           </Text>
         </HStack>
@@ -87,8 +103,8 @@ export function AmountBrigde({
             maxH="28px"
             minW="48px"
             disabled={false}
-            colorPalette="secondary"
-            onClick={() => handleMaxAmount()}
+            variant="subtle"
+            onClick={() => handleGetFeeBeforeMaxAmount()}
             borderRadius={6}
             padding={'4px 6px 4px 6px'}
             fontSize={10}

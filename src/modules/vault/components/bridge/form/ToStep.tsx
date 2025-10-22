@@ -12,7 +12,10 @@ import { ModalSelectNetworkBridge } from '../modalSelectNetwork';
 import { ITransferBridgePayload } from '../providers/FormBridgeProvider';
 import { SelectNetworkProps } from '../selectNewtork';
 
-export const ToFormStep = ({ setStepsForm, stepsForm }: SelectNetworkProps) => {
+export const ToFormStep = ({
+  setStepsForm,
+  stepsForm,
+}: Omit<SelectNetworkProps, 'setErrorAmount'>) => {
   const { control, watch, setValue, resetField } =
     useFormContext<ITransferBridgePayload>();
   const dialogSelectNetwork = useDisclosure();

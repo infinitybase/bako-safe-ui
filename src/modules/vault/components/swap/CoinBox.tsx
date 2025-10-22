@@ -134,6 +134,7 @@ export const CoinBox = memo(
               isLoadingCurrencies={isLoadingAssets}
               balance={balance}
               symbol={coin.slug}
+              disabled={isLoadingPreview}
             />
           </Box>
 

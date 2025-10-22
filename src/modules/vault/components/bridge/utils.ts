@@ -17,6 +17,7 @@ export enum ErrorBridgeForm {
   LIMIT = 'Error on get limits',
   DESTINATION = 'Error on get destinations',
   INSUFFICIENT_BALANCE = 'Insufficient balance for this operation!',
+  INSUFFICIENT_AMOUNT = 'Insufficient min amount for this operation!',
 }
 
 export enum TitleButtonsForm {

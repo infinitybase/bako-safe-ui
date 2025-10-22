@@ -1,5 +1,6 @@
 export * from './useAmountBridge';
 export * from './useCreateSwapBridge';
+export * from './useCreateTransactionBridge';
 export * from './useFormBridge';
 export * from './useGetDestinationsBridge';
 export * from './useGetLimits';
