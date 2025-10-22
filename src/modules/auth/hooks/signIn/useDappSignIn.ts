@@ -18,7 +18,7 @@ const useDappSignIn = () => {
   const isMounted = useRef(false);
 
   const navigate = useNavigate();
-  const { location, sessionId, byConnector, username } = useQueryParams();
+  const { location, byConnector, username } = useQueryParams();
 
   const redirect = useCallback(() => {
     const isRedirectToPrevious = !!location.state?.from;
@@ -74,17 +74,6 @@ const useDappSignIn = () => {
       handleAction: customHandleLogin,
     },
   };
-
-  const getSessionId = useCallback(() => {
-    let _sessionId = sessionId;
-
-    if (!_sessionId) {
-      _sessionId = crypto.randomUUID();
-      window.localStorage.setItem('sessionId', _sessionId);
-    }
-
-    return _sessionId;
-  }, [sessionId]);
 
   useEffect(() => {
     if (isMounted.current) {
