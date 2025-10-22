@@ -1,4 +1,5 @@
 import { Button, Card, Clipboard, Flex, Heading, Icon, Text } from 'bako-ui';
+import { Address } from 'fuels';
 import { JSX } from 'react';
 import { RiFileCopyFill } from 'react-icons/ri';
 
@@ -27,7 +28,9 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
 
   if (!vault) return null;
   const predicateVersion = vault.data?.configurable?.version;
-  const predicateAddress = vault.data?.predicateAddress;
+  const predicateAddress = vault.data?.predicateAddress
+    ? new Address(vault.data.predicateAddress).toString()
+    : '';
 
   return (
     <Card.Root
@@ -90,6 +93,7 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                 Address
               </Text>
               <Text
+                as="div"
                 display="flex"
                 alignItems="center"
                 gap={1}
@@ -127,6 +131,7 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                 Predicate
               </Text>
               <Text
+                as="div"
                 display="flex"
                 alignItems="center"
                 gap={1}

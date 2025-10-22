@@ -9,6 +9,7 @@ import {
   Text,
   useClipboard,
 } from 'bako-ui';
+import { Address } from 'fuels';
 import { useCallback, useMemo } from 'react';
 import { RiFileCopyFill } from 'react-icons/ri';
 
@@ -31,7 +32,8 @@ interface VaultBoxPropx {
 
 const VaultBox = (props: VaultBoxPropx) => {
   const { name, address, onChangeVault } = props;
-  const { copy, copied } = useClipboard({ value: address });
+  const addressWithChecksum = address ? new Address(address).toString() : '';
+  const { copy, copied } = useClipboard({ value: addressWithChecksum });
 
   const {
     authDetails: {
@@ -152,7 +154,7 @@ const VaultBox = (props: VaultBoxPropx) => {
 
             <Flex justifyContent="space-between" alignItems="center">
               <Text fontSize="xs" color="textSecondary">
-                {AddressUtils.format(address, 6)}
+                {AddressUtils.format(addressWithChecksum, 6)}
               </Text>
               <VaultIconInfo
                 onClick={copy}
