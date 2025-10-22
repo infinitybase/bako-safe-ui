@@ -29,7 +29,7 @@ const CLISettingsCard = ({
       cursor={disabled ? 'not-allowed' : 'pointer'}
       minH="104px"
       bg="bg.panel"
-      opacity={0.6}
+      opacity={0.8}
       _hover={{
         bg: 'bg.muted',
         opacity: !disabled ? 1 : 0.6,
