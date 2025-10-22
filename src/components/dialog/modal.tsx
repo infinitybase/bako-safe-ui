@@ -29,6 +29,7 @@ const DialogModal = (props: DialogModalProps) => {
       size={{ base: 'full', sm: 'xl' }}
       placement="center"
       motionPreset={isMobile ? 'slide-in-bottom' : 'scale'}
+      trapFocus={false}
       {...rest}
     >
       <Portal>
