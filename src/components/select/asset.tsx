@@ -49,11 +49,23 @@ const AssetSelectValue = () => {
           name={name}
         />
         <Stack gap={0.5}>
-          <Text fontSize="xs" color="textPrimary" lineHeight="shorter">
+          <Text
+            fontSize="xs"
+            color="textPrimary"
+            lineHeight="shorter"
+            truncate
+            lineClamp={1}
+          >
             {name}
           </Text>
           {description && (
-            <Text fontSize="xs" color="textSecondary" lineHeight="shorter">
+            <Text
+              fontSize="xs"
+              color="textSecondary"
+              lineHeight="shorter"
+              truncate
+              lineClamp={1}
+            >
               {description}
             </Text>
           )}
@@ -112,7 +124,16 @@ const AssetSelect = ({
       <Select.Positioner>
         <Select.Content>
           {collection.items.map((item) => (
-            <Select.Item key={item.value} item={item}>
+            <Select.Item
+              key={item.value}
+              item={item}
+              onClick={() => {
+                if (item.value === value) {
+                  // force onChange when same value is selected
+                  onChange(item.value);
+                }
+              }}
+            >
               <Flex gap={2} alignItems="center">
                 <Avatar
                   shape="rounded"
