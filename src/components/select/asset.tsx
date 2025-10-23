@@ -5,12 +5,15 @@ import {
   floatingStyles,
   HStack,
   Select,
+  Stack,
+  Text,
   useSelectContext,
 } from 'bako-ui';
 
 interface AssetSelectOption {
   value: string;
   image: string | null;
+  description?: string;
   name: string;
   symbol: string | null;
 }
@@ -32,6 +35,7 @@ const AssetSelectValue = () => {
   const items = select.selectedItems as AssetSelectOption[];
   const image = items?.[0]?.image;
   const name = items?.[0]?.name;
+  const description = items?.[0]?.description;
 
   return (
     <Select.ValueText placeholder=" ">
@@ -44,7 +48,16 @@ const AssetSelectValue = () => {
           src={image!}
           name={name}
         />
-        {name}
+        <Stack gap={0.5}>
+          <Text fontSize="xs" color="textPrimary" lineHeight="shorter">
+            {name}
+          </Text>
+          {description && (
+            <Text fontSize="xs" color="textSecondary" lineHeight="shorter">
+              {description}
+            </Text>
+          )}
+        </Stack>
       </HStack>
     </Select.ValueText>
   );
