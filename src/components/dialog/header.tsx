@@ -1,5 +1,6 @@
 import {
   Box,
+  Dialog,
   Heading,
   HeadingProps,
   HStack,
@@ -48,12 +49,14 @@ const DialogHeader = ({
         {title}
       </Heading>
       {!hideCloseButton && (
-        <LineCloseIcon
-          w="24px"
-          aria-label="Close window"
-          cursor="pointer"
-          onClick={onClose}
-        />
+        <Dialog.CloseTrigger asChild>
+          <LineCloseIcon
+            w="24px"
+            aria-label="Close window"
+            cursor="pointer"
+            onClick={onClose}
+          />
+        </Dialog.CloseTrigger>
       )}
     </HStack>
     <Box maxW={500} mb={{ base: 4, sm: 0 }}>
