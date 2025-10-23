@@ -47,11 +47,11 @@ const AssetItem = ({ asset, onSelect }: AssetItemBrigdeProps) => {
   return (
     <HStack
       border="1px solid"
-      borderColor="grey.950"
+      borderColor="bg.muted"
       padding={4}
       borderRadius={8}
       cursor="pointer"
-      _hover={{ bgColor: 'grey.925' }}
+      _hover={{ bgColor: 'bg.muted/90' }}
       w="100%"
       onClick={() => onSelect(asset)}
     >
@@ -64,10 +64,10 @@ const AssetItem = ({ asset, onSelect }: AssetItemBrigdeProps) => {
           onError={() => setLoaded(true)}
         />
       </Skeleton>
-      <Text fontSize={12} fontWeight={500} color="grey.50">
+      <Text fontSize={12} fontWeight={500} color="gray.50">
         {name}
       </Text>
-      <Text ml="auto" fontSize={12} fontWeight={400}>
+      <Text ml="auto" fontSize={12} fontWeight={400} color="gray.50">
         {balance} {symbol}
       </Text>
     </HStack>
@@ -166,7 +166,7 @@ export function ModalSelectAssetsBridge({
       open={isOpen}
       onOpenChange={handleClose}
       closeOnInteractOutside={false}
-      size={'md'}
+      size={{ base: 'full', sm: 'sm' }}
     >
       <Dialog.Body minH={650} maxH={650} flex={1}>
         <Dialog.Header
@@ -175,7 +175,7 @@ export function ModalSelectAssetsBridge({
           description={`Select the asset of your choice.`}
           mb={0}
           mt={0}
-          px={3}
+          px={6}
           titleSxProps={{
             fontSize: 16,
             fontWeight: 700,
@@ -190,7 +190,7 @@ export function ModalSelectAssetsBridge({
           control={control}
           render={({ field, fieldState }) => {
             return (
-              <Field.Root invalid={fieldState.invalid} marginY={4} px={3}>
+              <Field.Root invalid={fieldState.invalid} marginY={6} px={6}>
                 <InputGroup endElement={<SearchIcon color="textPrimary" />}>
                   <Input
                     placeholder="Search asset"
@@ -206,11 +206,11 @@ export function ModalSelectAssetsBridge({
             );
           }}
         />
-        <Separator marginTop={6} borderColor="bg.panel" />
+        <Separator marginTop={6} borderColor="bg.muted" />
         <VStack
           maxH={523}
           overflowY="auto"
-          px={3}
+          px={6}
           pt={6}
           css={{
             '&::-webkit-scrollbar': {

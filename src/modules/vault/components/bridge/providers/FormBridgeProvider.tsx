@@ -40,11 +40,13 @@ interface FormBridgeContextProps {
   dataLimits: IGetLimitsResponse;
   errorForm: string | null;
   toNetworkOptions: AssetFormItem[];
+  isSendingTx: boolean;
   saveQuote: (data: IQuoteFormLayersSwap) => void;
   setLoadingQuote: (loading: boolean) => void;
   saveLimits: (data: IGetLimitsResponse) => void;
   saveErrorForm: (error: string | null) => void;
   saveToNetworkOptions: (options: AssetFormItem[]) => void;
+  setIsSendingTx: (loading: boolean) => void;
   stepForm: BridgeStepsForm;
   setStepForm: (step: BridgeStepsForm) => void;
 }
@@ -64,6 +66,7 @@ const FormBridgeProvider = ({ children }: { children: React.ReactNode }) => {
   const [stepForm, setStepForm] = useState<BridgeStepsForm>(
     BridgeStepsForm.FROM,
   );
+  const [isSendingTx, setIsSendingTx] = useState<boolean>(false);
 
   const form = useForm<ITransferBridgePayload>({
     defaultValues: {
@@ -105,11 +108,13 @@ const FormBridgeProvider = ({ children }: { children: React.ReactNode }) => {
       isLoadingQuote,
       errorForm,
       toNetworkOptions,
+      isSendingTx,
       saveQuote,
       setLoadingQuote,
       saveLimits,
       saveErrorForm,
       saveToNetworkOptions,
+      setIsSendingTx,
       stepForm,
       setStepForm,
     }),
@@ -120,13 +125,13 @@ const FormBridgeProvider = ({ children }: { children: React.ReactNode }) => {
       isLoadingQuote,
       errorForm,
       toNetworkOptions,
+      isSendingTx,
       saveQuote,
       setLoadingQuote,
       saveLimits,
       saveErrorForm,
       saveToNetworkOptions,
       stepForm,
-      setStepForm,
     ],
   );
 

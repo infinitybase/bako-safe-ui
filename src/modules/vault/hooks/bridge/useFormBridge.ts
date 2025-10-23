@@ -29,6 +29,7 @@ import {
   useFormBridgeContext,
 } from '../../components/bridge/providers/FormBridgeProvider';
 import {
+  BridgeStepsForm,
   ErrorBridgeForm,
   formatEstimativeTime,
   optionsAssetsFuel,
@@ -83,6 +84,9 @@ const useFormBridge = () => {
     saveLimits,
     saveErrorForm,
     saveToNetworkOptions,
+    setStepForm,
+    isSendingTx,
+    setIsSendingTx,
   } = useFormBridgeContext();
   const { watch } = form;
   const toast = useTransactionToast();
@@ -95,7 +99,6 @@ const useFormBridge = () => {
   const { getLimitsBridgeAsync } = useGetLimitsBridge();
   const { getQuoteBridgeAsync } = useGetQuoteBridge();
   const [toAssetOptions, setToAssetOptions] = useState<AssetFormItem[]>([]);
-  const [isSendingTx, setIsSendingTx] = useState<boolean>(false);
 
   const assetFromValue = watch('selectAssetFrom');
   const assetToValue = watch('selectAssetTo');
@@ -419,14 +422,14 @@ const useFormBridge = () => {
           undefined,
           transaction,
         ).finally(async () => {
-          setIsSendingTx(false);
           await refetchVaultTransactionsList();
           await refetchTransactionsList();
           await refetchHomeTransactionsList();
         });
+        form.reset();
+        setStepForm(BridgeStepsForm.FROM);
       } catch (error) {
         console.info('error sendtx bridge', error);
-        setIsSendingTx(false);
       }
     },
     [
@@ -440,13 +443,15 @@ const useFormBridge = () => {
       refetchTransactionsList,
       refetchVaultTransactionsList,
       createTransactionBridgeAsync,
+      form,
+      setStepForm,
     ],
   );
 
   const onSubmit = form.handleSubmit(async () => {
-    setIsSendingTx(true);
-
     try {
+      setIsSendingTx(true);
+
       const payload = await prepareCreateSwapPayload();
 
       const response = await createSwapBridgeAsync(payload);
@@ -455,9 +460,19 @@ const useFormBridge = () => {
       const callData = JSON.parse(depositActions.callData);
 
       const tx = transactionRequestify(callData.script);
-      if (!payload?.sourceAddress) return;
+      if (!payload?.sourceAddress) {
+        toast.error(
+          'Please, check the address corresponding the source network.',
+        );
+        setIsSendingTx(false);
+        return;
+      }
 
-      if (!vault) return;
+      if (!vault) {
+        toast.error('Internal error occurred. Please, try again later.');
+        setIsSendingTx(false);
+        return;
+      }
 
       const add = await vault.getResourcesToSpend(
         callData.quantities.map((qtd: { assetId: string; amount: string }) => ({
@@ -484,7 +499,9 @@ const useFormBridge = () => {
           'Please, check the address corresponding the destination network.',
         );
       }
+    } finally {
       setIsSendingTx(false);
+      console.log('finish submit bridge');
     }
   });
 

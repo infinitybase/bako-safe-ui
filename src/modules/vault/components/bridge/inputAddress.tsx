@@ -1,5 +1,4 @@
-import { Button, Card, Field, Heading, Input, InputGroup } from 'bako-ui';
-import { useState } from 'react';
+import { Button, Card, Field, Heading, Input, InputGroup, Text } from 'bako-ui';
 import { Controller, useFormContext } from 'react-hook-form';
 
 import { LineCloseIcon } from '@/components';
@@ -13,28 +12,49 @@ import {
 import { BridgeStepsForm } from './utils';
 
 export function InputAddressBridge() {
-  const { control } = useFormContext<ITransferBridgePayload>();
+  const { control, watch } = useFormContext<ITransferBridgePayload>();
   const { stepForm, setStepForm } = useFormBridgeContext();
-  const [isFocused, setIsFocused] = useState(false);
 
   const isCurrentStep = stepForm === BridgeStepsForm.DESTINATION;
+  const isAfterDestinationStep = stepForm > BridgeStepsForm.DESTINATION;
 
   const handleContinue = () => {
     setStepForm(BridgeStepsForm.RESUME);
   };
 
+  const currentDestinationAddress = watch('destinationAddress');
+
+  const formatted = AddressUtils.isValid(currentDestinationAddress)
+    ? AddressUtils.format(currentDestinationAddress)
+    : currentDestinationAddress;
+
   return (
     <Card.Root
       variant="subtle"
       rounded="2xl"
-      w="458px"
+      w="full"
+      minH="88px"
       bg="bg.panel"
       overflow="hidden"
     >
-      <Card.Header pb={!isCurrentStep ? 6 : 0}>
-        <Heading color="textPrimary" fontSize="sm">
+      <Card.Header
+        pb={!isCurrentStep ? 6 : 0}
+        flexDirection="row"
+        alignItems="center"
+        justifyContent="space-between"
+      >
+        <Heading
+          color={isCurrentStep ? 'textPrimary' : 'textSecondary'}
+          fontSize="sm"
+        >
           Destination
         </Heading>
+
+        {isAfterDestinationStep && (
+          <Text color="textSecondary" fontSize="sm">
+            {formatted}
+          </Text>
+        )}
       </Card.Header>
 
       <ExpandableCardSection isExpanded={isCurrentStep} type="body">
@@ -42,15 +62,8 @@ export function InputAddressBridge() {
           control={control}
           name="destinationAddress"
           render={({ field, fieldState }) => {
-            const minLengthAddress = 40;
-
-            const displayValue =
-              !isFocused && field?.value?.length > minLengthAddress
-                ? AddressUtils.format(field?.value ?? '')
-                : field?.value;
-
             return (
-              <Field.Root invalid={fieldState.invalid} paddingTop={0}>
+              <Field.Root invalid={fieldState.invalid} paddingY={6}>
                 <InputGroup
                   endElement={
                     <LineCloseIcon
@@ -62,12 +75,10 @@ export function InputAddressBridge() {
                   }
                 >
                   <Input
-                    value={displayValue}
+                    value={field.value}
                     onChange={(e) => field.onChange(e.target.value)}
                     placeholder="Enter address"
                     variant="subtle"
-                    onFocus={() => setIsFocused(true)}
-                    onBlur={() => setIsFocused(false)}
                     w="100%"
                     disabled={!isCurrentStep}
                   />
@@ -85,7 +96,12 @@ export function InputAddressBridge() {
         maxHeight="100px"
       >
         {isCurrentStep && (
-          <Button w="full" onClick={handleContinue}>
+          <Button
+            alignSelf="self-end"
+            w="auto"
+            onClick={handleContinue}
+            disabled={!currentDestinationAddress}
+          >
             Continue
           </Button>
         )}

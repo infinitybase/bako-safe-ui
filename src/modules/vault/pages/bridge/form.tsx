@@ -1,6 +1,6 @@
 import { VStack } from 'bako-ui';
-import { motion, useAnimation } from 'framer-motion';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { motion } from 'framer-motion';
+import { useCallback, useMemo, useState } from 'react';
 
 import {
   AmountBrigde,
@@ -15,97 +15,20 @@ import { UseVaultDetailsReturn } from '../../hooks';
 import { useFormBridge } from '../../hooks/bridge';
 
 interface FormPageBrigdeProps {
-  stepsForm: number;
-  setStepsForm: React.Dispatch<React.SetStateAction<number>>;
   setScreenBridge: React.Dispatch<React.SetStateAction<'form' | 'resume'>>;
   assets?: UseVaultDetailsReturn['assets'];
 }
 
 const MotionBox = motion(VStack);
 
-export function FormPageBrigde({
-  stepsForm,
-  setStepsForm,
-  assets,
-}: FormPageBrigdeProps) {
+export function FormPageBrigde({ assets }: FormPageBrigdeProps) {
   const [errorAmount, setErrorAmount] = useState<string | null>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const fromRef = useRef<HTMLDivElement>(null);
-  const toRef = useRef<HTMLDivElement>(null);
-  const amountRef = useRef<HTMLDivElement>(null);
-  const destinationRef = useRef<HTMLDivElement>(null);
-  const resumeRef = useRef<HTMLDivElement>(null);
-
-  const controls = useAnimation();
-  const [isInitialized, setIsInitialized] = useState(false);
 
   const { assetFrom, onSubmit } = useFormBridge();
-  const { stepForm } = useFormBridgeContext();
+  const { stepForm, setStepForm } = useFormBridgeContext();
 
   // RESUME só aparece quando estiver no step TO ou superior
   const showResume = stepForm >= BridgeStepsForm.TO;
-
-  // Inicializar posição no primeiro render
-  useEffect(() => {
-    if (!isInitialized) {
-      requestAnimationFrame(() => {
-        setIsInitialized(true);
-      });
-    }
-  }, [isInitialized]);
-
-  // Calculate offset to center current step
-  useEffect(() => {
-    if (!isInitialized) return;
-
-    // Espera a animação de expansão terminar (300ms) + buffer
-    const timer = setTimeout(() => {
-      const refs: Record<
-        BridgeStepsForm,
-        React.RefObject<HTMLDivElement | null>
-      > = {
-        [BridgeStepsForm.FROM]: fromRef,
-        [BridgeStepsForm.TO]: toRef,
-        [BridgeStepsForm.AMOUNT]: amountRef,
-        [BridgeStepsForm.DESTINATION]: destinationRef,
-        [BridgeStepsForm.RESUME]: showResume ? resumeRef : destinationRef,
-      };
-
-      const currentRef = refs[stepForm]?.current;
-      const container = containerRef.current;
-
-      if (currentRef && container) {
-        // // Primeiro, reseta a posição para calcular corretamente
-        // controls.set({ y: 0 });
-
-        // Pequeno delay para garantir que o DOM atualizou
-        requestAnimationFrame(() => {
-          const containerRect = container.getBoundingClientRect();
-          const elementRect = currentRef.getBoundingClientRect();
-
-          // Calcula a posição do centro do container e do elemento
-          const containerCenter = containerRect.height / 2;
-          const elementTop = elementRect.top - containerRect.top;
-          const elementCenter = elementTop + elementRect.height / 2;
-
-          // Offset necessário para centralizar o elemento
-          // Positivo = elemento está abaixo do centro (precisa mover para cima)
-          // Negativo = elemento está acima do centro (precisa mover para baixo)
-          const offset = elementCenter - containerCenter;
-
-          controls.start({
-            y: -offset,
-            transition: {
-              duration: 0.5,
-              ease: [0.25, 0.1, 0.25, 1],
-            },
-          });
-        });
-      }
-    }, 350); // Aguarda a animação de expansão (300ms) + 50ms de buffer
-
-    return () => clearTimeout(timer);
-  }, [stepForm, controls, isInitialized, showResume]);
 
   // Calcular opacidade baseado na distância do step atual
   const getOpacityForStep = useCallback(
@@ -119,11 +42,90 @@ export function FormPageBrigde({
     [stepForm],
   );
 
-  const getScaleForStep = useCallback(
+  // Calcula a posição Y para cada step (carousel vertical effect)
+  // Mantém os steps empilhados verticalmente, centralizando o step atual
+  const getYPositionForStep = useCallback(
     (step: BridgeStepsForm) => {
-      return stepForm > step ? 0.95 : 1;
+      const currentIndex = stepForm;
+      const stepIndex = step;
+
+      // Altura dos cards (colapsado ou expandido)
+      const collapsedHeight = 88; // Altura do header colapsado
+      const gap = 8; // gap entre cards
+
+      // Função para obter a altura real de cada step
+      const getHeightForStep = (stepNum: BridgeStepsForm) => {
+        if (stepNum === BridgeStepsForm.FROM) return collapsedHeight;
+        if (stepNum === BridgeStepsForm.TO) return collapsedHeight;
+        if (stepNum === BridgeStepsForm.AMOUNT) {
+          return stepForm === BridgeStepsForm.AMOUNT ? 248 : collapsedHeight;
+        }
+        if (stepNum === BridgeStepsForm.DESTINATION) {
+          return stepForm === BridgeStepsForm.DESTINATION
+            ? 246
+            : collapsedHeight;
+        }
+        if (stepNum === BridgeStepsForm.RESUME) {
+          return stepForm >= BridgeStepsForm.RESUME ? 231 : collapsedHeight;
+        }
+        return collapsedHeight;
+      };
+
+      // Como os cards usam position absolute, cada um precisa ser posicionado
+      // considerando que o step atual está em y=0 (centro)
+      // e os outros ficam acima/abaixo considerando as alturas reais + gaps
+
+      let yPosition = 0;
+
+      if (stepIndex < currentIndex) {
+        // Steps acima do atual
+        // Começa da metade do card atual e vai subindo
+        yPosition = -(getHeightForStep(currentIndex) / 2 + gap);
+
+        // Soma as alturas dos cards entre o step e o atual (do mais próximo ao mais distante)
+        for (let i = currentIndex - 1; i > stepIndex; i--) {
+          yPosition -= getHeightForStep(i) + gap;
+        }
+
+        // Subtrai metade da altura do próprio step
+        yPosition -= getHeightForStep(stepIndex) / 2;
+      } else if (stepIndex > currentIndex) {
+        // Steps abaixo do atual
+        // Começa da metade do card atual e vai descendo
+        yPosition = getHeightForStep(currentIndex) / 2 + gap;
+
+        // Soma as alturas dos cards entre o atual e o step (do mais próximo ao mais distante)
+        for (let i = currentIndex + 1; i < stepIndex; i++) {
+          yPosition += getHeightForStep(i) + gap;
+        }
+
+        // Adiciona metade da altura do próprio step
+        yPosition += getHeightForStep(stepIndex) / 2;
+      }
+      // Se stepIndex === currentIndex, yPosition = 0 (centralizado)
+
+      return yPosition;
     },
     [stepForm],
+  );
+
+  const commonTransition = useMemo(
+    () => ({
+      duration: 0.6,
+      ease: [0.32, 0.72, 0, 1],
+    }),
+    [],
+  );
+
+  const handleChangeStep = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>, step: BridgeStepsForm) => {
+      // Only allow going back to previous steps
+      if (stepForm !== step && step < stepForm) {
+        e.stopPropagation();
+        setStepForm(step); // Use setStepForm from context
+      }
+    },
+    [stepForm, setStepForm],
   );
 
   return (
@@ -132,113 +134,111 @@ export function FormPageBrigde({
       onSubmit={onSubmit}
       w="full"
       h="600px"
-      justifyContent="flex-start"
+      px={{ base: 2, sm: 0 }}
+      justifyContent="center"
       align="center"
       overflow="hidden"
       position="relative"
-      ref={containerRef}
       pt="0"
     >
-      <MotionBox
-        w="456px"
-        gap={2}
-        animate={controls}
-        initial={{ y: 0 }}
-        style={{ willChange: 'transform' }}
+      <VStack
+        w={{ sm: '456px', base: 'full' }}
+        h="full"
+        position="relative"
+        justifyContent="center"
       >
-        {/* FROM STEP - Sempre visível */}
+        {/* FROM STEP 0 */}
         <MotionBox
-          ref={fromRef}
+          onClick={(e) => handleChangeStep(e, BridgeStepsForm.FROM)}
+          position="absolute"
+          w="full"
           animate={{
             opacity: getOpacityForStep(BridgeStepsForm.FROM),
-            scale: getScaleForStep(BridgeStepsForm.FROM),
+            y: getYPositionForStep(BridgeStepsForm.FROM),
           }}
-          transition={{
-            duration: 0.3,
-            ease: 'easeInOut',
+          transition={commonTransition}
+          style={{
+            zIndex: stepForm === BridgeStepsForm.FROM ? 5 : 1,
           }}
-          w="full"
         >
-          <FromFormStep
-            setStepsForm={setStepsForm}
-            stepsForm={stepsForm}
-            setErrorAmount={setErrorAmount}
-          />
+          <FromFormStep setErrorAmount={setErrorAmount} />
         </MotionBox>
 
-        {/* TO STEP - Sempre visível */}
+        {/* TO STEP 1 */}
         <MotionBox
-          ref={toRef}
+          onClick={(e) => handleChangeStep(e, BridgeStepsForm.TO)}
+          position="absolute"
+          w="full"
           animate={{
             opacity: getOpacityForStep(BridgeStepsForm.TO),
-            scale: getScaleForStep(BridgeStepsForm.TO),
+            y: getYPositionForStep(BridgeStepsForm.TO),
           }}
-          transition={{
-            duration: 0.3,
-            ease: 'easeInOut',
+          transition={commonTransition}
+          style={{
+            zIndex: stepForm === BridgeStepsForm.TO ? 5 : 1,
           }}
-          w="full"
         >
           <ToFormStep />
         </MotionBox>
 
-        {/* AMOUNT STEP - Sempre visível */}
+        {/* AMOUNT STEP 2 */}
         <MotionBox
-          ref={amountRef}
+          onClick={(e) => handleChangeStep(e, BridgeStepsForm.AMOUNT)}
+          position="absolute"
+          w="full"
           animate={{
             opacity: getOpacityForStep(BridgeStepsForm.AMOUNT),
-            scale: getScaleForStep(BridgeStepsForm.AMOUNT),
+            y: getYPositionForStep(BridgeStepsForm.AMOUNT),
           }}
-          transition={{
-            duration: 0.3,
-            ease: 'easeInOut',
+          transition={commonTransition}
+          style={{
+            zIndex: stepForm === BridgeStepsForm.AMOUNT ? 5 : 1,
           }}
-          w="full"
         >
           <AmountBrigde
             symbol={assetFrom?.symbol ?? ''}
-            stepsForm={stepsForm}
-            setStepsForm={setStepsForm}
             assets={assets?.assets}
             errorAmount={errorAmount}
             setErrorAmount={setErrorAmount}
           />
         </MotionBox>
 
-        {/* DESTINATION STEP - Sempre visível */}
+        {/* DESTINATION STEP 3 */}
         <MotionBox
-          ref={destinationRef}
+          onClick={(e) => handleChangeStep(e, BridgeStepsForm.DESTINATION)}
+          position="absolute"
+          w="full"
           animate={{
             opacity: getOpacityForStep(BridgeStepsForm.DESTINATION),
-            scale: getScaleForStep(BridgeStepsForm.DESTINATION),
+            y: getYPositionForStep(BridgeStepsForm.DESTINATION),
           }}
-          transition={{
-            duration: 0.3,
-            ease: 'easeInOut',
+          transition={commonTransition}
+          style={{
+            zIndex: stepForm === BridgeStepsForm.DESTINATION ? 5 : 1,
           }}
-          w="full"
         >
           <InputAddressBridge />
         </MotionBox>
 
-        {/* RESUME STEP - Aparece a partir do step TO */}
+        {/* RESUME STEP 4 */}
         {showResume && (
           <MotionBox
-            ref={resumeRef}
+            onClick={(e) => handleChangeStep(e, BridgeStepsForm.RESUME)}
+            position="absolute"
+            w="full"
             animate={{
               opacity: getOpacityForStep(BridgeStepsForm.RESUME),
-              scale: getScaleForStep(BridgeStepsForm.RESUME),
+              y: getYPositionForStep(BridgeStepsForm.RESUME),
             }}
-            transition={{
-              duration: 0.3,
-              ease: 'easeInOut',
+            transition={commonTransition}
+            style={{
+              zIndex: stepForm === BridgeStepsForm.RESUME ? 5 : 1,
             }}
-            w="full"
           >
             <DetailsBridge assets={assets} />
           </MotionBox>
         )}
-      </MotionBox>
+      </VStack>
     </VStack>
   );
 }

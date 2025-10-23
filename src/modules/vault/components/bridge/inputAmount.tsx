@@ -1,5 +1,5 @@
 import { Box, InputGroup } from 'bako-ui';
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { CurrencyField } from '@/components';
 import { formatMaxDecimals } from '@/utils';
@@ -17,9 +17,15 @@ export const InputAmount = ({
   disabled?: boolean;
 }) => {
   const mirrorRef = useRef<HTMLDivElement>(null);
+  const [width, setWidth] = useState<number>(150);
 
-  const offsetWidth = mirrorRef.current?.offsetWidth;
-  const width = offsetWidth || 150;
+  useEffect(() => {
+    // Trigger re-render to calculate width
+    if (mirrorRef.current) {
+      const width = mirrorRef.current.offsetWidth;
+      setWidth(width);
+    }
+  }, [value, setWidth]);
 
   return (
     <Box marginY={4} display="flex" alignItems="center">
@@ -46,8 +52,10 @@ export const InputAmount = ({
       >
         <CurrencyField
           type="crypto"
+          name="bridgeAmount"
           outline="none"
           border="none"
+          color="gray.50"
           minW={0}
           px={0}
           fontSize="3xl"

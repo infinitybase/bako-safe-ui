@@ -13,18 +13,11 @@ import { ErrorBridgeForm } from '../../components/bridge/utils';
 import { useFormBridge } from './useFormBridge';
 
 export interface UseAmountBridgeProps {
-  stepsForm: number;
-  setStepsForm: React.Dispatch<React.SetStateAction<number>>;
   assets?: Required<Asset>[];
   setErrorAmount: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
-const useAmountBridge = ({
-  stepsForm,
-  setStepsForm,
-  assets,
-  setErrorAmount,
-}: UseAmountBridgeProps) => {
+const useAmountBridge = ({ assets, setErrorAmount }: UseAmountBridgeProps) => {
   const debouncedGetQuotesRef = useRef<ReturnType<typeof debounce>>(null);
 
   const {
@@ -93,16 +86,14 @@ const useAmountBridge = ({
         return;
       }
 
-      const removeStep =
-        (valueTreated === 0 || insufficientBalance) && stepsForm > 1;
+      const removeStep = valueTreated === 0 || insufficientBalance;
       if (removeStep) {
-        setStepsForm(1);
+        // setStepsForm(1);
         return;
       }
 
-      const addNewStep =
-        valueTreated > 0 && !insufficientBalance && stepsForm === 1;
-      if (addNewStep) setStepsForm(2);
+      // const addNewStep = valueTreated > 0 && !insufficientBalance;
+      // if (addNewStep) setStepsForm(2);
 
       if (valueTreated > 0 && !insufficientBalance) {
         const payload = prepareCreateSwapPayload();
@@ -114,8 +105,6 @@ const useAmountBridge = ({
       form,
       balance,
       dataLimits.minAmount,
-      stepsForm,
-      setStepsForm,
       setErrorAmount,
       prepareCreateSwapPayload,
     ],
@@ -129,11 +118,11 @@ const useAmountBridge = ({
 
     if (dataLimits.minAmount > balanceTreated) {
       setErrorAmount(ErrorBridgeForm.INSUFFICIENT_BALANCE);
-      if (stepsForm > 1) setStepsForm(1);
+      // if (stepsForm > 1) setStepsForm(1);
       return;
     }
 
-    if (stepsForm === 1) setStepsForm(2);
+    // if (stepsForm === 1) setStepsForm(2);
 
     const payload = prepareCreateSwapPayload();
     payload.amount = dataLimits.minAmount;
@@ -143,8 +132,8 @@ const useAmountBridge = ({
     form,
     balance,
     dataLimits.minAmount,
-    stepsForm,
-    setStepsForm,
+    // stepsForm,
+    // setStepsForm,
     setErrorAmount,
     prepareCreateSwapPayload,
     debouncedGetQuotesRef,
@@ -177,7 +166,7 @@ const useAmountBridge = ({
 
       if (maxAmount > balanceTreated) {
         setErrorAmount(ErrorBridgeForm.INSUFFICIENT_BALANCE);
-        if (stepsForm > 1) setStepsForm(1);
+        // if (stepsForm > 1) setStepsForm(1);
         return;
       }
 
@@ -190,8 +179,8 @@ const useAmountBridge = ({
       form,
       balance,
       dataLimits.maxAmount,
-      stepsForm,
-      setStepsForm,
+      // stepsForm,
+      // setStepsForm,
       setErrorAmount,
       debouncedGetQuotesRef,
       prepareCreateSwapPayload,
@@ -205,14 +194,14 @@ const useAmountBridge = ({
     if (dataLimits.minAmount > balanceTreated) {
       setErrorAmount(ErrorBridgeForm.INSUFFICIENT_AMOUNT);
       form.setValue('amount', balance);
-      if (stepsForm > 1) setStepsForm(1);
+      // if (stepsForm > 1) setStepsForm(1);
       return;
     }
 
     const payload = prepareCreateSwapPayload();
     payload.amount = Number(balance);
 
-    if (stepsForm === 1) setStepsForm(2);
+    // if (stepsForm === 1) setStepsForm(2);
     const getMaxAmount = true;
     await debouncedGetQuotesRef.current?.(payload, getMaxAmount);
   }, [
@@ -220,8 +209,8 @@ const useAmountBridge = ({
     debouncedGetQuotesRef,
     form,
     dataLimits.minAmount,
-    stepsForm,
-    setStepsForm,
+    // stepsForm,
+    // setStepsForm,
     setErrorAmount,
     prepareCreateSwapPayload,
     setLoadingQuote,

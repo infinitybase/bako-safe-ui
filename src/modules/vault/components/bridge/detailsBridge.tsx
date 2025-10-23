@@ -1,5 +1,8 @@
 import { Button, Card, Heading, HStack, Loader, Text, VStack } from 'bako-ui';
-import { useEffect, useMemo } from 'react';
+import { bn } from 'fuels';
+import { useMemo } from 'react';
+
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { UseVaultDetailsReturn } from '../../hooks';
 import { useFormBridge } from '../../hooks/bridge';
@@ -21,9 +24,10 @@ export function DetailsBridge({ assets }: DetailsBridgeProps) {
     isPendingSigner,
     isLoadingQuote,
     isSendingTx,
-    getReceiveQuoteMobile,
+    isLoading,
+    amount,
   } = useFormBridge();
-
+  const { assetsMap } = useWorkspaceContext();
   const { stepForm } = useFormBridgeContext();
 
   const isExpanded = stepForm >= BridgeStepsForm.RESUME;
@@ -32,15 +36,33 @@ export function DetailsBridge({ assets }: DetailsBridgeProps) {
     return assets?.isEthBalanceLowerThanReservedAmount;
   }, [assets]);
 
-  useEffect(() => {
-    if (dataQuote.receiveInUsd !== '-') return;
-    getReceiveQuoteMobile();
-  }, [dataQuote.receiveInUsd, getReceiveQuoteMobile]);
+  const balance = useMemo(() => {
+    const asset = assets?.assets?.find((a) => a.assetId === assetFrom?.value);
+    if (!asset?.amount) return '0';
+
+    const assetsInfo = assetsMap?.[asset.assetId] ?? assetsMap?.['UNKNOWN'];
+
+    return bn(asset.amount)?.format({
+      units: assetsInfo?.units ?? assetsMap.UNKNOWN.units,
+    });
+  }, [assets, assetFrom?.value, assetsMap]);
+
+  const isEnoughETH = useMemo(() => {
+    const fee = dataQuote?.quote?.totalFee * 2;
+    if (!fee) return true;
+
+    const maxAmount = Number(balance) - fee;
+
+    return maxAmount > Number(amount);
+  }, [balance, amount, dataQuote?.quote?.totalFee]);
 
   return (
-    <Card.Root variant="subtle" w="458px" bg="bg.panel" rounded="2xl">
+    <Card.Root variant="subtle" w="full" bg="bg.panel" rounded="2xl">
       <Card.Header pb={!isExpanded ? 6 : 0}>
-        <Heading color="textPrimary" fontSize="sm">
+        <Heading
+          color={isExpanded ? 'textPrimary' : 'textSecondary'}
+          fontSize="sm"
+        >
           Resume
         </Heading>
       </Card.Header>
@@ -151,15 +173,15 @@ export function DetailsBridge({ assets }: DetailsBridgeProps) {
             !isFormComplete ||
             !!errorForm ||
             isPendingSigner ||
-            notEnoughBalanceETH
+            notEnoughBalanceETH ||
+            !isEnoughETH
           }
-          loading={isSendingTx}
+          loading={isSendingTx || isLoading}
           fontWeight={600}
           fontSize={16}
           letterSpacing={'2%'}
           type="submit"
           mt={4}
-          // onClick={() => setScreenBridge('resume')}
         >
           {isPendingSigner
             ? TitleButtonsForm.PENDING_TX

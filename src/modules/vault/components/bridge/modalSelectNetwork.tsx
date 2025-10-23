@@ -1,4 +1,5 @@
 import {
+  Box,
   DialogOpenChangeDetails,
   HStack,
   Image,
@@ -46,11 +47,11 @@ const AssetItem = React.memo(function AssetItemMemo({
   return (
     <HStack
       border="1px solid"
-      borderColor="bg.panel"
+      borderColor="bg.muted"
       padding={4}
       borderRadius={8}
       cursor="pointer"
-      _hover={{ bgColor: 'bg.muted' }}
+      _hover={{ bgColor: 'bg.muted/90' }}
       w="100%"
       onClick={() => onSelect(asset)}
     >
@@ -64,7 +65,7 @@ const AssetItem = React.memo(function AssetItemMemo({
         />
       </Skeleton>
 
-      <Text fontSize="sm" fontWeight="normal" color="textPrimary">
+      <Text fontSize="sm" fontWeight="normal" color="gray.50">
         {name}
       </Text>
     </HStack>
@@ -141,7 +142,7 @@ export function ModalSelectNetworkBridge({
       open={isOpen}
       onOpenChange={onOpenChange}
       closeOnInteractOutside={false}
-      size={{ base: 'full', sm: 'md' }}
+      size={{ base: 'full', sm: 'sm' }}
     >
       <Dialog.Body minH={650} maxH={650} flex={1}>
         <Dialog.Header
@@ -150,7 +151,7 @@ export function ModalSelectNetworkBridge({
           description={`Select the network of your choice.`}
           mb={0}
           mt={0}
-          px={3}
+          px={6}
           titleSxProps={{
             fontSize: 16,
             fontWeight: 700,
@@ -160,22 +161,24 @@ export function ModalSelectNetworkBridge({
           descriptionFontSize="12px"
           onClose={handleClose}
         />
-        <InputGroup endElement={<SearchIcon color="textPrimary" />} mx={3}>
-          <Input
-            placeholder="Search Network"
-            value={searchValue}
-            onChange={(e) => {
-              setSearchValue(e.target.value);
-            }}
-          />
-        </InputGroup>
+        <Box px={6} mt={6} w="full">
+          <InputGroup endElement={<SearchIcon color="textPrimary" />}>
+            <Input
+              placeholder="Search Network"
+              value={searchValue}
+              onChange={(e) => {
+                setSearchValue(e.target.value);
+              }}
+            />
+          </InputGroup>
+        </Box>
         <Separator marginTop={6} borderColor="bg.muted" />
         <VStack
           maxH={523}
           overflowY="auto"
           m={0}
           p={0}
-          px={3}
+          px={6}
           pt={6}
           css={{
             '&::-webkit-scrollbar': {

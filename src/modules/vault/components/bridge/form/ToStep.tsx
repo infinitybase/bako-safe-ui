@@ -63,11 +63,17 @@ export const ToFormStep = () => {
                   <HStack w="100%" justify="space-between" alignItems="center">
                     <HStack>
                       {field?.value && (
-                        <Image src={field?.value.image} boxSize={6} />
+                        <Image
+                          src={field?.value.image}
+                          rounded="full"
+                          boxSize={6}
+                        />
                       )}
                       <Text
                         fontSize="sm"
                         color={field.value ? 'textPrimary' : 'textSecondary'}
+                        lineClamp={1}
+                        truncate
                       >
                         {field.value
                           ? limitCharacters(field.value.name ?? '', 10)
@@ -125,11 +131,17 @@ export const ToFormStep = () => {
                   <HStack w="100%" justify="space-between" alignItems="center">
                     <HStack>
                       {field?.value && (
-                        <Image src={field?.value.image} boxSize={6} />
+                        <Image
+                          src={field?.value.image}
+                          boxSize={6}
+                          rounded="full"
+                        />
                       )}
                       <Text
                         fontSize="sm"
                         color={field.value ? 'textPrimary' : 'textSecondary'}
+                        lineClamp={1}
+                        truncate
                       >
                         {field.value
                           ? limitCharacters(field.value.name ?? '', 10)
