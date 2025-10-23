@@ -38,14 +38,14 @@ export const AssetsIcon = memo(
     return (
       <AvatarGroup
         // max={showOnlyOneAsset ? 1 : 2}
-        size="md"
+        // size="md"
         borderRadius="md"
         justifyContent={isMobile ? 'start' : 'end'}
         position="relative"
       >
         {assetsWithImage.map((asset) => (
           <Skeleton
-            key={asset.assetId}
+            key={asset.assetId + asset.to + asset.amount} // prevent duplicate keys
             loading={isLoading}
             borderRadius="md"
             w={{ base: '30.5px', sm: 7 }}
