@@ -11,6 +11,7 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { ErrorBridgeForm } from '../../components/bridge/utils';
 import { useFormBridge } from './useFormBridge';
+import { ceilToDecimals, floorToDecimals } from '@/utils';
 
 export interface UseAmountBridgeProps {
   stepsForm: number;
@@ -123,11 +124,19 @@ const useAmountBridge = ({
 
   const handleMinAmount = useCallback(() => {
     setErrorAmount(null);
-    const balanceTreated = Number(balance.replace(/,/g, ''));
 
-    form.setValue('amount', dataLimits.minAmount.toString());
+    const balanceFixed = floorToDecimals(
+      Number(balance.replace(/,/g, '')),
+      assetFrom?.decimals
+    );
+    const minAmountFixed = ceilToDecimals(
+      dataLimits.minAmount,
+      assetFrom?.decimals
+    );
 
-    if (dataLimits.minAmount > balanceTreated) {
+    form.setValue('amount', minAmountFixed.toString());
+
+    if (minAmountFixed > balanceFixed) {
       setErrorAmount(ErrorBridgeForm.INSUFFICIENT_BALANCE);
       if (stepsForm > 1) setStepsForm(1);
       return;
@@ -136,7 +145,7 @@ const useAmountBridge = ({
     if (stepsForm === 1) setStepsForm(2);
 
     const payload = prepareCreateSwapPayload();
-    payload.amount = dataLimits.minAmount;
+    payload.amount = minAmountFixed;
     debouncedGetQuotesRef.current?.(payload);
     setLoadingQuote(true);
   }, [
@@ -201,16 +210,24 @@ const useAmountBridge = ({
   const handleGetFeeBeforeMaxAmount = useCallback(async () => {
     setLoadingQuote(true);
 
-    const balanceTreated = Number(balance.replace(/,/g, ''));
-    if (dataLimits.minAmount > balanceTreated) {
+    const balanceFixed = floorToDecimals(
+      Number(balance.replace(/,/g, '')),
+      assetFrom?.decimals
+    );
+    const minAmountFixed = ceilToDecimals(
+      dataLimits.minAmount,
+      assetFrom?.decimals
+    );
+
+    if (minAmountFixed > balanceFixed) {
       setErrorAmount(ErrorBridgeForm.INSUFFICIENT_AMOUNT);
-      form.setValue('amount', balance);
+      form.setValue('amount', balanceFixed.toString());
       if (stepsForm > 1) setStepsForm(1);
       return;
     }
 
     const payload = prepareCreateSwapPayload();
-    payload.amount = Number(balance);
+    payload.amount = balanceFixed;
 
     if (stepsForm === 1) setStepsForm(2);
     const getMaxAmount = true;
