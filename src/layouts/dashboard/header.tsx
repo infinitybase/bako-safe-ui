@@ -14,7 +14,7 @@ import {
 } from 'bako-ui';
 import { AddressUtils as BakoAddressUtils } from 'bakosafe';
 import { Address, Network } from 'fuels';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import logo from '@/assets/bakoLogoWhite.svg';
 import { AddressWithCopyBtn, NotificationIcon } from '@/components';
@@ -131,7 +131,12 @@ const UserBox = () => {
     },
   ]);
 
-  const getUserAddress = () => {
+  const getUserAddress = useCallback(() => {
+    // Return empty string if userInfos is undefined
+    if (!authDetails.userInfos) {
+      return '';
+    }
+
     if (authDetails.userInfos?.type.type === TypeUser.EVM) {
       return BakoAddressUtils.parseFuelAddressToEth(
         authDetails.userInfos?.address,
@@ -142,9 +147,9 @@ const UserBox = () => {
       authDetails.userInfos?.address &&
       Address.fromString(authDetails.userInfos?.address).toB256()
     );
-  };
+  }, [authDetails.userInfos]);
 
-  const b256UserAddress = getUserAddress();
+  const b256UserAddress = useMemo(() => getUserAddress(), [getUserAddress]);
 
   return (
     <>
