@@ -39,6 +39,7 @@ export const AssetsIcon = memo(
       <AvatarGroup
         // max={showOnlyOneAsset ? 1 : 2}
         // size="md"
+        spaceX={-3}
         borderRadius="md"
         justifyContent={isMobile ? 'start' : 'end'}
         position="relative"
