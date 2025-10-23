@@ -175,6 +175,7 @@ export function ModalSelectAssetsBridge({
           description={`Select the asset of your choice.`}
           mb={0}
           mt={0}
+          px={3}
           titleSxProps={{
             fontSize: 16,
             fontWeight: 700,
@@ -189,10 +190,10 @@ export function ModalSelectAssetsBridge({
           control={control}
           render={({ field, fieldState }) => {
             return (
-              <Field.Root invalid={fieldState.invalid} marginY={4}>
-                <InputGroup endElement={<SearchIcon color="grey.500" />}>
+              <Field.Root invalid={fieldState.invalid} marginY={4} px={3}>
+                <InputGroup endElement={<SearchIcon color="textPrimary" />}>
                   <Input
-                    placeholder=""
+                    placeholder="Search asset"
                     bgColor="dark.950"
                     value={field.value}
                     onChange={(e) => {
@@ -201,17 +202,15 @@ export function ModalSelectAssetsBridge({
                     }}
                   />
                 </InputGroup>
-                <Field.Label>Search asset</Field.Label>
               </Field.Root>
             );
           }}
         />
-        <Separator marginTop={6} borderColor="grey.950" />
+        <Separator marginTop={6} borderColor="bg.panel" />
         <VStack
           maxH={523}
           overflowY="auto"
-          m={0}
-          p={0}
+          px={3}
           pt={6}
           css={{
             '&::-webkit-scrollbar': {

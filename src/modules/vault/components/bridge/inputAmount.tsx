@@ -1,5 +1,5 @@
 import { Box, InputGroup } from 'bako-ui';
-import { useEffect, useRef, useState } from 'react';
+import { useRef } from 'react';
 
 import { CurrencyField } from '@/components';
 import { formatMaxDecimals } from '@/utils';
@@ -17,33 +17,28 @@ export const InputAmount = ({
   disabled?: boolean;
 }) => {
   const mirrorRef = useRef<HTMLDivElement>(null);
-  const [inputWidth, setInputWidth] = useState(50);
 
-  useEffect(() => {
-    if (mirrorRef.current) {
-      const mirrorWidth = mirrorRef.current.offsetWidth;
-      setInputWidth(mirrorWidth + 13);
-    }
-  }, [value]);
+  const offsetWidth = mirrorRef.current?.offsetWidth;
+  const width = offsetWidth || 150;
 
   return (
-    <Box marginY={4} display="flex" justifyContent="center" alignItems="center">
+    <Box marginY={4} display="flex" alignItems="center">
       <InputGroup
         alignItems="center"
-        justifyContent="center"
-        borderBottom="1px solid"
-        borderColor="grey.950"
-        _hover={{
-          borderColor: 'grey.200',
-        }}
+        justifyContent="start"
         px={0}
         minW="150px"
-        w="fit-content"
+        w={`${width}px`}
+        border="none"
+        endElementProps={{
+          px: 0,
+        }}
         endElement={
           <Box
-            alignSelf="end"
-            color={disabled ? 'grey.75' : 'section.200'}
-            opacity={disabled ? 0.5 : 1}
+            alignSelf="center"
+            color="gray.400"
+            opacity={disabled ? 0.6 : 1}
+            px={0}
           >
             {symbol}
           </Box>
@@ -51,15 +46,15 @@ export const InputAmount = ({
       >
         <CurrencyField
           type="crypto"
-          textAlign="center"
-          borderBottomWidth="0"
+          outline="none"
+          border="none"
           minW={0}
           px={0}
           fontSize="3xl"
           disabled={disabled}
           value={value}
+          placeholder="0.000"
           onChange={(e) => onChange?.(e)}
-          width={`${inputWidth}px`}
         />
       </InputGroup>
       <Box
@@ -70,7 +65,7 @@ export const InputAmount = ({
         fontSize="3xl"
         px={0}
       >
-        {formatMaxDecimals(value, 9) || '0'}
+        {formatMaxDecimals(value, 9) || '0.000'} {symbol}
       </Box>
     </Box>
   );

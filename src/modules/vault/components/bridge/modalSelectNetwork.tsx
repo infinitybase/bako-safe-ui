@@ -1,7 +1,5 @@
 import {
   DialogOpenChangeDetails,
-  Field,
-  floatingStyles,
   HStack,
   Image,
   Input,
@@ -12,12 +10,9 @@ import {
   Text,
   VStack,
 } from 'bako-ui';
-import React, { useCallback, useEffect, useState } from 'react';
-import { Controller, useFormContext } from 'react-hook-form';
+import React, { useCallback, useState } from 'react';
 
 import { Dialog, SearchIcon } from '@/components';
-
-import { ITransferBridgePayload } from './providers/FormBridgeProvider';
 
 export interface AssetItem {
   value: string;
@@ -85,56 +80,60 @@ export function ModalSelectNetworkBridge({
   onSelect,
   onOpenChange,
 }: ModalSelectAssetsProps) {
-  const { control, resetField } = useFormContext<ITransferBridgePayload>();
+  const [searchValue, setSearchValue] = useState('');
 
-  const [filteredNetworks, setFilteredNetworks] = useState<AssetItem[]>([]);
-  const [assetSelected, setAssetSelected] = useState<AssetItem>(
-    {} as AssetItem,
-  );
+  // const [filteredNetworks, setFilteredNetworks] = useState<AssetItem[]>([]);
+  // const [assetSelected, setAssetSelected] = useState<AssetItem>(
+  //   {} as AssetItem,
+  // );
 
   const handleClose = () => {
-    setFilteredNetworks(options ?? []);
-    if (assetSelected?.value) {
-      onSelect(assetSelected);
-    } else {
-      resetField('selectNetworkTo');
-    }
-
-    resetField('searchNetwork');
-    onClose();
+    onOpenChange?.({ open: false });
   };
 
-  useEffect(() => {
-    setFilteredNetworks(options ?? []);
-  }, [options]);
+  // useEffect(() => {
+  //   setFilteredNetworks(options ?? []);
+  // }, [options]);
 
-  const handleSearch = useCallback(
-    (searchValue: string) => {
-      if (!options) return;
+  const filteredNetworks = React.useMemo(() => {
+    if (!options) return [];
 
-      if (!searchValue.trim()) {
-        setFilteredNetworks(options);
-        return;
-      }
+    if (!searchValue.trim()) {
+      return options;
+    }
 
-      const filtered = options.filter((asset) =>
-        asset.name.toLowerCase().includes(searchValue.toLowerCase()),
-      );
+    return options.filter((asset) =>
+      asset.name.toLowerCase().includes(searchValue.toLowerCase()),
+    );
+  }, [options, searchValue]);
 
-      setFilteredNetworks(filtered);
-    },
-    [options, setFilteredNetworks],
-  );
+  // const handleSearch = useCallback(
+  //   (searchValue: string) => {
+  //     if (!options) return;
+
+  //     if (!searchValue.trim()) {
+  //       setFilteredNetworks(options);
+  //       return;
+  //     }
+
+  //     const filtered = options.filter((asset) =>
+  //       asset.name.toLowerCase().includes(searchValue.toLowerCase()),
+  //     );
+
+  //     setFilteredNetworks(filtered);
+  //   },
+  //   [options, setFilteredNetworks],
+  // );
 
   const handleSelectAsset = useCallback(
     (asset: AssetItem) => {
       onSelect(asset);
-      setAssetSelected(asset);
-      setFilteredNetworks(options ?? []);
-      resetField('searchNetwork');
+      // setAssetSelected(asset);
+      // setFilteredNetworks(options ?? []);
+      // resetField('searchNetwork');
       onClose();
     },
-    [resetField, options, setFilteredNetworks, onSelect, onClose],
+    [onSelect, onClose],
   );
 
   return (
@@ -161,37 +160,22 @@ export function ModalSelectNetworkBridge({
           descriptionFontSize="12px"
           onClose={handleClose}
         />
-        <Controller
-          name="searchNetwork"
-          control={control}
-          render={({ field, fieldState }) => {
-            return (
-              <Field.Root invalid={fieldState.invalid} marginY={4} px={3}>
-                <InputGroup endElement={<SearchIcon color="textPrimary" />}>
-                  <Input
-                    placeholder=" "
-                    value={field.value}
-                    onChange={(e) => {
-                      field.onChange(e);
-                      handleSearch(e.target.value);
-                    }}
-                  />
-                </InputGroup>
-                <Field.Label
-                  css={floatingStyles({ hasValue: field.value.length > 0 })}
-                >
-                  Search Network
-                </Field.Label>
-              </Field.Root>
-            );
-          }}
-        />
+        <InputGroup endElement={<SearchIcon color="textPrimary" />} mx={3}>
+          <Input
+            placeholder="Search Network"
+            value={searchValue}
+            onChange={(e) => {
+              setSearchValue(e.target.value);
+            }}
+          />
+        </InputGroup>
         <Separator marginTop={6} borderColor="bg.muted" />
         <VStack
           maxH={523}
           overflowY="auto"
           m={0}
           p={0}
+          px={3}
           pt={6}
           css={{
             '&::-webkit-scrollbar': {

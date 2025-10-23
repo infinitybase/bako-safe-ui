@@ -19,7 +19,7 @@ const VaultBridgePage = () => {
 
   return (
     <Box w="full" p={0} flex={1}>
-      <HStack gap={5} align="flex-start" justifyContent="center" h="100%">
+      <HStack gap={5} align="center" justifyContent="center" h="100%">
         <FormBridgeProvider>
           {screenBridge === 'form' && !isMobile && (
             <FormPageBrigde

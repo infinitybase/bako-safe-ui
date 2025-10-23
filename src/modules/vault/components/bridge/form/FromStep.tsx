@@ -6,18 +6,23 @@ import { AssetSelect } from '@/components';
 import { useNetworks } from '@/modules/network/hooks';
 import { useFormBridge } from '@/modules/vault/hooks/bridge';
 
-import { ITransferBridgePayload } from '../providers/FormBridgeProvider';
+import {
+  ITransferBridgePayload,
+  useFormBridgeContext,
+} from '../providers/FormBridgeProvider';
 import { SelectNetworkProps } from '../selectNewtork';
-import { getFuelAssetsByNetwork, optionsNets } from '../utils';
+import { BridgeStepsForm, getFuelAssetsByNetwork, optionsNets } from '../utils';
 
 export const FromFormStep = ({
   setStepsForm,
   stepsForm,
-}: Omit<SelectNetworkProps, 'setErrorAmount'>) => {
+  setErrorAmount,
+}: SelectNetworkProps) => {
   const { control, resetField, setValue } =
     useFormContext<ITransferBridgePayload>();
   const { currentNetwork } = useNetworks();
-  const { getDestinations } = useFormBridge();
+  const { getDestinations, assetFrom } = useFormBridge();
+  const { setStepForm } = useFormBridgeContext();
 
   const checkResetSteps = useCallback(() => {
     if (stepsForm > 0) {
@@ -80,7 +85,11 @@ export const FromFormStep = ({
                       const asset = getFuelAssetsByNetwork(currentNetwork).find(
                         (a) => a.value === e,
                       );
+                      if (asset?.value !== assetFrom?.value) {
+                        setErrorAmount(null);
+                      }
                       getDestinations(asset);
+                      setStepForm(BridgeStepsForm.TO);
                     }}
                   />
                 </InputGroup>

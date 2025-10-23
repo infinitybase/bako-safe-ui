@@ -1,9 +1,16 @@
-import { createContext, useCallback, useContext, useState } from 'react';
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useMemo,
+  useState,
+} from 'react';
 import { FormProvider, useForm, UseFormReturn } from 'react-hook-form';
 
 import { IGetLimitsResponse, IQuoteFormLayersSwap } from '@/modules/core';
 
 import { AssetItem } from '../modalSelectAssets';
+import { BridgeStepsForm } from '../utils';
 
 export interface AssetFormItem extends AssetItem {
   tokens?: {
@@ -38,6 +45,8 @@ interface FormBridgeContextProps {
   saveLimits: (data: IGetLimitsResponse) => void;
   saveErrorForm: (error: string | null) => void;
   saveToNetworkOptions: (options: AssetFormItem[]) => void;
+  stepForm: BridgeStepsForm;
+  setStepForm: (step: BridgeStepsForm) => void;
 }
 
 const FormBridgeContext = createContext<FormBridgeContextProps | null>(null);
@@ -52,6 +61,9 @@ const FormBridgeProvider = ({ children }: { children: React.ReactNode }) => {
   );
   const [errorForm, setErrorForm] = useState<string | null>(null);
   const [toNetworkOptions, setToNetworkOptions] = useState<AssetFormItem[]>([]);
+  const [stepForm, setStepForm] = useState<BridgeStepsForm>(
+    BridgeStepsForm.FROM,
+  );
 
   const form = useForm<ITransferBridgePayload>({
     defaultValues: {
@@ -85,22 +97,41 @@ const FormBridgeProvider = ({ children }: { children: React.ReactNode }) => {
     setToNetworkOptions(options);
   }, []);
 
+  const value = useMemo(
+    () => ({
+      form,
+      dataQuote,
+      dataLimits,
+      isLoadingQuote,
+      errorForm,
+      toNetworkOptions,
+      saveQuote,
+      setLoadingQuote,
+      saveLimits,
+      saveErrorForm,
+      saveToNetworkOptions,
+      stepForm,
+      setStepForm,
+    }),
+    [
+      form,
+      dataQuote,
+      dataLimits,
+      isLoadingQuote,
+      errorForm,
+      toNetworkOptions,
+      saveQuote,
+      setLoadingQuote,
+      saveLimits,
+      saveErrorForm,
+      saveToNetworkOptions,
+      stepForm,
+      setStepForm,
+    ],
+  );
+
   return (
-    <FormBridgeContext.Provider
-      value={{
-        form,
-        dataQuote,
-        dataLimits,
-        isLoadingQuote,
-        errorForm,
-        toNetworkOptions,
-        saveQuote,
-        setLoadingQuote,
-        saveLimits,
-        saveErrorForm,
-        saveToNetworkOptions,
-      }}
-    >
+    <FormBridgeContext.Provider value={value}>
       <FormProvider {...form}>{children}</FormProvider>
     </FormBridgeContext.Provider>
   );

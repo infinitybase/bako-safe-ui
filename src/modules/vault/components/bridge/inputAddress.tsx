@@ -1,30 +1,43 @@
-import { Card, Field, Input, InputGroup, Text, VStack } from 'bako-ui';
+import { Button, Card, Field, Heading, Input, InputGroup } from 'bako-ui';
 import { useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
 import { LineCloseIcon } from '@/components';
-import { AddressUtils, useScreenSize } from '@/modules/core';
+import { AddressUtils } from '@/modules/core';
 
-import { ITransferBridgePayload } from './providers/FormBridgeProvider';
+import { ExpandableCardSection } from './ExpandableCardSection';
+import {
+  ITransferBridgePayload,
+  useFormBridgeContext,
+} from './providers/FormBridgeProvider';
+import { BridgeStepsForm } from './utils';
 
 export function InputAddressBridge() {
   const { control } = useFormContext<ITransferBridgePayload>();
+  const { stepForm, setStepForm } = useFormBridgeContext();
   const [isFocused, setIsFocused] = useState(false);
-  const { isMobile } = useScreenSize();
+
+  const isCurrentStep = stepForm === BridgeStepsForm.DESTINATION;
+
+  const handleContinue = () => {
+    setStepForm(BridgeStepsForm.RESUME);
+  };
 
   return (
     <Card.Root
       variant="subtle"
-      padding={isMobile ? 0 : 3}
-      w="full"
-      boxShadow="none"
+      rounded="2xl"
+      w="458px"
+      bg="bg.panel"
+      overflow="hidden"
     >
-      <VStack p={0} gap={1} align={'flex-start'} w="full">
-        {!isMobile && (
-          <Text color="grey.425" fontSize={12} flex={1}>
-            Destination address
-          </Text>
-        )}
+      <Card.Header pb={!isCurrentStep ? 6 : 0}>
+        <Heading color="textPrimary" fontSize="sm">
+          Destination
+        </Heading>
+      </Card.Header>
+
+      <ExpandableCardSection isExpanded={isCurrentStep} type="body">
         <Controller
           control={control}
           name="destinationAddress"
@@ -41,50 +54,42 @@ export function InputAddressBridge() {
                 <InputGroup
                   endElement={
                     <LineCloseIcon
-                      color="grey.75"
+                      color="textPrimary"
+                      display={field.value ? 'block' : 'none'}
                       fontSize="16px"
                       onClick={() => field.onChange('')}
                     />
                   }
-                  css={{
-                    paddingTop: 0,
-                    paddingBottom: 0,
-                    '> input': {
-                      height: '46px',
-                      paddingTop: 0,
-                      paddingBottom: 0,
-                      paddingRight: '2rem',
-                    },
-                  }}
                 >
                   <Input
                     value={displayValue}
                     onChange={(e) => field.onChange(e.target.value)}
-                    placeholder=" "
-                    // variant="dark"
+                    placeholder="Enter address"
+                    variant="subtle"
                     onFocus={() => setIsFocused(true)}
                     onBlur={() => setIsFocused(false)}
                     w="100%"
+                    disabled={!isCurrentStep}
                   />
                 </InputGroup>
-                {!isFocused && !field.value && (
-                  <Field.Label
-                    id="destination_addr"
-                    fontSize={'14px !important'}
-                    color={'grey.250 !important'}
-                    paddingTop={0}
-                  >
-                    {'Enter address'}
-                  </Field.Label>
-                )}
-                <Field.HelperText paddingTop={0} color="error.500">
-                  {fieldState.error?.message}
-                </Field.HelperText>
+                <Field.ErrorText>{fieldState.error?.message}</Field.ErrorText>
               </Field.Root>
             );
           }}
         />
-      </VStack>
+      </ExpandableCardSection>
+
+      <ExpandableCardSection
+        isExpanded={isCurrentStep}
+        type="footer"
+        maxHeight="100px"
+      >
+        {isCurrentStep && (
+          <Button w="full" onClick={handleContinue}>
+            Continue
+          </Button>
+        )}
+      </ExpandableCardSection>
     </Card.Root>
   );
 }

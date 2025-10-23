@@ -1,5 +1,4 @@
 import { Box, Card, Field, Heading, HStack, Image, Text } from 'bako-ui';
-import { useCallback } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
 import { ChevronDownIcon } from '@/components';
@@ -9,28 +8,20 @@ import { limitCharacters } from '@/utils';
 
 import { ModalSelectAssetsBridge } from '..';
 import { ModalSelectNetworkBridge } from '../modalSelectNetwork';
-import { ITransferBridgePayload } from '../providers/FormBridgeProvider';
-import { SelectNetworkProps } from '../selectNewtork';
+import {
+  ITransferBridgePayload,
+  useFormBridgeContext,
+} from '../providers/FormBridgeProvider';
+import { BridgeStepsForm } from '../utils';
 
-export const ToFormStep = ({
-  setStepsForm,
-  stepsForm,
-}: Omit<SelectNetworkProps, 'setErrorAmount'>) => {
-  const { control, watch, setValue, resetField } =
+export const ToFormStep = () => {
+  const { control, watch, resetField } =
     useFormContext<ITransferBridgePayload>();
+  const { setStepForm } = useFormBridgeContext();
   const dialogSelectNetwork = useDisclosure();
   const dialogSelectAsset = useDisclosure();
   const { toAssetOptions, toNetworkOptions, isLoadingDestinations } =
     useFormBridge();
-
-  const checkResetSteps = useCallback(() => {
-    if (stepsForm > 0) {
-      setTimeout(() => {
-        setStepsForm(0);
-        setValue('amount', '0.000');
-      }, 200);
-    }
-  }, [stepsForm, setValue, setStepsForm]);
 
   const assetFromValue = watch('selectAssetFrom');
   const networkToValue = watch('selectNetworkTo');
@@ -90,22 +81,21 @@ export const ToFormStep = ({
                       transform="translateY(2px)"
                     />
                   </HStack>
-
-                  <ModalSelectNetworkBridge
-                    title="Select Network"
-                    isOpen={dialogSelectNetwork.isOpen}
-                    onOpenChange={dialogSelectNetwork.onOpenChange}
-                    onClose={dialogSelectNetwork.onClose}
-                    options={toNetworkOptions}
-                    isLoadingOptions={isLoadingDestinations}
-                    onSelect={(value) => {
-                      resetField('selectAssetTo');
-                      resetField('selectAssetToMobile');
-                      checkResetSteps();
-                      field.onChange(value);
-                    }}
-                  />
                 </Box>
+                <ModalSelectNetworkBridge
+                  title="Select Network"
+                  isOpen={dialogSelectNetwork.isOpen}
+                  onOpenChange={dialogSelectNetwork.onOpenChange}
+                  onClose={dialogSelectNetwork.onClose}
+                  options={toNetworkOptions}
+                  isLoadingOptions={isLoadingDestinations}
+                  onSelect={(value) => {
+                    resetField('selectAssetTo');
+                    resetField('selectAssetToMobile');
+                    // checkResetSteps();
+                    field.onChange(value);
+                  }}
+                />
               </Field.Root>
             )}
           />
@@ -153,22 +143,17 @@ export const ToFormStep = ({
                       transform="translateY(2px)"
                     />
                   </HStack>
-
-                  <ModalSelectAssetsBridge
-                    title="Select Asset"
-                    isOpen={dialogSelectAsset.isOpen}
-                    onOpenChange={dialogSelectAsset.onOpenChange}
-                    options={toAssetOptions}
-                    onSelect={(value) => {
-                      field.onChange(value);
-                      if (stepsForm === 0) {
-                        setTimeout(() => {
-                          setStepsForm(1);
-                        }, 500);
-                      }
-                    }}
-                  />
                 </Box>
+                <ModalSelectAssetsBridge
+                  title="Select Asset"
+                  isOpen={dialogSelectAsset.isOpen}
+                  onOpenChange={dialogSelectAsset.onOpenChange}
+                  options={toAssetOptions}
+                  onSelect={(value) => {
+                    field.onChange(value);
+                    setStepForm(BridgeStepsForm.AMOUNT);
+                  }}
+                />
               </Field.Root>
             )}
           />

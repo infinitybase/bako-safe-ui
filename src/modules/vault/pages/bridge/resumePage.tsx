@@ -117,7 +117,7 @@ export function ResumePageBrigde({
         </HStack>
       </Card.Root>
       <Separator borderColor="grey.950" h="1px" flex="1" marginY={3} />
-      <DetailsBridge bgColor={'dark.850'} padding={0} />
+      <DetailsBridge />
 
       {!checkEnoughETH() && (
         <AlertsBrigde
