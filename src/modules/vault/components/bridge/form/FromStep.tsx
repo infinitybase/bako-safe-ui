@@ -9,25 +9,17 @@ import {
   ITransferBridgePayload,
   useFormBridgeContext,
 } from '../providers/FormBridgeProvider';
-import { SelectNetworkProps } from '../selectNewtork';
 import { BridgeStepsForm, getFuelAssetsByNetwork, optionsNets } from '../utils';
 
-export const FromFormStep = ({
-  setErrorAmount,
-}: Pick<SelectNetworkProps, 'setErrorAmount'>) => {
+interface FromFormStepProps {
+  setErrorAmount: React.Dispatch<React.SetStateAction<string | null>>;
+}
+
+export const FromFormStep = ({ setErrorAmount }: FromFormStepProps) => {
   const { control, resetField } = useFormContext<ITransferBridgePayload>();
   const { currentNetwork } = useNetworks();
   const { getDestinations, assetFrom } = useFormBridge();
   const { setStepForm } = useFormBridgeContext();
-
-  // const checkResetSteps = useCallback(() => {
-  //   if (stepsForm > 0) {
-  //     setTimeout(() => {
-  //       setStepsForm(0);
-  //       setValue('amount', '0.000');
-  //     }, 200);
-  //   }
-  // }, [stepsForm, setValue, setStepsForm]);
 
   return (
     <Card.Root variant="subtle" bg="bg.panel" w="full" rounded="2xl">
@@ -74,7 +66,6 @@ export const FromFormStep = ({
                     onChange={(e) => {
                       setStepForm(BridgeStepsForm.TO);
                       field.onChange(e);
-                      // checkResetSteps();
                       resetField('selectNetworkTo');
                       resetField('selectNetworkToMobile');
                       resetField('selectAssetToMobile');

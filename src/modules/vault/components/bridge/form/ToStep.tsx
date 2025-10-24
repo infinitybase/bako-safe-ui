@@ -2,8 +2,9 @@ import { Box, Card, Field, Heading, HStack, Image, Text } from 'bako-ui';
 import { Controller, useFormContext } from 'react-hook-form';
 
 import { ChevronDownIcon } from '@/components';
+import { Asset } from '@/modules/core';
 import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
-import { useFormBridge } from '@/modules/vault/hooks/bridge';
+import { useAmountBridge, useFormBridge } from '@/modules/vault/hooks/bridge';
 import { limitCharacters } from '@/utils';
 
 import { ModalSelectAssetsBridge } from '..';
@@ -14,14 +15,20 @@ import {
 } from '../providers/FormBridgeProvider';
 import { BridgeStepsForm } from '../utils';
 
-export const ToFormStep = () => {
+interface ToFormStepProps {
+  assets?: Required<Asset>[];
+  setErrorAmount: React.Dispatch<React.SetStateAction<string | null>>;
+}
+
+export const ToFormStep = ({ assets, setErrorAmount }: ToFormStepProps) => {
   const { control, watch, resetField } =
     useFormContext<ITransferBridgePayload>();
   const { setStepForm } = useFormBridgeContext();
   const dialogSelectNetwork = useDisclosure();
   const dialogSelectAsset = useDisclosure();
-  const { toAssetOptions, toNetworkOptions, isLoadingDestinations } =
+  const { toAssetOptions, toNetworkOptions, isLoadingDestinations, amount } =
     useFormBridge();
+  const { handleSourceChange } = useAmountBridge({ assets, setErrorAmount });
 
   const assetFromValue = watch('selectAssetFrom');
   const networkToValue = watch('selectNetworkTo');
@@ -164,6 +171,10 @@ export const ToFormStep = () => {
                   onSelect={(value) => {
                     field.onChange(value);
                     setStepForm(BridgeStepsForm.AMOUNT);
+                    // Trigger amount recalculation on asset change
+                    if (amount) {
+                      handleSourceChange(amount);
+                    }
                   }}
                 />
               </Field.Root>
