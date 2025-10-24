@@ -60,8 +60,8 @@ importers:
         specifier: ^1.5.0
         version: 1.11.0
       bako-ui:
-        specifier: 0.2.5
-        version: 0.2.5(@chakra-ui/react@3.28.0(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        specifier: 0.3.0
+        version: 0.3.0(@chakra-ui/react@3.28.0(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       bakosafe:
         specifier: 0.3.0-beta.1
         version: 0.3.0-beta.1(fuels@0.101.3(vitest@3.0.9(@types/debug@4.1.12)(@types/node@20.5.1)(terser@5.43.1)))
@@ -2318,6 +2318,7 @@ packages:
 
   '@walletconnect/sign-client@2.21.6':
     resolution: {integrity: sha512-n7WO1my4yxSrBvyb0lGcP3/uODAOVZAigULW4YvCsCrTbdK4ycADxZokeDrdFWcFNBH1sCnAFuI9Yhi/8TF9aA==}
+    deprecated: 'Reliability and performance improvements. See: https://github.com/WalletConnect/walletconnect-monorepo/releases'
 
   '@walletconnect/time@1.0.2':
     resolution: {integrity: sha512-uzdd9woDcJ1AaBZRhqy5rNC9laqWGErfc4dxA9a87mPdKOgWMD85mcFo9dIYIts/Jwocfwn07EC6EzclKubk/g==}
@@ -2909,8 +2910,8 @@ packages:
     resolution: {integrity: sha512-Cg7TFGpIr01vOQNODXOOaGz2NpCU5gl8x1qJFbb6hbZxR7XrcE2vtbAsTAbJ7/xwJtUuJEw8K8Zr/AE0LHlesg==}
     engines: {node: '>=10', npm: '>=6'}
 
-  bako-ui@0.2.5:
-    resolution: {integrity: sha512-d5HuJ2VN6XIjrzDegRCXF5ICohQ53pw5e50HaZmUc/XJqg31LyQPer9ls8r5SlIjut9SwxCgML/yEVWWdQbggQ==}
+  bako-ui@0.3.0:
+    resolution: {integrity: sha512-F9RCGUJRPZU1NhLgur/K952otk3mLPk4Xxu3Tg8AllN6kGvxHm4szl1vddSAjnu6m/NrcR8O/tzZrOcpF5b7mA==}
     peerDependencies:
       '@chakra-ui/react': ^3.21.0
       '@emotion/react': ^11.14.0
@@ -8907,7 +8908,7 @@ snapshots:
 
   '@scure/bip32@1.4.0':
     dependencies:
-      '@noble/curves': 1.4.0
+      '@noble/curves': 1.4.2
       '@noble/hashes': 1.4.0
       '@scure/base': 1.1.9
 
@@ -9160,7 +9161,7 @@ snapshots:
       '@solana/buffer-layout': 4.0.1
       agentkeepalive: 4.6.0
       bigint-buffer: 1.1.5
-      bn.js: 5.2.1
+      bn.js: 5.2.2
       borsh: 0.7.0
       bs58: 4.0.1
       buffer: 6.0.3
@@ -9348,7 +9349,7 @@ snapshots:
 
   '@types/connect@3.4.38':
     dependencies:
-      '@types/node': 12.20.55
+      '@types/node': 24.1.0
 
   '@types/crypto-js@4.2.2': {}
 
@@ -9420,7 +9421,7 @@ snapshots:
 
   '@types/ws@7.4.7':
     dependencies:
-      '@types/node': 12.20.55
+      '@types/node': 24.1.0
 
   '@types/ws@8.18.1':
     dependencies:
@@ -10090,7 +10091,7 @@ snapshots:
       '@walletconnect/safe-json': 1.0.2
       '@walletconnect/time': 1.0.2
       tslib: 1.14.1
-      uint8arrays: 3.1.0
+      uint8arrays: 3.1.1
 
   '@walletconnect/relay-auth@1.1.0':
     dependencies:
@@ -10098,7 +10099,7 @@ snapshots:
       '@noble/hashes': 1.7.0
       '@walletconnect/safe-json': 1.0.2
       '@walletconnect/time': 1.0.2
-      uint8arrays: 3.1.0
+      uint8arrays: 3.1.1
 
   '@walletconnect/safe-json@1.0.0': {}
 
@@ -10847,7 +10848,7 @@ snapshots:
 
   '@walletconnect/window-metadata@1.0.0':
     dependencies:
-      '@walletconnect/window-getters': 1.0.0
+      '@walletconnect/window-getters': 1.0.1
 
   '@walletconnect/window-metadata@1.0.1':
     dependencies:
@@ -11851,7 +11852,7 @@ snapshots:
       cosmiconfig: 7.1.0
       resolve: 1.22.10
 
-  bako-ui@0.2.5(@chakra-ui/react@3.28.0(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
+  bako-ui@0.3.0(@chakra-ui/react@3.28.0(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
     dependencies:
       '@chakra-ui/react': 3.28.0(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       '@emotion/react': 11.14.0(@types/react@19.2.2)(react@19.2.0)
@@ -14380,9 +14381,9 @@ snapshots:
     dependencies:
       '@adraffy/ens-normalize': 1.11.0
       '@noble/curves': 1.9.6
-      '@noble/hashes': 1.7.1
-      '@scure/bip32': 1.6.2
-      '@scure/bip39': 1.5.4
+      '@noble/hashes': 1.8.0
+      '@scure/bip32': 1.7.0
+      '@scure/bip39': 1.6.0
       abitype: 1.0.8(typescript@5.4.5)(zod@3.25.76)
       eventemitter3: 5.0.1
     optionalDependencies:
@@ -15907,8 +15908,8 @@ snapshots:
 
   webauthn-p256@0.0.5:
     dependencies:
-      '@noble/curves': 1.4.0
-      '@noble/hashes': 1.4.0
+      '@noble/curves': 1.9.6
+      '@noble/hashes': 1.8.0
 
   webextension-polyfill@0.10.0: {}
 
