@@ -8,6 +8,7 @@ import {
 
 import { Asset, PredicateMember } from '..';
 import { IPredicate } from '../core/hooks/bakosafe/utils/types';
+import { BridgeStepsForm } from './components/bridge/utils';
 import { SwapMode } from './components/swap/Root';
 import { Combination } from './hooks/swap/useAllAssetsCombination';
 
@@ -246,4 +247,74 @@ export const getSwapQuotesBatch = async (
 
 export const formatMeldEthSlug = (slug: string) => {
   return slug === 'ETH_FUEL' ? 'ETH' : slug;
+};
+
+/**
+ * @description Calculates the Y position for each step (carousel vertical effect)
+ * Keeps the steps stacked vertically, centering the current step
+ * @param step The step to get the Y position for
+ * @param stepForm The current step of the form
+ * @returns The Y position for the step
+ */
+export const getYPositionForStep = (
+  step: BridgeStepsForm,
+  stepForm: BridgeStepsForm,
+): number => {
+  const currentIndex = stepForm;
+  const stepIndex = step;
+
+  // Height of the cards (collapsed or expanded)
+  const collapsedHeight = 88; // Height of the collapsed header
+  const gap = 8; // gap between cards
+
+  // Function to get the real height of each step
+  const getHeightForStep = (stepNum: BridgeStepsForm) => {
+    if (stepNum === BridgeStepsForm.FROM) return collapsedHeight;
+    if (stepNum === BridgeStepsForm.TO) return collapsedHeight;
+    if (stepNum === BridgeStepsForm.AMOUNT) {
+      return stepForm === BridgeStepsForm.AMOUNT ? 248 : collapsedHeight;
+    }
+    if (stepNum === BridgeStepsForm.DESTINATION) {
+      return stepForm === BridgeStepsForm.DESTINATION ? 246 : collapsedHeight;
+    }
+    if (stepNum === BridgeStepsForm.RESUME) {
+      return stepForm >= BridgeStepsForm.RESUME ? 305 : collapsedHeight;
+    }
+    return collapsedHeight;
+  };
+
+  // As the cards use position absolute, each one needs to be positioned
+  // considering that the current step is at y=0 (center)
+  // and the others are above/below considering the real heights + gaps
+
+  let yPosition = 0;
+
+  if (stepIndex < currentIndex) {
+    // Steps above the current step
+    // Starts from the middle of the current card and goes up
+    yPosition = -(getHeightForStep(currentIndex) / 2 + gap);
+
+    // Sums the heights of the cards between the step and the current (from closest to farthest)
+    for (let i = currentIndex - 1; i > stepIndex; i--) {
+      yPosition -= getHeightForStep(i) + gap;
+    }
+
+    // Subtract half the height of the step itself
+    yPosition -= getHeightForStep(stepIndex) / 2;
+  } else if (stepIndex > currentIndex) {
+    // Steps below the current step
+    // Starts from the middle of the current card and goes down
+    yPosition = getHeightForStep(currentIndex) / 2 + gap;
+
+    // Sums the heights of the cards between the current and the step (from closest to farthest)
+    for (let i = currentIndex + 1; i < stepIndex; i++) {
+      yPosition += getHeightForStep(i) + gap;
+    }
+
+    // Adds half the height of the step itself
+    yPosition += getHeightForStep(stepIndex) / 2;
+  }
+  // If stepIndex === currentIndex, yPosition = 0 (centered)
+
+  return yPosition;
 };
