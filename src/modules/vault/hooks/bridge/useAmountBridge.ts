@@ -44,6 +44,53 @@ const useAmountBridge = ({ assets, setErrorAmount }: UseAmountBridgeProps) => {
     });
   }, [assets, assetFrom?.value, assetsMap]);
 
+  const handleMaxAmount = useCallback(
+    (
+      quotes: IGetQuotesResponse,
+      amount: string | undefined,
+      payload: ICreateSwapBridgePayload | undefined,
+    ) => {
+      setErrorAmount(null);
+      const fee = quotes?.quote?.totalFee;
+      if (!fee) return;
+
+      let balanceUser = balance;
+
+      if (Number(balanceUser) <= 0) {
+        balanceUser = amount ?? '0';
+      }
+
+      const balanceTreated = Number(balanceUser.replace(/,/g, ''));
+
+      let maxAmount = Number(balanceUser) - fee * 2;
+
+      if (maxAmount > dataLimits.maxAmount) maxAmount = dataLimits.maxAmount;
+
+      form.setValue('amount', maxAmount.toString());
+
+      if (maxAmount > balanceTreated) {
+        setErrorAmount(ErrorBridgeForm.INSUFFICIENT_BALANCE);
+        // if (stepsForm > 1) setStepsForm(1);
+        return;
+      }
+
+      const payloadSwap = payload ?? prepareCreateSwapPayload();
+      payloadSwap.amount = maxAmount;
+
+      debouncedGetQuotesRef.current?.(payload);
+    },
+    [
+      form,
+      balance,
+      dataLimits.maxAmount,
+      // stepsForm,
+      // setStepsForm,
+      setErrorAmount,
+      debouncedGetQuotesRef,
+      prepareCreateSwapPayload,
+    ],
+  );
+
   useEffect(() => {
     debouncedGetQuotesRef.current = debounce(
       async (payload: ICreateSwapBridgePayload, getMaxAmount = false) => {
@@ -83,12 +130,6 @@ const useAmountBridge = ({ assets, setErrorAmount }: UseAmountBridgeProps) => {
 
       if (!hasMinAmount && !insufficientBalance && valueTreated > 0) {
         setErrorAmount(`Amount must be at least ${dataLimits.minAmount}`);
-        return;
-      }
-
-      const removeStep = valueTreated === 0 || insufficientBalance;
-      if (removeStep) {
-        // setStepsForm(1);
         return;
       }
 
@@ -139,53 +180,6 @@ const useAmountBridge = ({ assets, setErrorAmount }: UseAmountBridgeProps) => {
     debouncedGetQuotesRef,
     setLoadingQuote,
   ]);
-
-  const handleMaxAmount = useCallback(
-    (
-      quotes: IGetQuotesResponse,
-      amount: string | undefined,
-      payload: ICreateSwapBridgePayload | undefined,
-    ) => {
-      setErrorAmount(null);
-      const fee = quotes?.quote?.totalFee;
-      if (!fee) return;
-
-      let balanceUser = balance;
-
-      if (Number(balanceUser) <= 0) {
-        balanceUser = amount ?? '0';
-      }
-
-      const balanceTreated = Number(balanceUser.replace(/,/g, ''));
-
-      let maxAmount = Number(balanceUser) - fee * 2;
-
-      if (maxAmount > dataLimits.maxAmount) maxAmount = dataLimits.maxAmount;
-
-      form.setValue('amount', maxAmount.toString());
-
-      if (maxAmount > balanceTreated) {
-        setErrorAmount(ErrorBridgeForm.INSUFFICIENT_BALANCE);
-        // if (stepsForm > 1) setStepsForm(1);
-        return;
-      }
-
-      const payloadSwap = payload ?? prepareCreateSwapPayload();
-      payloadSwap.amount = maxAmount;
-
-      debouncedGetQuotesRef.current?.(payload);
-    },
-    [
-      form,
-      balance,
-      dataLimits.maxAmount,
-      // stepsForm,
-      // setStepsForm,
-      setErrorAmount,
-      debouncedGetQuotesRef,
-      prepareCreateSwapPayload,
-    ],
-  );
 
   const handleGetFeeBeforeMaxAmount = useCallback(async () => {
     setLoadingQuote(true);

@@ -6,6 +6,7 @@ import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { UseVaultDetailsReturn } from '../../hooks';
 import { useFormBridge } from '../../hooks/bridge';
+import { AssetsResume } from './assetsResume';
 import { ExpandableCardSection } from './ExpandableCardSection';
 import { useFormBridgeContext } from './providers/FormBridgeProvider';
 import { BridgeStepsForm, TitleButtonsForm } from './utils';
@@ -19,6 +20,7 @@ export function DetailsBridge({ assets }: DetailsBridgeProps) {
     dataQuote,
     assetFrom,
     assetTo,
+    networkTo,
     isFormComplete,
     errorForm,
     isPendingSigner,
@@ -27,7 +29,7 @@ export function DetailsBridge({ assets }: DetailsBridgeProps) {
     isLoading,
     amount,
   } = useFormBridge();
-  const { assetsMap } = useWorkspaceContext();
+  const { assetsMap, tokensUSD } = useWorkspaceContext();
   const { stepForm } = useFormBridgeContext();
 
   const isExpanded = stepForm >= BridgeStepsForm.RESUME;
@@ -56,6 +58,19 @@ export function DetailsBridge({ assets }: DetailsBridgeProps) {
     return maxAmount > Number(amount);
   }, [balance, amount, dataQuote?.quote?.totalFee]);
 
+  const receiveInUsd = useMemo(() => {
+    if (!assetFrom) return null;
+    const usdData = tokensUSD.data[assetFrom?.value];
+    const usdAmount = usdData?.usdAmount ?? null;
+    if (!usdAmount || !dataQuote?.quote) return null;
+    const receiveValue = usdAmount * dataQuote?.quote?.receiveAmount;
+
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    }).format(receiveValue);
+  }, [dataQuote, tokensUSD, assetFrom]);
+
   return (
     <Card.Root variant="subtle" w="full" bg="bg.panel" rounded="2xl">
       <Card.Header pb={!isExpanded ? 6 : 0}>
@@ -71,10 +86,22 @@ export function DetailsBridge({ assets }: DetailsBridgeProps) {
         type="body"
         maxHeight="300px"
       >
-        <VStack p={0} gap={0}>
+        <VStack gap={1}>
+          {assetTo && assetFrom && (
+            <AssetsResume
+              toAsset={assetTo}
+              toNetwork={networkTo}
+              fromAsset={assetFrom}
+            />
+          )}
           <HStack width="full">
             <HStack gap={2} align={'center'}>
-              <Text color="gray.400" fontSize={12} flex={1}>
+              <Text
+                color="gray.400"
+                lineHeight="shorter"
+                fontSize="xs"
+                flex={1}
+              >
                 Estimated time
               </Text>
             </HStack>
@@ -89,6 +116,7 @@ export function DetailsBridge({ assets }: DetailsBridgeProps) {
               ) : (
                 <Text
                   color="textPrimary"
+                  lineHeight="shorter"
                   fontSize={12}
                   flex={1}
                   textAlign="right"
@@ -100,7 +128,7 @@ export function DetailsBridge({ assets }: DetailsBridgeProps) {
           </HStack>
           <HStack width="full">
             <HStack>
-              <Text color="gray.400" fontSize={12}>
+              <Text color="gray.400" lineHeight="shorter" fontSize="xs">
                 Fee
               </Text>
             </HStack>
@@ -115,7 +143,8 @@ export function DetailsBridge({ assets }: DetailsBridgeProps) {
               ) : (
                 <Text
                   color="textPrimary"
-                  fontSize={12}
+                  lineHeight="shorter"
+                  fontSize="xs"
                   flex={1}
                   textAlign="right"
                 >
@@ -127,7 +156,7 @@ export function DetailsBridge({ assets }: DetailsBridgeProps) {
             </HStack>
           </HStack>
           <HStack width="full">
-            <Text color="gray.400" fontSize={12}>
+            <Text color="gray.400" lineHeight="shorter" fontSize="xs">
               You will receive
             </Text>
             <HStack
@@ -144,17 +173,15 @@ export function DetailsBridge({ assets }: DetailsBridgeProps) {
                   <Text
                     color="gray.50"
                     fontWeight={600}
-                    fontSize={14}
+                    fontSize="xs"
                     textAlign="right"
                   >
                     {dataQuote?.quote?.receiveAmount
                       ? dataQuote?.quote?.receiveAmount + ' ' + assetTo?.symbol
                       : ''}
                   </Text>
-                  <Text color="textPrimary" fontSize={12} textAlign="right">
-                    {dataQuote?.receiveInUsd
-                      ? `(${dataQuote?.receiveInUsd})`
-                      : '-'}
+                  <Text color="textPrimary" fontSize="xs" textAlign="right">
+                    {receiveInUsd ? `(${receiveInUsd})` : '-'}
                   </Text>
                 </>
               )}
