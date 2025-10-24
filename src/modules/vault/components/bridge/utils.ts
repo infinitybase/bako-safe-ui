@@ -96,7 +96,9 @@ export function getFuelAssetsByNetwork(network: Network) {
 
   if (isMainnet) return optionsAssetsFuel;
 
-  return optionsAssetsFuel.filter((a) => a.name === 'ETH' || a.name === 'USDC');
+  return optionsAssetsFuel.filter(
+    (a) => a.symbol === 'ETH' || a.name === 'USDC',
+  );
 }
 
 export function formatEstimativeTime(duration: string): string {
