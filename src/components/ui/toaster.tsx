@@ -5,6 +5,7 @@ import { createToaster, Loader, Portal, Stack, Toast } from 'bako-ui';
 export const toaster = createToaster({
   placement: 'top-end',
   pauseOnPageIdle: true,
+  offsets: { top: '100px', right: '1rem', left: '1rem', bottom: '1rem' },
 });
 
 export const Toaster = () => {
