@@ -1,8 +1,9 @@
 import { Button, Card, Heading, HStack, Text } from 'bako-ui';
+import { useFormContext } from 'react-hook-form';
 
 import { Asset } from '@/modules/core';
 
-import { useAmountBridge, useFormBridge } from '../../hooks/bridge';
+import { useAmountBridge } from '../../hooks/bridge';
 import { ExpandableCardSection } from './ExpandableCardSection';
 import { InputAmount } from './inputAmount';
 import { useFormBridgeContext } from './providers/FormBridgeProvider';
@@ -21,8 +22,9 @@ export function AmountBrigde({
   errorAmount,
   setErrorAmount,
 }: AmountBridgeProps) {
-  const { amount } = useFormBridge();
   const { stepForm, setStepForm } = useFormBridgeContext();
+  const { watch } = useFormContext();
+  const amount = watch('amount');
 
   const isCurrentStep = stepForm === BridgeStepsForm.AMOUNT;
   const isAfterAmountStep = stepForm > BridgeStepsForm.AMOUNT;
