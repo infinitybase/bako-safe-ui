@@ -58,7 +58,7 @@ export const optionsAssetsFuel = [
   {
     symbol: 'ETH',
     description: 'Token',
-    name: 'ETH',
+    name: 'Ethereum',
     image:
       'https://prodlslayerswapbridgesa.blob.core.windows.net/layerswap/currencies/eth.png',
     value: '0xf8f8b6283d7fa5b672b530cbb84fcccb4ff8dc40f8176ef4544ddb1f1952ad07',
