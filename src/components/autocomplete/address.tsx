@@ -111,8 +111,8 @@ const AddressAutocomplete = memo(
                     />
                   </Box>
                   <Stack gap={0}>
-                    <Text color="section.200">{option.label}</Text>
-                    <Text color="section.500">
+                    <Text color="textPrimary">{option.label}</Text>
+                    <Text color="textSecondary">
                       {AddressUtils.format(option.value || '')}
                     </Text>
                   </Stack>

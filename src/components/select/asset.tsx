@@ -30,7 +30,7 @@ interface AssetSelectProps {
   onChange: (value: string) => void;
 }
 
-const AssetSelectValue = () => {
+const AssetSelectValue = ({ label }: { label: string | undefined }) => {
   const select = useSelectContext();
   const items = select.selectedItems as AssetSelectOption[];
   const image = items?.[0]?.image;
@@ -38,13 +38,13 @@ const AssetSelectValue = () => {
   const description = items?.[0]?.description;
 
   return (
-    <Select.ValueText placeholder=" ">
+    <Select.ValueText placeholder=" " pt={label && name ? 2.5 : 0}>
       <HStack>
         <Avatar
           shape="rounded"
           bg="transparent"
           hidden={!name}
-          size="2xs"
+          boxSize={5}
           src={image!}
           name={name}
         />
@@ -115,40 +115,43 @@ const AssetSelect = ({
       )}
       <Select.Control>
         <Select.Trigger>
-          <AssetSelectValue />
+          <AssetSelectValue label={label} />
         </Select.Trigger>
         <Select.IndicatorGroup>
           <Select.Indicator color="textPrimary" />
         </Select.IndicatorGroup>
       </Select.Control>
-      <Select.Positioner>
-        <Select.Content>
-          {collection.items.map((item) => (
-            <Select.Item
-              key={item.value}
-              item={item}
-              onClick={() => {
-                if (item.value === value) {
-                  // force onChange when same value is selected
-                  onChange(item.value);
-                }
-              }}
-            >
-              <Flex gap={2} alignItems="center">
-                <Avatar
-                  shape="rounded"
-                  src={item.image!}
-                  name={item.name}
-                  bg="transparent"
-                  size="2xs"
-                />
-                {item.name}
-              </Flex>
-              <Select.ItemIndicator />
-            </Select.Item>
-          ))}
-        </Select.Content>
-      </Select.Positioner>
+      <Select.Portal>
+        {/* Open inside Dialog */}
+        <Select.Positioner zIndex="2000 !important">
+          <Select.Content>
+            {collection.items.map((item) => (
+              <Select.Item
+                key={item.value}
+                item={item}
+                onClick={() => {
+                  if (item.value === value) {
+                    // force onChange when same value is selected
+                    onChange(item.value);
+                  }
+                }}
+              >
+                <Flex gap={2} alignItems="center">
+                  <Avatar
+                    shape="rounded"
+                    src={item.image!}
+                    name={item.name}
+                    bg="transparent"
+                    size="2xs"
+                  />
+                  {item.name}
+                </Flex>
+                <Select.ItemIndicator />
+              </Select.Item>
+            ))}
+          </Select.Content>
+        </Select.Positioner>
+      </Select.Portal>
     </Select.Root>
   );
 };

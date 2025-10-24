@@ -42,14 +42,7 @@ const AutocompleteRoot = memo(
             endElement={
               <>
                 {isLoading ? (
-                  <Loader
-                    position="absolute"
-                    transform="translateY(-50%)"
-                    top="50%"
-                    size="sm"
-                    color="brand.500"
-                    right="0.5rem"
-                  />
+                  <Loader size="sm" color="primary.main" />
                 ) : (
                   rightElement
                 )}
@@ -60,14 +53,22 @@ const AutocompleteRoot = memo(
             <>
               {value?.value && (
                 // <AutocompleteInput as="div" minH="50px">
-                <Flex w="full" gap={2} align="center">
+                <Flex
+                  w="full"
+                  gap={2}
+                  pl={4}
+                  align="center"
+                  bg="bg.muted"
+                  h="40px"
+                  rounded="sm"
+                >
                   <InputValueImage
                     image={value.image}
                     label={value.label || ''}
                   />
-                  <Text fontSize="sm" color="section.200">
+                  <Text fontSize="sm" color="textPrimary">
                     {value.label}{' '}
-                    <Text as="span" color="section.500">
+                    <Text as="span" color="textSecondary">
                       ({AddressUtils.format(value.value)})
                     </Text>
                   </Text>

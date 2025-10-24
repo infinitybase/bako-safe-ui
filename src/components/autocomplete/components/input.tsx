@@ -12,6 +12,7 @@ const AutocompleteInput = memo(
           paddingInlineEnd={'2.2rem !important'}
           autoComplete="off"
           placeholder=" "
+          variant="subtle"
           {...props}
         />
       );

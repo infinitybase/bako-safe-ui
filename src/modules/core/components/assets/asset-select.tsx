@@ -12,7 +12,7 @@ function AssetSelect(props: Props) {
 
   return (
     <Field.Root>
-      <Select label="Asset" maxOptionsHeight={300} {...rest} />
+      <Select label="Asset" {...rest} />
       {helperText}
     </Field.Root>
   );

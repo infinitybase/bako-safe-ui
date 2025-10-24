@@ -1,8 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
-import { Box, BoxProps, Field, Heading, Input, Separator } from 'bako-ui';
+import { Box, BoxProps, Heading, RhfInput, Separator } from 'bako-ui';
 import { bn } from 'fuels';
 import { useMemo } from 'react';
-import { Controller, FormProvider } from 'react-hook-form';
+import { FormProvider } from 'react-hook-form';
 
 import { Dialog } from '@/components';
 import { UseCreateTransaction } from '@/modules/transactions/hooks';
@@ -47,7 +47,7 @@ const CreateTransactionForm = (props: CreateTransactionFormProps) => {
 
     const used = transactionsFields.fields.reduce((acc, _, index) => {
       const transaction = form.watch(`transactions.${index}`);
-      if (transaction.asset !== baseAssetId) return acc;
+      if (transaction?.asset !== baseAssetId) return acc;
 
       const amount = Number(transaction.amount || 0);
       let fee = 0;
@@ -74,26 +74,14 @@ const CreateTransactionForm = (props: CreateTransactionFormProps) => {
   return (
     <FormProvider {...form}>
       <Box w="full" {...props}>
-        <Separator mt={2} mb={7} borderColor={'grey.425'} />
+        <Separator mt={2} mb={7} borderColor="textSecondary" />
 
-        <Controller
-          control={form.control}
+        <RhfInput
           name="name"
-          render={({ field, fieldState }) => (
-            <Field.Root invalid={fieldState.invalid}>
-              <Input
-                maxLength={27}
-                value={field.value?.trimStart()}
-                onChange={field.onChange}
-                placeholder=" "
-                // variant="dark"
-              />
-              <Field.Label id="transaction_name">Transaction name</Field.Label>
-              <Field.HelperText color="error.500">
-                {fieldState.error?.message}
-              </Field.HelperText>
-            </Field.Root>
-          )}
+          control={form.control as any}
+          label="Transaction name"
+          error={form.formState.errors.name}
+          defaultValue=""
         />
 
         <Dialog.Section

@@ -223,6 +223,8 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     (assetId?: string) => {
       const assetToCheck = assetId ?? currentFieldAsset;
 
+      if (!assetToCheck) return '0.000';
+
       const currentAssetBalance = bn.parseUnits(
         formattedCurrentAssetBalance?.find(
           (asset) => asset.assetId === assetToCheck,

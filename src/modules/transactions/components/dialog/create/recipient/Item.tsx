@@ -118,10 +118,10 @@ const RecipientItem = ({
         transaction?.asset === ethAssetId &&
         !isCurrentAmountZero
           ? 'red.500'
-          : 'grey.925'
+          : 'bg.muted'
       }
       borderRadius={10}
-      backgroundColor="dark.950"
+      backgroundColor="bg.panel"
     >
       <TransactionAccordion.Item
         title={`Recipient ${index + 1}`}

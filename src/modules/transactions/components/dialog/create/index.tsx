@@ -110,19 +110,20 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
         if (!e.open) handleClose();
       }}
       closeOnInteractOutside={false}
-      size={{ base: 'full', sm: 'lg' }}
+      size={{ base: 'full', sm: 'md' }}
+      modalContentProps={{ py: 6 }}
     >
       <Dialog.Header
         onClose={handleClose}
         position={{ base: 'static', sm: 'relative' }}
         mb={0}
         maxH={40}
-        maxW={480}
+        px={6}
         title="Create Transaction"
         description={`Send single or batch payments with multi assets. \n You can send multiple types of assets to different addresses.`}
       />
 
-      <Dialog.Body maxW={480} maxH={'full'} mt={{ sm: 4 }}>
+      <Dialog.Body px={6} maxH={'full'} mt={{ sm: 4 }}>
         <CreateTransactionForm
           form={form}
           nicks={nicks}
@@ -136,8 +137,8 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
 
       <VStack
         w="full"
-        bg={isMobile ? 'dark.950' : 'unset'}
-        maxW={480}
+        bg={isMobile ? 'bg.panel' : 'unset'}
+        px={6}
         justifySelf="center"
         mt={6}
         pb={4}
@@ -149,7 +150,7 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
           mb={{ base: 3, sm: 6 }}
           mt={0.5}
         >
-          <Separator mb={2} w="full" />
+          <Separator mb={2} w="full" borderColor="textSecondary" />
           <Text
             visibility={!transactionFee ? 'hidden' : 'visible'}
             // variant="description"
@@ -163,16 +164,16 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
               >
                 <Popover.Trigger>
                   <Icon
-                    color="grey.200"
+                    color="textPrimary"
                     boxSize="14px"
                     as={TooltipIcon}
                     onClick={onToggle}
                   />
                 </Popover.Trigger>
                 <Popover.Content
-                  bg="grey.825"
+                  bg="bg.muted"
                   p={2}
-                  borderColor="dark.100"
+                  borderColor="bg.panel/80"
                   maxW={270}
                   display={!isOpen ? 'none' : 'block'}
                   _focus={{ ring: 'none' }}

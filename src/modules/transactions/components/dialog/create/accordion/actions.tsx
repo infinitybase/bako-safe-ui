@@ -49,7 +49,7 @@ const AccordionConfirmAction = memo((props: AccordionActionProp) => {
   return (
     <Button
       maxW="fit-content"
-      bgColor="brand.500"
+      bgColor="primary.main"
       border="none"
       p={2}
       borderRadius={6}
@@ -62,7 +62,12 @@ const AccordionConfirmAction = memo((props: AccordionActionProp) => {
       {...props}
     >
       <Accordion.ItemTrigger asChild>
-        <Icon fontSize="sm" color="dark.950" as={CheckIcon} />
+        <Icon
+          fontSize="sm"
+          color="primary.contrast"
+          height="24px"
+          as={CheckIcon}
+        />
       </Accordion.ItemTrigger>
     </Button>
   );

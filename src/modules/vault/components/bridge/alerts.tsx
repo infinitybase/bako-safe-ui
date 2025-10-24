@@ -1,10 +1,13 @@
-import { Icon } from 'bako-ui';
-import { ComponentWithAs, HStack, IconProps, Text, VStack } from 'bako-ui';
+import { HStack, Icon, IconProps, Text, VStack } from 'bako-ui';
+import { ForwardRefExoticComponent } from 'react';
 
 interface AlertsBrigdeProps {
   title?: string;
   description: string;
-  icon: ComponentWithAs<'svg', IconProps>;
+  icon: ForwardRefExoticComponent<
+    IconProps & React.RefAttributes<SVGSVGElement>
+  >;
+
   type: 'info' | 'warning';
 }
 

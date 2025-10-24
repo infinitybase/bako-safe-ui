@@ -95,7 +95,6 @@ const AmountInput = (props: AmountInputProps) => (
         {...props}
         {...maskedInputProps}
         autoComplete="off"
-        color="gray"
         step="any"
         ref={(input) => maskedInputRef(input as HTMLInputElement)}
         inputMode="decimal"

@@ -108,7 +108,7 @@ const RecipientFormField = (props: RecipientFormFieldProps) => {
         isLoading={createContactRequest.isPending}
         isEdit={false}
       />
-      <VStack gap={5}>
+      <VStack gap={5} pb={3}>
         <Controller
           name={`transactions.${index}.value`}
           control={control}
@@ -139,10 +139,6 @@ const RecipientFormField = (props: RecipientFormFieldProps) => {
               assets={assets}
               assetsOptions={assetsOptions}
               onChange={field.onChange}
-              onClearValue={() => {
-                field.onChange('');
-                setValue(`transactions.${index}.amount`, '');
-              }}
               value={field.value}
             />
           )}

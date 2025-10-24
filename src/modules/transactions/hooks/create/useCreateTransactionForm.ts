@@ -21,10 +21,10 @@ export interface ITransactionField {
 }
 
 export interface ITransactionForm {
-  name?: string;
-  handle?: string;
-  resolver?: string;
-  transactions?: ITransactionField[];
+  name: string | undefined;
+  handle: string | undefined;
+  resolver: string | undefined;
+  transactions: ITransactionField[] | undefined;
 }
 
 export type UseCreateTransactionFormParams = {

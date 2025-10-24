@@ -171,7 +171,6 @@ const RecipientFormAddress = ({
           onSelect={handleSelectOption}
           optionsRef={optionsRef}
           emptyOptionsText={emptyOptionsText}
-          colorPalette="dark"
         />
         <Field.HelperText color="error.500">{error?.message}</Field.HelperText>
         <AddToAddressBook

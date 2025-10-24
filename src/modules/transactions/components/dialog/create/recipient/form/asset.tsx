@@ -6,8 +6,6 @@ import { FieldError, useFormContext } from 'react-hook-form';
 import { AssetSelectOption } from '@/components';
 import { AssetSelect, UseVaultDetailsReturn } from '@/modules';
 
-import Clear from './clear';
-
 interface RecipientFormAssetProps {
   assets: UseVaultDetailsReturn['assets'];
   index: number;
@@ -16,7 +14,6 @@ interface RecipientFormAssetProps {
   balanceAvailable: string;
   isNFT: boolean;
   isNFTAsset: (value: string) => boolean;
-  onClearValue: () => void;
   isInvalid: boolean;
   value?: string;
   error?: FieldError;
@@ -31,7 +28,6 @@ const RecipientFormAsset = ({
   isFeeCalcLoading,
   isNFT,
   isNFTAsset,
-  onClearValue,
   isInvalid,
   value,
   onChange,
@@ -100,7 +96,6 @@ const RecipientFormAsset = ({
           </Field.HelperText>
         }
       />
-      {!!value && <Clear top={isNFT ? '47%' : '38%'} onClear={onClearValue} />}
     </HStack>
   );
 };
