@@ -83,18 +83,9 @@ export function ModalSelectNetworkBridge({
 }: ModalSelectAssetsProps) {
   const [searchValue, setSearchValue] = useState('');
 
-  // const [filteredNetworks, setFilteredNetworks] = useState<AssetItem[]>([]);
-  // const [assetSelected, setAssetSelected] = useState<AssetItem>(
-  //   {} as AssetItem,
-  // );
-
   const handleClose = () => {
     onOpenChange?.({ open: false });
   };
-
-  // useEffect(() => {
-  //   setFilteredNetworks(options ?? []);
-  // }, [options]);
 
   const filteredNetworks = React.useMemo(() => {
     if (!options) return [];
@@ -108,30 +99,9 @@ export function ModalSelectNetworkBridge({
     );
   }, [options, searchValue]);
 
-  // const handleSearch = useCallback(
-  //   (searchValue: string) => {
-  //     if (!options) return;
-
-  //     if (!searchValue.trim()) {
-  //       setFilteredNetworks(options);
-  //       return;
-  //     }
-
-  //     const filtered = options.filter((asset) =>
-  //       asset.name.toLowerCase().includes(searchValue.toLowerCase()),
-  //     );
-
-  //     setFilteredNetworks(filtered);
-  //   },
-  //   [options, setFilteredNetworks],
-  // );
-
   const handleSelectAsset = useCallback(
     (asset: AssetItem) => {
       onSelect(asset);
-      // setAssetSelected(asset);
-      // setFilteredNetworks(options ?? []);
-      // resetField('searchNetwork');
       onClose();
     },
     [onSelect, onClose],
