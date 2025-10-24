@@ -64,10 +64,10 @@ const AssetItem = ({ asset, onSelect }: AssetItemBrigdeProps) => {
           onError={() => setLoaded(true)}
         />
       </Skeleton>
-      <Text fontSize={12} fontWeight={500} color="gray.50">
+      <Text fontSize="sm" fontWeight={500} color="gray.50">
         {name}
       </Text>
-      <Text ml="auto" fontSize={12} fontWeight={400} color="gray.50">
+      <Text ml="auto" fontSize="sm" fontWeight={400} color="gray.50">
         {balance} {symbol}
       </Text>
     </HStack>
@@ -224,7 +224,6 @@ export function ModalSelectAssetsBridge({
         >
           {filteredAssets.length > 0 ? (
             filteredAssets.map((asset) => (
-              /* eslint-disable react/prop-types */
               <AssetItem
                 key={asset.value}
                 asset={asset}
@@ -232,7 +231,7 @@ export function ModalSelectAssetsBridge({
               />
             ))
           ) : (
-            <Text color="grey.50" fontSize={12}>
+            <Text color="grey.50" fontSize="sm">
               No assets found
             </Text>
           )}

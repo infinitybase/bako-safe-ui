@@ -191,7 +191,7 @@ export function ModalSelectNetworkBridge({
           }}
         >
           {isLoadingOptions ? (
-            <Loader color="grey.500" size="md" />
+            <Loader color="textPrimary" size="md" />
           ) : filteredNetworks.length > 0 ? (
             filteredNetworks.map((net) => (
               <AssetItem
@@ -201,7 +201,7 @@ export function ModalSelectNetworkBridge({
               />
             ))
           ) : (
-            <Text color="gray.50" fontSize="xs">
+            <Text color="gray.50" fontSize="sm">
               No networks found
             </Text>
           )}
