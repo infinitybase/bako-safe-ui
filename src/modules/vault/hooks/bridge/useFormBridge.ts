@@ -273,7 +273,7 @@ const useFormBridge = () => {
       const payload = {
         destinationAddress: destinationAddress,
         sourceNetwork: isMainnet ? 'FUEL_MAINNET' : 'FUEL_TESTNET',
-        sourceToken: assetFrom?.name ?? '',
+        sourceToken: (assetFrom?.symbol || assetFrom?.name) ?? '',
         destinationNetwork: isMobile
           ? networkToMobile
           : (networkToValueForm?.value ?? ''),
