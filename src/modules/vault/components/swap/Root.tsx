@@ -1,5 +1,6 @@
-import { Button, Flex, Stack } from 'bako-ui';
+import { Box, Button, VStack } from 'bako-ui';
 import { Vault } from 'bakosafe';
+import { motion } from 'framer-motion';
 import { BN, bn } from 'fuels';
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 
@@ -24,16 +25,22 @@ import {
 import { useAvailableEthBalance } from '../../hooks/swap/useAvailableEthBalance';
 import { useMira } from '../../hooks/swap/useMira';
 import { State } from '../../hooks/swap/useSwapRouter';
+import { getYPositionForSwapStep } from '../../utils';
 import { CoinBox } from './CoinBox';
-import { SwapCost } from './SwapCost';
-import { SwapDivider } from './SwapDivider';
-import { SwapError } from './SwapError';
+import { SwapReview } from './SwapReview';
+
+export enum SwapSteps {
+  SELECT_SELL = 0,
+  SELECT_BUY = 1,
+  RESUME = 2,
+}
 
 export type SwapState = {
   from: Asset;
   to: Asset;
   fee?: BN;
   status: 'idle' | 'preview' | 'error';
+  step: SwapSteps;
 };
 
 const DEFAULT_FUEL_ASSET: Asset = {
@@ -63,6 +70,8 @@ interface RootSwapProps {
   networkUrl?: string;
 }
 
+const MotionBox = motion(Box);
+
 const MAINNET_NETWORK = import.meta.env.VITE_MAINNET_NETWORK;
 
 export const RootSwap = memo(
@@ -74,7 +83,7 @@ export const RootSwap = memo(
   }: RootSwapProps) => {
     const [swapMode, setSwapMode] = useState<SwapMode>('idle');
     const [swapButtonTitle, setSwapButtonTitle] = useState<SwapButtonTitle>(
-      SwapButtonTitle.PREVIEW,
+      SwapButtonTitle.SWAP,
     );
     const { successToast, errorToast } = useContactToast();
     const amm = useMira({ vault });
@@ -87,6 +96,7 @@ export const RootSwap = memo(
         ? { ...DEFAULT_FUEL_ASSET, assetId: FUEL_TESTNET_ASSET_ID }
         : DEFAULT_FUEL_ASSET,
       status: 'idle',
+      step: SwapSteps.SELECT_SELL,
     });
 
     const availableEthBalance = useAvailableEthBalance(swapState.from, assets);
@@ -116,10 +126,9 @@ export const RootSwap = memo(
 
     const { sendTx, isPending: isSendingTx } = useSwap();
 
-    const handleResetAmounts = useCallback(() => {
+    const handleResetSwap = useCallback(() => {
       setSwapMode('idle');
       setSwapState((prevState) => ({
-        ...prevState,
         from: {
           ...prevState.from,
           amount: '',
@@ -128,24 +137,39 @@ export const RootSwap = memo(
           ...prevState.to,
           amount: '',
         },
+        fee: undefined,
+        status: 'idle',
+        step: SwapSteps.SELECT_SELL,
       }));
-      setSwapButtonTitle(SwapButtonTitle.PREVIEW);
+      setSwapButtonTitle(SwapButtonTitle.SWAP);
     }, []);
 
-    const handleSubmitSwap = useCallback(async () => {
-      if (swapState.status === 'idle') {
-        const preview = await getSwapPreview({
-          state: swapState,
-          mode: swapMode,
-          slippage: DEFAULT_SLIPPAGE,
+    const handlePreviewSwap = useCallback(async () => {
+      if (
+        !swapState.from.amount ||
+        !swapState.to.amount ||
+        swapMode === 'idle'
+      ) {
+        errorToast({
+          title: 'Invalid Amount',
+          description: 'Please enter valid amounts to preview the swap.',
         });
-        setSwapState((prevState) => ({
-          ...prevState,
-          status: 'preview',
-          fee: preview.bakoFee,
-        }));
-        setSwapButtonTitle(SwapButtonTitle.SWAP);
+        return;
       }
+      setSwapState((prevState) => ({ ...prevState, step: SwapSteps.RESUME }));
+      const preview = await getSwapPreview({
+        state: swapState,
+        mode: swapMode,
+        slippage: DEFAULT_SLIPPAGE,
+      });
+      setSwapState((prevState) => ({
+        ...prevState,
+        status: 'preview',
+        fee: preview.bakoFee,
+      }));
+    }, [getSwapPreview, swapMode, swapState, errorToast]);
+
+    const handleSubmitSwap = useCallback(async () => {
       if (swapState.status !== 'idle' && swapData?.request) {
         await sendTx({
           vault,
@@ -155,7 +179,7 @@ export const RootSwap = memo(
         })
           .then(() => {
             successToast({ description: 'Swap transaction sent successfully' });
-            handleResetAmounts();
+            handleResetSwap();
           })
           .catch((e) => {
             const errorMessage = String(e);
@@ -179,15 +203,13 @@ export const RootSwap = memo(
           });
       }
     }, [
-      getSwapPreview,
-      swapMode,
       swapState,
       swapData,
       sendTx,
       vault,
       successToast,
       errorToast,
-      handleResetAmounts,
+      handleResetSwap,
     ]);
 
     const handleChangeSwapButtonTitle = useCallback(
@@ -219,7 +241,7 @@ export const RootSwap = memo(
           const isBalanceSufficient = asset.balance.gte(assetAmount);
 
           if (isBalanceSufficient) {
-            return setSwapButtonTitle(SwapButtonTitle.PREVIEW);
+            return setSwapButtonTitle(SwapButtonTitle.SWAP);
           }
         }
         if (swapButtonTitle !== SwapButtonTitle.INSUFFICIENT_BALANCE) {
@@ -243,7 +265,7 @@ export const RootSwap = memo(
             },
             status: 'idle',
           }));
-          handleChangeSwapButtonTitle(SwapButtonTitle.PREVIEW);
+          handleChangeSwapButtonTitle(SwapButtonTitle.SWAP);
         }
         handleCheckBalance(swapState.from.amount || '0', assetId);
       },
@@ -264,7 +286,7 @@ export const RootSwap = memo(
             },
             status: 'idle',
           }));
-          handleChangeSwapButtonTitle(SwapButtonTitle.PREVIEW);
+          handleChangeSwapButtonTitle(SwapButtonTitle.SWAP);
         }
       },
       [assets, swapState, handleChangeSwapButtonTitle],
@@ -299,16 +321,6 @@ export const RootSwap = memo(
       },
       [handleSwapModeChange, handleCheckBalance],
     );
-    const handleSwapAssets = useCallback(() => {
-      if (swapState.to.amount && swapState.to.amount !== '0') {
-        handleCheckBalance(swapState.to.amount, swapState.to.assetId);
-      }
-      setSwapState((prevState) => ({
-        ...prevState,
-        from: prevState.to,
-        to: prevState.from,
-      }));
-    }, [handleCheckBalance, swapState.to]);
 
     const handleUpdateAmountOut = useCallback(
       (amount: string) => {
@@ -354,12 +366,12 @@ export const RootSwap = memo(
         if (mode === 'sell') {
           const amountTo = swapState.to.amount;
 
-          if (amountTo === '0') return;
+          if (amountTo === '') return;
           setSwapState((prevState) => ({
             ...prevState,
             to: {
               ...prevState.to,
-              amount: '0',
+              amount: '',
             },
           }));
           return;
@@ -367,12 +379,12 @@ export const RootSwap = memo(
 
         const amountFrom = swapState.from.amount;
 
-        if (amountFrom === '0') return;
+        if (amountFrom === '') return;
         setSwapState((prevState) => ({
           ...prevState,
           from: {
             ...prevState.from,
-            amount: '0',
+            amount: '',
           },
         }));
       },
@@ -472,78 +484,167 @@ export const RootSwap = memo(
         swapButtonTitle === SwapButtonTitle.PENDING_TRANSACTION &&
         swapMode === 'idle'
       ) {
-        setSwapButtonTitle(SwapButtonTitle.PREVIEW);
+        setSwapButtonTitle(SwapButtonTitle.SWAP);
       }
     }, [isPendingSigner, swapButtonTitle, swapMode]);
 
-    const showSwapCost = useMemo(
-      () =>
-        [SwapButtonTitle.SWAP, SwapButtonTitle.PENDING_TRANSACTION].includes(
-          swapButtonTitle,
-        ) && swapState.status === 'preview',
-      [swapButtonTitle, swapState.status],
+    const handleChangeSwapStep = useCallback(
+      (step: SwapSteps) => {
+        if (step === swapState.step) return;
+        setSwapState((prevState) => ({
+          ...prevState,
+          step,
+        }));
+      },
+      [swapState.step],
+    );
+
+    const getOpacityForStep = useCallback(
+      (step: SwapSteps) => {
+        const distance = Math.abs(swapState.step - step);
+        if (distance === 0) return 1; // Current step
+        if (distance === 1) return 0.5; // 1 step away
+        return 0.3; // 2+ steps away
+      },
+      [swapState.step],
+    );
+
+    const commonTransition = useMemo(
+      () => ({
+        duration: 0.6,
+        ease: [0.32, 0.72, 0, 1],
+      }),
+      [],
+    );
+
+    const handleClickStep = useCallback(
+      (step: SwapSteps) => {
+        handleChangeSwapStep(step);
+      },
+      [handleChangeSwapStep],
     );
 
     return (
-      <Stack gap={1}>
-        <CoinBox
-          mode="sell"
-          coin={swapState.from}
-          onChangeAsset={handleFromAssetSelect}
-          assets={assets}
-          onChangeAmount={(value) => handleChangeAssetAmount('sell', value)}
-          isLoadingAmount={isLoading && swapMode === 'buy'}
-          isLoadingAssets={isLoadingAssets}
-          isLoadingPreview={isLoadingPreview}
-        />
-
-        <SwapDivider
-          onSwap={handleSwapAssets}
-          disabled={isLoadingPreview || isLoading}
-        />
-
-        <CoinBox
-          mode="buy"
-          coin={swapState.to}
-          onChangeAsset={handleToAssetSelect}
-          assets={assets}
-          onChangeAmount={(value) => handleChangeAssetAmount('buy', value)}
-          isLoadingAmount={isLoading && swapMode === 'sell'}
-          isLoadingAssets={isLoadingAssets}
-          isLoadingPreview={isLoadingPreview}
-        />
-
-        {trade.error && <SwapError error={trade.error} />}
-
-        {showSwapCost && (
-          <SwapCost
-            isLoadingCost={isLoadingPreview || isLoading}
-            pools={pools}
-            txCost={swapData?.tx}
-            swapState={swapState}
-            mode={swapMode}
-          />
-        )}
-
-        <Flex alignItems="center" mt={4}>
-          <Button
+      <VStack
+        w="full"
+        h="600px"
+        justifyContent="center"
+        align="center"
+        overflow="hidden"
+        position="relative"
+        pt="0"
+      >
+        <VStack
+          w={{ sm: '456px', base: 'full' }}
+          h="full"
+          position="relative"
+          justifyContent="center"
+        >
+          {/* SELECT_SELL STEP 0 */}
+          <MotionBox
+            onClick={() => handleClickStep(SwapSteps.SELECT_SELL)}
+            position="absolute"
             w="full"
-            colorPalette="primary"
-            disabled={
-              isEmptyAmounts ||
-              isEmptyAssets ||
-              isInsufficientBalance ||
-              isPendingTransaction ||
-              isInsufficientETHBalance ||
-              isNoRoute
-            }
-            loading={isLoadingPreview || isSendingTx || isLoading}
-            onClick={handleSubmitSwap}
+            animate={{
+              opacity: getOpacityForStep(SwapSteps.SELECT_SELL),
+              y: getYPositionForSwapStep(SwapSteps.SELECT_SELL, swapState.step),
+            }}
+            transition={commonTransition}
+            style={{
+              zIndex: swapState.step === SwapSteps.SELECT_SELL ? 5 : 1,
+            }}
           >
-            {swapButtonTitle}
-          </Button>
-        </Flex>
-      </Stack>
+            <CoinBox
+              mode="sell"
+              coin={swapState.from}
+              onChangeAsset={handleFromAssetSelect}
+              assets={assets}
+              onChangeAmount={(value) => handleChangeAssetAmount('sell', value)}
+              isLoadingAmount={isLoading && swapMode === 'buy'}
+              isLoadingAssets={isLoadingAssets}
+              isLoadingPreview={isLoadingPreview}
+              isCurrentStep={swapState.step === SwapSteps.SELECT_SELL}
+              error={trade.error}
+              onContinue={() => handleChangeSwapStep(SwapSteps.SELECT_BUY)}
+            />
+          </MotionBox>
+
+          {/* SELECT_BUY STEP 1 */}
+          <MotionBox
+            onClick={() => handleClickStep(SwapSteps.SELECT_BUY)}
+            position="absolute"
+            w="full"
+            animate={{
+              opacity: getOpacityForStep(SwapSteps.SELECT_BUY),
+              y: getYPositionForSwapStep(SwapSteps.SELECT_BUY, swapState.step),
+            }}
+            transition={commonTransition}
+            style={{
+              zIndex: swapState.step === SwapSteps.SELECT_BUY ? 5 : 1,
+            }}
+          >
+            <CoinBox
+              mode="buy"
+              coin={swapState.to}
+              onChangeAsset={handleToAssetSelect}
+              assets={assets}
+              onChangeAmount={(value) => handleChangeAssetAmount('buy', value)}
+              isLoadingAmount={isLoading}
+              isLoadingAssets={isLoadingAssets}
+              isLoadingPreview={isLoadingPreview}
+              isCurrentStep={swapState.step === SwapSteps.SELECT_BUY}
+              error={trade.error}
+              onContinue={handlePreviewSwap}
+            />
+          </MotionBox>
+
+          {/* RESUME STEP 2 */}
+          <MotionBox
+            onClick={() => {
+              if (!swapData) {
+                return;
+              }
+              handleClickStep(SwapSteps.RESUME);
+            }}
+            position="absolute"
+            w="full"
+            animate={{
+              opacity: getOpacityForStep(SwapSteps.RESUME),
+              y: getYPositionForSwapStep(SwapSteps.RESUME, swapState.step),
+            }}
+            transition={commonTransition}
+            style={{
+              zIndex: swapState.step === SwapSteps.RESUME ? 5 : 1,
+            }}
+          >
+            <SwapReview
+              isLoadingCost={isLoadingPreview || isLoading}
+              pools={pools}
+              txCost={swapData?.tx}
+              swapState={swapState}
+              mode={swapMode}
+              isCurrentStep={swapState.step === SwapSteps.RESUME}
+              error={trade.error}
+            >
+              <Button
+                disabled={
+                  isEmptyAmounts ||
+                  isEmptyAssets ||
+                  isInsufficientBalance ||
+                  isPendingTransaction ||
+                  isInsufficientETHBalance ||
+                  isNoRoute ||
+                  !!trade.error
+                }
+                loading={isLoadingPreview || isSendingTx || isLoading}
+                onClick={handleSubmitSwap}
+              >
+                {swapButtonTitle}
+              </Button>
+            </SwapReview>
+          </MotionBox>
+        </VStack>
+      </VStack>
     );
   },
 );

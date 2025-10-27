@@ -1,32 +1,30 @@
 import {
-  Box,
   Button,
   Card,
+  createListCollection,
   Flex,
+  Heading,
   InputGroup,
   Loader,
+  Select,
   Stack,
   Text,
 } from 'bako-ui';
+import { motion } from 'framer-motion';
 import { BN, bn } from 'fuels';
-import {
-  memo,
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { memo, useCallback, useMemo, useRef } from 'react';
 
 import { CurrencyField } from '@/components';
 import { ETH_SLUG, MinEthValue } from '@/config/swap';
-import { Asset, SelectedCurrency } from '@/modules';
+import { Asset } from '@/modules';
 import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
-import { CRYPTO_CONFIG, formatCurrencyValue, formatMaxDecimals } from '@/utils';
-import { moneyFormat } from '@/utils/money-format';
 
+import { calculateTextWidth } from '../../utils';
+import { ExpandableCardSection } from '../bridge/ExpandableCardSection';
 import { AssetsModal } from './AssetsModal';
+import { SelectedAsset } from './SelectedAsset';
+
+const Root = motion(Card.Root);
 
 interface CoinBoxProps {
   mode: 'buy' | 'sell';
@@ -37,6 +35,9 @@ interface CoinBoxProps {
   isLoadingAmount?: boolean;
   isLoadingAssets?: boolean;
   isLoadingPreview: boolean;
+  isCurrentStep: boolean;
+  onContinue: () => void;
+  error?: string;
 }
 
 export const CoinBox = memo(
@@ -47,26 +48,14 @@ export const CoinBox = memo(
     assets,
     onChangeAmount,
     isLoadingAmount,
-    isLoadingAssets,
+    isLoadingAssets = false,
     isLoadingPreview,
+    isCurrentStep,
+    onContinue,
+    error,
   }: CoinBoxProps) => {
     const assetsModal = useDisclosure();
-    const mirrorRef = useRef<HTMLDivElement>(null);
     const coinInputRef = useRef<HTMLInputElement>(null);
-    const [inputWidth, setInputWidth] = useState<number | undefined>(undefined);
-
-    useEffect(() => {
-      if (mirrorRef.current && coinInputRef.current) {
-        const mirrorWidth = mirrorRef.current.offsetWidth;
-        // eslint-disable-next-line react-compiler/react-compiler
-        coinInputRef.current.style.width = `${mirrorWidth}px`;
-      }
-    }, [coin.amount]);
-
-    const currentRate = useMemo(
-      () => assets.find((a) => a.assetId === coin.assetId)?.rate || 0,
-      [assets, coin.assetId],
-    );
 
     const balance = useMemo(() => {
       const asset = assets.find((a) => a.assetId === coin.assetId);
@@ -75,41 +64,17 @@ export const CoinBox = memo(
       return asset.balance.formatUnits(asset.units);
     }, [assets, coin.assetId]);
 
-    const amountInUSD = useMemo(() => {
-      if (!coin.amount || !currentRate) return '0';
-      const coinAmount = formatMaxDecimals(coin.amount, coin.units);
+    const value = useMemo(() => coin.amount || '', [coin.amount]);
 
-      const amount = bn.parseUnits(coinAmount, coin.units);
-
-      const currentRateFormatted = formatMaxDecimals(
-        currentRate.toString(),
-        coin.units,
-      );
-      const rate = bn.parseUnits(currentRateFormatted, coin.units);
-      return amount.mul(rate).formatUnits(coin.units * 2);
-    }, [coin.amount, currentRate, coin.units]);
-
-    const value = useMemo(
-      () => (coin.amount === '0' ? '' : coin.amount || ''),
-      [coin.amount],
-    );
-
-    useLayoutEffect(() => {
-      if (!mirrorRef.current) return;
-      const w = mirrorRef.current.offsetWidth;
-      setInputWidth(w);
-    }, [value, coin.units]);
-
-    const config = useMemo(() => {
-      return {
-        ...CRYPTO_CONFIG,
-        decimalScale:
-          coin.units != null ? Number(coin.units) : CRYPTO_CONFIG.decimalScale,
-      };
-    }, [coin.units]);
+    const width = useMemo(() => {
+      return calculateTextWidth(value);
+    }, [value]);
 
     const handleChangeMaxBalance = useCallback(() => {
       const balanceInBN = bn.parseUnits(balance, coin.units);
+      if (balanceInBN.isZero()) {
+        return onChangeAmount('');
+      }
       // subtract MinEthValue to avoid insufficient funds for gas when selling ETH
       const gasBuffer = bn.parseUnits(MinEthValue.toString(), coin.units);
       const amount =
@@ -117,124 +82,181 @@ export const CoinBox = memo(
       onChangeAmount(amount.formatUnits(coin.units));
     }, [balance, coin, onChangeAmount]);
 
+    const assetsCollections = useMemo(
+      () =>
+        createListCollection({
+          items: assets.map((asset) => ({
+            label: asset.name || asset.slug,
+            value: asset.assetId,
+            balance: asset.balance,
+            icon: asset.icon,
+            units: asset.units,
+          })),
+        }),
+      [assets],
+    );
+
     return (
-      <Card.Root variant="outline" p={3} pb={12}>
-        <Flex alignItems="center" justifyContent="space-between">
-          <Flex alignItems="center" gap={2}>
-            <Text color="section.500" fontSize="xs">
-              {mode === 'buy' ? 'Buy' : 'Sell'}
-            </Text>
-            {isLoadingAmount && <Loader color="grey.500" size="xs" />}
-          </Flex>
-          <Box>
-            <SelectedCurrency
-              name={coin.name}
-              imageUrl={coin.icon}
-              onClick={assetsModal.onOpen}
-              isLoadingCurrencies={isLoadingAssets}
-              balance={balance}
-              symbol={coin.slug}
-              disabled={isLoadingPreview}
-            />
-          </Box>
-
-          <AssetsModal
-            isOpen={assetsModal.isOpen}
-            onOpenChange={assetsModal.onOpenChange}
-            assets={assets}
-            onSelect={onChangeAsset}
-          />
-        </Flex>
-
-        <Stack justifyContent="center" alignItems="center" w="full">
-          <InputGroup
-            w="fit-content"
-            maxW={{
-              base: '100%',
-              sm: 'none',
-            }}
-            borderBottom="1px solid"
-            borderColor="grey.950"
-            _focusWithin={{
-              borderColor: 'grey.200',
-            }}
-            opacity={isLoadingAmount ? 0.5 : 1}
-            _hover={{
-              borderColor: 'grey.200',
-            }}
-            onClick={() => {
-              coinInputRef.current?.focus();
-            }}
-            gap={2}
-            endElement={
-              <Text
-                color="grey.500"
-                _groupFocusWithin={{
-                  color: 'grey.200',
-                }}
-                _groupHover={{
-                  color: 'grey.200',
-                }}
+      <Root
+        variant="subtle"
+        rounded="2xl"
+        w="full"
+        bg="bg.panel"
+        minH="88px"
+        overflow="hidden"
+      >
+        <Card.Header pb={isCurrentStep ? 0 : 6}>
+          <Flex alignItems="center" justifyContent="space-between" gap={1}>
+            <Stack gap={1}>
+              <Heading
+                color={isCurrentStep ? 'textPrimary' : 'gray.400'}
                 fontSize="sm"
+                lineHeight="shorter"
               >
-                {coin.slug}
-              </Text>
-            }
-          >
-            <>
+                {mode === 'buy' ? 'Receive' : 'Send'}
+              </Heading>
+              {!isCurrentStep && value && (
+                <Text
+                  truncate
+                  lineClamp={1}
+                  fontSize="sm"
+                  color="gray.50"
+                  letterSpacing="wider"
+                  fontWeight="bold"
+                  maxW={{ base: '130px', sm: 'unset' }}
+                >
+                  {value}
+                  <Text as="span" ml={1} color="gray.400" fontWeight="normal">
+                    {coin.slug}
+                  </Text>
+                </Text>
+              )}
+            </Stack>
+
+            <Select.Root
+              collection={assetsCollections}
+              open={false}
+              maxW="172px"
+              rounded="lg"
+              bg="bg.muted"
+              cursor="pointer"
+              value={[coin.assetId]}
+            >
+              <Select.HiddenSelect />
+              <Select.Control>
+                <Select.Trigger asChild>
+                  <SelectedAsset
+                    onClick={assetsModal.onOpen}
+                    isLoading={isLoadingAssets}
+                    balance={balance}
+                  />
+                </Select.Trigger>
+                <Select.IndicatorGroup>
+                  <Select.Indicator />
+                </Select.IndicatorGroup>
+              </Select.Control>
+            </Select.Root>
+            <AssetsModal
+              isOpen={assetsModal.isOpen}
+              onOpenChange={assetsModal.onOpenChange}
+              assets={assets}
+              onSelect={onChangeAsset}
+              isLoading={isLoadingAssets}
+            />
+          </Flex>
+        </Card.Header>
+        <ExpandableCardSection isExpanded={isCurrentStep} type="body">
+          <Stack>
+            <InputGroup
+              alignItems="center"
+              justifyContent="start"
+              px={0}
+              w={`${width}px`}
+              maxW={{ base: 'fit-content', sm: 'unset' }}
+              border="none"
+              transition="width 0.15s ease-out"
+              opacity={isLoadingAmount ? 0.5 : 1}
+              onClick={() => {
+                coinInputRef.current?.focus();
+              }}
+              gap={2}
+              endElementProps={{
+                px: 0,
+                maxW: '50px',
+              }}
+              endElement={
+                isLoadingAmount ? (
+                  <Loader />
+                ) : (
+                  <Text color="gray.400" fontSize="sm" truncate lineClamp={1}>
+                    {coin.slug}
+                  </Text>
+                )
+              }
+            >
               <CurrencyField
+                bg="bg.panel"
+                outline="none"
+                border="none"
+                color="gray.50"
+                _selection={{
+                  bg: 'textSecondary',
+                }}
                 name={`amount-${mode}`}
-                id={`amount-${mode}`}
-                borderBottomWidth="0"
                 ref={coinInputRef}
                 value={value}
                 type="crypto"
+                letterSpacing="wider"
+                minW={0}
                 px={0}
-                placeholder="0"
-                _placeholder={{ opacity: 0.5 }}
-                _focus={{ _placeholder: { color: 'grey.50' } }}
+                placeholder="0.000"
                 disabled={isLoadingAmount || isLoadingPreview}
                 fontSize="3xl"
                 decimalScale={coin.units}
-                w={inputWidth ? `${inputWidth}px` : undefined}
-                minW={'20px'}
-                maxW="450px"
                 onChange={onChangeAmount}
+                fontWeight="bold"
               />
-              <Box
-                position="absolute"
-                visibility="hidden"
-                fontSize="3xl"
-                ref={mirrorRef}
-                whiteSpace="nowrap"
+            </InputGroup>
+          </Stack>
+        </ExpandableCardSection>
+        <ExpandableCardSection isExpanded={isCurrentStep} type="footer">
+          <Flex alignItems="center" justifyContent="space-between" w="full">
+            {mode === 'sell' && (
+              <Button
+                variant="subtle"
+                onClick={handleChangeMaxBalance}
+                disabled={isLoadingAmount || isLoadingAssets}
+                borderRadius="lg"
+                size="xs"
               >
-                {formatCurrencyValue(value || '0', config, false)}
-              </Box>
-            </>
-          </InputGroup>
-
-          <Text color="grey.500" fontSize="xs" minH="20px" maxW={'450px'}>
-            {coin.amount &&
-              currentRate &&
-              bn.parseUnits(coin.amount).gt(0) &&
-              moneyFormat(amountInUSD)}
-          </Text>
-
-          {mode === 'sell' && (
-            <Button
-              colorPalette="secondary"
-              size="xs"
-              fontSize="2xs"
-              onClick={handleChangeMaxBalance}
-              disabled={isLoadingAmount}
-              color="grey.425"
-              borderRadius={6}
-            >
-              MAX
-            </Button>
-          )}
-        </Stack>
-      </Card.Root>
+                MAX
+              </Button>
+            )}
+            {error ? (
+              <Text
+                fontSize="xs"
+                color="red.500"
+                lineClamp={1}
+                truncate
+                ml="auto"
+              >
+                {error}
+              </Text>
+            ) : (
+              <Button
+                size="xs"
+                rounded="lg"
+                disabled={isLoadingAssets}
+                loading={isLoadingAmount}
+                ml="auto"
+                onClick={onContinue}
+              >
+                Continue
+              </Button>
+            )}
+          </Flex>
+        </ExpandableCardSection>
+      </Root>
     );
   },
 );
