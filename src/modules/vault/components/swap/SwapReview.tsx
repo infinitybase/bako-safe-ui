@@ -75,6 +75,18 @@ export const SwapReview = memo(function SwapReview({
           <Stack gap={1}>
             <Flex alignItems="center" justifyContent="space-between">
               <Text color="gray.400" fontSize="xs">
+                Estimated fees:
+              </Text>
+              <Text color="textPrimary" fontSize="xs">
+                {isLoadingCost && (
+                  <Loader size="xs" ml="auto" color="gray.400" />
+                )}
+                {!isLoadingCost && fee}
+              </Text>
+            </Flex>
+
+            <Flex alignItems="center" justifyContent="space-between">
+              <Text color="gray.400" fontSize="xs">
                 Rate:
               </Text>
               <Text color="textPrimary" fontSize="xs">
@@ -84,7 +96,7 @@ export const SwapReview = memo(function SwapReview({
 
             <Flex alignItems="center" justifyContent="space-between">
               <Text color="gray.400" fontSize="xs">
-                Routing:
+                Order Routing:
               </Text>
               <Flex alignItems="center" gap={1}>
                 {isLoadingCost && (
@@ -111,19 +123,7 @@ export const SwapReview = memo(function SwapReview({
 
             <Flex alignItems="center" justifyContent="space-between">
               <Text color="gray.400" fontSize="xs">
-                Estimated fees:
-              </Text>
-              <Text color="textPrimary" fontSize="xs">
-                {isLoadingCost && (
-                  <Loader size="xs" ml="auto" color="gray.400" />
-                )}
-                {!isLoadingCost && fee}
-              </Text>
-            </Flex>
-
-            <Flex alignItems="center" justifyContent="space-between">
-              <Text color="gray.400" fontSize="xs">
-                Gas cost:
+                Network cost:
               </Text>
               {isLoadingCost && <Loader size="xs" ml="auto" color="gray.400" />}
 
