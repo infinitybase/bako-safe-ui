@@ -4,40 +4,7 @@ import { memo, useCallback, useMemo, useRef } from 'react';
 import { CurrencyField } from '@/components';
 import { formatMaxDecimals } from '@/utils';
 
-const CHAR_WIDTH_MAP = {
-  '0': 20,
-  '1': 12,
-  '2': 20,
-  '3': 20,
-  '4': 20,
-  '5': 20,
-  '6': 20,
-  '7': 20,
-  '8': 20,
-  '9': 20,
-  '.': 10,
-  ',': 10,
-  ' ': 8,
-} as const;
-
-const MIN_WIDTH = 80;
-const MIN_WIDTH_WITHOUT_VALUE = 150;
-const SYMBOL_PADDING = 60;
-
-const calculateTextWidth = (text: string): number => {
-  // Fallback to '0.000' if text is empty
-  const displayText = text || '0.000';
-
-  let width = 0;
-  for (let i = 0; i < displayText.length; i++) {
-    const char = displayText[i] as keyof typeof CHAR_WIDTH_MAP;
-    width += CHAR_WIDTH_MAP[char] || 20;
-  }
-
-  const min = text.length === 0 ? MIN_WIDTH_WITHOUT_VALUE : MIN_WIDTH;
-
-  return Math.max(min, width + SYMBOL_PADDING);
-};
+import { calculateTextWidth } from '../../utils';
 
 const InputAmountComponent = ({
   symbol,

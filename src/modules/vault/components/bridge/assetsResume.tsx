@@ -28,16 +28,13 @@ export const AssetsResume = ({
     >
       <Flex gap={3} alignItems="center">
         <Box position="relative">
-          <Avatar
-            boxSize="20px"
-            src="https://verified-assets.fuel.network/images/fuel.svg"
-          />
+          <Avatar boxSize="20px" src={fromAsset.image} />
           <Float placement="bottom-end" offsetX="1" offsetY="1">
             <Avatar
               border="1px solid"
               borderColor="bg.panel"
               boxSize="14px"
-              src={fromAsset.image}
+              src="https://verified-assets.fuel.network/images/fuel.svg"
             />
           </Float>
         </Box>
@@ -74,13 +71,13 @@ export const AssetsResume = ({
           </Text>
         </Stack>
         <Box position="relative">
-          <Avatar boxSize="20px" src={toNetwork?.image} />
+          <Avatar boxSize="20px" src={toAsset.image} />
           <Float placement="bottom-end" offsetX="1" offsetY="1">
             <Avatar
               border="1px solid"
               borderColor="bg.panel"
               boxSize="14px"
-              src={toAsset.image}
+              src={toNetwork?.image}
             />
           </Float>
         </Box>
