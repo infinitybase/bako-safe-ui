@@ -250,25 +250,65 @@ export const formatMeldEthSlug = (slug: string) => {
 };
 
 /**
- * @description Calculates the Y position for each step (carousel vertical effect)
+ * @description Generic function to calculate Y position for carousel vertical effect
  * Keeps the steps stacked vertically, centering the current step
- * @param step The step to get the Y position for
- * @param stepForm The current step of the form
+ * @param stepIndex The step to get the Y position for
+ * @param currentIndex The current step
+ * @param getHeightForStep Function that returns the height for each step
+ * @param gap Gap between cards (default: 8px)
  * @returns The Y position for the step
  */
-export const getYPositionForStep = (
+const calculateCarouselYPosition = (
+  stepIndex: number,
+  currentIndex: number,
+  getHeightForStep: (step: number) => number,
+  gap = 8,
+): number => {
+  // If current step, position is 0 (centered)
+  if (stepIndex === currentIndex) return 0;
+
+  let yPosition = 0;
+
+  if (stepIndex < currentIndex) {
+    // Steps above the current step
+    yPosition = -(getHeightForStep(currentIndex) / 2 + gap);
+
+    // Sum heights of cards between step and current (from closest to farthest)
+    for (let i = currentIndex - 1; i > stepIndex; i--) {
+      yPosition -= getHeightForStep(i) + gap;
+    }
+
+    // Subtract half the height of the step itself
+    yPosition -= getHeightForStep(stepIndex) / 2;
+  } else {
+    // Steps below the current step
+    yPosition = getHeightForStep(currentIndex) / 2 + gap;
+
+    // Sum heights of cards between current and step (from closest to farthest)
+    for (let i = currentIndex + 1; i < stepIndex; i++) {
+      yPosition += getHeightForStep(i) + gap;
+    }
+
+    // Add half the height of the step itself
+    yPosition += getHeightForStep(stepIndex) / 2;
+  }
+
+  return yPosition;
+};
+
+/**
+ * @description Calculates the Y position for each bridge step
+ * @param step The bridge step to get the Y position for
+ * @param stepForm The current step of the bridge form
+ * @returns The Y position for the step
+ */
+export const getYPositionForBridgeStep = (
   step: BridgeStepsForm,
   stepForm: BridgeStepsForm,
 ): number => {
-  const currentIndex = stepForm;
-  const stepIndex = step;
+  const collapsedHeight = 88;
 
-  // Height of the cards (collapsed or expanded)
-  const collapsedHeight = 88; // Height of the collapsed header
-  const gap = 8; // gap between cards
-
-  // Function to get the real height of each step
-  const getHeightForStep = (stepNum: BridgeStepsForm) => {
+  const getHeightForStep = (stepNum: BridgeStepsForm): number => {
     if (stepNum === BridgeStepsForm.FROM) return collapsedHeight;
     if (stepNum === BridgeStepsForm.TO) return collapsedHeight;
     if (stepNum === BridgeStepsForm.AMOUNT) {
@@ -283,38 +323,71 @@ export const getYPositionForStep = (
     return collapsedHeight;
   };
 
-  // As the cards use position absolute, each one needs to be positioned
-  // considering that the current step is at y=0 (center)
-  // and the others are above/below considering the real heights + gaps
+  return calculateCarouselYPosition(step, stepForm, getHeightForStep);
+};
 
-  let yPosition = 0;
+/**
+ * @description Calculates the Y position for each swap step
+ * @param step The swap step to get the Y position for
+ * @param currentStep The current step of the swap
+ * @returns The Y position for the step
+ */
+export const getYPositionForSwapStep = (
+  step: number,
+  currentStep: number,
+): number => {
+  const collapsedHeight = 88;
 
-  if (stepIndex < currentIndex) {
-    // Steps above the current step
-    // Starts from the middle of the current card and goes up
-    yPosition = -(getHeightForStep(currentIndex) / 2 + gap);
-
-    // Sums the heights of the cards between the step and the current (from closest to farthest)
-    for (let i = currentIndex - 1; i > stepIndex; i--) {
-      yPosition -= getHeightForStep(i) + gap;
+  const getHeightForStep = (stepNum: number): number => {
+    if (stepNum === 0) {
+      // SELECT_SELL - expanded has input
+      return currentStep === 0 ? 200 : collapsedHeight;
     }
-
-    // Subtract half the height of the step itself
-    yPosition -= getHeightForStep(stepIndex) / 2;
-  } else if (stepIndex > currentIndex) {
-    // Steps below the current step
-    // Starts from the middle of the current card and goes down
-    yPosition = getHeightForStep(currentIndex) / 2 + gap;
-
-    // Sums the heights of the cards between the current and the step (from closest to farthest)
-    for (let i = currentIndex + 1; i < stepIndex; i++) {
-      yPosition += getHeightForStep(i) + gap;
+    if (stepNum === 1) {
+      // SELECT_BUY - expanded has input
+      return currentStep === 1 ? 200 : collapsedHeight;
     }
+    if (stepNum === 2) {
+      // RESUME - expanded has review info
+      return currentStep === 2 ? 242 : collapsedHeight;
+    }
+    return collapsedHeight;
+  };
 
-    // Adds half the height of the step itself
-    yPosition += getHeightForStep(stepIndex) / 2;
+  return calculateCarouselYPosition(step, currentStep, getHeightForStep);
+};
+
+const CHAR_WIDTH_MAP = {
+  '0': 20,
+  '1': 12,
+  '2': 20,
+  '3': 20,
+  '4': 20,
+  '5': 20,
+  '6': 20,
+  '7': 20,
+  '8': 20,
+  '9': 20,
+  '.': 10,
+  ',': 10,
+  ' ': 8,
+} as const;
+
+const MIN_WIDTH = 80;
+const MIN_WIDTH_WITHOUT_VALUE = 150;
+const SYMBOL_PADDING = 60;
+
+export const calculateTextWidth = (text: string): number => {
+  // Fallback to '0.000' if text is empty
+  const displayText = text || '0.000';
+
+  let width = 0;
+  for (let i = 0; i < displayText.length; i++) {
+    const char = displayText[i] as keyof typeof CHAR_WIDTH_MAP;
+    width += CHAR_WIDTH_MAP[char] || 20;
   }
-  // If stepIndex === currentIndex, yPosition = 0 (centered)
 
-  return yPosition;
+  const min = text.length === 0 ? MIN_WIDTH_WITHOUT_VALUE : MIN_WIDTH;
+
+  return Math.max(min, width + SYMBOL_PADDING);
 };
