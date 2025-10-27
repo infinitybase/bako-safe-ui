@@ -18,10 +18,10 @@ const useNotification = (options?: UseToastOptions) => {
     const method = status === 'loading' ? toaster.loading : toaster.create;
     method({
       status,
-      id: toastOptions.id || options?.id,
+      id: toastOptions.id || options?.id || `toast-${Date.now()}`,
       title: toastOptions.title || options?.title,
       description: toastOptions.description || options?.description,
-      type: toastOptions.status || options?.status || 'info',
+      type: status,
       duration: toastOptions.duration || options?.duration || 5000,
       closable: toastOptions.isClosable || options?.isClosable || false,
       ...options,
