@@ -156,6 +156,13 @@ export const RootSwap = memo(
         });
         return;
       }
+      if (SwapButtonTitle.INSUFFICIENT_BALANCE === swapButtonTitle) {
+        errorToast({
+          title: 'Insufficient Balance',
+          description: 'Insufficient balance to perform the swap.',
+        });
+        return;
+      }
       setSwapState((prevState) => ({ ...prevState, step: SwapSteps.RESUME }));
       const preview = await getSwapPreview({
         state: swapState,
@@ -167,7 +174,7 @@ export const RootSwap = memo(
         status: 'preview',
         fee: preview.bakoFee,
       }));
-    }, [getSwapPreview, swapMode, swapState, errorToast]);
+    }, [swapState, swapMode, swapButtonTitle, getSwapPreview, errorToast]);
 
     const handleSubmitSwap = useCallback(async () => {
       if (swapState.status !== 'idle' && swapData?.request) {
