@@ -13,7 +13,7 @@ import { useFormBridgeContext } from '../../components/bridge/providers/FormBrid
 import { BridgeStepsForm } from '../../components/bridge/utils';
 import { UseVaultDetailsReturn } from '../../hooks';
 import { useFormBridge } from '../../hooks/bridge';
-import { getYPositionForStep } from '../../utils';
+import { getYPositionForBridgeStep } from '../../utils';
 
 interface FormPageBrigdeProps {
   setScreenBridge: React.Dispatch<React.SetStateAction<'form' | 'resume'>>;
@@ -86,7 +86,7 @@ export function FormPageBrigde({ assets }: FormPageBrigdeProps) {
           w="full"
           animate={{
             opacity: getOpacityForStep(BridgeStepsForm.FROM),
-            y: getYPositionForStep(BridgeStepsForm.FROM, stepForm),
+            y: getYPositionForBridgeStep(BridgeStepsForm.FROM, stepForm),
           }}
           transition={commonTransition}
           style={{
@@ -103,7 +103,7 @@ export function FormPageBrigde({ assets }: FormPageBrigdeProps) {
           w="full"
           animate={{
             opacity: getOpacityForStep(BridgeStepsForm.TO),
-            y: getYPositionForStep(BridgeStepsForm.TO, stepForm),
+            y: getYPositionForBridgeStep(BridgeStepsForm.TO, stepForm),
           }}
           transition={commonTransition}
           style={{
@@ -120,7 +120,7 @@ export function FormPageBrigde({ assets }: FormPageBrigdeProps) {
           w="full"
           animate={{
             opacity: getOpacityForStep(BridgeStepsForm.AMOUNT),
-            y: getYPositionForStep(BridgeStepsForm.AMOUNT, stepForm),
+            y: getYPositionForBridgeStep(BridgeStepsForm.AMOUNT, stepForm),
           }}
           transition={commonTransition}
           style={{
@@ -142,7 +142,7 @@ export function FormPageBrigde({ assets }: FormPageBrigdeProps) {
           w="full"
           animate={{
             opacity: getOpacityForStep(BridgeStepsForm.DESTINATION),
-            y: getYPositionForStep(BridgeStepsForm.DESTINATION, stepForm),
+            y: getYPositionForBridgeStep(BridgeStepsForm.DESTINATION, stepForm),
           }}
           transition={commonTransition}
           style={{
@@ -160,7 +160,7 @@ export function FormPageBrigde({ assets }: FormPageBrigdeProps) {
             w="full"
             animate={{
               opacity: getOpacityForStep(BridgeStepsForm.RESUME),
-              y: getYPositionForStep(BridgeStepsForm.RESUME, stepForm),
+              y: getYPositionForBridgeStep(BridgeStepsForm.RESUME, stepForm),
             }}
             transition={commonTransition}
             style={{
