@@ -40,7 +40,12 @@ const DialogHeader = ({
     alignItems="flex-start"
     {...stackProps}
   >
-    <HStack w="full" justifyContent="space-between" alignItems="center">
+    <HStack
+      w="full"
+      justifyContent="space-between"
+      alignItems="center"
+      position="relative"
+    >
       <Heading
         fontSize={{ base: 'lg', sm: '3xl' }}
         color="white"
@@ -55,6 +60,9 @@ const DialogHeader = ({
             aria-label="Close window"
             cursor="pointer"
             onClick={onClose}
+            position="relative"
+            insetInlineEnd={0}
+            top={0}
           />
         </Dialog.CloseTrigger>
       )}

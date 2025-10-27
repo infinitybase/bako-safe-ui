@@ -36,14 +36,15 @@ const DialogModal = (props: DialogModalProps) => {
         <Dialog.Backdrop {...props.overlayProps} />
         <Dialog.Positioner>
           <Dialog.Content
-            rounded="3xl"
-            py={{ base: 2, sm: props.xsBreakPointPy ?? 8 }}
-            px={{ base: 4, sm: props.contentPadding ?? 0 }}
+            rounded={{ sm: '3xl' }}
+            py={{ base: 2, sm: props.xsBreakPointPy ?? 6 }}
+            px={{ base: 2, sm: props.contentPadding ?? 0 }}
             minH={{ sm: 'auto' }}
             {...props.modalContentProps}
           >
             <Dialog.Body
               overflowY="auto"
+              maxH={{ base: '100dvh' }}
               css={{
                 '&::-webkit-scrollbar': {
                   display: 'none',
