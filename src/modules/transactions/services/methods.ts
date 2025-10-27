@@ -218,7 +218,7 @@ export class TransactionService {
           const newAmount = bn
             .parseUnits(currentAmount, units)
             .add(bn.parseUnits(asset.amount, units));
-          assetAmountMap.set(asset.assetId, newAmount.formatUnits());
+          assetAmountMap.set(asset.assetId, newAmount.formatUnits(units));
         }
       });
 
