@@ -1,4 +1,6 @@
-import { theme, ThemeProvider } from 'bako-ui';
+import { ThemeProvider } from 'bako-ui';
+
+import theme from '@/themes';
 
 import { ColorModeProvider, ColorModeProviderProps } from './color-mode';
 import { Toaster } from './toaster';

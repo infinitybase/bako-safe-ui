@@ -1,1 +1,3 @@
-// export * from './default';
+import { theme } from 'bako-ui';
+
+export default theme;
