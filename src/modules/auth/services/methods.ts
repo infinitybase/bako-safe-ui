@@ -171,6 +171,12 @@ export type IGetUserInfosResponse = {
   network: Network;
 };
 
+interface IGetUserWalletResponse {
+  address: string;
+  configurable: string;
+  version: string;
+}
+
 export class UserService {
   static async create(payload: CreateUserPayload) {
     // const invalidNetwork = payload?.provider?.includes(NetworkType.MAINNET);
@@ -230,6 +236,11 @@ export class UserService {
     const { data } = await api.get<GetByHardwareResponse[]>(
       `/user/by-hardware/${hardwareId}`,
     );
+    return data;
+  }
+
+  static async userWallet() {
+    const { data } = await api.get<IGetUserWalletResponse>('/user/wallet');
     return data;
   }
 
