@@ -9,7 +9,6 @@ import {
 } from 'bako-ui';
 import { TransactionType } from 'bakosafe';
 import { memo, useCallback, useMemo } from 'react';
-import { IoIosArrowForward } from 'react-icons/io';
 
 import { ErrorIcon, SuccessIcon } from '@/components';
 import { TransactionState } from '@/modules/core';
@@ -30,30 +29,21 @@ interface TransactionActionsProps extends StackProps {
   callBack?: () => void;
 }
 
-const ActionsMobile = ({ isPossibleToSign }: ActionsMobileProps) => {
-  const {
-    screenSizes: { isSmall, isExtraSmall },
-  } = useWorkspaceContext();
-
+const ActionsMobile = memo(({ isPossibleToSign }: ActionsMobileProps) => {
   return (
-    <HStack justifyContent="end" gap={1}>
-      <Button
-        color={isPossibleToSign ? 'black' : 'grey.75'}
-        bgColor={isPossibleToSign ? 'brand.500' : '#F5F5F50D'}
-        fontWeight={isPossibleToSign ? 'bold' : 'normal'}
-        border="none"
-        fontSize="xs"
-        letterSpacing=".5px"
-        alignSelf={{ base: 'stretch', sm: 'flex-end' }}
-        colorPalette="secondary"
-        px={isExtraSmall ? 3 : 4}
-      >
-        <Icon as={IoIosArrowForward} fontSize="md" ml={isSmall ? -1 : 0} />
-        {isPossibleToSign ? 'Sign' : isSmall ? 'Details' : 'View Details'}
-      </Button>
-    </HStack>
+    <Button
+      alignSelf={{ base: 'stretch', sm: 'flex-end' }}
+      fontWeight="semibold"
+      variant={isPossibleToSign ? 'solid' : 'subtle'}
+      size="xs"
+      px={3}
+    >
+      {isPossibleToSign ? 'Sign' : 'Details'}
+    </Button>
   );
-};
+});
+
+ActionsMobile.displayName = 'Transaction Card Actions Mobile';
 
 const Actions = memo(
   ({
@@ -147,46 +137,68 @@ const Actions = memo(
       [declineTransaction, transaction],
     );
 
-    if (isMobile) {
-      return <ActionsMobile isPossibleToSign={showActionsButtons} />;
-    }
-
     return (
-      <HStack minW={140} justifySelf="end" {...rest}>
+      <HStack minW={{ md: 140 }} justifySelf="end" {...rest}>
         {isSigned && (
           <Badge
             h={6}
-            rounded="full"
+            rounded="sm"
             px={2}
-            colorPalette={isCanceled ? 'grey' : 'success'}
+            variant="subtle"
+            colorPalette={isCanceled ? 'gray' : 'green'}
+            css={
+              isCanceled
+                ? {
+                    bg: 'bg.muted/50',
+                    color: 'textSecondary',
+                  }
+                : {}
+            }
           >
             You {isCanceled ? 'canceled' : 'signed'}
-            {!isCanceled && <Icon as={SuccessIcon} w={4} color="success.700" />}
+            {!isCanceled && <Icon as={SuccessIcon} w={4} color="green" />}
           </Badge>
         )}
 
         {isDeclined && (
-          <Badge h={6} rounded="full" px={2} colorPalette="error">
+          <Badge
+            h={6}
+            variant="subtle"
+            rounded="sm"
+            px={2}
+            colorPalette="red"
+            bg="red.300/5"
+          >
             You declined
             <Icon as={ErrorIcon} w={4} />
           </Badge>
         )}
 
         {!isDeposit && notAnswered && (
-          <Badge h={6} rounded="full" px={2} colorPalette="info">
+          <Badge
+            h={6}
+            variant="subtle"
+            rounded="sm"
+            px={2}
+            bg="bg.muted/60"
+            color="textPrimary"
+          >
             {`You didn't sign`}
           </Badge>
         )}
 
-        {showActionsButtons ? (
-          <HStack minW={{ base: 140, sm: 100, xl: 140 }}>
+        {isMobile && <ActionsMobile isPossibleToSign={showActionsButtons} />}
+
+        {!isMobile && showActionsButtons ? (
+          <HStack
+            minW={{ base: 140, sm: 100, xl: 140 }}
+            flexDirection="row-reverse"
+          >
             <Button
               h={9}
               px={3}
               aria-label={'Sign btn tx card'}
-              colorPalette="primary"
               size={{ base: 'sm', sm: 'xs', lg: 'sm' }}
-              fontSize={{ base: 'unset', sm: 14, lg: 'unset' }}
               loading={isTxActionsInLoading}
               disabled={disableActionButtons}
               onClick={handleConfirm}
@@ -198,8 +210,7 @@ const Actions = memo(
               px={3}
               aria-label={'Decline btn tx card'}
               size={{ base: 'sm', sm: 'xs', lg: 'sm' }}
-              fontSize={{ base: 'unset', sm: 14, lg: 'unset' }}
-              colorPalette="secondary"
+              variant="subtle"
               onClick={handleDecline}
               loading={isTxActionsInLoading}
               disabled={disableActionButtons}
@@ -211,13 +222,12 @@ const Actions = memo(
           <Spacer />
         )}
 
-        <Accordion.ItemIndicator />
-        {/* <Icon
-          as={expanded ? IoIosArrowUp : IoIosArrowDown}
-          fontSize="md"
-          color="grey.200"
-          cursor="pointer"
-        /> */}
+        <Accordion.ItemIndicator
+          display={{
+            base: 'none',
+            sm: 'block',
+          }}
+        />
       </HStack>
     );
   },
