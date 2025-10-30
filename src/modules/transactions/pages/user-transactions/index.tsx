@@ -292,8 +292,8 @@ const UserTransactionsPage = () => {
         {!emptyTransactions && (
           <VStack h="35vh" mt={-3} w="full">
             {transactions?.map((grouped) => (
-              <Box key={grouped.monthYear} w="full">
-                <TransactionCard.GroupMonth monthYear={grouped.monthYear} />
+              <Box key={grouped.day} w="full">
+                <TransactionCard.GroupDay day={grouped.day} mb={2} />
 
                 <TransactionCard.List mt={1} w="full" gap={0}>
                   {grouped?.transactions.map((transaction) => (

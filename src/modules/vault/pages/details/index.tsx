@@ -2,7 +2,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { Box, Grid, GridItem, Loader, Text } from 'bako-ui';
 import { useEffect } from 'react';
 
-import { CustomSkeleton, TransactionFilters } from '@/components';
+import { TransactionFilters } from '@/components';
 import AddAssetsDialog from '@/components/addAssetsDialog';
 import DepositDialog from '@/components/depositDialog';
 import { EmptyState } from '@/components/emptyState';
@@ -11,6 +11,7 @@ import { CardLiquidStake } from '@/modules';
 import { useBakoSafeVault } from '@/modules/core/hooks';
 import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
 import { TransactionCard, WaitingSignatureBadge } from '@/modules/transactions';
+import { TransactionListSkeleton } from '@/modules/transactions/components/TransactionListSkeleton';
 import { useTransactionSocketListener } from '@/modules/transactions/hooks/events/useTransactionsSocketListener';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 import { useWorkspaceContext } from '@/modules/workspace/hooks';
@@ -139,7 +140,8 @@ const VaultDetailsPage = () => {
       <Box
         w="full"
         display="flex"
-        flexDir={{ base: 'column', sm: isSmall ? 'column' : 'row' }}
+        flexDir={{ base: 'row', sm: isSmall ? 'column' : 'row' }}
+        alignItems={{ base: 'center', sm: 'start' }}
         gap={4}
         mt={{ md: 10, base: 4 }}
         mb={{ base: 4, md: 6 }}
@@ -172,54 +174,47 @@ const VaultDetailsPage = () => {
         />
       </Box>
 
-      <CustomSkeleton
-        minH="30vh"
-        loading={vault.isLoading || isLoading}
-        h={!vault.isLoading || !isLoading ? 'unset' : '100px'}
-      >
-        {hasTransactions
-          ? transactions?.map((grouped, index) => {
-              const isLastGroup = index === transactions.length - 1;
-              return (
-                <Box key={grouped.monthYear} w="full">
-                  <TransactionCard.GroupMonth
-                    monthYear={grouped.monthYear}
-                    mb={!isMobile ? 3 : 0}
-                  />
-                  <TransactionCard.List
-                    w="full"
-                    maxH={{ base: undefined, sm: 'calc(100% - 72px)' }}
-                    gap={0}
-                  >
-                    {grouped?.transactions?.map((transaction) => (
-                      <TransactionCard.Item
-                        w="full"
-                        key={transaction.id}
-                        ref={transactionsRef}
-                        isMobile={isMobile}
-                        transaction={transaction}
-                        userInfos={userInfos}
-                      />
-                    ))}
+      {isLoading && <TransactionListSkeleton />}
 
-                    {isLastGroup &&
-                      grouped.transactions.length >= 5 &&
-                      isFetching && (
-                        <Loader alignSelf="center" mt={4} color="brand.500" />
-                      )}
-                  </TransactionCard.List>
-                </Box>
-              );
-            })
-          : !!transactions && (
-              <EmptyState
-                title="No Data available"
-                subTitle="Currently, there is no available data to display in this section."
-                showAction={false}
-                mb={10}
-              />
-            )}
-      </CustomSkeleton>
+      {hasTransactions
+        ? transactions?.map((grouped, index) => {
+            const isLastGroup = index === transactions.length - 1;
+            return (
+              <Box key={grouped.day} w="full">
+                <TransactionCard.GroupDay day={grouped.day} mb={2} />
+                <TransactionCard.List
+                  w="full"
+                  maxH={{ base: undefined, sm: 'calc(100% - 72px)' }}
+                  gap={0}
+                >
+                  {grouped?.transactions?.map((transaction) => (
+                    <TransactionCard.Item
+                      w="full"
+                      key={transaction.id}
+                      ref={transactionsRef}
+                      isMobile={isMobile}
+                      transaction={transaction}
+                      userInfos={userInfos}
+                    />
+                  ))}
+
+                  {isLastGroup &&
+                    grouped.transactions.length >= 5 &&
+                    isFetching && (
+                      <Loader alignSelf="center" mt={4} color="brand.500" />
+                    )}
+                </TransactionCard.List>
+              </Box>
+            );
+          })
+        : !!transactions && (
+            <EmptyState
+              title="No Data available"
+              subTitle="Currently, there is no available data to display in this section."
+              showAction={false}
+              mb={10}
+            />
+          )}
     </Box>
   );
 };

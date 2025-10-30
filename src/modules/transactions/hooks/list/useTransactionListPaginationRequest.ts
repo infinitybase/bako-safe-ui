@@ -2,7 +2,7 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 
 import { invalidateQueries, WorkspacesQueryKey } from '@/modules/core';
 import { SortOptionTx } from '@/modules/core/hooks/bakosafe/utils/types';
-import { useGroupTransactionsByMonth } from '@/modules/core/hooks/useGroupTransactionsByMonth';
+import { useGroupTransactionsByDay } from '@/modules/core/hooks/useGroupTransactionsByDay';
 import { DEFAULT_INITIAL_PAGE_PARAM } from '@/utils/constants';
 
 import {
@@ -59,7 +59,7 @@ const useTransactionListPaginationRequest = (
 
   return {
     ...query,
-    transactions: useGroupTransactionsByMonth(transactionsList),
+    transactions: useGroupTransactionsByDay(transactionsList),
   };
 };
 

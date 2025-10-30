@@ -1,4 +1,5 @@
-import { useGroupTransactionsByMonth } from '@/modules/core/hooks/useGroupTransactionsByMonth';
+import { useGroupTransactionsByDay } from '@/modules/core/hooks/useGroupTransactionsByDay';
+
 import { useHomeTransactionsRequest } from './useHomeTransationsRequest';
 
 export type IUseHomeTransactionsReturn = ReturnType<typeof useHomeTransactions>;
@@ -8,7 +9,7 @@ const useHomeTransactions = (workspaceId: string) => {
     useHomeTransactionsRequest(workspaceId);
 
   return {
-    transactions: useGroupTransactionsByMonth(data?.data),
+    transactions: useGroupTransactionsByDay(data?.data),
     request: {
       isFetching,
       isLoading,

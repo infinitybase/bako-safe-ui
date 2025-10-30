@@ -2,7 +2,7 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { TransactionType } from 'bakosafe';
 
 import { SortOptionTx } from '@/modules/core/hooks/bakosafe/utils/types';
-import { useGroupTransactionsByMonth } from '@/modules/core/hooks/useGroupTransactionsByMonth';
+import { useGroupTransactionsByDay } from '@/modules/core/hooks/useGroupTransactionsByDay';
 import {
   GetTransactionsWithIncomingsParams,
   TransactionOrderBy,
@@ -83,7 +83,7 @@ const useVaultTransactionsRequest = (
   return {
     ...query,
     queryKey,
-    transactions: useGroupTransactionsByMonth(transactionsList),
+    transactions: useGroupTransactionsByDay(transactionsList),
   };
 };
 

@@ -99,8 +99,8 @@ const HomeTransactions = () => {
 
       {!!transactions?.length &&
         transactions?.map((grouped) => (
-          <Box key={grouped.monthYear}>
-            <TransactionCard.GroupMonth monthYear={grouped.monthYear} />
+          <Box key={grouped.day}>
+            <TransactionCard.GroupMonth monthYear={grouped.day} />
 
             <TransactionCard.List
               gap={4}
