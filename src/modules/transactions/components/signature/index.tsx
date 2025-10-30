@@ -28,7 +28,13 @@ const WaitingSignatureBadge = (props: WaitingSignatureBadgeProps) => {
   }
 
   return (
-    <Badge h={5} colorPalette="yellow" variant="outline" fontSize="xs">
+    <Badge
+      h={5}
+      colorPalette="yellow"
+      variant="outline"
+      fontSize="xs"
+      display={{ base: 'none', sm: 'inline-flex' }}
+    >
       <PendingIcon w="12px" mr={1} />
       {`${quantity} ${label}`}
     </Badge>
