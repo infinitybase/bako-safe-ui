@@ -1,4 +1,4 @@
-import { Badge, HStack, Loader, StackProps, Text, VStack } from 'bako-ui';
+import { HStack, Loader, StackProps, Text, VStack } from 'bako-ui';
 import { WitnessStatus } from 'bakosafe';
 
 import { TransactionState } from '@/modules/core';
@@ -9,76 +9,70 @@ interface TransactionCardStatusProps extends StackProps {
   showDescription?: boolean;
 }
 
-import { useMemo } from 'react';
+import { memo, useMemo } from 'react';
 
 import { ITransaction } from '@/modules/core/hooks/bakosafe/utils/types';
 
 import { useTransactionState } from '../../states';
 
-const Status = ({
-  transaction,
-  status,
-  showDescription = true,
-  ...rest
-}: TransactionCardStatusProps) => {
-  const { isReproved, isCompleted, isError, isCanceled, isPendingProvider } =
-    status;
+const Status = memo(
+  ({
+    transaction,
+    status,
+    showDescription = true,
+    ...rest
+  }: TransactionCardStatusProps) => {
+    const { isCurrentTxPending } = useTransactionState();
+    const { isReproved, isCompleted, isError, isCanceled, isPendingProvider } =
+      status;
 
-  const signaturesCount =
-    transaction!.resume?.witnesses?.filter((w) =>
-      [WitnessStatus.DONE, WitnessStatus.CANCELED].includes(w.status),
-    ).length ?? 0;
+    const signaturesCount =
+      transaction!.resume?.witnesses?.filter((w) =>
+        [WitnessStatus.DONE, WitnessStatus.CANCELED].includes(w.status),
+      ).length ?? 0;
 
-  const signatureStatus = `${signaturesCount}/${transaction.resume.requiredSigners} Sgd`;
+    const signatureStatus = `${signaturesCount}/${transaction.resume.requiredSigners} Sgd`;
 
-  const { isCurrentTxPending } = useTransactionState();
+    const isCurrentTxLoading =
+      isCurrentTxPending.isPending &&
+      transaction.id === isCurrentTxPending.transactionId;
 
-  const isCurrentTxLoading =
-    isCurrentTxPending.isPending &&
-    transaction.id === isCurrentTxPending.transactionId;
+    const textColor = useMemo(() => {
+      if (isReproved || isError) return 'red';
+      if (isCompleted) return 'textPrimary';
+      if (isCanceled) return 'textSecondary';
+      return 'primary.main';
+    }, [isReproved, isCompleted, isError, isCanceled]);
 
-  const badgeColor = useMemo(() => {
-    if (isReproved || isError) return 'red';
-    if (isCompleted) return 'green';
-    if (isCanceled) return 'grey';
-    return 'yellow';
-  }, [isReproved, isCompleted, isError, isCanceled]);
-
-  return (
-    <HStack
-      justifyContent={{ base: 'flex-end', sm: 'center' }}
-      ml={{ base: 0, sm: 6 }}
-      maxW="full"
-      {...rest}
-    >
-      {isCurrentTxLoading && (
-        <Loader
-          css={{ '--spinner-track-color': 'dark.100' }}
-          size="lg"
-          color="brand.500"
-        />
-      )}
-      <VStack
-        hidden={isCurrentTxLoading}
-        minW={100}
-        gap={0}
-        w="full"
-        direction={{ base: 'row', sm: 'column' }}
-        alignItems={{ base: 'flex-end', md: 'center' }}
-        justifyContent="flex-end"
+    return (
+      <HStack
+        justifyContent={{ base: 'flex-end', sm: 'center' }}
+        ml={{ base: 0, sm: 6 }}
+        maxW="full"
+        {...rest}
       >
-        <HStack position="relative">
-          <Badge
-            minW={'80px'}
-            display="flex"
-            alignItems="center"
+        {isCurrentTxLoading && (
+          <Loader
+            css={{ '--spinner-track-color': 'dark.100' }}
+            size="lg"
+            color="brand.500"
+          />
+        )}
+        <VStack
+          hidden={isCurrentTxLoading}
+          minW={{ md: 100 }}
+          gap={0}
+          w="full"
+          direction={{ base: 'row', sm: 'column' }}
+          alignItems={{ base: 'flex-end', md: 'center' }}
+          justifyContent="flex-end"
+        >
+          <Text
             fontSize="xs"
-            justifyContent={'center'}
-            h={6}
-            variant="surface"
-            borderRadius="20px"
-            colorPalette={badgeColor}
-            // variant={badgeColor}
+            lineHeight="shorter"
+            fontWeight="medium"
+            letterSpacing="wider"
+            color={textColor}
           >
             {isError && 'Error'}
             {isReproved && 'Declined'}
@@ -91,21 +85,19 @@ const Status = ({
               !isCanceled &&
               !isPendingProvider &&
               signatureStatus}
-          </Badge>
-        </HStack>
-
-        {showDescription && (
-          <Text
-            // variant="description"
-            fontSize={{ base: 'xs', sm: 'sm' }}
-            color="grey.500"
-          >
-            Transfer status
           </Text>
-        )}
-      </VStack>
-    </HStack>
-  );
-};
+
+          {showDescription && (
+            <Text fontSize="xs" color="gray.400" lineHeight="shorter">
+              Transfer status
+            </Text>
+          )}
+        </VStack>
+      </HStack>
+    );
+  },
+);
+
+Status.displayName = 'TransactionStatus';
 
 export { Status };

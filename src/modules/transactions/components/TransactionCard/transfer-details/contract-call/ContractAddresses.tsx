@@ -45,6 +45,10 @@ const ContractAddresses = ({
       gap={{ base: 1, sm: 10 }}
       w="full"
       justifyContent="space-between"
+      mb={1}
+      _last={{
+        mb: 0,
+      }}
       {...props}
     >
       {from?.address && (
@@ -53,14 +57,13 @@ const ContractAddresses = ({
             {_from?.contact && (
               <Text
                 truncate
-                textOverflow="ellipsis"
                 maxW={{
                   base: isExtraSmall ? '80px' : isLitteSmall ? '90px' : '125px',
                   sm: isMobile ? '180px' : '135px',
                 }}
                 fontSize={isExtraSmall ? 'xs' : 'sm'}
                 textAlign="start"
-                color="grey.75"
+                color="textPrimary"
               >
                 {_from.contact}
               </Text>
@@ -71,7 +74,7 @@ const ContractAddresses = ({
                 value={from.address}
                 justifyContent="start"
                 textAlign="start"
-                color={_from?.contact ? 'grey.500' : 'grey.75'}
+                color="textPrimary"
               />
             )}
 

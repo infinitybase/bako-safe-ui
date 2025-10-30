@@ -1,16 +1,21 @@
-import { Avatar, Button, Center, Heading, HStack, Icon, VStack } from 'bako-ui';
+import {
+  Avatar,
+  Button,
+  Center,
+  Heading,
+  HStack,
+  Icon,
+  Stack,
+  VStack,
+} from 'bako-ui';
 import { format } from 'date-fns';
 
 import {
   Dialog,
   DialogModalProps,
-  DownLeftArrowGreen,
   FileCodeIcon,
   UpRightArrow,
-  UpRightArrowYellow,
 } from '@/components';
-import { ContractIcon } from '@/components/icons/tx-contract';
-import { DeployIcon } from '@/components/icons/tx-deploy';
 import env from '@/config/env';
 import { TransactionState } from '@/modules/core/models/transaction';
 import { NetworkService } from '@/modules/network/services';
@@ -30,10 +35,12 @@ interface DetailsDialogProps extends Omit<DialogModalProps, 'children'> {
   isSigner: boolean;
   isContract: boolean;
   callBack?: () => void;
+  TransactionIcon: React.ElementType;
 }
 
 const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
-  const { onOpenChange, open, transaction, status, isSigner } = props;
+  const { onOpenChange, open, transaction, status, isSigner, TransactionIcon } =
+    props;
   const {
     screenSizes: { isLowerThanFourHundredAndThirty },
   } = useWorkspaceContext();
@@ -46,13 +53,8 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
     );
   };
 
-  const {
-    isDeploy,
-    isFromConnector,
-    isDeposit,
-    isMint,
-    showAmountInformations,
-  } = useVerifyTransactionInformations(transaction);
+  const { isDeposit, isMint, showAmountInformations } =
+    useVerifyTransactionInformations(transaction);
 
   const {
     signTransaction: {
@@ -85,39 +87,19 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
 
   return (
     <Dialog.Modal onOpenChange={onOpenChange} open={open}>
-      <Dialog.Body borderTop="none">
+      <Dialog.Body borderTop="none" pb="64px" px={1}>
         <Dialog.Header
           onClose={() => onOpenChange?.({ open: false })}
           w="full"
           maxW={{ base: 480, sm: 'unset' }}
+          pt={6}
           title="Transaction Details"
         />
         <VStack gap={{ base: 3, sm: 5 }} display="block">
           <VStack w="full" gap={4} justifyContent="space-between">
             <HStack w="full">
               <HStack minH="38px">
-                <Center
-                  borderRadius="4px"
-                  width={6}
-                  height={6}
-                  bgColor="grey.925"
-                  padding="0 8px 0 8px"
-                >
-                  <Icon
-                    color="grey.250"
-                    fontSize="16px"
-                    p="1.6px"
-                    as={
-                      isFromConnector
-                        ? ContractIcon
-                        : isDeploy
-                          ? DeployIcon
-                          : isDeposit
-                            ? DownLeftArrowGreen
-                            : UpRightArrowYellow
-                    }
-                  />
-                </Center>
+                <Icon color="gray.200" boxSize="24px" as={TransactionIcon} />
                 <Center
                   w="fit-content"
                   alignItems="flex-start"
@@ -125,8 +107,8 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
                   gridRow={2}
                 >
                   <Heading
-                    // variant={'title-sm'}
-                    color="grey.200"
+                    color="textPrimary"
+                    fontSize="md"
                     textAlign="left"
                     wordBreak="break-all"
                     lineClamp={1}
@@ -138,19 +120,16 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
 
               {!isLowerThanFourHundredAndThirty && isCompleted && (
                 <Button
-                  border="none"
-                  bgColor="#F5F5F50D"
-                  fontSize="xs"
-                  fontWeight="normal"
+                  fontWeight="medium"
                   letterSpacing=".5px"
                   ml="auto"
-                  // variant="secondary"
-                  h="28px"
-                  p="6px 8px"
+                  variant="subtle"
+                  size="xs"
+                  px={3}
                   onClick={handleViewInExplorer}
                 >
-                  <UpRightArrow color="grey.75" fontSize="md" />
-                  View on Explorer
+                  <UpRightArrow color="grey.75" boxSize={4} />
+                  Explorer
                 </Button>
               )}
             </HStack>
@@ -158,9 +137,6 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
             <HStack w="full" justifyContent="space-between" h="38px">
               <HStack w="75%">
                 <Avatar
-                  color="grey.425"
-                  bgColor="grey.925"
-                  boxSize={6}
                   borderRadius="4px"
                   css={{
                     '&>div': {
@@ -171,7 +147,8 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
                 />
 
                 <Heading
-                  color="grey.200"
+                  color="textPrimary"
+                  fontSize="md"
                   textAlign="left"
                   lineClamp={1}
                   wordBreak="break-all"
@@ -200,19 +177,16 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
               <>
                 {isCompleted && (
                   <Button
+                    variant="subtle"
+                    size="xs"
                     mt={4}
                     w="full"
-                    border="none"
-                    bgColor="#F5F5F50D"
-                    fontSize="xs"
-                    fontWeight="normal"
+                    fontWeight="medium"
                     letterSpacing=".5px"
-                    h="28px"
-                    p="6px 8px"
                     onClick={handleViewInExplorer}
                   >
-                    <UpRightArrow color="grey.75" fontSize="md" />
-                    View on Explorer
+                    <UpRightArrow color="gray.200" boxSize={4} />
+                    Explorer
                   </Button>
                 )}
               </>
@@ -224,13 +198,8 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
                 rel="noreferrer"
                 style={{ width: '100%', textDecoration: 'none' }}
               >
-                <Button
-                  // variant="secondaryV2"
-                  w="100%"
-                  size="sm"
-                  h={7}
-                >
-                  <FileCodeIcon fontSize="lg" />
+                <Button variant="subtle" w="100%" size="xs">
+                  <FileCodeIcon boxSize={4} />
                   Advanced details
                 </Button>
               </a>
@@ -246,17 +215,19 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
       </Dialog.Body>
 
       <Dialog.Actions
-        mt="auto"
-        css={{
-          '&>hr': {
-            marginTop: '0',
-          },
-        }}
+        hideDivider
+        position="fixed"
+        bottom={0}
+        left={0}
+        right={0}
+        p={3}
+        bg="bg.panel"
       >
         {showSignActions ? (
-          <>
+          <Stack direction="row" gap={3} w="full">
             <Button
-              // variant="secondary"
+              flex={1}
+              colorPalette="red"
               onClick={(e) => {
                 e.stopPropagation();
                 e.preventDefault();
@@ -268,8 +239,7 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
               Decline
             </Button>
             <Button
-              // variant="primary"
-              w="full"
+              flex={1}
               loading={isLoading}
               disabled={isSuccess && !awaitingAnswer}
               onClick={(e) => {
@@ -281,10 +251,10 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
             >
               Sign
             </Button>
-          </>
+          </Stack>
         ) : (
           <Button
-            // variant="secondary"
+            variant="subtle"
             w="full"
             onClick={() => onOpenChange?.({ open: false })}
           >

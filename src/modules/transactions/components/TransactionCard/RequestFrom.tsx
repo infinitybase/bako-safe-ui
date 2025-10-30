@@ -1,18 +1,20 @@
 import {
+  Alert,
   Card,
-  CardRootProps,
   HStack,
   Icon,
   IconProps,
-  Separator,
+  Stack,
+  StackProps,
   Text,
   VStack,
 } from 'bako-ui';
 import React from 'react';
 
+import { MinimalAlertIcon } from '@/components';
 import { Nullable } from '@/modules/core';
 
-interface TransactionRequestFromProps extends CardRootProps {
+interface TransactionRequestFromProps extends StackProps {
   name: Nullable<string>;
   origin: Nullable<string>;
   icon?: React.ComponentType<IconProps>;
@@ -22,33 +24,63 @@ const TransactionRequestFrom = (props: TransactionRequestFromProps) => {
   const { name, origin, icon, ...rest } = props;
 
   return (
-    <Card.Root
-      {...rest}
-      bgColor="grey.825"
-      borderColor="grey.925"
-      borderRadius={8}
-      p={2}
-      borderWidth="1px"
-      w="full"
-    >
-      <Text fontSize={10} color="grey.425" fontWeight={400}>
+    <Stack gap={4} {...rest}>
+      <Text fontSize="xs" color="gray.400" fontWeight="medium">
         Requesting a transaction from:
       </Text>
+      <Card.Root variant="subtle" borderRadius="lg" w="full">
+        <Card.Body p={4}>
+          <HStack
+            width="100%"
+            gap={3.5}
+            alignItems={{ base: 'flex-start', sm: 'center' }}
+            flexDirection={{ base: 'column', sm: 'row' }}
+          >
+            <HStack alignItems="center" gap={3.5} flexShrink={0}>
+              {icon && <Icon as={icon} boxSize="24px" />}
+              <VStack alignItems="flex-start" gap={2}>
+                <Text
+                  color="gray.200"
+                  fontSize="xs"
+                  fontWeight="medium"
+                  lineHeight="shorter"
+                  truncate
+                >
+                  {name}
+                </Text>
+                <Text
+                  color="gray.400"
+                  fontSize="xs"
+                  lineHeight="shorter"
+                  truncate
+                >
+                  {origin}
+                </Text>
+              </VStack>
+            </HStack>
 
-      <Separator borderColor="grey.950" my={1} />
-
-      <HStack width="100%" gap={3.5}>
-        {icon && <Icon as={icon} fontSize={28} />}
-        <VStack alignItems="flex-start" gap={0.5}>
-          <Text color="grey.250" fontSize={12} fontWeight={500}>
-            {name}
-          </Text>
-          <Text color="brand.500" fontSize={12} fontWeight={400} lineHeight={4}>
-            {origin?.split('//')[1]}
-          </Text>
-        </VStack>
-      </HStack>
-    </Card.Root>
+            <Alert.Root
+              colorPalette="yellow"
+              variant="subtle"
+              bg="primary.main/5"
+              color="primary.main"
+              p={3}
+              rounded="sm"
+            >
+              <Alert.Indicator alignSelf="center">
+                <MinimalAlertIcon />
+              </Alert.Indicator>
+              <Alert.Content>
+                <Alert.Description>
+                  Please carefully review this externally created transaction
+                  before approving it.
+                </Alert.Description>
+              </Alert.Content>
+            </Alert.Root>
+          </HStack>
+        </Card.Body>
+      </Card.Root>
+    </Stack>
   );
 };
 

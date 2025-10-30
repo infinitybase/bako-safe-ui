@@ -1,8 +1,8 @@
 import { Box, Button, Flex, HStack, Stack, Text, VStack } from 'bako-ui';
 import { TransactionStatus, TransactionType } from 'bakosafe';
 import { parseISO } from 'date-fns';
-import { formatInTimeZone } from 'date-fns-tz';
 import { enUS } from 'date-fns/locale';
+import { formatInTimeZone } from 'date-fns-tz';
 import { memo, useCallback, useMemo, useState } from 'react';
 
 import { CustomSkeleton, FileCodeIcon, UpRightArrow } from '@/components';
@@ -95,18 +95,12 @@ const CancelTransactionButton = ({
 interface TransactionDetailsProps {
   transaction: TransactionUI;
   status?: TransactionState;
-  isInTheVaultPage?: boolean;
   isMobile?: boolean;
   isMobileDetailsOpen?: boolean;
 }
 
 const Details = memo(
-  ({
-    transaction,
-    status,
-    isInTheVaultPage,
-    isMobileDetailsOpen,
-  }: TransactionDetailsProps) => {
+  ({ transaction, status, isMobileDetailsOpen }: TransactionDetailsProps) => {
     const isDeposit = useMemo(
       () => transaction.type === TransactionType.DEPOSIT,
       [transaction.type],
@@ -150,10 +144,7 @@ const Details = memo(
                     direction={{ base: 'column', md: 'row' }}
                     alignItems="start"
                     justify="space-between"
-                    columnGap={{
-                      base: isInTheVaultPage ? '3rem' : '72px',
-                      lg: '150px',
-                    }}
+                    columnGap={6}
                     w="full"
                   >
                     {/* Transaction Breakdown */}
@@ -179,11 +170,7 @@ const Details = memo(
                     {/* LADO ESQUERDO */}
                     {!isMobile && !isDeposit && (
                       <Box>
-                        <Text
-                          // variant="description"
-                          color="grey.425"
-                          fontSize="xs"
-                        >
+                        <Text color="gray.400" fontSize="xs">
                           {formatInTimeZone(
                             parseISO(transaction.createdAt),
                             Intl.DateTimeFormat().resolvedOptions().timeZone,
@@ -206,9 +193,9 @@ const Details = memo(
                           <Button
                             variant="subtle"
                             alignSelf="flex-end"
-                            size={{ base: 'sm', sm: 'xs', lg: 'sm' }}
+                            size="sm"
                           >
-                            <FileCodeIcon fontSize="lg" />
+                            <FileCodeIcon boxSize={4} color="gray.200" />
                             Advanced details
                           </Button>
                         </a>
@@ -219,14 +206,16 @@ const Details = memo(
                           <Button
                             variant="subtle"
                             onClick={handleViewInExplorer}
-                            size={{ base: 'sm', sm: 'xs', lg: 'sm' }}
+                            size="sm"
                           >
-                            <UpRightArrow color="grey.75" fontSize="md" />
-                            View on Explorer
+                            <UpRightArrow color="gray.200" boxSize={4} />
+                            Explorer
                           </Button>
                         )}
 
-                      <CancelTransactionButton transaction={transaction} />
+                      {!isMobile && (
+                        <CancelTransactionButton transaction={transaction} />
+                      )}
                     </HStack>
                   </Flex>
                 </VStack>

@@ -1,8 +1,8 @@
-import { Box, Button, HStack, Icon, Separator, Text, VStack } from 'bako-ui';
+import { Box, Button, HStack, Icon, Text, VStack } from 'bako-ui';
 import { type ITransferAsset, TransactionStatus } from 'bakosafe';
+import { useMemo } from 'react';
 
 import { SuccessIcon, UpRightArrow } from '@/components';
-import { shakeAnimationY } from '@/modules/core';
 import { NetworkService } from '@/modules/network/services';
 import {
   useGetAssetsByOperations,
@@ -18,29 +18,30 @@ type DepositDetailsProps = {
 };
 
 const DepositDetails = ({ transaction }: DepositDetailsProps) => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { operationAssets, sentBy, hasNoDefaultAssets } =
-    useGetAssetsByOperations(transaction);
+  const { sentBy } = useGetAssetsByOperations(transaction);
   const {
-    screenSizes: { isMobile, isLowerThanFourHundredAndThirty },
+    screenSizes: { isMobile },
   } = useWorkspaceContext();
 
   const { isFuelFriday } = useVerifyTransactionInformations(transaction);
 
   const predicate = transaction.predicate?.predicateAddress;
 
+  const assets: ITransferAsset[] = useMemo(
+    () =>
+      transaction.summary?.operations
+        ?.find((o) => o.to?.address === predicate)
+        ?.assetsSent?.map((asset) => ({
+          assetId: asset.assetId,
+          amount: asset.amount.toString(),
+          to: predicate!,
+        })) ?? [],
+    [transaction?.summary, predicate],
+  );
+
   if (!transaction.summary || !predicate) {
     return null;
   }
-
-  const assets: ITransferAsset[] =
-    transaction.summary.operations
-      ?.find((o) => o.to?.address === predicate)
-      ?.assetsSent?.map((asset) => ({
-        assetId: asset.assetId,
-        amount: asset.amount.toString(),
-        to: predicate,
-      })) ?? [];
 
   const handleViewInExplorer = () => {
     const { hash, network } = transaction;
@@ -60,8 +61,6 @@ const DepositDetails = ({ transaction }: DepositDetailsProps) => {
       minH={{ base: 560, md: 400, sm: 'unset' }}
     >
       <VStack w="full" mt={isMobile ? 'unset' : 5}>
-        {isMobile && <Separator my={5} borderColor="grey.425" />}
-
         {isFuelFriday && (
           <Box w="full">
             <HStack
@@ -92,21 +91,17 @@ const DepositDetails = ({ transaction }: DepositDetailsProps) => {
           </Box>
         )}
 
-        <Box pb={6} borderColor="grey.950" borderBottomWidth={1} w="full">
-          <Text
-            color="grey.425"
-            fontSize={isLowerThanFourHundredAndThirty ? 'xs' : 'sm'}
-          >
+        <Box pb={6} w="full">
+          <Text color="gray.400" fontSize="xs">
             Transaction breakdown
           </Text>
         </Box>
 
-        <Box alignItems="flex-start" flexWrap="wrap" w="full">
+        <Box alignItems="flex-start" flexWrap="wrap" w="full" gap={1}>
           {assets.map((asset, index) => (
             <DetailItem
               key={`${asset?.assetId}${index}-key`}
               asset={asset}
-              index={index}
               sentBy={sentBy}
             />
           ))}
@@ -114,22 +109,23 @@ const DepositDetails = ({ transaction }: DepositDetailsProps) => {
       </VStack>
 
       {!isMobile && (
-        <HStack w="100%" justifyContent="end" alignItems="center" mt={4}>
+        <HStack
+          w="100%"
+          justifyContent="end"
+          alignItems="center"
+          mt={4}
+          flex={1}
+        >
           {transaction.status === TransactionStatus.SUCCESS && (
             <Button
               w={isMobile ? 'full' : 'unset'}
               alignSelf={{ base: 'stretch', sm: 'flex-end' }}
               size={{ base: 'sm', sm: 'xs', lg: 'sm' }}
-              colorPalette="secondaryV2"
+              variant="subtle"
               onClick={handleViewInExplorer}
-              css={`
-                &:hover .btn-icon {
-                  animation: ${shakeAnimationY} 0.5s ease-in-out;
-                }
-              `}
             >
-              <UpRightArrow w={5} className="btn-icon" />
-              View on Explorer
+              <UpRightArrow w={3} color="gray.200" />
+              Explorer
             </Button>
           )}
         </HStack>

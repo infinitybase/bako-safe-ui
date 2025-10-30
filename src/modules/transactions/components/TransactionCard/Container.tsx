@@ -88,7 +88,7 @@ const Container = memo(
             justifyContent="center"
             gap={0}
             w="full"
-            maxW={{ base: 890, lg: 'unset' }}
+            maxW={{ base: 890, md: 'unset' }}
           >
             <TransactionCard.Header
               isMobile={isMobile}

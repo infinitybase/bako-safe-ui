@@ -1,5 +1,5 @@
-import { Image, Text, VStack } from 'bako-ui';
-import { useMemo } from 'react';
+import { Avatar, VStack } from 'bako-ui';
+import { memo, useMemo } from 'react';
 
 import { AssetModel } from '@/modules/core';
 import { parseURI } from '@/modules/core/utils/formatter';
@@ -9,7 +9,7 @@ interface TokenInfosProps {
   asset: AssetModel;
 }
 
-const TokenInfos = ({ asset }: TokenInfosProps) => {
+const TokenInfos = memo(({ asset }: TokenInfosProps) => {
   const { assetsMap } = useWorkspaceContext();
   const assetInfo = useMemo(
     () =>
@@ -27,22 +27,27 @@ const TokenInfos = ({ asset }: TokenInfosProps) => {
     [assetInfo],
   );
 
+  const isNFT = useMemo(
+    () => assetInfo?.isNFT || assetInfo?.units === 0,
+    [assetInfo],
+  );
+
   return (
     <VStack minW="76px" alignItems="start">
-      <Image
-        w={7}
-        h={7}
-        fallbackStrategy="onError"
-        fallbackSrc={assetsMap?.UNKNOWN?.icon}
+      <Avatar
+        w={6}
+        h={6}
+        fallback={assetsMap?.UNKNOWN?.icon}
         src={parseURI(assetImage || assetsMap?.UNKNOWN?.icon || '')}
         borderRadius="md"
-        alt="Asset Icon"
+        shape={isNFT ? 'rounded' : 'full'}
+        bg="transparent"
         objectFit="cover"
       />
-      <Text fontSize="sm" color="grey.500">
-        {assetInfo?.slug}
-      </Text>
     </VStack>
   );
-};
+});
+
+TokenInfos.displayName = 'TokenInfos';
+
 export default TokenInfos;
