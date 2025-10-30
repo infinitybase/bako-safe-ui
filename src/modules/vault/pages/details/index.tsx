@@ -1,6 +1,6 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { Box, Grid, GridItem, Loader, Text } from 'bako-ui';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 
 import { TransactionFilters } from '@/components';
 import AddAssetsDialog from '@/components/addAssetsDialog';
@@ -58,7 +58,10 @@ const VaultDetailsPage = () => {
     screenSizes: { isSmall, isMobile },
   } = useWorkspaceContext();
 
-  const hasTransactions = !isLoading && transactions?.length;
+  const hasTransactions = useMemo(
+    () => !isLoading && transactions?.length,
+    [isLoading, transactions],
+  );
 
   const { vault: vaultSafe } = useBakoSafeVault({
     address: vault.data.predicateAddress,
@@ -207,7 +210,8 @@ const VaultDetailsPage = () => {
               </Box>
             );
           })
-        : !!transactions && (
+        : !!transactions &&
+          !isLoading && (
             <EmptyState
               title="No Data available"
               subTitle="Currently, there is no available data to display in this section."
