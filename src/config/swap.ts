@@ -1,4 +1,4 @@
-import { MiraIcon } from '@/components';
+import MiraIcon from '@/assets/images/microchain-icon.png';
 
 const FEE = import.meta.env.VITE_BAKO_SWAP_FEE || 1;
 

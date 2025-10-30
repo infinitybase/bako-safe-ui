@@ -4,7 +4,7 @@ import { memo, ReactNode, useMemo } from 'react';
 import { TransactionState } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
-import { TransactionCard } from '../..';
+import { getTransactionIconComponent, TransactionCard } from '../..';
 import { useDetailsDialog } from '../../hooks/details';
 import { useVerifyTransactionInformations } from '../../hooks/details/useVerifyTransactionInformations';
 import { TransactionWithVault } from '../../services/types';
@@ -47,10 +47,38 @@ const Container = memo(
       isContract,
       isFuelFriday,
       isMint,
+      isDeploy,
+      isBridge,
+      isLiquidStake,
+      isSwap,
+      isFromConnector,
+      isFromCLI,
       showAmountInformations,
     } = useVerifyTransactionInformations(transaction);
 
     const { isOpen, onOpen, onOpenChange } = useDetailsDialog();
+
+    const IconComponent = useMemo(
+      () =>
+        getTransactionIconComponent({
+          isDeploy,
+          isFromConnector,
+          isDeposit,
+          isLiquidStake,
+          isBridge,
+          isFromCLI,
+          isSwap,
+        }),
+      [
+        isDeploy,
+        isFromConnector,
+        isDeposit,
+        isFromCLI,
+        isLiquidStake,
+        isBridge,
+        isSwap,
+      ],
+    );
 
     return (
       <>
@@ -64,6 +92,7 @@ const Container = memo(
             isInTheVaultPage={isInTheVaultPage}
             callBack={callBack}
             isContract={isContract}
+            TransactionIcon={IconComponent}
           />
         )}
 
@@ -72,12 +101,7 @@ const Container = memo(
           pr={{ base: 2, sm: 4, md: isInTheVaultPage ? 4 : 0, lg: 4 }}
           py={0}
           w="full"
-          backdropFilter="blur(16px)"
-          borderColor={
-            missingSignature ? 'warning.500' : 'gradients.transaction-border'
-          }
-          bg="gradients.transaction-card"
-          boxShadow="0px 8px 6px 0px #00000026"
+          borderColor={missingSignature ? 'warning.500' : ''}
           maxW="full"
           value={transaction.id}
           {...rest}

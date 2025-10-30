@@ -1,8 +1,9 @@
-import { Box, Separator, Stack, Text } from 'bako-ui';
+import { Box, Image, Separator, Stack, Text } from 'bako-ui';
 import { TransactionStatus } from 'bakosafe';
 import { memo, useMemo } from 'react';
 
-import { LayerSwapIcon, RigContractIcon } from '@/components';
+import RigContractIcon from '@/assets/images/rig-icon.png';
+import { LayerSwapIcon } from '@/components';
 import { miraData } from '@/config/swap';
 import { AddressUtils, type TransactionState } from '@/modules/core';
 import { tokensIDS } from '@/modules/core/utils/assets/address';
@@ -137,7 +138,7 @@ const TransactionBreakdown = memo(
           <TransactionCard.TransactionRequestFrom
             name={miraData.name}
             origin={miraData.origin}
-            icon={miraData.icon}
+            icon={<Image src={miraData.icon} boxSize="24px" rounded="sm" />}
             mt={4}
           />
         )}
@@ -147,7 +148,7 @@ const TransactionBreakdown = memo(
             <TransactionCard.TransactionRequestFrom
               name={'Liquid stake via RIG'}
               origin={'https://rig.st/'}
-              icon={RigContractIcon}
+              icon={<Image src={RigContractIcon} boxSize="24px" rounded="sm" />}
             />
           </Box>
         )}
@@ -157,7 +158,7 @@ const TransactionBreakdown = memo(
             <TransactionCard.TransactionRequestFrom
               name={'Layerswap.app'}
               origin={'https://layerswap.io/'}
-              icon={LayerSwapIcon}
+              icon={<LayerSwapIcon boxSize="24px" rounded="sm" />}
             />
           </Box>
         )}

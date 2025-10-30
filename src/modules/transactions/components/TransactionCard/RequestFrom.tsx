@@ -1,15 +1,5 @@
-import {
-  Alert,
-  Card,
-  HStack,
-  Icon,
-  IconProps,
-  Stack,
-  StackProps,
-  Text,
-  VStack,
-} from 'bako-ui';
-import React from 'react';
+import { Alert, Card, HStack, Stack, StackProps, Text, VStack } from 'bako-ui';
+import React, { memo } from 'react';
 
 import { MinimalAlertIcon } from '@/components';
 import { Nullable } from '@/modules/core';
@@ -17,10 +7,10 @@ import { Nullable } from '@/modules/core';
 interface TransactionRequestFromProps extends StackProps {
   name: Nullable<string>;
   origin: Nullable<string>;
-  icon?: React.ComponentType<IconProps>;
+  icon?: React.ReactNode;
 }
 
-const TransactionRequestFrom = (props: TransactionRequestFromProps) => {
+const TransactionRequestFrom = memo((props: TransactionRequestFromProps) => {
   const { name, origin, icon, ...rest } = props;
 
   return (
@@ -37,7 +27,7 @@ const TransactionRequestFrom = (props: TransactionRequestFromProps) => {
             flexDirection={{ base: 'column', sm: 'row' }}
           >
             <HStack alignItems="center" gap={3.5} flexShrink={0}>
-              {icon && <Icon as={icon} boxSize="24px" />}
+              {icon && icon}
               <VStack alignItems="flex-start" gap={2}>
                 <Text
                   color="gray.200"
@@ -82,6 +72,8 @@ const TransactionRequestFrom = (props: TransactionRequestFromProps) => {
       </Card.Root>
     </Stack>
   );
-};
+});
+
+TransactionRequestFrom.displayName = 'TransactionRequestFrom';
 
 export { TransactionRequestFrom };
