@@ -73,7 +73,7 @@ export const Amount = memo(({ assets }: AmountProps) => {
       if (isNFT) return null;
 
       return isHex(assetsWithUSD[0].amount)
-        ? bn(assetsWithUSD[0].amount).format()
+        ? bn(assetsWithUSD[0].amount).format({ units: asset.units })
         : assetsWithUSD[0].amount;
     }
 
