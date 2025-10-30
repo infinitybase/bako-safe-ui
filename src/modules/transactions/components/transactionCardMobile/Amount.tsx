@@ -5,7 +5,6 @@ import { memo, useMemo } from 'react';
 
 import { useWorkspaceContext } from '@/modules';
 import { FIAT_CURRENCIES } from '@/modules/core/utils/fiat-currencies';
-import { isHex } from '@/utils';
 
 interface AmountProps {
   assets: ITransferAsset[];
@@ -40,7 +39,7 @@ export const Amount = memo(({ assets }: AmountProps) => {
   const formattedUSDAmount = useMemo(() => {
     if (isOnlyOneAsset) {
       const asset = assetsMap[assetsWithUSD[0].assetId] || assetsMap.UNKNOWN;
-      const isNFT = asset.isNFT || asset.units === 0;
+      const isNFT = asset.isNFT || !!asset.metadata;
       if (isNFT) return '1';
       const value = assetsWithUSD[0].usd;
       return value > 0
@@ -72,9 +71,7 @@ export const Amount = memo(({ assets }: AmountProps) => {
       const isNFT = asset.isNFT || asset.units === 0;
       if (isNFT) return null;
 
-      return isHex(assetsWithUSD[0].amount)
-        ? bn(assetsWithUSD[0].amount).format({ units: asset.units })
-        : assetsWithUSD[0].amount;
+      return bn(assetsWithUSD[0].amount).format({ units: asset.units });
     }
 
     return null;
