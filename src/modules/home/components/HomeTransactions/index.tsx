@@ -100,7 +100,7 @@ const HomeTransactions = () => {
       {!!transactions?.length &&
         transactions?.map((grouped) => (
           <Box key={grouped.day}>
-            <TransactionCard.GroupMonth monthYear={grouped.day} />
+            <TransactionCard.GroupDay day={grouped.day} />
 
             <TransactionCard.List
               gap={4}
