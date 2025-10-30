@@ -76,3 +76,4 @@ export * from './vault';
 export * from './vault-success';
 export * from './wallet-stake';
 export * from './warning';
+export * from './warning-2';
