@@ -259,7 +259,7 @@ export const AccountOverview = memo(
                     textAlign={{ base: 'end', sm: 'left' }}
                     fontWeight={400}
                     fontSize="xs"
-                    color="fg.info"
+                    color="primary.main"
                     onClick={onOpen}
                     cursor="pointer"
                   >
@@ -278,10 +278,9 @@ export const AccountOverview = memo(
                 )}
                 {isPendingSigner && (
                   <Text
-                    // variant="description"
                     textAlign={{ base: 'end', sm: 'left' }}
                     fontSize="xs"
-                    color="fg.info"
+                    color="primary.main"
                   >
                     This vault has pending transactions.
                   </Text>
