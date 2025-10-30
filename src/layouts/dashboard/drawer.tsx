@@ -6,21 +6,14 @@ import {
 } from 'bako-ui';
 
 import { LineCloseIcon } from '@/components';
-import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { Sidebar } from '../../modules/vault/layout/sidebar';
 
 interface DrawerProps extends Omit<DrawerRootProps, 'children'> {}
 
 const Drawer = ({ onOpenChange, ...props }: DrawerProps) => {
-  const {
-    screenSizes: { isSmall },
-  } = useWorkspaceContext();
-
   const handleClose = () => {
-    console.log('Drawer closed');
     if (onOpenChange) {
-      console.log('Calling onOpenChange with false');
       onOpenChange({ open: false });
     }
   };
@@ -28,7 +21,7 @@ const Drawer = ({ onOpenChange, ...props }: DrawerProps) => {
   return (
     <ChakraDrawer.Root
       {...props}
-      size={isSmall ? 'full' : 'xs'}
+      size="xs"
       placement="start"
       onOpenChange={onOpenChange}
       trapFocus={false}
@@ -36,7 +29,7 @@ const Drawer = ({ onOpenChange, ...props }: DrawerProps) => {
       <Portal>
         <ChakraDrawer.Backdrop />
         <ChakraDrawer.Positioner>
-          <ChakraDrawer.Content p={0}>
+          <ChakraDrawer.Content p={0} maxW={{ smDown: '50%' }}>
             <ChakraDrawer.CloseTrigger asChild>
               <IconButton
                 variant="ghost"
