@@ -4,7 +4,7 @@ import {
   UseMutationOptions,
   useQuery,
 } from '@tanstack/react-query';
-import { CoderUtils } from 'bakosafe';
+import { CoderUtils, EncodingService } from 'bakosafe';
 import { Account } from 'fuels';
 
 import { CookieName, CookiesConfig } from '@/config/cookies';
@@ -91,7 +91,16 @@ const useWalletSignMessage = (
   } = useAuth();
 
   const signAccountEvm = async (message: string, predicateVersion?: string) => {
-    const signature = await signAndValidate(message);
+    let encodedMessage = message;
+
+    if (predicateVersion) {
+      encodedMessage = EncodingService.encodedMessage(
+        message,
+        predicateVersion,
+      );
+    }
+
+    const signature = await signAndValidate(encodedMessage);
     return CoderUtils.encodeSignature(evmAddress, signature, predicateVersion);
   };
 

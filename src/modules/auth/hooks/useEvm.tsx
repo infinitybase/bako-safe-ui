@@ -1,12 +1,13 @@
-import { getAccount, Config, reconnect, watchAccount } from '@wagmi/core';
+import type EventEmitter from 'node:events';
+
 import {
   ecrecover,
   fromRpcSig,
   hashPersonalMessage,
   pubToAddress,
 } from '@ethereumjs/util';
+import { Config, getAccount, reconnect, watchAccount } from '@wagmi/core';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import type EventEmitter from 'node:events';
 import { stringToHex } from 'viem';
 
 import { createWagmiConfig, createWeb3ModalInstance } from '@/config/web3Modal';
@@ -20,7 +21,7 @@ export interface EIP1193Provider extends EventEmitter {
 
 const wagmiConfig: Config = createWagmiConfig();
 
-let modal = createWeb3ModalInstance({
+const modal = createWeb3ModalInstance({
   wagmiConfig,
 });
 
@@ -86,9 +87,13 @@ export const useEvm = () => {
         throw new Error('No Ethereum account selected');
       }
 
+      const _message = message.startsWith('0x')
+        ? message
+        : stringToHex(message);
+
       const signature = (await ethProvider.request({
         method: 'personal_sign',
-        params: [stringToHex(message), currentAddress],
+        params: [_message, currentAddress],
       })) as string;
 
       if (!validateSignature(currentAddress, message, signature)) {
@@ -106,7 +111,10 @@ export const useEvm = () => {
     message: string,
     signature: string,
   ) => {
-    const msgBuffer = Uint8Array.from(Buffer.from(message));
+    const msgBytes = message.startsWith('0x')
+      ? Buffer.from(message.slice(2), 'hex')
+      : Buffer.from(message, 'utf8');
+    const msgBuffer = Uint8Array.from(msgBytes);
     const msgHash = hashPersonalMessage(msgBuffer);
     const { v, r, s } = fromRpcSig(signature);
     const pubKey = ecrecover(msgHash, v, r, s);
