@@ -1,13 +1,13 @@
-import { Box, BoxProps, Flex, Icon, Image, VStack } from 'bako-ui';
+import { Box, BoxProps, Flex, Icon, Image, Text, VStack } from 'bako-ui';
 import AutoPlay from 'embla-carousel-autoplay';
 import useEmblaCarousel from 'embla-carousel-react';
-import { useCallback } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 import { NavigateOptions, To } from 'react-router-dom';
 
 import logo from '@/assets/svg/bako-symbol-white.svg';
 import {
   BakoGarageBanner,
-  BakoIdIcon,
+  BakoIcon,
   Banner,
   BridgeIcon,
   Carousel,
@@ -32,7 +32,7 @@ interface SidebarProps extends BoxProps {
   onClose?: () => void;
 }
 
-const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
+const Sidebar = memo(({ onDrawer, ...rest }: SidebarProps) => {
   const {
     screenSizes: { isLargerThan1210 },
   } = useWorkspaceContext();
@@ -59,6 +59,8 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
   };
 
   const handleOpenDrawer = useCallback(() => drawer.onOpen(), [drawer]);
+
+  const bakoUrl = useMemo(() => getBakoIDURL(), []);
 
   return (
     <Box
@@ -231,9 +233,18 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
           <Carousel.Slide>
             <Carousel.SlideItem>
               <Banner
-                icon={<Icon as={BakoIdIcon} h="auto" w="60px" />}
-                title="Register your Handles"
-                onClick={() => window.open(getBakoIDURL(), '_blank')}
+                icon={<Icon as={BakoIcon} boxSize="20px" />}
+                title="Get your Handle"
+                description={
+                  <>
+                    Use{' '}
+                    <Text color="primary.main" as="span">
+                      @myusername
+                    </Text>{' '}
+                    as your address.
+                  </>
+                }
+                href={bakoUrl}
               />
             </Carousel.SlideItem>
             <Carousel.SlideItem>
@@ -247,6 +258,8 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
       </VStack>
     </Box>
   );
-};
+});
+
+Sidebar.displayName = 'Sidebar';
 
 export { Sidebar };

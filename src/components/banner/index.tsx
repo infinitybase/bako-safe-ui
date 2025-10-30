@@ -1,52 +1,64 @@
-import { Box, BoxProps, Button, Flex, Text } from 'bako-ui';
+import { Flex, Stack, StackProps, Text } from 'bako-ui';
 import { ReactNode } from 'react';
 
-import { UpRightArrow } from '../icons';
+import BakoBanner from '@/assets/images/bako-banner-bg.png';
 
-interface BannerProps extends Omit<BoxProps, 'children'> {
+interface BannerProps extends Omit<StackProps, 'children'> {
   icon: ReactNode;
   title: string;
+  description: string | ReactNode;
+  href: string;
 }
 
 const Banner = (props: BannerProps) => {
-  const { icon, title, ...rest } = props;
+  const { icon, title, description, href, ...rest } = props;
+
+  const handleClick = () => {
+    window.open(href, '_blank', 'noopener,noreferrer');
+  };
 
   return (
-    <Box
-      w="full"
-      bgColor="bg.muted"
-      borderRadius="lg"
-      display="flex"
-      alignItems="center"
+    <Stack
       justifyContent="space-between"
+      alignItems="flex-start"
       h="full"
-      p={1}
+      rounded="lg"
+      flex={1}
+      p={3}
       gap={1}
       _hover={{
         cursor: 'pointer',
       }}
+      css={{
+        background: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${BakoBanner})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+      }}
+      onClick={handleClick}
       {...rest}
     >
-      <Flex gap={1} w="75%" flexDir="column">
-        {icon}
-        <Text w="full" fontSize="8px" color="gray.50" whiteSpace="pretty">
+      {icon}
+      <Flex gap={1} flexDir="column" mt="auto" w="full">
+        <Text
+          fontSize="xs"
+          color="gray.50"
+          whiteSpace="pretty"
+          lineHeight="shorter"
+        >
           {title}
         </Text>
+        <Text
+          lineHeight="shorter"
+          fontSize="2xs"
+          color="textSecondary"
+          truncate
+          lineClamp={2}
+        >
+          {description}
+        </Text>
       </Flex>
-      <Button
-        variant="outline"
-        size="2xs"
-        py={4}
-        _hover={{
-          bgColor: 'initial',
-          color: 'white',
-          borderColor: 'primary.main',
-        }}
-      >
-        <UpRightArrow w={4} h={4} />
-        Try now
-      </Button>
-    </Box>
+    </Stack>
   );
 };
 
