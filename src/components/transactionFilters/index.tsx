@@ -1,7 +1,14 @@
-import { Button, HStack, StackProps } from 'bako-ui';
+import { Button, HStack, Icon, StackProps, Text } from 'bako-ui';
 import { TransactionType } from 'bakosafe';
 
 import { StatusFilter } from '@/modules';
+
+import {
+  ChevronRightIcon,
+  DownLeftArrow,
+  UpRightArrow,
+  Warning2Icon,
+} from '../icons';
 
 interface ITransactionFiltersProps extends StackProps {
   onIncomingFilter: () => void;
@@ -46,6 +53,12 @@ const TransactionFilters = ({
           px={3}
         >
           Pending
+          <Icon
+            boxSize={4}
+            as={Warning2Icon}
+            color="primary.main"
+            display={{ sm: 'none', base: 'inline' }}
+          />
         </Button>
       )}
       <Button
@@ -61,7 +74,12 @@ const TransactionFilters = ({
         px={3}
         order={1}
       >
-        Incoming
+        <Icon
+          boxSize={4}
+          as={DownLeftArrow}
+          display={{ sm: 'none', base: 'inline' }}
+        />
+        <Text display={{ base: 'none', sm: 'inline' }}>Incoming</Text>
       </Button>
       <Button
         bg={isTransfer ? 'bg.muted' : 'bg.panel'}
@@ -76,7 +94,12 @@ const TransactionFilters = ({
         px={3}
         variant="subtle"
       >
-        Outgoing
+        <Icon
+          boxSize={4}
+          as={UpRightArrow}
+          display={{ sm: 'none', base: 'inline' }}
+        />
+        <Text display={{ base: 'none', sm: 'inline' }}>Outgoing</Text>
       </Button>
       <Button
         bg={isAll ? 'bg.muted' : 'bg.panel'}
@@ -91,7 +114,12 @@ const TransactionFilters = ({
         px={3}
         order={inverse ? 0 : 2}
       >
-        All
+        <Icon
+          boxSize={4}
+          as={ChevronRightIcon}
+          display={{ sm: 'none', base: 'inline' }}
+        />
+        <Text display={{ base: 'none', sm: 'inline' }}>All</Text>
       </Button>
     </HStack>
   );
