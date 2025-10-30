@@ -62,7 +62,6 @@ export const AccountAllocation = memo(
             <AssetsList assets={assets.assets || []} />
           </>
         )}
-        {/* <Card.Footer /> */}
       </Card.Root>
     );
   },

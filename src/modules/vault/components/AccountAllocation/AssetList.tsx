@@ -1,4 +1,4 @@
-import { Card } from 'bako-ui';
+import { Card, Text } from 'bako-ui';
 import { useMemo } from 'react';
 
 import { useWorkspaceContext } from '@/modules';
@@ -22,11 +22,19 @@ export const AssetsList = ({ assets }: { assets: Asset[] }) => {
       .map((item) => item.asset);
   }, [assets, tokensUSD]);
 
+  const isEmpty = useMemo(() => assets.length === 0, [assets]);
+
   return (
     <Card.Body pt={4}>
-      {topThreeAssets.map((asset) => (
-        <AssetItem key={asset.assetId} asset={asset} />
-      ))}
+      {isEmpty && (
+        <Text color="textSecondary" textAlign="center">
+          Nothing to show here yet
+        </Text>
+      )}
+      {!isEmpty &&
+        topThreeAssets.map((asset) => (
+          <AssetItem key={asset.assetId} asset={asset} />
+        ))}
     </Card.Body>
   );
 };
