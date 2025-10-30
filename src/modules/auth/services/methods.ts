@@ -27,11 +27,22 @@ export type SignWebAuthnPayload = {
   publicKey: string;
 };
 
+export type SignMessageWebAuthnPayload = {
+  signPayload: SignWebAuthnPayload;
+  address: string;
+  predicateVersion?: string;
+};
+
 export type SignInSignWebAuthnPayload = Omit<
   SignWebAuthnPayload,
   'publicKey'
 > & {
   name: string;
+};
+
+export type WalletSignMessagePayload = {
+  message: string;
+  predicateVersion?: string;
 };
 
 export type CreateUserResponse = {

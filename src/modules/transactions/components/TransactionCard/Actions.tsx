@@ -140,7 +140,8 @@ const Actions = memo(
       (e: React.MouseEvent) => {
         e.stopPropagation();
         e.preventDefault();
-        transaction && confirmTransaction(transaction.id, callBack);
+        transaction &&
+          confirmTransaction(transaction.id, callBack, transaction);
       },
       [confirmTransaction, transaction, callBack],
     );

@@ -92,7 +92,7 @@ const TransactionConfirm = () => {
               <Dialog.PrimaryAction
                 size="md"
                 isLoading={isSigning}
-                onClick={() => signTransaction()}
+                onClick={() => signTransaction(undefined, vault?.version)}
                 fontSize={14}
               >
                 Sign
