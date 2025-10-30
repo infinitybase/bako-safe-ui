@@ -23,17 +23,12 @@ const AddressActionsPopover = (props: AddressActionsProps) => {
       </Popover.Trigger>
       <Popover.Portal>
         <Popover.Positioner>
-          <Popover.Content
-            bg="gray.550"
-            p={0}
-            borderRadius={8}
-            css={{ boxShadow: '0px 4px 24px 0px #00000040' }}
-          >
+          <Popover.Content bg="gray.550" p={0} borderRadius="lg">
             <Popover.Body p={0}>
               {!hasContact && (
                 <>
-                  <AddToAddressBook address={address} />
-                  <Separator borderColor="grey.825" />
+                  <AddToAddressBook address={address} onClick={onClose} />
+                  <Separator borderColor="bg.muted" />
                 </>
               )}
               <CopyAddress
@@ -42,7 +37,7 @@ const AddressActionsPopover = (props: AddressActionsProps) => {
               />
               {handle && (
                 <>
-                  <Separator borderColor="grey.825" />
+                  <Separator borderColor="bg.muted" />
                   <GoToBakoId handle={handle} />
                 </>
               )}

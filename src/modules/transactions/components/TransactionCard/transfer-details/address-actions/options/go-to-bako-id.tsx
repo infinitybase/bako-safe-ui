@@ -26,15 +26,10 @@ const GoToBakoId = ({ handle }: GoToBakoIdProps) => {
         window.open(`${VITE_BAKO_ID_URL}/profile/${_handle}`, '_BLANK')
       }
     >
-      <UpRightArrow color="grey.50" fontSize="lg" />
+      <UpRightArrow color="gray.200" boxSize={3} />
       <VStack alignItems="flex-start" gap={0} fontSize="xs">
-        <Text color="grey.50">Go to Bako ID</Text>
-        <Text
-          isTruncated
-          textOverflow="ellipsis"
-          maxW={isMobile ? '75vw' : '220px'}
-          color="grey.425"
-        >
+        <Text color="gray.200">Go to Bako ID</Text>
+        <Text truncate maxW={isMobile ? '75vw' : '220px'} color="textSecondary">
           {handle}
         </Text>
       </VStack>
