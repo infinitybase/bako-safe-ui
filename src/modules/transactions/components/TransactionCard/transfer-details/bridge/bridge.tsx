@@ -50,7 +50,7 @@ const BridgeCardDetail = ({ transaction }: BridgeCardDetailProps) => {
     <Box
       alignItems="flex-start"
       flexWrap="wrap"
-      w={{ base: 'full', xs: 'unset' }}
+      w={{ base: 'full', sm: 'unset' }}
     >
       <AssetBoxInfo
         isContract={false}
@@ -62,7 +62,6 @@ const BridgeCardDetail = ({ transaction }: BridgeCardDetailProps) => {
           to: bridgeInfo?.sourceToken?.to ?? '',
           transactionID: transaction.id,
         }}
-        borderColor="grey.950"
         bridgeImgNet={'https://verified-assets.fuel.network/images/fuel.svg'}
       />
 
@@ -76,7 +75,6 @@ const BridgeCardDetail = ({ transaction }: BridgeCardDetailProps) => {
           to: bridgeInfo?.destinationToken?.to ?? '',
           transactionID: transaction.id,
         }}
-        borderColor="grey.950"
         bridgeImgNet={bridgeInfo?.destinationNetwork?.logo}
       />
     </Box>
