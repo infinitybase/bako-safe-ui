@@ -17,7 +17,11 @@ import { Address, DoubleArrowIcon, Handle } from '@/components';
 import { DeployIcon } from '@/components/icons/tx-deploy';
 import { useAssetMap } from '@/modules/assets-tokens/hooks/useAssetMap';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
-import type { AssetModel, IRampTransaction } from '@/modules/core';
+import {
+  AddressUtils,
+  type AssetModel,
+  type IRampTransaction,
+} from '@/modules/core';
 import { useAddressNicknameResolver } from '@/modules/core/hooks/useAddressNicknameResolver';
 import { FIAT_CURRENCIES_ASSET_IDS } from '@/modules/core/utils/fiat-currencies';
 import { parseURI } from '@/modules/core/utils/formatter';
@@ -53,11 +57,7 @@ const AssetBoxInfo = ({
 }: AssetBoxInfoProps) => {
   const {
     tokensUSD,
-    screenSizes: {
-      isLowerThanFourHundredAndThirty,
-      isExtraSmall,
-      isLitteSmall,
-    },
+    screenSizes: { isExtraSmall, isLitteSmall },
     nftList,
     assetsMap,
   } = useWorkspaceContext();
@@ -135,16 +135,9 @@ const AssetBoxInfo = ({
     [isFiatCurrency, rampTransaction?.fiatAmountInUsd, txUSDAmount],
   );
 
-  const contactOrProvider = useMemo(
-    () =>
-      isFiatCurrency
-        ? rampTransaction?.providerTransaction || '-'
-        : assetAddressInfo?.contact,
-    [
-      isFiatCurrency,
-      rampTransaction?.providerTransaction,
-      assetAddressInfo?.contact,
-    ],
+  const provider = useMemo(
+    () => (isFiatCurrency ? rampTransaction?.providerTransaction || '-' : null),
+    [isFiatCurrency, rampTransaction?.providerTransaction],
   );
 
   const paymentMethodOrProvider = useMemo(
@@ -165,12 +158,17 @@ const AssetBoxInfo = ({
       justifyContent={{ base: 'space-between' }}
       w="full"
       rounded="lg"
-      bg="gray.600"
+      bg="bg.muted"
+      mb={1}
+      _last={{
+        mb: 0,
+      }}
       direction={{
         base: !rampTransaction ? 'row' : 'column',
         sm: 'row',
       }}
       {...props}
+      border="none"
     >
       <HStack
         justifyContent={{ base: 'space-between', sm: 'flex-start' }}
@@ -179,7 +177,7 @@ const AssetBoxInfo = ({
         {assetInfo && (
           <VStack alignItems="start" minW="40px">
             {bridgeImgNet ? (
-              <Box position="relative" w={7} h={7}>
+              <Box position="relative" w={6} h={6}>
                 <Image
                   w="full"
                   h="full"
@@ -199,41 +197,37 @@ const AssetBoxInfo = ({
                   bottom={-1}
                   right={-1}
                   border="2px solid"
-                  borderColor="gray.900"
+                  borderColor="bg.panel"
                 />
               </Box>
             ) : (
               <Image
-                w={7}
-                h={7}
+                w={6}
+                h={6}
                 src={parseURI(imgUrl)}
                 borderRadius="md"
                 alt="Asset Icon"
                 objectFit="cover"
               />
             )}
-
-            <Text fontSize="sm" color="grey.500">
-              {assetInfo?.slug}
-            </Text>
           </VStack>
         )}
 
-        <VStack mt={0.5} minW={isLitteSmall ? '75px' : '105px'}>
+        <VStack mt={0.5} flex={1}>
           <Text
             textAlign="center"
-            // variant={isMobile ? 'title-sm' : 'title-md'}
-            color="grey.75"
-            fontSize={isLowerThanFourHundredAndThirty ? 'xs' : 'sm'}
+            color="textPrimary"
+            fontSize="xs"
+            lineHeight="shorter"
           >
-            {displayAmount}
+            {displayAmount} {assetInfo?.slug}
           </Text>
           {FIAT_CURRENCIES_ASSET_IDS.USD !== asset?.assetId && (
             <Text
               textAlign="center"
-              // variant="description"
               fontSize="xs"
-              color="grey.500"
+              color="gray.400"
+              lineHeight="shorter"
             >
               <AmountUSD amount={amount} isNFT={isNFT} />
             </Text>
@@ -254,25 +248,18 @@ const AssetBoxInfo = ({
               sm: 'end',
             }}
           >
-            <Text color="grey.75" fontSize="xs">
+            <Text color="textPrimary" fontSize="xs">
               {paymentMethodOrProvider}
             </Text>
-            <Text color="grey.500" fontSize="2xs">
+            <Text color="gray.400" fontSize="xs">
               {isFiatCurrency ? 'Founds via' : 'Quote By'}
             </Text>
           </Stack>
         )}
 
-        <Center
-          p={{ base: 1.5, sm: 3 }}
-          borderRadius={5}
-          bgColor="grey.825"
-          borderWidth={1}
-          borderColor="grey.925"
-          boxSize="30px"
-        >
+        <Center p={{ base: 1.5, sm: 3 }}>
           <Icon
-            color="grey.250"
+            color="gray.400"
             boxSize={isDeploy ? '12.8px' : !isContract ? '18px' : '12.8px'}
             as={isDeploy ? DeployIcon : !isContract ? DoubleArrowIcon : FaPlay}
           />
@@ -286,11 +273,11 @@ const AssetBoxInfo = ({
             minW={{
               base: isExtraSmall ? '100px' : isLitteSmall ? '125px' : '135px',
               sm: '160px',
-              md: '170px',
+              md: '200px',
             }}
           >
-            <VStack alignItems="end" gap={1}>
-              {contactOrProvider && (
+            <VStack alignItems="center" gap={1} flex={1}>
+              {provider && (
                 <Stack gap={0} alignItems="end">
                   <Text
                     truncate
@@ -304,44 +291,39 @@ const AssetBoxInfo = ({
                       sm: '130px',
                       lg: '130px',
                     }}
-                    color="grey.75"
-                    fontSize={isLowerThanFourHundredAndThirty ? 'xs' : 'sm'}
+                    color="textPrimary"
+                    fontSize="xs"
                   >
-                    {contactOrProvider}
+                    {provider}
                   </Text>
                   {isFiatCurrency && (
-                    <Text color="grey.500" as="span" fontSize="2xs">
+                    <Text color="gray.500" as="span" fontSize="xs">
                       Quote By
                     </Text>
                   )}
                 </Stack>
               )}
 
-              {!assetAddressInfo?.contact &&
-                !assetAddressInfo?.handle &&
-                asset?.to && (
-                  <Address
-                    value={asset?.to}
-                    color={assetAddressInfo?.contact ? 'grey.500' : 'grey.75'}
+              <Stack gap={1} justifyItems="center" alignItems="center" flex={1}>
+                {assetAddressInfo?.handle && (
+                  <Handle
+                    value={assetAddressInfo.handle}
+                    truncate
+                    alignSelf="center"
                   />
                 )}
-
-              {assetAddressInfo?.handle && (
-                <Handle
-                  value={assetAddressInfo.handle}
-                  truncate
-                  textOverflow="ellipsis"
-                  maxW={{
-                    base: isExtraSmall
-                      ? '50px'
-                      : isLitteSmall
-                        ? '75px'
-                        : '85px',
-                    sm: '105px',
-                    lg: '105px',
-                  }}
-                />
-              )}
+                {asset?.to && (
+                  <Address
+                    value={asset.to}
+                    customValue={AddressUtils.format(asset.to, 5)}
+                    color={
+                      assetAddressInfo?.contact || assetAddressInfo?.handle
+                        ? 'gray.400'
+                        : 'textPrimary'
+                    }
+                  />
+                )}
+              </Stack>
             </VStack>
 
             {asset?.to && (

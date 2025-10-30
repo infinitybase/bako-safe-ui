@@ -1,10 +1,11 @@
-import { Flex, HStack, type StackProps, Text, useMediaQuery } from 'bako-ui';
+import { Flex, HStack, type StackProps, Text } from 'bako-ui';
 import type { ITransferAsset } from 'bakosafe';
 import { bn } from 'fuels';
 import { useMemo } from 'react';
 
 import { CustomSkeleton } from '@/components';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
+import { TransactionBridgeResume } from '@/modules/core';
 import { FIAT_CURRENCIES } from '@/modules/core/utils/fiat-currencies';
 import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
@@ -15,6 +16,7 @@ import {
   type TransactionWithVault,
 } from '../../services';
 import { AssetsIcon } from './AssetsIcon';
+import { AssetsIconWithNetwork } from './AssetsIconWithNetwork';
 import { AmountUSD } from './transfer-details';
 
 interface TransactionCardAmountProps extends StackProps {
@@ -31,7 +33,6 @@ const Amount = ({
     transaction,
     transaction.predicate?.predicateAddress,
   );
-  const [showOnlyOneAsset] = useMediaQuery(['(max-width: 400px)']);
   const {
     tokensUSD,
     screenSizes: { isMobile, isExtraSmall },
@@ -57,6 +58,24 @@ const Amount = ({
         .format(),
     [transaction.assets],
   );
+
+  const bridgeAssets = useMemo(() => {
+    if (isBridge) {
+      const bridge = transaction.resume?.bridge as TransactionBridgeResume;
+      const fromAsset = {
+        assetId: bridge.sourceToken.assetId,
+        assetIcon: assetsMap[bridge.sourceToken.assetId]?.icon || '',
+        networkIcon: bridge.sourceNetwork.logo,
+      };
+      const toAsset = {
+        assetId: bridge.destinationToken.assetId,
+        assetIcon: assetsMap[bridge.destinationToken.assetId]?.icon || '',
+        networkIcon: bridge.destinationNetwork.logo,
+      };
+      return { from: fromAsset, to: toAsset };
+    }
+    return null;
+  }, [assetsMap, isBridge, transaction.resume?.bridge]);
 
   const oneAssetOfEach = useMemo(() => {
     if (isBridge) {
@@ -132,13 +151,14 @@ const Amount = ({
     >
       {!showAmount || hasNoDefaultAssets ? null : (
         <>
-          <AssetsIcon
-            assets={oneAssetOfEach}
-            isMobile={isMobile}
-            showOnlyOneAsset={showOnlyOneAsset}
-            assetsMap={assetsMap}
-            isNFT={isNFT}
-          />
+          {isBridge && bridgeAssets ? (
+            <AssetsIconWithNetwork
+              from={bridgeAssets?.from}
+              to={bridgeAssets?.to}
+            />
+          ) : (
+            <AssetsIcon assets={oneAssetOfEach} assetsMap={assetsMap} />
+          )}
           <Flex
             flexDir={isMultiToken ? 'column-reverse' : 'column'}
             w={isMobile ? 'unset' : 'full'}
@@ -146,8 +166,8 @@ const Amount = ({
             textAlign="start"
           >
             {isMultiToken ? (
-              <Text color="textPrimary" fontSize="xs">
-                Multi-token
+              <Text color="gray.400" fontSize="xs">
+                Send multi tokens
               </Text>
             ) : (
               <Text color="textPrimary" fontSize="sm">
