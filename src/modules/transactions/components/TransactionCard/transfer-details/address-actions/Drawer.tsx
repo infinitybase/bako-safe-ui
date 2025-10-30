@@ -19,28 +19,31 @@ const AddressActionsDrawer = (props: AddressActionsProps) => {
         open={isOpen}
         onOpenChange={onOpenChange}
         size="sm"
-        // variant="solid-dark"
         placement="bottom"
       >
-        <Drawer.Backdrop zIndex={1400} />
-        <Drawer.Content bg={'dark.950'} p={0} borderTopRadius={8}>
-          {!hasContact && (
-            <>
-              <AddToAddressBook address={address} />
-              <Separator borderColor="grey.825" />
-            </>
-          )}
-          <CopyAddress
-            address={address}
-            onClose={hasContact && !handle ? onClose : undefined}
-          />
-          {handle && (
-            <>
-              <Separator borderColor="grey.825" />
-              <GoToBakoId handle={handle} />
-            </>
-          )}
-        </Drawer.Content>
+        <Drawer.Portal>
+          <Drawer.Backdrop zIndex={1400} />
+          <Drawer.Positioner>
+            <Drawer.Content bg="gray.550" p={0} borderTopRadius={8}>
+              {!hasContact && (
+                <>
+                  <AddToAddressBook address={address} />
+                  <Separator borderColor="bg.muted" />
+                </>
+              )}
+              <CopyAddress
+                address={address}
+                onClose={hasContact && !handle ? onClose : undefined}
+              />
+              {handle && (
+                <>
+                  <Separator borderColor="bg.muted" />
+                  <GoToBakoId handle={handle} />
+                </>
+              )}
+            </Drawer.Content>
+          </Drawer.Positioner>
+        </Drawer.Portal>
       </Drawer.Root>
     </>
   );
