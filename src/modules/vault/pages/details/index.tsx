@@ -210,15 +210,7 @@ const VaultDetailsPage = () => {
               </Box>
             );
           })
-        : !!transactions &&
-          !isLoading && (
-            <EmptyState
-              title="No Data available"
-              subTitle="Currently, there is no available data to display in this section."
-              showAction={false}
-              mb={10}
-            />
-          )}
+        : !!transactions && !isLoading && <EmptyState showAction={false} />}
     </Box>
   );
 };
