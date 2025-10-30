@@ -57,7 +57,7 @@ const Address = (props: AddressProps) => {
       textOverflow="ellipsis"
       truncate
       textAlign={isExtraSmall ? 'start' : 'end'}
-      fontSize={isLowerThanFourHundredAndThirty ? 'xs' : 'sm'}
+      fontSize="xs"
       maxW={
         isSidebarAddress
           ? 'full'
