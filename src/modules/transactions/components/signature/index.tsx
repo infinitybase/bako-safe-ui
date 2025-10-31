@@ -17,8 +17,9 @@ const WaitingSignatureBadge = (props: WaitingSignatureBadgeProps) => {
     return (
       <Loader
         size="lg"
-        css={{ '--spinner-track-color': 'dark.100' }}
-        colorPalette="brand.500"
+        css={{ '--spinner-track-color': 'colors.gray.700' }}
+        colorPalette="yellow"
+        display={{ base: 'none', sm: 'inline-flex' }}
       />
     );
   }
