@@ -1,11 +1,16 @@
 import { Card, Text } from 'bako-ui';
-import { memo } from 'react';
+import { memo, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-import { CreateVaultDialog } from '@/modules';
-import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
+import { Pages } from '@/modules';
 
-const CreateNewAccountCard = memo(() => {
-  const dialog = useDisclosure();
+const ViewAllCard = memo(({ workspaceId }: { workspaceId: string }) => {
+  const navigate = useNavigate();
+
+  const handleNavigateToAllVaults = useCallback(() => {
+    navigate(Pages.userVaults({ workspaceId }));
+  }, [navigate, workspaceId]);
+
   return (
     <Card.Root
       variant="outline"
@@ -15,14 +20,11 @@ const CreateNewAccountCard = memo(() => {
       rounded="2xl"
       w="full"
       h="full"
-      onClick={dialog.onOpen}
+      onClick={handleNavigateToAllVaults}
       _hover={{
         '& p': { color: 'textPrimary' },
       }}
     >
-      {dialog.isOpen && (
-        <CreateVaultDialog open onOpenChange={dialog.onOpenChange} />
-      )}
       <Card.Body p={6} justifyContent="center">
         <Text
           fontSize="xs"
@@ -31,13 +33,13 @@ const CreateNewAccountCard = memo(() => {
           fontWeight="medium"
           transition="color 0.2s ease-in-out"
         >
-          Create new account
+          View all
         </Text>
       </Card.Body>
     </Card.Root>
   );
 });
 
-CreateNewAccountCard.displayName = 'CreateNewAccountCard';
+ViewAllCard.displayName = 'ViewAllCard';
 
-export default CreateNewAccountCard;
+export default ViewAllCard;
