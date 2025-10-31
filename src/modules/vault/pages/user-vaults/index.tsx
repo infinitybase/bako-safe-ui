@@ -6,20 +6,16 @@ import {
   GridItem,
   HStack,
   Icon,
-  Stack,
   Text,
   VStack,
 } from 'bako-ui';
-import { FaEye, FaEyeSlash, FaRegPlusSquare } from 'react-icons/fa';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { IoChevronBack } from 'react-icons/io5';
 
-import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
+import { CustomSkeleton, HomeIcon } from '@/components';
 import { EmptyState } from '@/components/emptyState';
-import { AddressBookIcon } from '@/components/icons/address-book';
-import { TransactionsIcon } from '@/components/icons/transactions';
 import { Pages, PermissionRoles } from '@/modules/core';
 import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
-import { ActionCard } from '@/modules/home/components/ActionCard';
 import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { CreateVaultDialog, VaultCard } from '../../components';
@@ -33,11 +29,9 @@ const UserVaultsPage = () => {
     authDetails: { userInfos },
     workspaceInfos: {
       handlers: { hasPermission, handleWorkspaceSelection, goHome },
-      requests: { latestPredicates },
     },
     userVaults: {
       request: { vaults, isLoading },
-      handlers: { navigate },
       inView,
       filter: { value, change },
     },
@@ -135,96 +129,16 @@ const UserVaultsPage = () => {
             </Breadcrumb.List>
           </Breadcrumb.Root>
         </HStack>
-        <Box>
-          <Button
-            colorPalette="primary"
-            fontWeight="bold"
-            disabled={!hasPermission([OWNER, MANAGER, ADMIN])}
-            onClick={onOpen}
-          >
-            <FaRegPlusSquare />
-            Create vault
-          </Button>
-        </Box>
       </HStack>
-
-      <CustomSkeleton display="flex" loading={latestPredicates.isLoading}>
-        <Stack w="full" direction={{ base: 'column', md: 'row' }} gap={6}>
-          <ActionCard.Container
-            flex={1}
-            onClick={() =>
-              navigate(
-                Pages.userVaults({
-                  workspaceId: userInfos.workspace?.id,
-                }),
-              )
-            }
-          >
-            <ActionCard.Icon>
-              <VaultIcon w={7} />
-            </ActionCard.Icon>
-            <Box>
-              <ActionCard.Title>Vaults</ActionCard.Title>
-              <ActionCard.Description>
-                Access and Manage All Your Vaults in One Place.
-              </ActionCard.Description>
-            </Box>
-          </ActionCard.Container>
-
-          <ActionCard.Container
-            flex={1}
-            onClick={() => {
-              navigate(
-                Pages.userTransactions({
-                  workspaceId: userInfos.workspace?.id,
-                }),
-              );
-            }}
-          >
-            <ActionCard.Icon>
-              <TransactionsIcon w={7} />
-            </ActionCard.Icon>
-            <Box>
-              <ActionCard.Title>Transactions</ActionCard.Title>
-              <ActionCard.Description>
-                Manage Transactions Across All Vaults in One Place.
-              </ActionCard.Description>
-            </Box>
-          </ActionCard.Container>
-
-          <ActionCard.Container
-            flex={1}
-            onClick={() =>
-              navigate(
-                Pages.addressBook({
-                  workspaceId: userInfos.workspace?.id,
-                }),
-              )
-            }
-          >
-            <ActionCard.Icon>
-              <AddressBookIcon w={7} />
-            </ActionCard.Icon>
-            <Box>
-              <ActionCard.Title>Address book</ActionCard.Title>
-              <ActionCard.Description>
-                Access and Manage Your Contacts for Easy Transfers and Vault
-                Creation.
-              </ActionCard.Description>
-            </Box>
-          </ActionCard.Container>
-        </Stack>
-      </CustomSkeleton>
 
       <HStack w="full" justifyContent="space-between" pb={2}>
         <Text color="white" fontWeight="semibold" fontSize="md">
-          Vaults
+          Accounts
         </Text>
         <HStack gap={2}>
           {value ? (
             <Button
-              color="grey.75"
-              colorPalette="txFilterType"
+              variant="subtle"
               alignSelf={{ base: 'stretch', sm: 'flex-end' }}
               onClick={() => change(false)}
               px={isExtraSmall ? 3 : 4}
@@ -239,8 +153,7 @@ const UserVaultsPage = () => {
             </Button>
           ) : (
             <Button
-              color="grey.75"
-              colorPalette="txFilterType"
+              variant="subtle"
               alignSelf={{ base: 'stretch', sm: 'flex-end' }}
               onClick={() => change(true)}
               px={isExtraSmall ? 3 : 4}
@@ -254,6 +167,14 @@ const UserVaultsPage = () => {
               Show Inactives
             </Button>
           )}
+
+          <Button
+            variant="subtle"
+            onClick={onOpen}
+            disabled={!hasPermission([OWNER, MANAGER, ADMIN])}
+          >
+            Create new Account
+          </Button>
         </HStack>
       </HStack>
 
@@ -313,20 +234,20 @@ const UserVaultsPage = () => {
                 id,
                 name,
                 workspace,
-                members,
                 description,
-                owner,
+                configurable,
                 isHidden,
                 predicateAddress,
               }) => (
                 <CustomSkeleton loading={isLoading} key={id} maxH="180px">
                   <GridItem>
                     <VaultCard
-                      ownerId={owner.id}
+                      id={id}
                       name={name}
-                      workspace={workspace}
+                      requiredSigners={configurable?.SIGNATURES_COUNT || 0}
+                      signersCount={configurable?.SIGNERS?.length || 0}
+                      workspaceId={workspace.id}
                       title={description}
-                      members={members!}
                       isHidden={isHidden}
                       onClick={() =>
                         handleWorkspaceSelection(
