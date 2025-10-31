@@ -60,8 +60,8 @@ importers:
         specifier: ^1.5.0
         version: 1.11.0
       bako-ui:
-        specifier: 0.3.1
-        version: 0.3.1(@chakra-ui/react@3.28.0(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        specifier: 0.3.2
+        version: 0.3.2(@chakra-ui/react@3.28.0(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       bakosafe:
         specifier: 0.3.0-beta.1
         version: 0.3.0-beta.1(fuels@0.101.3(vitest@3.0.9(@types/debug@4.1.12)(@types/node@20.5.1)(terser@5.43.1)))
@@ -2910,8 +2910,8 @@ packages:
     resolution: {integrity: sha512-Cg7TFGpIr01vOQNODXOOaGz2NpCU5gl8x1qJFbb6hbZxR7XrcE2vtbAsTAbJ7/xwJtUuJEw8K8Zr/AE0LHlesg==}
     engines: {node: '>=10', npm: '>=6'}
 
-  bako-ui@0.3.1:
-    resolution: {integrity: sha512-z3tEZb0RFTL4b87UiRYzcmYrv+AHbcrGBeLUdogDzGTvsJQSyx+2qG1gjXzvvC5MooPWB/VWZtBNoWgVbu+30w==}
+  bako-ui@0.3.2:
+    resolution: {integrity: sha512-iHVzQ52sj19M1NuANpHF9xv96dx8vaQ07R0Y5ipMh4Bcj+vEJndw5yu9EweTnDHqPvXxAia/vR7X2tnmCWPTrg==}
     peerDependencies:
       '@chakra-ui/react': ^3.21.0
       '@emotion/react': ^11.14.0
@@ -11852,7 +11852,7 @@ snapshots:
       cosmiconfig: 7.1.0
       resolve: 1.22.10
 
-  bako-ui@0.3.1(@chakra-ui/react@3.28.0(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
+  bako-ui@0.3.2(@chakra-ui/react@3.28.0(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
     dependencies:
       '@chakra-ui/react': 3.28.0(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       '@emotion/react': 11.14.0(@types/react@19.2.2)(react@19.2.0)
