@@ -202,7 +202,7 @@ const UserBox = () => {
             cursor="pointer"
             gap={2}
             p={2}
-            bg="gray.550"
+            bg="bg.muted"
             position="relative"
             borderRadius="lg"
           >
@@ -455,19 +455,19 @@ const Header = () => {
 
   return (
     <Flex
-      h={{
-        base: '64px',
-        sm: '72px',
-      }}
+      h="107px"
       zIndex={100}
       w="100%"
-      bgColor="dark.950"
-      px={{ base: 0, sm: 4 }}
+      background="linear-gradient(0deg, rgba(13, 13, 12, 0) 0%, rgba(13, 13, 12, 0.6) 35%, #0D0D0C 90%)"
+      px={{
+        base: 3,
+        sm: 6,
+      }}
+      style={{ WebkitBackdropFilter: 'blur(8px)', backdropFilter: 'blur(8px)' }}
       alignItems="center"
       position="sticky"
       top="0"
       justifyContent="space-between"
-      boxShadow="0px 8px 12px 0px rgba(0, 0, 0, 0.2)"
     >
       <NotificationsDrawer
         open={notificationDrawerState.isOpen}
@@ -490,15 +490,9 @@ const Header = () => {
       </Box>
       <Box
         css={{
-          paddingX: {
-            base: 3,
-            sm: 6,
-          },
-          paddingY: 3,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          height: '35%',
         }}
       >
         <UserBox />
