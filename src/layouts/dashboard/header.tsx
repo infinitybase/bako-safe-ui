@@ -382,8 +382,7 @@ const UserBox = () => {
                         ml="auto"
                         borderWidth="3px"
                         animationDelay="0.5s"
-                        css={{ '--spinner-track-color': 'primary.main' }}
-                        color="brand.500"
+                        css={{ '--spinner-track-color': 'colors.yellow.100' }}
                         w="20px"
                         h="20px"
                       />
