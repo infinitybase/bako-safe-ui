@@ -17,15 +17,18 @@ import {
 import { AddressUtils as BakoAddressUtils } from 'bakosafe';
 import { Address, Network } from 'fuels';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import logo from '@/assets/bakoLogoWhite.svg';
 import { AddressWithCopyBtn, NotificationIcon } from '@/components';
+import { AddressBook2Icon } from '@/components/icons/address-book-2';
 import { DisconnectIcon } from '@/components/icons/disconnect';
 import { FeedbackIcon } from '@/components/icons/feedback';
 import { SettingsTopMenuIcon } from '@/components/icons/settings-top-menu';
 import { queryClient } from '@/config';
 import {
   IDefaultMessage,
+  Pages,
   SocketEvents,
   useEvm,
   useUserWorkspacesRequest,
@@ -66,6 +69,7 @@ const UserBox = () => {
   const mySettingsRequest = useMySettingsRequest(
     authDetails.userInfos?.address,
   );
+  const navigate = useNavigate();
 
   const { avatar, isLoading: isLoadingAvatar } = useBakoIdAvatar(
     authDetails.userInfos?.address,
@@ -157,6 +161,13 @@ const UserBox = () => {
     settingsDrawer.onOpen();
     handleCloseMenu();
   }, [handleCloseMenu, settingsDrawer]);
+
+  const handleGoToAddressBookPage = useCallback(() => {
+    navigate(
+      Pages.addressBook({ workspaceId: authDetails?.userInfos?.workspace?.id }),
+    );
+    handleCloseMenu();
+  }, [navigate, authDetails?.userInfos?.workspace?.id, handleCloseMenu]);
 
   return (
     <>
@@ -318,6 +329,29 @@ const UserBox = () => {
                     onCreateNetwork={networkDialogState.onOpen}
                     onSelectNetwork={handleCloseMenu}
                   />
+                </VStack>
+
+                <Separator borderColor="gray.550" w="full" />
+
+                <VStack
+                  cursor="pointer"
+                  alignItems="start"
+                  justifyContent="center"
+                  px={4}
+                  onClick={handleGoToAddressBookPage}
+                  h="70px"
+                >
+                  <HStack gap={4}>
+                    <Icon
+                      w={4}
+                      h={4}
+                      color="textPrimary"
+                      as={AddressBook2Icon}
+                    />
+                    <Text color="textPrimary" fontSize="xs">
+                      Address Book
+                    </Text>
+                  </HStack>
                 </VStack>
 
                 <Separator borderColor="gray.550" w="full" />
