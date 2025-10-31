@@ -34,7 +34,6 @@ export const Header = memo(
     return (
       <Root
         onClick={onOpenDialog}
-        as="div"
         w="full"
         _hover={{ bgColor: 'transparent' }}
         px={{ base: 2, sm: 4 }}
