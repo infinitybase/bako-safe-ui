@@ -1,4 +1,5 @@
 import { HStack, Text, VStack } from 'bako-ui';
+import { memo } from 'react';
 
 import {
   Dialog,
@@ -16,7 +17,7 @@ interface CreateVaultDialogProps extends Omit<DialogModalProps, 'children'> {
   onCreate?: () => void;
 }
 
-const CreateVaultDialog = (props: CreateVaultDialogProps) => {
+const CreateVaultDialog = memo((props: CreateVaultDialogProps) => {
   const {
     tabs,
     form,
@@ -34,7 +35,7 @@ const CreateVaultDialog = (props: CreateVaultDialogProps) => {
     setSearch,
     validateAddress,
   } = useCreateVaultDialog({
-    onOpenChange: props.onOpenChange,
+    onOpenChange: (payload) => props.onOpenChange?.(payload),
     onCreate: props.onCreate,
   });
 
@@ -123,8 +124,8 @@ const CreateVaultDialog = (props: CreateVaultDialogProps) => {
                 Vault creation is free on Fuel Network
                 <Tooltip
                   placment="top-start"
-                  text="Vault creation is free on Bako Safe
-Bako Safe leverages Fuel predicates to manage vault permissions off-chain. Therefore, the creation of vaults is entirely free of charge and not sponsored by the network."
+                  text="Account creation is free on Bako Safe
+Bako Safe leverages Fuel predicates to manage account permissions off-chain. Therefore, the creation of accounts is entirely free of charge and not sponsored by the network."
                 />
               </Text>
             </HStack>
@@ -132,21 +133,18 @@ Bako Safe leverages Fuel predicates to manage vault permissions off-chain. There
           {tabs.tab === 2 && (
             <CreateVaultWarning
               mb={4}
-              message="Before initiating high-value deposits, first conduct smaller deposits and transactions to confirm that all signers have access to their wallets and that the vault’s funds can be transferred securely."
+              message="Before initiating high-value deposits, first conduct smaller deposits and transactions to confirm that all signers have access to their wallets and that the accounts funds can be transferred securely."
             />
           )}
           <HStack w="full" justifyContent="space-between">
             <Dialog.SecondaryAction
-              bgColor="transparent"
-              aria-label="Create Vault Secundary Action"
-              border="1px solid white"
+              variant="subtle"
+              aria-label="Create Account Secondary Action"
               w={tabs.tab !== TabState.SUCCESS ? '25%' : '100%'}
-              onClick={
-                tabs.tab === 2 ? steps.step.onContinue : steps.step.onCancel
-              }
-              _hover={{
-                borderColor: 'brand.500',
-                color: 'brand.500',
+              onClick={() => {
+                tabs.tab === TabState.SUCCESS
+                  ? steps.step.onContinue()
+                  : steps.step.onCancel();
               }}
             >
               {steps.step.closeText}
@@ -170,6 +168,8 @@ Bako Safe leverages Fuel predicates to manage vault permissions off-chain. There
       </Dialog.Actions>
     </Dialog.Modal>
   );
-};
+});
+
+CreateVaultDialog.displayName = 'CreateVaultDialog';
 
 export { CreateVaultDialog };
