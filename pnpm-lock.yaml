@@ -72,8 +72,8 @@ importers:
         specifier: ^1.5.0
         version: 1.11.0
       bakosafe:
-        specifier: 0.5.0
-        version: 0.5.0(bufferutil@4.0.9)(fuels@0.101.3(vitest@3.0.9(@types/debug@4.1.12)(@types/node@20.5.1)(terser@5.43.1)))(typescript@5.4.5)(utf-8-validate@5.0.10)(zod@3.25.76)
+        specifier: 0.5.1
+        version: 0.5.1(bufferutil@4.0.9)(fuels@0.101.3(vitest@3.0.9(@types/debug@4.1.12)(@types/node@20.5.1)(terser@5.43.1)))(typescript@5.4.5)(utf-8-validate@5.0.10)(zod@3.25.76)
       bech32:
         specifier: ^2.0.0
         version: 2.0.0
@@ -3199,8 +3199,8 @@ packages:
     resolution: {integrity: sha512-Cg7TFGpIr01vOQNODXOOaGz2NpCU5gl8x1qJFbb6hbZxR7XrcE2vtbAsTAbJ7/xwJtUuJEw8K8Zr/AE0LHlesg==}
     engines: {node: '>=10', npm: '>=6'}
 
-  bakosafe@0.5.0:
-    resolution: {integrity: sha512-Q8mAUNYRSQopaOk39Rl7RSqCH/bG9zo1v2lZYsVsxdFR6lEibidZ15+W54tZRGRzLhimkt31Wh2K/DBcasoznQ==}
+  bakosafe@0.5.1:
+    resolution: {integrity: sha512-rSVDTxltTTK75/M0BH9f7ShAlyWgK3Vni2ZJqAwWAlNZqGo1LqkPRe98rpftj7F5yWJy+G/V+ReCg89rfe+28g==}
     peerDependencies:
       fuels: ^0.101.0
 
@@ -12412,7 +12412,7 @@ snapshots:
       cosmiconfig: 7.1.0
       resolve: 1.22.10
 
-  bakosafe@0.5.0(bufferutil@4.0.9)(fuels@0.101.3(vitest@3.0.9(@types/debug@4.1.12)(@types/node@20.5.1)(terser@5.43.1)))(typescript@5.4.5)(utf-8-validate@5.0.10)(zod@3.25.76):
+  bakosafe@0.5.1(bufferutil@4.0.9)(fuels@0.101.3(vitest@3.0.9(@types/debug@4.1.12)(@types/node@20.5.1)(terser@5.43.1)))(typescript@5.4.5)(utf-8-validate@5.0.10)(zod@3.25.76):
     dependencies:
       '@ethereumjs/util': 9.0.3
       '@ethersproject/bytes': 5.7.0
