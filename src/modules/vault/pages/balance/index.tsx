@@ -17,7 +17,7 @@ const VaultBalancePage = () => {
   if (!vault) return null;
 
   return (
-    <Flex w="full" direction="column">
+    <Flex w="full" direction="column" flex={1}>
       <Flex w="full" direction="column" flex={1}>
         <Tabs.Root variant="subtle" defaultValue="tokens" lazyMount>
           <Tabs.List gap={3}>
@@ -25,7 +25,7 @@ const VaultBalancePage = () => {
             <Tabs.Trigger value="nft">NFTs</Tabs.Trigger>
           </Tabs.List>
 
-          <Tabs.Content value="tokens" px={-4}>
+          <Tabs.Content value="tokens">
             <CustomSkeleton
               loading={userInfos.isLoading && assets.isLoading}
               flex={1}
@@ -43,7 +43,7 @@ const VaultBalancePage = () => {
             </CustomSkeleton>
           </Tabs.Content>
 
-          <Tabs.Content value="nft" px={-4}>
+          <Tabs.Content value="nft">
             <CustomSkeleton
               loading={userInfos.isLoading && assets.isLoading}
               flex={1}
