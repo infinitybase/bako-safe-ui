@@ -1,4 +1,4 @@
-import { Box, Field, Input, TextArea, VStack } from 'bako-ui';
+import { Box, Field, floatingStyles, Input, TextArea, VStack } from 'bako-ui';
 import { ChangeEvent, useEffect } from 'react';
 import { Controller } from 'react-hook-form';
 
@@ -37,17 +37,19 @@ const VaultInfosStep = ({ form, vaultName }: VaultInfoStepProps) => {
             >
               <Input
                 id="vault_name"
-                // variant="dark"
                 value={search}
                 defaultValue={search || form.watch('name')}
                 maxLength={27}
+                pt={search ? 2 : 0}
                 onChange={(e) => {
                   searchHandler(e);
                   field.onChange(e.target.value);
                 }}
                 placeholder=" "
               />
-              <Field.Label>Vault name</Field.Label>
+              <Field.Label css={floatingStyles({ hasValue: !!search })}>
+                Account name
+              </Field.Label>
               <Field.HelperText
                 color={
                   !!vaultNameIsAvailable || form.formState.errors.name?.message
@@ -56,11 +58,11 @@ const VaultInfosStep = ({ form, vaultName }: VaultInfoStepProps) => {
                 }
               >
                 {!!vaultNameIsAvailable && search.length > 0
-                  ? 'Vault name already exists in this workspace'
+                  ? 'Account name already exists in this workspace'
                   : form.formState.errors.name?.message
                     ? form.formState.errors.name?.message
                     : search.length > 0
-                      ? 'This vault is available'
+                      ? 'This account is available'
                       : ''}
               </Field.HelperText>
             </Field.Root>

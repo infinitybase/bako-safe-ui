@@ -64,7 +64,7 @@ const CreateVaultDialog = (props: CreateVaultDialogProps) => {
         mb={0}
         pt={isSafariBrowser && isMobile ? 6 : 'unset'}
         hidden={steps.step?.hide}
-        title="Create Vault"
+        title="Create new Account"
         description={steps.step?.description ?? ''}
         descriptionFontSize="sm"
       />
