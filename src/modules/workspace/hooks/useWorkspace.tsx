@@ -25,7 +25,7 @@ type HandleWithSocketEventProps = {
   type: string;
 };
 
-const VAULTS_PER_PAGE = 8;
+const VAULTS_PER_PAGE = 5;
 
 export type UseWorkspaceReturn = ReturnType<typeof useWorkspace>;
 
