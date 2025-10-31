@@ -1,6 +1,5 @@
 import { Box, HStack, Icon, Text, VStack } from 'bako-ui';
 import { useEffect } from 'react';
-import { RiMenuUnfoldLine } from 'react-icons/ri';
 
 import {
   CustomSkeleton,
@@ -8,8 +7,6 @@ import {
   TransactionFilters,
 } from '@/components';
 import { EmptyState } from '@/components/emptyState';
-import { Drawer } from '@/layouts/dashboard/drawer';
-import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
 import { TransactionCard } from '@/modules/transactions/components';
 import { useTransactionSocketListener } from '@/modules/transactions/hooks/events/useTransactionsSocketListener';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
@@ -20,10 +17,9 @@ import { StatusFilter } from '../../../transactions/hooks';
 import { vaultInfinityQueryKey } from '../../hooks/list/useVaultTransactionsRequest';
 
 const TransactionsVaultPage = () => {
-  const menuDrawer = useDisclosure();
   const {
     authDetails: { userInfos },
-    screenSizes: { vaultRequiredSizeToColumnLayout, isMobile },
+    screenSizes: { isMobile },
   } = useWorkspaceContext();
 
   const { vault } = useVaultInfosContext();
@@ -65,18 +61,6 @@ const TransactionsVaultPage = () => {
 
   return (
     <Box w="full" h="100%" maxH="100%">
-      <Drawer open={menuDrawer.isOpen} onOpenChange={menuDrawer.onOpenChange} />
-      {vaultRequiredSizeToColumnLayout && (
-        <Box mb={10}>
-          <HStack mt={2} gap={1.5} w="fit-content" onClick={menuDrawer.onOpen}>
-            <Icon as={RiMenuUnfoldLine} fontSize="xl" color="grey.200" />
-            <Text fontSize="sm" fontWeight="normal" color="grey.100">
-              Menu
-            </Text>
-          </HStack>
-        </Box>
-      )}
-
       {/* FILTER */}
       <HStack gap={3}>
         <TransactionFilters
