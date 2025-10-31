@@ -3,6 +3,7 @@ import {
   Drawer,
   DrawerRootProps,
   Field,
+  floatingStyles,
   Heading,
   HStack,
   Input,
@@ -71,7 +72,6 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
     <Drawer.Root
       {...props}
       size="sm"
-      // variant="solid-dark"
       placement="end"
       onOpenChange={onCloseDrawer}
       open={props.open}
@@ -79,7 +79,7 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
       <Portal>
         <Drawer.Backdrop />
         <Drawer.Positioner>
-          <Drawer.Content maxW={456} p={9}>
+          <Drawer.Content maxW={456} p={6}>
             <Drawer.Header>
               <VStack alignItems="flex-start" gap={6}>
                 <HStack
@@ -88,37 +88,38 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
                   justifyContent="space-between"
                   w="full"
                 >
-                  <Heading fontSize="xl" fontWeight="bold" color="grey.50">
+                  <Heading fontSize="xl" fontWeight="bold" color="textPrimary">
                     Settings
                   </Heading>
-                  <LineCloseIcon
-                    w="24px"
-                    aria-label="Close window"
-                    cursor="pointer"
-                    onClick={onCloseDrawer}
-                  />
+
+                  <Drawer.CloseTrigger position="static">
+                    <LineCloseIcon
+                      w="24px"
+                      aria-label="Close window"
+                      cursor="pointer"
+                      onClick={onCloseDrawer}
+                    />
+                  </Drawer.CloseTrigger>
                 </HStack>
-                <Text
-                  fontSize="sm"
-                  maxWidth={320}
-                  color="grey.75"
-                  fontWeight="light"
-                >
+                <Text fontSize="sm" maxWidth={320} color="textSecondary">
                   Personalize Your Preferences: Set Your Name, Email, and Email
                   Notification Preferences.
                 </Text>
               </VStack>
             </Drawer.Header>
 
-            <Separator borderColor="#868079" my={10} />
+            <Separator borderColor="gray.400" my={10} />
 
             <Drawer.Body
               css={{
                 '::-webkit-scrollbar': { width: 0 },
                 scrollbarWidth: 'none',
               }}
+              flex={1}
+              display="flex"
+              px={0}
             >
-              <VStack alignItems="flex-start" p={1}>
+              <VStack alignItems="flex-start" p={1} flex={1}>
                 <VStack gap={3} w="full" mb={2}>
                   <Controller
                     control={form.control}
@@ -128,9 +129,9 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
                         invalid={fieldState.invalid || !!isNicknameInUse}
                       >
                         <Input
-                          // variant="dark"
                           maxLength={19}
                           placeholder=" "
+                          pt={inputValue.length > 0 ? 2 : 0}
                           value={inputValue}
                           onChange={(e) => {
                             handleInputChange(e.target.value.toLowerCase());
@@ -145,7 +146,13 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
                             })
                           }
                         />
-                        <Field.Label>Username</Field.Label>
+                        <Field.Label
+                          css={floatingStyles({
+                            hasValue: inputValue.length > 0,
+                          })}
+                        >
+                          Username
+                        </Field.Label>
 
                         <Field.HelperText
                           color={
@@ -176,12 +183,16 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
                     render={({ field, fieldState }) => (
                       <Field.Root invalid={fieldState.invalid}>
                         <Input
-                          // variant="dark"
                           value={field.value}
+                          pt={field.value ? 2 : 0}
                           onChange={field.onChange}
                           placeholder=" "
                         />
-                        <Field.Label>Email Address</Field.Label>
+                        <Field.Label
+                          css={floatingStyles({ hasValue: !!field.value })}
+                        >
+                          Email Address
+                        </Field.Label>
                         <Field.HelperText color="error.500">
                           {fieldState.error?.message}
                         </Field.HelperText>
@@ -189,59 +200,54 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
                     )}
                   />
                 </VStack>
-                <Separator borderColor="#868079" mb={5} mt={4} />
-                <Text fontWeight="bold" color="grey.200" fontSize={15}>
+
+                <Separator borderColor="gray.400" mb={5} mt={4} w="full" />
+
+                <Text fontWeight="bold" color="textPrimary" fontSize="md">
                   Notifications Preferences
                 </Text>
                 <Text
                   fontSize="sm"
                   maxWidth={320}
-                  color="grey.75"
-                  fontWeight="light"
-                  paddingBottom={'6px'}
+                  color="textSecondary"
+                  paddingBottom={1.5}
                 >
                   Get wallet and vault alerts by email for enhanced security.
                 </Text>
-                <Text fontWeight="bold" color="grey.200" fontSize={15}>
+
+                <Text fontWeight="bold" color="textPrimary" fontSize="md">
                   Do you wanna receive email notifications?
                 </Text>
 
                 <Controller
                   control={form.control}
                   name="notify"
-                  render={({ field }) => (
+                  defaultValue="false"
+                  render={({ field: { value, onChange, ...rest } }) => (
                     <RadioGroup
-                      name={field.name}
-                      value={field.value ?? 'no'}
-                      onValueChange={(e) => field.onChange(e.value)}
+                      colorPalette="primary"
+                      value={value}
+                      onValueChange={(e) => onChange(e.value)}
+                      {...rest}
                       size="md"
                     >
-                      <VStack>
-                        <Radio value="yes">Yes</Radio>
-                        <Radio value="no">No</Radio>
+                      <VStack alignItems="flex-start">
+                        <Radio value="true">Yes</Radio>
+                        <Radio value="false">No</Radio>
                       </VStack>
                     </RadioGroup>
                   )}
                 />
 
-                <Separator borderColor="dark.100" mb={5} mt={4} />
-
-                <HStack w="full" justifyContent="center">
-                  <Button
-                    colorPalette="secondary"
-                    bgColor="dark.100"
-                    border="none"
-                    onClick={onCloseDrawer}
-                    w="full"
-                  >
+                <HStack w="full" justifyContent="center" mt="auto">
+                  <Button variant="subtle" flex={1} onClick={onCloseDrawer}>
                     Cancel
                   </Button>
                   <Button
-                    colorPalette="primary"
                     disabled={disableUpdateButton}
                     onClick={handleSubmitSettings}
                     loading={isLoading}
-                    w="full"
+                    flex={1}
                   >
                     Update
                   </Button>
