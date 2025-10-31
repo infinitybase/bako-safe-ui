@@ -2,6 +2,7 @@ import { TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
 import { useState } from 'react';
 
 import { Dialog } from '@/components/dialog';
+import { useEvm } from '@/modules/auth/hooks';
 import { useMyWallet } from '@/modules/core/hooks/fuel';
 import CreateTxMenuButton, {
   ECreateTransactionMethods,
@@ -40,6 +41,7 @@ const TransactionConfirm = () => {
     },
   } = useWorkspaceContext();
   const { data: wallet } = useMyWallet();
+  const { isConnected: isEvmConnected } = useEvm();
 
   return (
     <Tabs isLazy index={tabs.tab}>
@@ -55,7 +57,7 @@ const TransactionConfirm = () => {
             primaryActionLoading={isSending}
             cancel={cancelSendTransaction}
             primaryActionButton={
-              type && (wallet || webauthn) ? (
+              type && (wallet || webauthn || isEvmConnected) ? (
                 <CreateTxMenuButton
                   createTxMethod={createTxMethod}
                   setCreateTxMethod={setCreateTxMethod}
