@@ -205,7 +205,7 @@ const UserBox = () => {
               <Avatar
                 boxSize="16px"
                 shape="full"
-                src={avatar || undefined}
+                src={avatar!}
                 color="textPrimary"
               />
             </Skeleton>
