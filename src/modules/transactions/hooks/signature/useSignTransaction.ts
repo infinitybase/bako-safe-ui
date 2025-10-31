@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { queryClient } from '@/config';
 import { CookieName, CookiesConfig } from '@/config/cookies';
 import { useContactToast } from '@/modules/addressBook/hooks/useContactToast';
-import { useWalletSignMessage } from '@/modules/core';
+import { instantiateVault, useWalletSignMessage } from '@/modules/core';
 import { ITransaction } from '@/modules/core/hooks/bakosafe/utils/types';
 import { VAULT_TRANSACTIONS_LIST_PAGINATION } from '@/modules/vault/hooks/list/useVaultTransactionsRequest';
 
@@ -108,9 +108,23 @@ const useSignTransaction = ({
 
     setSelectedTransaction(transaction);
 
-    const signedMessage = await signMessageRequest.mutateAsync(
-      transaction?.hash,
-    );
+    let predicateVersion = undefined;
+
+    if (
+      transactionInformations?.predicate?.predicateAddress &&
+      transactionInformations?.network.url
+    ) {
+      const vault = await instantiateVault({
+        predicateAddress: transactionInformations.predicate.predicateAddress,
+        providerUrl: transactionInformations.network.url,
+      });
+      predicateVersion = vault.predicateVersion;
+    }
+
+    const signedMessage = await signMessageRequest.mutateAsync({
+      message: transaction?.hash,
+      predicateVersion,
+    });
 
     await request.mutateAsync(
       {

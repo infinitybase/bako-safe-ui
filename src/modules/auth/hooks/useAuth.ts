@@ -41,7 +41,8 @@ const useAuth = (): IUseAuthReturn => {
     useAuthCookies();
   const signOutRequest = useSignOut();
   const { account, singleWorkspace, accessToken } = userAuthCookiesInfo();
-  const { sessionId, origin, name, request_id, byConnector } = useQueryParams();
+  const { sessionId, origin, name, request_id, byConnector, connectorType } =
+    useQueryParams();
   const navigate = useNavigate();
 
   const authenticate = (params: AuthenticateParams) => {
@@ -68,6 +69,7 @@ const useAuth = (): IUseAuthReturn => {
         name,
         request_id,
         byConnector: byConnector ? String(byConnector) : undefined,
+        connectorType: connectorType ? connectorType : undefined,
       });
       navigate(`/${queryParams}`);
     }, 200);
@@ -100,7 +102,7 @@ const useAuth = (): IUseAuthReturn => {
       return { type: TypeUser.WEB_AUTHN, name: EConnectors.WEB_AUTHN };
     }
 
-    const isEvm = infos?.type as unknown as TypeUser == TypeUser.EVM;
+    const isEvm = (infos?.type as unknown as TypeUser) == TypeUser.EVM;
     if (isEvm) {
       return { type: TypeUser.EVM, name: EConnectors.EVM };
     }
