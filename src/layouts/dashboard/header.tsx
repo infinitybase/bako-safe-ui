@@ -7,6 +7,7 @@ import {
   Icon,
   Image,
   Loader,
+  MenuOpenChangeDetails,
   Popover,
   Separator,
   Skeleton,
@@ -18,17 +19,9 @@ import { Address, Network } from 'fuels';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import logo from '@/assets/bakoLogoWhite.svg';
-import {
-  AddressWithCopyBtn,
-  ChevronDownIcon,
-  FuelIcon,
-  NotificationIcon,
-  PlusIcon,
-  UnknownIcon,
-} from '@/components';
+import { AddressWithCopyBtn, NotificationIcon } from '@/components';
 import { DisconnectIcon } from '@/components/icons/disconnect';
 import { FeedbackIcon } from '@/components/icons/feedback';
-import { NetworkIcon } from '@/components/icons/network';
 import { SettingsTopMenuIcon } from '@/components/icons/settings-top-menu';
 import { queryClient } from '@/config';
 import {
@@ -46,7 +39,6 @@ import { AddressUtils } from '@/modules/core/utils/address';
 import { NetworkDialog } from '@/modules/network/components/dialog';
 import { NetworkDrawer } from '@/modules/network/components/drawer';
 import { useNetworks } from '@/modules/network/hooks';
-import { NetworkService, NetworkType } from '@/modules/network/services';
 import { useNotification } from '@/modules/notification';
 import { NotificationsDrawer } from '@/modules/notifications/components';
 import { useAppNotifications } from '@/modules/notifications/hooks';
@@ -56,10 +48,12 @@ import { SelectWorkspaceDialog } from '@/modules/workspace/components';
 import { useWorkspaceContext } from '@/modules/workspace/hooks';
 import { limitCharacters } from '@/utils';
 
+import NetworkSelect from './network';
+
 const UserBox = () => {
+  const [openMenu, setOpenMenu] = useState(false);
   const { authDetails } = useWorkspaceContext();
-  const { networks, currentNetwork, handleSelectNetwork } = useNetworks();
-  const networkPopoverState = useDisclosure();
+  const { currentNetwork } = useNetworks();
   const networkDrawerState = useDisclosure();
   const networkDialogState = useDisclosure();
   const toast = useNotification();
@@ -78,6 +72,17 @@ const UserBox = () => {
     currentNetwork.chainId,
   );
 
+  const handleOpenMenuChange = useCallback(
+    ({ open }: MenuOpenChangeDetails) => {
+      setOpenMenu(open);
+    },
+    [],
+  );
+
+  const handleCloseMenu = useCallback(() => {
+    setOpenMenu(false);
+  }, []);
+
   const name = useMemo(
     () => mySettingsRequest.data?.name ?? '',
     [mySettingsRequest.data?.name],
@@ -85,11 +90,6 @@ const UserBox = () => {
   const hasNickName = useMemo(
     () => name && !AddressUtils.isValid(name),
     [name],
-  );
-
-  const isMainnet = useCallback(
-    (url: string) => url?.includes(NetworkType.MAINNET),
-    [],
   );
 
   const logout = useCallback(async () => {
@@ -148,6 +148,16 @@ const UserBox = () => {
 
   const b256UserAddress = useMemo(() => getUserAddress(), [getUserAddress]);
 
+  const handleNotificationClick = useCallback(() => {
+    notificationDrawerState.onOpen();
+    handleCloseMenu();
+  }, [handleCloseMenu, notificationDrawerState]);
+
+  const handleSettingsClick = useCallback(() => {
+    settingsDrawer.onOpen();
+    handleCloseMenu();
+  }, [handleCloseMenu, settingsDrawer]);
+
   return (
     <>
       <SettingsDrawer
@@ -169,7 +179,12 @@ const UserBox = () => {
       />
 
       {/* TOP MENU */}
-      <Popover.Root positioning={{ placement: 'bottom-end' }} autoFocus={false}>
+      <Popover.Root
+        open={openMenu}
+        onOpenChange={handleOpenMenuChange}
+        positioning={{ placement: 'bottom-end' }}
+        autoFocus={false}
+      >
         <Popover.Trigger asChild>
           <HStack
             alignItems="center"
@@ -187,7 +202,12 @@ const UserBox = () => {
             </Text>
 
             <Skeleton boxSize="16px" loading={isLoadingAvatar}>
-              <Avatar boxSize="16px" shape="full" src={avatar || undefined} />
+              <Avatar
+                boxSize="16px"
+                shape="full"
+                src={avatar || undefined}
+                color="textPrimary"
+              />
             </Skeleton>
 
             {unreadCounter > 0 && (
@@ -251,7 +271,7 @@ const UserBox = () => {
                   justifyContent="center"
                   px={4}
                   h="70px"
-                  onClick={notificationDrawerState.onOpen}
+                  onClick={handleNotificationClick}
                 >
                   <HStack gap={4} w="full">
                     <Icon
@@ -294,110 +314,10 @@ const UserBox = () => {
                   px={4}
                   h="70px"
                 >
-                  <HStack w="full" justifyContent="space-between">
-                    <HStack gap={4}>
-                      <Icon color="textPrimary" w={4} h={4} as={NetworkIcon} />
-                      <Text color="textPrimary" fontSize="xs">
-                        Network
-                      </Text>
-                    </HStack>
-
-                    <Popover.Root>
-                      <Popover.Trigger asChild>
-                        <HStack alignItems="center" gap={4}>
-                          <Icon
-                            as={
-                              isMainnet(currentNetwork.url)
-                                ? FuelIcon
-                                : UnknownIcon
-                            }
-                            rounded="full"
-                            w={4}
-                          />
-                          <Text
-                            fontSize="xs"
-                            color="gray.200"
-                            truncate
-                            lineClamp={1}
-                          >
-                            {NetworkService.getName(currentNetwork.url)}
-                          </Text>
-
-                          <Icon
-                            color="gray.200"
-                            w={4}
-                            h={4}
-                            as={ChevronDownIcon}
-                          />
-                        </HStack>
-                      </Popover.Trigger>
-                      <Popover.Positioner>
-                        <Popover.Content
-                          bg="bg.muted"
-                          rounded="2xl"
-                          shadow="md"
-                        >
-                          <Popover.Body p={0}>
-                            <VStack alignItems="start" gap={0}>
-                              {networks?.map((network) => (
-                                <VStack
-                                  w="full"
-                                  key={network.url}
-                                  cursor="pointer"
-                                  alignItems="start"
-                                  justifyContent="center"
-                                  borderBottom="1px solid"
-                                  borderColor="gray.550"
-                                  p={4}
-                                  onClick={() => {
-                                    networkPopoverState.onClose?.();
-                                    if (network.url !== currentNetwork.url) {
-                                      handleSelectNetwork(network.url);
-                                    }
-                                  }}
-                                >
-                                  <HStack gap={4}>
-                                    <Icon
-                                      as={
-                                        isMainnet(network.url)
-                                          ? FuelIcon
-                                          : UnknownIcon
-                                      }
-                                      rounded="full"
-                                      w={4}
-                                    />
-                                    <Text
-                                      color="gray.200"
-                                      fontSize="xs"
-                                      lineHeight="shorter"
-                                    >
-                                      {network.name}
-                                    </Text>
-                                  </HStack>
-                                </VStack>
-                              ))}
-
-                              <VStack
-                                w="full"
-                                cursor="pointer"
-                                alignItems="start"
-                                justifyContent="center"
-                                p={4}
-                                onClick={() => networkDialogState.onOpen()}
-                              >
-                                <HStack gap={4}>
-                                  <Icon as={PlusIcon} w={4} color="gray.200" />
-                                  <Text color="gray.200" fontSize="xs">
-                                    Add new network
-                                  </Text>
-                                </HStack>
-                              </VStack>
-                            </VStack>
-                          </Popover.Body>
-                        </Popover.Content>
-                      </Popover.Positioner>
-                    </Popover.Root>
-                  </HStack>
+                  <NetworkSelect
+                    onCreateNetwork={networkDialogState.onOpen}
+                    onSelectNetwork={handleCloseMenu}
+                  />
                 </VStack>
 
                 <Separator borderColor="gray.550" w="full" />
@@ -408,7 +328,7 @@ const UserBox = () => {
                   justifyContent="center"
                   px={4}
                   h="70px"
-                  onClick={settingsDrawer.onOpen}
+                  onClick={handleSettingsClick}
                 >
                   <HStack gap={4}>
                     <Icon
