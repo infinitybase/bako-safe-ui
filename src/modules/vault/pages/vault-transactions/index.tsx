@@ -60,7 +60,7 @@ const TransactionsVaultPage = () => {
   const hasTransactions = !isLoading && transactions?.length;
 
   return (
-    <Box w="full" h="100%" maxH="100%">
+    <Box w="full" flex={1}>
       {/* FILTER */}
       <HStack gap={3}>
         <TransactionFilters
@@ -90,10 +90,9 @@ const TransactionsVaultPage = () => {
       </HStack>
 
       {/* TRANSACTION LIST */}
-      <CustomSkeleton h="100%" loading={isLoading}>
+      <CustomSkeleton loading={isLoading}>
         {hasTransactions ? (
           <VStack
-            maxH="77.5vh"
             overflowY="scroll"
             scrollBehavior="smooth"
             css={{
