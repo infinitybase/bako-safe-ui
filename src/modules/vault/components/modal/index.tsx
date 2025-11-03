@@ -49,10 +49,6 @@ const VaultListModal = ({
     onOpenChange: createVaultModalOnOpenChange,
   } = useDisclosure();
 
-  const isLoadingVaults = inView.inView
-    ? !isLoading
-    : !isLoading && !isFetching;
-
   return (
     <>
       <CreateVaultDialog
@@ -81,8 +77,8 @@ const VaultListModal = ({
             onClose={drawer.onClose}
             w="full"
             maxW={{ base: 480, sm: 'unset' }}
-            title="Select vault"
-            description="Select the vault or create new one"
+            title="Select account"
+            description="Select the account or create new one"
             descriptionFontSize="12px"
             titleSxProps={{
               fontSize: '16px',
@@ -96,24 +92,25 @@ const VaultListModal = ({
             mt={6}
             pb={6}
             borderBottomWidth={1}
-            borderColor="grey.425"
+            borderColor="gray.550"
           >
             <Field.Root>
-              <Input
-                placeholder=" "
-                bg="transparent"
-                onChange={search.handler}
-                pt={2}
-                px={3}
-              />
-              <Field.Label
-                css={floatingStyles({
-                  withStartIcon: false,
-                  hasValue: search.value.length > 0,
-                })}
-              >
-                Search
-              </Field.Label>
+              <Box position="relative" w="full">
+                <Input
+                  placeholder=" "
+                  bg="transparent"
+                  onChange={search.handler}
+                  pt={2}
+                  px={3}
+                />
+                <Field.Label
+                  css={floatingStyles({
+                    hasValue: !!search.value,
+                  })}
+                >
+                  Search
+                </Field.Label>
+              </Box>
             </Field.Root>
           </Box>
 
@@ -135,12 +132,12 @@ const VaultListModal = ({
             )}
 
             <VStack marginBottom={4} w="full">
-              {isLoadingVaults && vaults.length === 0 && (
+              {isLoading && vaults.length === 0 && (
                 <VStack gap={4} w="full" pt={4}>
                   <Loader size="md" borderWidth="4px" color="brand.500" />
                 </VStack>
               )}
-              <CustomSkeleton loading={isLoadingVaults}>
+              <CustomSkeleton loading={isLoading}>
                 <VaultList
                   vaults={vaults}
                   currentVaultId={vaultId}
@@ -170,21 +167,17 @@ const VaultListModal = ({
                 marginTop: '0',
               },
             }}
+            hideDivider
           >
             <Button
-              fontSize="14px"
-              lineHeight="15.85px"
               fontWeight="normal"
               letterSpacing=".5px"
-              variant="outline"
-              color="grey.75"
-              borderColor="grey.75"
+              variant="subtle"
               w="full"
-              _hover={{ bg: '#f5f5f513' }}
               onClick={createVaultModalOnOpen}
-              aria-label="Create new vault"
+              aria-label="Create new account"
             >
-              Create new vault
+              Create new account
             </Button>
           </Dialog.Actions>
         </Dialog.Body>

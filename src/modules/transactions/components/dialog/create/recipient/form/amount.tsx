@@ -70,6 +70,9 @@ const RecipientFormAmount = memo(
                     <Clear
                       position="relative"
                       transform="none"
+                      _hover={{
+                        bg: 'transparent',
+                      }}
                       onClear={() => onChange('')}
                     />
                     <Button

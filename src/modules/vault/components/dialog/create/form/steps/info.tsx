@@ -35,26 +35,28 @@ const VaultInfosStep = ({ form, vaultName }: VaultInfoStepProps) => {
                 (vaultNameIsAvailable && search.length > 0)
               }
             >
-              <Input
-                id="vault_name"
-                value={search}
-                defaultValue={search || form.watch('name')}
-                maxLength={27}
-                pt={search ? 2 : 0}
-                onChange={(e) => {
-                  searchHandler(e);
-                  field.onChange(e.target.value);
-                }}
-                placeholder=" "
-              />
-              <Field.Label css={floatingStyles({ hasValue: !!search })}>
-                Account name
-              </Field.Label>
+              <Box position="relative" w="full">
+                <Input
+                  id="vault_name"
+                  value={search}
+                  defaultValue={search || form.watch('name')}
+                  maxLength={27}
+                  pt={2}
+                  onChange={(e) => {
+                    searchHandler(e);
+                    field.onChange(e.target.value);
+                  }}
+                  placeholder=" "
+                />
+                <Field.Label css={floatingStyles({ hasValue: !!field.value })}>
+                  Account name
+                </Field.Label>
+              </Box>
               <Field.HelperText
                 color={
                   !!vaultNameIsAvailable || form.formState.errors.name?.message
                     ? 'error.500'
-                    : 'grey.500'
+                    : 'gray.550'
                 }
               >
                 {!!vaultNameIsAvailable && search.length > 0
@@ -71,7 +73,7 @@ const VaultInfosStep = ({ form, vaultName }: VaultInfoStepProps) => {
         <Field.Root
           css={{
             'Aa::placeholder': {
-              color: 'grey.500',
+              color: 'gray.500',
             },
           }}
         >
@@ -80,8 +82,6 @@ const VaultInfosStep = ({ form, vaultName }: VaultInfoStepProps) => {
             id="vault_description"
             maxLength={199}
             placeholder="Description"
-            bg={`grey.825`}
-            borderColor={`grey.800`}
             resize="none"
           />
           <Field.HelperText>Optional</Field.HelperText>

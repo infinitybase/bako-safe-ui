@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   Drawer,
   DrawerRootProps,
@@ -128,31 +129,33 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
                       <Field.Root
                         invalid={fieldState.invalid || !!isNicknameInUse}
                       >
-                        <Input
-                          maxLength={19}
-                          placeholder=" "
-                          pt={inputValue.length > 0 ? 2 : 0}
-                          value={inputValue}
-                          onChange={(e) => {
-                            handleInputChange(e.target.value.toLowerCase());
-                            field.onChange(e.target.value.toLowerCase());
-                          }}
-                          onKeyDown={(e) =>
-                            handleActionUsingKeys({
-                              pressedKey: e.key,
-                              allowedKeys: [ActionKeys.Enter],
-                              action: handleSubmitSettings,
-                              enabled: !disableUpdateButton,
-                            })
-                          }
-                        />
-                        <Field.Label
-                          css={floatingStyles({
-                            hasValue: inputValue.length > 0,
-                          })}
-                        >
-                          Username
-                        </Field.Label>
+                        <Box position="relative" w="full">
+                          <Input
+                            maxLength={19}
+                            placeholder=" "
+                            pt={2}
+                            value={inputValue}
+                            onChange={(e) => {
+                              handleInputChange(e.target.value.toLowerCase());
+                              field.onChange(e.target.value.toLowerCase());
+                            }}
+                            onKeyDown={(e) =>
+                              handleActionUsingKeys({
+                                pressedKey: e.key,
+                                allowedKeys: [ActionKeys.Enter],
+                                action: handleSubmitSettings,
+                                enabled: !disableUpdateButton,
+                              })
+                            }
+                          />
+                          <Field.Label
+                            css={floatingStyles({
+                              hasValue: inputValue.length > 0,
+                            })}
+                          >
+                            Username
+                          </Field.Label>
+                        </Box>
 
                         <Field.HelperText
                           color={
@@ -182,17 +185,19 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
                     name="email"
                     render={({ field, fieldState }) => (
                       <Field.Root invalid={fieldState.invalid}>
-                        <Input
-                          value={field.value}
-                          pt={field.value ? 2 : 0}
-                          onChange={field.onChange}
-                          placeholder=" "
-                        />
-                        <Field.Label
-                          css={floatingStyles({ hasValue: !!field.value })}
-                        >
-                          Email Address
-                        </Field.Label>
+                        <Box position="relative" w="full">
+                          <Input
+                            value={field.value}
+                            pt={2}
+                            onChange={field.onChange}
+                            placeholder=" "
+                          />
+                          <Field.Label
+                            css={floatingStyles({ hasValue: !!field.value })}
+                          >
+                            Email Address
+                          </Field.Label>
+                        </Box>
                         <Field.HelperText color="error.500">
                           {fieldState.error?.message}
                         </Field.HelperText>
