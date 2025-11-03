@@ -160,9 +160,7 @@ const useCreateVaultForm = (account?: string) => {
     },
   });
 
-  type UseCreateVaultFormFields = yup.InferType<typeof vaultSchema>;
-
-  const addressesFieldArray = useFieldArray<UseCreateVaultFormFields>({
+  const addressesFieldArray = useFieldArray({
     name: 'addresses',
     control: form.control,
   });
