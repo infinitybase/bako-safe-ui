@@ -103,11 +103,7 @@ const RecipientFormAddress = ({
 
   const handleChange = useCallback(
     (value: string) => {
-      if (isB256(value)) {
-        onChange(value);
-        setInputValue(value);
-        return;
-      }
+      onChange(value);
       setInputValue(value);
     },
     [onChange],
