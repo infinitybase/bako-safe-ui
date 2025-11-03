@@ -13,6 +13,7 @@ export interface AmountBridgeProps {
   assets?: Required<Asset>[];
   errorAmount?: string | null;
   setErrorAmount: React.Dispatch<React.SetStateAction<string | null>>;
+  decimals?: number;
 }
 
 const MotionBox = motion(VStack);
@@ -24,6 +25,7 @@ export function AmountBrigde({
   assets,
   errorAmount,
   setErrorAmount,
+  decimals,
 }: AmountBridgeProps) {
   const { amount, assetFromUSD } = useFormBridge();
 
@@ -63,6 +65,7 @@ export function AmountBrigde({
 
         <InputAmount
           symbol={symbol}
+          decimals={decimals}
           value={amount}
           onChange={handleSourceChange}
           disabled={false}

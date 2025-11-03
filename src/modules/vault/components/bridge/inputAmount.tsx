@@ -9,12 +9,14 @@ export const InputAmount = ({
   value,
   disabled,
   onChange,
+  decimals
 }: {
   symbol: string;
   value: string;
   onChange?: (value: string) => void;
   autoFocus?: boolean;
   disabled?: boolean;
+  decimals?: number;
 }) => {
   const mirrorRef = useRef<HTMLDivElement>(null);
   const [inputWidth, setInputWidth] = useState(50);
@@ -49,6 +51,7 @@ export const InputAmount = ({
           fontSize="3xl"
           disabled={disabled}
           value={value}
+          decimalScale={decimals}
           onChange={(e) => onChange?.(e)}
           width={`${inputWidth}px`}
         />
