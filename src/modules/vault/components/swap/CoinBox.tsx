@@ -137,6 +137,7 @@ export const CoinBox = memo(
               collection={assetsCollections}
               open={false}
               maxW="172px"
+              h="40px"
               rounded="lg"
               bg="bg.muted"
               cursor="pointer"
