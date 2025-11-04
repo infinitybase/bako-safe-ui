@@ -25,7 +25,7 @@ export const AssetsList = ({ assets }: { assets: Asset[] }) => {
   const isEmpty = useMemo(() => assets.length === 0, [assets]);
 
   return (
-    <Card.Body pt={4}>
+    <Card.Body pt={4} justifyContent={isEmpty ? 'center' : 'flex-start'}>
       {isEmpty && (
         <Text color="textSecondary" textAlign="center">
           Nothing to show here yet
