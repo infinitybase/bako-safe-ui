@@ -3,6 +3,7 @@ import { useState } from 'react';
 
 import { Dialog } from '@/components/dialog';
 import { useEvm } from '@/modules/auth/hooks';
+import { useSocial } from '@/modules/auth/hooks/useSocial';
 import { useMyWallet } from '@/modules/core/hooks/fuel';
 import CreateTxMenuButton, {
   ECreateTransactionMethods,
@@ -42,6 +43,7 @@ const TransactionConfirm = () => {
   } = useWorkspaceContext();
   const { data: wallet } = useMyWallet();
   const { isConnected: isEvmConnected } = useEvm();
+  const { wallet: socialWallet } = useSocial();
 
   return (
     <Tabs isLazy index={tabs.tab}>
@@ -57,7 +59,7 @@ const TransactionConfirm = () => {
             primaryActionLoading={isSending}
             cancel={cancelSendTransaction}
             primaryActionButton={
-              type && (wallet || webauthn || isEvmConnected) ? (
+              type && (wallet || webauthn || isEvmConnected || socialWallet) ? (
                 <CreateTxMenuButton
                   createTxMethod={createTxMethod}
                   setCreateTxMethod={setCreateTxMethod}

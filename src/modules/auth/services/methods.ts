@@ -19,6 +19,7 @@ export enum TypeUser {
   FULLET = 'FULLET',
   WEB_AUTHN = 'WEB_AUTHN',
   EVM = 'EVM',
+  SOCIAL = 'SOCIAL',
 }
 
 export type SignWebAuthnPayload = {

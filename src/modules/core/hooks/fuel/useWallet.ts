@@ -14,6 +14,7 @@ import {
   useEvm,
   WalletSignMessagePayload,
 } from '@/modules/auth';
+import { useSocial } from '@/modules/auth/hooks/useSocial';
 import { TypeUser } from '@/modules/auth/services';
 import { signChallange } from '@/modules/core/utils/webauthn';
 
@@ -86,22 +87,33 @@ const useWalletSignMessage = (
 ) => {
   const { data: wallet } = useMyWallet();
   const { signAndValidate, address: evmAddress } = useEvm();
+  const { wallet: socialWallet, signMessage: socialSignMessage } = useSocial();
   const {
     userInfos: { type, webauthn, address },
   } = useAuth();
 
+  const encodeMessageEvm = (message: string, predicateVersion?: string) => {
+    if (!predicateVersion) return message;
+    return EncodingService.encodedMessage(message, predicateVersion);
+  };
+
   const signAccountEvm = async (message: string, predicateVersion?: string) => {
-    let encodedMessage = message;
-
-    if (predicateVersion) {
-      encodedMessage = EncodingService.encodedMessage(
-        message,
-        predicateVersion,
-      );
-    }
-
+    const encodedMessage = encodeMessageEvm(message, predicateVersion);
     const signature = await signAndValidate(encodedMessage);
     return CoderUtils.encodeSignature(evmAddress, signature, predicateVersion);
+  };
+
+  const signAccountSocial = async (
+    message: string,
+    predicateVersion?: string,
+  ) => {
+    const encodedMessage = encodeMessageEvm(message, predicateVersion);
+    const signature = await socialSignMessage(encodedMessage);
+    return CoderUtils.encodeSignature(
+      socialWallet?.address ?? '',
+      signature ?? '',
+      predicateVersion,
+    );
   };
 
   return useMutation({
@@ -122,6 +134,8 @@ const useWalletSignMessage = (
           });
         case TypeUser.EVM:
           return await signAccountEvm(message, predicateVersion);
+        case TypeUser.SOCIAL:
+          return await signAccountSocial(message, predicateVersion);
         default:
           return signAccountFuel(wallet!, message, predicateVersion);
       }
