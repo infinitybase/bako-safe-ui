@@ -1,3 +1,5 @@
+import { BN } from 'fuels';
+
 import { UseVaultDetailsReturn } from '@/modules/vault';
 
 import { IPredicate } from '../hooks/bakosafe/utils/types';
@@ -28,3 +30,13 @@ export interface SignersDetailsProps {
 
 export interface PredicateUpdatePayload
   extends Pick<Predicate, 'name' | 'description'> {}
+
+export interface IPredicateAllocation {
+  data: {
+    assetId: string | null;
+    amountInUSD: number;
+    amount: BN;
+    percentage: number;
+  }[];
+  totalAmountInUSD: number;
+}
