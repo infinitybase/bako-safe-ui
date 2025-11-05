@@ -72,8 +72,8 @@ const DonutLabel = ({
 
 const Donut = memo(({ allocation, isLoading }: DonutProps) => {
   const isEmpty = useMemo(
-    () => !isLoading && (!allocation || !allocation.totalAmountInUSD),
-    [allocation, isLoading],
+    () => !allocation || !allocation.totalAmountInUSD,
+    [allocation],
   );
 
   const data = useMemo(
@@ -94,12 +94,12 @@ const Donut = memo(({ allocation, isLoading }: DonutProps) => {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
     >
-      {isEmpty && (
+      {isEmpty && !isLoading && (
         <Text color="textSecondary" textAlign="center">
           Nothing to show here yet
         </Text>
       )}
-      {!isEmpty && (
+      {!isEmpty && !isLoading && (
         <AssetsDonut
           width="185px"
           data={data}

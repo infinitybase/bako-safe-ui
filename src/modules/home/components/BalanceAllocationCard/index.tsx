@@ -41,7 +41,7 @@ const BalanceAllocationCard = memo(() => {
           Balance allocation
         </Heading>
       </Card.Header>
-      <Card.Body alignItems="center">
+      <Card.Body alignItems="center" justifyContent="center">
         {!isEmpty && <AdvancedDonut data={chartData} />}
 
         {!isLoading && isEmpty && (
