@@ -14,9 +14,10 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { useFuel } from '@fuels/react';
+import { usePrivy } from '@privy-io/react-auth';
+import { AddressUtils as BakoAddressUtils } from 'bakosafe';
 import { useEffect, useState } from 'react';
 import { RiLogoutBoxRLine } from 'react-icons/ri';
-import { AddressUtils as BakoAddressUtils } from 'bakosafe';
 
 import { CustomSkeleton, EmptyBox, LineCloseIcon } from '@/components';
 import { useQueryParams } from '@/modules/auth';
@@ -41,6 +42,7 @@ const VaultConnector = () => {
   const { isSafariBrowser } = useVerifyBrowserType();
 
   const { fuel } = useFuel();
+  const { logout: privyLogout } = usePrivy();
 
   const {
     request: { vaults, isSuccess, isLoading, isFetching },
@@ -97,6 +99,8 @@ const VaultConnector = () => {
       userInfos?.type.type === TypeUser.FUEL &&
         userInfos?.type.name !== EConnectors.FULLET &&
         (await fuel.disconnect());
+
+      userInfos?.type.type === TypeUser.SOCIAL && (await privyLogout());
     } catch (error) {
       // eslint-disable-next-line no-empty
     } finally {
@@ -106,7 +110,10 @@ const VaultConnector = () => {
 
   const getUserAddress = () => {
     if (BakoAddressUtils.isEvm(userInfos?.address)) {
-      return AddressUtils.format(BakoAddressUtils.parseFuelAddressToEth(userInfos?.address), 15);
+      return AddressUtils.format(
+        BakoAddressUtils.parseFuelAddressToEth(userInfos?.address),
+        15,
+      );
     }
 
     return isWebAuthn
