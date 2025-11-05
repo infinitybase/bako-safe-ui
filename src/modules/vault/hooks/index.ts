@@ -8,6 +8,7 @@ export * from './useHomeVaultsRequest';
 export * from './user-vaults';
 export * from './useUpdateVault';
 export * from './useUserVaultRequest';
+export * from './useVaultBalanceAllocationRequest';
 export * from './useVaultByIdRequest';
 export * from './useVaultInfoContext';
 export * from './useVaultListRequest';

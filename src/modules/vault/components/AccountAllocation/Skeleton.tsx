@@ -5,7 +5,7 @@ export const AllocationSkeleton = () => {
     <>
       <Card.Header>
         <Flex justify="space-between" align="center">
-          <Skeleton height="20px" width="100px" borderRadius="md" />
+          <Skeleton height="10px" width="100px" borderRadius="md" />
           <Flex gap={2}>
             <Skeleton height="20px" width="40px" borderRadius="md" />
             <Skeleton height="20px" width="40px" borderRadius="md" />
@@ -22,11 +22,11 @@ export const AllocationSkeleton = () => {
         >
           <Flex gap={2} alignItems="center">
             <Skeleton height="20px" width="20px" borderRadius="full" />
-            <Skeleton height="20px" width="60px" borderRadius="md" />
+            <Skeleton height="15px" width="60px" borderRadius="md" />
           </Flex>
           <Stack gap={3} align="end">
-            <Skeleton height="20px" width="80px" borderRadius="md" />
-            <Skeleton height="20px" width="60px" borderRadius="md" />
+            <Skeleton height="10px" width="80px" borderRadius="md" />
+            <Skeleton height="10px" width="60px" borderRadius="md" />
           </Stack>
         </Flex>
 
@@ -37,13 +37,13 @@ export const AllocationSkeleton = () => {
           borderColor="bg.muted"
           py={4}
         >
-          <Flex gap={2}>
+          <Flex gap={2} alignItems="center">
             <Skeleton height="20px" width="20px" borderRadius="full" />
-            <Skeleton height="20px" width="60px" borderRadius="md" />
+            <Skeleton height="15px" width="60px" borderRadius="md" />
           </Flex>
           <Stack gap={3} align="end">
-            <Skeleton height="20px" width="80px" borderRadius="md" />
-            <Skeleton height="20px" width="60px" borderRadius="md" />
+            <Skeleton height="10px" width="80px" borderRadius="md" />
+            <Skeleton height="10px" width="60px" borderRadius="md" />
           </Stack>
         </Flex>
 
@@ -55,13 +55,13 @@ export const AllocationSkeleton = () => {
           borderColor="bg.muted"
           py={4}
         >
-          <Flex gap={2}>
+          <Flex gap={2} alignItems="center">
             <Skeleton height="20px" width="20px" borderRadius="full" />
-            <Skeleton height="20px" width="60px" borderRadius="md" />
+            <Skeleton height="15px" width="60px" borderRadius="md" />
           </Flex>
           <Stack gap={3} align="end">
-            <Skeleton height="20px" width="80px" borderRadius="md" />
-            <Skeleton height="20px" width="60px" borderRadius="md" />
+            <Skeleton height="10px" width="80px" borderRadius="md" />
+            <Skeleton height="10px" width="60px" borderRadius="md" />
           </Stack>
         </Flex>
       </Card.Body>
