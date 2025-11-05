@@ -129,15 +129,22 @@ const Amount = ({
     tokensUSD?.isUnknownToken,
   );
 
-  const formattedAmount = useMemo(
-    () =>
-      transaction?.assets.length === 1
-        ? bn(transaction.assets[0].amount).format({
-            units: assetsMap[transaction.assets[0].assetId]?.units ?? 9,
-          })
-        : totalAmoutSent,
-    [transaction?.assets, assetsMap, totalAmoutSent],
-  );
+  const formattedAmount = useMemo(() => {
+    if (transaction?.assets.length === 1) {
+      if (formattedAssets[0]?.isNFT) {
+        return '1';
+      }
+      const amount = bn(transaction.assets[0].amount).format({
+        units: assetsMap[transaction.assets[0].assetId]?.units ?? 9,
+      });
+      const slug =
+        assetsMap[transaction.assets[0].assetId]?.slug ||
+        assetsMap.UNKNOWN.slug;
+
+      return `${amount} ${slug}`;
+    }
+    return totalAmoutSent;
+  }, [transaction.assets, totalAmoutSent, formattedAssets, assetsMap]);
 
   const isNFT =
     formattedAssets.length === 1 && formattedAssets[0]?.isNFT === true;
@@ -171,7 +178,7 @@ const Amount = ({
               </Text>
             ) : (
               <Text color="textPrimary" fontSize="sm">
-                {isNFT ? '1' : formattedAmount}
+                {formattedAmount}
               </Text>
             )}
             <Text
