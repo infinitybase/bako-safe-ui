@@ -1,43 +1,48 @@
-import { Card, CardRootProps, HStack, Separator, Text, VStack } from 'bako-ui';
+import { Flex, FlexProps, HStack, Text, VStack } from 'bako-ui';
 
 import { Nullable } from '@/modules/core';
 
-interface DappRequestingFromProps extends CardRootProps {
+interface DappRequestingFromProps extends FlexProps {
   name: Nullable<string>;
   origin: Nullable<string>;
+  icon?: React.ReactNode;
 }
 
 const DappRequestingFrom = (props: DappRequestingFromProps) => {
-  const { name, origin, ...rest } = props;
+  const { name, origin, icon, ...rest } = props;
 
   return (
-    <Card.Root
-      {...rest}
-      bgColor="grey.825"
-      borderColor="grey.925"
-      borderRadius={8}
-      p={2}
-      borderWidth="1px"
+    <Flex
+      alignItems="center"
+      justifyContent="space-between"
+      bg="gray.550"
+      borderRadius="8px"
+      p={3}
       w="full"
+      {...rest}
     >
-      <Text fontSize={10} color="grey.425" fontWeight={400}>
-        Requesting a transaction from:
-      </Text>
-
-      <Separator borderColor="grey.950" my={1} />
-
-      <HStack width="100%" gap={3.5}>
-        <VStack alignItems="flex-start" gap={0.5}>
-          <Text color="grey.250" fontSize={12} fontWeight={500}>
+      <HStack gap={3} align="center">
+        {icon && icon}
+        <VStack gap={2} align="flex-start">
+          <Text
+            color="gray.100"
+            fontSize={12}
+            fontWeight={500}
+            lineHeight="9px"
+          >
             {name}
           </Text>
-          <Text color="brand.500" fontSize={12} fontWeight={400} lineHeight={4}>
-            {origin?.split('//')[1]}
-            {/* fuel-connectors-hx60ddh96-fuel-labs.vercel.app */}
+          <Text
+            color="gray.300"
+            fontSize={12}
+            fontWeight={400}
+            lineHeight="9px"
+          >
+            Requesting a transaction from: {origin?.split('//')[1]}
           </Text>
         </VStack>
       </HStack>
-    </Card.Root>
+    </Flex>
   );
 };
 

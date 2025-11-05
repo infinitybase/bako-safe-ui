@@ -8,16 +8,14 @@ import {
   Heading,
   HStack,
   Loader,
-  Separator,
-  Spacer,
   Text,
   VStack,
 } from 'bako-ui';
 import { AddressUtils as BakoAddressUtils } from 'bakosafe';
 import { useEffect } from 'react';
-import { RiLogoutBoxRLine } from 'react-icons/ri';
+import { RiArrowLeftRightLine } from 'react-icons/ri';
 
-import { CustomSkeleton, EmptyBox, LineCloseIcon } from '@/components';
+import { CustomSkeleton, EmptyBox, LayerSwapIcon, LineCloseIcon } from '@/components';
 import { useQueryParams } from '@/modules/auth';
 import { TypeUser } from '@/modules/auth/services';
 import { AddressUtils } from '@/modules/core';
@@ -114,13 +112,13 @@ const VaultConnector = () => {
 
     return isWebAuthn
       ? userInfos?.name
-      : AddressUtils.format(userInfos?.address, 15);
+      : AddressUtils.format(userInfos?.address, 4);
   };
 
   return (
     <VStack
       w="full"
-      h="$100vh"
+      h="100vh"
       overflowX="hidden"
       css={{
         '&::-webkit-scrollbar': { width: '0' },
@@ -139,82 +137,82 @@ const VaultConnector = () => {
         >
           <CreateVaultDialog open={isOpen} onOpenChange={onOpenChange} />
 
-          <HStack gap={3} paddingX={6} paddingTop={5} w="full">
-            <Avatar
-              shape="rounded"
-              boxSize={'40px'}
-              border="2px solid #EBA312"
-              src={userInfos?.avatar}
-            />
+          <Flex
+            alignItems="center"
+            justifyContent="space-between"
+            bg="gray.600"
+            borderRadius={8}
+            p={3}
+            m={6}
+          >
+            <HStack gap={3} align="center">
+              <Avatar
+                shape="rounded"
+                boxSize="48px"
+                src={userInfos?.avatar}
+              />
 
-            <VStack w="full" alignItems={'flex-start'}>
-              <Text
-                // variant="subtitle"
-                truncate
-                w="full"
-                color="grey.75"
-                fontSize={12}
-                fontWeight={500}
-                lineHeight={4}
-              >
-                {getUserAddress()}
-              </Text>
-
-              {isWebAuthn && (
+              <VStack gap={2} align="flex-start">
                 <Text
-                  // variant="subtitle"
-                  fontWeight={400}
+                  fontWeight={700}
                   truncate
-                  w="full"
-                  color="grey.550"
-                  fontSize={12}
-                  lineHeight={4}
+                  color="gray.100"
+                  fontSize="xs"
+                  lineHeight="12px"
                 >
-                  {AddressUtils.format(
-                    AddressUtils.toBech32(userInfos?.address),
-                    15,
-                  )}
+                  {getUserAddress()}
                 </Text>
-              )}
-            </VStack>
 
-            <Spacer />
+                {isWebAuthn && (
+                  <Text
+                    fontWeight={400}
+                    truncate
+                    color="gray.300"
+                    fontSize="xs"
+                    lineHeight="12px"
+                  >
+                    {AddressUtils.format(
+                      AddressUtils.toBech32(userInfos?.address),
+                      15,
+                    )}
+                  </Text>
+                )}
+              </VStack>
+            </HStack>
 
             <Button
-              colorPalette="primary"
-              color="grey.75"
-              bgColor="grey.825"
+              variant="subtle"
+              color="gray.300"
+              bgColor="gray.600"
               size="xs"
-              minW={140}
-              height={8}
+              gap={3}
+              px="12px"
               fontWeight={400}
-              fontSize="12px"
               onClick={logout}
             >
-              <RiLogoutBoxRLine size={14} />
-              Change account
+              Switch user
+              <RiArrowLeftRightLine size={12} />
             </Button>
-          </HStack>
-
-          <Separator borderColor="grey.425" marginTop={5} />
+          </Flex>
 
           <Box
             display="flex"
             w={'full'}
             flexDirection={'column'}
             px={6}
-            pt={4}
-            pb={0}
-            //flex={1}
-            //bgColor={'green.100'}
           >
             <HStack
-              gap={2}
               justifyContent="space-between"
-              alignItems="flex-start"
+              alignItems="center"
             >
-              <Heading fontSize={12} fontWeight={700} color="grey.50">
-                Select vault
+              <Heading
+                fontSize={14}
+                fontWeight={600}
+                lineHeight="10px"
+                py={4}
+                color="gray.100"
+              >
+                Accounts
               </Heading>
 
               {isSafariBrowser && (
@@ -228,7 +226,7 @@ const VaultConnector = () => {
               )}
             </HStack>
 
-            <CustomSkeleton loading={isLoading} mt={4}>
+            <CustomSkeleton loading={isLoading} mt={6}>
               {/* Result */}
               <VStack
                 w="full"
@@ -265,7 +263,7 @@ const VaultConnector = () => {
                       workspace={workspace}
                       members={members?.length}
                       address={predicateAddress}
-                      root={root}
+                      root={false}
                       id={id}
                       isActive={selectedVaultId === id}
                       isSingleWorkspace={workspace.single}
@@ -344,20 +342,24 @@ const VaultConnector = () => {
         </Box>
 
         <VStack
-          w={'full'}
+          w="full"
           gap={6}
-          p={7}
-          boxShadow={'0px 8px 24px 0px #00000080'}
-          borderTopLeftRadius={16}
-          borderTopRightRadius={16}
-          maxH={195}
+          p={6}
+          borderTopRadius={16}
+          bg="gray.600"
         >
-          <DappTransaction.RequestingFrom name={name} origin={origin} />
-          <HStack w="full" justifyContent="center" gap={5}>
+          <DappTransaction.RequestingFrom
+            name={name}
+            origin={origin}
+            icon={<LayerSwapIcon boxSize="36px" rounded="sm" />} // TODO ARTHUR > ajustar
+          />
+          <HStack w="full" gap={6}>
             <Button
-              colorPalette="secondary"
-              borderColor="grey.75"
-              paddingX={8}
+              variant="subtle"
+              color="gray.300"
+              bgColor="gray.600"
+              px="20px"
+              fontWeight={400}
               onClick={() => {
                 handlers.logout?.(true, window.close);
               }}
@@ -368,17 +370,16 @@ const VaultConnector = () => {
 
             {!noVaultsAvailable && (
               <Button
+                flex={1}
                 colorPalette="primary"
-                width="100%"
-                fontWeight={700}
-                fontSize={16}
+                fontWeight={600}
+                fontSize={14}
                 disabled={
                   !selectedVaultId ||
                   !vaults.length ||
                   isLoading ||
                   send.isPending
                 }
-                //leftIcon={<RiLink size={22} />}
                 onClick={() => {
                   send.mutate({
                     name: name!,
