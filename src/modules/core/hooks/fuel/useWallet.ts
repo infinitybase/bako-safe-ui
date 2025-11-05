@@ -4,12 +4,17 @@ import {
   UseMutationOptions,
   useQuery,
 } from '@tanstack/react-query';
-import { bakoCoder, SignatureType } from 'bakosafe';
+import { CoderUtils, EncodingService } from 'bakosafe';
 import { Account } from 'fuels';
 
 import { CookieName, CookiesConfig } from '@/config/cookies';
-import { useAuth, useEvm } from '@/modules/auth';
-import { SignWebAuthnPayload, TypeUser } from '@/modules/auth/services';
+import {
+  SignMessageWebAuthnPayload,
+  useAuth,
+  useEvm,
+  WalletSignMessagePayload,
+} from '@/modules/auth';
+import { TypeUser } from '@/modules/auth/services';
 import { signChallange } from '@/modules/core/utils/webauthn';
 
 import { recoverPublicKey } from '../../utils/webauthn/crypto';
@@ -34,11 +39,15 @@ const useMyWallet = () => {
 };
 
 //sign by webauthn
-const signAccountWebAuthn = async (sign: SignWebAuthnPayload) => {
+const signAccountWebAuthn = async ({
+  signPayload,
+  address,
+  predicateVersion,
+}: SignMessageWebAuthnPayload) => {
   const signature = await signChallange(
-    sign.id,
-    `0x${sign.challenge}`,
-    sign.publicKey,
+    signPayload.id,
+    `0x${signPayload.challenge}`,
+    signPayload.publicKey,
   );
 
   const publicKeyOnSignature = [
@@ -46,57 +55,75 @@ const signAccountWebAuthn = async (sign: SignWebAuthnPayload) => {
     recoverPublicKey(signature.sig_compact, signature.dig_compact, 1),
   ];
 
-  const isValidSignature = publicKeyOnSignature.includes(sign.publicKey);
+  const isValidSignature = publicKeyOnSignature.includes(signPayload.publicKey);
 
   if (!isValidSignature) {
     throw new Error('Invalid signature');
   }
 
-  //todo: validate signature if is valid
-  return bakoCoder.encode({
-    type: SignatureType.WebAuthn,
-    ...(signature as Required<typeof signature>),
-  });
+  return CoderUtils.encodeSignature(
+    address,
+    signature as Required<typeof signature>,
+    predicateVersion,
+  );
 };
 
-const signAccountFuel = async (account: Account, message: string) => {
+const signAccountFuel = async (
+  account: Account,
+  message: string,
+  predicateVersion?: string,
+) => {
   const signature = await account.signMessage(message);
-  return bakoCoder.encode({
-    type: SignatureType.Fuel,
+  return CoderUtils.encodeSignature(
+    account.address.toB256(),
     signature,
-  });
+    predicateVersion,
+  );
 };
 
 const useWalletSignMessage = (
-  options?: UseMutationOptions<string, unknown, string>,
+  options?: UseMutationOptions<string, unknown, WalletSignMessagePayload>,
 ) => {
   const { data: wallet } = useMyWallet();
-  const { signAndValidate } = useEvm();
+  const { signAndValidate, address: evmAddress } = useEvm();
   const {
-    userInfos: { type, webauthn },
+    userInfos: { type, webauthn, address },
   } = useAuth();
 
-  const signAccountEvm = async (message: string) => {
-    const signature = await signAndValidate(message);
-    return bakoCoder.encode({
-      type: SignatureType.Evm,
-      signature,
-    });
+  const signAccountEvm = async (message: string, predicateVersion?: string) => {
+    let encodedMessage = message;
+
+    if (predicateVersion) {
+      encodedMessage = EncodingService.encodedMessage(
+        message,
+        predicateVersion,
+      );
+    }
+
+    const signature = await signAndValidate(encodedMessage);
+    return CoderUtils.encodeSignature(evmAddress, signature, predicateVersion);
   };
 
   return useMutation({
-    mutationFn: async (message: string) => {
+    mutationFn: async ({
+      message,
+      predicateVersion,
+    }: WalletSignMessagePayload) => {
       switch (type.type) {
         case TypeUser.WEB_AUTHN:
           return signAccountWebAuthn({
-            challenge: message,
-            id: webauthn!.id,
-            publicKey: webauthn!.publicKey,
+            address,
+            predicateVersion,
+            signPayload: {
+              challenge: message,
+              id: webauthn!.id,
+              publicKey: webauthn!.publicKey,
+            },
           });
         case TypeUser.EVM:
-          return await signAccountEvm(message);
+          return await signAccountEvm(message, predicateVersion);
         default:
-          return signAccountFuel(wallet!, message);
+          return signAccountFuel(wallet!, message, predicateVersion);
       }
     },
     retry: false,

@@ -87,8 +87,8 @@ export const useTransactionSocket = () => {
   );
 
   const signMessageRequest = useWalletSignMessage({
-    onSuccess: (signedMessage, hash) => {
-      emitSignTransactionEvent(hash, signedMessage);
+    onSuccess: (signedMessage, { message }) => {
+      emitSignTransactionEvent(message, signedMessage);
     },
     onError: () => {
       showSignErrorToast();
@@ -97,9 +97,12 @@ export const useTransactionSocket = () => {
   });
 
   const signTransaction = useCallback(
-    (_hash?: string) => {
+    (_hash?: string, predicateVersion?: string) => {
       setIsSigning(true);
-      signMessageRequest.mutateAsync(_hash || hash);
+      signMessageRequest.mutateAsync({
+        message: _hash || hash,
+        predicateVersion,
+      });
     },
     [hash, signMessageRequest],
   );
@@ -128,7 +131,7 @@ export const useTransactionSocket = () => {
       setIsSending(false);
 
       const { data: content } = data;
-      const { hash: _hash, sign, status } = content;
+      const { hash: _hash, sign, status, predicateVersion } = content;
 
       if (status === IEventTX_STATUS.ERROR) {
         errorToast({
@@ -142,7 +145,7 @@ export const useTransactionSocket = () => {
 
       if (_hash && sign) {
         tabs.set(TabState.SIGN);
-        signTransaction(_hash);
+        signTransaction(_hash, predicateVersion);
         return;
       }
 

@@ -11,12 +11,14 @@ const InputAmountComponent = ({
   value,
   disabled,
   onChange,
+  decimals,
 }: {
   symbol: string;
   value: string;
   onChange?: (value: string) => void;
   autoFocus?: boolean;
   disabled?: boolean;
+  decimals?: number;
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -79,6 +81,7 @@ const InputAmountComponent = ({
           value={value}
           placeholder="0.000"
           onChange={handleChange}
+          decimalScale={decimals}
         />
       </InputGroup>
     </Box>

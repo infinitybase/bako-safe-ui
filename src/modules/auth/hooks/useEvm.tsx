@@ -85,9 +85,11 @@ export const useEvm = () => {
       throw new Error('No Ethereum account selected');
     }
 
+    const _message = message.startsWith('0x') ? message : stringToHex(message);
+
     const signature = (await ethProvider.request({
       method: 'personal_sign',
-      params: [stringToHex(message), currentAddress],
+      params: [_message, currentAddress],
     })) as string;
 
     if (!validateSignature(currentAddress, message, signature)) {
@@ -102,7 +104,10 @@ export const useEvm = () => {
     message: string,
     signature: string,
   ) => {
-    const msgBuffer = Uint8Array.from(Buffer.from(message));
+    const msgBytes = message.startsWith('0x')
+      ? Buffer.from(message.slice(2), 'hex')
+      : Buffer.from(message, 'utf8');
+    const msgBuffer = Uint8Array.from(msgBytes);
     const msgHash = hashPersonalMessage(msgBuffer);
     const { v, r, s } = fromRpcSig(signature);
     const pubKey = ecrecover(msgHash, v, r, s);

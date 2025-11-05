@@ -8,6 +8,7 @@ import {
   IGetQuotesResponse,
 } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/hooks';
+import { ceilToDecimals, floorToDecimals } from '@/utils';
 
 import { ErrorBridgeForm } from '../../components/bridge/utils';
 import { useFormBridge } from './useFormBridge';
@@ -153,11 +154,19 @@ const useAmountBridge = ({ assets, setErrorAmount }: UseAmountBridgeProps) => {
 
   const handleMinAmount = useCallback(() => {
     setErrorAmount(null);
-    const balanceTreated = Number(balance.replace(/,/g, ''));
 
-    form.setValue('amount', dataLimits.minAmount.toString());
+    const balanceFixed = floorToDecimals(
+      Number(balance.replace(/,/g, '')),
+      assetFrom?.decimals,
+    );
+    const minAmountFixed = ceilToDecimals(
+      dataLimits.minAmount,
+      assetFrom?.decimals,
+    );
 
-    if (dataLimits.minAmount > balanceTreated) {
+    form.setValue('amount', minAmountFixed.toString());
+
+    if (minAmountFixed > balanceFixed) {
       setErrorAmount(ErrorBridgeForm.INSUFFICIENT_BALANCE);
       // if (stepsForm > 1) setStepsForm(1);
       return;
@@ -166,15 +175,14 @@ const useAmountBridge = ({ assets, setErrorAmount }: UseAmountBridgeProps) => {
     // if (stepsForm === 1) setStepsForm(2);
 
     const payload = prepareCreateSwapPayload();
-    payload.amount = dataLimits.minAmount;
+    payload.amount = minAmountFixed;
     debouncedGetQuotesRef.current?.(payload);
     setLoadingQuote(true);
   }, [
     form,
     balance,
     dataLimits.minAmount,
-    // stepsForm,
-    // setStepsForm,
+    assetFrom?.decimals,
     setErrorAmount,
     prepareCreateSwapPayload,
     debouncedGetQuotesRef,
@@ -184,16 +192,24 @@ const useAmountBridge = ({ assets, setErrorAmount }: UseAmountBridgeProps) => {
   const handleGetFeeBeforeMaxAmount = useCallback(async () => {
     setLoadingQuote(true);
 
-    const balanceTreated = Number(balance.replace(/,/g, ''));
-    if (dataLimits.minAmount > balanceTreated) {
+    const balanceFixed = floorToDecimals(
+      Number(balance.replace(/,/g, '')),
+      assetFrom?.decimals,
+    );
+    const minAmountFixed = ceilToDecimals(
+      dataLimits.minAmount,
+      assetFrom?.decimals,
+    );
+
+    if (minAmountFixed > balanceFixed) {
       setErrorAmount(ErrorBridgeForm.INSUFFICIENT_AMOUNT);
-      form.setValue('amount', balance);
+      form.setValue('amount', balanceFixed.toString());
       // if (stepsForm > 1) setStepsForm(1);
       return;
     }
 
     const payload = prepareCreateSwapPayload();
-    payload.amount = Number(balance);
+    payload.amount = balanceFixed;
 
     // if (stepsForm === 1) setStepsForm(2);
     const getMaxAmount = true;
@@ -203,8 +219,7 @@ const useAmountBridge = ({ assets, setErrorAmount }: UseAmountBridgeProps) => {
     debouncedGetQuotesRef,
     form,
     dataLimits.minAmount,
-    // stepsForm,
-    // setStepsForm,
+    assetFrom?.decimals,
     setErrorAmount,
     prepareCreateSwapPayload,
     setLoadingQuote,
