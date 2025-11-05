@@ -4,7 +4,7 @@ import {
   UseMutationOptions,
   useQuery,
 } from '@tanstack/react-query';
-import { CoderUtils, EncodingService } from 'bakosafe';
+import { CoderUtils } from 'bakosafe';
 import { Account } from 'fuels';
 
 import { CookieName, CookiesConfig } from '@/config/cookies';
@@ -18,6 +18,7 @@ import { useSocial } from '@/modules/auth/hooks/useSocial';
 import { TypeUser } from '@/modules/auth/services';
 import { signChallange } from '@/modules/core/utils/webauthn';
 
+import { EvmSignatureUtils } from '../../utils';
 import { recoverPublicKey } from '../../utils/webauthn/crypto';
 import { FuelQueryKeys } from './types';
 
@@ -92,13 +93,11 @@ const useWalletSignMessage = (
     userInfos: { type, webauthn, address },
   } = useAuth();
 
-  const encodeMessageEvm = (message: string, predicateVersion?: string) => {
-    if (!predicateVersion) return message;
-    return EncodingService.encodedMessage(message, predicateVersion);
-  };
-
   const signAccountEvm = async (message: string, predicateVersion?: string) => {
-    const encodedMessage = encodeMessageEvm(message, predicateVersion);
+    const encodedMessage = EvmSignatureUtils.encodeMessage(
+      message,
+      predicateVersion,
+    );
     const signature = await signAndValidate(encodedMessage);
     return CoderUtils.encodeSignature(evmAddress, signature, predicateVersion);
   };
@@ -107,7 +106,10 @@ const useWalletSignMessage = (
     message: string,
     predicateVersion?: string,
   ) => {
-    const encodedMessage = encodeMessageEvm(message, predicateVersion);
+    const encodedMessage = EvmSignatureUtils.encodeMessage(
+      message,
+      predicateVersion,
+    );
     const signature = await socialSignMessage(encodedMessage);
     return CoderUtils.encodeSignature(
       socialWallet?.address ?? '',
