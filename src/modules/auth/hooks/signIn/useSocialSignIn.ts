@@ -1,5 +1,5 @@
-import { usePrivy, useWallets } from '@privy-io/react-auth';
-import { useCallback, useEffect, useMemo } from 'react';
+import { usePrivy } from '@privy-io/react-auth';
+import { useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { useContactToast } from '@/modules/addressBook';
@@ -9,6 +9,7 @@ import { useNetworks } from '@/modules/network/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useQueryParams } from '../usePopup';
+import { useSocial } from '../useSocial';
 import { useCreateUserRequest, useSignInRequest } from '../useUserRequest';
 
 export const useSocialSignIn = () => {
@@ -16,17 +17,12 @@ export const useSocialSignIn = () => {
   const { location } = useQueryParams();
 
   const { ready, authenticated, user, isModalOpen, login, logout } = usePrivy();
-  const { wallets, ready: walletsReady } = useWallets();
+  const { wallet, walletsReady, signMessage } = useSocial();
   const { fromConnector } = useNetworks();
   const { authDetails, invalidateGifAnimationRequest } = useWorkspaceContext();
   const createUserRequest = useCreateUserRequest();
   const signInRequest = useSignInRequest();
   const { errorToast } = useContactToast();
-
-  const privyWallet = useMemo(
-    () => wallets.find((wallet) => wallet.walletClientType === 'privy'),
-    [wallets],
-  );
 
   const connect = useCallback(async () => {
     login();
@@ -58,7 +54,7 @@ export const useSocialSignIn = () => {
         type: TypeUser.SOCIAL,
       });
 
-      const signature = await privyWallet?.sign(code);
+      const signature = await signMessage(code);
       const result = await signInRequest.mutateAsync({
         code,
         type: TypeUser.SOCIAL,
@@ -106,11 +102,11 @@ export const useSocialSignIn = () => {
       !authDetails.userInfos.address &&
       ready &&
       walletsReady &&
-      !!privyWallet &&
+      !!wallet &&
       authenticated &&
       user?.wallet?.address
     ) {
-      handleSignIn(privyWallet.address);
+      handleSignIn(wallet.address);
     }
   }, [
     authenticated,
@@ -118,7 +114,7 @@ export const useSocialSignIn = () => {
     ready,
     walletsReady,
     authDetails.userInfos.address,
-    privyWallet,
+    wallet,
   ]);
 
   return {

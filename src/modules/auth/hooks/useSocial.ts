@@ -4,7 +4,7 @@ import { useCallback, useMemo } from 'react';
 import { EvmSignatureUtils } from '@/modules/core/utils';
 
 export const useSocial = () => {
-  const { wallets } = useWallets();
+  const { wallets, ready } = useWallets();
 
   const privyWallet = useMemo(
     () => wallets.find((wallet) => wallet.walletClientType === 'privy'),
@@ -42,5 +42,5 @@ export const useSocial = () => {
     [privyWallet],
   );
 
-  return { wallet: privyWallet, signMessage };
+  return { wallet: privyWallet, walletsReady: ready, signMessage };
 };
