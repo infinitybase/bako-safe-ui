@@ -13,7 +13,6 @@ const StepProgress = ({ value, length }: StepProgressProps) => {
     <HStack
       w="full"
       h={1}
-      bgColor="dark.200"
       justifyContent="space-between"
       rounded="full"
       gap={2}
@@ -27,7 +26,7 @@ const StepProgress = ({ value, length }: StepProgressProps) => {
             w="full"
             key={index}
             maxW={`${maxWidth}%`}
-            bgColor={value >= index ? 'brand.500' : 'dark.200'}
+            bgColor={value >= index ? 'primary.main' : 'gray.600'}
           />
         ))}
     </HStack>
