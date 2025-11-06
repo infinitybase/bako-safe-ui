@@ -89,18 +89,18 @@ const useCreateVaultDialog = (props: UseCreateVaultDialogProps) => {
       hide: false,
       disable: !form.formState.isValid,
       onContinue: () => tabs.set(TabState.ADDRESSES),
-      description:
-        'Define the name and description of this account. These details will be visible to all members.',
+      title: 'Create account',
+      description: 'Define the name and description of this account.',
       onCancel: close(handleCancel),
       closeText: 'Cancel',
-      nextStepText: 'Continue',
+      nextStepText: 'Next',
     },
     [TabState.ADDRESSES]: {
       hide: false,
       disable: isCreateVaultButtonDisabled,
       onContinue: form.handleCreateVault,
-      description:
-        'Define the details of your account. Set up this rules carefully because it cannot be changed later.',
+      title: 'Account signers',
+      description: 'Who is going to sign this vault?',
       onCancel: close(() => {
         tabs.set(TabState.INFO);
         close(handleCancel)();
@@ -111,6 +111,7 @@ const useCreateVaultDialog = (props: UseCreateVaultDialogProps) => {
     [TabState.SUCCESS]: {
       hide: true,
       disable: false,
+      title: null,
       description: null,
       onContinue: () => {
         if (!isSignInFromDapp) {
