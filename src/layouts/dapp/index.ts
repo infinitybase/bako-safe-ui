@@ -1,13 +1,17 @@
 import { Container } from './container';
-import { Content } from './content';
+import { ScrollableContent } from './scrollable-content';
 import { Header } from './header';
 import { Section } from './section';
+import { Profile } from './profile';
+import { FixedFooter } from './fixed-footer';
 
 const Dapp = {
   Container,
   Section,
-  Content,
+  ScrollableContent,
   Header,
+  Profile,
+  FixedFooter,
 };
 
 export { Dapp };
