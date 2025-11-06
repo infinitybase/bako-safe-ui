@@ -1,9 +1,10 @@
 import { usePrivy } from '@privy-io/react-auth';
+import { TypeUser } from 'bakosafe';
 import { useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { useContactToast } from '@/modules/addressBook';
-import { Encoder, localStorageKeys, TypeUser } from '@/modules/auth/services';
+import { Encoder, localStorageKeys } from '@/modules/auth/services';
 import { Pages } from '@/modules/core';
 import { useNetworks } from '@/modules/network/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';

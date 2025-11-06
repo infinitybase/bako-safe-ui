@@ -19,11 +19,11 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
+import { TypeUser } from 'bakosafe';
 import { Controller } from 'react-hook-form';
 
 import { PlusIcon, RemoveIcon, UnknownIcon } from '@/components';
 import { BakoIcon } from '@/components/icons/assets/bakoIcon';
-import { TypeUser } from '@/modules/auth/services';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { NetworkDrawerMode, useNetworks } from '../../hooks';

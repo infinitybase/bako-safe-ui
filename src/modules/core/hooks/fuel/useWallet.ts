@@ -4,7 +4,7 @@ import {
   UseMutationOptions,
   useQuery,
 } from '@tanstack/react-query';
-import { CoderUtils } from 'bakosafe';
+import { CoderUtils, TypeUser } from 'bakosafe';
 import { Account } from 'fuels';
 
 import { CookieName, CookiesConfig } from '@/config/cookies';
@@ -15,7 +15,6 @@ import {
   WalletSignMessagePayload,
 } from '@/modules/auth';
 import { useSocial } from '@/modules/auth/hooks/useSocial';
-import { TypeUser } from '@/modules/auth/services';
 import { signChallange } from '@/modules/core/utils/webauthn';
 
 import { EvmSignatureUtils } from '../../utils';

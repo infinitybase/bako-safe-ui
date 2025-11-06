@@ -10,10 +10,10 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
+import { TypeUser } from 'bakosafe';
 
 import { AddAddressBook, AddressWithCopyBtn, Handle } from '@/components';
 import { Card } from '@/components/card';
-import { TypeUser } from '@/modules/auth';
 import { AddressUtils } from '@/modules/core';
 import { useScreenSize } from '@/modules/core/hooks';
 import { useBakoIdAvatar } from '@/modules/core/hooks/bako-id';

@@ -15,13 +15,12 @@ import {
 } from '@chakra-ui/react';
 import { useFuel } from '@fuels/react';
 import { usePrivy } from '@privy-io/react-auth';
-import { AddressUtils as BakoAddressUtils } from 'bakosafe';
+import { AddressUtils as BakoAddressUtils, TypeUser } from 'bakosafe';
 import { useEffect, useState } from 'react';
 import { RiLogoutBoxRLine } from 'react-icons/ri';
 
 import { CustomSkeleton, EmptyBox, LineCloseIcon } from '@/components';
 import { useQueryParams } from '@/modules/auth';
-import { TypeUser } from '@/modules/auth/services';
 import { AddressUtils } from '@/modules/core';
 import { EConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
 import { CreateVaultDialog } from '@/modules/vault';

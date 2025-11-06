@@ -1,11 +1,14 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { AddressUtils as BakoAddressUtils, BakoProvider } from 'bakosafe';
+import {
+  AddressUtils as BakoAddressUtils,
+  BakoProvider,
+  TypeUser,
+} from 'bakosafe';
 import { Assets } from 'fuels';
 import { useFieldArray, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
 import { CookieName, CookiesConfig } from '@/config/cookies';
-import { TypeUser } from '@/modules/auth';
 import { AddressUtils, Batch32 } from '@/modules/core/utils';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 

@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
 import { useFuel } from '@fuels/react';
 import { usePrivy } from '@privy-io/react-auth';
+import { TypeUser } from 'bakosafe';
 import { Provider } from 'fuels';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -18,12 +19,7 @@ import {
   useQueryParams,
   useSignOut,
 } from '..';
-import {
-  AuthenticateParams,
-  IUseAuthReturn,
-  TypeUser,
-  UserType,
-} from '../services';
+import { AuthenticateParams, IUseAuthReturn, UserType } from '../services';
 import { useUserInfoRequest } from './useUserInfoRequest';
 
 export type SingleAuthentication = {
@@ -92,9 +88,7 @@ const useAuth = (): IUseAuthReturn => {
   };
 
   const userProvider = async () => {
-    const _userProvider =
-      infos?.type?.type === TypeUser.FUEL ||
-      infos?.type?.type === TypeUser.FULLET;
+    const _userProvider = infos?.type?.type === TypeUser.FUEL;
 
     return {
       provider: new Provider(

@@ -1,5 +1,6 @@
 import { bytesToHex } from '@noble/curves/abstract/utils';
 import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query';
+import { TypeUser } from 'bakosafe';
 import { Address, Network, Provider } from 'fuels';
 
 import { api } from '@/config';
@@ -12,14 +13,6 @@ export enum Encoder {
   METAMASK = 'METAMASK',
   WEB_AUTHN = 'WEB_AUTHN',
   EVM = 'EVM',
-}
-
-export enum TypeUser {
-  FUEL = 'FUEL',
-  FULLET = 'FULLET',
-  WEB_AUTHN = 'WEB_AUTHN',
-  EVM = 'EVM',
-  SOCIAL = 'SOCIAL',
 }
 
 export type SignWebAuthnPayload = {

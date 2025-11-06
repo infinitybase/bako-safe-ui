@@ -20,7 +20,7 @@ import {
 } from '@chakra-ui/react';
 import { useFuel } from '@fuels/react';
 import { usePrivy } from '@privy-io/react-auth';
-import { AddressUtils as BakoAddressUtils } from 'bakosafe';
+import { AddressUtils as BakoAddressUtils, TypeUser } from 'bakosafe';
 import { Address, Network } from 'fuels';
 import React, { useEffect, useState } from 'react';
 import { FaChevronDown } from 'react-icons/fa';
@@ -44,7 +44,6 @@ import {
   useEvm,
   useUserWorkspacesRequest,
 } from '@/modules';
-import { TypeUser } from '@/modules/auth/services';
 import { useBakoIdAvatar } from '@/modules/core/hooks/bako-id';
 import { EConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
 import { useSocketEvent } from '@/modules/core/hooks/socket/useSocketEvent';

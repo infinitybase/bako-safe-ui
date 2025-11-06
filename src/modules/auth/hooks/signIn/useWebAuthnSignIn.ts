@@ -1,3 +1,4 @@
+import { TypeUser } from 'bakosafe';
 import { useCallback, useEffect, useState } from 'react';
 
 import { useTab } from '@/modules/core/hooks';
@@ -5,7 +6,6 @@ import { EnumUtils } from '@/modules/core/utils';
 import { useTermsStore } from '@/modules/termsOfUse/store/useTermsStore';
 import { ActionKeys, handleActionUsingKeys } from '@/utils';
 
-import { TypeUser } from '../../services/methods';
 import {
   useWebAuthnForm,
   useWebAuthnInput,
