@@ -60,8 +60,8 @@ importers:
         specifier: ^1.5.0
         version: 1.11.0
       bako-ui:
-        specifier: 0.4.0
-        version: 0.4.0(@chakra-ui/react@3.28.0(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(recharts@3.3.0(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react-is@16.13.1)(react@19.2.0)(redux@5.0.1))
+        specifier: 0.5.1
+        version: 0.5.1(@chakra-ui/react@3.28.0(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(recharts@3.3.0(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react-is@16.13.1)(react@19.2.0)(redux@5.0.1))
       bakosafe:
         specifier: 0.5.1
         version: 0.5.1(bufferutil@4.0.9)(fuels@0.101.3(vitest@3.0.9(@types/debug@4.1.12)(@types/node@20.5.1)(terser@5.43.1)))(typescript@5.4.5)(utf-8-validate@5.0.10)(zod@3.25.76)
@@ -2981,8 +2981,8 @@ packages:
     resolution: {integrity: sha512-Cg7TFGpIr01vOQNODXOOaGz2NpCU5gl8x1qJFbb6hbZxR7XrcE2vtbAsTAbJ7/xwJtUuJEw8K8Zr/AE0LHlesg==}
     engines: {node: '>=10', npm: '>=6'}
 
-  bako-ui@0.4.0:
-    resolution: {integrity: sha512-4eRx5awSZDf6TMVqDTu2MjBkcJ3+8WooeJHljiSyMjt0olT21vMpbZKAVV04OGHAe7HBGgm5XzZiAHSp+NTDqQ==}
+  bako-ui@0.5.1:
+    resolution: {integrity: sha512-gPnxQ4J7MzO06fWEOu+kmCMTtco9AhJvfFRGFdQpvaYGb/xzJvEGlYLUk5lFfqbubMCuShUDeVa3LXSGIDkdKg==}
     peerDependencies:
       '@chakra-ui/react': ^3.21.0
       '@emotion/react': ^11.14.0
@@ -12190,7 +12190,7 @@ snapshots:
       cosmiconfig: 7.1.0
       resolve: 1.22.10
 
-  bako-ui@0.4.0(@chakra-ui/react@3.28.0(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(recharts@3.3.0(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react-is@16.13.1)(react@19.2.0)(redux@5.0.1)):
+  bako-ui@0.5.1(@chakra-ui/react@3.28.0(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(recharts@3.3.0(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react-is@16.13.1)(react@19.2.0)(redux@5.0.1)):
     dependencies:
       '@chakra-ui/charts': 3.28.1(@chakra-ui/react@3.28.0(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(recharts@3.3.0(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react-is@16.13.1)(react@19.2.0)(redux@5.0.1))
       '@chakra-ui/react': 3.28.0(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
