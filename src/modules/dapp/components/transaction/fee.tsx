@@ -24,18 +24,20 @@ const DappTransactionFee = ({ fee, isLoading, closePopover }: FeeProps) => {
   const { isMobile } = useVerifyBrowserType();
 
   return isLoading || !fee ? null : (
-    <HStack display="flex" justifyContent="space-between">
+    <HStack
+      w="full"
+      justifyContent="space-between"
+    >
       <Text
-        // variant="subtitle"
-        fontSize={14}
-        color="grey.250"
+        fontSize={12}
+        color="gray.400"
         fontWeight={400}
         display="flex"
         alignItems="center"
         gap={2}
       >
-        Max Fee
-        {isMobile ? (
+        Max fee
+        {isMobile ? ( // TODO ASDF > implementar o estilo do tooltip pra mobile
           <Popover.Root
             positioning={{ placement: 'top-start' }}
             open={isOpen}
@@ -79,7 +81,11 @@ const DappTransactionFee = ({ fee, isLoading, closePopover }: FeeProps) => {
           </Tooltip>
         )}
       </Text>
-      <Text fontSize={14} color="grey.250" fontWeight={400}>
+      <Text
+        fontSize={12}
+        color="gray.100"
+        fontWeight={500}
+      >
         {fee} ETH
       </Text>
     </HStack>
