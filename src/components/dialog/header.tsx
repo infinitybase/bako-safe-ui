@@ -34,8 +34,8 @@ const DialogHeader = ({
 }: DialogHeaderProps) => (
   <VStack
     w="full"
-    mb={{ base: 6, sm: 12 }}
-    mt={{ base: 0, sm: 6 }}
+    mb={6}
+    mt={6}
     gap={3}
     alignItems="flex-start"
     {...stackProps}
@@ -56,7 +56,7 @@ const DialogHeader = ({
       {!hideCloseButton && (
         <Dialog.CloseTrigger asChild>
           <LineCloseIcon
-            w="24px"
+            w="16px"
             aria-label="Close window"
             cursor="pointer"
             onClick={onClose}
