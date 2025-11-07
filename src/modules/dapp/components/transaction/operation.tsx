@@ -1,24 +1,117 @@
-import { Box, HStack, VStack } from 'bako-ui';
-import { Operation } from 'fuels';
+import { Box, Flex, HStack, Icon, Separator, Text, VStack } from 'bako-ui';
+import { motion } from 'framer-motion';
+import { useState } from 'react';
 
-import { CustomSkeleton } from '@/components';
-import { useAssetMap } from '@/modules/assets-tokens/hooks/useAssetMap';
-import { Asset } from '@/modules/core';
-import { DappTransactionAsset } from '@/modules/dapp/components/transaction/asset';
-import { DappTransactionFromTo } from '@/modules/dapp/components/transaction/from-to';
-import { RecipientCard } from '@/modules/dapp/components/transaction/recipient';
-import { useNetworks } from '@/modules/network/hooks';
-import { formatAmount, getAssetImageUrl } from '@/utils';
+import { UseTransactionSocket } from '../../hooks';
+import { SimplifiedOperation } from '../../services/simplify-transaction';
+import { DappTransaction } from '.';
+import { ChevronDownIcon, CustomSkeleton } from '@/components';
+import { RecipientCard } from './recipient';
 
-interface OperationProps {
-  vault?: {
-    name: string;
-    predicateAddress: string;
-  };
-  operation?: Operation;
+const MotionBox = motion(Box);
+
+type DappTransactionProps = {
+  operation: SimplifiedOperation;
+  vault?: UseTransactionSocket['vault'];
+  renderSeparator: boolean;
+};
+
+function DappTransactionOperation({
+  operation,
+  vault,
+  renderSeparator,
+}: DappTransactionProps) {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const isGrouped = (operation.operations?.length || 0) > 1;
+  return (
+    <VStack w="full" gap={1}>
+      <Flex w="full" direction="column">
+        <DappTransaction.Card
+          vault={vault!}
+          operation={operation}
+        />
+
+        {renderSeparator && <Separator borderColor="gray.600" m={4} />}
+      </Flex>
+
+      {isGrouped && (
+        <Box
+          w="full"
+          bg="gray.700"
+          borderRadius={8}
+        >
+          <Flex
+            as="button"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setIsExpanded(!isExpanded);
+            }}
+            align="center"
+            justify="space-between"
+            w="full"
+            border="none"
+            p={4}
+            cursor="pointer"
+          >
+            <Text
+              fontWeight={500}
+              color="gray.100"
+              fontSize="xs"
+              lineHeight="12px"
+            >
+              + {operation.operations?.length} operations
+            </Text>
+
+            {isExpanded ? (
+              <ChevronDownIcon boxSize="3" color="gray.400" />
+            ) : (
+              <ChevronDownIcon boxSize="3" color="gray.400" /> // TODO ASDF > ALTERAR CHEVRON E COLOCAR ROTACAO
+            )}
+          </Flex>
+
+          <MotionBox
+            initial={{ height: 0, opacity: 0 }}
+            animate={{
+              height: isExpanded ? 'auto' : 0,
+              opacity: isExpanded ? 1 : 0,
+            }}
+            transition={{
+              duration: 0.3,
+              ease: 'easeInOut',
+              opacity: { duration: 0.2 },
+            }}
+            display="flex"
+            flexDirection="column"
+          >
+            {operation.operations?.map((op, index) => {
+              const isLast = index === ((operation.operations?.length ?? 0) - 1);
+
+              return (
+                <Flex
+                  key={`${op.type}-${op.from?.address || ''}-${op.to?.address || ''}-${index}`}
+                  w="100%"
+                  borderRadius="md"
+                  overflow="hidden"
+                  boxShadow="shadows.transaction"
+                >
+                  <DappTransaction.Operation
+                    operation={op}
+                    vault={vault!}
+                    renderSeparator={!isLast}
+                  />
+                </Flex>
+              );
+            })}
+          </MotionBox>
+        </Box>
+      )}
+    </VStack>
+  );
 }
+export { DappTransactionOperation };
 
-export const DappTransactionOperationSekeleton = () => (
+export const DappTransactionOperationSekeleton = () => ( // TODO ASDF > REMOVER?
   <VStack w="full">
     <HStack gap={0} w="full">
       <RecipientCard justifyContent="space-between">
@@ -37,58 +130,3 @@ export const DappTransactionOperationSekeleton = () => (
     </RecipientCard>
   </VStack>
 );
-
-const DappTransactionOperation = ({ vault, operation }: OperationProps) => {
-  const { to, assetsSent, from } = operation ?? {};
-  const { currentNetwork } = useNetworks();
-  const { getAssetInfo, assetsMap } = useAssetMap(currentNetwork.chainId);
-
-  if (!to || !from || !vault) return null;
-
-  const assetData = assetsSent?.map((sent) => {
-    const assetInfo = getAssetInfo(sent.assetId);
-
-    return {
-      ...assetInfo,
-      amount: sent.amount,
-    };
-  });
-
-  const assets = assetData?.map((data) => {
-    const assetAmount = formatAmount({
-      amount: data.amount,
-      options: { units: data.units },
-    });
-
-    return {
-      icon: data?.icon,
-      amount: assetAmount,
-      assetId: data?.assetId,
-      name: data?.name || data?.metadata?.name || '',
-      slug: data?.slug ?? (assetAmount === '1' ? 'NFT' : ''),
-      image: getAssetImageUrl(data as Asset, assetsMap),
-    };
-  });
-
-  const hasAssets = !!assets?.length;
-
-  return (
-    <Box w="full" mb={7}>
-      <DappTransactionFromTo
-        from={{
-          address: from.address,
-          type: from.type,
-        }}
-        to={{
-          address: to.address,
-          type: to.type,
-        }}
-        vault={vault}
-        hasAssets={hasAssets}
-      />
-      {assets && <DappTransactionAsset assets={assets} />}
-    </Box>
-  );
-};
-
-export { DappTransactionOperation };

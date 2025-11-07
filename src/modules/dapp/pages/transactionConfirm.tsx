@@ -11,6 +11,8 @@ import { useWorkspaceContext } from '@/modules/workspace/hooks';
 import { DappTransactionSuccess } from '../components/transaction/success';
 import { DappTransactionWrapper } from '../components/transaction/wrapper';
 import { useTransactionSocket } from '../hooks';
+import { useSimplifiedTransaction } from '../hooks/useSimplifiedTransaction';
+import { TransactionRequest, TransactionResult, TransactionSummary } from 'fuels';
 
 const TransactionConfirm = () => {
   const [createTxMethod, setCreateTxMethod] =
@@ -22,6 +24,7 @@ const TransactionConfirm = () => {
     vault,
     pendingSignerTransactions,
     summary,
+    tx,
     startTime,
     validAt,
     tabs,
@@ -41,6 +44,15 @@ const TransactionConfirm = () => {
   } = useWorkspaceContext();
   const { data: wallet } = useMyWallet();
 
+  const { transaction } = useSimplifiedTransaction({
+    tx: summary.transactionSummary as
+      | TransactionSummary
+      | TransactionResult
+      | undefined,
+    txRequest: tx as TransactionRequest | undefined,
+    txAccount: vault.address,
+  });
+
   const currentView = tabs.tab;
 
   return (
@@ -48,7 +60,7 @@ const TransactionConfirm = () => {
       {currentView === 0 && (
         <Box p={0}>
           <DappTransactionWrapper
-            title="Create transaction"
+            title="Review transaction"
             startTime={startTime}
             validAt={validAt}
             vault={vault}
@@ -56,6 +68,7 @@ const TransactionConfirm = () => {
             summary={summary}
             primaryActionLoading={isSending}
             cancel={cancelSendTransaction}
+            transaction={transaction}
             primaryActionButton={
               type && (wallet || webauthn) ? (
                 <CreateTxMenuButton
@@ -92,6 +105,7 @@ const TransactionConfirm = () => {
             summary={summary}
             primaryActionLoading={isSigning}
             cancel={cancelSignTransaction}
+            transaction={transaction}
             primaryActionButton={
               <Dialog.PrimaryAction
                 size="md"

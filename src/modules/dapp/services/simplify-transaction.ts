@@ -72,20 +72,19 @@ export type SimplifiedAddress = {
   type: number; // 0 for contract, 1 for account
 };
 
+export type SimplifiedAsset = {
+  amount: BN;
+  assetId: string;
+}
+
 export type SimplifiedOperation = {
   type: TxCategory;
   from: SimplifiedAddress;
   to: SimplifiedAddress;
   isFromCurrentAccount?: boolean;
   isToCurrentAccount?: boolean;
-  assets?: Array<{
-    amount: BN;
-    assetId: string;
-  }>;
-  assetsToFrom?: Array<{
-    amount: BN;
-    assetId: string;
-  }>;
+  assets?: Array<SimplifiedAsset>;
+  assetsToFrom?: Array<SimplifiedAsset>;
   metadata: ContractCallMetadata;
   receipts?: Receipt[];
   operations?: SimplifiedOperation[];
