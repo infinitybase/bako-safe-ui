@@ -1,45 +1,35 @@
-import { WarningTwoIcon } from '@chakra-ui/icons';
+import { useFuel } from '@fuels/react';
+import { usePrivy } from '@privy-io/react-auth';
 import {
   Avatar,
   Box,
-  chakra,
   Flex,
   HStack,
   Icon,
   Image,
+  Loader,
+  MenuOpenChangeDetails,
   Popover,
-  PopoverBody,
-  PopoverContent,
-  PopoverTrigger,
+  Separator,
   Skeleton,
-  Spacer,
-  Spinner,
   Text,
-  useDisclosure,
   VStack,
-} from '@chakra-ui/react';
-import { useFuel } from '@fuels/react';
-import { usePrivy } from '@privy-io/react-auth';
+} from 'bako-ui';
 import { AddressUtils as BakoAddressUtils } from 'bakosafe';
 import { Address, Network } from 'fuels';
-import React, { useEffect, useState } from 'react';
-import { FaChevronDown } from 'react-icons/fa';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import logo from '@/assets/bakoLogoWhite.svg';
-import {
-  AddressWithCopyBtn,
-  NotificationIcon,
-  PlusIcon,
-  UnknownIcon,
-} from '@/components';
-import { BakoIcon } from '@/components/icons/assets/bakoIcon';
+import { AddressWithCopyBtn, NotificationIcon } from '@/components';
+import { AddressBook2Icon } from '@/components/icons/address-book-2';
 import { DisconnectIcon } from '@/components/icons/disconnect';
 import { FeedbackIcon } from '@/components/icons/feedback';
-import { NetworkIcon } from '@/components/icons/network';
 import { SettingsTopMenuIcon } from '@/components/icons/settings-top-menu';
 import { queryClient } from '@/config';
 import {
   IDefaultMessage,
+  Pages,
   SocketEvents,
   useEvm,
   useUserWorkspacesRequest,
@@ -48,63 +38,30 @@ import { TypeUser } from '@/modules/auth/services';
 import { useBakoIdAvatar } from '@/modules/core/hooks/bako-id';
 import { EConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
 import { useSocketEvent } from '@/modules/core/hooks/socket/useSocketEvent';
+import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
 import { AddressUtils } from '@/modules/core/utils/address';
 import { NetworkDialog } from '@/modules/network/components/dialog';
 import { NetworkDrawer } from '@/modules/network/components/drawer';
 import { useNetworks } from '@/modules/network/hooks';
-import { NetworkService, NetworkType } from '@/modules/network/services';
 import { useNotification } from '@/modules/notification';
 import { NotificationsDrawer } from '@/modules/notifications/components';
 import { useAppNotifications } from '@/modules/notifications/hooks';
 import { SettingsDrawer } from '@/modules/settings/components/drawer';
 import { useMySettingsRequest } from '@/modules/settings/hooks/useMySettingsRequest';
 import { SelectWorkspaceDialog } from '@/modules/workspace/components';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 import { limitCharacters } from '@/utils';
 
-const SpacedBox = chakra(Box, {
-  baseStyle: {
-    paddingX: {
-      base: 3,
-      sm: 6,
-    },
-    paddingY: 3,
-  },
-});
-
-const TopBarItem = chakra(SpacedBox, {
-  baseStyle: {
-    borderColor: 'dark.100',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: '35%',
-  },
-});
+import NetworkSelect from './network';
 
 const UserBox = () => {
-  const {
-    authDetails,
-    screenSizes: {
-      isMobile,
-      isExtraSmall,
-      isLitteSmall,
-      isLowerThanFourHundredAndThirty,
-    },
-  } = useWorkspaceContext();
-
-  const {
-    networks,
-    currentNetwork,
-    handleSelectNetwork,
-    selectNetworkRequest,
-    checkNetwork,
-  } = useNetworks();
-  const networkPopoverState = useDisclosure();
+  const [openMenu, setOpenMenu] = useState(false);
+  const { authDetails } = useWorkspaceContext();
+  const { currentNetwork } = useNetworks();
   const networkDrawerState = useDisclosure();
   const networkDialogState = useDisclosure();
   const toast = useNotification();
-
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const { fuel } = useFuel();
   const { disconnect: evmDisconnect } = useEvm();
   const { logout: privyLogout } = usePrivy();
@@ -114,26 +71,38 @@ const UserBox = () => {
   const mySettingsRequest = useMySettingsRequest(
     authDetails.userInfos?.address,
   );
+  const navigate = useNavigate();
 
   const { avatar, isLoading: isLoadingAvatar } = useBakoIdAvatar(
     authDetails.userInfos?.address,
     currentNetwork.chainId,
   );
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [openAlert, setOpenAlert] = React.useState(false);
+  const handleOpenMenuChange = useCallback(
+    ({ open }: MenuOpenChangeDetails) => {
+      setOpenMenu(open);
+    },
+    [],
+  );
 
-  const name = mySettingsRequest.data?.name ?? '';
-  const hasNickName = name && !AddressUtils.isValid(name);
+  const handleCloseMenu = useCallback(() => {
+    setOpenMenu(false);
+  }, []);
 
-  const isWebAuthn =
-    authDetails.userInfos?.type?.type === TypeUser.WEB_AUTHN ||
-    authDetails.userInfos?.type?.type === TypeUser.EVM ||
-    authDetails.userInfos?.type?.type === TypeUser.SOCIAL;
+  const name = useMemo(
+    () => mySettingsRequest.data?.name ?? '',
+    [mySettingsRequest.data?.name],
+  );
+  const hasNickName = useMemo(
+    () => name && !AddressUtils.isValid(name),
+    [name],
+  );
+  // const isWebAuthn =
+  //   authDetails.userInfos?.type?.type === TypeUser.WEB_AUTHN ||
+  //   authDetails.userInfos?.type?.type === TypeUser.EVM ||
+  //   authDetails.userInfos?.type?.type === TypeUser.SOCIAL;
 
-  const isMainnet = (url: string) => url?.includes(NetworkType.MAINNET);
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
-  const logout = async () => {
+  const logout = useCallback(async () => {
     setIsLoggingOut(true);
     try {
       authDetails.userInfos?.type.type === TypeUser.FUEL &&
@@ -152,10 +121,12 @@ const UserBox = () => {
     } finally {
       authDetails.handlers.logout?.();
     }
-  };
+  }, [authDetails, evmDisconnect, fuel]);
 
-  const feedbackForm = () =>
-    window.open(import.meta.env.VITE_FEEDBACK_FORM, '_BLANK');
+  const feedbackForm = useCallback(
+    () => window.open(import.meta.env.VITE_FEEDBACK_FORM, '_BLANK'),
+    [],
+  );
 
   // Bug fix to unread counter that keeps previous state after redirect
   useEffect(() => {
@@ -171,7 +142,12 @@ const UserBox = () => {
     },
   ]);
 
-  const getUserAddress = () => {
+  const getUserAddress = useCallback(() => {
+    // Return empty string if userInfos is undefined
+    if (!authDetails.userInfos) {
+      return '';
+    }
+
     if (authDetails.userInfos?.type.type === TypeUser.EVM) {
       return BakoAddressUtils.parseFuelAddressToEth(
         authDetails.userInfos?.address,
@@ -182,475 +158,286 @@ const UserBox = () => {
       authDetails.userInfos?.address &&
       Address.fromString(authDetails.userInfos?.address).toB256()
     );
-  };
+  }, [authDetails.userInfos]);
 
-  const b256UserAddress = getUserAddress();
+  const b256UserAddress = useMemo(() => getUserAddress(), [getUserAddress]);
+
+  const handleNotificationClick = useCallback(() => {
+    notificationDrawerState.onOpen();
+    handleCloseMenu();
+  }, [handleCloseMenu, notificationDrawerState]);
+
+  const handleSettingsClick = useCallback(() => {
+    settingsDrawer.onOpen();
+    handleCloseMenu();
+  }, [handleCloseMenu, settingsDrawer]);
+
+  const handleGoToAddressBookPage = useCallback(() => {
+    navigate(
+      Pages.addressBook({ workspaceId: authDetails?.userInfos?.workspace?.id }),
+    );
+    handleCloseMenu();
+  }, [navigate, authDetails?.userInfos?.workspace?.id, handleCloseMenu]);
 
   return (
     <>
       <SettingsDrawer
-        isOpen={settingsDrawer.isOpen}
-        onClose={settingsDrawer.onClose}
+        open={settingsDrawer.isOpen}
+        onOpenChange={settingsDrawer.onOpenChange}
         onOpen={settingsDrawer.onOpen}
       />
       <NotificationsDrawer
-        isOpen={notificationDrawerState.isOpen}
-        onClose={notificationDrawerState.onClose}
+        open={notificationDrawerState.isOpen}
+        onOpenChange={notificationDrawerState.onOpenChange}
       />
       <NetworkDrawer
-        isOpen={networkDrawerState.isOpen}
-        onClose={networkDrawerState.onClose}
+        open={networkDrawerState.isOpen}
+        onOpenChange={networkDrawerState.onOpenChange}
       />
       <NetworkDialog
-        isOpen={networkDialogState.isOpen}
-        onClose={networkDialogState.onClose}
+        open={networkDialogState.isOpen}
+        onOpenChange={networkDialogState.onOpenChange}
       />
 
-      {!isMobile && (
-        <Popover
-          isOpen={isWebAuthn && networkPopoverState.isOpen}
-          onClose={networkPopoverState.onClose}
-        >
-          <PopoverTrigger>
-            <HStack
-              w={220}
-              h={'32px'}
-              alignItems="center"
-              cursor={isWebAuthn ? 'pointer' : 'default'}
-              onClick={networkPopoverState.onOpen}
-              aria-label={'Select networks'}
-              spacing={isMobile ? 2 : 4}
-              position="relative"
-              border={'1px solid'}
-              borderColor="grey.925"
-              justifyContent={
-                selectNetworkRequest.isPending ? 'center' : 'space-between'
-              }
-              borderRadius="6px"
-              py={2}
-              px={4}
-              mr={6}
-            >
-              {selectNetworkRequest.isPending ? (
-                <Spinner w={4} h={4} color="brand.500" />
-              ) : (
-                <>
-                  <HStack>
-                    <Icon
-                      as={
-                        checkNetwork(NetworkType.MAINNET)
-                          ? BakoIcon
-                          : UnknownIcon
-                      }
-                      fontSize={16}
-                    />
-
-                    <Text
-                      fontSize={12}
-                      fontWeight={500}
-                      color="grey.200"
-                      noOfLines={1}
-                    >
-                      {NetworkService.getName(currentNetwork.url)}
-                    </Text>
-                  </HStack>
-
-                  {isWebAuthn && (
-                    <Icon
-                      color="grey.200"
-                      fontSize={{ base: 'sm', sm: 'sm' }}
-                      as={FaChevronDown}
-                    />
-                  )}
-                </>
-              )}
-            </HStack>
-          </PopoverTrigger>
-
-          <PopoverContent
-            bg={'dark.300'}
-            w={220}
-            borderTop="none"
-            border="1px solid #353230"
-            _focus={{ ring: 'none' }}
+      {/* TOP MENU */}
+      <Popover.Root
+        open={openMenu}
+        onOpenChange={handleOpenMenuChange}
+        positioning={{ placement: 'bottom-end' }}
+        autoFocus={false}
+      >
+        <Popover.Trigger asChild>
+          <HStack
+            alignItems="center"
+            cursor="pointer"
+            gap={2}
+            p={2}
+            bg="bg.muted"
+            position="relative"
+            borderRadius="lg"
           >
-            <PopoverBody p={0}>
-              <VStack cursor={'pointer'} alignItems="start" spacing={0}>
-                {networks?.map((network) => (
-                  <VStack
-                    w="full"
-                    key={network.url}
-                    cursor={'pointer'}
-                    alignItems="start"
-                    justifyContent="center"
-                    borderBottom={'1px solid'}
-                    borderColor="grey.925"
-                    px={4}
-                    py={4}
+            <Text color="textPrimary" fontSize="xs" lineClamp={1}>
+              {hasNickName
+                ? limitCharacters(name, 16)
+                : AddressUtils.format(b256UserAddress, 4)}
+            </Text>
+
+            <Skeleton boxSize="16px" loading={isLoadingAvatar}>
+              <Avatar
+                boxSize="16px"
+                shape="full"
+                src={avatar!}
+                color="textPrimary"
+              />
+            </Skeleton>
+
+            {unreadCounter > 0 && (
+              <Box
+                rounded="full"
+                bgColor="red.100"
+                boxSize="8px"
+                position="absolute"
+                top={-1}
+                right={-1}
+              />
+            )}
+          </HStack>
+        </Popover.Trigger>
+        <Popover.Portal>
+          <Popover.Positioner>
+            <Popover.Content bg="bg.muted" rounded="2xl">
+              <Popover.Body p={0}>
+                <VStack cursor="pointer" alignItems="start" p={4} gap={4}>
+                  {hasNickName && (
+                    <Text color="textPrimary" fontWeight={500}>
+                      {limitCharacters(name, 25)}
+                    </Text>
+                  )}
+                  <AddressWithCopyBtn
+                    value={
+                      authDetails.userInfos?.type.type === TypeUser.WEB_AUTHN
+                        ? AddressUtils.toBech32(authDetails.userInfos?.address)
+                        : (authDetails.userInfos?.address ?? '')
+                    }
+                    justifyContent="start"
+                    gap={4}
+                    aria-label="Copy address"
+                    isSidebarAddress
+                    flexDir="row-reverse"
+                    textProps={{
+                      color: hasNickName ? 'grey.400' : 'textPrimary',
+                    }}
                     onClick={() => {
-                      networkPopoverState.onClose?.();
-                      if (network.url !== currentNetwork.url) {
-                        handleSelectNetwork(network.url);
+                      if (authDetails.userInfos.type.type === TypeUser.EVM) {
+                        toast({
+                          duration: 3000,
+                          isClosable: false,
+                          title: 'Copied!',
+                          status: 'warning',
+                          description:
+                            'This is your login account, DO NOT send assets to this address.',
+                        });
+                        return;
                       }
                     }}
-                  >
-                    <HStack>
-                      <Icon
-                        as={isMainnet(network.url) ? BakoIcon : UnknownIcon}
-                        fontSize={16}
-                      />
-                      <Text color="grey.200" fontSize={12} fontWeight={500}>
-                        {network.name}
-                      </Text>
-                    </HStack>
-                  </VStack>
-                ))}
+                  />
+                </VStack>
 
+                <Separator borderColor="gray.550" w="full" />
+
+                {/* NOTIFICATIONS */}
                 <VStack
-                  w="full"
-                  cursor={'pointer'}
+                  cursor="pointer"
                   alignItems="start"
                   justifyContent="center"
-                  borderBottom={'1px solid'}
-                  borderColor="grey.925"
                   px={4}
-                  py={4}
-                  onClick={() => networkDialogState.onOpen()}
+                  h="70px"
+                  onClick={handleNotificationClick}
                 >
-                  <HStack>
-                    <Icon as={PlusIcon} fontSize={16} color="grey.75" />
-                    <Text color="grey.200" fontSize={12} fontWeight={500}>
-                      Add new network
+                  <HStack gap={4} w="full">
+                    <Icon
+                      color="textPrimary"
+                      as={NotificationIcon}
+                      w={4}
+                      h={4}
+                    />
+                    <Text color="textPrimary" fontSize="xs">
+                      Notifications
+                    </Text>
+                    {unreadCounter > 0 && (
+                      <Text
+                        fontSize="2xs"
+                        rounded="full"
+                        ml="auto"
+                        bgColor="red"
+                        color="gray.50"
+                        fontWeight="bold"
+                        border="none"
+                        minW="16px"
+                        h="16px"
+                        lineHeight="shorter"
+                        textAlign="center"
+                        px={unreadCounter > 99 ? '0.5' : '0'}
+                      >
+                        {unreadCounter > 99 ? '+99' : unreadCounter}
+                      </Text>
+                    )}
+                  </HStack>
+                </VStack>
+
+                <Separator borderColor="gray.550" w="full" />
+
+                {/* NETWORK */}
+                <VStack
+                  cursor="pointer"
+                  alignItems="start"
+                  justifyContent="center"
+                  px={4}
+                  h="70px"
+                >
+                  <NetworkSelect
+                    onCreateNetwork={networkDialogState.onOpen}
+                    onSelectNetwork={handleCloseMenu}
+                  />
+                </VStack>
+
+                <Separator borderColor="gray.550" w="full" />
+
+                <VStack
+                  cursor="pointer"
+                  alignItems="start"
+                  justifyContent="center"
+                  px={4}
+                  onClick={handleGoToAddressBookPage}
+                  h="70px"
+                >
+                  <HStack gap={4}>
+                    <Icon
+                      w={4}
+                      h={4}
+                      color="textPrimary"
+                      as={AddressBook2Icon}
+                    />
+                    <Text color="textPrimary" fontSize="xs">
+                      Address Book
                     </Text>
                   </HStack>
                 </VStack>
-              </VStack>
-            </PopoverBody>
-          </PopoverContent>
-        </Popover>
-      )}
 
-      {/* TOP MENU */}
-      <Popover placement="bottom-end">
-        <PopoverTrigger>
-          <HStack
-            // w="100%"
-            alignItems="center"
-            cursor={'pointer'}
-            spacing={isMobile ? 2 : 4}
-            position="relative"
-            border={isMobile ? '1px solid #353230' : 'none'}
-            borderRadius="6px"
-          >
-            <HStack
-              w="full"
-              flexDir={isMobile ? 'row' : 'row-reverse'}
-              spacing={4}
-            >
-              <Text
-                fontWeight="semibold"
-                color="grey.200"
-                pl={isMobile ? 4 : 0}
-                noOfLines={1}
-              >
-                {hasNickName ? (
-                  limitCharacters(name, 20)
-                ) : (
-                  <AddressWithCopyBtn
-                    value={authDetails.userInfos?.address ?? ''}
-                    customValue={AddressUtils.format(
-                      b256UserAddress,
-                      isExtraSmall
-                        ? 8
-                        : isLitteSmall
-                          ? 10
-                          : isLowerThanFourHundredAndThirty
-                            ? 15
-                            : 18,
-                    )}
-                    justifyContent="start"
-                    aria-label="Copy address"
-                    flexDir="row-reverse"
-                    hideCopyButton
-                    textProps={{
-                      fontSize: isMobile ? 'xs' : 'md',
-                    }}
-                  />
-                )}
-              </Text>
+                <Separator borderColor="gray.550" w="full" />
 
-              <Skeleton
-                boxSize={isMobile ? '32px' : '40px'}
-                isLoaded={!isLoadingAvatar}
-              >
-                <Avatar
-                  variant="roundedSquare"
-                  src={avatar || authDetails.userInfos?.avatar}
-                  boxSize="full"
-                  border={avatar ? 'none' : '1px solid #CFCCC9'}
-                />
-              </Skeleton>
-
-              {!isMobile && (
-                <HStack
-                  position="relative"
-                  mr={3}
-                  onClick={notificationDrawerState.onOpen}
+                <VStack
+                  cursor="pointer"
+                  alignItems="start"
+                  justifyContent="center"
+                  px={4}
+                  h="70px"
+                  onClick={handleSettingsClick}
                 >
-                  <Icon color="grey.75" as={NotificationIcon} fontSize="28px" />
-                  {unreadCounter > 0 && (
-                    <Text
-                      fontSize="10px"
-                      rounded="full"
-                      bgColor="error.600"
-                      color="white"
-                      border="none"
-                      minW="20px"
-                      h="20px"
-                      lineHeight="18px"
-                      textAlign="center"
-                      position="absolute"
-                      top={-1}
-                      right={-1}
-                      px={unreadCounter > 99 ? '0.5' : '0'}
-                    >
-                      {unreadCounter > 99 ? '+99' : unreadCounter}
+                  <HStack gap={4}>
+                    <Icon
+                      color="textPrimary"
+                      w={4}
+                      h={4}
+                      as={SettingsTopMenuIcon}
+                    />
+                    <Text color="textPrimary" fontSize="xs">
+                      Settings
                     </Text>
-                  )}
-                </HStack>
-              )}
-            </HStack>
-            {!isMobile && (
-              <Icon
-                aria-label={'Dropdown header'}
-                color="grey.200"
-                fontSize={{ base: 'sm', sm: 'lg' }}
-                as={FaChevronDown}
-              />
-            )}
+                  </HStack>
+                </VStack>
 
-            {unreadCounter > 0 && isMobile && (
-              <Text
-                fontSize="xs"
-                minW="20px"
-                h="20px"
-                lineHeight="18px"
-                rounded="full"
-                bgColor="error.600"
-                color="white"
-                textAlign="center"
-                position="absolute"
-                right={-2}
-                top={-2}
-                px={unreadCounter > 99 ? '0.5' : '0'}
-              >
-                {unreadCounter > 99 ? '+99' : unreadCounter}
-              </Text>
-            )}
-          </HStack>
-        </PopoverTrigger>
+                <Separator borderColor="gray.550" w="full" />
 
-        <PopoverContent
-          bg={'dark.300'}
-          // w="100%"
-          m={0}
-          p={0}
-          pb={0}
-          borderTop="none"
-          border="1px solid #353230"
-          _focus={{ ring: 'none' }}
-        >
-          <PopoverBody pb={0}>
-            <VStack
-              cursor={'pointer'}
-              alignItems="start"
-              px={4}
-              py={2}
-              spacing={1.5}
-            >
-              {hasNickName && (
-                <Text color="grey.50" fontWeight={500}>
-                  {limitCharacters(name, 25)}
-                </Text>
-              )}
-              <AddressWithCopyBtn
-                value={
-                  authDetails.userInfos?.type.type === TypeUser.WEB_AUTHN
-                    ? AddressUtils.toBech32(authDetails.userInfos?.address)
-                    : (authDetails.userInfos?.address ?? '')
-                }
-                justifyContent="start"
-                aria-label="Copy address"
-                isSidebarAddress
-                flexDir="row-reverse"
-                textProps={{ color: '#AAA6A1' }}
-                onClick={() => {
-                  if (authDetails.userInfos.type.type === TypeUser.EVM) {
-                    toast({
-                      position: 'top-right',
-                      duration: 3000,
-                      isClosable: false,
-                      title: 'Copied!',
-                      status: 'warning',
-                      description:
-                        'This is your login account, DO NOT send assets to this address.',
-                      icon: (
-                        <Icon
-                          fontSize="2xl"
-                          color="brand.500"
-                          as={WarningTwoIcon}
-                        />
-                      ),
-                    });
-                    return;
-                  }
-
-                  authDetails.userInfos.type.type === TypeUser.WEB_AUTHN &&
-                    setOpenAlert(true);
-                }}
-              />
-            </VStack>
-
-            {isMobile && (
-              <VStack
-                borderTop={'1px solid'}
-                borderTopColor={'dark.100'}
-                cursor={'pointer'}
-                alignItems="start"
-                justifyContent="center"
-                px={4}
-                h="70px"
-                onClick={networkDrawerState.onOpen}
-              >
-                <HStack spacing={4}>
-                  <Icon color="grey.75" w={5} h={5} as={NetworkIcon} />
-                  <Text color="grey.75" fontWeight={500}>
-                    Network
-                  </Text>
-                </HStack>
-              </VStack>
-            )}
-
-            {isMobile && (
-              <VStack
-                borderTop={'1px solid'}
-                borderTopColor={'dark.100'}
-                cursor={'pointer'}
-                alignItems="start"
-                justifyContent="center"
-                px={4}
-                h="70px"
-                onClick={notificationDrawerState.onOpen}
-              >
-                <HStack spacing={4}>
-                  <Icon
-                    color="grey.75"
-                    as={NotificationIcon}
-                    fontSize={20}
-                    w={5}
-                    h={5}
-                  />
-                  <Text color="grey.75" fontWeight={500}>
-                    Notifications
-                  </Text>
-                  {unreadCounter > 0 && (
-                    <Text
-                      fontSize="xs"
-                      rounded="full"
-                      bgColor="error.600"
-                      color="white"
-                      border="none"
-                      minW="20px"
-                      h="20px"
-                      lineHeight="18px"
-                      textAlign="center"
-                      px={unreadCounter > 99 ? '0.5' : '0'}
-                    >
-                      {unreadCounter > 99 ? '+99' : unreadCounter}
+                <VStack
+                  cursor="pointer"
+                  alignItems="start"
+                  justifyContent="center"
+                  px={4}
+                  onClick={feedbackForm}
+                  h="70px"
+                >
+                  <HStack gap={4}>
+                    <Icon w={4} h={4} color="textPrimary" as={FeedbackIcon} />
+                    <Text color="textPrimary" fontSize="xs">
+                      Send feedback
                     </Text>
-                  )}
-                </HStack>
-              </VStack>
-            )}
+                  </HStack>
+                </VStack>
 
-            <VStack
-              borderTop={'1px solid'}
-              borderTopColor={'dark.100'}
-              cursor={'pointer'}
-              alignItems="start"
-              justifyContent="center"
-              px={4}
-              h="70px"
-              onClick={settingsDrawer.onOpen}
-            >
-              <HStack spacing={4}>
-                <Icon color="grey.75" w={5} h={5} as={SettingsTopMenuIcon} />
-                <Text color="grey.75" fontWeight={500}>
-                  Settings
-                </Text>
-              </HStack>
-            </VStack>
+                <Separator borderColor="gray.550" w="full" />
 
-            <VStack
-              borderTop={'1px solid'}
-              borderTopColor={'dark.100'}
-              cursor={'pointer'}
-              alignItems="start"
-              justifyContent="center"
-              px={4}
-              h="70px"
-            >
-              <HStack cursor={'pointer'} onClick={feedbackForm} spacing={4}>
-                <Icon
-                  w={5}
-                  h={5}
-                  color="grey.75"
-                  fontSize={18}
-                  as={FeedbackIcon}
-                />
-                <Text color="grey.75" fontWeight={500}>
-                  Send feedback
-                </Text>
-              </HStack>
-            </VStack>
-
-            <VStack
-              borderTop={'1px solid'}
-              borderTopColor={'dark.100'}
-              cursor={'pointer'}
-              alignItems="start"
-              justifyContent="center"
-              px={4}
-              h="70px"
-              mb={0}
-            >
-              <HStack
-                cursor="pointer"
-                onClick={logout}
-                spacing={4}
-                aria-label="Disconnect"
-                w="full"
-              >
-                <Icon color="grey.75" fontSize="xl" as={DisconnectIcon} />
-                <Text color="grey.75" fontWeight={500}>
-                  Disconnect
-                </Text>
-                <Spacer />
-                {isLoggingOut && (
-                  <Spinner
-                    thickness="3px"
-                    speed="0.5s"
-                    emptyColor="gray.200"
-                    color="brand.500"
-                    w="20px"
-                    h="20px"
-                  />
-                )}
-              </HStack>
-            </VStack>
-          </PopoverBody>
-        </PopoverContent>
-      </Popover>
+                <VStack
+                  cursor="pointer"
+                  alignItems="start"
+                  justifyContent="center"
+                  onClick={logout}
+                  aria-label="Disconnect"
+                  px={4}
+                  h="70px"
+                >
+                  <HStack gap={4} w="full">
+                    <Icon color="textPrimary" w={4} as={DisconnectIcon} />
+                    <Text color="textPrimary" fontSize="xs">
+                      Disconnect
+                    </Text>
+                    {isLoggingOut && (
+                      <Loader
+                        ml="auto"
+                        borderWidth="3px"
+                        animationDelay="0.5s"
+                        css={{ '--spinner-track-color': 'colors.yellow.100' }}
+                        w="20px"
+                        h="20px"
+                      />
+                    )}
+                  </HStack>
+                </VStack>
+              </Popover.Body>
+            </Popover.Content>
+          </Popover.Positioner>
+        </Popover.Portal>
+      </Popover.Root>
     </>
   );
 };
@@ -678,23 +465,23 @@ const Header = () => {
 
   return (
     <Flex
-      h={{
-        base: '64px',
-        sm: '72px',
-      }}
+      h="107px"
       zIndex={100}
       w="100%"
-      bgColor="dark.950"
-      px={{ base: 0, sm: 4 }}
+      background="linear-gradient(0deg, rgba(13, 13, 12, 0) 0%, rgba(13, 13, 12, 0.6) 35%, #0D0D0C 90%)"
+      px={{
+        base: 3,
+        sm: 6,
+      }}
+      style={{ WebkitBackdropFilter: 'blur(8px)', backdropFilter: 'blur(8px)' }}
       alignItems="center"
       position="sticky"
       top="0"
       justifyContent="space-between"
-      boxShadow="0px 8px 12px 0px rgba(0, 0, 0, 0.2)"
     >
       <NotificationsDrawer
-        isOpen={notificationDrawerState.isOpen}
-        onClose={notificationDrawerState.onClose}
+        open={notificationDrawerState.isOpen}
+        onOpenChange={notificationDrawerState.onOpenChange}
       />
       <SelectWorkspaceDialog
         dialog={workspaceDialog}
@@ -711,11 +498,17 @@ const Header = () => {
       >
         <Image width={{ base: 90, sm: 140 }} src={logo} alt="" p={0} />
       </Box>
-      <TopBarItem>
+      <Box
+        css={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
         <UserBox />
-      </TopBarItem>
+      </Box>
     </Flex>
   );
 };
 
-export { Header };
+export { Header, UserBox };

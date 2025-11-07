@@ -1,4 +1,4 @@
-import { Button, Card, Image, Stack, Text, VStack } from '@chakra-ui/react';
+import { Button, Card, Image, Stack, Text, VStack } from 'bako-ui';
 import { Link } from 'react-router-dom';
 
 import Empty from '@/assets/nft-empty.png';
@@ -6,7 +6,7 @@ import { GARAGE_APP_URL } from '@/utils/enviroment';
 
 export const NFTsEmptyState = () => {
   return (
-    <Card
+    <Card.Root
       w="full"
       p={{ base: 10, xs: 10 }}
       bg="gradients.transaction-card"
@@ -19,7 +19,7 @@ export const NFTsEmptyState = () => {
       flexDirection="column"
       alignItems="center"
     >
-      <VStack spacing={8} py={{ md: 8, base: 4 }}>
+      <VStack gap={8} py={{ md: 8, base: 4 }}>
         <Image
           src={Empty}
           alt="Empty nfts"
@@ -33,7 +33,7 @@ export const NFTsEmptyState = () => {
           }}
         />
 
-        <Stack spacing={2}>
+        <Stack gap={2}>
           <Text textAlign="center" color="grey.50" fontSize="md">
             No items found
           </Text>
@@ -42,18 +42,12 @@ export const NFTsEmptyState = () => {
           </Text>
         </Stack>
 
-        <Button
-          variant="primary"
-          as={Link}
-          to={GARAGE_APP_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          size="lg"
-          px={8}
-        >
-          Go to marketplace
+        <Button size="lg" px={8} asChild>
+          <Link to={GARAGE_APP_URL} target="_blank" rel="noopener noreferrer">
+            Go to marketplace
+          </Link>
         </Button>
       </VStack>
-    </Card>
+    </Card.Root>
   );
 };

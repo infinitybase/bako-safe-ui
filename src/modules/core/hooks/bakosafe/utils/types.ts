@@ -67,7 +67,7 @@ export interface ITransaction extends ICreateTransactionPayload {
   updatedAt: string;
   predicateId: string;
   type: TransactionType | TransactionTypeWithRamp | TransactionTypeBridge;
-  resume: ITransactionResume; // RESULT
+  resume: ITransactionResume & { bridge?: any }; // TODO: update bridge type
   assets: ITransferAsset[];
   summary?: ITransactionSummary;
   rampTransaction?: IRampTransaction;

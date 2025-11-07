@@ -5,7 +5,7 @@ import { useEvm } from '@/modules';
 import { useContactToast } from '@/modules/addressBook';
 import { EConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
 import { useNetworks } from '@/modules/network/hooks';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 import { ENetworks } from '@/utils/constants';
 
 import { Encoder, localStorageKeys, TypeUser } from '../../services';
@@ -18,9 +18,12 @@ const useWalletSignIn = (
 ) => {
   const [isAnyWalletConnectorOpen, setIsAnyWalletConnectorOpen] =
     useState(false);
+  const [currentOpenConnector, setCurrentOpenConnector] = useState<
+    string | null
+  >(null);
 
   const { fuel } = useFuel();
-  const { authDetails, invalidateGifAnimationRequest } = useWorkspaceContext();
+  const { authDetails } = useWorkspaceContext();
   const { errorToast } = useContactToast();
   const { fromConnector } = useNetworks();
   const {
@@ -42,7 +45,7 @@ const useWalletSignIn = (
     await connect();
   };
 
-  const evmWalletConnect = async (_connector: string) => {
+  const evmWalletConnect = async () => {
     if (!evmModalIsOpen) {
       setEvmModalIsOpen(true);
       await evmConnect();
@@ -82,7 +85,6 @@ const useWalletSignIn = (
         provider_url: result.provider,
         first_login: result.first_login,
       });
-      invalidateGifAnimationRequest();
       callback(result.rootWallet, result.workspace.id);
     } catch (e) {
       console.error(e);
@@ -103,6 +105,7 @@ const useWalletSignIn = (
 
   const handleSelectWallet = async (connector: string) => {
     if (handler[connector]) {
+      setCurrentOpenConnector(connector);
       handler[connector](connector);
     }
   };
@@ -147,12 +150,12 @@ const useWalletSignIn = (
         first_login: result.first_login,
       });
 
-      invalidateGifAnimationRequest();
       callback(result.rootWallet, result.workspace.id);
     } catch (e) {
       authDetails.handlers.setInvalidAccount?.(true);
     } finally {
       setIsAnyWalletConnectorOpen(false);
+      setCurrentOpenConnector(null);
     }
   };
 
@@ -171,7 +174,6 @@ const useWalletSignIn = (
   useEffect(() => {
     const unsub = evmModal.subscribeEvents(
       async (event: { data: { event: string } }) => {
-        console.log('event.data.event', event.data.event);
         switch (event.data.event) {
           case 'MODAL_OPEN':
             setEvmModalIsOpen(true);
@@ -202,6 +204,7 @@ const useWalletSignIn = (
   return {
     handleSelectWallet,
     isAnyWalletConnectorOpen,
+    currentOpenConnector,
   };
 };
 

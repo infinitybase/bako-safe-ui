@@ -1,23 +1,14 @@
-import {
-  Box,
-  Button,
-  Divider,
-  HStack,
-  Icon,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
-import { css } from '@emotion/react';
+import { Box, Button, HStack, Icon, Text, VStack } from 'bako-ui';
 import { type ITransferAsset, TransactionStatus } from 'bakosafe';
+import { useMemo } from 'react';
 
 import { SuccessIcon, UpRightArrow } from '@/components';
-import { shakeAnimationY } from '@/modules/core';
 import { NetworkService } from '@/modules/network/services';
 import {
   useGetAssetsByOperations,
   useVerifyTransactionInformations,
 } from '@/modules/transactions/hooks';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import type { TransactionWithVault } from '../../../services';
 import DetailItem from './DetailItem';
@@ -27,29 +18,30 @@ type DepositDetailsProps = {
 };
 
 const DepositDetails = ({ transaction }: DepositDetailsProps) => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { operationAssets, sentBy, hasNoDefaultAssets } =
-    useGetAssetsByOperations(transaction);
+  const { sentBy } = useGetAssetsByOperations(transaction);
   const {
-    screenSizes: { isMobile, isLowerThanFourHundredAndThirty },
+    screenSizes: { isMobile },
   } = useWorkspaceContext();
 
   const { isFuelFriday } = useVerifyTransactionInformations(transaction);
 
   const predicate = transaction.predicate?.predicateAddress;
 
+  const assets: ITransferAsset[] = useMemo(
+    () =>
+      transaction.summary?.operations
+        ?.find((o) => o.to?.address === predicate)
+        ?.assetsSent?.map((asset) => ({
+          assetId: asset.assetId,
+          amount: asset.amount.toString(),
+          to: predicate!,
+        })) ?? [],
+    [transaction?.summary, predicate],
+  );
+
   if (!transaction.summary || !predicate) {
     return null;
   }
-
-  const assets: ITransferAsset[] =
-    transaction.summary.operations
-      ?.find((o) => o.to?.address === predicate)
-      ?.assetsSent?.map((asset) => ({
-        assetId: asset.assetId,
-        amount: asset.amount.toString(),
-        to: predicate,
-      })) ?? [];
 
   const handleViewInExplorer = () => {
     const { hash, network } = transaction;
@@ -62,15 +54,13 @@ const DepositDetails = ({ transaction }: DepositDetailsProps) => {
   return (
     <Box
       display="flex"
-      flexDirection={{ base: 'row', xs: 'column' }}
+      flexDirection={{ base: 'row', md: 'column' }}
       w="full"
       minW={{ base: 200, sm: '476px' }}
       flexWrap="wrap"
-      minH={{ base: 560, xs: 400, sm: 'unset' }}
+      minH={{ base: 560, md: 400, sm: 'unset' }}
     >
       <VStack w="full" mt={isMobile ? 'unset' : 5}>
-        {isMobile && <Divider my={5} borderColor="grey.425" />}
-
         {isFuelFriday && (
           <Box w="full">
             <HStack
@@ -85,9 +75,9 @@ const DepositDetails = ({ transaction }: DepositDetailsProps) => {
               py={4}
               px={4}
             >
-              <Icon as={SuccessIcon} color="#00E65C" mt={1} fontSize={27} />
+              <Icon as={SuccessIcon} color="#00E65C" mt={1} w="27px" />
 
-              <VStack spacing={0} alignItems="flex-start">
+              <VStack gap={0} alignItems="flex-start">
                 <Text fontWeight="bold" color="#00E65C" fontSize="sm">
                   Fuel the Future of Scalable Payments
                 </Text>
@@ -101,21 +91,17 @@ const DepositDetails = ({ transaction }: DepositDetailsProps) => {
           </Box>
         )}
 
-        <Box pb={6} borderColor="grey.950" borderBottomWidth={1} w="full">
-          <Text
-            color="grey.425"
-            fontSize={isLowerThanFourHundredAndThirty ? 'xs' : 'sm'}
-          >
+        <Box pb={6} w="full">
+          <Text color="gray.400" fontSize="xs">
             Transaction breakdown
           </Text>
         </Box>
 
-        <Box alignItems="flex-start" flexWrap="wrap" w="full">
+        <Box alignItems="flex-start" flexWrap="wrap" w="full" gap={1}>
           {assets.map((asset, index) => (
             <DetailItem
               key={`${asset?.assetId}${index}-key`}
               asset={asset}
-              index={index}
               sentBy={sentBy}
             />
           ))}
@@ -123,24 +109,23 @@ const DepositDetails = ({ transaction }: DepositDetailsProps) => {
       </VStack>
 
       {!isMobile && (
-        <HStack w="100%" justifyContent="end" alignItems="center" mt={4}>
+        <HStack
+          w="100%"
+          justifyContent="end"
+          alignItems="center"
+          mt={4}
+          flex={1}
+        >
           {transaction.status === TransactionStatus.SUCCESS && (
             <Button
               w={isMobile ? 'full' : 'unset'}
               alignSelf={{ base: 'stretch', sm: 'flex-end' }}
               size={{ base: 'sm', sm: 'xs', lg: 'sm' }}
-              variant="secondaryV2"
+              variant="subtle"
               onClick={handleViewInExplorer}
-              css={css`
-                &:hover .btn-icon {
-                  animation: ${shakeAnimationY} 0.5s ease-in-out;
-                }
-              `}
-              rightIcon={
-                <Icon as={UpRightArrow} fontSize="lg" className="btn-icon" />
-              }
             >
-              View on Explorer
+              <UpRightArrow w={3} color="gray.200" />
+              Explorer
             </Button>
           )}
         </HStack>

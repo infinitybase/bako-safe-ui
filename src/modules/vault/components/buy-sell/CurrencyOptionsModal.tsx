@@ -1,20 +1,18 @@
-import { SearchIcon } from '@chakra-ui/icons';
 import {
   Box,
-  Divider,
+  DialogOpenChangeDetails,
+  Field,
   Flex,
-  FormControl,
-  FormLabel,
-  Icon,
   Image,
   Input,
   InputGroup,
-  InputRightElement,
+  Separator,
   Stack,
   Text,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 import debounce from 'lodash.debounce';
 import { useMemo, useState } from 'react';
+import { FiSearch as SearchIcon } from 'react-icons/fi';
 
 import { Dialog } from '@/components';
 import { Header } from '@/layouts/dashboard/header';
@@ -22,7 +20,7 @@ import { CurrencyList } from '@/modules/core/components/currencyList';
 
 interface CurrencyOptionsModalProps {
   open: boolean;
-  onClose: () => void;
+  onOpenChange?: (e: DialogOpenChangeDetails) => void;
   onCurrencyChange: (currencyCode: string) => void;
   currentCurrencyCode: string;
   currencies: {
@@ -37,7 +35,7 @@ interface CurrencyOptionsModalProps {
 
 export const CurrencyOptionsModal = ({
   open,
-  onClose,
+  onOpenChange,
   onCurrencyChange,
   currentCurrencyCode,
   currencies,
@@ -63,14 +61,14 @@ export const CurrencyOptionsModal = ({
 
   return (
     <Dialog.Modal
-      isOpen={open}
-      onClose={onClose}
+      open={open}
+      onOpenChange={onOpenChange}
       trapFocus={false}
       modalContentProps={{
         padding: 0,
       }}
     >
-      <Box display={{ base: 'block', xs: 'none' }} w="full">
+      <Box display={{ base: 'block', sm: 'none' }} w="full">
         <Header />
       </Box>
       <Dialog.Header
@@ -78,31 +76,26 @@ export const CurrencyOptionsModal = ({
         description={description}
         mt={3}
         mb={3}
-        onClose={onClose}
+        onClose={() => onOpenChange?.({ open: false })}
         px={4}
       />
-      <Dialog.Body py={{ base: 0, xs: 2 }}>
+      <Dialog.Body py={{ base: 0, sm: 2 }}>
         <Stack gap={4}>
-          <FormControl px={4}>
-            <InputGroup position="relative">
-              <InputRightElement
-                position="absolute"
-                right={4}
-                top="50%"
-                transform="translateY(-50%)"
-              >
-                <Icon as={SearchIcon} color="grey.500" />
-              </InputRightElement>
+          <Field.Root px={4}>
+            <InputGroup
+              position="relative"
+              endElement={<SearchIcon color="grey.500" />}
+            >
               <Input
                 bg="dark.950"
                 onChange={(e) => debouncedSearch(e)}
                 placeholder=" "
               />
-              <FormLabel>Search asset</FormLabel>
             </InputGroup>
-          </FormControl>
+            <Field.Label>Search asset</Field.Label>
+          </Field.Root>
 
-          <Divider borderColor="grey.950" />
+          <Separator borderColor="grey.950" />
 
           <CurrencyList.Root px={4}>
             {isLoading && <CurrencyList.Loading />}

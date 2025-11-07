@@ -1,23 +1,21 @@
-import { PlusSquareIcon } from '@chakra-ui/icons';
+import { keyframes } from '@emotion/react';
 import {
   Avatar,
   Box,
   Button,
-  Divider,
   Flex,
   Heading,
   HStack,
-  Icon,
   IconButton,
-  keyframes,
+  Separator,
   Text,
   TextProps,
   Tooltip,
-  useDisclosure,
   VStack,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 import { bn } from 'fuels';
-import { useMemo, useRef } from 'react';
+import { JSX, useMemo, useRef } from 'react';
+import { FiPlusSquare as PlusSquareIcon } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 
 import {
@@ -30,10 +28,12 @@ import {
 import { EyeCloseIcon } from '@/components/icons/eye-close';
 import { EyeOpenIcon } from '@/components/icons/eye-open';
 import { RefreshIcon } from '@/components/icons/refresh-icon';
+// import { Tooltip } from '@/components/ui/tooltip';
 import { Pages, PermissionRoles } from '@/modules/core';
+import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
 import { useNetworks } from '@/modules/network/hooks';
 import { NetworkType } from '@/modules/network/services';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { UseVaultDetailsReturn } from '../hooks/details';
 import { openFaucet } from '../utils';
@@ -61,7 +61,7 @@ const Update = (props: TextProps & { isLoading: boolean }) => {
       display="flex"
       alignItems="center"
       justifyContent="space-around"
-      variant="description"
+      // variant="description"
       fontSize={{ base: 'small', sm: 'md' }}
       fontWeight="semibold"
       _hover={{
@@ -87,7 +87,7 @@ const Update = (props: TextProps & { isLoading: boolean }) => {
 const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
   const assetsContainerRef = useRef(null);
   const navigate = useNavigate();
-  const { isOpen, onClose, onOpen } = useDisclosure();
+  const { isOpen, setOpen, onOpen } = useDisclosure();
 
   const { vault, assets, setAddAssetsDialogState } = props;
   const {
@@ -148,9 +148,15 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
   return (
     <Box w="full">
       {isMobile ? (
-        <BalanceHelperDrawer onClose={onClose} isOpen={isOpen} />
+        <BalanceHelperDrawer
+          onOpenChange={(e) => setOpen(e.open)}
+          open={isOpen}
+        />
       ) : (
-        <BalanceHelperDialog onClose={onClose} isOpen={isOpen} />
+        <BalanceHelperDialog
+          onOpenChange={(e) => setOpen(e.open)}
+          open={isOpen}
+        />
       )}
       <Box mb="22px" w="full">
         <Text
@@ -163,7 +169,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
         </Text>
       </Box>
 
-      <CustomSkeleton isLoaded={!vault.isLoading}>
+      <CustomSkeleton loading={vault.isLoading}>
         <Card
           p={{ base: 4, sm: 8 }}
           borderColor="gradients.transaction-border"
@@ -172,7 +178,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
           backdropFilter="blur(16px)"
           dropShadow="0px 8px 6px 0px #00000026"
         >
-          <VStack spacing={4} w="full">
+          <VStack gap={4} w="full">
             <Flex
               w="full"
               flexDir={{ base: 'column', md: 'row' }}
@@ -189,21 +195,21 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
               >
                 <Avatar
                   position="relative"
-                  variant="roundedSquare"
                   size={{ base: 'md', sm: 'lg' }}
                   p={{ base: 8, sm: 14 }}
                   bgColor="grey.950"
                   color="grey.450"
                   fontWeight="bold"
-                  name={vault.data?.name}
+                  shape="rounded"
                   boxShadow="0px 6.5px 6.5px 0px rgba(0, 0, 0, 0.4);"
+                  name={vault.data?.name}
                 />
                 <Box alignItems="center" justifyContent="center" w="full">
                   <HStack justifyContent="space-between" gap={2} maxW="full">
                     <Heading
                       alignSelf="flex-start"
-                      variant={{ base: 'title-md', sm: 'title-xl' }}
-                      noOfLines={1}
+                      // variant={{ base: 'title-md', sm: 'title-xl' }}
+                      lineClamp={1}
                       wordBreak="break-all"
                     >
                       {vault?.data.name}
@@ -243,8 +249,8 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                   )} */}
 
                   <Text
-                    variant="description"
-                    noOfLines={4}
+                    // variant="description"
+                    lineClamp={4}
                     wordBreak="break-all"
                   >
                     {vault?.data?.description}
@@ -274,14 +280,14 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                       alignItems="center"
                       mb={props.isPendingSigner && isMobile ? 5 : 0}
                       justifyContent="space-around"
-                      spacing={2}
+                      gap={2}
                     >
                       <CustomSkeleton
-                        isLoaded={!isLoading}
+                        loading={isLoading}
                         customStartColor="grey.75"
                         customEndColor="dark.100"
                       >
-                        <Heading variant={{ base: 'title-lg', sm: 'title-xl' }}>
+                        <Heading>
                           {visibleBalance ? `${balanceUSD} USD` : '-----'}
                         </Heading>
                       </CustomSkeleton>
@@ -314,35 +320,33 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                 </Box>
 
                 <CustomSkeleton
-                  isLoaded={!isLoading}
+                  loading={isLoading}
                   customStartColor="grey.75"
                   customEndColor="dark.100"
                   w="fit-content"
                 >
                   <Button
                     hidden={hasBalance}
-                    variant="primary"
+                    colorScheme="primary"
                     onClick={() =>
                       isTestnet
                         ? openFaucet(vault.data?.predicateAddress)
                         : setAddAssetsDialogState(true)
                     }
-                    leftIcon={<PlusSquareIcon />}
                   >
+                    <PlusSquareIcon />
                     {isTestnet ? 'Faucet' : 'Add Assets'}
                   </Button>
 
                   <VStack
-                    spacing={2}
+                    gap={2}
                     hidden={!hasBalance}
                     alignItems={{ base: 'flex-end', sm: 'flex-start' }}
                   >
                     <Tooltip
-                      label={ToolTipComponent}
-                      hasArrow
-                      placement="top"
-                      bg="dark.700"
-                      color="white"
+                      content={ToolTipComponent}
+                      showArrow
+                      positioning={{ placement: 'top' }}
                     >
                       <Box
                         display="flex"
@@ -360,16 +364,16 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                               }),
                             )
                           }
-                          isDisabled={
+                          disabled={
                             !hasBalance ||
                             !makeTransactionsPerm ||
                             props.isPendingSigner ||
                             isEthBalanceLowerThanReservedAmount
                           }
-                          variant="primary"
-                          leftIcon={<SquarePlusIcon />}
+                          colorPalette="primary"
                           fontWeight="bold"
                         >
+                          <SquarePlusIcon />
                           Send
                         </Button>
                       </Box>
@@ -378,7 +382,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                       !props.isPendingSigner &&
                       isMobile && (
                         <Text
-                          variant="description"
+                          // variant="description"
                           textAlign={{ base: 'end', sm: 'left' }}
                           fontWeight={400}
                           fontSize="xs"
@@ -394,13 +398,14 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                             size="xs"
                             minW={4}
                             maxH={4}
-                            icon={<Icon as={ErrorTooltip} fontSize="xs" />}
-                          />
+                          >
+                            <ErrorTooltip />
+                          </IconButton>
                         </Text>
                       )}
                     {props.isPendingSigner && isMobile ? (
                       <Text
-                        variant="description"
+                        // variant="description"
                         textAlign={{ base: 'end', sm: 'left' }}
                         fontSize="xs"
                         color="error.500"
@@ -411,13 +416,13 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                       <Text
                         fontSize="xs"
                         hidden={isMobile}
-                        variant="description"
+                        // variant="description"
                         color="error.500"
                       >
                         You dont have permission to send transactions.
                       </Text>
                     ) : (
-                      <Text hidden={true} variant="description" fontSize="xs">
+                      <Text hidden={true} fontSize="xs">
                         Send single or batch <br /> payments with multi assets.
                       </Text>
                     )}
@@ -426,14 +431,14 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
               </Flex>
             </Flex>
 
-            <Divider w="full" borderColor="grey.400" />
+            <Separator w="full" borderColor="grey.400" />
 
-            <VStack w="full" alignItems="flex-start" spacing={4}>
+            <VStack w="full" alignItems="flex-start" gap={4}>
               <Text fontWeight="semibold" color="grey.450">
                 Vault balance breakdown
               </Text>
               <CustomSkeleton
-                isLoaded={!userInfos.isLoading && !isLoading}
+                loading={userInfos.isLoading && isLoading}
                 w="full"
                 h="full"
               >
@@ -448,12 +453,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                     alignItems="center"
                     justifyContent="center"
                   >
-                    <VStack
-                      flex={1}
-                      h="full"
-                      spacing={1}
-                      justifyContent="center"
-                    >
+                    <VStack flex={1} h="full" gap={1} justifyContent="center">
                       <Text fontWeight="bold" color="white">
                         First things first...
                       </Text>
@@ -468,7 +468,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                     w="full"
                     h="full"
                     maxH={150}
-                    spacing={{ base: 2, sm: 4 }}
+                    gap={{ base: 2, sm: 4 }}
                     justifyContent="flex-start"
                   >
                     <AssetsDetails

@@ -1,4 +1,4 @@
-import { MiraIcon } from '@/components';
+import MiraIcon from '@/assets/images/microchain-icon.png';
 
 const FEE = import.meta.env.VITE_BAKO_SWAP_FEE || 1;
 
@@ -17,7 +17,6 @@ export const BAKO_FEE_PERCENTAGE = parseInt(FEE);
 export const DEFAULT_SLIPPAGE = 1 * 100; // 1%
 
 export enum SwapButtonTitle {
-  PREVIEW = 'Preview',
   INSUFFICIENT_BALANCE = 'Insufficient Balance',
   INSUFFICIENT_ETH_BALANCE = 'Bridge more ETH to pay for Gas',
   PENDING_TRANSACTION = 'Pending Transaction',

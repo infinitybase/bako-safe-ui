@@ -1,4 +1,4 @@
-import { Box, Flex, Text } from '@chakra-ui/react';
+import { Box, Flex, Text } from 'bako-ui';
 import { bn } from 'fuels';
 import { useMemo } from 'react';
 

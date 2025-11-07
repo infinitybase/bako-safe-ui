@@ -1,12 +1,11 @@
 import {
-  Box,
   Button,
-  FormControl,
-  FormHelperText,
-  FormLabel,
+  Field,
+  floatingStyles,
   HStack,
+  InputGroup,
   Text,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 import { memo, useMemo } from 'react';
 import { FieldError, useFormContext } from 'react-hook-form';
 
@@ -16,7 +15,7 @@ import Clear from './clear';
 
 interface RecipientFormAmountProps {
   index: number;
-  value: string;
+  value: string | undefined;
   onChange: (value: string) => void;
   isNFT: boolean;
   getAssetPrice: (assetId: string) => number;
@@ -61,85 +60,81 @@ const RecipientFormAmount = memo(
     );
 
     return (
-      <HStack align="start" spacing={2} position="relative" width="100%">
-        <FormControl variant="floating" isInvalid={!!error?.message}>
-          <Box position="relative">
-            <AmountInput
-              placeholder=" "
-              value={isNFT ? '1' : value}
-              onFocus={() => {
-                if (value === '.00' || value === '0.00') {
-                  value = '';
-                }
-              }}
-              onChange={({ target }) => onChange(target.value)}
-              isInvalid={!!error?.message}
-              isDisabled={isNFT}
-            />
-            <FormLabel data-testid="transaction_amount">Amount</FormLabel>
-
-            <FormHelperText
-              pl={4}
-              color={error?.message ? 'error.500' : 'gray.400'}
-            >
-              {error?.message ? (
-                <Text fontSize="sm" lineHeight="short">
-                  {error.message}
-                </Text>
-              ) : !isNFT ? (
-                <Text
-                  fontSize="sm"
-                  lineHeight="short"
-                  color="grey.425"
-                  opacity={usdNumber > 0 ? 1 : 0}
-                >
-                  ~ {usdEstimate}
-                </Text>
-              ) : null}
-            </FormHelperText>
-
-            {!isNFT && (
-              <HStack
-                position="absolute"
-                top="35%"
-                right="0.75rem"
-                spacing={1}
-                zIndex={1}
-                bg="grey.825"
-                transform="translateY(-50%)"
+      <HStack align="start" gap={2} position="relative" width="100%">
+        <Field.Root invalid={!!error?.message}>
+          <InputGroup
+            endElement={
+              <>
+                {!isNFT && (
+                  <HStack gap={1}>
+                    <Clear
+                      position="relative"
+                      transform="none"
+                      _hover={{
+                        bg: 'transparent',
+                      }}
+                      onClear={() => onChange('')}
+                    />
+                    <Button
+                      size="2xs"
+                      borderRadius="lg"
+                      lineHeight="1"
+                      variant="subtle"
+                      bg="bg.panel"
+                      disabled={isLoadingFee}
+                      onClick={() => {
+                        const max = getBalanceAvailable();
+                        onChange(max);
+                      }}
+                    >
+                      MAX
+                    </Button>
+                  </HStack>
+                )}
+              </>
+            }
+          >
+            <>
+              <AmountInput
+                placeholder=" "
+                variant="subtle"
+                value={isNFT ? '1' : value}
+                onFocus={() => {
+                  if (value === '.00' || value === '0.00') {
+                    value = '';
+                  }
+                }}
+                pt={value || isNFT ? 2 : 0}
+                onChange={({ target }) => onChange(target.value)}
+                isInvalid={!!error?.message}
+                disabled={isNFT}
+              />
+              <Field.Label
+                data-testid="transaction_amount"
+                css={floatingStyles({ hasValue: !!value })}
               >
-                <Clear
-                  position="relative"
-                  transform="none"
-                  onClear={() => onChange('')}
-                />
-                <Button
-                  size="xs"
-                  bg="transparent"
-                  border="1px solid "
-                  borderColor="white"
-                  borderRadius="md"
-                  color={'white'}
-                  fontWeight="bold"
-                  lineHeight="1"
-                  _hover={{
-                    bg: 'grey.900',
-                  }}
-                  _active={{
-                    bg: 'grey.850',
-                  }}
-                  isDisabled={isLoadingFee}
-                  onClick={() => {
-                    const max = getBalanceAvailable();
-                    onChange(max);
-                  }}
-                >
-                  MAX
-                </Button>
-              </HStack>
-            )}
-          </Box>
-        </FormControl>
+                Amount
+              </Field.Label>
+            </>
+          </InputGroup>
+
+          <Field.HelperText color={error?.message ? 'red' : 'gray.400'}>
+            {error?.message ? (
+              <Text fontSize="sm" lineHeight="short">
+                {error.message}
+              </Text>
+            ) : !isNFT ? (
+              <Text
+                fontSize="sm"
+                lineHeight="short"
+                color="gray.400"
+                opacity={usdNumber > 0 ? 1 : 0}
+              >
+                ~ {usdEstimate}
+              </Text>
+            ) : null}
+          </Field.HelperText>
+        </Field.Root>
       </HStack>
     );
   },

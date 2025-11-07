@@ -1,24 +1,19 @@
 import {
-  Divider,
-  FormControl,
-  FormLabel,
+  Box,
+  DialogOpenChangeDetails,
   HStack,
   Image,
   Input,
   InputGroup,
-  InputRightElement,
+  Loader,
+  Separator,
   Skeleton,
-  Spinner,
   Text,
   VStack,
-} from '@chakra-ui/react';
-import React, { useCallback, useEffect, useState } from 'react';
-import { Controller, useFormContext } from 'react-hook-form';
+} from 'bako-ui';
+import React, { useCallback, useState } from 'react';
 
 import { Dialog, SearchIcon } from '@/components';
-
-import { useFormBridge } from '../../hooks/bridge';
-import { ITransferBridgePayload } from './providers/FormBridgeProvider';
 
 export interface AssetItem {
   value: string;
@@ -38,6 +33,7 @@ export interface ModalSelectAssetsProps {
   options?: AssetItem[];
   isLoadingOptions: boolean;
   onClose: () => void;
+  onOpenChange?: (details: DialogOpenChangeDetails) => void;
   onSelect: (asset: AssetItem) => void;
 }
 
@@ -51,15 +47,15 @@ const AssetItem = React.memo(function AssetItemMemo({
   return (
     <HStack
       border="1px solid"
-      borderColor="grey.950"
+      borderColor="bg.muted"
       padding={4}
       borderRadius={8}
       cursor="pointer"
-      _hover={{ bgColor: 'grey.925' }}
+      _hover={{ bgColor: 'bg.muted/90' }}
       w="100%"
       onClick={() => onSelect(asset)}
     >
-      <Skeleton isLoaded={loaded} boxSize={6} borderRadius="full">
+      <Skeleton loading={!loaded} boxSize={6} borderRadius="full">
         <Image
           src={image}
           boxSize={6}
@@ -69,12 +65,13 @@ const AssetItem = React.memo(function AssetItemMemo({
         />
       </Skeleton>
 
-      <Text fontSize={12} fontWeight={500} color="grey.50">
+      <Text fontSize="sm" fontWeight="normal" color="gray.50">
         {name}
       </Text>
     </HStack>
   );
 });
+
 export function ModalSelectNetworkBridge({
   title,
   isOpen = false,
@@ -82,66 +79,40 @@ export function ModalSelectNetworkBridge({
   isLoadingOptions,
   onClose,
   onSelect,
+  onOpenChange,
 }: ModalSelectAssetsProps) {
-  const { control } = useFormContext<ITransferBridgePayload>();
-  const { form } = useFormBridge();
-
-  const [filteredNetworks, setFilteredNetworks] = useState<AssetItem[]>([]);
-  const [assetSelected, setAssetSelected] = useState<AssetItem>(
-    {} as AssetItem,
-  );
+  const [searchValue, setSearchValue] = useState('');
 
   const handleClose = () => {
-    setFilteredNetworks(options ?? []);
-    if (assetSelected?.value) {
-      onSelect(assetSelected);
-    } else {
-      form.resetField('selectNetworkTo');
-    }
-
-    form.resetField('searchNetwork');
-    onClose();
+    onOpenChange?.({ open: false });
   };
 
-  useEffect(() => {
-    setFilteredNetworks(options ?? []);
-  }, [options]);
+  const filteredNetworks = React.useMemo(() => {
+    if (!options) return [];
 
-  const handleSearch = useCallback(
-    (searchValue: string) => {
-      if (!options) return;
+    if (!searchValue.trim()) {
+      return options;
+    }
 
-      if (!searchValue.trim()) {
-        setFilteredNetworks(options);
-        return;
-      }
-
-      const filtered = options.filter((asset) =>
-        asset.name.toLowerCase().includes(searchValue.toLowerCase()),
-      );
-
-      setFilteredNetworks(filtered);
-    },
-    [options, setFilteredNetworks],
-  );
+    return options.filter((asset) =>
+      asset.name.toLowerCase().includes(searchValue.toLowerCase()),
+    );
+  }, [options, searchValue]);
 
   const handleSelectAsset = useCallback(
     (asset: AssetItem) => {
       onSelect(asset);
-      setAssetSelected(asset);
-      setFilteredNetworks(options ?? []);
-      form.resetField('searchNetwork');
       onClose();
     },
-    [form, options, setFilteredNetworks, onSelect, onClose],
+    [onSelect, onClose],
   );
 
   return (
     <Dialog.Modal
-      isOpen={isOpen}
-      onClose={handleClose}
-      closeOnOverlayClick={false}
-      size={'md'}
+      open={isOpen}
+      onOpenChange={onOpenChange}
+      closeOnInteractOutside={false}
+      size={{ base: 'full', sm: 'sm' }}
     >
       <Dialog.Body minH={650} maxH={650} flex={1}>
         <Dialog.Header
@@ -150,50 +121,36 @@ export function ModalSelectNetworkBridge({
           description={`Select the network of your choice.`}
           mb={0}
           mt={0}
+          px={6}
           titleSxProps={{
             fontSize: 16,
             fontWeight: 700,
-            color: 'grey.50',
+            color: 'gray.50',
             marginTop: { base: 5, md: 0 },
           }}
           descriptionFontSize="12px"
           onClose={handleClose}
         />
-        <Controller
-          name="searchNetwork"
-          control={control}
-          render={({ field, fieldState }) => {
-            return (
-              <FormControl isInvalid={fieldState.invalid} marginY={4}>
-                <InputGroup>
-                  <InputRightElement pr={3} top="35%">
-                    <SearchIcon color="grey.75" fontSize={'16px'} />
-                  </InputRightElement>
-
-                  <Input
-                    placeholder=""
-                    bgColor="dark.950"
-                    value={field.value}
-                    onChange={(e) => {
-                      field.onChange(e);
-                      handleSearch(e.target.value);
-                    }}
-                  />
-
-                  <FormLabel>Search Network</FormLabel>
-                </InputGroup>
-              </FormControl>
-            );
-          }}
-        />
-        <Divider marginTop={6} borderColor="grey.950" />
+        <Box px={6} mt={6} w="full">
+          <InputGroup endElement={<SearchIcon color="textPrimary" />}>
+            <Input
+              placeholder="Search Network"
+              value={searchValue}
+              onChange={(e) => {
+                setSearchValue(e.target.value);
+              }}
+            />
+          </InputGroup>
+        </Box>
+        <Separator marginTop={6} borderColor="bg.muted" />
         <VStack
           maxH={523}
           overflowY="auto"
           m={0}
           p={0}
+          px={6}
           pt={6}
-          sx={{
+          css={{
             '&::-webkit-scrollbar': {
               display: 'none',
               width: '5px',
@@ -204,10 +161,9 @@ export function ModalSelectNetworkBridge({
           }}
         >
           {isLoadingOptions ? (
-            <Spinner color="grey.500" size="md" />
+            <Loader color="textPrimary" size="md" />
           ) : filteredNetworks.length > 0 ? (
             filteredNetworks.map((net) => (
-              /* eslint-disable react/prop-types */
               <AssetItem
                 key={net.value}
                 asset={net}
@@ -215,8 +171,8 @@ export function ModalSelectNetworkBridge({
               />
             ))
           ) : (
-            <Text color="grey.50" fontSize={12}>
-              No netwoks found
+            <Text color="gray.50" fontSize="sm">
+              No networks found
             </Text>
           )}
         </VStack>

@@ -1,9 +1,9 @@
-import { Avatar, Card, HStack, Text, VStack } from '@chakra-ui/react';
+import { Avatar, Card, HStack, Text, VStack } from 'bako-ui';
 import { useMemo } from 'react';
 
 import { AddressWithCopyBtn } from '@/components';
 import { AddressUtils } from '@/modules/core';
-import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
+import { useVaultInfosContext } from '@/modules/vault/hooks';
 
 export function VaultInfoBridgeMobile() {
   const { vault } = useVaultInfosContext();
@@ -15,7 +15,7 @@ export function VaultInfoBridgeMobile() {
   }, [vault]);
 
   return (
-    <Card padding={3} w="full" bgColor="grey.825" gap={3}>
+    <Card.Root padding={3} w="full" bgColor="grey.825" gap={3}>
       <Text color="grey.425" fontSize={12}>
         Vault
       </Text>
@@ -24,12 +24,12 @@ export function VaultInfoBridgeMobile() {
           borderRadius={6}
           bgColor="grey.950"
           color="grey.75"
-          name={vault?.data?.name}
           boxShadow="0px 1.5px 1.5px 0px rgba(0, 0, 0, 0.4);"
           boxSize="30px"
-          sx={{
+          css={{
             '& div': { fontSize: '12px' },
           }}
+          name={vault?.data?.name}
         />
 
         <VStack w="full" align="start" gap={0}>
@@ -46,8 +46,8 @@ export function VaultInfoBridgeMobile() {
               textAlign: 'start',
               maxW: 'full',
               wordBreak: 'break-all',
-              noOfLines: 1,
-              isTruncated: false,
+              lineClamp: 1,
+              truncate: false,
               fontSize: 'xs',
             }}
             justifyContent="start"
@@ -55,6 +55,6 @@ export function VaultInfoBridgeMobile() {
           />
         </VStack>
       </HStack>
-    </Card>
+    </Card.Root>
   );
 }

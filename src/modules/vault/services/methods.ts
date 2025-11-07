@@ -14,6 +14,7 @@ import {
   IGetDestinationsResponse,
   IGetLimitsResponse,
   IGetQuotesResponse,
+  IPredicateAllocation,
   Predicate,
   PredicateUpdatePayload,
   Workspace,
@@ -297,6 +298,13 @@ export class VaultService {
 
   static async updatePredicate(id: string, payload: PredicateUpdatePayload) {
     const { data } = await api.put<Predicate>(`/predicate/${id}`, payload);
+    return data;
+  }
+
+  static async getBalanceAllocation(predicateId: string) {
+    const { data } = await api.get<IPredicateAllocation>(
+      `/predicate/${predicateId}/allocation`,
+    );
     return data;
   }
 }

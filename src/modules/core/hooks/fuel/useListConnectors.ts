@@ -19,9 +19,9 @@ export const EConnectorsInverse: Record<EConnectors, keyof typeof TypeUser> = {
 };
 
 export enum EConnectorsLabels {
-  FUEL = 'Fuel Wallet',
+  FUEL = 'Fuel',
   FUELET = 'Fuelet',
-  EVM = 'Ethereum Wallets',
+  EVM = 'Ethereum',
   SOCIAL = 'Social Login',
 }
 

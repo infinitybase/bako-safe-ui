@@ -7,7 +7,7 @@ import * as yup from 'yup';
 import { CookieName, CookiesConfig } from '@/config/cookies';
 import { TypeUser } from '@/modules/auth';
 import { AddressUtils, Batch32 } from '@/modules/core/utils';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 const schema = (
   providerInstance: Promise<BakoProvider>,
@@ -160,9 +160,7 @@ const useCreateVaultForm = (account?: string) => {
     },
   });
 
-  type UseCreateVaultFormFields = yup.InferType<typeof vaultSchema>;
-
-  const addressesFieldArray = useFieldArray<UseCreateVaultFormFields>({
+  const addressesFieldArray = useFieldArray({
     name: 'addresses',
     control: form.control,
   });

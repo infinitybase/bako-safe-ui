@@ -1,7 +1,7 @@
-import { Card, HStack, Text, VStack } from '@chakra-ui/react';
+import { Card, GridItem, HStack, Text, VStack } from 'bako-ui';
 
 import { CustomSkeleton } from '@/components';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 import { limitCharacters } from '@/utils';
 
 export interface ItemLiquidStakeProps {
@@ -24,33 +24,29 @@ export function ItemLiquidStake({
   const charLimit = isLargerThan1600 || isMobile ? 20 : 13;
 
   return (
-    <Card
-      flexDirection="row"
-      borderRadius={9}
+    <Card.Root
+      as={GridItem}
+      borderRadius="lg"
       flex={1}
-      alignItems="center"
-      background={'var(--chakra-colors-dark-950)'}
+      borderColor="bg.muted"
       width="full"
-      minW={value.length > 9 ? '235px' : '140px'}
+      minW={value.length > 9 ? '190px' : '140px'}
     >
-      <HStack
-        flex={1}
-        padding={3}
-        borderRadius={9}
-        background={'var(--chakra-colors-gradients-transaction-card)'}
-      >
-        <VStack flex={1} alignItems="flex-start" gap={0}>
-          <Text fontSize={12} color={'gray'}>
-            {label}
-          </Text>
-          <CustomSkeleton isLoaded={!isLoading}>
-            <Text fontSize={16} fontWeight={700} color="white">
-              {limitCharacters(value, charLimit)}
+      <Card.Body padding={3}>
+        <HStack flex={1} borderRadius={9}>
+          <VStack flex={1} alignItems="flex-start" gap={0}>
+            <Text fontSize="xs" color="textSecondary">
+              {label}
             </Text>
-          </CustomSkeleton>
-        </VStack>
-        {children}
-      </HStack>
-    </Card>
+            <CustomSkeleton loading={isLoading}>
+              <Text fontSize="xs" fontWeight={500} color="textPrimary">
+                {limitCharacters(value, charLimit)}
+              </Text>
+            </CustomSkeleton>
+          </VStack>
+          {children}
+        </HStack>
+      </Card.Body>
+    </Card.Root>
   );
 }

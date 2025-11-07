@@ -1,204 +1,138 @@
-import { WarningTwoIcon } from '@chakra-ui/icons';
 import {
   Avatar,
-  Badge,
-  chakra,
   Flex,
+  Heading,
   HStack,
   Icon,
   Skeleton,
+  Stack,
   Text,
-  VStack,
-} from '@chakra-ui/react';
+} from 'bako-ui';
+import { useMemo } from 'react';
 
-import { AddAddressBook, AddressWithCopyBtn, Handle } from '@/components';
-import { Card } from '@/components/card';
+import { AddAddressBook, UpRightArrow } from '@/components';
+import { ListContactsResponse } from '@/modules/addressBook/services';
 import { TypeUser } from '@/modules/auth';
 import { AddressUtils } from '@/modules/core';
-import { useScreenSize } from '@/modules/core/hooks';
 import { useBakoIdAvatar } from '@/modules/core/hooks/bako-id';
+import { useAddressNicknameResolver } from '@/modules/core/hooks/useAddressNicknameResolver';
 import { useNetworks } from '@/modules/network/hooks';
-import { useNotification } from '@/modules/notification';
-import { HandleUtils } from '@/utils/handle';
+import { NetworkService } from '@/modules/network/services';
 
-const { VITE_BAKO_ID_URL } = import.meta.env;
+import { VaultIconInfo } from './vaultIconInfo';
 
 interface CardMemberProps {
   member: {
-    nickname?: string;
-    handle?: string;
     avatar: string;
     address: string;
     type?: TypeUser;
   };
   isOwner: boolean;
-  isGrid?: boolean;
-  hasAdd?: boolean;
+  contacts: ListContactsResponse;
 }
 
-const SignerCard = chakra(Card, {
-  baseStyle: {
-    w: 'full',
-    p: 3,
-    bg: 'dark.600',
-    flex: 1,
-  },
-});
-
-const CardMemberBagde = () => {
-  return (
-    <Badge py={0} variant="success" alignSelf="flex-start" fontSize="2xs">
-      Owner
-    </Badge>
-  );
-};
-
-const CardMember = ({
-  member,
-  isOwner,
-  isGrid = true,
-  hasAdd = true,
-}: CardMemberProps) => {
-  const { isLitteSmall, isLargerThan680, isLargerThan1700, isExtraLarge } =
-    useScreenSize();
-  const toast = useNotification();
+const CardMember = ({ member, isOwner, contacts }: CardMemberProps) => {
   const { currentNetwork } = useNetworks();
+  const { resolveAddressContactHandle } = useAddressNicknameResolver();
+  const handleInfo = useMemo(
+    () =>
+      contacts?.find(
+        (contact) => contact.handle_info?.resolver === member.address,
+      )?.handle_info,
+    [contacts, member.address],
+  );
+
+  const { contact, handle } = resolveAddressContactHandle(
+    member.address,
+    handleInfo?.handle,
+    handleInfo?.resolver,
+  );
 
   // the avatar request is enabled only when have handle
   const { avatar, isLoading: isLoadingAvatar } = useBakoIdAvatar(
-    member?.handle || member.address,
+    handle || member.address,
     currentNetwork.chainId,
   );
 
-  const hasNickname = member?.nickname;
+  const memberName =
+    handle || contact || AddressUtils.format(member.address, 4);
   const address =
     member?.type === TypeUser.WEB_AUTHN
       ? AddressUtils.toBech32(member.address)
       : member.address;
 
+  const redirectToNetwork = () =>
+    window.open(
+      `${NetworkService.getExplorer(currentNetwork.url)}/account/${member.address}/assets`,
+      '_BLANK',
+    );
+
+  const hasAdd = !contact;
+
   return (
-    <SignerCard
-      w="full"
-      minW={{ base: 'unset', xs: 320 }}
-      bg="gradients.transaction-card"
-      borderColor="gradients.transaction-border"
-      backdropFilter="blur(6px)"
+    <Flex
+      py={6}
+      gap={3}
+      borderTop="1px solid"
+      borderBottom="1px solid"
+      borderColor="bg.muted"
       alignItems="center"
-      display="flex"
-      boxShadow="lg"
+      w="full"
     >
-      <Flex flexDir="row" gap={2} w="full" alignItems="center">
-        <Skeleton
-          isLoaded={!isLoadingAvatar}
-          boxSize={{ base: '32px', xs: '40px' }}
+      <Skeleton
+        loading={isLoadingAvatar}
+        boxSize={{ base: '32px', sm: '40px' }}
+        rounded="md"
+      >
+        <Avatar
+          borderRadius="md"
+          boxSize="full"
+          shape="rounded"
+          src={avatar || member?.avatar}
+        />
+      </Skeleton>
+      <Stack gap={2} flex={1}>
+        <Flex justifyContent="space-between">
+          <HStack w="full" gap={2} align="center">
+            <Heading fontSize="xs" color="textPrimary" fontWeight="medium">
+              {memberName}
+            </Heading>
+
+            {isOwner && (
+              <Text
+                as="span"
+                fontSize="xs"
+                color="gray.400"
+                lineHeight="shorter"
+              >
+                Owner
+              </Text>
+            )}
+          </HStack>
+
+          <Flex alignItems="center" gap={2}>
+            <AddAddressBook address={member.address} hasAdd={hasAdd} />
+
+            <VaultIconInfo
+              onClick={redirectToNetwork}
+              tooltipContent="View on Explorer"
+              placement="top"
+            >
+              <Icon as={UpRightArrow} color="gray.200" w="12px" />
+            </VaultIconInfo>
+          </Flex>
+        </Flex>
+
+        <Text
+          truncate
+          fontSize="xs"
+          color="gray.400"
+          maxW={{ base: '200px', md: '400px' }}
         >
-          <Avatar
-            borderRadius={8}
-            src={avatar || member?.avatar}
-            boxSize="full"
-            border={avatar ? 'none' : '1px solid'}
-            borderColor="grey.75"
-          />
-        </Skeleton>
-
-        <HStack
-          w="full"
-          spacing={2}
-          justifyContent="space-between"
-          alignItems="center"
-          flex={1}
-        >
-          <VStack
-            align="flex-start"
-            spacing={0}
-            justifyContent="center"
-            flex={1}
-          >
-            <HStack w="full" justifyContent="space-between" spacing={2}>
-              {hasNickname ? (
-                <Text
-                  fontSize="xs"
-                  color="grey.200"
-                  fontWeight="medium"
-                  maxW={isOwner ? 180 : 180}
-                  isTruncated
-                >
-                  {member?.nickname}
-                </Text>
-              ) : (
-                <AddAddressBook address={member.address} hasAdd={hasAdd} />
-              )}
-
-              {isOwner && <CardMemberBagde />}
-            </HStack>
-
-            <HStack w="full" justifyContent="flex-start" spacing={2}>
-              {member.handle && (
-                <Handle
-                  value={member.handle}
-                  fontSize="xs"
-                  isTruncated
-                  textOverflow="ellipsis"
-                  maxW={
-                    isGrid
-                      ? {
-                          base: isLitteSmall ? '70px' : '140px',
-                          xs: isLargerThan680 ? '85px' : '140px',
-                          md: isExtraLarge ? '85px' : '140px',
-                          '2xl': isLargerThan1700 ? '90px' : '140px',
-                        }
-                      : '95px'
-                  }
-                  onClick={() => {
-                    const handle = HandleUtils.fromHandle(member.handle ?? '');
-                    window.open(
-                      `${VITE_BAKO_ID_URL}/profile/${handle}`,
-                      '_BLANK',
-                    );
-                  }}
-                />
-              )}
-              <AddressWithCopyBtn
-                value={address}
-                isSidebarAddress
-                flexDir="row-reverse"
-                gap={0.5}
-                textProps={{
-                  fontSize: 'xs',
-                  color: 'grey.250',
-                }}
-                onClick={() => {
-                  if (member?.type === TypeUser.EVM) {
-                    toast({
-                      position: 'top-right',
-                      duration: 3000,
-                      isClosable: false,
-                      title: 'Copied!',
-                      status: 'warning',
-                      description:
-                        'This is your login account, DO NOT send assets to this address.',
-                      icon: (
-                        <Icon
-                          fontSize="2xl"
-                          color="brand.500"
-                          as={WarningTwoIcon}
-                        />
-                      ),
-                    });
-                  }
-                }}
-                copyBtnProps={{
-                  iconProps: {
-                    'aria-label': 'Copy',
-                    fontSize: 'xs',
-                  },
-                }}
-              />
-            </HStack>
-          </VStack>
-        </HStack>
-      </Flex>
-    </SignerCard>
+          {address}
+        </Text>
+      </Stack>
+    </Flex>
   );
 };
 

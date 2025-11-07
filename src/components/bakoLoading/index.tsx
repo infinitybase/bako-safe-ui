@@ -1,4 +1,4 @@
-import { Flex } from '@chakra-ui/react';
+import { Flex } from 'bako-ui';
 import Lottie from 'lottie-react';
 
 import bakoLoading from '@/assets/bako-loading/bako-loading.json';

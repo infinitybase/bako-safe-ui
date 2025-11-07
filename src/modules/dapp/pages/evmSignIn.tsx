@@ -1,4 +1,4 @@
-import { Button, Text, VStack } from '@chakra-ui/react';
+import { Button, Text, VStack } from 'bako-ui';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 

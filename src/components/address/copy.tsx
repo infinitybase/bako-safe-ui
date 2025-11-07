@@ -1,4 +1,4 @@
-import { BoxProps, Flex, TextProps } from '@chakra-ui/react';
+import { Flex, FlexProps, TextProps } from 'bako-ui';
 import { AddressUtils as BakoAddressUtils } from 'bakosafe';
 import { Address as FuelsAddress, isB256 } from 'fuels';
 import { useMemo } from 'react';
@@ -7,11 +7,11 @@ import {
   CopyAddressButton,
   CopyAddressButtonProps,
 } from '@/components/copyAddressButton';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { Address } from '.';
 
-export interface AddressWithCopyBtnProps extends BoxProps {
+export interface AddressWithCopyBtnProps extends FlexProps {
   value: string;
   isDeposit?: boolean;
   isSidebarAddress?: boolean;

@@ -1,24 +1,24 @@
 import {
   Box,
   Button,
-  DrawerProps,
-  FormControl,
-  FormLabel,
+  DrawerRootProps,
+  Field,
+  floatingStyles,
   Input,
-  Spinner,
+  Loader,
   Text,
-  useDisclosure,
   VStack,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 
 import { CustomSkeleton, Dialog } from '@/components';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { CreateVaultDialog } from '../dialog';
 import { useVaultDrawer } from './hook';
 import { VaultList } from './VaultList';
 
-interface VaultListModalProps extends Omit<DrawerProps, 'children'> {
+interface VaultListModalProps extends Omit<DrawerRootProps, 'children'> {
   vaultId: string;
   onSelect?: (vaultId: string) => void;
   onCloseAll?: () => void;
@@ -38,37 +38,33 @@ const VaultListModal = ({
     request: { vaults, isSuccess, isLoading, isFetching },
     inView,
   } = useVaultDrawer({
-    onClose: props.onClose,
-    isOpen: props.isOpen,
+    onClose: () => props.onOpenChange?.({ open: false }),
+    isOpen: props.open,
     onCloseAll,
   });
 
   const {
     isOpen: isCreateVaultModalOpen,
-    onClose: createVaultModalOnClose,
     onOpen: createVaultModalOnOpen,
+    onOpenChange: createVaultModalOnOpenChange,
   } = useDisclosure();
-
-  const isLoadingVaults = inView.inView
-    ? !isLoading
-    : !isLoading && !isFetching;
 
   return (
     <>
       <CreateVaultDialog
-        isOpen={isCreateVaultModalOpen}
-        onClose={createVaultModalOnClose}
+        open={isCreateVaultModalOpen}
+        onOpenChange={createVaultModalOnOpenChange}
         onCreate={onCloseAll}
       />
 
       <Dialog.Modal
-        autoFocus={false}
-        onClose={drawer.onClose}
-        isOpen={props.isOpen}
+        onOpenChange={(e) => (e.open ? undefined : drawer.onClose())}
+        open={props.open}
+        size="md"
         modalContentProps={{
           px: 10,
           py: 10,
-          maxHeight: '$100vh',
+          maxHeight: '100vh',
         }}
         modalBodyProps={{
           overflow: 'visible',
@@ -80,9 +76,9 @@ const VaultListModal = ({
             mb={0}
             onClose={drawer.onClose}
             w="full"
-            maxW={{ base: 480, xs: 'unset' }}
-            title="Select vault"
-            description="Select the vault or create new one"
+            maxW={{ base: 480, sm: 'unset' }}
+            title="Select account"
+            description="Select the account or create new one"
             descriptionFontSize="12px"
             titleSxProps={{
               fontSize: '16px',
@@ -96,43 +92,52 @@ const VaultListModal = ({
             mt={6}
             pb={6}
             borderBottomWidth={1}
-            borderColor="grey.425"
+            borderColor="gray.550"
           >
-            <FormControl>
-              <Input
-                placeholder=" "
-                bg="transparent"
-                colorScheme="dark"
-                onChange={search.handler}
-              />
-              <FormLabel>Search</FormLabel>
-            </FormControl>
+            <Field.Root>
+              <Box position="relative" w="full">
+                <Input
+                  placeholder=" "
+                  bg="transparent"
+                  onChange={search.handler}
+                  pt={2}
+                  px={3}
+                />
+                <Field.Label
+                  css={floatingStyles({
+                    hasValue: !!search.value,
+                  })}
+                >
+                  Search
+                </Field.Label>
+              </Box>
+            </Field.Root>
           </Box>
 
           <VStack
             w="full"
             minH={300}
-            maxH={{ base: `calc(100vh - 350px)`, xs: 555, sm: 380, md: 500 }}
+            maxH={{ base: `calc(100vh - 350px)`, sm: 555, md: 500 }}
             overflowY="scroll"
-            sx={{
+            css={{
               '&::-webkit-scrollbar': { display: 'none' },
               '&::-webkit-scrollbar-thumb': { display: 'none' },
             }}
           >
             {isSuccess && !vaults.length && (
-              <Text variant="variant">
+              <Text>
                 We {"couldn't"} find any results for <b>“{search.value}”</b> in
                 the vault.
               </Text>
             )}
 
             <VStack marginBottom={4} w="full">
-              {isLoadingVaults && vaults.length === 0 && (
-                <VStack spacing={4} w="full" pt={4}>
-                  <Spinner size="md" thickness="4px" color="brand.500" />
+              {isLoading && vaults.length === 0 && (
+                <VStack gap={4} w="full" pt={4}>
+                  <Loader size="md" borderWidth="4px" color="brand.500" />
                 </VStack>
               )}
-              <CustomSkeleton isLoaded={isLoadingVaults}>
+              <CustomSkeleton loading={isLoading}>
                 <VaultList
                   vaults={vaults}
                   currentVaultId={vaultId}
@@ -142,7 +147,7 @@ const VaultListModal = ({
               <Box ref={inView.ref} />
               {isFetching && vaults.length > 0 && (
                 <Box py={4}>
-                  <Spinner size="sm" thickness="3px" color="brand.500" />
+                  <Loader size="sm" borderWidth="3px" color="brand.500" />
                 </Box>
               )}
             </VStack>
@@ -157,26 +162,22 @@ const VaultListModal = ({
             right={0}
             px={isMobile ? 10 : 'unset'}
             bg={isMobile ? 'dark.950' : 'unset'}
-            sx={{
+            css={{
               '&>hr': {
                 marginTop: '0',
               },
             }}
+            hideDivider
           >
             <Button
-              fontSize="14px"
-              lineHeight="15.85px"
               fontWeight="normal"
               letterSpacing=".5px"
-              variant="outline"
-              color="grey.75"
-              borderColor="grey.75"
+              variant="subtle"
               w="full"
-              _hover={{ bg: '#f5f5f513' }}
               onClick={createVaultModalOnOpen}
-              aria-label="Create new vault"
+              aria-label="Create new account"
             >
-              Create new vault
+              Create new account
             </Button>
           </Dialog.Actions>
         </Dialog.Body>

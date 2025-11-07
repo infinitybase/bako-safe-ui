@@ -1,4 +1,4 @@
-import { Text } from '@chakra-ui/react';
+import { Text } from 'bako-ui';
 
 export interface TransactionFilterFieldProps {
   value: string;

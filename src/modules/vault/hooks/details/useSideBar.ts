@@ -1,8 +1,8 @@
-import { useDisclosure } from '@chakra-ui/react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { Pages } from '@/modules/core';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 type UseSidebarProps = {
   params: { workspaceId: string; vaultId: string };

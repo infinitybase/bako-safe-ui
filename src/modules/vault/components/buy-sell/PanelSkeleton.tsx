@@ -1,4 +1,4 @@
-import { Skeleton, Stack } from '@chakra-ui/react';
+import { Skeleton, Stack } from 'bako-ui';
 
 export const PanelSkeleton = () => {
   return (

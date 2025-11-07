@@ -1,16 +1,15 @@
 import {
-  Alert,
   Badge,
   Box,
   Button,
   Center,
-  Divider,
   Heading,
   HStack,
   Icon,
+  Separator,
   Text,
   VStack,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 
 import { SquarePlusIcon, StepProgress } from '@/components';
 import { TransactionsBoxIcon } from '@/components/icons/transactions-box-icon';
@@ -35,7 +34,7 @@ const OnboardingStep = (props: OnboardingStepProps) => {
         sm: 6,
       }}
     >
-      <VStack spacing={2} w="full" minH={220}>
+      <VStack gap={2} w="full" minH={220}>
         <Box m={{ base: 2, xs: 4, sm: 8 }}>
           <Icon fontSize={{ base: 70, xs: 100 }} as={TransactionsBoxIcon} />
         </Box>
@@ -59,7 +58,7 @@ const OnboardingStep = (props: OnboardingStepProps) => {
         </Box>
       </VStack>
 
-      <VStack spacing={{ base: 0, sm: 6 }} minH={{ base: 425, xs: 'unset' }}>
+      <VStack gap={{ base: 0, sm: 6 }} minH={{ base: 425, xs: 'unset' }}>
         <Box maxW={{ base: 'full', sm: 480 }} mt={{ base: 0, sm: 'unset' }}>
           <Text
             color="white"
@@ -106,7 +105,7 @@ const OnboardingStep = (props: OnboardingStepProps) => {
                   base: 0.3,
                 }}
                 px={7}
-                variant="yellow"
+                // variant="yellow"
               >
                 Manager
               </Badge>
@@ -128,7 +127,7 @@ const OnboardingStep = (props: OnboardingStepProps) => {
                   base: 0.3,
                 }}
                 px={7}
-                variant="blue"
+                // variant="blue"
               >
                 Viewer
               </Badge>
@@ -143,7 +142,7 @@ const OnboardingStep = (props: OnboardingStepProps) => {
           </HStack>
         </VStack>
         <Box mb={{ base: 2, xs: 3, sm: 5 }} minW="full" maxW={500}>
-          <Alert
+          {/* <Alert.Root
             color="#F05D48"
             bgColor="rgba(240,93,72,0.1)"
             borderWidth={1}
@@ -156,12 +155,12 @@ const OnboardingStep = (props: OnboardingStepProps) => {
               rights in a vault. They are separate entities with separate
               controls.
             </Text>
-          </Alert>
+          </Alert> */}
         </Box>
       </VStack>
 
-      <Divider mb={{ base: 3, xs: 4 }} borderColor="dark.100" mt="auto" />
-      <HStack w="full" spacing={4}>
+      <Separator mb={{ base: 3, xs: 4 }} borderColor="dark.100" mt="auto" />
+      <HStack w="full" gap={4}>
         <Button
           _hover={{
             borderColor: 'brand.500',
@@ -170,7 +169,7 @@ const OnboardingStep = (props: OnboardingStepProps) => {
           w="25%"
           border="1px solid white"
           bgColor="transparent"
-          variant="secondary"
+          // variant="secondary"
           onClick={props.onCancel}
         >
           Cancel
@@ -178,13 +177,13 @@ const OnboardingStep = (props: OnboardingStepProps) => {
         <Button
           w="75%"
           color="grey.300"
-          variant="primary"
+          // variant="primary"
           onClick={props.onConfirm}
-          leftIcon={<SquarePlusIcon fontSize={18} />}
           _hover={{
             opacity: 0.8,
           }}
         >
+          <SquarePlusIcon fontSize={18} />
           Create workspace
         </Button>
       </HStack>

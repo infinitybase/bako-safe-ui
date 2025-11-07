@@ -1,21 +1,21 @@
 import {
   Box,
-  CircularProgress,
+  Field,
   Flex,
-  FormLabel,
   HStack,
   Input,
   InputGroup,
   InputGroupProps,
-  InputRightElement,
+  Loader,
   Text,
   VStack,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 import {
   ChangeEvent,
   CSSProperties,
   LegacyRef,
   ReactNode,
+  Ref,
   useCallback,
   useEffect,
   useRef,
@@ -30,7 +30,8 @@ export interface AutocompleteOption {
   label: string;
 }
 
-interface AutocompleteProps extends Omit<InputGroupProps, 'onChange'> {
+interface AutocompleteProps
+  extends Omit<InputGroupProps, 'onChange' | 'children'> {
   label?: string;
   ariaLabel?: string;
   value?: string;
@@ -52,7 +53,7 @@ interface AutocompleteProps extends Omit<InputGroupProps, 'onChange'> {
   actionOnSelect?: () => void;
   actionOnRemoveInput?: () => void;
   actionOnBlur?: () => void;
-  inputRef?: LegacyRef<HTMLInputElement>;
+  inputRef?: Ref<HTMLInputElement>;
 }
 
 const Autocomplete = ({
@@ -73,7 +74,7 @@ const Autocomplete = ({
   optionsContainerRef,
   actionOnFocus = () => {},
   actionOnSelect = () => {},
-  actionOnRemoveInput = () => {},
+  // actionOnRemoveInput = () => {},
   actionOnBlur = () => {},
   inputRef,
   ...rest
@@ -138,10 +139,6 @@ const Autocomplete = ({
     setIsFocused(true);
   };
 
-  const handleRemoveInput = () => {
-    actionOnRemoveInput();
-  };
-
   const handleClear = () => {
     onChange('');
   };
@@ -180,41 +177,14 @@ const Autocomplete = ({
   }, []);
 
   return (
-    <>
-      <InputGroup {...rest}>
-        <Input
-          aria-label={ariaLabel ?? 'Autocomplete Input'}
-          value={inputValue}
-          placeholder=" "
-          disabled={disabled}
-          autoComplete="off"
-          onChange={handleInputChange}
-          onBlur={handleOnBlur}
-          onPaste={handlePaste}
-          onFocus={handleFocus}
-          style={inputStyle}
-          ref={inputRef}
-          paddingInlineEnd={'2.2rem !important'}
-        />
-
-        <FormLabel color="grey.500">{label}</FormLabel>
-
-        {!disabled && rightElement && (
-          <InputRightElement
-            pr={1}
-            top="1px"
-            right="1px"
-            borderRadius={10}
-            bgColor={rightElement ? 'grey.825' : 'transparent'}
-            h="calc(100% - 3px)"
-            w={showClearIcon && rightElement ? 16 : 10}
-            onClick={handleRemoveInput}
-          >
+    <Field.Root>
+      <InputGroup
+        endElement={
+          <>
             {isLoading && isFocused ? (
-              <CircularProgress
-                trackColor="dark.100"
-                size={18}
-                isIndeterminate
+              <Loader
+                css={{ '--spinner-track-color': 'dark.100' }}
+                w={18}
                 color="brand.500"
               />
             ) : (
@@ -230,9 +200,26 @@ const Autocomplete = ({
                 {rightElement}
               </HStack>
             )}
-          </InputRightElement>
-        )}
+          </>
+        }
+        {...rest}
+      >
+        <Input
+          aria-label={ariaLabel ?? 'Autocomplete Input'}
+          value={inputValue}
+          placeholder=" "
+          disabled={disabled}
+          autoComplete="off"
+          onChange={handleInputChange}
+          onBlur={handleOnBlur}
+          onPaste={handlePaste}
+          onFocus={handleFocus}
+          style={inputStyle}
+          ref={inputRef}
+          paddingInlineEnd={'2.2rem !important'}
+        />
       </InputGroup>
+      <Field.Label color="grey.500">{label}</Field.Label>
 
       {isOpen && (
         <Box
@@ -288,7 +275,7 @@ const Autocomplete = ({
           </Flex>
         </Box>
       )}
-    </>
+    </Field.Root>
   );
 };
 

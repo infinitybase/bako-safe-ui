@@ -1,12 +1,4 @@
-import {
-  Avatar,
-  Card,
-  Divider,
-  HStack,
-  Icon,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { Alert, Avatar, Card, HStack, Stack, Text, VStack } from 'bako-ui';
 
 import { MinimalAlertIcon } from '@/components';
 import { TransactionWithVault } from '@/modules/transactions/services';
@@ -27,6 +19,7 @@ const ConnectorInfos = ({
   isPending,
   isNotSigned,
 }: IConnectorInfos) => {
+  // @ts-expect-error -- fix later
   const txSummaryName = transaction.summary?.['name'];
   const originName =
     txSummaryName === ETransactionSummaryNames.FUEL
@@ -36,71 +29,71 @@ const ConnectorInfos = ({
         : txSummaryName;
 
   return (
-    <Card
-      bgColor="grey.825"
-      borderColor="grey.925"
-      borderRadius={10}
-      w={{ base: 'full', xs: 'unset' }}
-      px={5}
-      py={{ base: 2, xs: 4 }}
-      borderWidth="1px"
-      mt={4}
-    >
-      <Text color="grey.550" fontSize="xs">
+    <Stack gap={4} w="full">
+      <Text fontSize="xs" color="gray.400" fontWeight="medium">
         Requesting a transaction from:
       </Text>
-
-      <Divider borderColor="grey.950" my={4} />
-
-      <HStack width="100%" alignItems="center" spacing={4} h="32px">
-        <Avatar
-          borderRadius="6.4px"
-          color="white"
-          bgColor="dark.950"
-          name={transaction?.predicate?.name}
-          size="sm"
-        />
-        <VStack alignItems="flex-start" spacing={0}>
-          <Text
-            variant="subtitle"
-            fontSize="14px"
-            color="grey.250"
-            textTransform="capitalize"
+      <Card.Root variant="subtle" borderRadius="lg" w="full">
+        <Card.Body p={4}>
+          <HStack
+            width="100%"
+            alignItems={{ base: 'flex-start', sm: 'center' }}
+            gap={3.5}
+            flexDirection={{ base: 'column', sm: 'row' }}
           >
-            {originName}
-          </Text>
-          <Text color="brand.500" variant="description" fontSize="xs">
-            {transaction.summary?.type === 'connector' &&
-              transaction.summary.origin}
-            {/* bakoconnector-git-gr-featbakosafe-infinity-base.vercel.app */}
-          </Text>
-        </VStack>
-      </HStack>
-      {isPending && isNotSigned && (
-        <HStack
-          bg="#FFC01026"
-          borderColor="#FFC0104D"
-          borderWidth="1px"
-          borderRadius={10}
-          justify={'center'}
-          mt={{ base: 4, xs: 8 }}
-          py={4}
-          px={4}
-        >
-          <Icon as={MinimalAlertIcon} color="warning.600" fontSize={28} />
-
-          <VStack spacing={0} alignItems="flex-start">
-            <Text fontWeight="bold" color="#FFC010" fontSize="sm">
-              Double check it!
-            </Text>
-            <Text color="#EED07C" fontSize="xs">
-              Please carefully review this externally created transaction before
-              approving it.
-            </Text>
-          </VStack>
-        </HStack>
-      )}
-    </Card>
+            <HStack alignItems="center" gap={3.5} flexShrink={0}>
+              <Avatar
+                borderRadius="6.4px"
+                color="white"
+                name={transaction?.predicate?.name}
+                size="sm"
+              />
+              <VStack alignItems="flex-start" gap={2}>
+                <Text
+                  color="gray.200"
+                  fontSize="xs"
+                  fontWeight="medium"
+                  lineHeight="shorter"
+                  truncate
+                  textTransform="capitalize"
+                >
+                  {originName}
+                </Text>
+                <Text
+                  color="gray.400"
+                  fontSize="xs"
+                  lineHeight="shorter"
+                  truncate
+                >
+                  {transaction.summary?.type === 'connector' &&
+                    transaction.summary.origin}
+                </Text>
+              </VStack>
+            </HStack>
+            {isPending && isNotSigned && (
+              <Alert.Root
+                status="warning"
+                variant="subtle"
+                bg="primary.main/5"
+                color="primary.main"
+                p={3}
+                rounded="sm"
+              >
+                <Alert.Indicator alignSelf="center">
+                  <MinimalAlertIcon />
+                </Alert.Indicator>
+                <Alert.Content>
+                  <Alert.Description>
+                    Please carefully review this externally created transaction
+                    before approving it.
+                  </Alert.Description>
+                </Alert.Content>
+              </Alert.Root>
+            )}
+          </HStack>
+        </Card.Body>
+      </Card.Root>
+    </Stack>
   );
 };
 export { ConnectorInfos };

@@ -1,105 +1,111 @@
-import {
-  Card,
-  FormControl,
-  FormHelperText,
-  FormLabel,
-  Input,
-  InputGroup,
-  InputRightElement,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
-import { useState } from 'react';
+import { Button, Card, Field, Heading, Input, InputGroup, Text } from 'bako-ui';
 import { Controller, useFormContext } from 'react-hook-form';
 
 import { LineCloseIcon } from '@/components';
-import { AddressUtils, useScreenSize } from '@/modules/core';
+import { AddressUtils } from '@/modules/core';
 
-import { ITransferBridgePayload } from './providers/FormBridgeProvider';
+import { ExpandableCardSection } from './ExpandableCardSection';
+import {
+  ITransferBridgePayload,
+  useFormBridgeContext,
+} from './providers/FormBridgeProvider';
+import { BridgeStepsForm } from './utils';
 
 export function InputAddressBridge() {
-  const { control } = useFormContext<ITransferBridgePayload>();
-  const [isFocused, setIsFocused] = useState(false);
-  const { isMobile } = useScreenSize();
+  const { control, watch } = useFormContext<ITransferBridgePayload>();
+  const { stepForm, setStepForm } = useFormBridgeContext();
+
+  const isCurrentStep = stepForm === BridgeStepsForm.DESTINATION;
+  const isAfterDestinationStep = stepForm > BridgeStepsForm.DESTINATION;
+
+  const handleContinue = () => {
+    setStepForm(BridgeStepsForm.RESUME);
+  };
+
+  const currentDestinationAddress = watch('destinationAddress');
+
+  const formatted = AddressUtils.isValid(currentDestinationAddress)
+    ? AddressUtils.format(currentDestinationAddress)
+    : currentDestinationAddress;
 
   return (
-    <Card
-      variant="outline"
-      padding={isMobile ? 0 : 3}
+    <Card.Root
+      variant="subtle"
+      rounded="2xl"
       w="full"
-      boxShadow="none"
+      minH="88px"
+      bg="bg.panel"
+      overflow="hidden"
     >
-      <VStack p={0} gap={1} align={'flex-start'} w="full">
-        {!isMobile && (
-          <Text color="grey.425" fontSize={12} flex={1}>
-            Destination address
+      <Card.Header
+        pb={!isCurrentStep ? 6 : 0}
+        flexDirection="row"
+        alignItems="center"
+        justifyContent="space-between"
+      >
+        <Heading
+          color={isCurrentStep ? 'textPrimary' : 'textSecondary'}
+          fontSize="sm"
+        >
+          Destination
+        </Heading>
+
+        {isAfterDestinationStep && (
+          <Text color="textSecondary" fontSize="sm">
+            {formatted}
           </Text>
         )}
+      </Card.Header>
+
+      <ExpandableCardSection isExpanded={isCurrentStep} type="body">
         <Controller
           control={control}
           name="destinationAddress"
           render={({ field, fieldState }) => {
-            const minLengthAddress = 40;
-
-            const displayValue =
-              !isFocused && field?.value?.length > minLengthAddress
-                ? AddressUtils.format(field?.value ?? '')
-                : field?.value;
-
             return (
-              <FormControl isInvalid={fieldState.invalid} paddingTop={0}>
+              <Field.Root invalid={fieldState.invalid} paddingY={6}>
                 <InputGroup
-                  sx={{
-                    '> input': {
-                      height: '46px',
-                      paddingTop: 0,
-                      paddingBottom: 0,
-                      paddingRight: '2rem',
-                    },
-                  }}
+                  endElement={
+                    <LineCloseIcon
+                      color="textPrimary"
+                      display={field.value ? 'block' : 'none'}
+                      fontSize="16px"
+                      onClick={() => field.onChange('')}
+                    />
+                  }
                 >
-                  <InputRightElement
-                    w="2rem"
-                    h="full"
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                    cursor="pointer"
-                    onClick={() => field.onChange('')}
-                  >
-                    <LineCloseIcon color="grey.75" fontSize="16px" />
-                  </InputRightElement>
-
                   <Input
-                    value={displayValue}
+                    value={field.value}
                     onChange={(e) => field.onChange(e.target.value)}
-                    placeholder=" "
-                    variant="dark"
-                    onFocus={() => setIsFocused(true)}
-                    onBlur={() => setIsFocused(false)}
+                    placeholder="Enter address"
+                    variant="subtle"
                     w="100%"
+                    disabled={!isCurrentStep}
                   />
-
-                  {!isFocused && !field.value && (
-                    <FormLabel
-                      id="destination_addr"
-                      fontSize="14px !important"
-                      color="grey.250 !important"
-                      paddingTop={0}
-                    >
-                      {'Enter address'}
-                    </FormLabel>
-                  )}
                 </InputGroup>
-
-                <FormHelperText paddingTop={0} color="error.500">
-                  {fieldState.error?.message}
-                </FormHelperText>
-              </FormControl>
+                <Field.ErrorText>{fieldState.error?.message}</Field.ErrorText>
+              </Field.Root>
             );
           }}
         />
-      </VStack>
-    </Card>
+      </ExpandableCardSection>
+
+      <ExpandableCardSection
+        isExpanded={isCurrentStep}
+        type="footer"
+        maxHeight="100px"
+      >
+        {isCurrentStep && (
+          <Button
+            alignSelf="self-end"
+            w="auto"
+            onClick={handleContinue}
+            disabled={!currentDestinationAddress}
+          >
+            Continue
+          </Button>
+        )}
+      </ExpandableCardSection>
+    </Card.Root>
   );
 }

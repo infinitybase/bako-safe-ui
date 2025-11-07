@@ -1,18 +1,8 @@
-import {
-  HStack,
-  Icon,
-  Popover,
-  PopoverBody,
-  PopoverCloseButton,
-  PopoverContent,
-  PopoverTrigger,
-  Text,
-  Tooltip,
-  useDisclosure,
-} from '@chakra-ui/react';
+import { HStack, Icon, Popover, Text, Tooltip } from 'bako-ui';
 import { useEffect } from 'react';
 
 import { TooltipIcon } from '@/components/icons/tooltip';
+import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
 
 import { useVerifyBrowserType } from '../../hooks';
 
@@ -23,7 +13,7 @@ export interface FeeProps {
 }
 
 const DappTransactionFee = ({ fee, isLoading, closePopover }: FeeProps) => {
-  const { isOpen, onToggle, onClose } = useDisclosure();
+  const { isOpen, onToggle, onOpenChange } = useDisclosure();
 
   useEffect(() => {
     if (closePopover && isOpen) {
@@ -36,7 +26,7 @@ const DappTransactionFee = ({ fee, isLoading, closePopover }: FeeProps) => {
   return isLoading || !fee ? null : (
     <HStack display="flex" justifyContent="space-between">
       <Text
-        variant="subtitle"
+        // variant="subtitle"
         fontSize={14}
         color="grey.250"
         fontWeight={400}
@@ -46,16 +36,20 @@ const DappTransactionFee = ({ fee, isLoading, closePopover }: FeeProps) => {
       >
         Max Fee
         {isMobile ? (
-          <Popover placement="top-start" isOpen={isOpen} onClose={onClose}>
-            <PopoverTrigger>
+          <Popover.Root
+            positioning={{ placement: 'top-start' }}
+            open={isOpen}
+            onOpenChange={onOpenChange}
+          >
+            <Popover.Trigger>
               <Icon
                 color="grey.200"
                 boxSize="14px"
                 as={TooltipIcon}
                 onClick={onToggle}
               />
-            </PopoverTrigger>
-            <PopoverContent
+            </Popover.Trigger>
+            <Popover.Content
               bg="grey.825"
               p={4}
               borderColor="dark.100"
@@ -63,29 +57,29 @@ const DappTransactionFee = ({ fee, isLoading, closePopover }: FeeProps) => {
               display={!isOpen ? 'none' : 'block'}
               _focus={{ ring: 'none' }}
             >
-              <PopoverCloseButton />
-              <PopoverBody>
+              <Popover.CloseTrigger />
+              <Popover.Body>
                 {`The amount shown is the maximum fee you will be charged for
                   this transaction. There won't be any extra costs.`}
-              </PopoverBody>
-            </PopoverContent>
-          </Popover>
+              </Popover.Body>
+            </Popover.Content>
+          </Popover.Root>
         ) : (
           <Tooltip
-            label="The amount shown is the maximum fee you will be charged for this transaction. There won't be any extra costs."
-            fontSize="xs"
-            bg="grey.825"
-            rounded={8}
-            maxW={270}
-            overflow="hidden"
-            placement="top-end"
+            content="The amount shown is the maximum fee you will be charged for this transaction. There won't be any extra costs."
+            // fontSize="xs"
+            // bg="grey.825"
+            // rounded={8}
+            // maxW={270}
+            // overflow="hidden"
+            positioning={{ placement: 'top-end' }}
             closeOnScroll
           >
             <Icon color="grey.200" boxSize="14px" as={TooltipIcon} />
           </Tooltip>
         )}
       </Text>
-      <Text variant="subtitle" fontSize={14} color="grey.250" fontWeight={400}>
+      <Text fontSize={14} color="grey.250" fontWeight={400}>
         {fee} ETH
       </Text>
     </HStack>

@@ -1,16 +1,13 @@
-import { Icon } from '@chakra-ui/icons';
-import {
-  ComponentWithAs,
-  HStack,
-  IconProps,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { HStack, Icon, IconProps, Text, VStack } from 'bako-ui';
+import { ForwardRefExoticComponent } from 'react';
 
 interface AlertsBrigdeProps {
   title?: string;
   description: string;
-  icon: ComponentWithAs<'svg', IconProps>;
+  icon: ForwardRefExoticComponent<
+    IconProps & React.RefAttributes<SVGSVGElement>
+  >;
+
   type: 'info' | 'warning';
 }
 
@@ -37,7 +34,7 @@ export function AlertsBrigde({
       }
     >
       <Icon as={icon} fontSize="18px" />
-      <VStack w="full" align="start" spacing={0}>
+      <VStack w="full" align="start" gap={0}>
         {title && (
           <Text
             fontSize={14}

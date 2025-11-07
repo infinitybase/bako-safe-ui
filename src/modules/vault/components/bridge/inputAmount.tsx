@@ -1,15 +1,17 @@
-import { Box, InputGroup, InputRightAddon } from '@chakra-ui/react';
-import { useEffect, useRef, useState } from 'react';
+import { Box, InputGroup } from 'bako-ui';
+import { memo, useCallback, useMemo, useRef } from 'react';
 
 import { CurrencyField } from '@/components';
 import { formatMaxDecimals } from '@/utils';
 
-export const InputAmount = ({
+import { calculateTextWidth } from '../../utils';
+
+const InputAmountComponent = ({
   symbol,
   value,
   disabled,
   onChange,
-  decimals
+  decimals,
 }: {
   symbol: string;
   value: string;
@@ -18,63 +20,74 @@ export const InputAmount = ({
   disabled?: boolean;
   decimals?: number;
 }) => {
-  const mirrorRef = useRef<HTMLDivElement>(null);
-  const [inputWidth, setInputWidth] = useState(50);
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    if (mirrorRef.current) {
-      const mirrorWidth = mirrorRef.current.offsetWidth;
-      setInputWidth(mirrorWidth + 13);
-    }
+  const formattedValue = useMemo(() => {
+    return formatMaxDecimals(value, 9) || '0.000';
   }, [value]);
 
+  const width = useMemo(() => {
+    return calculateTextWidth(formattedValue);
+  }, [formattedValue]);
+
+  const handleChange = useCallback(
+    (newValue: string) => {
+      onChange?.(newValue);
+    },
+    [onChange],
+  );
+
   return (
-    <Box marginY={4} display="flex" justifyContent="center" alignItems="center">
+    <Box marginY={4} display="flex" alignItems="center" position="relative">
       <InputGroup
         alignItems="center"
-        justifyContent="center"
-        borderBottom="1px solid"
-        borderColor="grey.950"
-        _hover={{
-          borderColor: 'grey.200',
-        }}
+        justifyContent="start"
         px={0}
-        minW="150px"
-        w="fit-content"
+        w={`${width}px`}
+        border="none"
+        transition="width 0.15s ease-out"
+        endElementProps={{
+          px: 0,
+        }}
+        endElement={
+          <Box
+            alignSelf="center"
+            letterSpacing="wider"
+            color="gray.400"
+            opacity={disabled ? 0.6 : 1}
+            px={0}
+          >
+            {symbol}
+          </Box>
+        }
       >
         <CurrencyField
+          ref={inputRef}
           type="crypto"
-          textAlign="center"
-          borderBottomWidth="0"
+          bg="bg.panel"
+          name="bridgeAmount"
+          outline="none"
+          border="none"
+          color="gray.50"
+          _selection={{
+            bg: 'textSecondary',
+          }}
+          fontWeight="bold"
+          letterSpacing="wider"
           minW={0}
           px={0}
           fontSize="3xl"
           disabled={disabled}
           value={value}
+          placeholder="0.000"
+          onChange={handleChange}
           decimalScale={decimals}
-          onChange={(e) => onChange?.(e)}
-          width={`${inputWidth}px`}
         />
-
-        <Box
-          ref={mirrorRef}
-          position="absolute"
-          visibility="hidden"
-          whiteSpace="pre"
-          fontSize="3xl"
-          px={0}
-        >
-          {formatMaxDecimals(value, 9) || '0'}
-        </Box>
-
-        <InputRightAddon
-          alignSelf="end"
-          color={disabled ? 'grey.75' : 'section.200'}
-          opacity={disabled ? 0.5 : 1}
-        >
-          {symbol}
-        </InputRightAddon>
       </InputGroup>
     </Box>
   );
 };
+
+InputAmountComponent.displayName = 'InputAmount';
+
+export const InputAmount = memo(InputAmountComponent);

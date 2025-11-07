@@ -1,4 +1,4 @@
-const scrollToBottom = (containerRef: React.RefObject<HTMLElement>) => {
+const scrollToBottom = (containerRef: React.RefObject<HTMLElement | null>) => {
   const container = containerRef.current;
 
   if (container) {

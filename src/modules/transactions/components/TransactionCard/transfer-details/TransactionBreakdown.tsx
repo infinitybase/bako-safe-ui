@@ -1,15 +1,17 @@
-import { Box, Divider, HStack, Text } from '@chakra-ui/react';
+import { Box, Image, Separator, Stack, Text } from 'bako-ui';
 import { TransactionStatus } from 'bakosafe';
-import { useMemo } from 'react';
+import { memo, useMemo } from 'react';
 
-import { LayerSwapIcon, RigContractIcon } from '@/components';
+import RigContractIcon from '@/assets/images/rig-icon.png';
+import { LayerSwapIcon } from '@/components';
 import { miraData } from '@/config/swap';
 import { AddressUtils, type TransactionState } from '@/modules/core';
 import { tokensIDS } from '@/modules/core/utils/assets/address';
 import { FIAT_CURRENCIES } from '@/modules/core/utils/fiat-currencies';
 import { useVerifyTransactionInformations } from '@/modules/transactions/hooks/details/useVerifyTransactionInformations';
 import { TransactionTypeBridge } from '@/modules/transactions/services';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
+import { FUEL_ETH_ID } from '@/utils/constants';
 
 import { TransactionCard } from '..';
 import { AssetBoxInfo, type TransactionUI } from '../Details';
@@ -23,148 +25,166 @@ interface ITransactionBreakdown {
   status: TransactionState | undefined;
 }
 
-const TransactionBreakdown = ({
-  transaction,
-  status,
-}: ITransactionBreakdown) => {
-  const { isFromConnector, isContract, isPending, isDeploy, isMint, isSwap } =
-    useVerifyTransactionInformations(transaction);
+const TransactionBreakdown = memo(
+  ({ transaction, status }: ITransactionBreakdown) => {
+    const { isFromConnector, isContract, isPending, isDeploy, isMint, isSwap } =
+      useVerifyTransactionInformations(transaction);
 
-  const {
-    screenSizes: { isMobile, isLowerThanFourHundredAndThirty },
-  } = useWorkspaceContext();
+    const {
+      screenSizes: { isMobile, isLowerThanFourHundredAndThirty },
+      tokensUSD,
+    } = useWorkspaceContext();
 
-  const isNotSigned = !status?.isDeclined && !status?.isSigned;
+    const isNotSigned = useMemo(
+      () => !status?.isDeclined && !status?.isSigned,
+      [status],
+    );
 
-  const showContractAddresses = (isDeploy || isContract) && !isMint;
+    const showContractAddresses = useMemo(
+      () => (isDeploy || isContract) && !isMint,
+      [isContract, isDeploy, isMint],
+    );
 
-  const isLiquidStake =
-    transaction.name === 'Liquid Stake' &&
-    transaction.assets[0].assetId === tokensIDS.FUEL;
+    const isLiquidStake = useMemo(
+      () =>
+        transaction.name === 'Liquid Stake' &&
+        transaction.assets[0].assetId === tokensIDS.FUEL,
+      [transaction],
+    );
 
-  const isBridge = useMemo(
-    () => transaction.type === TransactionTypeBridge.BRIDGE,
-    [transaction.type],
-  );
+    const isBridge = useMemo(
+      () => transaction.type === TransactionTypeBridge.BRIDGE,
+      [transaction.type],
+    );
 
-  return (
-    <Box
-      display="flex"
-      flexDirection={{ base: 'row', xs: 'column' }}
-      w="full"
-      minW={{ base: 200, sm: '476px' }}
-      flexWrap="wrap"
-    >
-      {isFromConnector && !isDeploy && isMobile && (
-        <ConnectorInfos
-          transaction={transaction}
-          isNotSigned={isNotSigned}
-          isPending={isPending}
-        />
-      )}
+    const gasUsedInUSD = useMemo(() => {
+      const rate = tokensUSD.data[FUEL_ETH_ID]?.usdAmount || 0;
+      const gasUsed = transaction.gasUsed ? parseFloat(transaction.gasUsed) : 0;
+      const value = rate * gasUsed;
+      return Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+      }).format(value);
+    }, [tokensUSD.data, transaction.gasUsed]);
 
-      {isMobile && <Divider my={6} borderColor="grey.425" />}
-
-      <Box mb={isMobile ? 6 : 4}>
-        <Text
-          color="grey.425"
-          fontSize={isLowerThanFourHundredAndThirty ? 'xs' : 'sm'}
-        >
-          Transaction breakdown
-        </Text>
-      </Box>
-
+    return (
       <Box
-        alignItems="flex-start"
+        display="flex"
+        flexDirection={{ base: 'row', sm: 'column' }}
+        w="full"
+        minW={{ base: 200, sm: '60%' }}
         flexWrap="wrap"
-        mb={isFromConnector ? 4 : 0}
-        w={{ base: 'full', xs: 'unset' }}
       >
-        {!isContract &&
-          transaction.assets.map((asset, index) => (
-            <AssetBoxInfo
-              key={`${index} - ${asset.assetId}`}
-              asset={{
-                assetId: asset.assetId,
-                amount: asset.amount,
-                to: asset.to,
-                transactionID: transaction.id,
-                recipientNickname: AddressUtils.format(
-                  asset?.recipientNickname ?? '',
-                ),
-              }}
-              borderColor="grey.950"
-              borderBottomWidth={
-                index === transaction.assets.length - 1 ? 1 : 0
-              }
-              isFiatCurrency={FIAT_CURRENCIES.has(asset.assetId)}
-              rampTransaction={transaction.rampTransaction}
-            />
-          ))}
-
-        {showContractAddresses && (
-          <ContractAddresses
+        {isFromConnector && !isDeploy && isMobile && (
+          <ConnectorInfos
             transaction={transaction}
-            borderColor="grey.950"
-            borderBottomWidth={1}
+            isNotSigned={isNotSigned}
+            isPending={isPending}
           />
         )}
-        {isBridge && <BridgeCardDetail transaction={transaction} />}
-        {isMint && !isBridge && <MintTokenInfos transaction={transaction} />}
-      </Box>
 
-      {isFromConnector && !isDeploy && !isMobile && (
-        <ConnectorInfos
-          transaction={transaction}
-          isNotSigned={isNotSigned}
-          isPending={isPending}
-        />
-      )}
+        {isMobile && <Separator my={6} borderColor="gray.400" />}
 
-      {isSwap && (
-        <TransactionCard.TransactionRequestFrom
-          name={miraData.name}
-          origin={miraData.origin}
-          icon={miraData.icon}
+        <Box mb={4} mt={{ base: 3, md: 0 }}>
+          <Text
+            color="gray.400"
+            fontSize={isLowerThanFourHundredAndThirty ? 'xs' : 'sm'}
+          >
+            Transaction breakdown
+          </Text>
+        </Box>
+
+        <Box
+          mb={isFromConnector ? 4 : 0}
+          w={{ base: 'full', sm: 'unset' }}
+          display="flex"
+          flexDirection="column"
+          gap={1}
+        >
+          {!isContract &&
+            transaction.assets.map((asset, index) => (
+              <AssetBoxInfo
+                key={`${index} - ${asset.assetId}`}
+                asset={{
+                  assetId: asset.assetId,
+                  amount: asset.amount,
+                  to: asset.to,
+                  transactionID: transaction.id,
+                  recipientNickname: AddressUtils.format(
+                    asset?.recipientNickname ?? '',
+                  ),
+                }}
+                isFiatCurrency={FIAT_CURRENCIES.has(asset.assetId)}
+                rampTransaction={transaction.rampTransaction}
+              />
+            ))}
+
+          {showContractAddresses && (
+            <ContractAddresses transaction={transaction} />
+          )}
+          {isBridge && <BridgeCardDetail transaction={transaction} />}
+          {isMint && !isBridge && <MintTokenInfos transaction={transaction} />}
+        </Box>
+
+        {isFromConnector && !isDeploy && !isMobile && (
+          <ConnectorInfos
+            transaction={transaction}
+            isNotSigned={isNotSigned}
+            isPending={isPending}
+          />
+        )}
+
+        {isSwap && (
+          <TransactionCard.TransactionRequestFrom
+            name={miraData.name}
+            origin={miraData.origin}
+            icon={<Image src={miraData.icon} boxSize="24px" rounded="sm" />}
+            mt={4}
+          />
+        )}
+
+        {isLiquidStake && (
+          <Box mt={4} w={'full'}>
+            <TransactionCard.TransactionRequestFrom
+              name={'Liquid stake via RIG'}
+              origin={'https://rig.st/'}
+              icon={<Image src={RigContractIcon} boxSize="24px" rounded="sm" />}
+            />
+          </Box>
+        )}
+
+        {isBridge && (
+          <Box mt={4} w={'full'}>
+            <TransactionCard.TransactionRequestFrom
+              name={'Layerswap.app'}
+              origin={'https://layerswap.io/'}
+              icon={<LayerSwapIcon boxSize="24px" rounded="sm" />}
+            />
+          </Box>
+        )}
+
+        <Box
+          w="full"
+          hidden={transaction.status !== TransactionStatus.SUCCESS}
           mt={4}
-        />
-      )}
-
-      {isLiquidStake && (
-        <Box mt={4} w={'full'}>
-          <TransactionCard.TransactionRequestFrom
-            name={'Liquid stake via RIG'}
-            origin={'https://rig.st/'}
-            icon={RigContractIcon}
-          />
+        >
+          <Stack gap={3}>
+            <Text color="gray.400" fontSize="xs">
+              Gas Fee
+            </Text>
+            <Text color="textPrimary" fontSize="xs">
+              {transaction.gasUsed} ETH{' '}
+              <Text as="span" fontSize="xs" color="gray.400">
+                {gasUsedInUSD}
+              </Text>
+            </Text>
+          </Stack>
         </Box>
-      )}
-
-      {isBridge && (
-        <Box mt={4} w={'full'}>
-          <TransactionCard.TransactionRequestFrom
-            name={'Layerswap.app'}
-            origin={'https://layerswap.io/'}
-            icon={LayerSwapIcon}
-          />
-        </Box>
-      )}
-
-      <Box
-        w="full"
-        hidden={transaction.status !== TransactionStatus.SUCCESS}
-        mt={4}
-      >
-        <HStack gap={8} justifyContent="space-between">
-          <Text color="grey.75" fontSize="xs">
-            Gas Fee (ETH)
-          </Text>
-          <Text color="grey.75" fontSize="xs">
-            -{transaction.gasUsed}
-          </Text>
-        </HStack>
       </Box>
-    </Box>
-  );
-};
+    );
+  },
+);
+
+TransactionBreakdown.displayName = 'TransactionBreakdown';
+
 export { TransactionBreakdown };

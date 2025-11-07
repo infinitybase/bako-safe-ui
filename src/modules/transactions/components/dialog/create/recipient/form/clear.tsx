@@ -1,5 +1,5 @@
-import { CloseIcon } from '@chakra-ui/icons';
-import { IconButton, IconButtonProps } from '@chakra-ui/react';
+import { Icon, IconButton, IconButtonProps } from 'bako-ui';
+import { FiX as CloseIcon } from 'react-icons/fi';
 
 interface ClearProps extends Omit<IconButtonProps, 'onClick' | 'aria-label'> {
   onClear: () => void;
@@ -8,7 +8,6 @@ interface ClearProps extends Omit<IconButtonProps, 'onClick' | 'aria-label'> {
 const Clear = ({ onClear, ...rest }: ClearProps) => {
   return (
     <IconButton
-      icon={<CloseIcon boxSize={2.5} />}
       size="xs"
       variant="ghost"
       position="absolute"
@@ -26,7 +25,9 @@ const Clear = ({ onClear, ...rest }: ClearProps) => {
       onClick={onClear}
       aria-label="Clear"
       {...rest}
-    />
+    >
+      <Icon as={CloseIcon} boxSize={2.5} />
+    </IconButton>
   );
 };
 

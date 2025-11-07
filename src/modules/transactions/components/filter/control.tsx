@@ -1,4 +1,4 @@
-import { HStack } from '@chakra-ui/react';
+import { HStack } from 'bako-ui';
 import React from 'react';
 
 import { TransactionFilterFieldProps } from './field';
@@ -20,7 +20,7 @@ const TransactionFilterControl = (props: TransactionFilterControl) => {
     }
   });
 
-  return <HStack spacing={7}>{childrens}</HStack>;
+  return <HStack gap={7}>{childrens}</HStack>;
 };
 
 export { TransactionFilterControl };

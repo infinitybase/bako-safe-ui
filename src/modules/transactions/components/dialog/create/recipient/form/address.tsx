@@ -1,4 +1,4 @@
-import { FormControl, FormHelperText, HStack } from '@chakra-ui/react';
+import { Field, HStack } from 'bako-ui';
 import { AddressUtils as BakoSafeUtils } from 'bakosafe';
 import { Address, isB256 } from 'fuels';
 import { memo, useCallback, useMemo, useState } from 'react';
@@ -18,13 +18,13 @@ import {
   useResolverAddressQuery,
   useResolverNameQuery,
 } from '@/modules/core/hooks/bako-id';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import Clear from './clear';
 
 interface RecipientFormAddressProps {
   index: number;
-  value: string;
+  value: string | undefined;
   onChange: (value: string) => void;
   handleOpenDialog: (addr: string) => void;
   isLoading: boolean;
@@ -117,6 +117,7 @@ const RecipientFormAddress = ({
   const showAddToAddressBook = useMemo(
     () =>
       canAddMember &&
+      !!value &&
       !error?.message &&
       AddressUtils.isValid(value) &&
       !BakoSafeUtils.isEvm(value) &&
@@ -152,8 +153,8 @@ const RecipientFormAddress = ({
   }, [inputValue, isHandleInputted]);
 
   return (
-    <HStack align="start" spacing={2} position="relative" width="100%">
-      <FormControl isInvalid={!!error?.message} flex="1">
+    <HStack align="start" gap={2} position="relative" width="100%">
+      <Field.Root invalid={!!error?.message} flex="1">
         <AddressAutocomplete
           label={`Recipient ${index + 1} address`}
           aria-label={`Autocomplete Recipient Address ${index + 1}`}
@@ -166,14 +167,13 @@ const RecipientFormAddress = ({
           onSelect={handleSelectOption}
           optionsRef={optionsRef}
           emptyOptionsText={emptyOptionsText}
-          variant="dark"
         />
-        <FormHelperText color="error.500">{error?.message}</FormHelperText>
+        <Field.HelperText color="error.500">{error?.message}</Field.HelperText>
         <AddToAddressBook
           visible={showAddToAddressBook}
-          onAdd={() => handleOpenDialog?.(value)}
+          onAdd={() => handleOpenDialog?.(value!)}
         />
-      </FormControl>
+      </Field.Root>
     </HStack>
   );
 };

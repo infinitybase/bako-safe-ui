@@ -1,4 +1,3 @@
-import { useDisclosure } from '@chakra-ui/react';
 import { BakoProvider } from 'bakosafe';
 import { Assets } from 'fuels';
 import { useMemo, useState } from 'react';
@@ -7,6 +6,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import { IUseAuthReturn } from '@/modules/auth/services';
 import { PermissionRoles } from '@/modules/core';
+import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
 
 import { useAddressBookFormHandlers } from './useAddressBookFormHandlers';
 import { useAddressBookMutations } from './useAddressBookMutations';

@@ -40,9 +40,7 @@ const useInfiniteListcontactsRequest = (
         }),
       initialPageParam: DEFAULT_INITIAL_PAGE_PARAM,
       getNextPageParam: (lastPage) =>
-        lastPage.currentPage !== lastPage.totalPages
-          ? lastPage.nextPage
-          : undefined,
+        lastPage.data.length < lastPage.perPage ? undefined : lastPage.nextPage,
     });
 
   const observer = useRef<IntersectionObserver | null>(null);

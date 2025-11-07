@@ -1,4 +1,4 @@
-import { HStack, Text, VStack } from '@chakra-ui/react';
+import { HStack, Text, VStack } from 'bako-ui';
 import { useMemo } from 'react';
 
 import { UpRightArrow } from '@/components/icons';
@@ -18,7 +18,7 @@ const GoToBakoId = ({ handle }: GoToBakoIdProps) => {
 
   return (
     <HStack
-      spacing={4}
+      gap={4}
       px={4}
       py={3}
       cursor="pointer"
@@ -26,15 +26,10 @@ const GoToBakoId = ({ handle }: GoToBakoIdProps) => {
         window.open(`${VITE_BAKO_ID_URL}/profile/${_handle}`, '_BLANK')
       }
     >
-      <UpRightArrow color="grey.50" fontSize="lg" />
-      <VStack alignItems="flex-start" spacing={0} fontSize="xs">
-        <Text color="grey.50">Go to Bako ID</Text>
-        <Text
-          isTruncated
-          textOverflow="ellipsis"
-          maxW={isMobile ? '75vw' : '220px'}
-          color="grey.425"
-        >
+      <UpRightArrow color="gray.200" boxSize={3} />
+      <VStack alignItems="flex-start" gap={0} fontSize="xs">
+        <Text color="gray.200">Go to Bako ID</Text>
+        <Text truncate maxW={isMobile ? '75vw' : '220px'} color="textSecondary">
           {handle}
         </Text>
       </VStack>

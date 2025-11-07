@@ -15,7 +15,7 @@ import {
   ITransactionReactQueryUpdate,
 } from '@/modules/transactions/services/types';
 import { vaultInfinityQueryKey } from '@/modules/vault/hooks/list/useVaultTransactionsRequest';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 export const useTransactionSocketListener = (key?: QueryKey) => {
   const {

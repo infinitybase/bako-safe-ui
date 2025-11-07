@@ -1,4 +1,4 @@
-import { Button } from '@chakra-ui/react';
+import { Button, DialogOpenChangeDetails } from 'bako-ui';
 
 import { Dialog } from '@/components';
 import { PredicateUpdatePayload } from '@/modules/core';
@@ -9,6 +9,7 @@ import { UpdateVaultForm } from './form';
 interface UpdateVaultDialogProps {
   isOpen: boolean;
   onClose: () => void;
+  onOpenChange?: (details: DialogOpenChangeDetails) => void;
   initialValues: PredicateUpdatePayload & { id: string };
   workspaceId: string;
 }
@@ -18,6 +19,7 @@ export const UpdateVaultDialog = ({
   isOpen,
   onClose,
   workspaceId,
+  onOpenChange,
 }: UpdateVaultDialogProps) => {
   const { isPending, updateVault } = useUpdateVault(workspaceId);
 
@@ -34,9 +36,9 @@ export const UpdateVaultDialog = ({
 
   return (
     <Dialog.Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      size={{ sm: '2xl', base: 'full' }}
+      open={isOpen}
+      onOpenChange={onOpenChange}
+      size={{ sm: 'sm', base: 'full' }}
       modalBodyProps={{ px: 4 }}
     >
       <Dialog.Header
@@ -51,20 +53,14 @@ export const UpdateVaultDialog = ({
           vaultId={initialValues.id}
         />
       </Dialog.Body>
-      <Dialog.Actions position="relative">
-        <Button
-          variant="secondary"
-          disabled={isPending}
-          onClick={onClose}
-          px={6}
-        >
+      <Dialog.Actions position="relative" hideDivider mt={4}>
+        <Button variant="outline" disabled={isPending} onClick={onClose} px={6}>
           Cancel
         </Button>
         <Button
-          variant="primary"
-          isLoading={isPending}
+          loading={isPending}
           form="update-vault-form"
-          w="full"
+          flex={1}
           type="submit"
         >
           Save

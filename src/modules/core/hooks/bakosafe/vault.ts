@@ -1,5 +1,5 @@
 import { PredicateResponseWithWorkspace } from '@/modules/vault';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { createVault } from './createVault';
 import { instantiateVault } from './instantiateVault';

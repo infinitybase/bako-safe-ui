@@ -1,4 +1,4 @@
-import { Box, Text } from '@chakra-ui/react';
+import { Box, Text } from 'bako-ui';
 import { addHours, differenceInHours } from 'date-fns';
 import React, { useEffect, useState } from 'react';
 

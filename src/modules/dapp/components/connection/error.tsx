@@ -1,4 +1,4 @@
-import { Alert, Box, Icon, Text } from '@chakra-ui/react';
+import { Alert, Box, Icon, Text } from 'bako-ui';
 
 import { RoundedErrorIcon } from '@/components/icons/rounded-error';
 

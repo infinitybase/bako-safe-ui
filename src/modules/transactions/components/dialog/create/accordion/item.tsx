@@ -1,13 +1,13 @@
 import {
-  AccordionPanel,
+  Accordion,
   Box,
   Heading,
-  useAccordionItemState,
+  useAccordionItemContext,
   VStack,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 import React, { useMemo } from 'react';
 
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 interface AccordionItemProps {
   title: string;
@@ -25,7 +25,7 @@ const AccordionItem = ({
   const {
     screenSizes: { isExtraSmall },
   } = useWorkspaceContext();
-  const { isOpen } = useAccordionItemState();
+  const { expanded: isOpen } = useAccordionItemContext();
 
   const flexDirection = useMemo(
     () => (isExtraSmall ? 'column' : 'row'),
@@ -35,7 +35,7 @@ const AccordionItem = ({
   return (
     <>
       <Box p={0} alignItems="center" justifyContent="space-between">
-        <VStack w="full" py={5} px={5} alignItems="flex-start" spacing={0}>
+        <VStack w="full" py={5} px={5} alignItems="flex-start" gap={0}>
           <Box
             w="full"
             display="flex"
@@ -53,7 +53,9 @@ const AccordionItem = ({
           </Box>
         </VStack>
       </Box>
-      {isOpen && <AccordionPanel px={5}>{children}</AccordionPanel>}
+      {isOpen && (
+        <Accordion.ItemContent px={5}>{children}</Accordion.ItemContent>
+      )}
     </>
   );
 };

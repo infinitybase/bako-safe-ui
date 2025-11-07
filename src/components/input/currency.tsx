@@ -1,4 +1,4 @@
-import { Input, InputProps } from '@chakra-ui/react';
+import { Input, InputProps } from 'bako-ui';
 import {
   forwardRef,
   memo,
@@ -173,7 +173,6 @@ const Field = forwardRef<HTMLInputElement, CurrencyFieldProps>(
               }
             }}
             autoComplete="off"
-            variant="filled"
             inputMode="decimal"
             borderColor={isInvalid ? 'error' : undefined}
             _focusVisible={{

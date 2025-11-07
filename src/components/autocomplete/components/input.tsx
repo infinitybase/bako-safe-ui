@@ -1,4 +1,4 @@
-import { Input, InputProps } from '@chakra-ui/react';
+import { Input, InputProps } from 'bako-ui';
 import { forwardRef, memo } from 'react';
 
 interface AutocompleteInputProps extends InputProps {}
@@ -12,6 +12,7 @@ const AutocompleteInput = memo(
           paddingInlineEnd={'2.2rem !important'}
           autoComplete="off"
           placeholder=" "
+          variant="subtle"
           {...props}
         />
       );

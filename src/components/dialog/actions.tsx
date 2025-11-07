@@ -1,11 +1,4 @@
-import {
-  Box,
-  BoxProps,
-  Button,
-  ButtonProps,
-  Divider,
-  HStack,
-} from '@chakra-ui/react';
+import { Box, BoxProps, Button, ButtonProps, HStack, Separator } from 'bako-ui';
 
 export interface DialogActionsProps extends BoxProps {
   hideDivider?: boolean;
@@ -15,15 +8,15 @@ export interface DialogActionProps extends ButtonProps {}
 
 const DialogActions = ({
   children,
-  hideDivider,
   dividerBorderColor,
   flexWrap,
   flexDir,
   flexDirection,
+  hideDivider,
   ...rest
 }: DialogActionsProps) => (
   <Box w="full" {...rest}>
-    <Divider
+    <Separator
       hidden={hideDivider}
       my={{ base: 3, sm: 6 }}
       borderColor={dividerBorderColor ?? 'unset'}
@@ -32,7 +25,7 @@ const DialogActions = ({
       flexDir={flexDir}
       flexDirection={flexDirection}
       flexWrap={flexWrap}
-      spacing={4}
+      gap={4}
       justifyContent="center"
     >
       {children}
@@ -41,25 +34,20 @@ const DialogActions = ({
 );
 
 const DialogPrimaryAction = (props: DialogActionProps) => (
-  <Button w="full" variant="primary" {...props} />
+  <Button w="full" colorPalette="primary" {...props} />
 );
 
 const DialogSecondaryAction = (props: DialogActionProps) => (
-  <Button
-    w="25%"
-    variant="secondary"
-    bgColor="transparent"
-    border="1px solid white"
-    _hover={{
-      borderColor: 'brand.500',
-      color: 'brand.500',
-    }}
-    {...props}
-  />
+  <Button w="25%" variant="subtle" {...props} />
 );
 
 const DialogTertiaryAction = (props: DialogActionProps) => (
-  <Button variant="tertiary" bgColor="error.900" border="none" {...props} />
+  <Button
+    colorPalette="tertiary"
+    bgColor="error.900"
+    border="none"
+    {...props}
+  />
 );
 
 export {

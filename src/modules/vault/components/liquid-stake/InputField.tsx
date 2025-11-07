@@ -1,4 +1,4 @@
-import { Box, InputGroup, InputRightAddon } from '@chakra-ui/react';
+import { Box } from 'bako-ui';
 import { useEffect, useRef } from 'react';
 
 import { CurrencyField } from '@/components';
@@ -22,20 +22,21 @@ export const InputField = ({
   useEffect(() => {
     if (mirrorRef.current && ref?.current) {
       const mirrorWidth = mirrorRef.current.offsetWidth;
-      // eslint-disable-next-line react-compiler/react-compiler
       ref.current.style.width = `${mirrorWidth}px`;
     }
   }, [value, ref]);
 
   return (
     <Box marginY={6} display="flex" justifyContent="center" alignItems="center">
-      <InputGroup
+      <Box
+        position="relative"
+        display="flex"
         alignItems="center"
         justifyContent="center"
         borderBottom="1px solid"
-        borderColor="grey.950"
+        borderColor="gray.500"
         _hover={{
-          borderColor: 'grey.200',
+          borderColor: 'gray.600',
         }}
         px={0}
         minW="150px"
@@ -43,8 +44,11 @@ export const InputField = ({
       >
         <CurrencyField
           type="crypto"
+          bg="transparent"
+          border="none"
+          outline="none"
           textAlign="center"
-          borderBottomWidth="0"
+          color="gray.50"
           minW={0}
           px={0}
           fontSize="3xl"
@@ -64,14 +68,15 @@ export const InputField = ({
           {formatMaxDecimals(value, 9) || '0'}
         </Box>
 
-        <InputRightAddon
-          alignSelf="end"
-          color={`${disabled ? 'grey.75' : 'section.200'}`}
+        <Box
+          alignSelf="center"
+          color="gray.50"
           opacity={disabled ? 0.5 : 1}
+          px={2}
         >
           {symbol}
-        </InputRightAddon>
-      </InputGroup>
+        </Box>
+      </Box>
     </Box>
   );
 };

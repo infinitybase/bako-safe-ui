@@ -1,4 +1,4 @@
-import { StackProps, Text, VStack } from '@chakra-ui/react';
+import { StackProps, Text, VStack } from 'bako-ui';
 import React from 'react';
 
 export interface DialogSectionProps extends Omit<StackProps, 'title'> {
@@ -15,14 +15,10 @@ const DialogSection = ({
   descriptionFontSize,
   ...stackProps
 }: DialogSectionProps) => (
-  <VStack spacing={1} alignItems="flex-start" {...stackProps}>
+  <VStack gap={1} alignItems="flex-start" {...stackProps}>
     {title}
     {description && (
-      <Text
-        w="90%"
-        fontSize={{ base: 'sm', sm: descriptionFontSize ?? 'md' }}
-        variant="description"
-      >
+      <Text w="90%" fontSize={{ base: 'sm', sm: descriptionFontSize ?? 'md' }}>
         {description}
       </Text>
     )}

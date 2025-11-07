@@ -8,7 +8,7 @@ import { AppRoutes } from '@/routes';
 
 import { invalidateQueries } from './modules/core/utils';
 import { useNetworks } from './modules/network/hooks';
-import { useWorkspaceContext } from './modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from './modules/workspace/hooks';
 
 function App() {
   const { fuel } = useFuel();

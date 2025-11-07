@@ -1,4 +1,4 @@
-import { Input, InputProps } from '@chakra-ui/react';
+import { Input, InputProps } from 'bako-ui';
 import MaskedInput from 'react-text-mask';
 import { createNumberMask } from 'text-mask-addons';
 
@@ -95,8 +95,6 @@ const AmountInput = (props: AmountInputProps) => (
         {...props}
         {...maskedInputProps}
         autoComplete="off"
-        variant="dark"
-        color="gray"
         step="any"
         ref={(input) => maskedInputRef(input as HTMLInputElement)}
         inputMode="decimal"

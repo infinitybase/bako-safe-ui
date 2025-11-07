@@ -1,12 +1,13 @@
-import { Box, BoxProps, Divider, Icon, VStack } from '@chakra-ui/react';
+import { Box, BoxProps, Flex, Icon, Image, Text, VStack } from 'bako-ui';
 import AutoPlay from 'embla-carousel-autoplay';
 import useEmblaCarousel from 'embla-carousel-react';
-import { useCallback } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 import { NavigateOptions, To } from 'react-router-dom';
 
+import logo from '@/assets/svg/bako-symbol-white.svg';
 import {
   BakoGarageBanner,
-  BakoIdIcon,
+  BakoIcon,
   Banner,
   BridgeIcon,
   Carousel,
@@ -19,11 +20,11 @@ import {
   SwapIcon,
 } from '@/components';
 import { SidebarMenu } from '@/layouts/dashboard/menu';
-import { Pages, PermissionRoles } from '@/modules/core';
+import { Pages } from '@/modules/core';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 import { VaultBox, VaultListModal } from '@/modules/vault/components';
-import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useVaultInfosContext } from '@/modules/vault/hooks';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 import { getBakoIDURL, getGarageURL } from '@/utils/enviroment';
 
 interface SidebarProps extends BoxProps {
@@ -31,11 +32,8 @@ interface SidebarProps extends BoxProps {
   onClose?: () => void;
 }
 
-const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
+const Sidebar = memo(({ onDrawer, ...rest }: SidebarProps) => {
   const {
-    workspaceInfos: {
-      handlers: { hasPermission },
-    },
     screenSizes: { isLargerThan1210 },
   } = useWorkspaceContext();
   const [emblaRef] = useEmblaCarousel({ loop: true }, [
@@ -43,7 +41,6 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
   ]);
 
   const {
-    assets: { isLoading, hasBalance, isEthBalanceLowerThanReservedAmount },
     vault,
     sideBarDetails: { route, drawer, menuItems },
   } = useVaultInfosContext();
@@ -63,37 +60,27 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
 
   const handleOpenDrawer = useCallback(() => drawer.onOpen(), [drawer]);
 
+  const bakoUrl = useMemo(() => getBakoIDURL(), []);
+
   return (
     <Box
-      w="100%"
-      maxW={isLargerThan1210 ? '300px' : 'full'}
-      bgColor={onDrawer ? 'transparent' : 'dark.950'}
-      boxShadow={onDrawer ? 'none' : '8px 0px 6px 0px rgba(0, 0, 0, 0.15)'}
-      p="24px 16px 16px 16px"
+      w="full"
+      maxW={isLargerThan1210 ? '220px' : 'full'}
+      bgColor={onDrawer ? 'transparent' : 'bg.panel'}
+      position="sticky"
+      top={0}
+      h="dvh"
       {...rest}
     >
-      <VStack
-        position="fixed"
-        width={isLargerThan1210 ? '269px' : 'full'}
-        pr={isLargerThan1210 ? 'unset' : 8}
-        pb={4}
-        pt={isLargerThan1210 ? 6 : 0}
-        top={isLargerThan1210 ? '72px' : 14}
-        bottom={0}
-        overflowY="scroll"
-        __css={{
-          '&::-webkit-scrollbar': {
-            display: 'none',
-          },
-          '&::-webkit-scrollbar-thumb': {
-            display: 'none',
-          },
-        }}
-      >
+      <VStack p={4} h="full" gap={4}>
+        <Flex>
+          <Image src={logo} alt="Bako" w="75px" h="75px" />
+        </Flex>
+
         {/* VAULT Modal LIST */}
         <VaultListModal
-          isOpen={drawer.isOpen}
-          onClose={drawer.onClose}
+          open={drawer.isOpen}
+          onOpenChange={drawer.onOpenChange}
           onCloseAll={() => {
             drawer.onClose();
             rest.onClose?.();
@@ -103,36 +90,13 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
 
         {/*/!* VAULT INFOS *!/*/}
         <VaultBox
-          isFirstAssetsLoading={isLoading}
           name={vault?.data.name}
           address={vault?.data?.predicateAddress ?? ''}
-          isEthBalanceLowerThanReservedAmount={
-            isEthBalanceLowerThanReservedAmount
-          }
-          isLoading={vault.isLoading}
-          isFetching={vault.isFetching}
           onChangeVault={handleOpenDrawer}
-          hasBalance={hasBalance}
-          isPending={isPendingSigner}
-          hasPermission={hasPermission([
-            PermissionRoles?.OWNER,
-            PermissionRoles?.ADMIN,
-            PermissionRoles?.MANAGER,
-          ])}
-          onCreateTransaction={() => {
-            route.navigate(
-              Pages.createTransaction({
-                workspaceId: route.params.workspaceId!,
-                vaultId: route.params.vaultId!,
-              }),
-            );
-          }}
         />
 
-        <Divider borderColor="dark.100" mt={8} mb={4} />
-
         {/* MENU */}
-        <SidebarMenu.List w="100%" mb={4}>
+        <SidebarMenu.List w="100%" gap={4}>
           <SidebarMenu.Container
             isActive={menuItems.overview}
             onClick={() =>
@@ -163,34 +127,8 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
           >
             <SidebarMenu.Icon as={CoinsIcon} isActive={menuItems.balance} />
             <SidebarMenu.Title isActive={menuItems.balance}>
-              Balance
+              Assets
             </SidebarMenu.Title>
-          </SidebarMenu.Container>
-
-          <SidebarMenu.Container
-            isActive={menuItems.transactions}
-            id={'transactions_tab_sidebar'}
-            cursor={'pointer'}
-            onClick={() =>
-              handleNavigate(
-                Pages.transactions({
-                  workspaceId: route.params.workspaceId!,
-                  vaultId: route.params.vaultId!,
-                }),
-              )
-            }
-          >
-            <SidebarMenu.Icon
-              as={ExchangeIcon}
-              isActive={menuItems.transactions}
-            />
-            <SidebarMenu.Title isActive={menuItems.transactions}>
-              Transactions
-            </SidebarMenu.Title>
-            <SidebarMenu.Badge hidden={!isPendingSigner}>
-              <Icon as={PendingIcon} />{' '}
-              {isPendingSigner && pendingSignerTransactionsLength}
-            </SidebarMenu.Badge>
           </SidebarMenu.Container>
 
           <SidebarMenu.Container
@@ -224,7 +162,7 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
           >
             <SidebarMenu.Icon as={Exchange2Icon} isActive={menuItems.buySell} />
             <SidebarMenu.Title isActive={menuItems.buySell}>
-              Buy & Sell
+              Buy / Sell Crypto
             </SidebarMenu.Title>
           </SidebarMenu.Container>
 
@@ -244,6 +182,32 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
             <SidebarMenu.Title isActive={menuItems.swap}>
               Swap
             </SidebarMenu.Title>
+          </SidebarMenu.Container>
+
+          <SidebarMenu.Container
+            isActive={menuItems.transactions}
+            id={'transactions_tab_sidebar'}
+            cursor={'pointer'}
+            onClick={() =>
+              handleNavigate(
+                Pages.transactions({
+                  workspaceId: route.params.workspaceId!,
+                  vaultId: route.params.vaultId!,
+                }),
+              )
+            }
+          >
+            <SidebarMenu.Icon
+              as={ExchangeIcon}
+              isActive={menuItems.transactions}
+            />
+            <SidebarMenu.Title isActive={menuItems.transactions}>
+              Transactions
+            </SidebarMenu.Title>
+            <SidebarMenu.Badge hidden={!isPendingSigner}>
+              <Icon as={PendingIcon} w={3} />{' '}
+              {isPendingSigner && pendingSignerTransactionsLength}
+            </SidebarMenu.Badge>
           </SidebarMenu.Container>
 
           <SidebarMenu.Container
@@ -269,9 +233,18 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
           <Carousel.Slide>
             <Carousel.SlideItem>
               <Banner
-                icon={<Icon as={BakoIdIcon} h={10} w={102.5} />}
-                title="Register your Handles"
-                onClick={() => window.open(getBakoIDURL(), '_blank')}
+                icon={<Icon as={BakoIcon} boxSize="20px" />}
+                title="Get your Handle"
+                description={
+                  <>
+                    Use{' '}
+                    <Text color="primary.main" as="span">
+                      @myusername
+                    </Text>{' '}
+                    as your address.
+                  </>
+                }
+                href={bakoUrl}
               />
             </Carousel.SlideItem>
             <Carousel.SlideItem>
@@ -285,6 +258,8 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
       </VStack>
     </Box>
   );
-};
+});
+
+Sidebar.displayName = 'Sidebar';
 
 export { Sidebar };

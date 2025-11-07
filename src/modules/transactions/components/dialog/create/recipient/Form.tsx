@@ -1,4 +1,4 @@
-import { VStack } from '@chakra-ui/react';
+import { VStack } from 'bako-ui';
 import { memo, useCallback, useMemo } from 'react';
 import { Controller, useFormContext, useWatch } from 'react-hook-form';
 
@@ -12,7 +12,7 @@ import {
   UseCreateTransaction,
 } from '@/modules/transactions/hooks';
 import { UseVaultDetailsReturn } from '@/modules/vault';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import RecipientFormAddress from './form/address';
 import RecipientFormAmount from './form/amount';
@@ -108,7 +108,7 @@ const RecipientFormField = (props: RecipientFormFieldProps) => {
         isLoading={createContactRequest.isPending}
         isEdit={false}
       />
-      <VStack spacing={5}>
+      <VStack gap={5} pb={3}>
         <Controller
           name={`transactions.${index}.value`}
           control={control}
@@ -139,10 +139,6 @@ const RecipientFormField = (props: RecipientFormFieldProps) => {
               assets={assets}
               assetsOptions={assetsOptions}
               onChange={field.onChange}
-              onClearValue={() => {
-                field.onChange('');
-                setValue(`transactions.${index}.amount`, '');
-              }}
               value={field.value}
             />
           )}
