@@ -4,7 +4,7 @@ import {
   UseMutationOptions,
   useQuery,
 } from '@tanstack/react-query';
-import { CoderUtils, EncodingService } from 'bakosafe';
+import { CoderUtils } from 'bakosafe';
 import { Account } from 'fuels';
 
 import { CookieName, CookiesConfig } from '@/config/cookies';
@@ -14,9 +14,11 @@ import {
   useEvm,
   WalletSignMessagePayload,
 } from '@/modules/auth';
+import { useSocial } from '@/modules/auth/hooks/useSocial';
 import { TypeUser } from '@/modules/auth/services';
 import { signChallange } from '@/modules/core/utils/webauthn';
 
+import { EvmSignatureUtils } from '../../utils';
 import { recoverPublicKey } from '../../utils/webauthn/crypto';
 import { FuelQueryKeys } from './types';
 
@@ -86,22 +88,34 @@ const useWalletSignMessage = (
 ) => {
   const { data: wallet } = useMyWallet();
   const { signAndValidate, address: evmAddress } = useEvm();
+  const { wallet: socialWallet, signMessage: socialSignMessage } = useSocial();
   const {
     userInfos: { type, webauthn, address },
   } = useAuth();
 
   const signAccountEvm = async (message: string, predicateVersion?: string) => {
-    let encodedMessage = message;
-
-    if (predicateVersion) {
-      encodedMessage = EncodingService.encodedMessage(
-        message,
-        predicateVersion,
-      );
-    }
-
+    const encodedMessage = EvmSignatureUtils.encodeMessage(
+      message,
+      predicateVersion,
+    );
     const signature = await signAndValidate(encodedMessage);
     return CoderUtils.encodeSignature(evmAddress, signature, predicateVersion);
+  };
+
+  const signAccountSocial = async (
+    message: string,
+    predicateVersion?: string,
+  ) => {
+    const encodedMessage = EvmSignatureUtils.encodeMessage(
+      message,
+      predicateVersion,
+    );
+    const signature = await socialSignMessage(encodedMessage);
+    return CoderUtils.encodeSignature(
+      socialWallet?.address ?? '',
+      signature ?? '',
+      predicateVersion,
+    );
   };
 
   return useMutation({
@@ -122,6 +136,8 @@ const useWalletSignMessage = (
           });
         case TypeUser.EVM:
           return await signAccountEvm(message, predicateVersion);
+        case TypeUser.SOCIAL:
+          return await signAccountSocial(message, predicateVersion);
         default:
           return signAccountFuel(wallet!, message, predicateVersion);
       }

@@ -1,5 +1,6 @@
 import { FueletWalletConnector, FuelWalletConnector } from '@fuels/connectors';
 import { FuelProvider } from '@fuels/react';
+import { PrivyProvider } from '@privy-io/react-auth';
 import * as Sentry from '@sentry/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import React from 'react';
@@ -41,6 +42,8 @@ if (VITE_SENTRY_DNS !== '') {
 }
 
 const gtmId = import.meta.env.VITE_GTM_ID;
+const privyAppId = import.meta.env.VITE_PRIVY_APP_ID;
+const privyClientId = import.meta.env.VITE_PRIVY_CLIENT_ID;
 
 const tagManagerArgs = {
   gtmId,
@@ -63,17 +66,33 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
             ],
           }}
         >
-          <BakoSafeQueryClientProvider>
-            <BrowserRouter>
-              <TransactionsProvider>
-                <WorkspaceProvider>
-                  <SocketProvider>
-                    <App />
-                  </SocketProvider>
-                </WorkspaceProvider>
-              </TransactionsProvider>
-            </BrowserRouter>
-          </BakoSafeQueryClientProvider>
+          <PrivyProvider
+            appId={privyAppId}
+            clientId={privyClientId}
+            config={{
+              loginMethods: ['google', 'email'],
+              embeddedWallets: {
+                ethereum: {
+                  createOnLogin: 'users-without-wallets', // Create a wallet for users who do not have a wallet on login.
+                },
+              },
+              appearance: {
+                theme: 'dark',
+              },
+            }}
+          >
+            <BakoSafeQueryClientProvider>
+              <BrowserRouter>
+                <TransactionsProvider>
+                  <WorkspaceProvider>
+                    <SocketProvider>
+                      <App />
+                    </SocketProvider>
+                  </WorkspaceProvider>
+                </TransactionsProvider>
+              </BrowserRouter>
+            </BakoSafeQueryClientProvider>
+          </PrivyProvider>
         </FuelProvider>
       </QueryClientProvider>
     </Provider>

@@ -1,4 +1,5 @@
 import { useFuel } from '@fuels/react';
+import { usePrivy } from '@privy-io/react-auth';
 import {
   Avatar,
   Box,
@@ -41,6 +42,7 @@ const VaultConnector = () => {
   const { isSafariBrowser } = useVerifyBrowserType();
 
   const { fuel } = useFuel();
+  const { logout: privyLogout } = usePrivy();
 
   const {
     request: { vaults, isSuccess, isLoading, isFetching },
@@ -97,6 +99,8 @@ const VaultConnector = () => {
       userInfos?.type.type === TypeUser.FUEL &&
         userInfos?.type.name !== EConnectors.FULLET &&
         (await fuel.disconnect());
+
+      userInfos?.type.type === TypeUser.SOCIAL && (await privyLogout());
     } catch (error) {
       // eslint-disable-next-line no-empty
     } finally {
