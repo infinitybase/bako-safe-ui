@@ -6,7 +6,7 @@ import { useContactToast } from '@/modules/addressBook';
 import { Encoder, localStorageKeys, TypeUser } from '@/modules/auth/services';
 import { Pages } from '@/modules/core';
 import { useNetworks } from '@/modules/network/hooks';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { useQueryParams } from '../usePopup';
 import { useSocial } from '../useSocial';
