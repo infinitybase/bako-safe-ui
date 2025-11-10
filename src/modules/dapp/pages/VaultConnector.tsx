@@ -10,7 +10,7 @@ import {
   VStack,
 } from 'bako-ui';
 import { useEffect } from 'react';
-import { CustomSkeleton, EmptyBox } from '@/components';
+import { EmptyBox } from '@/components';
 import { useQueryParams } from '@/modules/auth';
 import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
 import { CreateVaultDialog } from '@/modules/vault';
@@ -29,7 +29,6 @@ const VaultConnector = () => {
     sessionId,
     request_id
   } = useQueryParams();
-  // const [_, setDynamicHeight] = useState(0);
 
   const {
     authDetails: { userInfos, handlers },
@@ -76,26 +75,15 @@ const VaultConnector = () => {
       });
     }
   }, [
-    // name,
-    // origin,
-    // sessionId,
-    // request_id,
     userInfos.address,
     vaults.length,
-    // send,
   ]);
-
-  // useEffect(() => {
-  //   const clientWindowHeight = window.innerHeight;
-  //   const dividedBy = clientWindowHeight >= 750 ? 1.64 : 1.8;
-  //   setDynamicHeight(clientWindowHeight / dividedBy);
-  // }, []);
 
   return (
     <Dapp.Container>
       <Dapp.Profile />
 
-      <Dapp.ScrollableContent>
+      <Dapp.ScrollableContent isLoading={isLoading}>
         <CreateVaultDialog
           open={isOpen}
           onOpenChange={onOpenChange}
@@ -105,112 +93,109 @@ const VaultConnector = () => {
           title="Accounts"
         />
 
-        <CustomSkeleton loading={isLoading} h="full">
-          {/* Result */}
-          <VStack
-            w="full"
-            gap={2}
-          >
-            {vaults?.map((vault) => {
-              if (!vault) return null;
+        <VStack
+          w="full"
+          gap={2}
+        >
+          {vaults?.map((vault) => {
+            if (!vault) return null;
 
-              const {
-                id,
-                name,
-                predicateAddress,
-                workspace,
-                members,
-                root,
-              } = vault;
+            const {
+              id,
+              name,
+              predicateAddress,
+              workspace,
+              members,
+              root,
+            } = vault;
 
-              if (id === currentVault && !selectedVaultId)
-                setSelectedVaultId(id);
+            if (id === currentVault && !selectedVaultId)
+              setSelectedVaultId(id);
 
-              if (id !== currentVault && !selectedVaultId && root)
-                setSelectedVaultId(id);
+            if (id !== currentVault && !selectedVaultId && root)
+              setSelectedVaultId(id);
 
-              return (
-                <VaultItemBox
-                  key={id}
-                  name={name}
-                  workspace={workspace}
-                  members={members?.length}
-                  address={predicateAddress}
-                  root={false}
-                  id={id}
-                  isActive={selectedVaultId === id}
-                  isSingleWorkspace={workspace.single}
-                  onClick={() => setSelectedVaultId(id)}
-                  isInDapp
-                  mt={0}
-                />
-              );
-            })}
+            return (
+              <VaultItemBox
+                key={id}
+                name={name}
+                workspace={workspace}
+                members={members?.length}
+                address={predicateAddress}
+                root={false}
+                id={id}
+                isActive={selectedVaultId === id}
+                isSingleWorkspace={workspace.single}
+                onClick={() => setSelectedVaultId(id)}
+                isInDapp
+                mt={0}
+              />
+            );
+          })}
 
-            {isFetching && vaults.length && (
-              <Flex justifyContent="center" alignItems="center">
-                <Loader color="brand.500" size="md" />
-              </Flex>
-            )}
-
-            {/* Normally, it's a self closing box (<Box/>) but due the dynamic height using window.height */}
-            {/* it's necessary to render it this way */}
-            <Box ref={inView.ref} color="transparent">
-              ...
-            </Box>
-          </VStack>
-
-          {/* No vaults */}
-          {!isFetching && noVaultsAvailable && (
-            <VStack mb={6} h={'full'} gap={5}>
-              <Card.Root
-                w="full"
-                bgColor="transparent"
-                display="flex"
-                borderWidth={1}
-                borderColor="grey.300"
-                justifyContent="center"
-                flexDirection="column"
-                alignItems="center"
-                h={224}
-                my={1}
-              >
-                <Flex
-                  alignItems="center"
-                  justifyContent="center"
-                  bg="linear-gradient(132.19deg, rgba(255, 192, 16, 0.1) 0%, rgba(235, 163, 18, 0.1) 48%, rgba(211, 128, 21, 0.1) 71%, rgba(178, 79, 24, 0.1) 99%);"
-                  rounded={10}
-                  w="57px"
-                  h="56px"
-                >
-                  <EmptyBox w="33px" h="33px" />
-                </Flex>
-                <Flex
-                  w={305}
-                  alignItems="center"
-                  flexDir="column"
-                  gap={6}
-                  mt={4}
-                >
-                  <Heading color="grey.75" fontSize={20}>
-                    Nothing to show here.
-                  </Heading>
-                  <Text
-                    color="grey.450"
-                    fontSize={12}
-                    textAlign="center"
-                    fontWeight="medium"
-                  >
-                    It seems like you {"haven't"} any Vault yet.
-                  </Text>
-                </Flex>
-              </Card.Root>
-              <Button bg="grey.75" fontSize={14} onClick={onOpen} w="full">
-                Create new Vault
-              </Button>
-            </VStack>
+          {isFetching && vaults.length && (
+            <Flex justifyContent="center" alignItems="center" p={6}>
+              <Loader color="brand.500" size="md" />
+            </Flex>
           )}
-        </CustomSkeleton>
+
+          {/* Normally, it's a self closing box (<Box/>) but due the dynamic height using window.height */}
+          {/* it's necessary to render it this way */}
+          <Box ref={inView.ref} color="transparent">
+            ...
+          </Box>
+        </VStack>
+
+        {/* No vaults */}
+        {!isFetching && noVaultsAvailable && (
+          <VStack mb={6} h={'full'} gap={5}>
+            <Card.Root
+              w="full"
+              bgColor="transparent"
+              display="flex"
+              borderWidth={1}
+              borderColor="grey.300"
+              justifyContent="center"
+              flexDirection="column"
+              alignItems="center"
+              h={224}
+              my={1}
+            >
+              <Flex
+                alignItems="center"
+                justifyContent="center"
+                bg="linear-gradient(132.19deg, rgba(255, 192, 16, 0.1) 0%, rgba(235, 163, 18, 0.1) 48%, rgba(211, 128, 21, 0.1) 71%, rgba(178, 79, 24, 0.1) 99%);"
+                rounded={10}
+                w="57px"
+                h="56px"
+              >
+                <EmptyBox w="33px" h="33px" />
+              </Flex>
+              <Flex
+                w={305}
+                alignItems="center"
+                flexDir="column"
+                gap={6}
+                mt={4}
+              >
+                <Heading color="grey.75" fontSize={20}>
+                  Nothing to show here.
+                </Heading>
+                <Text
+                  color="grey.450"
+                  fontSize={12}
+                  textAlign="center"
+                  fontWeight="medium"
+                >
+                  It seems like you {"haven't"} any Vault yet.
+                </Text>
+              </Flex>
+            </Card.Root>
+            <Button bg="grey.75" fontSize={14} onClick={onOpen} w="full">
+              Create new Vault
+            </Button>
+          </VStack>
+        )}
       </Dapp.ScrollableContent>
 
       <Dapp.FixedFooter>
@@ -218,7 +203,7 @@ const VaultConnector = () => {
           name={name}
           origin={origin}
         />
-        <HStack gap={6}>
+        <HStack gap={6} w="full">
           <Button
             variant="subtle"
             color="gray.300"
