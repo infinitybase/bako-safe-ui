@@ -1,11 +1,13 @@
-import { VStack } from "bako-ui";
+import { VStack, VStackProps } from "bako-ui";
 import React from "react";
 
-interface Props {
+interface Props extends VStackProps {
   children: React.ReactNode;
 }
 
-export const FixedFooter = ({ children }: Props) => {
+export const FixedFooter = (props: Props) => {
+  const { children, ...rest } = props;
+
   return (
     <VStack
       flexShrink={0}
@@ -14,6 +16,7 @@ export const FixedFooter = ({ children }: Props) => {
       p={6}
       borderTopRadius={16}
       bg="gray.600"
+      {...rest}
     >
       {children}
     </VStack>

@@ -6,7 +6,7 @@ interface Props extends VStackProps {
 }
 
 const ScrollableContent = ({
-  isLoading = true,
+  isLoading = false,
   children,
   ...rest
 }: Props) => {
