@@ -8,28 +8,24 @@ interface Props extends HStackProps {
 
 export const TransactionAlert = (props: Props) => {
   const { type, text } = props;
-
-  // TODO ASDF > AJUSTAR AS CORES
-  const bgColor = type === "red" ? "#F05D4814" : "#FFC01014";
-  const textColor = type === "red" ? "red.100" : "yellow.100";
-
+  const baseColor = type === "red" ? "red.100" : "yellow.100";
   return (
     <HStack
       gap={3}
       align="center"
-      bg={bgColor}
+      bg={`${baseColor}/8`}
       borderRadius="8px"
       p={3}
       w="full"
       {...props}
     >
       <Warning3Icon
-        color={textColor}
+        color={baseColor}
         h={4}
         w={9}
       />
       <Text
-        color={textColor}
+        color={baseColor}
         fontSize={12}
         fontWeight={400}
         lineHeight="12px">

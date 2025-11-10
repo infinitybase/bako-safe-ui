@@ -164,7 +164,6 @@ const AddressDisplay = ({
       p={4}
     >
       <HStack gap={3} align="center">
-        {/* TODO ASDF > ajustar avatar correto, não generico */}
         <Avatar
           shape="rounded"
           color="gray.100"

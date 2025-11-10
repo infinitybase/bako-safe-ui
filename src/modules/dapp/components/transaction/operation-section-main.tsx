@@ -11,15 +11,7 @@ interface Props {
 export const DappTransactionOperationSectionMain = (props: Props) => {
   const { operations, vault } = props;
 
-  if (!operations?.length) { // TODO ASDF > MANTER?
-    return (
-      <Box>
-        <Text>
-          No root operations related to this account.
-        </Text>
-      </Box>
-    );
-  }
+  if (!operations?.length) return null;
 
   return (
     operations.map((operation, index) => (

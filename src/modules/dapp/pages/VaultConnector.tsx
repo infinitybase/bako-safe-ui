@@ -93,6 +93,8 @@ const VaultConnector = () => {
 
   return (
     <Dapp.Container>
+      <Dapp.Profile />
+
       <Dapp.ScrollableContent>
         <CreateVaultDialog
           open={isOpen}

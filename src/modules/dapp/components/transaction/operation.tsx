@@ -111,23 +111,3 @@ function DappTransactionOperation({
   );
 }
 export { DappTransactionOperation };
-
-export const DappTransactionOperationSekeleton = () => ( // TODO ASDF > REMOVER?
-  <VStack w="full">
-    <HStack gap={0} w="full">
-      <RecipientCard justifyContent="space-between">
-        {/*<CustomSkeleton w="full" h={5} borderRadius={2} />*/}
-        <CustomSkeleton w="full" h="100px" borderRadius={2} />
-        <CustomSkeleton w="full" h={8} borderRadius={2} />
-      </RecipientCard>
-      <RecipientCard justifyContent="space-between">
-        <CustomSkeleton w="full" h="100px" borderRadius={2} />
-        <CustomSkeleton w="full" h={8} borderRadius={2} />
-      </RecipientCard>
-    </HStack>
-    <RecipientCard display="flex" flexDirection="row" gap={3} minH="95px">
-      <CustomSkeleton w={200} h="70px" borderRadius={2} />
-      <CustomSkeleton w="full" h="70px" borderRadius={2} />
-    </RecipientCard>
-  </VStack>
-);
