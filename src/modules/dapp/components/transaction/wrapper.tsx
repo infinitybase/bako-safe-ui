@@ -1,13 +1,6 @@
-import { Box } from 'bako-ui';
-import { ReactNode, useEffect, useState } from 'react';
-import { useInView } from 'react-intersection-observer';
+import { ReactNode } from 'react';
 
-import {
-  CustomSkeleton,
-  Dialog,
-  LayerSwapIcon,
-  TransactionExpire,
-} from '@/components';
+import { TransactionExpire } from '@/components';
 import { Dapp } from '@/layouts/dapp';
 import { useQueryParams } from '@/modules/auth/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/hooks';
@@ -16,6 +9,34 @@ import { DappTransaction } from '.';
 import { UseTransactionSocket } from '../../hooks';
 import { TransactionAlert } from './alert';
 import { SimplifiedTransaction } from '../../services/simplify-transaction';
+import { Box, Button, HStack } from 'bako-ui';
+
+const Alert = (
+  {
+    isLoading,
+    pendingSignerTransactions
+  }: {
+    isLoading: boolean;
+    pendingSignerTransactions: boolean;
+  }
+) => {
+  if (isLoading) return null;
+
+  if (pendingSignerTransactions)
+    return (
+      <TransactionAlert
+        type="red"
+        text="A new transaction cannot be created while another one is pending."
+      />
+    );
+
+  return (
+    <TransactionAlert
+      type="yellow"
+      text="Double-check transaction details before submission."
+    />
+  );
+};
 
 interface DappTransactionWrapperProps {
   title: string;
@@ -30,7 +51,7 @@ interface DappTransactionWrapperProps {
   cancel: () => void;
 }
 
-const DappTransactionWrapper = (props: DappTransactionWrapperProps) => {
+export const DappTransactionWrapper = (props: DappTransactionWrapperProps) => {
   const {
     title,
     startTime,
@@ -43,6 +64,8 @@ const DappTransactionWrapper = (props: DappTransactionWrapperProps) => {
     transaction,
     cancel,
   } = props;
+
+  const isLoading = !transactionSummary || isLoadingTransactionSummary;
 
   const {
     workspaceInfos: {
@@ -69,9 +92,7 @@ const DappTransactionWrapper = (props: DappTransactionWrapperProps) => {
 
       <Dapp.Profile />
 
-      <Dapp.ScrollableContent
-        isLoading={isLoadingTransactionSummary && !transactionSummary}
-      >
+      <Dapp.ScrollableContent isLoading={isLoading}>
         <Dapp.Header
           title={title}
           onClose={cancel}
@@ -84,59 +105,26 @@ const DappTransactionWrapper = (props: DappTransactionWrapperProps) => {
 
       <Dapp.FixedFooter>
         <DappTransaction.Fee fee={transactionSummary?.fee} />
-
         <DappTransaction.RequestingFrom
           name={name}
           origin={origin}
         />
-
-        {pendingSignerTransactions ?
-          <TransactionAlert
-            type="red"
-            text="A new transaction cannot be created while another one is pending."
-          />
-          :
-          <TransactionAlert
-            type="yellow"
-            text="Double-check transaction details before submission."
-          />
-        }
-
-        <Dialog.Actions
-          hideDivider
-          hidden={isLoadingTransactionSummary || !transactionSummary}
-          w="full"
-        >
-          {!pendingSignerTransactions ? (
-            <>
-              <Dialog.SecondaryAction
-                size="md"
-                onClick={cancel}
-                disabled={primaryActionLoading}
-                borderColor="grey.75"
-                fontSize={14}
-              >
-                Cancel
-              </Dialog.SecondaryAction>
-              {primaryActionButton}
-            </>
-          ) : (
-            <>
-              <Dialog.SecondaryAction
-                size="lg"
-                width="full"
-                onClick={cancel}
-                fontSize={14}
-                disabled={primaryActionLoading}
-              >
-                Back
-              </Dialog.SecondaryAction>
-            </>
-          )}
-        </Dialog.Actions>
+        <Alert isLoading={isLoading} pendingSignerTransactions={pendingSignerTransactions} />
+        <HStack hidden={isLoading} gap={6} w="full">
+          <Button
+            variant="subtle"
+            color="gray.300"
+            bgColor="gray.600"
+            px="20px"
+            fontWeight={400}
+            onClick={cancel}
+            disabled={primaryActionLoading}
+          >
+            Cancel
+          </Button>
+          {primaryActionButton}
+        </HStack>
       </Dapp.FixedFooter>
-    </Dapp.Container>
+    </Dapp.Container >
   );
 };
-
-export { DappTransactionWrapper };

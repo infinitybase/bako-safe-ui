@@ -1,4 +1,4 @@
-import { Box } from 'bako-ui';
+import { Box, Button } from 'bako-ui';
 import { useState } from 'react';
 
 import { Dialog } from '@/components/dialog';
@@ -75,19 +75,22 @@ const TransactionConfirm = () => {
                   createTxMethod={createTxMethod}
                   setCreateTxMethod={setCreateTxMethod}
                   isLoading={isSending}
-                  isDisabled={isSending}
+                  isDisabled={isSending || pendingSignerTransactions}
                   handleCreateTransaction={sendTransaction}
                   handleCreateAndSignTransaction={sendTransactionAndSign}
                 />
               ) : (
-                <Dialog.PrimaryAction
-                  size="md"
-                  loading={isSending}
-                  onClick={sendTransaction}
+                <Button
+                  flex={1}
+                  colorPalette="primary"
+                  fontWeight={600}
                   fontSize={14}
+                  loading={isSending}
+                  disabled={isSending || pendingSignerTransactions}
+                  onClick={sendTransaction}
                 >
                   Create
-                </Dialog.PrimaryAction>
+                </Button>
               )
             }
           />
@@ -107,14 +110,17 @@ const TransactionConfirm = () => {
             cancel={cancelSignTransaction}
             transaction={transaction}
             primaryActionButton={
-              <Dialog.PrimaryAction
-                size="md"
-                loading={isSigning}
-                onClick={() => signTransaction()}
+              <Button
+                flex={1}
+                colorPalette="primary"
+                fontWeight={600}
                 fontSize={14}
+                loading={isSigning}
+                disabled={isSending || pendingSignerTransactions}
+                onClick={() => signTransaction()}
               >
                 Sign
-              </Dialog.PrimaryAction>
+              </Button>
             }
           />
         </Box>

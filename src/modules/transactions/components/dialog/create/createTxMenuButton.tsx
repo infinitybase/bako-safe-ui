@@ -73,7 +73,6 @@ const CreateTxMenuButton = ({
             aria-label={'Menu select mode create tx'}
             asChild
             w="20px"
-            pl={2}
             borderRadius="0px 8px 8px 0px"
             disabled={isDisabled || isLoading}
           >
