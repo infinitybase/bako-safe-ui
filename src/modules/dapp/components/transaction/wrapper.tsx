@@ -44,25 +44,18 @@ const DappTransactionWrapper = (props: DappTransactionWrapperProps) => {
     cancel,
   } = props;
 
-  const [closePopover, setClosePopover] = useState(false);
-
   const {
     workspaceInfos: {
       handlers: { goHome },
     },
   } = useWorkspaceContext();
 
-  const inView = useInView();
   const { sessionId, request_id, name, origin } = useQueryParams();
 
   if (!sessionId || !request_id) {
     window.close();
     goHome();
   }
-
-  useEffect(() => {
-    setClosePopover(inView.inView);
-  }, [inView.inView]);
 
   return (
     <Dapp.Container>
@@ -73,31 +66,24 @@ const DappTransactionWrapper = (props: DappTransactionWrapperProps) => {
           callBack={cancel}
         />
       </Box>
-      <Dapp.ScrollableContent>
+
+      <Dapp.Profile />
+
+      <Dapp.ScrollableContent
+        isLoading={isLoadingTransactionSummary && !transactionSummary}
+      >
         <Dapp.Header
           title={title}
           onClose={cancel}
         />
-
-        <CustomSkeleton
-          loading={isLoadingTransactionSummary && !transactionSummary}
-          h="full"
-        >
-          {/* Essa box é usada como "parâmetro" para fechar o popover do max fee. */}
-          <Box ref={inView?.ref} />
-
-          <DappTransaction.OperationPanel
-            operations={transaction?.categorizedOperations}
-            vault={vault!}
-          />
-        </CustomSkeleton>
+        <DappTransaction.OperationPanel
+          operations={transaction?.categorizedOperations}
+          vault={vault!}
+        />
       </Dapp.ScrollableContent>
 
       <Dapp.FixedFooter>
-        <DappTransaction.Fee
-          closePopover={closePopover}
-          fee={transactionSummary?.fee}
-        />
+        <DappTransaction.Fee fee={transactionSummary?.fee} />
 
         <DappTransaction.RequestingFrom
           name={name}
