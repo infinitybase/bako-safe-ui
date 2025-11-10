@@ -1,4 +1,4 @@
-import { Avatar, Box, Flex, HStack, Icon, IconButton, Text, Tooltip, useClipboard, VStack } from "bako-ui";
+import { Avatar, Box, Flex, HStack, IconButton, Text, Tooltip, useClipboard, VStack } from "bako-ui";
 import { SimplifiedAsset, SimplifiedOperation, TxCategory } from "../../services/simplify-transaction";
 import { AddressUtils } from "@/modules/core";
 import { PiCopyThin } from "react-icons/pi";
@@ -6,7 +6,7 @@ import { useMemo } from "react";
 import { bn } from "fuels";
 import { UseTransactionSocket } from "../../hooks";
 import { useWorkspaceContext } from "@/modules";
-import { ChevronDownIcon } from "@/components";
+import { ChevronDown2Icon } from "@/components";
 
 interface OperationArrowDisplayProps {
   label: string;
@@ -22,11 +22,10 @@ const OperationArrowDisplay = ({
     gap={3}
     align="center"
   >
-    <Icon
+    <ChevronDown2Icon
       color="gray.400"
       w={9}
       h={4}
-      as={ChevronDownIcon} // TODO ASDF > ALTERAR PARA DOUBLE DOWN
     />
     <Text
       fontWeight={500}

@@ -1,4 +1,4 @@
-import { Box, Flex, HStack, Icon, Separator, Text, VStack } from 'bako-ui';
+import { Box, Flex, HStack, Separator, Text, VStack } from 'bako-ui';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 
@@ -63,11 +63,12 @@ function DappTransactionOperation({
               + {operation.operations?.length} operations
             </Text>
 
-            {isExpanded ? (
-              <ChevronDownIcon boxSize="3" color="gray.400" />
-            ) : (
-              <ChevronDownIcon boxSize="3" color="gray.400" /> // TODO ASDF > ALTERAR CHEVRON E COLOCAR ROTACAO
-            )}
+            <ChevronDownIcon
+              boxSize={3}
+              color="gray.400"
+              transition="transform 0.2s ease"
+              transform={isExpanded ? "rotate(180deg)" : "rotate(0deg)"}
+            />
           </Flex>
 
           <MotionBox

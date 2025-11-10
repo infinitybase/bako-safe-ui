@@ -48,11 +48,12 @@ export function DappTransactionOperationSectionGroup({
           {title}
         </Text>
 
-        {isOpen ? (
-          <ChevronDownIcon boxSize="3" color="gray.400" />
-        ) : (
-          <ChevronDownIcon boxSize="3" color="gray.400" /> // TODO ASDF > ALTERAR CHEVRON E COLOCAR ROTACAO
-        )}
+        <ChevronDownIcon
+          boxSize={3}
+          color="gray.400"
+          transition="transform 0.2s ease"
+          transform={isOpen ? "rotate(180deg)" : "rotate(0deg)"}
+        />
       </Flex>
 
       <MotionBox

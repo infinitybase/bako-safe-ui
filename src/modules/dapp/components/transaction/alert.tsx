@@ -1,5 +1,5 @@
-import { Warning2Icon } from "@/components";
-import { HStack, HStackProps, Icon, Text } from "bako-ui";
+import { Warning3Icon } from "@/components";
+import { HStack, HStackProps, Text } from "bako-ui";
 
 interface Props extends HStackProps {
   type: "red" | "yellow";
@@ -23,13 +23,11 @@ export const TransactionAlert = (props: Props) => {
       w="full"
       {...props}
     >
-      <Icon
+      <Warning3Icon
         color={textColor}
-        h="16px"
-        w="36px"
-        as={Warning2Icon}
-        px={2}
-      /> {/* TODO ASDF > ALTERAR ICONE DO WARNING */}
+        h={4}
+        w={9}
+      />
       <Text
         color={textColor}
         fontSize={12}
