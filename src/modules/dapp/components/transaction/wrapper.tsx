@@ -81,6 +81,7 @@ const DappTransactionWrapper = (props: DappTransactionWrapperProps) => {
 
         <CustomSkeleton
           loading={isLoadingTransactionSummary && !transactionSummary}
+          h="full"
         >
           {/* Essa box é usada como "parâmetro" para fechar o popover do max fee. */}
           <Box ref={inView?.ref} />
@@ -101,7 +102,6 @@ const DappTransactionWrapper = (props: DappTransactionWrapperProps) => {
         <DappTransaction.RequestingFrom
           name={name}
           origin={origin}
-          icon={<LayerSwapIcon boxSize="36px" rounded="sm" />} // TODO ASDF > ajustar
         />
 
         {pendingSignerTransactions ?

@@ -10,8 +10,7 @@ import {
   VStack,
 } from 'bako-ui';
 import { useEffect } from 'react';
-
-import { CustomSkeleton, EmptyBox, LayerSwapIcon } from '@/components';
+import { CustomSkeleton, EmptyBox } from '@/components';
 import { useQueryParams } from '@/modules/auth';
 import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
 import { CreateVaultDialog } from '@/modules/vault';
@@ -24,7 +23,12 @@ import { useAuthSocket } from '../hooks';
 import { Dapp } from '@/layouts';
 
 const VaultConnector = () => {
-  const { name, origin, sessionId, request_id } = useQueryParams();
+  const {
+    name,
+    origin,
+    sessionId,
+    request_id
+  } = useQueryParams();
   // const [_, setDynamicHeight] = useState(0);
 
   const {
@@ -36,10 +40,18 @@ const VaultConnector = () => {
     inView,
   } = useVaultDrawer({ perPage: 10, orderByRoot: true });
 
-  const { selectedVaultId, setSelectedVaultId, currentVault, send } =
-    useAuthSocket();
+  const {
+    selectedVaultId,
+    setSelectedVaultId,
+    currentVault,
+    send
+  } = useAuthSocket();
 
-  const { isOpen, onOpenChange, onOpen } = useDisclosure();
+  const {
+    isOpen,
+    onOpenChange,
+    onOpen
+  } = useDisclosure();
 
   const noVaultsAvailable = isSuccess && !vaults.length;
 
@@ -91,16 +103,11 @@ const VaultConnector = () => {
           title="Accounts"
         />
 
-        <CustomSkeleton loading={isLoading}>
+        <CustomSkeleton loading={isLoading} h="full">
           {/* Result */}
           <VStack
             w="full"
             gap={2}
-            overflowY="scroll"
-            css={{
-              '&::-webkit-scrollbar': { width: '0' },
-              scrollbarWidth: 'none',
-            }}
           >
             {vaults?.map((vault) => {
               if (!vault) return null;
@@ -208,7 +215,6 @@ const VaultConnector = () => {
         <DappTransaction.RequestingFrom
           name={name}
           origin={origin}
-          icon={<LayerSwapIcon boxSize="36px" rounded="sm" />} // TODO ASDF > ajustar
         />
         <HStack gap={6}>
           <Button

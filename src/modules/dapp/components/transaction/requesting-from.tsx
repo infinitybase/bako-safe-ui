@@ -1,15 +1,34 @@
-import { HStack, HStackProps, Text, VStack } from 'bako-ui';
+import { HStack, HStackProps, Image, Text, VStack } from 'bako-ui';
 
+import { miraData } from '@/config/swap';
+import RigContractIcon from '@/assets/images/rig-icon.png';
 import { Nullable } from '@/modules/core';
+import { LayerSwapIcon } from '@/components';
+
+const FromIcon = ({
+  origin
+}: {
+  origin: Nullable<string>;
+}) => {
+  if (origin === miraData.origin)
+    return <Image src={miraData.icon} boxSize="36px" rounded="sm" />
+
+  if (origin === 'https://rig.st')
+    return <Image src={RigContractIcon} boxSize="36px" rounded="sm" />
+
+  if (origin === 'https://layerswap.io')
+    return <LayerSwapIcon boxSize="36px" rounded="sm" />
+
+  return null;
+}
 
 interface DappRequestingFromProps extends HStackProps {
   name: Nullable<string>;
   origin: Nullable<string>;
-  icon?: React.ReactNode;
 }
 
 const DappRequestingFrom = (props: DappRequestingFromProps) => {
-  const { name, origin, icon, ...rest } = props;
+  const { name, origin, ...rest } = props;
 
   return (
     <HStack
@@ -21,7 +40,7 @@ const DappRequestingFrom = (props: DappRequestingFromProps) => {
       w="full"
       {...rest}
     >
-      {icon && icon}
+      <FromIcon origin={origin} />
       <VStack gap={2} align="flex-start">
         <Text
           color="gray.100"
