@@ -1,8 +1,8 @@
+import { useCallback, useMemo } from "react";
 import { Avatar, Box, Flex, HStack, IconButton, Text, Tooltip, useClipboard, VStack } from "bako-ui";
 import { SimplifiedAsset, SimplifiedOperation, TxCategory } from "../../services/simplify-transaction";
 import { AddressUtils } from "@/modules/core";
 import { PiCopyThin } from "react-icons/pi";
-import { useMemo } from "react";
 import { bn } from "fuels";
 import { UseTransactionSocket } from "../../hooks";
 import { useWorkspaceContext } from "@/modules";
@@ -148,13 +148,13 @@ const AddressDisplay = ({
   onCopy,
   hasCopied,
 }: AddressDisplayProps) => {
-  const handleCopy = () => {
+  const handleCopy = useCallback(() => {
     if (isCurrentAccount && vaultAddress) {
       onCopy();
     } else {
       navigator.clipboard.writeText(address);
     }
-  };
+  }, [isCurrentAccount, vaultAddress, onCopy, address]);
   return (
     <Flex
       w="full"

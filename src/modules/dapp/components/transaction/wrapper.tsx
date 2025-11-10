@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode, memo, useEffect } from 'react';
 
 import { TransactionExpire } from '@/components';
 import { Dapp } from '@/layouts/dapp';
@@ -11,15 +11,10 @@ import { TransactionAlert } from './alert';
 import { SimplifiedTransaction } from '../../services/simplify-transaction';
 import { Box, Button, HStack } from 'bako-ui';
 
-const Alert = (
-  {
-    isLoading,
-    pendingSignerTransactions
-  }: {
-    isLoading: boolean;
-    pendingSignerTransactions: boolean;
-  }
-) => {
+const Alert = memo(({ isLoading, pendingSignerTransactions }: {
+  isLoading: boolean;
+  pendingSignerTransactions: boolean;
+}) => {
   if (isLoading) return null;
 
   if (pendingSignerTransactions)
@@ -36,7 +31,7 @@ const Alert = (
       text="Double-check transaction details before submission."
     />
   );
-};
+});
 
 interface DappTransactionWrapperProps {
   title: string;
@@ -75,10 +70,12 @@ export const DappTransactionWrapper = (props: DappTransactionWrapperProps) => {
 
   const { sessionId, request_id, name, origin } = useQueryParams();
 
-  if (!sessionId || !request_id) {
-    window.close();
-    goHome();
-  }
+  useEffect(() => {
+    if (!sessionId || !request_id) {
+      window.close();
+      goHome();
+    }
+  }, [sessionId, request_id, goHome]);
 
   return (
     <Dapp.Container>
@@ -109,7 +106,10 @@ export const DappTransactionWrapper = (props: DappTransactionWrapperProps) => {
           name={name}
           origin={origin}
         />
-        <Alert isLoading={isLoading} pendingSignerTransactions={pendingSignerTransactions} />
+        <Alert
+          isLoading={isLoading}
+          pendingSignerTransactions={pendingSignerTransactions}
+        />
         <HStack hidden={isLoading} gap={6} w="full">
           <Button
             variant="subtle"
@@ -125,6 +125,6 @@ export const DappTransactionWrapper = (props: DappTransactionWrapperProps) => {
           {primaryActionButton}
         </HStack>
       </Dapp.FixedFooter>
-    </Dapp.Container >
+    </Dapp.Container>
   );
 };

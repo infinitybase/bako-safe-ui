@@ -1,3 +1,4 @@
+import { useCallback, useMemo } from "react";
 import { AddressUtils as BakoAddressUtils } from "bakosafe";
 import { AddressUtils } from "@/modules/core";
 import { EConnectors } from "@/modules/core/hooks/fuel/useListConnectors";
@@ -10,21 +11,25 @@ export const useProfile = () => {
   } = useWorkspaceContext();
   const { fuel } = useFuel();
 
-  const isWebAuthn = userInfos?.type.type === TypeUser.WEB_AUTHN;
+  const isWebAuthn = useMemo(
+    () => userInfos?.type.type === TypeUser.WEB_AUTHN,
+    [userInfos?.type.type]
+  );
 
-  const getUserAddress = () => {
-    if (BakoAddressUtils.isEvm(userInfos?.address)) {
+  const getUserAddress = useCallback(() => {
+    if (!userInfos?.address) return "";
+
+    if (BakoAddressUtils.isEvm(userInfos.address)) {
       return AddressUtils.format(
-        BakoAddressUtils.parseFuelAddressToEth(userInfos?.address),
-        15
-      );
+        BakoAddressUtils.parseFuelAddressToEth(userInfos.address), 15);
     }
+
     return isWebAuthn
       ? userInfos?.name
       : AddressUtils.format(userInfos?.address, 4);
-  };
+  }, [userInfos?.address, userInfos?.name, isWebAuthn]);
 
-  const logout = async () => {
+  const logout = useCallback(async () => {
     try {
       if (
         userInfos?.type.type === TypeUser.FUEL &&
@@ -37,7 +42,7 @@ export const useProfile = () => {
     } finally {
       handlers.logout?.();
     }
-  };
+  }, [userInfos?.type.type, userInfos?.type.name, fuel, handlers.logout]);
 
   return { userInfos, isWebAuthn, getUserAddress, logout };
 }

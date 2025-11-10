@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { HStack, HStackProps, Image, Text, VStack } from 'bako-ui';
 
 import { miraData } from '@/config/swap';
@@ -5,7 +6,7 @@ import RigContractIcon from '@/assets/images/rig-icon.png';
 import { Nullable } from '@/modules/core';
 import { LayerSwapIcon } from '@/components';
 
-const FromIcon = ({
+const FromIcon = memo(({
   origin
 }: {
   origin: Nullable<string>;
@@ -20,7 +21,7 @@ const FromIcon = ({
     return <LayerSwapIcon boxSize="36px" rounded="sm" />
 
   return null;
-}
+});
 
 interface DappRequestingFromProps extends HStackProps {
   name: Nullable<string>;

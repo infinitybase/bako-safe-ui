@@ -14,10 +14,12 @@ interface DappTransactionSuccessProps {
 const DappTransactionSuccess = (props: DappTransactionSuccessProps) => {
   const { title, description } = props;
 
+  const origin = window.location.origin;
+
   const handleRedirectToBakoSafe = useCallback(() => {
     window.close();
-    window.open(window.location.origin, '_BLANK');
-  }, []);
+    window.open(origin, '_BLANK');
+  }, [origin]);
 
   return (
     <Container>
