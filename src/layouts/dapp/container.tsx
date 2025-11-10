@@ -19,6 +19,7 @@ const Container = (props: ContainerProps) => {
         maxW={500}
         minW={404}
         overflow="hidden"
+        gap={0}
         {...rest}
       >
         {children}
