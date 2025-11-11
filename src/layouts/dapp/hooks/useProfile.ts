@@ -1,4 +1,5 @@
 import { useFuel } from '@fuels/react';
+import { usePrivy } from '@privy-io/react-auth';
 import { AddressUtils as BakoAddressUtils } from 'bakosafe';
 import { useCallback, useMemo } from 'react';
 
@@ -11,6 +12,7 @@ export const useProfile = () => {
     authDetails: { userInfos, handlers },
   } = useWorkspaceContext();
   const { fuel } = useFuel();
+  const { logout: privyLogout } = usePrivy();
 
   const isWebAuthn = useMemo(
     () => userInfos?.type.type === TypeUser.WEB_AUTHN,
@@ -34,12 +36,11 @@ export const useProfile = () => {
 
   const logout = useCallback(async () => {
     try {
-      if (
-        userInfos?.type.type === TypeUser.FUEL &&
-        userInfos?.type.name !== EConnectors.FULLET
-      ) {
-        await fuel.disconnect();
-      }
+      userInfos?.type.type === TypeUser.FUEL &&
+        userInfos?.type.name !== EConnectors.FULLET &&
+        (await fuel.disconnect());
+
+      userInfos?.type.type === TypeUser.SOCIAL && (await privyLogout());
       // eslint-disable-next-line no-empty
     } catch {
     } finally {

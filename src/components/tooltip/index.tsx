@@ -24,23 +24,22 @@ const Tooltip = ({ text, placment }: TooltipProps) => {
         >
           <Popover.Trigger>
             <Icon
-              color="grey.200"
+              color="textPrimary"
               boxSize="14px"
               as={TooltipIcon}
               onClick={onToggle}
             />
           </Popover.Trigger>
           <Popover.Content
-            bg="grey.825"
+            bg="bg.muted"
             py={4}
             px={2}
-            borderColor="dark.100"
             maxW={270}
             display={!isOpen ? 'none' : 'block'}
             _focus={{ ring: 'none' }}
           >
             <Popover.CloseTrigger />
-            <Popover.Body color="white">
+            <Popover.Body color="textPrimary">
               {text ??
                 `Max Fee is the most that you might pay for the transaction. Only the actual fee will be deducted from your wallet. 100% of this fee goes to the network.`}
             </Popover.Body>
@@ -52,13 +51,11 @@ const Tooltip = ({ text, placment }: TooltipProps) => {
             text ??
             'Max Fee is the most that you might pay for the transaction. Only the actual fee will be deducted from your wallet. 100% of this fee goes to the network.'
           }
-          // fontSize="xs"
-          // bg="grey.825"
-          // rounded={8}
-          // maxW={270}
-          // overflow="hidden"
+          contentProps={{
+            bg: 'bg.muted',
+            color: 'textPrimary',
+          }}
           positioning={{ placement: placment ?? 'top-start' }}
-          // padding={4}
           closeOnScroll
         >
           <Icon color="grey.200" boxSize="14px" as={TooltipIcon} />

@@ -1,10 +1,13 @@
 import { Card, Text } from 'bako-ui';
+import { motion } from 'framer-motion';
 import { useMemo } from 'react';
 
 import { useWorkspaceContext } from '@/modules';
 import { Asset } from '@/modules/core';
 
 import AssetItem from './AssetItem';
+
+const MotionBody = motion(Card.Body);
 
 export const AssetsList = ({ assets }: { assets: Asset[] }) => {
   const { tokensUSD } = useWorkspaceContext();
@@ -25,7 +28,13 @@ export const AssetsList = ({ assets }: { assets: Asset[] }) => {
   const isEmpty = useMemo(() => assets.length === 0, [assets]);
 
   return (
-    <Card.Body pt={4}>
+    <MotionBody
+      pt={4}
+      justifyContent={isEmpty ? 'center' : 'flex-start'}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.3 }}
+    >
       {isEmpty && (
         <Text color="textSecondary" textAlign="center">
           Nothing to show here yet
@@ -35,6 +44,6 @@ export const AssetsList = ({ assets }: { assets: Asset[] }) => {
         topThreeAssets.map((asset) => (
           <AssetItem key={asset.assetId} asset={asset} />
         ))}
-    </Card.Body>
+    </MotionBody>
   );
 };

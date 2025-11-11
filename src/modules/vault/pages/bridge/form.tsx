@@ -132,6 +132,7 @@ export function FormPageBrigde({ assets }: FormPageBrigdeProps) {
             assets={assets?.assets}
             errorAmount={errorAmount}
             setErrorAmount={setErrorAmount}
+            decimals={assetFrom?.decimals}
           />
         </MotionBox>
 

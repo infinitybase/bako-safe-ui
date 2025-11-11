@@ -1,8 +1,12 @@
 import { TransactionType } from 'bakosafe';
 
 import { api } from '@/config';
+import { IPredicateAllocation } from '@/modules/core';
 import { AssetId } from '@/modules/core/utils/assets/address';
-import { TransactionWithVault } from '@/modules/transactions/services';
+import {
+  ITransactionStatusFilter,
+  TransactionWithVault,
+} from '@/modules/transactions/services';
 import { GetAllPredicatePaginationResponse } from '@/modules/vault';
 
 export interface HomeDataResponse {
@@ -11,9 +15,21 @@ export interface HomeDataResponse {
 
 export interface HomeTransactionsResponse {
   data: TransactionWithVault[];
+  offsetDb: number;
+  offsetFuel: number;
+  perPage: number;
 }
 
 type TokensUSDResponse = [AssetId, number][];
+
+type HomeTransactionsParams = {
+  type?: TransactionType;
+  status?: ITransactionStatusFilter;
+  offsetDb?: string | number;
+  offsetFuel?: string | number;
+  perPage?: string | number;
+};
+
 export class HomeService {
   static async home() {
     const { data } = await api.get<HomeDataResponse>(`/user/predicates`);
@@ -21,13 +37,11 @@ export class HomeService {
     return data;
   }
 
-  static async homeTransactions(type?: TransactionType) {
+  static async homeTransactions(params: HomeTransactionsParams) {
     const { data } = await api.get<HomeTransactionsResponse>(
-      `/user/latest/transactions`,
+      `/user/transactions`,
       {
-        params: {
-          type,
-        },
+        params: { ...params },
       },
     );
 
@@ -40,5 +54,11 @@ export class HomeService {
     const result = !Array.isArray(data) ? [] : data;
 
     return result;
+  }
+
+  static async getUserAllocation() {
+    const { data } = await api.get<IPredicateAllocation>(`/user/allocation`);
+
+    return data;
   }
 }

@@ -14,6 +14,7 @@ export interface AmountBridgeProps {
   assets?: Required<Asset>[];
   errorAmount?: string | null;
   setErrorAmount: React.Dispatch<React.SetStateAction<string | null>>;
+  decimals?: number;
 }
 
 export function AmountBrigde({
@@ -21,6 +22,7 @@ export function AmountBrigde({
   assets,
   errorAmount,
   setErrorAmount,
+  decimals,
 }: AmountBridgeProps) {
   const { stepForm, setStepForm } = useFormBridgeContext();
   const { watch } = useFormContext();
@@ -83,6 +85,7 @@ export function AmountBrigde({
       <ExpandableCardSection isExpanded={isCurrentStep} type="body">
         <InputAmount
           symbol={symbol}
+          decimals={decimals}
           value={amount}
           onChange={handleSourceChange}
           disabled={!isCurrentStep}

@@ -31,7 +31,10 @@ const VaultBalancePage = () => {
               flex={1}
             >
               {assets.hasAssets ? (
-                <AssetsBalanceList assets={assets.assets!} />
+                <AssetsBalanceList
+                  assets={assets.assets!}
+                  predicateId={vault.data.id}
+                />
               ) : (
                 <EmptyState
                   showAction={false}

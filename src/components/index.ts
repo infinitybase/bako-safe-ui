@@ -6,6 +6,7 @@ export * from './bakoLoading';
 export * from './banner';
 export * from './card';
 export * from './carousel';
+export * from './chart';
 export * from './commingSoonDialog';
 export * from './copyAddressButton';
 export * from './depositDialog';

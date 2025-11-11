@@ -22,6 +22,7 @@ export enum EConnectorsLabels {
   FUEL = 'Fuel',
   FUELET = 'Fuelet',
   EVM = 'Ethereum',
+  SOCIAL = 'Social Login',
 }
 
 const DEFAULT_CONNECTORS = [

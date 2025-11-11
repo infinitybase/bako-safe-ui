@@ -1,5 +1,6 @@
 import { Box, Text } from 'bako-ui';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
+import { useInView } from 'react-intersection-observer';
 
 import { CustomSkeleton, TransactionFilters } from '@/components';
 import { EmptyState } from '@/components/emptyState';
@@ -8,10 +9,11 @@ import { useTransactionsContext } from '@/modules/transactions/providers/Transac
 import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 const HomeTransactions = () => {
+  const inView = useInView();
   const {
     homeTransactions: {
       transactions,
-      request: { isLoading },
+      request: { isLoading, fetchNextPage, hasNextPage, isFetching },
       filter: {
         filter,
         handleAllAction,
@@ -39,6 +41,12 @@ const HomeTransactions = () => {
         : false,
     [pendingSignerTransactions],
   );
+
+  useEffect(() => {
+    if (inView && hasNextPage && !isFetching) {
+      fetchNextPage();
+    }
+  }, [inView, hasNextPage, isFetching, fetchNextPage]);
 
   return (
     <Box w="full" mt={{ base: 16, sm: 8 }}>
@@ -111,6 +119,8 @@ const HomeTransactions = () => {
             </TransactionCard.List>
           </Box>
         ))}
+
+      <Box ref={inView.ref} />
     </Box>
   );
 };

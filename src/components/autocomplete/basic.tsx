@@ -215,7 +215,6 @@ const Autocomplete = ({
           onPaste={handlePaste}
           onFocus={handleFocus}
           style={inputStyle}
-          // @ts-expect-error - TODO CHECK THIS
           ref={inputRef}
           paddingInlineEnd={'2.2rem !important'}
         />

@@ -1,46 +1,41 @@
-import { Heading, HStack, Icon, StackProps, Text, VStack } from 'bako-ui';
+import { Alert, Icon } from 'bako-ui';
+import React from 'react';
 
 import { TriangleWarning } from '@/components';
 
-interface ICreateVaultWarningProps extends StackProps {
+type AlertRootProps = React.ComponentProps<typeof Alert.Root>;
+interface ICreateVaultWarningProps extends AlertRootProps {
   message: string;
 }
 
 const CreateVaultWarning = (props: ICreateVaultWarningProps) => {
   const { message, ...rest } = props;
   return (
-    <VStack
+    <Alert.Root
       w="full"
-      borderRadius="8px"
-      border="1px solid rgba(255, 192, 16, 0.3)"
-      bgColor="rgba(255, 192, 16, 0.15)"
-      backdropFilter=" blur(30px)"
-      padding="8px 8px 12px 8px"
-      alignItems="start"
+      borderRadius="lg"
+      status="warning"
+      variant="solid"
+      bgColor="primary.main/8"
+      padding={3}
+      gap={3}
+      alignItems="center"
       {...rest}
     >
-      <HStack>
+      <Alert.Indicator>
         <Icon as={TriangleWarning} w={4} />
-        <Heading
-          color="brand.500"
-          fontWeight={600}
-          fontSize="sm"
-          lineHeight="16.94px"
+      </Alert.Indicator>
+      <Alert.Content>
+        <Alert.Description
+          fontWeight={400}
+          fontSize="xs"
+          lineHeight="shorter"
+          color="primary.main"
         >
-          Warning
-        </Heading>
-      </HStack>
-
-      <Text
-        fontWeight={400}
-        fontSize="xs"
-        lineHeight="14.52px"
-        color="brand.400"
-        pl={7}
-      >
-        {message}
-      </Text>
-    </VStack>
+          {message}
+        </Alert.Description>
+      </Alert.Content>
+    </Alert.Root>
   );
 };
 

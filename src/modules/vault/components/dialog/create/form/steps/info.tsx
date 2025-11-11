@@ -39,6 +39,7 @@ const VaultInfosStep = ({ form, vaultName }: VaultInfoStepProps) => {
                 <Input
                   id="vault_name"
                   value={search}
+                  variant="subtle"
                   defaultValue={search || form.watch('name')}
                   maxLength={27}
                   pt={2}
@@ -56,7 +57,7 @@ const VaultInfosStep = ({ form, vaultName }: VaultInfoStepProps) => {
                 color={
                   !!vaultNameIsAvailable || form.formState.errors.name?.message
                     ? 'error.500'
-                    : 'gray.550'
+                    : 'textSecondary'
                 }
               >
                 {!!vaultNameIsAvailable && search.length > 0
@@ -81,10 +82,10 @@ const VaultInfosStep = ({ form, vaultName }: VaultInfoStepProps) => {
             {...form.register('description')}
             id="vault_description"
             maxLength={199}
-            placeholder="Description"
-            resize="none"
+            variant="subtle"
+            rows={5}
+            placeholder="Description (optional)"
           />
-          <Field.HelperText>Optional</Field.HelperText>
         </Field.Root>
       </VStack>
     </Box>

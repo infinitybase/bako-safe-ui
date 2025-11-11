@@ -19,6 +19,7 @@ export enum TypeUser {
   FULLET = 'FULLET',
   WEB_AUTHN = 'WEB_AUTHN',
   EVM = 'EVM',
+  SOCIAL = 'SOCIAL',
 }
 
 export type SignWebAuthnPayload = {
@@ -27,11 +28,22 @@ export type SignWebAuthnPayload = {
   publicKey: string;
 };
 
+export type SignMessageWebAuthnPayload = {
+  signPayload: SignWebAuthnPayload;
+  address: string;
+  predicateVersion?: string;
+};
+
 export type SignInSignWebAuthnPayload = Omit<
   SignWebAuthnPayload,
   'publicKey'
 > & {
   name: string;
+};
+
+export type WalletSignMessagePayload = {
+  message: string;
+  predicateVersion?: string;
 };
 
 export type CreateUserResponse = {
@@ -171,6 +183,12 @@ export type IGetUserInfosResponse = {
   network: Network;
 };
 
+interface IGetUserWalletResponse {
+  address: string;
+  configurable: string;
+  version: string;
+}
+
 export class UserService {
   static async create(payload: CreateUserPayload) {
     // const invalidNetwork = payload?.provider?.includes(NetworkType.MAINNET);
@@ -230,6 +248,11 @@ export class UserService {
     const { data } = await api.get<GetByHardwareResponse[]>(
       `/user/by-hardware/${hardwareId}`,
     );
+    return data;
+  }
+
+  static async userWallet() {
+    const { data } = await api.get<IGetUserWalletResponse>('/user/wallet');
     return data;
   }
 

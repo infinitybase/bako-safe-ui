@@ -1,11 +1,23 @@
-import { Box, Button, Field, Heading, HStack, Icon, VStack } from 'bako-ui';
+import {
+  Box,
+  Button,
+  createListCollection,
+  Field,
+  Heading,
+  HStack,
+  Icon,
+  Select,
+  Stack,
+  Text,
+  VStack,
+} from 'bako-ui';
 import { AddressUtils as BakoAddressUtils } from 'bakosafe';
 import { Address, isB256, isEvmAddress } from 'fuels';
-import { useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { Controller } from 'react-hook-form';
-import { FiPlusSquare as PlusSquareIcon } from 'react-icons/fi';
 
-import { Autocomplete, Dialog, RemoveIcon, Select } from '@/components';
+import { Autocomplete, RemoveIcon } from '@/components';
+import { Plus2Icon } from '@/components/icons/plus2';
 import {
   AddToAddressBook,
   CreateContactDialog,
@@ -17,11 +29,12 @@ import {
 import { useBakoIDClient } from '@/modules/core/hooks/bako-id';
 import { ITemplate } from '@/modules/core/models';
 import { AddressUtils } from '@/modules/core/utils/address';
-import CreateVaultWarning from '@/modules/vault/components/CreateVaultWarning';
 import { UseCreateVaultReturn } from '@/modules/vault/hooks/create/useCreateVault';
 import { useWorkspaceContext } from '@/modules/workspace/hooks';
 import { AddressBookUtils } from '@/utils';
 import { scrollToBottom } from '@/utils/scroll-to-bottom';
+
+import { MyAccountSignerCard } from './myAccountSignerCard';
 
 export interface VaultAddressesStepProps {
   form: UseCreateVaultReturn['form'];
@@ -52,9 +65,6 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
     handlers: { fetchResolverName, fetchResolveAddress },
   } = useBakoIDClient(providerInstance);
 
-  const hasTwoOrMoreAddresses =
-    form.watch('addresses') && form.watch('addresses')!.length >= 2;
-
   const [isFirstLoad, setIsFirstLoad] = useState(true);
   const [currentInputIndex, setCurrentInputIndex] = useState<
     number | undefined
@@ -83,7 +93,7 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
   const hasOneAddress = addresses.fields.length === 1;
   const hasTenAddress = addresses.fields.length >= 10;
 
-  const isDisable =
+  const isDisabled =
     (!!form.formState.errors.addresses ||
       validateAddress.isLoading ||
       hasTenAddress) &&
@@ -92,6 +102,17 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
   const lastAddressIndex = addresses.fields.length;
 
   const minSigners = form.formState.errors.minSigners?.message;
+
+  const signaturesOptions = useMemo(
+    () => Array.from({ length: addresses.fields.length || 1 }, (_, i) => i + 1),
+    [addresses.fields.length],
+  );
+
+  const signaturesCollection = createListCollection({
+    items: signaturesOptions || [],
+    itemToString: (item) => item.toString(),
+    itemToValue: (item) => item.toString(),
+  });
 
   return (
     <>
@@ -107,16 +128,10 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
           w="full"
           overflowY="scroll"
           aria-label="Scroll vault form"
+          justifyContent="space-between"
           css={{
             '&::-webkit-scrollbar': {
               display: 'none',
-              width: '5px',
-              maxHeight: '330px',
-            },
-            '&::-webkit-scrollbar-thumb': {
-              backgroundColor: '#2C2C2C',
-              borderRadius: '30px',
-              height: '10px',
             },
           }}
           onWheel={(e) => {
@@ -124,270 +139,252 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
           }}
           h={{ base: '60vh', sm: 500 }}
         >
-          <CreateVaultWarning
-            mb={2}
-            message="Please ensure that all signer addresses are valid and accessible wallet
-        addresses on the Fuel Network. Addresses from other Bako Safe Vaults and
-        wallets from other networks cannot be used as signers."
-          />
-
-          <Dialog.Section
+          <VStack
+            mt={4}
             w="full"
-            p={4}
-            borderRadius="xl"
-            border="1px solid"
-            borderColor="grey.925"
-            bgColor="transparent"
-            title={
-              <Heading fontSize="sm" color="grey.200">
-                Vault signers
-              </Heading>
-            }
-            description="Who is going to sign this vault?"
-            descriptionFontSize="sm"
+            gap={2}
+            flex={1}
+            onClick={() => {
+              handleFirstIsFirstLoad();
+            }}
+            ref={optionsScrollableContainerRef}
           >
-            <VStack
-              mt={4}
-              w="full"
-              gap={2}
-              minH={120}
-              position="relative"
-              onClick={() => {
-                handleFirstIsFirstLoad();
-              }}
-              ref={optionsScrollableContainerRef}
-            >
-              {addresses.fields.map(({ id }, index) => {
-                const first = index === 0;
+            {addresses.fields.map(({ id }, index) => {
+              const first = index === 0;
 
-                return (
-                  <Controller
-                    key={id}
-                    name={`addresses.${index}.value`}
-                    control={form.control}
-                    render={({ field, fieldState }) => {
-                      const appliedOptions = handleFieldOptions(
-                        field.value || '',
-                        optionsRequests[index]?.options ?? [],
-                        first,
-                      );
+              return (
+                <Controller
+                  key={id}
+                  name={`addresses.${index}.value`}
+                  control={form.control}
+                  render={({ field, fieldState }) => {
+                    const appliedOptions = handleFieldOptions(
+                      field.value || '',
+                      optionsRequests[index]?.options ?? [],
+                      first,
+                    );
 
-                      if (index && !fieldState.invalid && field.value) {
-                        validateAddress.handler(field.value, index);
-                      }
+                    if (index && !fieldState.invalid && field.value) {
+                      validateAddress.handler(field.value, index);
+                    }
 
-                      const isLoading =
-                        !optionsRequests[index].isSuccess ||
-                        validateAddress.isLoading;
-                      const value = field.value || '';
+                    const isLoading =
+                      !optionsRequests[index].isSuccess ||
+                      validateAddress.isLoading;
+                    const value = field.value || '';
 
-                      const showAddToAddressBook =
-                        !first &&
-                        !fieldState.invalid &&
-                        AddressUtils.isValid(value) &&
-                        optionsRequests[index].isSuccess &&
-                        listContactsRequest.data &&
-                        !listContactsRequest.data
-                          .map((o) =>
-                            Address.fromString(o.user.address).toString(),
-                          )
-                          .includes(
-                            isB256(value)
-                              ? Address.fromString(value).toString()
-                              : value,
-                          );
+                    const showAddToAddressBook =
+                      !first &&
+                      !fieldState.invalid &&
+                      AddressUtils.isValid(value) &&
+                      optionsRequests[index].isSuccess &&
+                      listContactsRequest.data &&
+                      !listContactsRequest.data
+                        .map((o) =>
+                          Address.fromString(o.user.address).toString(),
+                        )
+                        .includes(
+                          isB256(value)
+                            ? Address.fromString(value).toString()
+                            : value,
+                        );
 
+                    if (first && field.value) {
                       return (
-                        <Field.Root
-                          invalid={fieldState.invalid}
-                          id={`Address ${index + 1}`}
-                        >
-                          <Autocomplete
-                            label={
-                              first ? 'Your address' : `Address ${index + 1}`
-                            }
-                            actionOnFocus={() => {
-                              if (index !== lastAddressIndex) {
-                                setCurrentInputIndex(index);
-                              }
-                            }}
-                            // variant="dark"
-                            optionsRef={optionRef}
-                            value={field.value}
-                            onChange={field.onChange}
-                            onInputChange={async (value: string) => {
-                              const result = { value: value, label: value };
-
-                              if (value.startsWith('@')) {
-                                const address =
-                                  await fetchResolveAddress.handler(
-                                    value.split(' - ').at(0)!,
-                                  );
-                                if (address) {
-                                  // address without checksum
-                                  // is required to validate if it's not a vault address
-                                  result.value = new Address(address).toB256();
-
-                                  result.label =
-                                    AddressBookUtils.formatForAutocomplete(
-                                      value,
-                                      address,
-                                    );
-                                }
-                              }
-
-                              if (
-                                value.startsWith('eth:') ||
-                                isEvmAddress(value)
-                              ) {
-                                const address = value.replaceAll('eth:', '');
-                                if (isEvmAddress(address)) {
-                                  result.value = new Address(address).toB256();
-                                  result.label = address.toLowerCase();
-                                }
-                              }
-
-                              if (isB256(value)) {
-                                const name =
-                                  await fetchResolverName.handler(value);
-                                if (name) {
-                                  result.label =
-                                    AddressBookUtils.formatForAutocomplete(
-                                      name,
-                                      value,
-                                    );
-                                }
-                                result.value = new Address(value).toB256();
-                              }
-
-                              return result;
-                            }}
-                            options={appliedOptions}
-                            isLoading={isLoading}
-                            disabled={first}
-                            inView={inView}
-                            clearable={false}
-                            rightElement={
-                              <Icon
-                                as={RemoveIcon}
-                                fontSize="md"
-                                cursor="pointer"
-                                onClick={() => {
-                                  const minSigners =
-                                    form.getValues('minSigners');
-                                  const addressesLength =
-                                    addresses.fields.length - 1;
-                                  if (Number(minSigners) > addressesLength) {
-                                    form.setValue(
-                                      'minSigners',
-                                      String(addressesLength),
-                                    );
-                                  }
-                                  addresses.remove(index);
-                                }}
-                              />
-                            }
-                          />
-
-                          <Field.HelperText color="error.500">
-                            {fieldState.error?.message}
-                          </Field.HelperText>
-
-                          <AddToAddressBook
-                            visible={showAddToAddressBook}
-                            onAdd={() => {
-                              let _address = field.value || '';
-
-                              if (BakoAddressUtils.isEvm(_address)) {
-                                _address =
-                                  'eth:' +
-                                  BakoAddressUtils.parseFuelAddressToEth(
-                                    _address,
-                                  );
-                              }
-
-                              handleOpenDialog?.({
-                                address: _address,
-                              });
-                            }}
-                          />
-                        </Field.Root>
+                        <MyAccountSignerCard
+                          address={field.value}
+                          providerInstance={providerInstance}
+                        />
                       );
-                    }}
-                  />
-                );
-              })}
-              <Button
-                minH={10}
-                w="full"
-                border="none"
-                color="dark.300"
-                bgColor="grey.200"
-                colorPalette="secondary"
-                mt="auto"
-                disabled={isDisable}
-                aria-label={'Add more addresses vault form'}
-                onClick={() => {
-                  addresses.append();
-                  setTimeout(
-                    () => scrollToBottom(optionsScrollableContainerRef),
-                    0,
-                  );
-                }}
-                _hover={{
-                  opacity: 0.8,
-                }}
-              >
-                <Icon as={PlusSquareIcon} w={5} h={5} />
-                Add more addresses
-              </Button>
-            </VStack>
-          </Dialog.Section>
+                    }
 
-          <HStack
-            position="relative"
-            mt={{ base: 2, sm: 8 }}
-            border="1px solid"
-            borderColor="grey.925"
-            borderRadius="xl"
-            py={{ base: 2, sm: 4 }}
-            px={4}
-            mb={{ base: 12, sm: 4 }}
-          >
-            <Dialog.Section
+                    return (
+                      <Field.Root
+                        invalid={fieldState.invalid}
+                        id={`Address ${index + 1}`}
+                      >
+                        <Autocomplete
+                          label={
+                            first ? 'Your address' : `Address ${index + 1}`
+                          }
+                          actionOnFocus={() => {
+                            if (index !== lastAddressIndex) {
+                              setCurrentInputIndex(index);
+                            }
+                          }}
+                          // variant="dark"
+                          optionsRef={optionRef}
+                          value={field.value}
+                          onChange={field.onChange}
+                          onInputChange={async (value: string) => {
+                            const result = { value: value, label: value };
+
+                            if (value.startsWith('@')) {
+                              const address = await fetchResolveAddress.handler(
+                                value.split(' - ').at(0)!,
+                              );
+                              if (address) {
+                                // address without checksum
+                                // is required to validate if it's not a vault address
+                                result.value = new Address(address).toB256();
+
+                                result.label =
+                                  AddressBookUtils.formatForAutocomplete(
+                                    value,
+                                    address,
+                                  );
+                              }
+                            }
+
+                            if (
+                              value.startsWith('eth:') ||
+                              isEvmAddress(value)
+                            ) {
+                              const address = value.replaceAll('eth:', '');
+                              if (isEvmAddress(address)) {
+                                result.value = new Address(address).toB256();
+                                result.label = address.toLowerCase();
+                              }
+                            }
+
+                            if (isB256(value)) {
+                              const name =
+                                await fetchResolverName.handler(value);
+                              if (name) {
+                                result.label =
+                                  AddressBookUtils.formatForAutocomplete(
+                                    name,
+                                    value,
+                                  );
+                              }
+                              result.value = new Address(value).toB256();
+                            }
+
+                            return result;
+                          }}
+                          options={appliedOptions}
+                          isLoading={isLoading}
+                          disabled={first}
+                          inView={inView}
+                          clearable={false}
+                          rightElement={
+                            <Icon
+                              as={RemoveIcon}
+                              fontSize="md"
+                              cursor="pointer"
+                              display={first ? 'none' : 'block'}
+                              onClick={() => {
+                                const minSigners = form.getValues('minSigners');
+                                const addressesLength =
+                                  addresses.fields.length - 1;
+                                if (Number(minSigners) > addressesLength) {
+                                  form.setValue(
+                                    'minSigners',
+                                    String(addressesLength),
+                                  );
+                                }
+                                addresses.remove(index);
+                              }}
+                            />
+                          }
+                        />
+
+                        <Field.HelperText color="error.500">
+                          {fieldState.error?.message}
+                        </Field.HelperText>
+
+                        <AddToAddressBook
+                          visible={showAddToAddressBook}
+                          onAdd={() => {
+                            let _address = field.value || '';
+
+                            if (BakoAddressUtils.isEvm(_address)) {
+                              _address =
+                                'eth:' +
+                                BakoAddressUtils.parseFuelAddressToEth(
+                                  _address,
+                                );
+                            }
+
+                            handleOpenDialog?.({
+                              address: _address,
+                            });
+                          }}
+                        />
+                      </Field.Root>
+                    );
+                  }}
+                />
+              );
+            })}
+            <Button
               w="full"
-              maxW={350}
-              mb={{ base: 0, sm: 5 }}
-              title={
-                <Heading fontSize="sm" color="grey.200">
-                  Min signatures required?
-                </Heading>
-              }
-              description="Set the minimum number of signatures to approve a transfer."
-              descriptionFontSize="sm"
-            />
+              variant="subtle"
+              bg="bg.panel"
+              disabled={isDisabled}
+              onClick={() => {
+                addresses.append();
+                setTimeout(
+                  () => scrollToBottom(optionsScrollableContainerRef),
+                  0,
+                );
+              }}
+              _hover={{
+                bg: 'gray.550',
+              }}
+            >
+              <Icon as={Plus2Icon} color="textSecondary" w={5} h={5} />
+              Add more addresses
+            </Button>
+          </VStack>
+
+          <HStack w="full" justifyContent="space-between" pb={6}>
+            <Stack gap={3} maxW="275px">
+              <Heading fontSize="xs" color="textPrimary" lineHeight="shorter">
+                Minimum signatures required
+              </Heading>
+              <Text fontSize="xs" color="gray.400" lineHeight="shorter">
+                Set the minimum number of signatures to approve any transfer in
+                this vault.
+              </Text>
+            </Stack>
 
             <Controller
               name="minSigners"
               control={form.control}
+              defaultValue="1"
               render={({ field }) => (
-                <Field.Root position="relative" maxW={'full'} w="24">
-                  <Select
-                    aria-label={'Select min signatures vault form'}
-                    needShowOptionsAbove={hasTwoOrMoreAddresses}
-                    style={{
-                      background: '#201F1D',
-                    }}
-                    value={Number(field.value)}
-                    onChange={field.onChange}
-                    options={Array(addresses.fields.length)
-                      .fill('')
-                      .map((_, index) => ({
-                        label: index + 1,
-                        value: index + 1,
-                      }))}
-                  />
-                </Field.Root>
+                <Select.Root
+                  w="98px"
+                  variant="subtle"
+                  rounded="lg"
+                  // positioning={{ strategy: 'fixed' }}
+                  collection={signaturesCollection}
+                  aria-label={'Select min signatures vault form'}
+                  value={[field.value ?? '']}
+                  onValueChange={(e) => field.onChange(e.value[0].toString())}
+                >
+                  <Select.HiddenSelect />
+
+                  <Select.Control>
+                    <Select.Trigger px={6}>
+                      <Select.ValueText color="gray.50" />
+                    </Select.Trigger>
+                    <Select.IndicatorGroup>
+                      <Select.Indicator />
+                    </Select.IndicatorGroup>
+                  </Select.Control>
+                  <Select.Positioner>
+                    <Select.Content>
+                      {signaturesOptions.map((index) => (
+                        <Select.Item item={index} key={index}>
+                          {index}
+                          <Select.ItemIndicator />
+                        </Select.Item>
+                      ))}
+                    </Select.Content>
+                  </Select.Positioner>
+                </Select.Root>
               )}
             />
           </HStack>

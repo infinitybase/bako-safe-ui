@@ -6,6 +6,8 @@ import {
 } from 'fuels';
 import { useState } from 'react';
 
+import { useEvm } from '@/modules/auth/hooks';
+import { useSocial } from '@/modules/auth/hooks/useSocial';
 import { useMyWallet } from '@/modules/core/hooks/fuel';
 import CreateTxMenuButton, {
   ECreateTransactionMethods,
@@ -46,6 +48,8 @@ const TransactionConfirm = () => {
     },
   } = useWorkspaceContext();
   const { data: wallet } = useMyWallet();
+  const { isConnected: isEvmConnected } = useEvm();
+  const { wallet: socialWallet } = useSocial();
 
   const { transaction } = useSimplifiedTransaction({
     tx: summary.transactionSummary as
@@ -73,7 +77,7 @@ const TransactionConfirm = () => {
             cancel={cancelSendTransaction}
             transaction={transaction}
             primaryActionButton={
-              type && (wallet || webauthn) ? (
+              type && (wallet || webauthn || isEvmConnected || socialWallet) ? (
                 <CreateTxMenuButton
                   createTxMethod={createTxMethod}
                   setCreateTxMethod={setCreateTxMethod}
@@ -120,7 +124,7 @@ const TransactionConfirm = () => {
                 fontSize={14}
                 loading={isSigning}
                 disabled={isSending || pendingSignerTransactions}
-                onClick={() => signTransaction()}
+                onClick={() => signTransaction(undefined, vault?.version)}
               >
                 Sign
               </Button>
