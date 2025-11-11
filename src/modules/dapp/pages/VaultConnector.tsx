@@ -20,25 +20,27 @@ import { useEffect, useState } from 'react';
 import { RiLogoutBoxRLine } from 'react-icons/ri';
 
 import { CustomSkeleton, EmptyBox, LineCloseIcon } from '@/components';
-import { useQueryParams } from '@/modules/auth';
+import { useAuth, useQueryParams } from '@/modules/auth';
 import { AddressUtils } from '@/modules/core';
 import { EConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
 import { CreateVaultDialog } from '@/modules/vault';
 import { VaultItemBox } from '@/modules/vault/components/modal/box';
 import { useVaultDrawer } from '@/modules/vault/components/modal/hook';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { DappTransaction } from '../components';
 import { useAuthSocket, useVerifyBrowserType } from '../hooks';
+import { useUserConnectorCompatibility } from '../hooks/useUserConnectorCompatibility';
 
 const VaultConnector = () => {
-  const { name, origin, sessionId, request_id } = useQueryParams();
-  const [dynamicHeight, setDynamicHeight] = useState(0);
+  const [isUserCompatibleWithConnector, setIsUserCompatibleWithConnector] =
+    useState<boolean | null>(null);
 
-  const {
-    authDetails: { userInfos, handlers },
-  } = useWorkspaceContext();
+  const { name, origin, sessionId, request_id, connectorType } =
+    useQueryParams();
+
+  const { userInfos, handlers } = useAuth();
   const { isSafariBrowser } = useVerifyBrowserType();
+  const { checkCompatibility } = useUserConnectorCompatibility();
 
   const { fuel } = useFuel();
   const { logout: privyLogout } = usePrivy();
@@ -53,45 +55,9 @@ const VaultConnector = () => {
 
   const { isOpen, onClose, onOpen } = useDisclosure();
 
+  const connector = decodeURIComponent(connectorType || '');
   const noVaultsAvailable = isSuccess && !vaults.length;
-
   const isWebAuthn = userInfos?.type.type === TypeUser.WEB_AUTHN;
-
-  useEffect(() => {
-    if (
-      vaults.length === 1 &&
-      vaults[0]?.id &&
-      !send.isPending &&
-      name &&
-      origin &&
-      sessionId &&
-      request_id &&
-      userInfos.address
-    ) {
-      send.mutate({
-        name: name,
-        origin: origin,
-        sessionId: sessionId,
-        request_id: request_id,
-        vaultId: vaults[0].id,
-        userAddress: userInfos.address,
-      });
-    }
-  }, [
-    // name,
-    // origin,
-    // sessionId,
-    // request_id,
-    userInfos.address,
-    vaults.length,
-    // send,
-  ]);
-
-  useEffect(() => {
-    const clientWindowHeight = window.innerHeight;
-    const dividedBy = clientWindowHeight >= 750 ? 1.64 : 1.8;
-    setDynamicHeight(clientWindowHeight / dividedBy);
-  }, []);
 
   const logout = async () => {
     try {
@@ -119,6 +85,52 @@ const VaultConnector = () => {
       ? userInfos?.name
       : AddressUtils.format(userInfos?.address, 15);
   };
+
+  useEffect(() => {
+    if (
+      vaults.length === 1 &&
+      vaults[0]?.id &&
+      !send.isPending &&
+      name &&
+      origin &&
+      sessionId &&
+      request_id &&
+      userInfos.address &&
+      isUserCompatibleWithConnector
+    ) {
+      send.mutate({
+        name: name,
+        origin: origin,
+        sessionId: sessionId,
+        request_id: request_id,
+        vaultId: vaults[0].id,
+        userAddress: userInfos.address,
+      });
+    }
+  }, [userInfos.address, vaults.length, isUserCompatibleWithConnector]);
+
+  useEffect(() => {
+    if (
+      connector &&
+      userInfos?.address &&
+      userInfos?.type.type &&
+      !userInfos?.isFetching &&
+      !userInfos?.isLoading
+    ) {
+      const isCompatible = checkCompatibility(connector, userInfos.type.type);
+      setIsUserCompatibleWithConnector(isCompatible);
+    }
+  }, [
+    connector,
+    userInfos?.address,
+    userInfos?.type.type,
+    userInfos?.isFetching,
+    userInfos?.isLoading,
+  ]);
+
+  useEffect(() => {
+    if (isUserCompatibleWithConnector === false) handlers.logout?.();
+  }, [isUserCompatibleWithConnector]);
 
   return (
     <VStack
@@ -208,8 +220,6 @@ const VaultConnector = () => {
             px={6}
             pt={4}
             pb={0}
-            //flex={1}
-            //bgColor={'green.100'}
           >
             <HStack
               spacing={2}
@@ -379,9 +389,9 @@ const VaultConnector = () => {
                   !selectedVaultId ||
                   !vaults.length ||
                   isLoading ||
-                  send.isPending
+                  send.isPending ||
+                  !isUserCompatibleWithConnector
                 }
-                //leftIcon={<RiLink size={22} />}
                 onClick={() => {
                   send.mutate({
                     name: name!,
