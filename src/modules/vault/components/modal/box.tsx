@@ -7,10 +7,10 @@ import {
   useTransactionsSignaturePending,
   WaitingSignatureBadge,
 } from '@/modules/transactions';
-
-import { PredicateWorkspace } from '../../services';
-import { useHasReservedCoins } from '../../hooks';
 import { moneyFormat } from '@/utils';
+
+import { useHasReservedCoins } from '../../hooks';
+import { PredicateWorkspace } from '../../services';
 
 interface VaultItemBoxText {
   type: 'primary' | 'secondary';
@@ -25,27 +25,22 @@ const VaultItemBoxText = (props: VaultItemBoxText) => {
   if (isLoading) return <Skeleton height="12px" width="40px" />;
 
   const isPrimary = type === 'primary';
-  const color = isPrimary ? isActive ? 'gray.50' : 'gray.200' : 'gray.300';
+  const color = isPrimary ? (isActive ? 'gray.50' : 'gray.200') : 'gray.300';
   const fontWeight = isPrimary ? 500 : 400;
 
   return (
-    <Text
-      color={color}
-      fontWeight={fontWeight}
-      fontSize="xs"
-      lineHeight="12px"
-    >
+    <Text color={color} fontWeight={fontWeight} fontSize="xs" lineHeight="12px">
       {children}
     </Text>
-  )
-}
+  );
+};
 
 interface VaultDrawerBoxProps extends CardProps {
-  id?: string;
-  isActive?: boolean;
+  id: string;
   name: string;
   address: string;
-  workspace?: PredicateWorkspace;
+  workspace: PredicateWorkspace;
+  isActive?: boolean;
   isSingleWorkspace?: boolean;
   isInDapp?: boolean;
   members?: number;
@@ -65,7 +60,10 @@ const VaultItemBoxComponent = ({
   workspace,
   ...rest
 }: VaultDrawerBoxProps) => {
-  const { data, isLoading: isLoadingBalance } = useHasReservedCoins(id!, workspace!.id);
+  const { data, isLoading: isLoadingBalance } = useHasReservedCoins(
+    id,
+    workspace.id,
+  );
   const isPending = useTransactionsSignaturePending([id!]);
   const showPending = isPending.data?.transactionsBlocked;
   const needSignature = isPending.data?.pendingSignature;
@@ -95,8 +93,8 @@ const VaultItemBoxComponent = ({
       >
         Personal
       </Badge>
-    )
-  }, []);
+    );
+  }, [isInDapp, root]);
 
   return (
     <Card
@@ -130,22 +128,26 @@ const VaultItemBoxComponent = ({
           name={name}
         />
         <VStack gap={2} align="flex-start">
-          <VaultItemBoxText type='primary' isActive={isActive}>
+          <VaultItemBoxText type="primary" isActive={isActive}>
             {name}
           </VaultItemBoxText>
-          <VaultItemBoxText type='secondary' isActive={isActive}>
+          <VaultItemBoxText type="secondary" isActive={isActive}>
             {AddressUtils.format(address ?? '', 4)}
           </VaultItemBoxText>
         </VStack>
       </HStack>
       <VStack gap={2} align="flex-end">
-        <VaultItemBoxText type='primary' isActive={isActive} isLoading={isLoadingBalance}>
+        <VaultItemBoxText
+          type="primary"
+          isActive={isActive}
+          isLoading={isLoadingBalance}
+        >
           {data ? moneyFormat(data.currentBalanceUSD) : ''}
         </VaultItemBoxText>
         <HStack gap={3}>
           {StatusBadge}
           {RootBadge}
-          <VaultItemBoxText type='secondary' isActive={isActive}>
+          <VaultItemBoxText type="secondary" isActive={isActive}>
             {requiredSigners ?? 0}/{members} signers
           </VaultItemBoxText>
         </HStack>
