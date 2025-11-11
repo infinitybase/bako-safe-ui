@@ -1,5 +1,5 @@
-import { VStack, VStackProps } from "bako-ui";
-import React from "react";
+import { VStack, VStackProps } from 'bako-ui';
+import React from 'react';
 
 interface Props extends VStackProps {
   children: React.ReactNode;

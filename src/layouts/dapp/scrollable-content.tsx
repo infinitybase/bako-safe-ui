@@ -1,15 +1,12 @@
-import { CustomSkeleton } from '@/components';
 import { Box, VStack, VStackProps } from 'bako-ui';
 
+import { CustomSkeleton } from '@/components';
+
 interface Props extends VStackProps {
-  isLoading?: boolean,
+  isLoading?: boolean;
 }
 
-const ScrollableContent = ({
-  isLoading = false,
-  children,
-  ...rest
-}: Props) => {
+const ScrollableContent = ({ isLoading = false, children, ...rest }: Props) => {
   if (isLoading)
     return (
       <Box w="full" p={6} flex={1}>

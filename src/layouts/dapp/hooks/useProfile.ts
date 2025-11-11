@@ -1,9 +1,10 @@
-import { useCallback, useMemo } from "react";
-import { AddressUtils as BakoAddressUtils } from "bakosafe";
-import { AddressUtils } from "@/modules/core";
-import { EConnectors } from "@/modules/core/hooks/fuel/useListConnectors";
-import { useFuel } from "@fuels/react";
-import { TypeUser, useWorkspaceContext } from "@/modules";
+import { useFuel } from '@fuels/react';
+import { AddressUtils as BakoAddressUtils } from 'bakosafe';
+import { useCallback, useMemo } from 'react';
+
+import { TypeUser, useWorkspaceContext } from '@/modules';
+import { AddressUtils } from '@/modules/core';
+import { EConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
 
 export const useProfile = () => {
   const {
@@ -13,15 +14,17 @@ export const useProfile = () => {
 
   const isWebAuthn = useMemo(
     () => userInfos?.type.type === TypeUser.WEB_AUTHN,
-    [userInfos?.type.type]
+    [userInfos?.type.type],
   );
 
   const getUserAddress = useCallback(() => {
-    if (!userInfos?.address) return "";
+    if (!userInfos?.address) return '';
 
     if (BakoAddressUtils.isEvm(userInfos.address)) {
       return AddressUtils.format(
-        BakoAddressUtils.parseFuelAddressToEth(userInfos.address), 15);
+        BakoAddressUtils.parseFuelAddressToEth(userInfos.address),
+        15,
+      );
     }
 
     return isWebAuthn
@@ -37,12 +40,12 @@ export const useProfile = () => {
       ) {
         await fuel.disconnect();
       }
-    } catch {
       // eslint-disable-next-line no-empty
+    } catch {
     } finally {
       handlers.logout?.();
     }
-  }, [userInfos?.type.type, userInfos?.type.name, fuel, handlers.logout]);
+  }, [userInfos?.type.type, userInfos?.type.name, fuel, handlers]);
 
   return { userInfos, isWebAuthn, getUserAddress, logout };
-}
+};

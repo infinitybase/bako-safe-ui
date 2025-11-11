@@ -1,7 +1,11 @@
 import { Box, Button } from 'bako-ui';
+import {
+  TransactionRequest,
+  TransactionResult,
+  TransactionSummary,
+} from 'fuels';
 import { useState } from 'react';
 
-import { Dialog } from '@/components/dialog';
 import { useMyWallet } from '@/modules/core/hooks/fuel';
 import CreateTxMenuButton, {
   ECreateTransactionMethods,
@@ -12,7 +16,6 @@ import { DappTransactionSuccess } from '../components/transaction/success';
 import { DappTransactionWrapper } from '../components/transaction/wrapper';
 import { useTransactionSocket } from '../hooks';
 import { useSimplifiedTransaction } from '../hooks/useSimplifiedTransaction';
-import { TransactionRequest, TransactionResult, TransactionSummary } from 'fuels';
 
 const TransactionConfirm = () => {
   const [createTxMethod, setCreateTxMethod] =

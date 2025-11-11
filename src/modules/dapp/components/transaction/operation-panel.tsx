@@ -1,18 +1,23 @@
-import { VStack } from "bako-ui";
-import { DappTransaction } from ".";
-import { CategorizedOperations } from "../../services/simplify-transaction";
-import { UseTransactionSocket } from "../../hooks";
+import { VStack } from 'bako-ui';
+
+import { UseTransactionSocket } from '../../hooks';
+import { CategorizedOperations } from '../../services/simplify-transaction';
+import { DappTransaction } from '.';
 
 interface DappTransactionOperationPanel {
   operations?: CategorizedOperations;
   vault: UseTransactionSocket['vault'];
 }
 
-export const DappTransactionOperationPanel = (props: DappTransactionOperationPanel) => {
+export const DappTransactionOperationPanel = (
+  props: DappTransactionOperationPanel,
+) => {
   const { operations, vault } = props;
 
-  const renderIntermediateContractCalls = (operations?.intermediateContractCalls?.length ?? 0) > 0;
-  const renderNotRelatedToCurrentAccount = (operations?.notRelatedToCurrentAccount?.length ?? 0) > 0;
+  const renderIntermediateContractCalls =
+    (operations?.intermediateContractCalls?.length ?? 0) > 0;
+  const renderNotRelatedToCurrentAccount =
+    (operations?.notRelatedToCurrentAccount?.length ?? 0) > 0;
 
   return (
     <VStack gap={1} w="full">
@@ -20,20 +25,20 @@ export const DappTransactionOperationPanel = (props: DappTransactionOperationPan
         operations={operations?.mainOperations}
         vault={vault}
       />
-      {renderIntermediateContractCalls &&
+      {renderIntermediateContractCalls && (
         <DappTransaction.OperationSectionGroup
           title="Intermediate contract calls"
-          operations={operations?.intermediateContractCalls!}
+          operations={operations?.intermediateContractCalls ?? []}
           vault={vault}
         />
-      }
-      {renderNotRelatedToCurrentAccount &&
+      )}
+      {renderNotRelatedToCurrentAccount && (
         <DappTransaction.OperationSectionGroup
           title="Operations not related to your vault"
-          operations={operations?.notRelatedToCurrentAccount!}
+          operations={operations?.notRelatedToCurrentAccount ?? []}
           vault={vault}
         />
-      }
+      )}
     </VStack>
   );
-}
+};

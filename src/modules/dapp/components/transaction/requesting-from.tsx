@@ -1,27 +1,25 @@
-import { memo } from 'react';
 import { HStack, HStackProps, Image, Text, VStack } from 'bako-ui';
+import { memo } from 'react';
 
-import { miraData } from '@/config/swap';
 import RigContractIcon from '@/assets/images/rig-icon.png';
-import { Nullable } from '@/modules/core';
 import { LayerSwapIcon } from '@/components';
+import { miraData } from '@/config/swap';
+import { Nullable } from '@/modules/core';
 
-const FromIcon = memo(({
-  origin
-}: {
-  origin: Nullable<string>;
-}) => {
+const FromIconComponent = ({ origin }: { origin: Nullable<string> }) => {
   if (origin === miraData.origin)
-    return <Image src={miraData.icon} boxSize="36px" rounded="sm" />
+    return <Image src={miraData.icon} boxSize="36px" rounded="sm" />;
 
   if (origin === 'https://rig.st')
-    return <Image src={RigContractIcon} boxSize="36px" rounded="sm" />
+    return <Image src={RigContractIcon} boxSize="36px" rounded="sm" />;
 
   if (origin === 'https://layerswap.io')
-    return <LayerSwapIcon boxSize="36px" rounded="sm" />
+    return <LayerSwapIcon boxSize="36px" rounded="sm" />;
 
   return null;
-});
+};
+
+const FromIcon = memo(FromIconComponent);
 
 interface DappRequestingFromProps extends HStackProps {
   name: Nullable<string>;
@@ -43,20 +41,10 @@ const DappRequestingFrom = (props: DappRequestingFromProps) => {
     >
       <FromIcon origin={origin} />
       <VStack gap={2} align="flex-start">
-        <Text
-          color="gray.100"
-          fontSize={12}
-          fontWeight={500}
-          lineHeight="9px"
-        >
+        <Text color="gray.100" fontSize={12} fontWeight={500} lineHeight="9px">
           {name}
         </Text>
-        <Text
-          color="gray.300"
-          fontSize={12}
-          fontWeight={400}
-          lineHeight="9px"
-        >
+        <Text color="gray.300" fontSize={12} fontWeight={400} lineHeight="9px">
           Requesting a transaction from: {origin?.split('//')[1]}
         </Text>
       </VStack>

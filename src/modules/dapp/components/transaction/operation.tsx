@@ -1,12 +1,12 @@
-import { Box, Flex, HStack, Separator, Text, VStack } from 'bako-ui';
+import { Box, Flex, Separator, Text, VStack } from 'bako-ui';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
+
+import { ChevronDownIcon } from '@/components';
 
 import { UseTransactionSocket } from '../../hooks';
 import { SimplifiedOperation } from '../../services/simplify-transaction';
 import { DappTransaction } from '.';
-import { ChevronDownIcon, CustomSkeleton } from '@/components';
-import { RecipientCard } from './recipient';
 
 const MotionBox = motion(Box);
 
@@ -26,20 +26,13 @@ function DappTransactionOperation({
   return (
     <VStack w="full" gap={1}>
       <Flex w="full" direction="column">
-        <DappTransaction.Card
-          vault={vault!}
-          operation={operation}
-        />
+        <DappTransaction.Card vault={vault!} operation={operation} />
 
         {renderSeparator && <Separator borderColor="gray.600" m={4} />}
       </Flex>
 
       {isGrouped && (
-        <Box
-          w="full"
-          bg="gray.700"
-          borderRadius={8}
-        >
+        <Box w="full" bg="gray.700" borderRadius={8}>
           <Flex
             as="button"
             onClick={(e) => {
@@ -67,7 +60,7 @@ function DappTransactionOperation({
               boxSize={3}
               color="gray.400"
               transition="transform 0.2s ease"
-              transform={isExpanded ? "rotate(180deg)" : "rotate(0deg)"}
+              transform={isExpanded ? 'rotate(180deg)' : 'rotate(0deg)'}
             />
           </Flex>
 
@@ -86,7 +79,7 @@ function DappTransactionOperation({
             flexDirection="column"
           >
             {operation.operations?.map((op, index) => {
-              const isLast = index === ((operation.operations?.length ?? 0) - 1);
+              const isLast = index === (operation.operations?.length ?? 0) - 1;
 
               return (
                 <Flex

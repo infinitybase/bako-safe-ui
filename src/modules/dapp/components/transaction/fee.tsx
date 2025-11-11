@@ -1,5 +1,5 @@
-import { HStack, Text, Tooltip } from 'bako-ui';
 import { useState } from 'react';
+import { HStack, Text, Tooltip } from 'bako-ui';
 
 import { TooltipIcon } from '@/components/icons/tooltip';
 
@@ -14,10 +14,7 @@ const DappTransactionFee = ({ fee, isLoading }: FeeProps) => {
   const handleOpen = () => setTooltipOpen(true);
 
   return isLoading || !fee ? null : (
-    <HStack
-      w="full"
-      justifyContent="space-between"
-    >
+    <HStack w="full" justifyContent="space-between">
       <Text
         fontSize={12}
         color="gray.400"
@@ -41,11 +38,7 @@ const DappTransactionFee = ({ fee, isLoading }: FeeProps) => {
           />
         </Tooltip>
       </Text>
-      <Text
-        fontSize={12}
-        color="gray.100"
-        fontWeight={500}
-      >
+      <Text fontSize={12} color="gray.100" fontWeight={500}>
         {fee} ETH
       </Text>
     </HStack>

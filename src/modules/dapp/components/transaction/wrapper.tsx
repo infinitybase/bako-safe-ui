@@ -1,17 +1,20 @@
-import { ReactNode, memo, useEffect } from 'react';
+import { Box, Button, HStack } from 'bako-ui';
+import { memo, ReactNode, useEffect } from 'react';
 
 import { TransactionExpire } from '@/components';
 import { Dapp } from '@/layouts/dapp';
 import { useQueryParams } from '@/modules/auth/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
-import { DappTransaction } from '.';
 import { UseTransactionSocket } from '../../hooks';
-import { TransactionAlert } from './alert';
 import { SimplifiedTransaction } from '../../services/simplify-transaction';
-import { Box, Button, HStack } from 'bako-ui';
+import { DappTransaction } from '.';
+import { TransactionAlert } from './alert';
 
-const Alert = memo(({ isLoading, pendingSignerTransactions }: {
+const AlertComponent = ({
+  isLoading,
+  pendingSignerTransactions,
+}: {
   isLoading: boolean;
   pendingSignerTransactions: boolean;
 }) => {
@@ -31,7 +34,9 @@ const Alert = memo(({ isLoading, pendingSignerTransactions }: {
       text="Double-check transaction details before submission."
     />
   );
-});
+};
+
+const Alert = memo(AlertComponent);
 
 interface DappTransactionWrapperProps {
   title: string;
@@ -90,10 +95,7 @@ export const DappTransactionWrapper = (props: DappTransactionWrapperProps) => {
       <Dapp.Profile />
 
       <Dapp.ScrollableContent isLoading={isLoading}>
-        <Dapp.Header
-          title={title}
-          onClose={cancel}
-        />
+        <Dapp.Header title={title} onClose={cancel} />
         <DappTransaction.OperationPanel
           operations={transaction?.categorizedOperations}
           vault={vault!}
@@ -102,10 +104,7 @@ export const DappTransactionWrapper = (props: DappTransactionWrapperProps) => {
 
       <Dapp.FixedFooter>
         <DappTransaction.Fee fee={transactionSummary?.fee} />
-        <DappTransaction.RequestingFrom
-          name={name}
-          origin={origin}
-        />
+        <DappTransaction.RequestingFrom name={name} origin={origin} />
         <Alert
           isLoading={isLoading}
           pendingSignerTransactions={pendingSignerTransactions}

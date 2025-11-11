@@ -1,6 +1,6 @@
 import { Flex, VStack, VStackProps } from 'bako-ui';
 
-interface ContainerProps extends VStackProps { }
+interface ContainerProps extends VStackProps {}
 
 const Container = (props: ContainerProps) => {
   const { children, ...rest } = props;

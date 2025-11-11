@@ -1,14 +1,15 @@
-import { Warning3Icon } from "@/components";
-import { HStack, HStackProps, Text } from "bako-ui";
+import { HStack, HStackProps, Text } from 'bako-ui';
+
+import { Warning3Icon } from '@/components';
 
 interface Props extends HStackProps {
-  type: "red" | "yellow";
+  type: 'red' | 'yellow';
   text: string;
 }
 
 export const TransactionAlert = (props: Props) => {
   const { type, text } = props;
-  const baseColor = type === "red" ? "red.100" : "yellow.100";
+  const baseColor = type === 'red' ? 'red.100' : 'yellow.100';
   return (
     <HStack
       gap={3}
@@ -19,16 +20,8 @@ export const TransactionAlert = (props: Props) => {
       w="full"
       {...props}
     >
-      <Warning3Icon
-        color={baseColor}
-        h={4}
-        w={9}
-      />
-      <Text
-        color={baseColor}
-        fontSize={12}
-        fontWeight={400}
-        lineHeight="12px">
+      <Warning3Icon color={baseColor} h={4} w={9} />
+      <Text color={baseColor} fontSize={12} fontWeight={400} lineHeight="12px">
         {text}
       </Text>
     </HStack>

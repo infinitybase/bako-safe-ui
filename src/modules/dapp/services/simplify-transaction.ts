@@ -75,7 +75,7 @@ export type SimplifiedAddress = {
 export type SimplifiedAsset = {
   amount: BN;
   assetId: string;
-}
+};
 
 export type SimplifiedOperation = {
   type: TxCategory;
@@ -349,9 +349,7 @@ function groupOpsFromContractToCurrentAccount(
   return groupedFromContractToAccount;
 }
 
-function onlySumAssets(
-  operations?: SimplifiedOperation[],
-): Record<string, BN> {
+function onlySumAssets(operations?: SimplifiedOperation[]): Record<string, BN> {
   const assets: Record<string, BN> = {};
 
   for (const op of operations || []) {

@@ -1,38 +1,37 @@
-import { useCallback, useMemo } from "react";
-import { Avatar, Box, Flex, HStack, IconButton, Text, Tooltip, useClipboard, VStack } from "bako-ui";
-import { SimplifiedAsset, SimplifiedOperation, TxCategory } from "../../services/simplify-transaction";
-import { AddressUtils } from "@/modules/core";
-import { PiCopyThin } from "react-icons/pi";
-import { bn } from "fuels";
-import { UseTransactionSocket } from "../../hooks";
-import { useWorkspaceContext } from "@/modules";
-import { ChevronDown2Icon } from "@/components";
+import {
+  Avatar,
+  Box,
+  Flex,
+  HStack,
+  IconButton,
+  Text,
+  Tooltip,
+  useClipboard,
+  VStack,
+} from 'bako-ui';
+import { bn } from 'fuels';
+import { useCallback, useMemo } from 'react';
+import { PiCopyThin } from 'react-icons/pi';
+
+import { ChevronDown2Icon } from '@/components';
+import { useWorkspaceContext } from '@/modules';
+import { AddressUtils } from '@/modules/core';
+
+import { UseTransactionSocket } from '../../hooks';
+import {
+  SimplifiedAsset,
+  SimplifiedOperation,
+  TxCategory,
+} from '../../services/simplify-transaction';
 
 interface OperationArrowDisplayProps {
   label: string;
 }
 
-const OperationArrowDisplay = ({
-  label
-}: OperationArrowDisplayProps) => (
-  <Flex
-    w="full"
-    alignItems="center"
-    p={4}
-    gap={3}
-    align="center"
-  >
-    <ChevronDown2Icon
-      color="gray.400"
-      w={9}
-      h={4}
-    />
-    <Text
-      fontWeight={500}
-      color="gray.400"
-      fontSize="xs"
-      lineHeight="12px"
-    >
+const OperationArrowDisplay = ({ label }: OperationArrowDisplayProps) => (
+  <Flex w="full" alignItems="center" p={4} gap={3} align="center">
+    <ChevronDown2Icon color="gray.400" w={9} h={4} />
+    <Text fontWeight={500} color="gray.400" fontSize="xs" lineHeight="12px">
       {label}
     </Text>
   </Flex>
@@ -40,11 +39,9 @@ const OperationArrowDisplay = ({
 
 interface AssetDisplayProps {
   assets?: SimplifiedAsset[];
-};
+}
 
-const AssetDisplay = ({
-  assets,
-}: AssetDisplayProps) => {
+const AssetDisplay = ({ assets }: AssetDisplayProps) => {
   const { tokensUSD, assetsMap } = useWorkspaceContext();
 
   const asset = Object.values(assetsMap).find(
@@ -63,10 +60,7 @@ const AssetDisplay = ({
     });
   };
 
-  const assetOperation = useMemo(
-    () => bn(assets?.[0]?.amount || 0),
-    [assets],
-  );
+  const assetOperation = useMemo(() => bn(assets?.[0]?.amount || 0), [assets]);
 
   const assetsInfo = asset
     ? (assetsMap?.[asset.assetId] ?? assetsMap?.['UNKNOWN'])
@@ -77,10 +71,7 @@ const AssetDisplay = ({
   });
 
   const formatted = assets?.[0]
-    ? formatUsdEstimate(
-      bn(assets[0].amount).formatUnits(),
-      assets[0].assetId,
-    )
+    ? formatUsdEstimate(bn(assets[0].amount).formatUnits(), assets[0].assetId)
     : '$0.00';
 
   const assetId = assets?.[0]?.assetId || 'UNKNOWN';
@@ -96,21 +87,16 @@ const AssetDisplay = ({
       align="center"
     >
       <Box w={9} h={4}>
-        {assetsInfo?.icon &&
+        {assetsInfo?.icon && (
           <img
             src={assetsInfo.icon}
             alt="Asset icon"
             style={{ width: '100%', height: '100%' }}
           />
-        }
+        )}
       </Box>
       <Flex gap={1}>
-        <Text
-          fontWeight={500}
-          color="gray.100"
-          fontSize="xs"
-          lineHeight="12px"
-        >
+        <Text fontWeight={500} color="gray.100" fontSize="xs" lineHeight="12px">
           {assetAmount === '0.000000001' ? '' : assetAmount}{' '}
           {assetsInfo?.slug === 'UNK' || !assetsInfo?.slug
             ? `NFT ${AddressUtils.format(assetId, 8)}`
@@ -138,7 +124,7 @@ interface AddressDisplayProps {
   vaultAddress?: string;
   onCopy: () => void;
   hasCopied: boolean;
-};
+}
 
 const AddressDisplay = ({
   address,
@@ -156,13 +142,7 @@ const AddressDisplay = ({
     }
   }, [isCurrentAccount, vaultAddress, onCopy, address]);
   return (
-    <Flex
-      w="full"
-      alignItems="center"
-      bg="gray.700"
-      borderRadius={8}
-      p={4}
-    >
+    <Flex w="full" alignItems="center" bg="gray.700" borderRadius={8} p={4}>
       <HStack gap={3} align="center">
         <Avatar
           shape="rounded"
@@ -173,7 +153,7 @@ const AddressDisplay = ({
           name={name ?? '?'}
         />
         <VStack gap={2} align="flex-start">
-          {name &&
+          {name && (
             <Text
               fontWeight={500}
               color="gray.100"
@@ -182,7 +162,7 @@ const AddressDisplay = ({
             >
               {name}
             </Text>
-          }
+          )}
           <Flex align="center" gap={1}>
             <Text
               fontWeight={name ? 400 : 500}
@@ -212,7 +192,7 @@ const AddressDisplay = ({
       </HStack>
     </Flex>
   );
-}
+};
 
 interface DappTransactionOperationCardProps {
   operation: SimplifiedOperation;
@@ -220,7 +200,7 @@ interface DappTransactionOperationCardProps {
 }
 
 export const DappTransactionOperationCard = (
-  props: DappTransactionOperationCardProps
+  props: DappTransactionOperationCardProps,
 ) => {
   const { operation, vault } = props;
 
@@ -229,14 +209,16 @@ export const DappTransactionOperationCard = (
   const isContract = operation.type === TxCategory.CONTRACTCALL;
   const hasAssetsComingBack = useMemo(
     () => operation.assetsToFrom?.some((a) => a.amount.gt(0)),
-    [operation.assetsToFrom]
+    [operation.assetsToFrom],
   );
 
   return (
     <VStack gap={1} w="full">
       <AddressDisplay
         address={operation.from.address}
-        name={operation.isFromCurrentAccount ? vault?.name || 'Vault' : undefined}
+        name={
+          operation.isFromCurrentAccount ? vault?.name || 'Vault' : undefined
+        }
         isCurrentAccount={operation.isFromCurrentAccount ?? false}
         vaultAddress={vault?.address}
         onCopy={copy}
@@ -258,24 +240,26 @@ export const DappTransactionOperationCard = (
         hasCopied={copied}
       />
 
-      {hasAssetsComingBack &&
+      {hasAssetsComingBack && (
         <>
           <AssetDisplay assets={operation.assetsToFrom} />
 
-          <OperationArrowDisplay
-            label="Sends funds"
-          />
+          <OperationArrowDisplay label="Sends funds" />
 
           <AddressDisplay
             address={operation.from.address}
-            name={operation.isFromCurrentAccount ? vault?.name || 'Vault' : undefined}
+            name={
+              operation.isFromCurrentAccount
+                ? vault?.name || 'Vault'
+                : undefined
+            }
             isCurrentAccount={operation.isFromCurrentAccount ?? false}
             vaultAddress={vault?.address}
             onCopy={copy}
             hasCopied={copied}
           />
         </>
-      }
+      )}
     </VStack>
   );
-}
+};

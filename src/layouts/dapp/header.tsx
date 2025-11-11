@@ -1,5 +1,7 @@
 import { Heading, HStack, Text, VStack } from 'bako-ui';
+
 import { LineCloseIcon } from '@/components';
+
 import { useHeader } from './hooks/useHeader';
 
 interface HeaderProps {
@@ -16,12 +18,7 @@ const Header = ({
   const { renderCloseIcon } = useHeader();
 
   return (
-    <HStack
-      w="full"
-      justifyContent="space-between"
-      alignItems="center"
-      py={4}
-    >
+    <HStack w="full" justifyContent="space-between" alignItems="center" py={4}>
       <VStack gap={4} align="flex-start">
         <Heading
           fontSize={14}
@@ -31,7 +28,7 @@ const Header = ({
         >
           {title}
         </Heading>
-        {description &&
+        {description && (
           <Text
             fontWeight={400}
             truncate
@@ -41,9 +38,9 @@ const Header = ({
           >
             {description}
           </Text>
-        }
+        )}
       </VStack>
-      {renderCloseIcon &&
+      {renderCloseIcon && (
         <LineCloseIcon
           mr={2}
           onClick={onClose}
@@ -51,7 +48,7 @@ const Header = ({
           fontSize="24px"
           aria-label="Close window"
         />
-      }
+      )}
     </HStack>
   );
 };

@@ -1,22 +1,15 @@
 import { Avatar, Box, Button, Flex, HStack, Text, VStack } from 'bako-ui';
-import { AddressUtils } from '@/modules/core';
 import { RiArrowLeftRightLine } from 'react-icons/ri';
+
+import { AddressUtils } from '@/modules/core';
+
 import { useProfile } from './hooks/useProfile';
 
 export const Profile = () => {
-  const {
-    userInfos,
-    isWebAuthn,
-    getUserAddress,
-    logout
-  } = useProfile();
+  const { userInfos, isWebAuthn, getUserAddress, logout } = useProfile();
 
   return (
-    <Box
-      w="full"
-      px={6}
-      pt={6}
-    >
+    <Box w="full" px={6} pt={6}>
       <Flex
         w="full"
         alignItems="center"
@@ -26,11 +19,7 @@ export const Profile = () => {
         p={3}
       >
         <HStack gap={3} align="center">
-          <Avatar
-            shape="rounded"
-            boxSize="48px"
-            src={userInfos.avatar}
-          />
+          <Avatar shape="rounded" boxSize="48px" src={userInfos.avatar} />
           <VStack gap={2} align="flex-start">
             <Text
               fontWeight={700}

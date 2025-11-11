@@ -1,10 +1,10 @@
 import { Button, Text } from 'bako-ui';
 import { useCallback } from 'react';
 
+import { CheckIcon } from '@/components';
 import { Container } from '@/layouts/dapp/container';
 import { FixedFooter } from '@/layouts/dapp/fixed-footer';
 import { ScrollableContent } from '@/layouts/dapp/scrollable-content';
-import { CheckIcon } from '@/components';
 
 interface DappTransactionSuccessProps {
   title: string;
@@ -25,11 +25,7 @@ const DappTransactionSuccess = (props: DappTransactionSuccessProps) => {
     <Container>
       <ScrollableContent justify="center">
         <CheckIcon boxSize={12} color="gray.50" />
-        <Text
-          fontWeight={700}
-          fontSize="md"
-          color="gray.50"
-        >
+        <Text fontWeight={700} fontSize="md" color="gray.50">
           {title}
         </Text>
         <Text

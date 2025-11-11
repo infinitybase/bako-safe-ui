@@ -10,7 +10,9 @@ import {
   VStack,
 } from 'bako-ui';
 import { useEffect } from 'react';
+
 import { EmptyBox } from '@/components';
+import { Dapp } from '@/layouts';
 import { useQueryParams } from '@/modules/auth';
 import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
 import { CreateVaultDialog } from '@/modules/vault';
@@ -20,15 +22,9 @@ import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { DappTransaction } from '../components';
 import { useAuthSocket } from '../hooks';
-import { Dapp } from '@/layouts';
 
 const VaultConnector = () => {
-  const {
-    name,
-    origin,
-    sessionId,
-    request_id
-  } = useQueryParams();
+  const { name, origin, sessionId, request_id } = useQueryParams();
 
   const {
     authDetails: { userInfos, handlers },
@@ -39,18 +35,10 @@ const VaultConnector = () => {
     inView,
   } = useVaultDrawer({ perPage: 10, orderByRoot: true });
 
-  const {
-    selectedVaultId,
-    setSelectedVaultId,
-    currentVault,
-    send
-  } = useAuthSocket();
+  const { selectedVaultId, setSelectedVaultId, currentVault, send } =
+    useAuthSocket();
 
-  const {
-    isOpen,
-    onOpenChange,
-    onOpen
-  } = useDisclosure();
+  const { isOpen, onOpenChange, onOpen } = useDisclosure();
 
   const noVaultsAvailable = isSuccess && !vaults.length;
 
@@ -74,43 +62,25 @@ const VaultConnector = () => {
         userAddress: userInfos.address,
       });
     }
-  }, [
-    userInfos.address,
-    vaults.length,
-  ]);
+  }, [name, origin, request_id, send, sessionId, userInfos.address, vaults]);
 
   return (
     <Dapp.Container>
       <Dapp.Profile />
 
       <Dapp.ScrollableContent isLoading={isLoading}>
-        <CreateVaultDialog
-          open={isOpen}
-          onOpenChange={onOpenChange}
-        />
+        <CreateVaultDialog open={isOpen} onOpenChange={onOpenChange} />
 
-        <Dapp.Header
-          title="Accounts"
-        />
+        <Dapp.Header title="Accounts" />
 
-        <VStack
-          w="full"
-          gap={2}
-        >
+        <VStack w="full" gap={2}>
           {vaults?.map((vault) => {
             if (!vault) return null;
 
-            const {
-              id,
-              name,
-              predicateAddress,
-              workspace,
-              members,
-              root,
-            } = vault;
+            const { id, name, predicateAddress, workspace, members, root } =
+              vault;
 
-            if (id === currentVault && !selectedVaultId)
-              setSelectedVaultId(id);
+            if (id === currentVault && !selectedVaultId) setSelectedVaultId(id);
 
             if (id !== currentVault && !selectedVaultId && root)
               setSelectedVaultId(id);
@@ -171,13 +141,7 @@ const VaultConnector = () => {
               >
                 <EmptyBox w="33px" h="33px" />
               </Flex>
-              <Flex
-                w={305}
-                alignItems="center"
-                flexDir="column"
-                gap={6}
-                mt={4}
-              >
+              <Flex w={305} alignItems="center" flexDir="column" gap={6} mt={4}>
                 <Heading color="grey.75" fontSize={20}>
                   Nothing to show here.
                 </Heading>
@@ -199,10 +163,7 @@ const VaultConnector = () => {
       </Dapp.ScrollableContent>
 
       <Dapp.FixedFooter>
-        <DappTransaction.RequestingFrom
-          name={name}
-          origin={origin}
-        />
+        <DappTransaction.RequestingFrom name={name} origin={origin} />
         <HStack gap={6} w="full">
           <Button
             variant="subtle"

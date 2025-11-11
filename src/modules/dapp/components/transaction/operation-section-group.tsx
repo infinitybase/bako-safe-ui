@@ -1,20 +1,20 @@
-
+import { Box, Flex, Text } from 'bako-ui';
 import { motion } from 'framer-motion';
 
-const MotionBox = motion(Box);
-
-import { UseTransactionSocket } from '../../hooks';
-import { DappTransaction } from '.';
-import { Box, Flex, Text } from 'bako-ui';
-import { SimplifiedOperation } from '../../services/simplify-transaction';
 import { ChevronDownIcon } from '@/components';
 import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
+
+import { UseTransactionSocket } from '../../hooks';
+import { SimplifiedOperation } from '../../services/simplify-transaction';
+import { DappTransaction } from '.';
+
+const MotionBox = motion(Box);
 
 interface Props {
   title: string;
   operations: SimplifiedOperation[];
   vault: UseTransactionSocket['vault'];
-};
+}
 
 export function DappTransactionOperationSectionGroup({
   title,
@@ -24,11 +24,7 @@ export function DappTransactionOperationSectionGroup({
   const { isOpen, onToggle } = useDisclosure();
 
   return (
-    <Box
-      w="full"
-      bg="gray.700"
-      borderRadius={8}
-    >
+    <Box w="full" bg="gray.700" borderRadius={8}>
       <Flex
         as="button"
         onClick={onToggle}
@@ -39,12 +35,7 @@ export function DappTransactionOperationSectionGroup({
         p={4}
         cursor="pointer"
       >
-        <Text
-          fontWeight={500}
-          color="gray.100"
-          fontSize="xs"
-          lineHeight="12px"
-        >
+        <Text fontWeight={500} color="gray.100" fontSize="xs" lineHeight="12px">
           {title}
         </Text>
 
@@ -52,14 +43,14 @@ export function DappTransactionOperationSectionGroup({
           boxSize={3}
           color="gray.400"
           transition="transform 0.2s ease"
-          transform={isOpen ? "rotate(180deg)" : "rotate(0deg)"}
+          transform={isOpen ? 'rotate(180deg)' : 'rotate(0deg)'}
         />
       </Flex>
 
       <MotionBox
         animate={{
           height: isOpen ? 'auto' : 0,
-          opacity: isOpen ? 1 : 0
+          opacity: isOpen ? 1 : 0,
         }}
         transition={{
           duration: 0.3,
@@ -70,7 +61,7 @@ export function DappTransactionOperationSectionGroup({
         flexDirection="column"
       >
         {operations.map((op, index) => {
-          const isLast = index === ((operations?.length ?? 0) - 1);
+          const isLast = index === (operations?.length ?? 0) - 1;
 
           return (
             <Flex
