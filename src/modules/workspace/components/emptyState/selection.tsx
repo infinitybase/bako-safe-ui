@@ -1,7 +1,8 @@
-import { Box, Divider, Heading, Text, VStack } from '@chakra-ui/react';
+import { Box, Heading, Separator, Text, VStack } from 'bako-ui';
 
 import { UserWorkspaceIcon } from '@/components/icons/user-workspace-icon';
-import { useWorkspaceContext } from '../../WorkspaceProvider';
+
+import { useWorkspaceContext } from '../../hooks';
 
 export const SelectionEmptyState = () => {
   const {
@@ -9,7 +10,7 @@ export const SelectionEmptyState = () => {
   } = useWorkspaceContext();
 
   return (
-    <VStack spacing={4}>
+    <VStack gap={4}>
       <Box mb={4}>
         <UserWorkspaceIcon w={100} h={100} />
       </Box>
@@ -27,7 +28,7 @@ export const SelectionEmptyState = () => {
         </Text>
       </Box>
 
-      <Divider
+      <Separator
         position="absolute"
         left={0}
         bottom={0}

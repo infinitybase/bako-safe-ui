@@ -1,46 +1,35 @@
 import {
   Accordion,
-  AccordionButton,
-  AccordionItem,
-  AccordionPanel,
   Badge,
   Box,
   Button,
-  FormControl,
-  FormLabel,
+  Field,
   Heading,
   HStack,
   Icon,
   IconButton,
   Input,
-  Select,
   Text,
-  useAccordionItemState,
-  useDisclosure,
+  useAccordionItemContext,
   VStack,
-} from '@chakra-ui/react';
-import React from 'react';
+} from 'bako-ui';
 import { BsBoxArrowUpRight } from 'react-icons/bs';
 import { FaRegClone } from 'react-icons/fa';
 import { HiQrCode } from 'react-icons/hi2';
 import { MdEmail } from 'react-icons/md';
 import { SiBitcoinsv } from 'react-icons/si';
 
-import {
-  Card,
-  Dialog,
-  ErrorIcon,
-  PendingIcon,
-  SuccessIcon,
-} from '@/components';
+import { Card, ErrorIcon, PendingIcon, SuccessIcon } from '@/components';
+import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
 
 const AccordionTEste = () => {
-  const { isOpen, onClose, onOpen } = useAccordionItemState();
+  const accordionContext = useAccordionItemContext();
+  const isOpen = accordionContext.expanded;
 
   return (
-    <Button onClick={() => (isOpen ? onClose() : onOpen())}>
-      Open <AccordionButton />
-    </Button>
+    <Accordion.ItemTrigger asChild>
+      <Button>Open</Button>
+    </Accordion.ItemTrigger>
   );
 };
 
@@ -53,10 +42,10 @@ const ExamplePage = () => {
       <Box width="100%" mb={10}>
         <Heading size="lg">Card</Heading>
         <Box mt={4}>
-          <HStack spacing={2}>
+          <HStack gap={2}>
             <Card w="100%">
               <Box mb={3}>
-                <Heading variant="title-xl">Infinitybase</Heading>
+                <Heading>Infinitybase</Heading>
               </Box>
               <Box>
                 <Text variant="description">
@@ -67,7 +56,7 @@ const ExamplePage = () => {
             </Card>
             <Card w="100%">
               <Box mb={3}>
-                <Heading variant="title-xl">Infinitybase</Heading>
+                <Heading>Infinitybase</Heading>
               </Box>
               <Box>
                 <Text variant="description">
@@ -78,7 +67,7 @@ const ExamplePage = () => {
             </Card>
             <Card w="100%">
               <Box mb={3}>
-                <Heading variant="title-xl">Infinitybase</Heading>
+                <Heading>Infinitybase</Heading>
               </Box>
               <Box>
                 <Text variant="description">
@@ -90,10 +79,10 @@ const ExamplePage = () => {
           </HStack>
         </Box>
         <Box mt={4}>
-          <VStack spacing={4}>
+          <VStack gap={4}>
             <Card w="100%">
-              <HStack alignItems="center" spacing={10}>
-                <HStack alignItems="center" spacing={2}>
+              <HStack alignItems="center" gap={10}>
+                <HStack alignItems="center" gap={2}>
                   <Icon as={SiBitcoinsv} fontSize="lg" />
                   <Text color="grey.500">BTC</Text>
                 </HStack>
@@ -111,8 +100,8 @@ const ExamplePage = () => {
               </HStack>
             </Card>
             <Card w="100%" bgColor="warning.900" borderColor="warning.500">
-              <HStack alignItems="center" spacing={10}>
-                <HStack alignItems="center" spacing={2}>
+              <HStack alignItems="center" gap={10}>
+                <HStack alignItems="center" gap={2}>
                   <Icon as={SiBitcoinsv} fontSize="lg" />
                   <Text color="grey.500">BTC</Text>
                 </HStack>
@@ -130,8 +119,8 @@ const ExamplePage = () => {
               </HStack>
             </Card>
             <Card w="100%">
-              <HStack alignItems="center" spacing={10}>
-                <HStack alignItems="center" spacing={2}>
+              <HStack alignItems="center" gap={10}>
+                <HStack alignItems="center" gap={2}>
                   <Icon as={SiBitcoinsv} fontSize="lg" />
                   <Text color="grey.500">BTC</Text>
                 </HStack>
@@ -151,79 +140,68 @@ const ExamplePage = () => {
           </VStack>
         </Box>
       </Box>
-
       {/* BUTTONS */}
       <Box width="100%" mb={10}>
         <Heading size="lg">Button</Heading>
         <Box mt={4}>
-          <HStack mb={2} spacing={2}>
+          <HStack mb={2} gap={2}>
             <Card w="100%">
               <Box mb={3}>
-                <Heading variant="title-xl">Primary</Heading>
+                <Heading>Primary</Heading>
               </Box>
               <Box>
-                <Button variant="primary" onClick={dialogExample.onOpen}>
+                <Button onClick={dialogExample.onOpen}>
                   Open example modal
                 </Button>
               </Box>
             </Card>
             <Card w="100%">
               <Box mb={3}>
-                <Heading variant="title-xl">Primary with icon</Heading>
+                <Heading>Primary with icon</Heading>
               </Box>
               <Box>
-                <Button
-                  variant="primary"
-                  fontWeight="bold"
-                  leftIcon={<MdEmail />}
-                >
+                <Button fontWeight="bold">
+                  <MdEmail />
                   Create New Vault
                 </Button>
               </Box>
             </Card>
           </HStack>
-          <HStack mb={2} spacing={2}>
+          <HStack mb={2} gap={2}>
             <Card w="100%">
               <Box mb={3}>
-                <Heading variant="title-xl">Secondary</Heading>
+                <Heading>Secondary</Heading>
               </Box>
               <Box>
-                <Button variant="secondary">Decline</Button>
+                <Button>Decline</Button>
               </Box>
             </Card>
             <Card w="100%">
               <Box mb={3}>
-                <Heading variant="title-xl">Button icon</Heading>
+                <Heading>Button icon</Heading>
               </Box>
-              <HStack spacing={2}>
-                <IconButton
-                  aria-label="Copy"
-                  variant="icon"
-                  icon={<Icon as={FaRegClone} />}
-                />
-                <IconButton
-                  aria-label="QR Code"
-                  variant="icon"
-                  icon={<Icon as={HiQrCode} />}
-                />
-                <IconButton
-                  aria-label="Show in explorer"
-                  variant="icon"
-                  icon={<Icon as={BsBoxArrowUpRight} />}
-                />
+              <HStack gap={2}>
+                <IconButton aria-label="Copy">
+                  <Icon as={FaRegClone} />
+                </IconButton>
+                <IconButton aria-label="QR Code">
+                  <Icon as={HiQrCode} />
+                </IconButton>
+                <IconButton aria-label="Show in explorer">
+                  <Icon as={BsBoxArrowUpRight} />
+                </IconButton>
               </HStack>
             </Card>
           </HStack>
         </Box>
       </Box>
-
       {/* ICONS */}
       <Box width="100%" mb={10}>
         <Heading size="lg">Icons</Heading>
         <Box mt={4}>
-          <HStack mb={2} spacing={2}>
+          <HStack mb={2} gap={2}>
             <Card w="100%">
-              <HStack spacing={2}>
+              <HStack gap={2}>
                 <Icon as={PendingIcon} fontSize="xl" color="warning.500" />
                 <Icon as={ErrorIcon} fontSize="xl" color="error.500" />
                 <Icon as={SuccessIcon} fontSize="xl" color="success.500" />
@@ -232,26 +210,25 @@ const ExamplePage = () => {
           </HStack>
         </Box>
       </Box>
-
       {/* BADGE */}
       <Box width="100%" mb={10}>
         <Heading size="lg">Badge</Heading>
         <Box mt={4}>
-          <HStack mb={2} spacing={2}>
+          <HStack mb={2} gap={2}>
             <Card w="100%">
-              <HStack spacing={2}>
-                <Badge variant="success">
+              <HStack gap={2}>
+                <Badge variant="outline">
                   You signed
                   <Icon as={SuccessIcon} />
                 </Badge>
-                <Badge variant="error">
+                <Badge variant="outline" color="red">
                   You declined
                   <Icon as={ErrorIcon} />
                 </Badge>
-                <Badge variant="warning">
+                <Badge variant="outline" color="yellow">
                   <Icon as={PendingIcon} />1 pending transaction
                 </Badge>
-                <Badge variant="warning">
+                <Badge variant="outline">
                   <Icon as={PendingIcon} /> 1
                 </Badge>
               </HStack>
@@ -259,76 +236,73 @@ const ExamplePage = () => {
           </HStack>
         </Box>
       </Box>
-
       {/* BUTTONS */}
       <Box width="100%" mb={10}>
         <Heading size="lg">Form</Heading>
         <Box mt={4}>
-          <HStack mb={2} spacing={2}>
+          <HStack mb={2} gap={2}>
             <Card flex={1}>
               <Box mb={3}>
-                <Heading variant="title-xl">Input</Heading>
+                <Heading>Input</Heading>
               </Box>
               <Box w="100%" py={2}>
-                <FormControl>
+                <Field.Root>
                   <Input placeholder=" " />
-                  <FormLabel>First name</FormLabel>
+                  <Field.Label>First name</Field.Label>
                   {/* It is important that the Label comes after the Control due to css selectors */}
-                </FormControl>
+                </Field.Root>
               </Box>
               <Box w="100%" py={2}>
-                <FormControl>
+                <Field.Root>
                   <Input placeholder=" " />
-                  <FormLabel>First name</FormLabel>
+                  <Field.Label>First name</Field.Label>
                   {/* It is important that the Label comes after the Control due to css selectors */}
-                </FormControl>
+                </Field.Root>
               </Box>
             </Card>
             <Card flex={1}>
               <Box mb={3}>
-                <Heading variant="title-xl">Select</Heading>
+                <Heading>Select</Heading>
               </Box>
               <Box w="100%" py={2}>
-                <FormControl>
-                  <Select placeholder=" ">
+                <Field.Root>
+                  {/* <Select.Root placeholder=" ">
                     <option value="option1">Option 1</option>
                     <option value="option2">Option 2</option>
                     <option value="option3">Option 3</option>
-                  </Select>
-                  <FormLabel>First name</FormLabel>
+                  </Select.Root> */}
+                  <Field.Label>First name</Field.Label>
                   {/* It is important that the Label comes after the Control due to css selectors */}
-                </FormControl>
+                </Field.Root>
               </Box>
             </Card>
           </HStack>
         </Box>
       </Box>
-
       {/* ACCORDION */}
       <Box width="100%" mb={10}>
         <Heading size="lg">Accordion</Heading>
         <Box mt={4}>
-          <HStack mb={2} spacing={2}>
+          <HStack mb={2} gap={2}>
             <Card flex={1}>
-              <Accordion allowToggle>
+              {/* <Accordion allowToggle>
                 <AccordionItem>
                   <h2>
                     <AccordionTEste />
                   </h2>
-                  <AccordionPanel pb={4}>
+                  <AccordionItemContent pb={4}>
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
                     do eiusmod tempor incididunt ut labore et dolore magna
                     aliqua. Ut enim ad minim veniam, quis nostrud exercitation
                     ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                  </AccordionPanel>
+                  </AccordionItemContent>
                 </AccordionItem>
-              </Accordion>
+              </Accordion> */}
             </Card>
           </HStack>
         </Box>
       </Box>
-
-      {/* DIALOG */}
+      {/* DIALOG
       <Dialog.Modal
         isOpen={dialogExample.isOpen}
         onClose={dialogExample.onClose}
@@ -343,14 +317,14 @@ const ExamplePage = () => {
 
         <Dialog.Body maxW={420}>
           <VStack>
-            <FormControl>
+            <Field.Root>
               <Input placeholder=" " />
               <FormLabel>First name</FormLabel>
-            </FormControl>
-            <FormControl>
+            </Field.Root>
+            <Field.Root>
               <Input placeholder=" " />
               <FormLabel>First name</FormLabel>
-            </FormControl>
+            </Field.Root>
           </VStack>
         </Dialog.Body>
 
@@ -360,7 +334,7 @@ const ExamplePage = () => {
           </Dialog.SecondaryAction>
           <Dialog.PrimaryAction>Continue</Dialog.PrimaryAction>
         </Dialog.Actions>
-      </Dialog.Modal>
+      </Dialog.Modal> */}
     </Box>
   );
 };

@@ -1,4 +1,4 @@
-import { Box, BoxProps, Image } from '@chakra-ui/react';
+import { Box, BoxProps, Image } from 'bako-ui';
 
 import GarageBanner from '@/assets/garage-new-place-banner.png';
 
@@ -10,7 +10,9 @@ export const BakoGarageBanner = ({ ...rest }: BoxProps) => {
         alt="Bako Garage Banner"
         borderRadius="lg"
         width="full"
-        height="101px"
+        height="auto"
+        objectFit="inherit"
+        aspectRatio={16 / 9}
       />
     </Box>
   );

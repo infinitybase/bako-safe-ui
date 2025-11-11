@@ -167,8 +167,8 @@ export interface ITransactionWithType extends ITransaction {
   type: TTransactionType;
 }
 
-export interface ITransactionsGroupedByMonth {
-  monthYear: string;
+export interface ITransactionsGroupedByDay {
+  day: string;
   transactions: TransactionWithVault[];
 }
 

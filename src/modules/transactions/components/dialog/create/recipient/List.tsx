@@ -1,10 +1,11 @@
-import { Accordion, Button, Center, Text, Tooltip } from '@chakra-ui/react';
+import { Accordion, Button, Center, Text } from 'bako-ui';
 import { memo, useCallback } from 'react';
 
 import { UserAddIcon } from '@/components';
+import { Tooltip } from '@/components/ui/tooltip';
 import { delay } from '@/modules/core';
 import { UseCreateTransaction } from '@/modules/transactions/hooks';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 interface RecipientListProps {
   accordion: UseCreateTransaction['accordion'];
@@ -37,13 +38,13 @@ export const RecipientList = ({
   }, [transactions, ethAssetId, accordion]);
 
   return (
-    <Accordion
-      index={accordion.index}
+    <Accordion.Root
+      value={[accordion.index.toString()]}
       overflowY="auto"
       pb={isMobile ? 10 : 0}
       maxH={450}
       pr={{ base: 1, sm: 0 }}
-      sx={{
+      css={{
         '&::-webkit-scrollbar': {
           width: '5px',
           maxHeight: '330px',
@@ -70,16 +71,15 @@ export const RecipientList = ({
           </Text>
         ) : (
           <Tooltip
-            label="All available assets have been used."
-            isDisabled={!allAssetsUsed}
-            hasArrow
-            placement="top"
+            content="All available assets have been used."
+            disabled={!allAssetsUsed}
+            showArrow
+            positioning={{ placement: 'top' }}
           >
             <Button
               id="add_more_recipient"
               w="full"
-              leftIcon={<UserAddIcon />}
-              variant="primary"
+              colorPalette="primary"
               bgColor="grey.200"
               border="none"
               _hover={{
@@ -89,15 +89,16 @@ export const RecipientList = ({
                 cursor: 'not-allowed',
                 opacity: 0.6,
               }}
-              isDisabled={allAssetsUsed}
+              disabled={allAssetsUsed}
               onClick={handleAddMoreRecipient}
             >
+              <UserAddIcon />
               Add more recipients
             </Button>
           </Tooltip>
         )}
       </Center>
-    </Accordion>
+    </Accordion.Root>
   );
 };
 

@@ -1,4 +1,4 @@
-import { Icon } from '@chakra-ui/icons';
+import { Icon } from 'bako-ui';
 import { IoIosCheckmarkCircle } from 'react-icons/io';
 
 import { useNotification } from '@/modules/notification';

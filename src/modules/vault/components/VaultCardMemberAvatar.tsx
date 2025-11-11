@@ -1,4 +1,4 @@
-import { Avatar, Skeleton } from '@chakra-ui/react';
+import { Avatar, Skeleton } from 'bako-ui';
 import { memo } from 'react';
 
 import { PredicateMember } from '@/modules/core';
@@ -14,19 +14,20 @@ const VaultCardMemberAvatar = memo(
     );
 
     return (
-      <Skeleton isLoaded={!isLoading} borderRadius={8} boxSize="36px">
+      <Skeleton loading={isLoading} borderRadius={8} boxSize="36px">
         <Avatar
-          variant="roundedSquare"
+          shape="rounded"
           borderRadius={8}
-          src={avatar || member.avatar}
           key={member.address}
           border="none"
-          sx={{
+          css={{
             '&>img': {
               border: '1px solid #CFCCC9',
               boxShadow: '4px 0px 4px 0px #2B2827E5',
             },
           }}
+          name={member.nickname || member.address}
+          src={avatar || member.avatar}
         />
       </Skeleton>
     );

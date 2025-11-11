@@ -1,45 +1,51 @@
-import {
-  ToastId,
-  useToast as useToastChakra,
-  UseToastOptions,
-} from '@chakra-ui/react';
 import { useRef } from 'react';
 
-const useToast = () => {
-  const toast = useToastChakra();
-  const toastRef = useRef<ToastId | null>(null);
+import { toaster } from '@/components/ui/toaster';
 
-  const update = (params: UseToastOptions) => {
+interface ToastOptions {
+  title: string;
+  description?: string;
+  type?: 'info' | 'success' | 'error' | 'warning';
+  duration?: number;
+}
+
+const useToast = () => {
+  const toastRef = useRef<string | number | null>(null);
+
+  const update = (params: ToastOptions) => {
     if (toastRef.current) {
-      toast.update(toastRef.current, params);
+      toaster.update(toastRef.current, {
+        title: params.title,
+        description: params.description,
+        type: params.type || 'info',
+      });
     }
   };
 
-  const show = (params: UseToastOptions) => {
-    toastRef.current = toast(params);
+  const show = (params: ToastOptions) => {
+    toastRef.current = toaster.create({
+      title: params.title,
+      description: params.description,
+      type: params.type || 'info',
+      duration: params.duration || 5000,
+    });
   };
 
   const success = (title: string) => {
-    toast({
+    toaster.create({
       title,
-      status: 'success',
-      position: 'bottom',
-      isClosable: true,
+      type: 'success',
       duration: 5000,
     });
   };
 
   const error = (title: string) => {
-    toast.isActive('error')
-      ? update({ title, status: 'error' })
-      : toast({
-          id: 'error',
-          title,
-          status: 'error',
-          position: 'bottom',
-          isClosable: true,
-          duration: 5000,
-        });
+    toaster.create({
+      id: 'error',
+      title,
+      type: 'error',
+      duration: 5000,
+    });
   };
 
   return {

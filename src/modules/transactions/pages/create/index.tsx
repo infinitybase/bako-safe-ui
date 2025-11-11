@@ -7,7 +7,14 @@ const CreateTransactionPage = () => {
 
   const handleClose = () => navigate(-1);
 
-  return <CreateTransactionDialog onClose={handleClose} isOpen />;
+  return (
+    <CreateTransactionDialog
+      onOpenChange={(e) => {
+        handleClose();
+      }}
+      open
+    />
+  );
 };
 
 export { CreateTransactionPage };

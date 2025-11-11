@@ -1,7 +1,7 @@
-import { Button, VStack } from '@chakra-ui/react';
+import { Button, DialogOpenChangeDetails, VStack } from 'bako-ui';
 
 import { useUpdateSettingsRequest } from '@/modules/settings/hooks';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { Dialog } from '../dialog';
 import { BridgeIcon, CoinsIcon, DownLeftArrow } from '../icons';
@@ -9,14 +9,14 @@ import WelcomeCard from '../welcomeDialog/card';
 
 interface IWelcomeDialogProps {
   isOpen: boolean;
-  setIsAddAssetDialogOpen: (value: boolean) => void;
+  onOpenChange: (value: DialogOpenChangeDetails) => void;
   setIsDepositDialogOpen: (value: boolean) => void;
 }
 
 const AddAssetsDialog = ({
   isOpen,
   setIsDepositDialogOpen,
-  setIsAddAssetDialogOpen,
+  onOpenChange,
 }: IWelcomeDialogProps) => {
   const {
     screenSizes: {
@@ -42,12 +42,12 @@ const AddAssetsDialog = ({
   const handleOpenDepositDialog = () => {
     handleUpdateUser();
     setIsDepositDialogOpen(true);
-    setIsAddAssetDialogOpen(false);
+    onOpenChange({ open: false });
   };
 
   const handleClose = () => {
     handleUpdateUser();
-    setIsAddAssetDialogOpen(false);
+    onOpenChange({ open: false });
   };
 
   const handleRedirectToMainNet = async () => {
@@ -56,11 +56,11 @@ const AddAssetsDialog = ({
 
   return (
     <Dialog.Modal
-      onClose={() => handleClose()}
-      isOpen={isOpen}
-      closeOnEsc={false}
-      closeOnOverlayClick={false}
-      size={{ base: 'full', xs: 'lg' }}
+      onOpenChange={onOpenChange}
+      open={isOpen}
+      closeOnEscape={false}
+      closeOnInteractOutside={false}
+      size={{ base: 'full', sm: 'lg' }}
       modalContentProps={{
         px: 10,
         py: 10,
@@ -72,7 +72,7 @@ const AddAssetsDialog = ({
           mb={0}
           onClose={() => handleClose()}
           w="full"
-          maxW={{ base: 480, xs: 'unset' }}
+          maxW={{ base: 480, sm: 'unset' }}
           title="Add your assets"
           description={`Select your preferred method for adding funds to your personal vault.`}
           descriptionFontSize="12px"
@@ -86,7 +86,7 @@ const AddAssetsDialog = ({
           pb={6}
         />
 
-        <VStack w="full" my={6} pb={isMobile ? 8 : 0} spacing={4}>
+        <VStack w="full" my={6} pb={isMobile ? 8 : 0} gap={4}>
           <WelcomeCard
             title="Deposit"
             description="Deposit using QR Code or vault adress."
@@ -97,6 +97,7 @@ const AddAssetsDialog = ({
           <WelcomeCard
             title="Bridge"
             description="Transfer between different networks."
+            iconSize="22px"
             icon={BridgeIcon}
             onClick={() => handleRedirectToMainNet()}
           />
@@ -118,7 +119,8 @@ const AddAssetsDialog = ({
           bg={isMobile ? 'dark.950' : 'unset'}
           borderRadius={isMobile && !isSmall ? '20px' : 'unset'}
           pb={isMobile && !isSmall ? 5 : 'unset'}
-          sx={{
+          hideDivider
+          css={{
             '&>hr': {
               marginTop: '0',
               borderColor: '#868079',

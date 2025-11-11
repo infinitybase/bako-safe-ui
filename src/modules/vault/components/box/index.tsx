@@ -1,216 +1,197 @@
 import {
-  Avatar,
-  Box,
   Button,
+  Card,
+  Flex,
   Heading,
   HStack,
   Icon,
-  IconButton,
-  SkeletonCircle,
-  SkeletonText,
+  Stack,
   Text,
-  Tooltip,
-  VStack,
-} from '@chakra-ui/react';
-import { useMemo } from 'react';
-import { FiPlusSquare } from 'react-icons/fi';
+  useClipboard,
+} from 'bako-ui';
+import { Address } from 'fuels';
+import { useCallback, useMemo } from 'react';
+import { RiFileCopyFill } from 'react-icons/ri';
 
-import {
-  AddressWithCopyBtn,
-  ChartBulletIcon,
-  CustomSkeleton,
-  HomeIcon,
-  LeftAndRightArrow,
-  TooltipNotEnoughBalance,
-  UpRightArrow,
-} from '@/components';
+import { HomeIcon, LeftAndRightArrow, UpRightArrow } from '@/components';
+import { CopyTopMenuIcon } from '@/components/icons/copy-top-menu';
+import { EyeCloseIcon } from '@/components/icons/eye-close';
+import { EyeOpenIcon } from '@/components/icons/eye-open';
+import { AddressUtils } from '@/modules/core';
 import { NetworkService } from '@/modules/network/services';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
-import { TooltipPendingTx } from '../TooltipPendingTx';
+import { VaultIconInfo } from '../vaultIconInfo';
+import { VaultInfoBoxSkeleton } from './vaultInfoBoxSkeleton';
 
 interface VaultBoxPropx {
   name: string;
   address: string;
   onChangeVault: () => void;
-  onCreateTransaction: () => void;
-  isLoading?: boolean;
-  isPending?: boolean;
-  hasBalance?: boolean;
-  hasPermission?: boolean;
-  isFetching: boolean;
-  isEthBalanceLowerThanReservedAmount: boolean;
-  isFirstAssetsLoading: boolean;
 }
 
-const VaultBoxSkeleton = () => (
-  <Box w="100%">
-    <HStack width="100%" alignItems="center" spacing={5} mb={5}>
-      <SkeletonCircle />
-      <Box w="100%" maxW="100%">
-        <SkeletonText w="100%" />
-      </Box>
-    </HStack>
-    <Box w="100%">
-      <Button
-        w="100%"
-        variant="primary"
-        fontWeight="bold"
-        leftIcon={<ChartBulletIcon mr={2} fontSize={22} />}
-      >
-        Create transaction
-      </Button>
-    </Box>
-  </Box>
-);
-
 const VaultBox = (props: VaultBoxPropx) => {
-  const {
-    name,
-    address,
-    isLoading,
-    isPending,
-    hasBalance,
-    hasPermission,
-    onChangeVault,
-    onCreateTransaction,
-    isFirstAssetsLoading,
-    isEthBalanceLowerThanReservedAmount,
-  } = props;
+  const { name, address, onChangeVault } = props;
+  const addressWithChecksum = address ? new Address(address).toString() : '';
+  const { copy, copied } = useClipboard({ value: addressWithChecksum });
 
   const {
-    screenSizes: { isMobile },
     authDetails: {
       userInfos: { network },
     },
     workspaceInfos: {
       handlers: { goHome },
     },
+    vaultDetails: {
+      assets: {
+        balanceUSD,
+        visibleBalance,
+        setVisibleBalance,
+        isLoading: isLoadingAssets,
+      },
+      vaultRequest: { isLoading: isLoadingVault },
+    },
   } = useWorkspaceContext();
 
+  const handleToggleBalanceVisibility = useCallback(() => {
+    setVisibleBalance(!visibleBalance);
+  }, [setVisibleBalance, visibleBalance]);
+
+  const balance = useMemo(() => balanceUSD || '0', [balanceUSD]);
   const redirectToNetwork = () =>
     window.open(
       `${NetworkService.getExplorer(network?.url)}/account/${address}/assets`,
       '_BLANK',
     );
 
-  const ToolTipComponent = useMemo(() => {
-    if (!isFirstAssetsLoading && isPending) {
-      return <TooltipPendingTx />;
-    }
-    if (!isFirstAssetsLoading && isEthBalanceLowerThanReservedAmount) {
-      return <TooltipNotEnoughBalance />;
-    }
-    return null;
-  }, [isPending, isFirstAssetsLoading, isEthBalanceLowerThanReservedAmount]);
+  const EyeIcon = visibleBalance ? EyeOpenIcon : EyeCloseIcon;
+  const isLoading = useMemo(
+    () => isLoadingAssets || isLoadingVault,
+    [isLoadingAssets, isLoadingVault],
+  );
 
   return (
-    <Box w="100%">
+    <Stack w="100%" gap={4}>
       {/* Headers BTNS */}
       <HStack>
-        <Button w="full" variant="secondaryV2" onClick={() => goHome()}>
-          <Icon as={HomeIcon} fontSize="lg" mr="auto" />
-          <Text mr="auto">Home</Text>
-        </Button>
-        <Button w="full" variant="secondaryV2" onClick={() => onChangeVault()}>
-          <Icon as={LeftAndRightArrow} fontSize="lg" mr="auto" />
-          <Text mr="auto">Vault</Text>
-        </Button>
-      </HStack>
-      {/* Vault Avatar and Address */}
-      <HStack width="100%" alignItems="center" spacing={4} my={6}>
-        <CustomSkeleton w="min-content" isLoaded={!isLoading}>
-          <Avatar
-            variant="roundedSquare"
-            bgColor="dark.150"
-            color="grey.75"
-            name={name}
-            boxShadow="0px 3.5px 3.5px 0px rgba(0, 0, 0, 0.4);"
-            boxSize="56px"
-          />
-        </CustomSkeleton>
-        <VStack
-          alignItems="start"
-          spacing={3}
-          justifyContent="center"
-          minW="200px"
-          w="full"
+        <Button
+          flex={1}
+          variant="subtle"
+          onClick={goHome}
+          flexDirection="column"
+          alignItems="center"
+          h="auto"
+          p={3}
+          bg="bg.muted"
+          _hover={{
+            bg: 'gray.550',
+            '& svg, p': {
+              opacity: 1,
+            },
+          }}
         >
-          <Heading size="xs" isTruncated textOverflow="ellipsis" w="full">
-            {name}
-          </Heading>
-          <HStack
-            alignItems="center"
-            justifyContent="center"
-            w={isMobile ? 'unset' : 'full'}
-          >
-            <AddressWithCopyBtn
-              value={address}
-              isSidebarAddress
-              aria-label="Sidebar Vault Address"
-              h="20px"
-              flexDir="row-reverse"
-            />
-            <IconButton
-              icon={<Icon as={UpRightArrow} fontSize="md" color="grey.75" />}
-              aria-label="Explorer"
-              size="xs"
-              minW={2}
-              bg="none"
-              h={3}
-              _hover={{ bg: 'none' }}
-              onClick={redirectToNetwork}
-            />
-          </HStack>
-        </VStack>
+          <Icon as={HomeIcon} w={4} color="gray.50" opacity={0.6} />
+          <Text opacity={0.6} textTransform="uppercase" fontSize="2xs">
+            Home
+          </Text>
+        </Button>
+        <Button
+          flex={1}
+          variant="subtle"
+          onClick={onChangeVault}
+          flexDirection="column"
+          alignItems="center"
+          h="auto"
+          bg="bg.muted"
+          p={3}
+          _hover={{
+            bg: 'gray.550',
+            '& svg, p': {
+              opacity: 1,
+            },
+          }}
+        >
+          <Icon as={LeftAndRightArrow} w={4} color="gray.50" opacity={0.6} />
+          <Text opacity={0.6} textTransform="uppercase" fontSize="2xs">
+            Account
+          </Text>
+        </Button>
       </HStack>
-      {/* Create Tx Btn */}
-      {hasPermission && (
-        <Box w="100%">
-          <Tooltip
-            label={ToolTipComponent}
-            hasArrow
-            placement="top"
-            bg="dark.700"
-            color="white"
-          >
-            <Box display="inline-block" cursor="not-allowed" w={'100%'}>
-              <Button
-                aria-label={'Create transaction btn'}
-                w="100%"
-                variant="primary"
-                fontWeight="bold"
-                onClick={onCreateTransaction}
-                isDisabled={
-                  !hasBalance ||
-                  isPending ||
-                  isEthBalanceLowerThanReservedAmount ||
-                  isFirstAssetsLoading
-                }
-                leftIcon={<FiPlusSquare fontSize={isMobile ? 20 : 22} />}
-              >
-                Create transaction
-              </Button>
-            </Box>
-          </Tooltip>
 
-          {isPending && isMobile && (
-            <Text variant="description" mt={2} color="error.500">
-              This vault has pending transactions.
-            </Text>
-          )}
-          {!isPending &&
-            !isFirstAssetsLoading &&
-            isMobile &&
-            isEthBalanceLowerThanReservedAmount && (
-              <Text variant="description" mt={2} color="error.500">
-                Not enough balance.
+      {/* Vault Info Box */}
+      {isLoading && <VaultInfoBoxSkeleton />}
+      {!isLoading && (
+        <Card.Root
+          variant="subtle"
+          rounded="lg"
+          border="1px solid"
+          borderColor="bg.muted"
+        >
+          <Card.Body
+            display="flex"
+            flexDirection="column"
+            gap={1}
+            w="full"
+            p={3}
+          >
+            <Flex justifyContent="space-between" alignItems="center">
+              <Heading
+                size="xs"
+                truncate
+                textOverflow="ellipsis"
+                w="full"
+                color="textPrimary"
+              >
+                {name}
+              </Heading>
+              <VaultIconInfo
+                onClick={redirectToNetwork}
+                tooltipContent="View on Explorer"
+              >
+                <Icon as={UpRightArrow} color="gray.200" w="12px" />
+              </VaultIconInfo>
+            </Flex>
+
+            <Flex justifyContent="space-between" alignItems="center">
+              <Text fontSize="xs" color="textSecondary">
+                {AddressUtils.format(addressWithChecksum, 6)}
               </Text>
-            )}
-        </Box>
+              <VaultIconInfo
+                onClick={copy}
+                tooltipContent={copied ? 'Copied' : 'Copy Address'}
+              >
+                <Icon
+                  as={copied ? RiFileCopyFill : CopyTopMenuIcon}
+                  color="gray.200"
+                  w="12px"
+                />
+              </VaultIconInfo>
+            </Flex>
+
+            <Flex justifyContent="space-between" alignItems="center">
+              {visibleBalance && (
+                <Text color="gray.50" fontSize="sm">
+                  <Text as="span" color="textSecondary">
+                    $
+                  </Text>{' '}
+                  {balance}
+                </Text>
+              )}
+              {!visibleBalance && <Text color="gray.50">-----</Text>}
+              <VaultIconInfo
+                tooltipContent={
+                  visibleBalance ? 'Hide Balance' : 'Show Balance'
+                }
+                onClick={handleToggleBalanceVisibility}
+              >
+                <Icon as={EyeIcon} color="gray.200" w="16px" />
+              </VaultIconInfo>
+            </Flex>
+          </Card.Body>
+        </Card.Root>
       )}
-    </Box>
+    </Stack>
   );
 };
 
-export { VaultBox, VaultBoxSkeleton };
+export { VaultBox };

@@ -1,4 +1,4 @@
-import { Box, BoxProps } from '@chakra-ui/react';
+import { Box, BoxProps } from 'bako-ui';
 import { EmblaViewportRefType } from 'embla-carousel-react';
 
 interface CarouselRootProps extends BoxProps {

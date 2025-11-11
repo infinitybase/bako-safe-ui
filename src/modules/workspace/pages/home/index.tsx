@@ -1,23 +1,20 @@
-import { Icon } from '@chakra-ui/icons';
 import {
   Avatar,
   Box,
   Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
   Button,
   Center,
-  Divider,
   Grid,
   GridItem,
   Heading,
   HStack,
-  Spinner,
+  Icon,
+  Loader,
+  Separator,
   Stack,
   Text,
-  useDisclosure,
   VStack,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 import { useRef } from 'react';
 import { FaRegPlusSquare } from 'react-icons/fa';
 import { IoChevronBack } from 'react-icons/io5';
@@ -37,6 +34,7 @@ import { EyeOpenIcon } from '@/components/icons/eye-open';
 import { RefreshIcon } from '@/components/icons/refresh-icon';
 import { TransactionsIcon } from '@/components/icons/transactions';
 import { Pages, PermissionRoles } from '@/modules/core';
+import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
 import { ActionCard } from '@/modules/home/components/ActionCard';
 import {
   AssetsDetails,
@@ -47,14 +45,14 @@ import {
 import { WorkspaceSettingsDrawer } from '@/modules/workspace/components';
 
 import WkHomeTransactions from '../../components/wkHomeTransactions';
-import { useWorkspaceContext } from '../../WorkspaceProvider';
+import { useWorkspaceContext } from '../../hooks';
 
 const { OWNER, ADMIN, MANAGER } = PermissionRoles;
 
 const WorkspacePage = () => {
   const assetsContainerRef = useRef(null);
 
-  const { isOpen, onClose, onOpen } = useDisclosure();
+  const { isOpen, onOpenChange, onOpen } = useDisclosure();
   const workspaceDialog = useDisclosure();
 
   const {
@@ -87,9 +85,9 @@ const WorkspacePage = () => {
     <Text
       w={20}
       display="flex"
-      align="center"
+      textAlign="center"
       justifyContent="space-around"
-      variant="description"
+      // variant="description"
       fontWeight="semibold"
       _hover={{
         cursor: 'pointer',
@@ -115,14 +113,14 @@ const WorkspacePage = () => {
       display="flex"
       alignItems="center"
       justifyContent={{ base: 'start', md: 'space-around' }}
-      spacing={2}
+      gap={2}
     >
-      <Heading variant="title-xl">
+      <Heading>
         {visibleBalance ? (
           balanceUSD ? (
             `${balanceUSD} USD`
           ) : (
-            <Spinner w={5} h={5} />
+            <Loader w={5} h={5} />
           )
         ) : (
           '----'
@@ -146,51 +144,48 @@ const WorkspacePage = () => {
   );
 
   return (
-    <VStack w="full" spacing={6} px={{ base: 0, sm: 8 }}>
-      <CreateVaultDialog isOpen={isOpen} onClose={onClose} />
+    <VStack w="full" gap={6} px={{ base: 0, sm: 8 }}>
+      <CreateVaultDialog open={isOpen} onOpenChange={onOpenChange} />
       {/* This outlet components is used to display a blur background */}
       <Outlet />
       <WorkspaceSettingsDrawer
-        isOpen={workspaceDialog.isOpen}
-        onClose={workspaceDialog.onClose}
+        open={workspaceDialog.isOpen}
+        onOpenChange={workspaceDialog.onOpenChange}
       />
       <HStack w="full" h="10" justifyContent="space-between" my={2}>
         <HStack>
           <Button
-            display={{ base: 'none', xs: 'flex' }}
-            variant="primary"
+            display={{ base: 'none', sm: 'flex' }}
+            colorPalette="primary"
             fontWeight="semibold"
             fontSize={15}
-            leftIcon={
-              <Box mr={-1}>
-                <IoChevronBack size={22} />
-              </Box>
-            }
             px={3}
             bg="dark.100"
             color="grey.200"
             onClick={() => goHome()}
           >
+            <IoChevronBack size={22} />
             Back home
           </Button>
 
-          <Breadcrumb display={{ base: 'none', sm: 'initial' }} ml={8}>
-            <BreadcrumbItem>
-              <BreadcrumbLink
-                fontSize="sm"
-                color="grey.200"
-                fontWeight="semibold"
-                onClick={() => goHome()}
-              >
-                <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
-                Home
-              </BreadcrumbLink>
-            </BreadcrumbItem>
+          <Breadcrumb.Root display={{ base: 'none', sm: 'initial' }} ml={8}>
+            <Breadcrumb.List>
+              <Breadcrumb.Item>
+                <Breadcrumb.Link
+                  fontSize="sm"
+                  color="grey.200"
+                  fontWeight="semibold"
+                  onClick={() => goHome()}
+                >
+                  <Icon mr={2} as={HomeIcon} w={6} color="grey.200" />
+                  Home
+                </Breadcrumb.Link>
+              </Breadcrumb.Item>
 
-            {/* Commented out code to temporarily disable workspaces. */}
+              {/* Commented out code to temporarily disable workspaces. */}
 
-            {/* <BreadcrumbItem>
-              <BreadcrumbLink
+              {/* <Breadcrumb.Item>
+              <Breadcrumb.Link
                 fontSize="sm"
                 color="grey.200"
                 fontWeight="semibold"
@@ -204,18 +199,18 @@ const WorkspacePage = () => {
                 }
               >
                 {limitCharacters(userInfos.workspace?.name ?? '', 10)}
-              </BreadcrumbLink>
-            </BreadcrumbItem> */}
-          </Breadcrumb>
+              </Breadcrumb.Link>
+            </Breadcrumb.Item> */}
+            </Breadcrumb.List>
+          </Breadcrumb.Root>
         </HStack>
-        <HStack spacing={3}>
+        <HStack gap={3}>
           {hasPermission([OWNER, ADMIN]) && (
-            <CustomSkeleton isLoaded={!latestPredicates.isLoading}>
+            <CustomSkeleton loading={latestPredicates.isLoading}>
               <Button
-                variant="primary"
+                colorPalette="primary"
                 fontWeight="semibold"
                 fontSize={15}
-                leftIcon={<SettingsIcon fontSize={18} />}
                 px={3}
                 bg="grey.200"
                 color="dark.300"
@@ -224,36 +219,33 @@ const WorkspacePage = () => {
                   opacity: 0.8,
                 }}
               >
+                <SettingsIcon fontSize={18} />
                 Members
               </Button>
             </CustomSkeleton>
           )}
 
           {hasPermission([OWNER, ADMIN, MANAGER]) && (
-            <CustomSkeleton isLoaded={!latestPredicates.isLoading}>
+            <CustomSkeleton loading={latestPredicates.isLoading}>
               <Button
-                variant="primary"
+                colorPalette="primary"
                 fontWeight="bold"
-                leftIcon={<FaRegPlusSquare />}
                 _hover={{
                   opacity: 0.8,
                 }}
                 onClick={onOpen}
               >
+                <FaRegPlusSquare />
                 Create vault
               </Button>
             </CustomSkeleton>
           )}
         </HStack>
       </HStack>
-      <Stack
-        w="full"
-        spacing={6}
-        direction={{ base: 'column-reverse', md: 'row' }}
-      >
+      <Stack w="full" gap={6} direction={{ base: 'column-reverse', md: 'row' }}>
         {/* WORKSPACE OVERVIEW */}
         <CustomSkeleton
-          isLoaded={!latestPredicates.isLoading}
+          loading={latestPredicates.isLoading}
           style={{ padding: 0, margin: 0 }}
           w="full"
           h="full"
@@ -266,7 +258,7 @@ const WorkspacePage = () => {
           >
             <Text
               color="grey.400"
-              variant="subtitle"
+              // variant="subtitle"
               fontWeight="semibold"
               fontSize="md"
             >
@@ -278,7 +270,7 @@ const WorkspacePage = () => {
             h={{ base: 'unset', md: 'full' }}
             bgColor="grey.800"
           >
-            <VStack spacing={4} w="full" h="full">
+            <VStack gap={4} w="full" h="full">
               <HStack
                 w="full"
                 display="flex"
@@ -293,48 +285,39 @@ const WorkspacePage = () => {
                 >
                   <Avatar
                     position="relative"
-                    variant="roundedSquare"
+                    shape="rounded"
                     size={{ base: 'md', sm: 'lg' }}
                     p={{ base: 10, sm: 14 }}
                     bgColor="grey.600"
                     color="grey.450"
                     fontWeight="bold"
                     name={userInfos.workspace?.name}
-                  >
-                    <Box
-                      position="absolute"
-                      borderRadius="md"
-                      w="calc(100% - 10px)"
-                      h="calc(100% - 10px)"
-                      borderWidth={{ base: 2, sm: 3 }}
-                      borderColor="grey.450"
-                    />
-                  </Avatar>
+                  />
                   <Box>
                     <Heading
-                      variant="title-xl"
+                      // variant="title-xl"
                       w="max"
                       maxW={{
                         base: '60px',
-                        xs: '200px',
+                        sm: '200px',
                       }}
                       textOverflow="ellipsis"
-                      isTruncated
+                      truncate
                     >
                       {userInfos.workspace?.name}
                     </Heading>
 
                     <Text
-                      maxW={{ base: '60px', xs: '140px' }}
-                      variant="description"
+                      maxW={{ base: '60px', sm: '140px' }}
+                      // variant="description"
                       textOverflow="ellipsis"
-                      isTruncated
+                      truncate
                     >
                       {userInfos.workspace?.description}
                     </Text>
                   </Box>
                 </Center>
-                <VStack spacing={4} alignSelf="flex-start">
+                <VStack gap={4} alignSelf="flex-start">
                   {!isMobile && (
                     <Box width="auto">
                       <HStack
@@ -357,15 +340,15 @@ const WorkspacePage = () => {
                   {WorkspaceBalance}
                 </HStack>
               )}
-              <Divider w="full" borderColor="grey.400" />
-              <VStack h="full" w="full" alignItems="flex-start" spacing={4}>
+              <Separator w="full" borderColor="grey.400" />
+              <VStack h="full" w="full" alignItems="flex-start" gap={4}>
                 <Text
                   fontWeight="semibold"
                   color="grey.450"
                 >{`Workspace's balance breakdown`}</Text>
 
                 <CustomSkeleton
-                  isLoaded={!workspaceBalance.isLoading}
+                  loading={workspaceBalance.isLoading}
                   w="full"
                   h="full"
                 >
@@ -377,7 +360,7 @@ const WorkspacePage = () => {
                       borderColor="dark.100"
                       borderStyle="dashed"
                     >
-                      <VStack h="full" spacing={1} justifyContent="center">
+                      <VStack h="full" gap={1} justifyContent="center">
                         <Text fontWeight="bold" color="grey.200">
                           First thing first...
                         </Text>
@@ -392,7 +375,7 @@ const WorkspacePage = () => {
                       ref={assetsContainerRef}
                       w="full"
                       h="full"
-                      spacing={{ base: 2, sm: 4 }}
+                      gap={{ base: 2, sm: 4 }}
                       justifyContent="flex-start"
                     >
                       <AssetsDetails
@@ -413,18 +396,15 @@ const WorkspacePage = () => {
         </CustomSkeleton>
 
         {/* ACTION CARDS */}
-        <VStack
-          w="full"
-          maxW={{ base: 'full', md: 500 }}
-          maxH={450}
-          spacing={5}
-        >
-          <CustomSkeleton isLoaded={!latestPredicates.isLoading}>
+        <VStack w="full" maxW={{ base: 'full', md: 500 }} maxH={450} gap={5}>
+          <CustomSkeleton loading={latestPredicates.isLoading}>
             <ActionCard.Container
               w="full"
               onClick={() => navigate(Pages.userVaults({ workspaceId }))}
             >
-              <ActionCard.Icon icon={VaultIcon} />
+              <ActionCard.Icon>
+                <VaultIcon w={6} />
+              </ActionCard.Icon>
               <Box w="full">
                 <ActionCard.Title>Vaults</ActionCard.Title>
                 <ActionCard.Description maxWidth={{}}>
@@ -434,7 +414,7 @@ const WorkspacePage = () => {
             </ActionCard.Container>
           </CustomSkeleton>
 
-          <CustomSkeleton isLoaded={!latestPredicates.isLoading}>
+          <CustomSkeleton loading={latestPredicates.isLoading}>
             <ActionCard.Container
               onClick={() =>
                 navigate(
@@ -444,7 +424,9 @@ const WorkspacePage = () => {
                 )
               }
             >
-              <ActionCard.Icon icon={TransactionsIcon} />
+              <ActionCard.Icon>
+                <TransactionsIcon w={6} />
+              </ActionCard.Icon>
               <Box>
                 <ActionCard.Title>Transactions</ActionCard.Title>
                 <ActionCard.Description maxWidth={{}}>
@@ -454,7 +436,7 @@ const WorkspacePage = () => {
             </ActionCard.Container>
           </CustomSkeleton>
 
-          <CustomSkeleton isLoaded={!latestPredicates.isLoading}>
+          <CustomSkeleton loading={latestPredicates.isLoading}>
             <ActionCard.Container
               onClick={() =>
                 navigate(
@@ -464,7 +446,9 @@ const WorkspacePage = () => {
                 )
               }
             >
-              <ActionCard.Icon icon={AddressBookIcon} />
+              <ActionCard.Icon>
+                <AddressBookIcon w={6} />
+              </ActionCard.Icon>
               <Box>
                 <ActionCard.Title>Address book</ActionCard.Title>
                 <ActionCard.Description maxWidth={{}}>
@@ -480,14 +464,14 @@ const WorkspacePage = () => {
       <Box mt={4} mb={-2} alignSelf="flex-start">
         <Text
           color="grey.400"
-          variant="subtitle"
+          // variant="subtitle"
           fontWeight="semibold"
           fontSize="md"
         >
           Recently used vaults
         </Text>
       </Box>
-      <CustomSkeleton isLoaded={!latestPredicates.isLoading}>
+      <CustomSkeleton loading={latestPredicates.isLoading}>
         {!hasVaults ? (
           <>
             <EmptyState
@@ -506,7 +490,7 @@ const WorkspacePage = () => {
             maxW="full"
             templateColumns={{
               base: 'repeat(1, 1fr)',
-              xs: 'repeat(2, 1fr)',
+              sm: 'repeat(2, 1fr)',
               md: 'repeat(3, 1fr)',
               xl: 'repeat(4, 1fr)',
             }}
@@ -530,7 +514,7 @@ const WorkspacePage = () => {
 
                 return (
                   <GridItem key={id} maxH={{ base: 180, sm: 190 }}>
-                    <CustomSkeleton isLoaded={!latestPredicates.isLoading}>
+                    <CustomSkeleton loading={latestPredicates.isLoading}>
                       {lastCard && hasMore ? (
                         <ExtraVaultCard
                           mt={{ base: 6, sm: 'unset' }}

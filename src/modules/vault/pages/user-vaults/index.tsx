@@ -1,33 +1,27 @@
 import {
   Box,
   Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
   Button,
   Grid,
   GridItem,
   HStack,
   Icon,
-  Stack,
   Text,
-  useDisclosure,
   VStack,
-} from '@chakra-ui/react';
-import { FaEye, FaEyeSlash, FaRegPlusSquare } from 'react-icons/fa';
+} from 'bako-ui';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { IoChevronBack } from 'react-icons/io5';
 
-import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
+import { CustomSkeleton, HomeIcon } from '@/components';
 import { EmptyState } from '@/components/emptyState';
-import { AddressBookIcon } from '@/components/icons/address-book';
-import { TransactionsIcon } from '@/components/icons/transactions';
 import { Pages, PermissionRoles } from '@/modules/core';
-import { ActionCard } from '@/modules/home/components/ActionCard';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { CreateVaultDialog, VaultCard } from '../../components';
 
 const UserVaultsPage = () => {
-  const { isOpen, onClose, onOpen } = useDisclosure();
+  const { isOpen, onOpenChange, onOpen } = useDisclosure();
 
   const { MANAGER, OWNER, ADMIN } = PermissionRoles;
 
@@ -35,11 +29,9 @@ const UserVaultsPage = () => {
     authDetails: { userInfos },
     workspaceInfos: {
       handlers: { hasPermission, handleWorkspaceSelection, goHome },
-      requests: { latestPredicates },
     },
     userVaults: {
       request: { vaults, isLoading },
-      handlers: { navigate },
       inView,
       filter: { value, change },
     },
@@ -55,11 +47,11 @@ const UserVaultsPage = () => {
   return (
     <VStack
       w="full"
-      spacing={6}
+      gap={6}
       p={{ base: 1, sm: 1 }}
       px={{ base: 'auto', sm: 8 }}
     >
-      <CreateVaultDialog isOpen={isOpen} onClose={onClose} />
+      <CreateVaultDialog open={isOpen} onOpenChange={onOpenChange} />
       <HStack
         h="10"
         w="full"
@@ -68,14 +60,9 @@ const UserVaultsPage = () => {
       >
         <HStack visibility={{ base: 'hidden', sm: 'visible' }}>
           <Button
-            variant="primary"
+            colorPalette="primary"
             fontWeight="semibold"
             fontSize={15}
-            leftIcon={
-              <Box mr={-1}>
-                <IoChevronBack size={22} />
-              </Box>
-            }
             px={3}
             bg="dark.100"
             color="grey.200"
@@ -90,25 +77,26 @@ const UserVaultsPage = () => {
                   )
             }
           >
+            <IoChevronBack size={22} />
             Back home
           </Button>
-          <Breadcrumb ml={8}>
-            <BreadcrumbItem>
-              <BreadcrumbLink
-                fontSize="sm"
-                color="grey.200"
-                fontWeight="semibold"
-                onClick={() => goHome()}
-              >
-                <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
-                Home
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-
-            {/* Commented out code to temporarily disable workspaces. */}
-
-            {/* {!userInfos.onSingleWorkspace && (
-              <BreadcrumbItem>
+          <Breadcrumb.Root ml={8}>
+            <Breadcrumb.List>
+              <Breadcrumb.Item>
+                <Breadcrumb.Link
+                  fontSize="sm"
+                  color="grey.200"
+                  fontWeight="semibold"
+                  onClick={() => goHome()}
+                >
+                  <Icon mr={2} as={HomeIcon} w={3} color="grey.200" />
+                  Home
+                </Breadcrumb.Link>
+              </Breadcrumb.Item>
+              <Breadcrumb.Separator />
+              {/* Commented out code to temporarily disable workspaces. */}
+              {/* {!userInf.os.onSingleWorkspace && (
+              <Breadcrumb.Item>
                 <BreadcrumbLink
                   fontSize="sm"
                   color="grey.200"
@@ -125,145 +113,74 @@ const UserVaultsPage = () => {
                   isTruncated
                 >
                   {userInfos.workspace?.name}
-                </BreadcrumbLink>
-              </BreadcrumbItem>
+                </Breadcrumb.Link>
+              </Breadcrumb.Item>
             )} */}
-
-            <BreadcrumbItem>
-              <BreadcrumbLink
-                fontSize="sm"
-                color="grey.200"
-                fontWeight="semibold"
-                href="#"
-              >
-                Vaults
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-          </Breadcrumb>
+              <Breadcrumb.Item>
+                <Breadcrumb.Link
+                  fontSize="sm"
+                  color="grey.200"
+                  fontWeight="semibold"
+                  href="#"
+                >
+                  Vaults
+                </Breadcrumb.Link>
+              </Breadcrumb.Item>
+            </Breadcrumb.List>
+          </Breadcrumb.Root>
         </HStack>
-        <Box>
-          <Button
-            variant="primary"
-            fontWeight="bold"
-            leftIcon={<FaRegPlusSquare />}
-            isDisabled={!hasPermission([OWNER, MANAGER, ADMIN])}
-            onClick={onOpen}
-          >
-            Create vault
-          </Button>
-        </Box>
       </HStack>
-
-      <CustomSkeleton display="flex" isLoaded={!latestPredicates.isLoading}>
-        <Stack w="full" direction={{ base: 'column', md: 'row' }} spacing={6}>
-          <ActionCard.Container
-            flex={1}
-            onClick={() =>
-              navigate(
-                Pages.userVaults({
-                  workspaceId: userInfos.workspace?.id,
-                }),
-              )
-            }
-          >
-            <ActionCard.Icon icon={VaultIcon} />
-            <Box>
-              <ActionCard.Title>Vaults</ActionCard.Title>
-              <ActionCard.Description>
-                Access and Manage All Your Vaults in One Place.
-              </ActionCard.Description>
-            </Box>
-          </ActionCard.Container>
-
-          <ActionCard.Container
-            flex={1}
-            onClick={() => {
-              navigate(
-                Pages.userTransactions({
-                  workspaceId: userInfos.workspace?.id,
-                }),
-              );
-            }}
-          >
-            <ActionCard.Icon icon={TransactionsIcon} />
-            <Box>
-              <ActionCard.Title>Transactions</ActionCard.Title>
-              <ActionCard.Description>
-                Manage Transactions Across All Vaults in One Place.
-              </ActionCard.Description>
-            </Box>
-          </ActionCard.Container>
-
-          <ActionCard.Container
-            flex={1}
-            onClick={() =>
-              navigate(
-                Pages.addressBook({
-                  workspaceId: userInfos.workspace?.id,
-                }),
-              )
-            }
-          >
-            <ActionCard.Icon icon={AddressBookIcon} />
-            <Box>
-              <ActionCard.Title>Address book</ActionCard.Title>
-              <ActionCard.Description>
-                Access and Manage Your Contacts for Easy Transfers and Vault
-                Creation.
-              </ActionCard.Description>
-            </Box>
-          </ActionCard.Container>
-        </Stack>
-      </CustomSkeleton>
 
       <HStack w="full" justifyContent="space-between" pb={2}>
         <Text color="white" fontWeight="semibold" fontSize="md">
-          Vaults
+          Accounts
         </Text>
-        <HStack spacing={2}>
+        <HStack gap={2}>
           {value ? (
             <Button
-              color="grey.75"
-              variant="txFilterType"
+              variant="subtle"
               alignSelf={{ base: 'stretch', sm: 'flex-end' }}
-              rightIcon={
-                <Icon
-                  as={() => <FaEyeSlash color="grey.75" />}
-                  fontSize="lg"
-                  ml={isSmall ? -1 : 0}
-                  className="btn-icon"
-                />
-              }
               onClick={() => change(false)}
               px={isExtraSmall ? 3 : 4}
             >
+              <Icon
+                as={() => <FaEyeSlash color="grey.75" />}
+                fontSize="lg"
+                ml={isSmall ? -1 : 0}
+                className="btn-icon"
+              />
               Hide Inactives
             </Button>
           ) : (
             <Button
-              color="grey.75"
-              variant="txFilterType"
+              variant="subtle"
               alignSelf={{ base: 'stretch', sm: 'flex-end' }}
-              rightIcon={
-                <Icon
-                  as={() => <FaEye color="grey.75" />}
-                  fontSize="lg"
-                  ml={isSmall ? -1 : 0}
-                  className="btn-icon"
-                />
-              }
               onClick={() => change(true)}
               px={isExtraSmall ? 3 : 4}
             >
+              <Icon
+                as={() => <FaEye color="grey.75" />}
+                fontSize="lg"
+                ml={isSmall ? -1 : 0}
+                className="btn-icon"
+              />
               Show Inactives
             </Button>
           )}
+
+          <Button
+            variant="subtle"
+            onClick={onOpen}
+            disabled={!hasPermission([OWNER, MANAGER, ADMIN])}
+          >
+            Create new Account
+          </Button>
         </HStack>
       </HStack>
 
       {showEmptyState ||
         (showHiddenMessage && (
-          <CustomSkeleton isLoaded={!isLoading}>
+          <CustomSkeleton loading={isLoading}>
             <EmptyState
               showAction={hasPermission([OWNER, MANAGER, ADMIN])}
               title="Let's Begin!"
@@ -285,7 +202,7 @@ const UserVaultsPage = () => {
           overflowY="scroll"
           overflowX="hidden"
           scrollBehavior="smooth"
-          sx={{
+          css={{
             '&::-webkit-scrollbar': {
               display: 'none',
               width: '5px',
@@ -307,7 +224,7 @@ const UserVaultsPage = () => {
             gap={6}
             templateColumns={{
               base: 'repeat(1, 1fr)',
-              xs: 'repeat(2, 1fr)',
+              sm: 'repeat(2, 1fr)',
               md: 'repeat(3, 1fr)',
               '2xl': 'repeat(4, 1fr)',
             }}
@@ -317,20 +234,20 @@ const UserVaultsPage = () => {
                 id,
                 name,
                 workspace,
-                members,
                 description,
-                owner,
+                configurable,
                 isHidden,
                 predicateAddress,
               }) => (
-                <CustomSkeleton isLoaded={!isLoading} key={id} maxH="180px">
+                <CustomSkeleton loading={isLoading} key={id} maxH="180px">
                   <GridItem>
                     <VaultCard
-                      ownerId={owner.id}
+                      id={id}
                       name={name}
-                      workspace={workspace}
+                      requiredSigners={configurable?.SIGNATURES_COUNT || 0}
+                      signersCount={configurable?.SIGNERS?.length || 0}
+                      workspaceId={workspace.id}
                       title={description}
-                      members={members!}
                       isHidden={isHidden}
                       onClick={() =>
                         handleWorkspaceSelection(

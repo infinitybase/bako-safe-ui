@@ -1,18 +1,10 @@
-import {
-  Button,
-  Card,
-  Divider,
-  HStack,
-  Icon,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { Button, Card, HStack, Icon, Separator, Text, VStack } from 'bako-ui';
 import { bn } from 'fuels';
 import { useCallback, useMemo } from 'react';
 
 import { MinimalAlertIcon, SwapIcon } from '@/components';
 import { AddressUtils, Asset } from '@/modules/core';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import {
   AlertsBrigde,
@@ -98,9 +90,9 @@ export function ResumePageBrigde({
         amountUSD={assetFromUSD}
       />
       <HStack w="full" align="center" marginY={3}>
-        <Divider borderColor="grey.950" h="1px" flex="1" />
+        <Separator borderColor="grey.950" h="1px" flex="1" />
         <Icon as={SwapIcon} color="grey.550" fontSize="18px" />
-        <Divider borderColor="grey.950" h="1px" flex="1" />
+        <Separator borderColor="grey.950" h="1px" flex="1" />
       </HStack>
       <SectionInfo
         direction="To"
@@ -114,7 +106,7 @@ export function ResumePageBrigde({
           dataQuote?.receiveInUsd ? `(${dataQuote?.receiveInUsd})` : '-'
         }
       />
-      <Card variant="outline" mt={3} padding={3} paddingY={2} w="full">
+      <Card.Root variant="subtle" mt={3} padding={3} paddingY={2} w="full">
         <HStack w="full" justifyContent="space-between">
           <Text color="grey.250" fontSize={12}>
             On wallet
@@ -123,9 +115,9 @@ export function ResumePageBrigde({
             {AddressUtils.format(destinationAddress ?? '', 6)}
           </Text>
         </HStack>
-      </Card>
-      <Divider borderColor="grey.950" h="1px" flex="1" marginY={3} />
-      <DetailsBridge bgColor={'dark.850'} padding={0} />
+      </Card.Root>
+      <Separator borderColor="grey.950" h="1px" flex="1" marginY={3} />
+      <DetailsBridge />
 
       {!checkEnoughETH() && (
         <AlertsBrigde
@@ -138,7 +130,7 @@ export function ResumePageBrigde({
 
       <HStack w={'full'} gap={4}>
         <Button
-          variant="secondary"
+          colorPalette="secondary"
           fontWeight={500}
           fontSize={14}
           letterSpacing={'2%'}
@@ -150,9 +142,9 @@ export function ResumePageBrigde({
         </Button>
 
         <Button
-          isDisabled={isSendingTx || isPendingSigner || !checkEnoughETH()}
-          isLoading={isSendingTx}
-          variant="primary"
+          disabled={isSendingTx || isPendingSigner || !checkEnoughETH()}
+          loading={isSendingTx}
+          colorPalette="primary"
           type="submit"
           fontWeight={600}
           fontSize={14}

@@ -11,4 +11,12 @@ class EnumUtils {
   }
 }
 
+export enum AutocompleteBadgeStatus {
+  SEARCHING = 0,
+  SUCCESS = 1,
+  ERROR = 2,
+  INFO = 3,
+  CONFLICT = 4,
+}
+
 export { EnumUtils };

@@ -1,135 +1,141 @@
-import { Button, Card, HStack, Text, VStack } from '@chakra-ui/react';
-import { motion } from 'framer-motion';
+import { Button, Card, Heading, HStack, Text } from 'bako-ui';
+import { useFormContext } from 'react-hook-form';
 
 import { Asset } from '@/modules/core';
 
-import { useAmountBridge, useFormBridge } from '../../hooks/bridge';
+import { useAmountBridge } from '../../hooks/bridge';
+import { ExpandableCardSection } from './ExpandableCardSection';
 import { InputAmount } from './inputAmount';
+import { useFormBridgeContext } from './providers/FormBridgeProvider';
+import { BridgeStepsForm } from './utils';
 
 export interface AmountBridgeProps {
   symbol: string;
-  stepsForm: number;
-  setStepsForm: React.Dispatch<React.SetStateAction<number>>;
   assets?: Required<Asset>[];
   errorAmount?: string | null;
   setErrorAmount: React.Dispatch<React.SetStateAction<string | null>>;
   decimals?: number;
 }
 
-const MotionBox = motion(VStack);
-
 export function AmountBrigde({
   symbol,
-  stepsForm,
-  setStepsForm,
   assets,
   errorAmount,
   setErrorAmount,
   decimals,
 }: AmountBridgeProps) {
-  const { amount, assetFromUSD } = useFormBridge();
+  const { stepForm, setStepForm } = useFormBridgeContext();
+  const { watch } = useFormContext();
+  const amount = watch('amount');
+
+  const isCurrentStep = stepForm === BridgeStepsForm.AMOUNT;
+  const isAfterAmountStep = stepForm > BridgeStepsForm.AMOUNT;
 
   const {
     balance,
     handleSourceChange,
     handleGetFeeBeforeMaxAmount,
     handleMinAmount,
-  } = useAmountBridge({ stepsForm, setStepsForm, assets, setErrorAmount });
+  } = useAmountBridge({ assets, setErrorAmount });
+
+  const handleContinue = () => {
+    setStepForm(BridgeStepsForm.DESTINATION);
+  };
+
+  const amountGreaterThanZero = Number(amount) > 0;
 
   return (
-    <MotionBox
-      w={430}
-      initial={{ x: -50, opacity: 0 }}
-      animate={{ x: 0, opacity: 1 }}
-      exit={{ x: 50, opacity: 0 }}
-      transition={{ duration: 0.4, ease: 'easeOut' }}
+    <Card.Root
+      variant="subtle"
+      rounded="2xl"
+      w="full"
+      minH="88px"
+      bg="bg.panel"
+      position="relative"
+      overflow="hidden"
     >
-      <Card
-        variant="outline"
-        padding={3}
-        paddingBottom={1}
-        w={'full'}
-        overflow="visible"
-        position="relative"
+      <Card.Header
+        pb={!isCurrentStep ? 6 : 0}
+        flexDirection="row"
+        alignItems="center"
+        justifyContent="space-between"
       >
-        <HStack>
-          <Text color="grey.425" fontSize={12} fontWeight={400}>
-            Amount
-          </Text>
-          <HStack flex={1} justifyContent="flex-end">
-            <Text color="grey.425" fontSize={12} fontWeight={400}>
-              Balance: {balance + ' ' + symbol}
-            </Text>
-          </HStack>
-        </HStack>
+        <Heading
+          color={!isCurrentStep ? 'textSecondary' : 'textPrimary'}
+          fontSize="sm"
+        >
+          Amount
+        </Heading>
 
+        {isAfterAmountStep && (
+          <Text color="gray.50" fontSize="sm">
+            {amount}
+            <Text as="span" ml="1" color="gray.400">
+              {symbol}
+            </Text>
+          </Text>
+        )}
+        {!isAfterAmountStep && symbol && (
+          <Text color="gray.400" fontSize="xs">
+            {balance} {symbol}
+          </Text>
+        )}
+      </Card.Header>
+
+      <ExpandableCardSection isExpanded={isCurrentStep} type="body">
         <InputAmount
           symbol={symbol}
           decimals={decimals}
           value={amount}
           onChange={handleSourceChange}
-          disabled={false}
+          disabled={!isCurrentStep}
         />
 
-        <HStack
-          justifyContent="center"
-          mb={{ base: 2, md: 4 }}
-          w="full"
-          textAlign="center"
-        >
-          <Text
-            maxW={'400px'}
-            color="grey.425"
-            fontSize={12}
-            fontWeight={400}
-            isTruncated
-            noOfLines={1}
-          >
-            {assetFromUSD}
-          </Text>
+        <Text color="red.500" fontSize="xs" minH="18px">
+          {errorAmount && errorAmount}
+        </Text>
+      </ExpandableCardSection>
+
+      <ExpandableCardSection
+        isExpanded={isCurrentStep}
+        type="footer"
+        maxHeight="200px"
+      >
+        <HStack w="full" justifyContent="space-between" alignItems="flex-end">
+          <HStack gap={2}>
+            <Button
+              variant="subtle"
+              borderRadius="lg"
+              px={3}
+              onClick={handleMinAmount}
+              disabled={!isCurrentStep}
+            >
+              MIN
+            </Button>
+            <Button
+              variant="subtle"
+              onClick={handleGetFeeBeforeMaxAmount}
+              borderRadius="lg"
+              px={3}
+              disabled={!isCurrentStep}
+            >
+              MAX
+            </Button>
+          </HStack>
+          <HStack flex={1} justifyContent="flex-end">
+            {isCurrentStep && amountGreaterThanZero && (
+              <Button
+                w="auto"
+                alignSelf="flex-end"
+                onClick={handleContinue}
+                disabled={!!errorAmount}
+              >
+                Continue
+              </Button>
+            )}
+          </HStack>
         </HStack>
-        <HStack justifyContent="center" gap={2}>
-          <Button
-            maxH="28px"
-            minW="48px"
-            isDisabled={false}
-            variant="secondary"
-            borderRadius={6}
-            padding={'4px 6px 4px 6px'}
-            fontSize={10}
-            fontWeight={500}
-            onClick={() => handleMinAmount()}
-          >
-            <Text color="grey.425">MIN</Text>
-          </Button>
-          <Button
-            maxH="28px"
-            minW="48px"
-            isDisabled={false}
-            variant="secondary"
-            onClick={() => handleGetFeeBeforeMaxAmount()}
-            borderRadius={6}
-            padding={'4px 6px 4px 6px'}
-            fontSize={10}
-            fontWeight={500}
-          >
-            <Text color="grey.425">MAX</Text>
-          </Button>
-        </HStack>
-        <HStack
-          h={{
-            base: 8,
-            sm: 6,
-          }}
-          pt={1}
-        >
-          {!!errorAmount && (
-            <Text color="red.500" fontSize="xs">
-              {errorAmount}
-            </Text>
-          )}
-        </HStack>
-      </Card>
-    </MotionBox>
+      </ExpandableCardSection>
+    </Card.Root>
   );
 }

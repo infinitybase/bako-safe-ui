@@ -1,4 +1,4 @@
-import { Flex } from '@chakra-ui/react';
+import { Flex } from 'bako-ui';
 
 import { CopyAddressButton } from '../copyAddressButton';
 import { Address } from './basic';

@@ -1,22 +1,28 @@
-import { InputRightElement, InputRightElementProps } from '@chakra-ui/react';
-import { memo } from 'react';
+import { Box, BoxProps } from 'bako-ui';
+import { memo, ReactNode } from 'react';
 
-interface AutocompleteRightElementProps extends InputRightElementProps {}
+interface AutocompleteRightElementProps extends BoxProps {
+  children?: ReactNode;
+}
 
 const AutocompleteRightElement = memo(
   ({ children, ...props }: AutocompleteRightElementProps) => {
     return (
-      <InputRightElement
+      <Box
         pr={1}
         top="1px"
         right="1px"
         borderRadius={10}
         h="calc(100% - 3px)"
         w={16}
+        position="absolute"
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
         {...props}
       >
         {children}
-      </InputRightElement>
+      </Box>
     );
   },
 );

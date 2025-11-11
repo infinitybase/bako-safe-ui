@@ -1,6 +1,6 @@
-import { TypeUser } from 'bakosafe';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
+import { AutocompleteBadgeStatus } from '@/components';
 import { useTab } from '@/modules/core/hooks';
 import { EnumUtils } from '@/modules/core/utils';
 import { useTermsStore } from '@/modules/termsOfUse/store/useTermsStore';
@@ -39,24 +39,25 @@ const useWebAuthnSignIn = (
   });
 
   const { form } = useWebAuthnForm();
-
   const { checkNicknameRequest, accountsRequest, badge, ...rest } =
-    useWebAuthnInput(!form.formState.errors.username);
-  const { handleLogin, isSigningIn, signInProgress } = useWebAuthnSignInMode({
+    useWebAuthnInput(!form.formState.errors.username, undefined, mode);
+  const { handleLogin, isSigningIn } = useWebAuthnSignInMode({
     form,
     setMode,
     callback: signInCallback,
   });
-  const { isRegistering, registerProgress, handleRegister } =
-    useWebAuthnRegisterMode({
-      form,
-      setMode,
-      setTab: tabs.set,
-      setCreatedAcccountUsername,
-    });
+  const { isRegistering, handleRegister } = useWebAuthnRegisterMode({
+    form,
+    setMode,
+    setTab: tabs.set,
+    setCreatedAcccountUsername,
+  });
   const { setModalIsOpen } = useTermsStore();
 
-  const isRegisterMode = mode === WebAuthnModeState.REGISTER;
+  const isRegisterMode = useMemo(
+    () => mode === WebAuthnModeState.REGISTER,
+    [mode],
+  );
 
   const isSearchModeBtnDisabled =
     !form.formState.isValid ||
@@ -76,17 +77,6 @@ const useWebAuthnSignIn = (
     checkNicknameRequest.isLoading ||
     !window.navigator.credentials;
 
-  const handleCheckUsername = useCallback(() => {
-    if (checkNicknameRequest.data?.type === TypeUser.WEB_AUTHN) {
-      setMode(WebAuthnModeState.LOGIN);
-    } else if (checkNicknameRequest.data?.type) {
-      setMode(WebAuthnModeState.SEARCH);
-      form.setError('username', { message: 'Username is already being used' });
-    } else {
-      setMode(WebAuthnModeState.REGISTER);
-    }
-  }, [checkNicknameRequest.data?.type]);
-
   const formState = {
     [WebAuthnModeState.SEARCH]: {
       label: 'Continue',
@@ -96,10 +86,10 @@ const useWebAuthnSignIn = (
       isDisabled: isSearchModeBtnDisabled,
       disableInput: false,
       actionProgress: 0,
-      showAccountsOptions: !accountsRequest.isLoading,
+      isLoadingOptions: accountsRequest.isLoading,
     },
     [WebAuthnModeState.LOGIN]: {
-      label: 'Login account',
+      label: 'Continue',
       handleAction: handleLogin,
       handleActionUsingEnterKey: (pressedKey: string) =>
         handleActionUsingKeys({
@@ -111,11 +101,10 @@ const useWebAuthnSignIn = (
       isLoading: isSigningIn,
       isDisabled: isLoginModeBtnDisabled,
       disableInput: isSigningIn,
-      actionProgress: signInProgress,
-      showAccountsOptions: !accountsRequest.isLoading,
+      isLoadingOptions: accountsRequest.isLoading,
     },
     [WebAuthnModeState.REGISTER]: {
-      label: 'Create account',
+      label: 'Create',
       handleAction: () => setModalIsOpen(true),
       handleActionUsingEnterKey: (pressedKey: string) =>
         handleActionUsingKeys({
@@ -127,8 +116,7 @@ const useWebAuthnSignIn = (
       isLoading: isRegistering,
       isDisabled: isRegisterModeBtnDisabled,
       disableInput: isRegistering,
-      actionProgress: registerProgress,
-      showAccountsOptions: false,
+      isLoadingOptions: false,
     },
     [WebAuthnModeState.ACCOUNT_CREATED]: {
       label: 'Begin',
@@ -137,16 +125,25 @@ const useWebAuthnSignIn = (
       isLoading: isSigningIn,
       isDisabled: isLoginModeBtnDisabled,
       disableInput: false,
-      actionProgress: signInProgress,
-      showAccountsOptions: false,
+      isLoadingOptions: false,
     },
   };
 
   useEffect(() => {
-    if (checkNicknameRequest.data) {
-      handleCheckUsername();
+    if (
+      badge &&
+      [
+        AutocompleteBadgeStatus.ERROR,
+        AutocompleteBadgeStatus.CONFLICT,
+      ].includes(badge?.status)
+    ) {
+      form.setError('username', {
+        message: badge.label,
+      });
+    } else {
+      form.trigger('username');
     }
-  }, [handleCheckUsername, checkNicknameRequest.data]);
+  }, [badge, mode]);
 
   return {
     formData: {

@@ -1,9 +1,9 @@
-import { BoxProps, Text, VStack } from '@chakra-ui/react';
+import { BoxProps, StackProps, Text, VStack } from 'bako-ui';
 
 import { PredicateAndWorkspace } from '@/modules/vault/services/methods';
 import { limitCharacters } from '@/utils';
 
-interface TransactionBasicInfosProps extends BoxProps {
+interface TransactionBasicInfosProps extends StackProps {
   vault: PredicateAndWorkspace;
   transactionName: string;
   spacingBetweenNameAndDesc?: boolean;
@@ -20,23 +20,23 @@ const BasicInfos = ({
   ...rest
 }: TransactionBasicInfosProps) => {
   return (
-    <VStack alignItems="flex-start" spacing={0} {...rest} w="full">
+    <VStack alignItems="flex-start" gap={0} {...rest} w="full">
       <Text
-        color="grey.75"
+        color="textSecondary"
         mt={0}
-        fontSize="sm"
+        fontSize="xs"
         wordBreak="break-all"
-        noOfLines={1}
+        lineClamp={1}
         {...nameSxProps}
         mb={spacingBetweenNameAndDesc ? 2 : 0}
       >
         {limitCharacters(transactionName, 28)}
       </Text>
       <Text
-        color="grey.425"
+        color="gray.400"
         mt={0}
         wordBreak="break-all"
-        noOfLines={1}
+        lineClamp={1}
         fontSize="xs"
         {...descSxProps}
       >
@@ -46,7 +46,7 @@ const BasicInfos = ({
       {/* Commented out code to temporarily disable workspaces. */}
 
       {/* {!vault.workspace.single && (
-        <HStack spacing={1}>
+        <HStack gap={1}>
           <Icon
             as={HandbagIcon}
             fontSize={{ base: 'xs', sm: 14 }}

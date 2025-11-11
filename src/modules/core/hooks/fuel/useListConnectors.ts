@@ -25,9 +25,9 @@ export enum EFuelConnectorsTypes {
 }
 
 export enum EConnectorsLabels {
-  FUEL = 'Fuel Wallet',
+  FUEL = 'Fuel',
   FUELET = 'Fuelet',
-  EVM = 'Ethereum Wallet',
+  EVM = 'Ethereum',
 }
 
 const DEFAULT_CONNECTORS = [

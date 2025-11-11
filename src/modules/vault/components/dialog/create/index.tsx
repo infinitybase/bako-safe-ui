@@ -1,12 +1,7 @@
-import { HStack, Text, VStack } from '@chakra-ui/react';
+import { HStack, Text, VStack } from 'bako-ui';
+import { memo } from 'react';
 
-import {
-  Dialog,
-  DialogModalProps,
-  SquarePlusIcon,
-  Tooltip,
-} from '@/components';
-import { useVerifyBrowserType } from '@/modules/dapp/hooks';
+import { Dialog, DialogModalProps, Tooltip } from '@/components';
 import { TabState, useCreateVaultDialog } from '@/modules/vault/hooks';
 
 import CreateVaultWarning from '../../CreateVaultWarning';
@@ -16,7 +11,7 @@ interface CreateVaultDialogProps extends Omit<DialogModalProps, 'children'> {
   onCreate?: () => void;
 }
 
-const CreateVaultDialog = (props: CreateVaultDialogProps) => {
+const CreateVaultDialog = memo((props: CreateVaultDialogProps) => {
   const {
     tabs,
     form,
@@ -34,48 +29,45 @@ const CreateVaultDialog = (props: CreateVaultDialogProps) => {
     setSearch,
     validateAddress,
   } = useCreateVaultDialog({
-    onClose: props.onClose,
+    onOpenChange: (payload) => props.onOpenChange?.(payload),
     onCreate: props.onCreate,
   });
 
-  const { isSafariBrowser, isMobile } = useVerifyBrowserType();
-
-  const isFirstTab = tabs.tab === 0;
-  const isSecondTab = tabs.tab === 1;
-
-  const isSecondTabAndMobile = isSecondTab && isMobile;
-
   return (
     <Dialog.Modal
-      size={{ base: 'full', md: 'xl' }}
+      size={{ base: 'full', sm: 'md' }}
       {...props}
-      onClose={handleCancel}
-      closeOnOverlayClick={false}
+      closeOnInteractOutside={false}
       modalContentProps={{
-        maxH: '$100vh',
+        maxH: '100vh',
+        borderRadius: '2xl',
+        py: 0,
+        pt: 6,
+        shadow: 'none',
       }}
       modalBodyProps={{
-        maxH: '$100vh',
+        maxH: '100vh',
+        minH: { sm: '780px' },
       }}
     >
       <Dialog.Header
-        hideCloseButton={isSafariBrowser && isMobile}
         onClose={handleCancel}
-        maxW={450}
+        px={6}
         mb={0}
-        pt={isSafariBrowser && isMobile ? 6 : 'unset'}
         hidden={steps.step?.hide}
-        title="Create Vault"
+        title={steps.step?.title ?? ''}
+        titleSxProps={{
+          fontSize: 'sm',
+          color: 'textPrimary',
+          lineHeight: 'shorter',
+        }}
         description={steps.step?.description ?? ''}
-        descriptionFontSize="sm"
+        descriptionFontSize="xs"
+        descriptionColor="textSecondary"
+        mt={0}
       />
 
-      <Dialog.Body
-        maxW={450}
-        mb={isFirstTab ? 8 : 0}
-        maxH={isFirstTab ? '60vh' : 700}
-        minH={!isFirstTab ? 'fit-content' : 'unset'}
-      >
+      <Dialog.Body px={6} flex={1}>
         <CreateVaultForm
           tabs={tabs}
           form={form}
@@ -93,63 +85,58 @@ const CreateVaultDialog = (props: CreateVaultDialogProps) => {
           validateAddress={validateAddress}
         />
       </Dialog.Body>
+      {/* 
+      <Box
+        w="full"
+        mt="auto"
+        height="56px"
+        background="linear-gradient(180deg, rgba(21, 20, 19, 0) 0%, rgba(21, 20, 19, 0.75) 30%, #151413 100%);"
+      /> */}
 
       <Dialog.Actions
+        hideDivider
         w="full"
-        maxW={450}
-        mt={isSecondTab ? 'unset' : 'auto'}
-        sx={{
-          '&>hr': {
-            mt: 0,
-            mb: isSecondTab ? 0 : 8,
-            display: tabs.tab === 2 ? 'none' : 'block',
-          },
-        }}
-        bgColor="dark.950"
-        position={isSecondTabAndMobile ? 'absolute' : 'unset'}
-        bottom={0}
-        px={isSecondTabAndMobile ? 6 : 'unset'}
+        p={6}
+        bgColor="bg.muted"
+        borderRadius="2xl"
+        css={{ boxShadow: '0px -12px 8px 0px #0D0D0C99' }}
       >
-        <VStack w="full" alignItems="center" bg="dark.950" zIndex={999}>
-          {isSecondTab && (
-            <HStack my={6} w="full" justifyContent="space-between">
-              <Text variant="description" fontSize="xs">
-                Estimated Fee
-              </Text>
-              <Text
-                color="white"
-                variant="description"
-                display="flex"
-                gap={2}
-                fontSize="xs"
-              >
-                Vault creation is free on Fuel Network
-                <Tooltip
-                  placment="top-start"
-                  text="Vault creation is free on Bako Safe
-Bako Safe leverages Fuel predicates to manage vault permissions off-chain. Therefore, the creation of vaults is entirely free of charge and not sponsored by the network."
-                />
-              </Text>
-            </HStack>
+        <VStack w="full" alignItems="center" gap={6} zIndex={999}>
+          <HStack w="full" justifyContent="space-between">
+            <Text
+              as="div"
+              fontSize="xs"
+              display="flex"
+              gap={2}
+              color="gray.400"
+            >
+              Estimated Fee
+              <Tooltip
+                placment="top-start"
+                text="Account creation is free on Bako Safe leverages Fuel predicates to manage account permissions off-chain. Therefore, the creation of accounts is entirely free of charge and not sponsored by the network."
+              />
+            </Text>
+            <Text color="textPrimary" fontSize="xs">
+              Vault creation is free on Fuel Network
+            </Text>
+          </HStack>
+          {tabs.tab === 1 && (
+            <CreateVaultWarning message="Please ensure that all signer addresses are valid and accessible wallet addresses on the Fuel Network. Addresses from other Bako Safe Vaults and wallets from other networks cannot be used as signers." />
           )}
           {tabs.tab === 2 && (
             <CreateVaultWarning
               mb={4}
-              message="Before initiating high-value deposits, first conduct smaller deposits and transactions to confirm that all signers have access to their wallets and that the vault’s funds can be transferred securely."
+              message="Before initiating high-value deposits, first conduct smaller deposits and transactions to confirm that all signers have access to their wallets and that the accounts funds can be transferred securely."
             />
           )}
           <HStack w="full" justifyContent="space-between">
             <Dialog.SecondaryAction
-              bgColor="transparent"
-              aria-label="Create Vault Secundary Action"
-              border="1px solid white"
+              variant="ghost"
               w={tabs.tab !== TabState.SUCCESS ? '25%' : '100%'}
-              onClick={
-                tabs.tab === 2 ? steps.step.onContinue : steps.step.onCancel
-              }
-              _hover={{
-                borderColor: 'brand.500',
-                color: 'brand.500',
+              onClick={() => {
+                tabs.tab === TabState.SUCCESS
+                  ? steps.step.onContinue()
+                  : steps.step.onCancel();
               }}
             >
               {steps.step.closeText}
@@ -159,13 +146,10 @@ Bako Safe leverages Fuel predicates to manage vault permissions off-chain. There
               aria-label="Create Vault Primary Action"
               hidden={steps.step?.hide}
               onClick={steps.step?.onContinue}
-              leftIcon={
-                tabs.tab === TabState.ADDRESSES ? <SquarePlusIcon /> : undefined
-              }
-              isDisabled={steps.step?.disable}
-              isLoading={bakoSafeVault.isPending || form.formState.isSubmitting}
+              disabled={steps.step?.disable}
+              loading={bakoSafeVault.isPending || form.formState.isSubmitting}
               _hover={{
-                opacity: !steps.step?.disable && 0.8,
+                opacity: !steps.step?.disable ? 0.8 : 1,
               }}
             >
               {steps.step?.nextStepText}
@@ -175,6 +159,8 @@ Bako Safe leverages Fuel predicates to manage vault permissions off-chain. There
       </Dialog.Actions>
     </Dialog.Modal>
   );
-};
+});
+
+CreateVaultDialog.displayName = 'CreateVaultDialog';
 
 export { CreateVaultDialog };

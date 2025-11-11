@@ -1,4 +1,4 @@
-import { createIcon } from '@chakra-ui/react';
+import { createIcon } from 'bako-ui';
 
 const CopyIcon = createIcon({
   displayName: 'CopyIcon',

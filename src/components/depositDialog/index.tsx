@@ -2,16 +2,17 @@ import {
   Avatar,
   Box,
   Button,
+  DialogOpenChangeDetails,
   Heading,
   HStack,
   Text,
   VStack,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 import { QRCodeSVG } from 'qrcode.react';
 
 import { AddressUtils, PredicateAndWorkspace } from '@/modules';
 import { openFaucet } from '@/modules/vault/utils';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 import { ENetworks } from '@/utils/constants';
 
 import { AddressWithCopyBtn } from '../address/copy';
@@ -20,13 +21,13 @@ import { Dialog } from '../dialog';
 interface IDepositDialogProps {
   vault: PredicateAndWorkspace;
   isOpen: boolean;
-  setIsDepositDialogOpen: (value: boolean) => void;
+  onOpenChange: (isOpen: DialogOpenChangeDetails) => void;
 }
 
 const DepositDialog = ({
   vault,
   isOpen,
-  setIsDepositDialogOpen,
+  onOpenChange,
 }: IDepositDialogProps) => {
   const {
     screenSizes: {
@@ -42,11 +43,11 @@ const DepositDialog = ({
 
   return (
     <Dialog.Modal
-      onClose={() => setIsDepositDialogOpen(false)}
-      isOpen={isOpen}
-      closeOnEsc={false}
-      closeOnOverlayClick={false}
-      size={{ base: 'full', xs: 'md' }}
+      onOpenChange={onOpenChange}
+      open={isOpen}
+      closeOnEscape={false}
+      closeOnInteractOutside={false}
+      size={{ base: 'full', sm: 'md' }}
       modalContentProps={{
         px: 10,
         py: 10,
@@ -56,9 +57,9 @@ const DepositDialog = ({
         <Dialog.Header
           mt={0}
           mb={0}
-          onClose={() => setIsDepositDialogOpen(false)}
+          onClose={() => onOpenChange({ open: false })}
           w="full"
-          maxW={{ base: 480, xs: 'unset' }}
+          maxW={{ base: 480, sm: 'unset' }}
           title={''}
           description={''}
           descriptionFontSize="12px"
@@ -69,7 +70,7 @@ const DepositDialog = ({
           }}
         />
 
-        <VStack w="full" mt={6} mb={4} spacing={isMobile ? 6 : 10}>
+        <VStack w="full" mt={6} mb={4} gap={isMobile ? 6 : 10}>
           <Box
             boxSize={isMobile ? '190px' : '220px'}
             p={2}
@@ -88,7 +89,7 @@ const DepositDialog = ({
               }}
             />
           </Box>
-          <VStack spacing={6}>
+          <VStack gap={6}>
             <Text color="grey.75" fontWeight={700} fontSize="20px">
               Receive Assets
             </Text>
@@ -103,14 +104,14 @@ const DepositDialog = ({
             </Text>
           </VStack>
 
-          <HStack h="40px" mb={6} spacing={4} w="full">
+          <HStack h="40px" mb={6} gap={4} w="full">
             <Avatar
-              name={vault?.name ?? ''}
               color="grey.75"
               bgColor="grey.925"
               boxSize="40px"
               borderRadius="4px"
-              sx={{
+              name={vault.name ?? ''}
+              css={{
                 '&>div': {
                   fontSize: '14px',
                 },
@@ -123,8 +124,8 @@ const DepositDialog = ({
                 lineHeight="14.52px"
                 textOverflow="ellipsis"
                 textAlign="left"
-                noOfLines={1}
-                maxW={{ base: isExtraSmall ? 82 : 140, xs: 320 }}
+                lineClamp={1}
+                maxW={{ base: isExtraSmall ? 82 : 140, sm: 320 }}
               >
                 {vault?.name}
               </Heading>
@@ -139,8 +140,8 @@ const DepositDialog = ({
                   textAlign: 'start',
                   maxW: 'full',
                   wordBreak: 'break-all',
-                  noOfLines: 1,
-                  isTruncated: false,
+                  lineClamp: 1,
+                  truncate: false,
                   fontSize: 'xs',
                 }}
                 justifyContent="start"
@@ -168,7 +169,8 @@ const DepositDialog = ({
           right={0}
           px={isMobile ? 10 : 'unset'}
           bg={isMobile ? 'dark.950' : 'unset'}
-          sx={{
+          hideDivider
+          css={{
             '&>hr': {
               display: 'none',
             },
@@ -180,10 +182,7 @@ const DepositDialog = ({
               lineHeight="15.85px"
               letterSpacing=".5px"
               variant="outline"
-              color="dark.950"
-              bg="grey.75"
               fontWeight={600}
-              _hover={{ bg: 'grey.75' }}
               w="full"
               onClick={() => openFaucet(vault.predicateAddress)}
             >

@@ -1,17 +1,8 @@
-import {
-  Box,
-  Button,
-  chakra,
-  Heading,
-  HStack,
-  Image,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { Box, Button, Heading, HStack, Image, Text, VStack } from 'bako-ui';
 import { bn } from 'fuels';
 
 import { Card, CustomSkeleton, NotFoundIcon } from '@/components';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { Asset } from '../../core/utils/assets/types';
 import { UseVaultDetailsReturn } from '../hooks/details';
@@ -27,15 +18,6 @@ export interface AmountDetailsProps {
   vaultAddress: string;
 }
 
-const AssetCard = chakra(Card, {
-  baseStyle: {
-    w: 'full',
-    py: 5,
-    px: 6,
-    bgColor: 'dark.300',
-  },
-});
-
 const AmountDetails = (props: AmountDetailsProps) => {
   const { assetsMap } = useWorkspaceContext();
   const { assets, isLoading, vaultAddress } = props;
@@ -50,10 +32,11 @@ const AmountDetails = (props: AmountDetailsProps) => {
           Balance
         </Text>
       </Box>
-      <VStack spacing={5} justifyContent="space-between">
+      <VStack gap={5} justifyContent="space-between">
         {!assets.hasAssets && (
-          <CustomSkeleton isLoaded={!isLoading}>
-            <AssetCard
+          <CustomSkeleton loading={isLoading}>
+            <Card
+              css={{ w: 'full', py: 5, px: 6, bgColor: 'dark.300' }}
               w="full"
               p={5}
               display="flex"
@@ -68,9 +51,7 @@ const AmountDetails = (props: AmountDetailsProps) => {
                 <NotFoundIcon w={70} h={70} />
               </Box>
               <Box mb={5}>
-                <Heading color="grey.200" variant="title-xl">
-                  No assets
-                </Heading>
+                <Heading color="grey.200">No assets</Heading>
               </Box>
               <Box mb={8}>
                 <Text
@@ -83,12 +64,12 @@ const AmountDetails = (props: AmountDetailsProps) => {
                 </Text>
               </Box>
               <Button
-                variant="primary"
+                colorPalette="primary"
                 onClick={() => openFaucet(vaultAddress)}
               >
                 Use the faucet
               </Button>
-            </AssetCard>
+            </Card>
           </CustomSkeleton>
         )}
 
@@ -97,11 +78,15 @@ const AmountDetails = (props: AmountDetailsProps) => {
             if (isBig > 0 && index > 3) return;
             if (isBig > 0 && index == 3) {
               return (
-                <CustomSkeleton isLoaded={!isLoading} key={index}>
-                  <AssetCard w="full" borderStyle="dashed">
+                <CustomSkeleton loading={isLoading} key={index}>
+                  <Card
+                    w="full"
+                    borderStyle="dashed"
+                    css={{ w: 'full', py: 5, px: 6, bgColor: 'dark.300' }}
+                  >
                     <HStack
                       w="100%"
-                      spacing={0}
+                      gap={0}
                       justifyContent="center"
                       alignItems="center"
                       display="flex"
@@ -109,17 +94,15 @@ const AmountDetails = (props: AmountDetailsProps) => {
                       cursor="pointer"
                     >
                       <Text
-                        variant="description"
+                        // variant="description"
                         fontSize="20px"
                         fontWeight="bold"
                       >
                         +{isBig + 1}
                       </Text>
-                      <Text variant="description" fontSize="15px">
-                        View all
-                      </Text>
+                      <Text fontSize="15px">View all</Text>
                     </HStack>
-                  </AssetCard>
+                  </Card>
                 </CustomSkeleton>
               );
             }
@@ -129,9 +112,9 @@ const AmountDetails = (props: AmountDetailsProps) => {
             });
 
             return (
-              <CustomSkeleton isLoaded={!isLoading} key={index}>
-                <AssetCard>
-                  <HStack w="full" spacing={4}>
+              <CustomSkeleton loading={isLoading} key={index}>
+                <Card css={{ w: 'full', py: 5, px: 6, bgColor: 'dark.300' }}>
+                  <HStack w="full" gap={4}>
                     {/* This code is probably not being used, just to fix a build issue */}
                     <Image
                       w={{ base: 8, sm: 10 }}
@@ -149,12 +132,12 @@ const AmountDetails = (props: AmountDetailsProps) => {
                       >
                         {visibleBalance ? balance : '*****'}
                       </Text>
-                      <Text variant="description" fontSize="md">
+                      <Text fontSize="md">
                         {assetsMap?.[asset.assetId].slug}
                       </Text>
                     </Box>
                   </HStack>
-                </AssetCard>
+                </Card>
               </CustomSkeleton>
             );
           })}

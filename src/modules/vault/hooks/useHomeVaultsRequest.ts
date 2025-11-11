@@ -4,7 +4,7 @@ import {
   SortOption,
   TransactionOrderBy,
 } from '@/modules/transactions/services';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 import { DEFAULT_INITIAL_PAGE_PARAM } from '@/utils/constants';
 
 import { VaultService } from '../services';

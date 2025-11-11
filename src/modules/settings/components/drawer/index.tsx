@@ -1,30 +1,27 @@
 import {
+  Box,
   Button,
-  Divider,
   Drawer,
-  DrawerBody,
-  DrawerContent,
-  DrawerHeader,
-  DrawerOverlay,
-  DrawerProps,
-  FormControl,
-  FormHelperText,
-  FormLabel,
+  DrawerRootProps,
+  Field,
+  floatingStyles,
   Heading,
   HStack,
   Input,
+  Portal,
   Radio,
   RadioGroup,
+  Separator,
   Text,
   VStack,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 import { useEffect } from 'react';
 import { Controller } from 'react-hook-form';
 
 import { LineCloseIcon } from '@/components';
 import { useWebAuthnInput } from '@/modules/auth/hooks/webAuthn';
 import { AddressUtils } from '@/modules/core/utils/address';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 import {
   ActionKeys,
   handleActionUsingKeys,
@@ -32,7 +29,7 @@ import {
 
 import { useSettings } from '../../hooks';
 
-interface SettingsDrawerProps extends Omit<DrawerProps, 'children'> {
+interface SettingsDrawerProps extends Omit<DrawerRootProps, 'children'> {
   onOpen: () => void;
 }
 
@@ -43,7 +40,10 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
     updateSettingsRequest: { isPending: isLoading },
     onCloseDrawer,
     mySettingsRequest,
-  } = useSettings({ onOpen: props.onOpen, onClose: props.onClose });
+  } = useSettings({
+    onOpen: props.onOpen,
+    onClose: () => props.onOpenChange?.({ open: false }),
+  });
   const {
     authDetails: { userInfos },
   } = useWorkspaceContext();
@@ -67,191 +67,202 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
   useEffect(() => {
     const _search = AddressUtils.isValid(name) ? '' : name;
     setInputValue(_search);
-  }, [name, props.isOpen]);
+  }, [name, props.open]);
 
   return (
-    <Drawer
+    <Drawer.Root
       {...props}
       size="sm"
-      variant="solid-dark"
-      placement="right"
-      onClose={onCloseDrawer}
-      isOpen={props.isOpen}
+      placement="end"
+      onOpenChange={onCloseDrawer}
+      open={props.open}
     >
-      <DrawerOverlay />
-      <DrawerContent maxW={456} p={9}>
-        <DrawerHeader>
-          <VStack alignItems="flex-start" spacing={6}>
-            <HStack
-              spacing={2}
-              alignItems="center"
-              justifyContent="space-between"
-              w="full"
-            >
-              <Heading fontSize="xl" fontWeight="bold" color="grey.50">
-                Settings
-              </Heading>
-              <LineCloseIcon
-                fontSize="24px"
-                aria-label="Close window"
-                cursor="pointer"
-                onClick={onCloseDrawer}
-              />
-            </HStack>
-            <Text
-              fontSize="sm"
-              maxWidth={320}
-              color="grey.75"
-              fontWeight="light"
-            >
-              Personalize Your Preferences: Set Your Name, Email, and Email
-              Notification Preferences.
-            </Text>
-          </VStack>
-        </DrawerHeader>
-
-        <Divider borderColor="#868079" my={10} />
-
-        <DrawerBody
-          css={{
-            '::-webkit-scrollbar': { width: 0 },
-            scrollbarWidth: 'none',
-          }}
-        >
-          <VStack alignItems="flex-start" p={1}>
-            <VStack spacing={3} w="full" mb={2}>
-              <Controller
-                control={form.control}
-                name="name"
-                render={({ field, fieldState }) => (
-                  <FormControl isInvalid={fieldState.invalid}>
-                    <Input
-                      variant="dark"
-                      maxLength={19}
-                      placeholder=" "
-                      value={inputValue}
-                      onChange={(e) => {
-                        handleInputChange(e.target.value.toLowerCase());
-                        field.onChange(e.target.value.toLowerCase());
-                      }}
-                      onKeyDown={(e) =>
-                        handleActionUsingKeys({
-                          pressedKey: e.key,
-                          allowedKeys: [ActionKeys.Enter],
-                          action: handleSubmitSettings,
-                          enabled: !disableUpdateButton,
-                        })
-                      }
-                      isInvalid={fieldState.invalid || !!isNicknameInUse}
-                    />
-                    <FormLabel>Username</FormLabel>
-
-                    <FormHelperText
-                      color={
-                        checkNicknameRequest.data?.type ||
-                        form.formState.errors.name?.message ||
-                        isNameInputInvalid
-                          ? 'error.500'
-                          : 'grey.500'
-                      }
-                    >
-                      {isNicknameInUse
-                        ? 'Username already exists'
-                        : form.formState.errors.name?.message
-                          ? form.formState.errors.name?.message
-                          : inputValue.length >= 3
-                            ? 'This username is available'
-                            : isNameInputInvalid
-                              ? 'Username must be at least 3 characters'
-                              : ''}
-                    </FormHelperText>
-                  </FormControl>
-                )}
-              />
-
-              <Controller
-                control={form.control}
-                name="email"
-                render={({ field, fieldState }) => (
-                  <FormControl isInvalid={fieldState.invalid}>
-                    <Input
-                      variant="dark"
-                      value={field.value}
-                      onChange={field.onChange}
-                      placeholder=" "
-                    />
-                    <FormLabel>Email Address</FormLabel>
-                    <FormHelperText color="error.500">
-                      {fieldState.error?.message}
-                    </FormHelperText>
-                  </FormControl>
-                )}
-              />
-            </VStack>
-            <Divider borderColor="#868079" mb={5} mt={4} />
-            <Text fontWeight="bold" color="grey.200" fontSize={15}>
-              Notifications Preferences
-            </Text>
-            <Text
-              fontSize="sm"
-              maxWidth={320}
-              color="grey.75"
-              fontWeight="light"
-              paddingBottom={'6px'}
-            >
-              Get wallet and vault alerts by email for enhanced security.
-            </Text>
-            <Text fontWeight="bold" color="grey.200" fontSize={15}>
-              Do you wanna receive email notifications?
-            </Text>
-
-            <Controller
-              control={form.control}
-              name="notify"
-              render={({ field }) => (
-                <RadioGroup
-                  name={field.name}
-                  value={field.value ?? 'false'}
-                  onChange={field.onChange}
+      <Portal>
+        <Drawer.Backdrop />
+        <Drawer.Positioner>
+          <Drawer.Content maxW={456} p={6}>
+            <Drawer.Header>
+              <VStack alignItems="flex-start" gap={6}>
+                <HStack
+                  gap={2}
+                  alignItems="center"
+                  justifyContent="space-between"
+                  w="full"
                 >
-                  <VStack>
-                    <Radio value="false" size="md">
-                      Yes
-                    </Radio>
-                    <Radio value="true" size="md">
-                      No
-                    </Radio>
-                  </VStack>
-                </RadioGroup>
-              )}
-            />
+                  <Heading fontSize="xl" fontWeight="bold" color="textPrimary">
+                    Settings
+                  </Heading>
 
-            <Divider borderColor="dark.100" mb={5} mt={4} />
+                  <Drawer.CloseTrigger position="static">
+                    <LineCloseIcon
+                      w="24px"
+                      aria-label="Close window"
+                      cursor="pointer"
+                      onClick={onCloseDrawer}
+                    />
+                  </Drawer.CloseTrigger>
+                </HStack>
+                <Text fontSize="sm" maxWidth={320} color="textSecondary">
+                  Personalize Your Preferences: Set Your Name, Email, and Email
+                  Notification Preferences.
+                </Text>
+              </VStack>
+            </Drawer.Header>
 
-            <HStack w="full" justifyContent="center">
-              <Button
-                variant="secondary"
-                bgColor="dark.100"
-                border="none"
-                onClick={onCloseDrawer}
-                w="full"
-              >
-                Cancel
-              </Button>
-              <Button
-                variant="primary"
-                isDisabled={disableUpdateButton}
-                onClick={handleSubmitSettings}
-                isLoading={isLoading}
-                w="full"
-              >
-                Update
-              </Button>
-            </HStack>
-          </VStack>
-        </DrawerBody>
-      </DrawerContent>
-    </Drawer>
+            <Separator borderColor="gray.400" my={10} />
+
+            <Drawer.Body
+              css={{
+                '::-webkit-scrollbar': { width: 0 },
+                scrollbarWidth: 'none',
+              }}
+              flex={1}
+              display="flex"
+              px={0}
+            >
+              <VStack alignItems="flex-start" p={1} flex={1}>
+                <VStack gap={3} w="full" mb={2}>
+                  <Controller
+                    control={form.control}
+                    name="name"
+                    render={({ field, fieldState }) => (
+                      <Field.Root
+                        invalid={fieldState.invalid || !!isNicknameInUse}
+                      >
+                        <Box position="relative" w="full">
+                          <Input
+                            maxLength={19}
+                            placeholder=" "
+                            pt={2}
+                            value={inputValue}
+                            onChange={(e) => {
+                              handleInputChange(e.target.value.toLowerCase());
+                              field.onChange(e.target.value.toLowerCase());
+                            }}
+                            onKeyDown={(e) =>
+                              handleActionUsingKeys({
+                                pressedKey: e.key,
+                                allowedKeys: [ActionKeys.Enter],
+                                action: handleSubmitSettings,
+                                enabled: !disableUpdateButton,
+                              })
+                            }
+                          />
+                          <Field.Label
+                            css={floatingStyles({
+                              hasValue: inputValue.length > 0,
+                            })}
+                          >
+                            Username
+                          </Field.Label>
+                        </Box>
+
+                        <Field.HelperText
+                          color={
+                            checkNicknameRequest.data?.type ||
+                            form.formState.errors.name?.message ||
+                            isNameInputInvalid
+                              ? 'error.500'
+                              : 'grey.500'
+                          }
+                        >
+                          {isNicknameInUse
+                            ? 'Username already exists'
+                            : form.formState.errors.name?.message
+                              ? form.formState.errors.name?.message
+                              : inputValue.length >= 3
+                                ? 'This username is available'
+                                : isNameInputInvalid
+                                  ? 'Username must be at least 3 characters'
+                                  : ''}
+                        </Field.HelperText>
+                      </Field.Root>
+                    )}
+                  />
+
+                  <Controller
+                    control={form.control}
+                    name="email"
+                    render={({ field, fieldState }) => (
+                      <Field.Root invalid={fieldState.invalid}>
+                        <Box position="relative" w="full">
+                          <Input
+                            value={field.value}
+                            pt={2}
+                            onChange={field.onChange}
+                            placeholder=" "
+                          />
+                          <Field.Label
+                            css={floatingStyles({ hasValue: !!field.value })}
+                          >
+                            Email Address
+                          </Field.Label>
+                        </Box>
+                        <Field.HelperText color="error.500">
+                          {fieldState.error?.message}
+                        </Field.HelperText>
+                      </Field.Root>
+                    )}
+                  />
+                </VStack>
+
+                <Separator borderColor="gray.400" mb={5} mt={4} w="full" />
+
+                <Text fontWeight="bold" color="textPrimary" fontSize="md">
+                  Notifications Preferences
+                </Text>
+                <Text
+                  fontSize="sm"
+                  maxWidth={320}
+                  color="textSecondary"
+                  paddingBottom={1.5}
+                >
+                  Get wallet and vault alerts by email for enhanced security.
+                </Text>
+
+                <Text fontWeight="bold" color="textPrimary" fontSize="md">
+                  Do you wanna receive email notifications?
+                </Text>
+
+                <Controller
+                  control={form.control}
+                  name="notify"
+                  defaultValue="false"
+                  render={({ field: { value, onChange, ...rest } }) => (
+                    <RadioGroup
+                      colorPalette="primary"
+                      value={value}
+                      onValueChange={(e) => onChange(e.value)}
+                      {...rest}
+                      size="md"
+                    >
+                      <VStack alignItems="flex-start">
+                        <Radio value="true">Yes</Radio>
+                        <Radio value="false">No</Radio>
+                      </VStack>
+                    </RadioGroup>
+                  )}
+                />
+
+                <HStack w="full" justifyContent="center" mt="auto">
+                  <Button variant="subtle" flex={1} onClick={onCloseDrawer}>
+                    Cancel
+                  </Button>
+                  <Button
+                    disabled={disableUpdateButton}
+                    onClick={handleSubmitSettings}
+                    loading={isLoading}
+                    flex={1}
+                  >
+                    Update
+                  </Button>
+                </HStack>
+              </VStack>
+            </Drawer.Body>
+          </Drawer.Content>
+        </Drawer.Positioner>
+      </Portal>
+    </Drawer.Root>
   );
 };
 

@@ -9,10 +9,10 @@ import { Pages } from '@/modules/core/routes';
 import { AddressUtils } from '@/modules/core/utils/address';
 import { TemplateService } from '@/modules/template/services/methods';
 import { useTemplateStore } from '@/modules/template/store';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
-import { useCheckVaultName } from '../useGetByNameVaultRequest';
 import { useCreateVaultForm, useValidateAddress } from '.';
+import { useCheckVaultName } from '../useGetByNameVaultRequest';
 
 export enum TabState {
   INFO,

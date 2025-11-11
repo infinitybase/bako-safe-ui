@@ -1,4 +1,4 @@
-import { Box, HStack, VStack } from '@chakra-ui/react';
+import { Box, HStack, VStack } from 'bako-ui';
 import { Operation } from 'fuels';
 
 import { CustomSkeleton } from '@/components';
@@ -20,7 +20,7 @@ interface OperationProps {
 
 export const DappTransactionOperationSekeleton = () => (
   <VStack w="full">
-    <HStack spacing={0} w="full">
+    <HStack gap={0} w="full">
       <RecipientCard justifyContent="space-between">
         {/*<CustomSkeleton w="full" h={5} borderRadius={2} />*/}
         <CustomSkeleton w="full" h="100px" borderRadius={2} />

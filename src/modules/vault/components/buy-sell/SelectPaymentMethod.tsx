@@ -1,12 +1,7 @@
-import { ChevronRightIcon } from '@chakra-ui/icons';
-import {
-  FormControl,
-  InputGroup,
-  InputRightElement,
-  Text,
-} from '@chakra-ui/react';
+import { Field, InputGroup, Text } from 'bako-ui';
 import { useMemo } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
+import { FiChevronRight as ChevronRightIcon } from 'react-icons/fi';
 
 import { AssetSelect } from '@/components';
 import { ICreateWidgetPayload } from '@/modules/core/models/meld';
@@ -38,19 +33,14 @@ export const SelectPaymentMethod = () => {
         control={control}
         name="paymentMethodType"
         render={({ field }) => (
-          <FormControl>
-            <InputGroup position="relative">
+          <Field.Root>
+            <InputGroup
+              endElement={<ChevronRightIcon color="grey.75" fontSize="lg" />}
+              position="relative"
+            >
               <AssetSelect {...field} options={options} />
-              <InputRightElement
-                position="absolute"
-                right={4}
-                top="50%"
-                transform="translateY(-50%)"
-              >
-                <ChevronRightIcon color="grey.75" fontSize="lg" />
-              </InputRightElement>
             </InputGroup>
-          </FormControl>
+          </Field.Root>
         )}
       />
     </CardRoot>

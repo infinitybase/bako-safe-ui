@@ -1,58 +1,46 @@
-import {
-  FormControl,
-  FormHelperText,
-  FormLabel,
-  Input,
-  VStack,
-} from '@chakra-ui/react';
-import { Controller } from 'react-hook-form';
+import { Field, RhfInput, VStack } from 'bako-ui';
+import { Controller, useFormContext } from 'react-hook-form';
 
 import { AddressInput } from '@/components/input';
-import { UseAddressBookReturn } from '@/modules/addressBook/hooks';
+import { ICreateContactFormData } from '@/modules';
 
 export interface CreateContactFormProps {
-  form: UseAddressBookReturn['form'];
   address?: string;
 }
 
-const CreateContactForm = ({ form }: CreateContactFormProps) => {
+const CreateContactForm = ({ address }: CreateContactFormProps) => {
+  const form = useFormContext<ICreateContactFormData>();
+  const {
+    control,
+    formState: { errors },
+  } = form;
+
   return (
-    <VStack spacing={6}>
-      <Controller
-        control={form.control}
+    <VStack gap={6}>
+      <RhfInput
+        label="Name or Label"
         name="nickname"
-        render={({ field, fieldState }) => (
-          <FormControl isInvalid={fieldState.invalid}>
-            <Input
-              value={field.value}
-              onChange={field.onChange}
-              placeholder=" "
-              variant="dark"
-              maxLength={27}
-            />
-            <FormLabel>Name or Label</FormLabel>
-            <FormHelperText color="error.500">
-              {fieldState.error?.message}
-            </FormHelperText>
-          </FormControl>
-        )}
+        control={control}
+        defaultValue=""
+        error={errors.nickname}
       />
 
       <Controller
-        control={form.control}
+        control={control}
         name="address"
+        defaultValue={address || ''}
         render={({ field, fieldState }) => (
-          <FormControl isInvalid={fieldState.invalid}>
+          <Field.Root invalid={fieldState.invalid}>
             <AddressInput
-              variant="dark"
               value={field.value}
               onChange={field.onChange}
+              // @ts-expect-error - AddressInput expects the full form object
               adbForm={form}
             />
-            <FormHelperText color="error.500">
+            <Field.HelperText color="error.500">
               {fieldState.error?.message}
-            </FormHelperText>
-          </FormControl>
+            </Field.HelperText>
+          </Field.Root>
         )}
       />
     </VStack>

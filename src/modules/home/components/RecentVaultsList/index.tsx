@@ -1,10 +1,12 @@
-import { Box, Grid, Text } from '@chakra-ui/react';
-import { Fragment, memo } from 'react';
+import { Grid, GridItem, HStack, Skeleton } from 'bako-ui';
+import { memo, useMemo } from 'react';
 
 import { PredicateAndWorkspace } from '@/modules/vault';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
+import CreateNewAccountCard from '../CreateNewAccountCard';
 import RecentVaultsItem from '../RecentVaultsItem';
+import ViewAllCard from '../ViewAllCard';
 
 interface RecentVaultsListProps {
   predicates: PredicateAndWorkspace[];
@@ -15,50 +17,56 @@ const RecentVaultsList = memo(
   ({ isLoading = false, predicates }: RecentVaultsListProps) => {
     const {
       workspaceInfos: {
-        handlers: { navigate, handleWorkspaceSelection },
+        handlers: { handleWorkspaceSelection },
         workspaceVaults: { extraCount, vaultsMax },
       },
       authDetails: { userInfos },
     } = useWorkspaceContext();
 
+    const firstFivePredicates = useMemo(
+      () => predicates.slice(0, vaultsMax),
+      [predicates, vaultsMax],
+    );
+
+    const workspaceId = useMemo(
+      () => userInfos.workspace?.id ?? '',
+      [userInfos.workspace?.id],
+    );
+
+    const showViewAll = useMemo(() => extraCount > 0, [extraCount]);
+
     return (
-      <Fragment>
-        <Box pb={9} alignSelf="flex-start">
-          <Text
-            color="grey.400"
-            variant="subtitle"
-            fontWeight="semibold"
-            fontSize="md"
-          >
-            Recently used vaults
-          </Text>
-        </Box>
-        <Grid
-          mt={{ base: -8, sm: -2 }}
-          w="full"
-          maxW="full"
-          gap={6}
-          templateColumns={{
-            base: 'repeat(1, 1fr)',
-            xs: 'repeat(2, 1fr)',
-            md: 'repeat(3, 1fr)',
-            '2xl': 'repeat(4, 1fr)',
-          }}
-        >
-          {predicates.map((predicate, index) => (
+      <Grid
+        w="full"
+        gap={6}
+        templateColumns={{
+          base: 'repeat(1, 1fr)',
+          sm: 'repeat(2, 1fr)',
+          md: 'repeat(3, 1fr)',
+        }}
+      >
+        {!isLoading &&
+          firstFivePredicates.map((predicate) => (
             <RecentVaultsItem
               predicate={predicate}
-              extraCount={extraCount}
-              isLastVault={index === vaultsMax - 1}
-              userInfos={userInfos}
-              onNavigate={navigate}
               handleWorkspaceSelection={handleWorkspaceSelection}
-              isLoading={isLoading}
               key={predicate.id}
             />
           ))}
-        </Grid>
-      </Fragment>
+
+        {isLoading && (
+          <GridItem>
+            <Skeleton height="150px" rounded="2xl" />
+          </GridItem>
+        )}
+
+        <GridItem>
+          <HStack w="full" h="full" justify="stretch" gap={2.5}>
+            <CreateNewAccountCard />
+            {showViewAll && <ViewAllCard workspaceId={workspaceId} />}
+          </HStack>
+        </GridItem>
+      </Grid>
     );
   },
 );

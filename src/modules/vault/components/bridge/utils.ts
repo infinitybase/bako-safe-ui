@@ -31,6 +31,7 @@ export const optionsAssetsFuel = [
   {
     symbol: 'USDC',
     name: 'USDC',
+    description: 'Token',
     image:
       'https://prodlslayerswapbridgesa.blob.core.windows.net/layerswap/currencies/usdc.png',
     value: '0x286c479da40dc953bddc3bb4c453b608bba2e0ac483b077bd475174115395e6b',
@@ -38,6 +39,7 @@ export const optionsAssetsFuel = [
   },
   {
     symbol: 'USDT',
+    description: 'Token',
     name: 'USDT',
     image:
       'https://prodlslayerswapbridgesa.blob.core.windows.net/layerswap/currencies/usdt.png',
@@ -46,6 +48,7 @@ export const optionsAssetsFuel = [
   },
   {
     symbol: 'FUEL',
+    description: 'Token',
     name: 'FUEL',
     image:
       'https://prodlslayerswapbridgesa.blob.core.windows.net/layerswap/currencies/fuel.png',
@@ -54,7 +57,8 @@ export const optionsAssetsFuel = [
   },
   {
     symbol: 'ETH',
-    name: 'ETH',
+    description: 'Token',
+    name: 'Ethereum',
     image:
       'https://prodlslayerswapbridgesa.blob.core.windows.net/layerswap/currencies/eth.png',
     value: '0xf8f8b6283d7fa5b672b530cbb84fcccb4ff8dc40f8176ef4544ddb1f1952ad07',
@@ -65,18 +69,21 @@ export const optionsAssetsFuel = [
 export const optionsNets = [
   {
     value: 'Network ethereum',
+    description: 'Network',
     name: 'Ethereum Network',
     image: 'https://assets.fuel.network/providers/eth.svg',
     symbol: null,
   },
   {
     value: 'Network Fuel Ignition',
+    description: 'Network',
     name: 'Fuel Ignition',
     image: 'https://verified-assets.fuel.network/images/fuel.svg',
     symbol: null,
   },
   {
     value: 'Network Base',
+    description: 'Network',
     name: 'Base',
     image:
       'https://firebasestorage.googleapis.com/v0/b/pump-555ee.appspot.com/o/images%2Faecb0358-d860-402c-9f3c-c5b579e4eb88.jpeg?alt=media&token=b39c9a29-4b5e-4b2c-8600-62e9afff2448',
@@ -89,7 +96,9 @@ export function getFuelAssetsByNetwork(network: Network) {
 
   if (isMainnet) return optionsAssetsFuel;
 
-  return optionsAssetsFuel.filter((a) => a.name === 'ETH' || a.name === 'USDC');
+  return optionsAssetsFuel.filter(
+    (a) => a.symbol === 'ETH' || a.name === 'USDC',
+  );
 }
 
 export function formatEstimativeTime(duration: string): string {
@@ -114,3 +123,38 @@ export function formatEstimativeTime(duration: string): string {
 
   return `${seconds} second${seconds !== 1 ? 's' : ''}`;
 }
+
+export enum BridgeStepsForm {
+  FROM = 0,
+  TO = 1,
+  AMOUNT = 2,
+  DESTINATION = 3,
+  RESUME = 4,
+}
+
+export const checkBridgeStep = (
+  currentStep: BridgeStepsForm,
+  stepToCheck: BridgeStepsForm,
+) => {
+  return currentStep === stepToCheck;
+};
+
+export const isInitialBridgeStep = (currentStep: BridgeStepsForm) => {
+  return currentStep === BridgeStepsForm.FROM;
+};
+
+export const isToBridgeStep = (currentStep: BridgeStepsForm) => {
+  return currentStep === BridgeStepsForm.TO;
+};
+
+export const isAmountBridgeStep = (currentStep: BridgeStepsForm) => {
+  return currentStep === BridgeStepsForm.AMOUNT;
+};
+
+export const isDestinationBridgeStep = (currentStep: BridgeStepsForm) => {
+  return currentStep === BridgeStepsForm.DESTINATION;
+};
+
+export const isFinalBridgeStep = (currentStep: BridgeStepsForm) => {
+  return currentStep === BridgeStepsForm.RESUME;
+};

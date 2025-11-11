@@ -1,4 +1,4 @@
-import { AvatarGroup, Image, Skeleton } from '@chakra-ui/react';
+import { AvatarGroup, Center, Image, Skeleton, Text } from 'bako-ui';
 import { ITransferAsset } from 'bakosafe';
 import { memo, useMemo } from 'react';
 
@@ -8,14 +8,12 @@ import { parseURI } from '@/modules/core/utils/formatter';
 import { useGetAssetsMetadata } from '../../hooks/assets/useGetAssetsMetadata';
 interface AssetsIconProps {
   assets: ITransferAsset[];
-  isMobile: boolean;
-  showOnlyOneAsset: boolean;
   assetsMap: AssetMap;
-  isNFT: boolean;
+  size?: number | string;
 }
 
 export const AssetsIcon = memo(
-  ({ assets, isMobile, showOnlyOneAsset, assetsMap }: AssetsIconProps) => {
+  ({ assets, assetsMap, size = 6 }: AssetsIconProps) => {
     const { assets: metadataAssets, isLoading } = useGetAssetsMetadata(
       assets.map((asset) => asset.assetId),
     );
@@ -35,34 +33,52 @@ export const AssetsIcon = memo(
       [assets, metadataAssets, assetsMap.UNKNOWN.icon],
     );
 
+    const assetsToShow = useMemo(
+      () => assetsWithImage.slice(0, 2),
+      [assetsWithImage],
+    );
+
     return (
       <AvatarGroup
-        max={showOnlyOneAsset ? 1 : 2}
-        size="md"
+        spaceX={-3}
         borderRadius="md"
-        justifyContent={isMobile ? 'start' : 'end'}
+        justifyContent={{ sm: 'start', base: 'end' }}
         position="relative"
       >
-        {assetsWithImage.map((asset) => (
+        {assetsToShow.map((asset) => (
           <Skeleton
-            key={asset.assetId}
-            isLoaded={!isLoading}
+            key={asset.assetId + asset.to + asset.amount} // prevent duplicate keys
+            loading={isLoading}
             borderRadius="md"
-            w={{ base: '30.5px', sm: 7 }}
-            h={{ base: 'full', sm: 7 }}
+            w={size}
+            h={size}
           >
             <Image
-              w={{ base: '30.5px', sm: 7 }}
-              h={{ base: 'full', sm: 7 }}
-              fallbackSrc={assetsMap?.['UNKNOWN'].icon}
-              fallbackStrategy="onError"
-              src={asset.image}
+              w={size}
+              h={size}
+              src={asset.image || assetsMap?.['UNKNOWN'].icon}
               borderRadius="md"
               alt="Asset Icon"
               objectFit="cover"
             />
           </Skeleton>
         ))}
+        {assets.length > 2 && (
+          <Skeleton loading={isLoading} borderRadius="md">
+            <Center
+              w={size}
+              h={size}
+              rounded="full"
+              bg="primary.main"
+              justifyContent="center"
+              alignItems="center"
+            >
+              <Text color="primary.contrast" fontSize="2xs">
+                + {assets.length - 2}
+              </Text>
+            </Center>
+          </Skeleton>
+        )}
       </AvatarGroup>
     );
   },

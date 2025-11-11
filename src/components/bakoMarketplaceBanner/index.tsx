@@ -1,4 +1,4 @@
-import { Box, BoxProps, Icon, Image, Stack, Text } from '@chakra-ui/react';
+import { Box, BoxProps, Icon, Image, Stack, Text } from 'bako-ui';
 
 import MarketplaceBanner from '@/assets/bako-id-marketplace-banner.png';
 

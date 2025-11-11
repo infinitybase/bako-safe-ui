@@ -31,13 +31,18 @@ const useVaultTransactionsList = ({
 
   const [filter, setFilter] = useState<StatusFilter>(StatusFilter.ALL);
 
+  const handleResetStatusFilter = useCallback(() => {
+    if (filter !== StatusFilter.ALL) setFilter(StatusFilter.ALL);
+  }, [filter]);
+
   const { selectedTransaction, setSelectedTransaction } = useTransactionState();
   const {
     txFilterType,
     handleIncomingAction,
     handleOutgoingAction,
     setTxFilterType,
-  } = useFilterTxType();
+    handleAllAction,
+  } = useFilterTxType(handleResetStatusFilter);
 
   const {
     transactions,
@@ -54,7 +59,7 @@ const useVaultTransactionsList = ({
     id: selectedTransaction.id,
   });
 
-  const observer = useRef<IntersectionObserver>();
+  const observer = useRef<IntersectionObserver>(null);
   const lastElementRef = useCallback(
     (node: HTMLDivElement) => {
       if (isLoading) return;
@@ -77,6 +82,11 @@ const useVaultTransactionsList = ({
     [fetchNextPage, hasNextPage, isFetching, isLoading],
   );
 
+  const handlePendingStatusChange = () => {
+    setTxFilterType(undefined);
+    setFilter(StatusFilter.PENDING);
+  };
+
   return {
     request: {
       isLoading,
@@ -92,7 +102,9 @@ const useVaultTransactionsList = ({
       navigate,
       handleIncomingAction,
       handleOutgoingAction,
+      handlePendingStatusChange,
       listTransactionTypeFilter: setTxFilterType,
+      handleAllAction,
     },
     filter: {
       set: setFilter,

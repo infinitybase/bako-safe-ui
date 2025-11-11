@@ -1,22 +1,27 @@
-import { Box, Button, Icon, Spacer, Text } from '@chakra-ui/react';
-import { css } from '@emotion/react';
-import { useEffect, useState } from 'react';
-import { MdKeyboardArrowRight } from 'react-icons/md';
+import { Box, Text } from 'bako-ui';
+import { useEffect, useMemo } from 'react';
+import { useInView } from 'react-intersection-observer';
 
-import { CustomSkeleton } from '@/components';
+import { CustomSkeleton, TransactionFilters } from '@/components';
 import { EmptyState } from '@/components/emptyState';
-import { Pages, shakeAnimationX } from '@/modules/core';
 import { TransactionCard, WaitingSignatureBadge } from '@/modules/transactions';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 const HomeTransactions = () => {
-  const [hasTransactions, setHasTransactions] = useState(false);
-
+  const inView = useInView();
   const {
     homeTransactions: {
       transactions,
-      request: { isLoading },
+      request: { isLoading, fetchNextPage, hasNextPage, isFetching },
+      filter: {
+        filter,
+        handleAllAction,
+        handleIncomingAction,
+        handleOutgoingAction,
+        txFilterType,
+        handlePendingStatusChange,
+      },
     },
     pendingSignerTransactions,
   } = useTransactionsContext();
@@ -25,32 +30,40 @@ const HomeTransactions = () => {
     authDetails: { userInfos },
     workspaceInfos: {
       requests: { latestPredicates },
-      handlers: { navigate },
     },
-    screenSizes: { isSmall, isMobile, isExtraSmall },
+    screenSizes: { isMobile, isExtraSmall },
   } = useWorkspaceContext();
 
+  const isPendingTransaction = useMemo(
+    () =>
+      pendingSignerTransactions?.data?.ofUser
+        ? pendingSignerTransactions?.data?.ofUser > 0
+        : false,
+    [pendingSignerTransactions],
+  );
+
   useEffect(() => {
-    if (transactions && transactions.length >= 1 && !hasTransactions) {
-      setHasTransactions(true);
+    if (inView && hasNextPage && !isFetching) {
+      fetchNextPage();
     }
-  }, [transactions]);
+  }, [inView, hasNextPage, isFetching, fetchNextPage]);
 
   return (
     <Box w="full" mt={{ base: 16, sm: 8 }}>
       <Box
         w="full"
-        h="100%"
         display="flex"
-        flexDir={isSmall ? 'column' : 'row'}
+        flexDir="row"
+        alignItems="center"
         gap={4}
+        justifyContent="space-between"
         mb={4}
       >
         <Box
           display="flex"
-          flexDir={isSmall ? 'column' : 'row'}
-          alignItems={isSmall ? 'unset' : 'center'}
-          gap={isSmall ? 2 : 4}
+          flexDir="'row'"
+          alignItems="center"
+          gap={{ base: 2, md: 4 }}
         >
           <Text fontWeight={700} fontSize="md" color="grey.50">
             Transactions
@@ -61,39 +74,16 @@ const HomeTransactions = () => {
           />
         </Box>
 
-        {hasTransactions && (
-          <>
-            <Spacer />
-            <Button
-              color="grey.75"
-              variant="txFilterType"
-              alignSelf={{ base: 'stretch', sm: 'flex-end' }}
-              rightIcon={
-                <Icon
-                  as={MdKeyboardArrowRight}
-                  fontSize="lg"
-                  ml={isSmall ? -1 : 0}
-                  className="btn-icon"
-                />
-              }
-              onClick={() =>
-                navigate(
-                  Pages.userTransactions({
-                    workspaceId: userInfos.workspace?.id,
-                  }),
-                )
-              }
-              css={css`
-                &:hover .btn-icon {
-                  animation: ${shakeAnimationX} 0.5s ease-in-out;
-                }
-              `}
-              px={isExtraSmall ? 3 : 4}
-            >
-              View all
-            </Button>
-          </>
-        )}
+        <TransactionFilters
+          status={filter}
+          currentFilter={txFilterType}
+          onIncomingFilter={handleIncomingAction}
+          onOutgoingFilter={handleOutgoingAction}
+          isPendingSignerTransaction={isPendingTransaction}
+          onAllFilter={handleAllAction}
+          onPendingFilter={handlePendingStatusChange}
+          justifyContent="flex-end"
+        />
       </Box>
 
       {!isLoading && !transactions?.length && (
@@ -107,15 +97,15 @@ const HomeTransactions = () => {
 
       {!!transactions?.length &&
         transactions?.map((grouped) => (
-          <Box key={grouped.monthYear}>
-            <TransactionCard.GroupMonth monthYear={grouped.monthYear} />
+          <Box key={grouped.day}>
+            <TransactionCard.GroupDay day={grouped.day} />
 
             <TransactionCard.List
-              spacing={4}
+              gap={4}
               mt={isExtraSmall ? 0 : 3}
               mb={transactions.length >= 1 ? 0 : 12}
             >
-              <CustomSkeleton isLoaded={!latestPredicates.isLoading}>
+              <CustomSkeleton loading={latestPredicates.isLoading}>
                 {grouped?.transactions.map((transaction) => (
                   <TransactionCard.Item
                     w="full"
@@ -129,6 +119,8 @@ const HomeTransactions = () => {
             </TransactionCard.List>
           </Box>
         ))}
+
+      <Box ref={inView.ref} />
     </Box>
   );
 };

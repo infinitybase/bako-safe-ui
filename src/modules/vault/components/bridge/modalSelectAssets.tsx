@@ -1,21 +1,20 @@
 import {
-  Divider,
-  FormControl,
-  FormLabel,
+  DialogOpenChangeDetails,
+  Field,
   HStack,
   Image,
   Input,
   InputGroup,
-  InputRightElement,
+  Separator,
   Skeleton,
   Text,
   VStack,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 import { useCallback, useEffect, useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
 import { Dialog, SearchIcon } from '@/components';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { useFormBridge } from '../../hooks/bridge';
 import { ITransferBridgePayload } from './providers/FormBridgeProvider';
@@ -37,7 +36,7 @@ export interface ModalSelectAssetsProps {
   title: string;
   isOpen?: boolean;
   options?: AssetItem[];
-  onClose: () => void;
+  onOpenChange?: (open: DialogOpenChangeDetails) => void;
   onSelect: (asset: AssetItem) => void;
 }
 
@@ -48,15 +47,15 @@ const AssetItem = ({ asset, onSelect }: AssetItemBrigdeProps) => {
   return (
     <HStack
       border="1px solid"
-      borderColor="grey.950"
+      borderColor="bg.muted"
       padding={4}
       borderRadius={8}
       cursor="pointer"
-      _hover={{ bgColor: 'grey.925' }}
+      _hover={{ bgColor: 'bg.muted/90' }}
       w="100%"
       onClick={() => onSelect(asset)}
     >
-      <Skeleton isLoaded={loaded} boxSize={6} borderRadius="full">
+      <Skeleton loading={!loaded} boxSize={6} borderRadius="full">
         <Image
           src={image}
           boxSize={6}
@@ -65,10 +64,10 @@ const AssetItem = ({ asset, onSelect }: AssetItemBrigdeProps) => {
           onError={() => setLoaded(true)}
         />
       </Skeleton>
-      <Text fontSize={12} fontWeight={500} color="grey.50">
+      <Text fontSize="sm" fontWeight={500} color="gray.50">
         {name}
       </Text>
-      <Text ml="auto" fontSize={12} fontWeight={400}>
+      <Text ml="auto" fontSize="sm" fontWeight={400} color="gray.50">
         {balance} {symbol}
       </Text>
     </HStack>
@@ -79,7 +78,7 @@ export function ModalSelectAssetsBridge({
   title,
   isOpen = false,
   options,
-  onClose,
+  onOpenChange,
   onSelect,
 }: ModalSelectAssetsProps) {
   const { control } = useFormContext<ITransferBridgePayload>();
@@ -101,7 +100,7 @@ export function ModalSelectAssetsBridge({
 
     form.resetField('searchAsset');
     setSearchValue('');
-    onClose();
+    onOpenChange?.({ open: false });
   };
 
   const orderOptions = useCallback(
@@ -149,7 +148,7 @@ export function ModalSelectAssetsBridge({
       setFilteredAssets(options ?? []);
       form.resetField('searchAsset');
       setSearchValue('');
-      onClose();
+      onOpenChange?.({ open: false });
     },
     [
       form,
@@ -157,17 +156,17 @@ export function ModalSelectAssetsBridge({
       setFilteredAssets,
       setSearchValue,
       onSelect,
-      onClose,
+      onOpenChange,
       getOperationLimits,
     ],
   );
 
   return (
     <Dialog.Modal
-      isOpen={isOpen}
-      onClose={handleClose}
-      closeOnOverlayClick={false}
-      size={'md'}
+      open={isOpen}
+      onOpenChange={handleClose}
+      closeOnInteractOutside={false}
+      size={{ base: 'full', sm: 'sm' }}
     >
       <Dialog.Body minH={650} maxH={650} flex={1}>
         <Dialog.Header
@@ -176,6 +175,7 @@ export function ModalSelectAssetsBridge({
           description={`Select the asset of your choice.`}
           mb={0}
           mt={0}
+          px={6}
           titleSxProps={{
             fontSize: 16,
             fontWeight: 700,
@@ -190,14 +190,10 @@ export function ModalSelectAssetsBridge({
           control={control}
           render={({ field, fieldState }) => {
             return (
-              <FormControl isInvalid={fieldState.invalid} marginY={4}>
-                <InputGroup>
-                  <InputRightElement pr={3} top="35%">
-                    <SearchIcon color="grey.75" fontSize={'16px'} />
-                  </InputRightElement>
-
+              <Field.Root invalid={fieldState.invalid} marginY={6} px={6}>
+                <InputGroup endElement={<SearchIcon color="textPrimary" />}>
                   <Input
-                    placeholder=""
+                    placeholder="Search asset"
                     bgColor="dark.950"
                     value={field.value}
                     onChange={(e) => {
@@ -205,21 +201,18 @@ export function ModalSelectAssetsBridge({
                       handleSearch(e.target.value);
                     }}
                   />
-
-                  <FormLabel>Search asset</FormLabel>
                 </InputGroup>
-              </FormControl>
+              </Field.Root>
             );
           }}
         />
-        <Divider marginTop={6} borderColor="grey.950" />
+        <Separator marginTop={6} borderColor="bg.muted" />
         <VStack
           maxH={523}
           overflowY="auto"
-          m={0}
-          p={0}
+          px={6}
           pt={6}
-          sx={{
+          css={{
             '&::-webkit-scrollbar': {
               display: 'none',
               width: '5px',
@@ -231,7 +224,6 @@ export function ModalSelectAssetsBridge({
         >
           {filteredAssets.length > 0 ? (
             filteredAssets.map((asset) => (
-              /* eslint-disable react/prop-types */
               <AssetItem
                 key={asset.value}
                 asset={asset}
@@ -239,7 +231,7 @@ export function ModalSelectAssetsBridge({
               />
             ))
           ) : (
-            <Text color="grey.50" fontSize={12}>
+            <Text color="grey.50" fontSize="sm">
               No assets found
             </Text>
           )}

@@ -1,12 +1,5 @@
-import {
-  FormControl,
-  FormHelperText,
-  FormLabel,
-  Input,
-  Textarea,
-  VStack,
-} from '@chakra-ui/react';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { Box, Field, floatingStyles, Input, TextArea, VStack } from 'bako-ui';
 import { Controller, useForm } from 'react-hook-form';
 
 import { PredicateUpdatePayload, useDebounce } from '@/modules/core';
@@ -25,7 +18,7 @@ export const UpdateVaultForm = ({
   onSubmit,
   vaultId,
 }: UpdateVaultFormProps) => {
-  const { control, handleSubmit, watch } = useForm<PredicateUpdatePayload>({
+  const { control, handleSubmit, watch } = useForm({
     defaultValues: {
       name: initialValues.name,
       description: initialValues.description,
@@ -39,27 +32,30 @@ export const UpdateVaultForm = ({
 
   return (
     <form id="update-vault-form" onSubmit={handleSubmit(onSubmit)}>
-      <VStack spacing={6}>
+      <VStack gap={6}>
         <Controller
           control={control}
           name="name"
           render={({ field, fieldState: { error } }) => (
-            <FormControl>
-              <Input
-                variant="dark"
-                // TODO: if vault name already exists, don't show input error
-                isInvalid={!!error || alreadyExists}
-                placeholder=" "
-                {...field}
-                type="text"
-              />
-              <FormLabel>Name</FormLabel>
+            <Field.Root invalid={!!error || !!alreadyExists}>
+              <Box position="relative" w="full">
+                <Input
+                  variant="subtle"
+                  placeholder=" "
+                  {...field}
+                  pt={2}
+                  type="text"
+                />
+                <Field.Label css={floatingStyles({ hasValue: !!field.value })}>
+                  Name
+                </Field.Label>
+              </Box>
               {(error || alreadyExists) && (
-                <FormHelperText color="error.500">
+                <Field.ErrorText color="error.500">
                   {error?.message || 'Vault name already exists'}
-                </FormHelperText>
+                </Field.ErrorText>
               )}
-            </FormControl>
+            </Field.Root>
           )}
         />
 
@@ -67,22 +63,24 @@ export const UpdateVaultForm = ({
           control={control}
           name="description"
           render={({ field, fieldState: { error } }) => (
-            <FormControl>
-              <Textarea
-                bg="grey.825"
-                borderColor="grey.800"
-                isInvalid={!!error}
+            <Field.Root invalid={!!error}>
+              <TextArea
+                variant="subtle"
                 rows={3}
+                placeholder=" "
+                pt={3}
                 resize="none"
                 {...field}
               />
-              <FormLabel>Description</FormLabel>
+              <Field.Label css={floatingStyles({ hasValue: !!field.value })}>
+                Description
+              </Field.Label>
               {error && (
-                <FormHelperText color="error.500">
+                <Field.ErrorText color="error.500">
                   {error.message}
-                </FormHelperText>
+                </Field.ErrorText>
               )}
-            </FormControl>
+            </Field.Root>
           )}
         />
       </VStack>

@@ -7,12 +7,12 @@ import {
   Skeleton,
   Text,
   VStack,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 import { useMemo, useState } from 'react';
 
 import { AddressUtils } from '@/modules/core';
 
-import { useVaultInfosContext } from '../../VaultInfosProvider';
+import { useVaultInfosContext } from '../../hooks';
 import { AssetItem } from './modalSelectAssets';
 
 export interface SectionInfoBridgeProps {
@@ -49,12 +49,12 @@ const SectionItem = ({
           borderRadius={6}
           bgColor="grey.950"
           color="grey.75"
-          name={title}
           boxShadow="0px 1.5px 1.5px 0px rgba(0, 0, 0, 0.4);"
           boxSize="30px"
-          sx={{
+          css={{
             '& div': { fontSize: '12px' },
           }}
+          name={title}
         />
       ) : (
         <Box
@@ -63,7 +63,7 @@ const SectionItem = ({
           h={{ base: '28.8px', md: '32px' }}
         >
           <Skeleton
-            isLoaded={loadedMainImg}
+            loading={!loadedMainImg}
             boxSize={8}
             border="1px solid"
             borderRadius="full"
@@ -76,7 +76,7 @@ const SectionItem = ({
             />
           </Skeleton>
           <Skeleton
-            isLoaded={loadedSecondImg}
+            loading={!loadedSecondImg}
             position="absolute"
             bottom={0}
             right={0}
@@ -124,7 +124,7 @@ export function SectionInfo({
   }, [vault]);
 
   return (
-    <Card variant="outline" paddingX={3} paddingY={2} w="full">
+    <Card.Root variant="outline" paddingX={3} paddingY={2} w="full">
       <VStack p={0} gap={0}>
         <HStack width="full">
           <HStack gap={2} align={'center'}>
@@ -162,6 +162,6 @@ export function SectionInfo({
           </VStack>
         </HStack>
       </VStack>
-    </Card>
+    </Card.Root>
   );
 }

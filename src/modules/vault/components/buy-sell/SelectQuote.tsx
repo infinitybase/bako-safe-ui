@@ -1,16 +1,9 @@
-import {
-  Badge,
-  Flex,
-  Icon,
-  Image,
-  Skeleton,
-  Text,
-  useDisclosure,
-} from '@chakra-ui/react';
+import { Badge, Flex, Icon, Image, Skeleton, Text } from 'bako-ui';
 import { useMemo } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
 import { LeftAndRightArrow } from '@/components';
+import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
 import { ICreateWidgetPayload, IQuote } from '@/modules/core/models/meld';
 
 import { useListMeldProviders } from '../../hooks';
@@ -63,7 +56,7 @@ export const SelectQuote = ({
   };
 
   return (
-    <Skeleton isLoaded={!isLoadingProviders && !isLoadingQuotes} w="full">
+    <Skeleton loading={isLoadingProviders && isLoadingQuotes} w="full">
       <CardRoot
         flexDirection="row"
         justifyContent="space-between"
@@ -74,7 +67,13 @@ export const SelectQuote = ({
             Quote by
           </Text>
           {bestProviderQuote === currentProvider && (
-            <Badge variant="blue" py={1} px={2} shadow="none" fontSize="2xs">
+            <Badge
+              colorPalette="blue"
+              py={1}
+              px={2}
+              shadow="none"
+              fontSize="2xs"
+            >
               Best Rate
             </Badge>
           )}
@@ -116,13 +115,13 @@ export const SelectQuote = ({
                   </Text>
                 )}
 
-                <Icon as={LeftAndRightArrow} color="grey.75" />
+                <Icon as={LeftAndRightArrow} w={5} color="grey.75" />
               </Flex>
             )}
           />
           <SelectQuoteModal
             open={quoteModal.isOpen}
-            onClose={quoteModal.onClose}
+            onOpenChange={quoteModal.onOpenChange}
             quotes={quoteWithProvider}
             onChangeProvider={handleChangeProvider}
             currentProvider={currentProvider}

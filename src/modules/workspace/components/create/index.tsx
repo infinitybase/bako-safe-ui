@@ -1,16 +1,4 @@
-import {
-  Box,
-  FormControl,
-  FormHelperText,
-  FormLabel,
-  Input,
-  ModalProps,
-  TabPanel,
-  TabPanels,
-  Tabs,
-  Textarea,
-  VStack,
-} from '@chakra-ui/react';
+import { Box, Field, Input, Tabs, TextArea, VStack } from 'bako-ui';
 import { Controller } from 'react-hook-form';
 
 import {
@@ -32,45 +20,45 @@ const CreateWorkspaceForm = ({
 }: {
   form: UseCreateWorkspace['form'];
 }) => (
-  <VStack spacing={2}>
+  <VStack gap={2}>
     <Controller
       control={form.control}
       name="name"
       render={({ field, fieldState }) => (
-        <FormControl isInvalid={fieldState.invalid}>
+        <Field.Root invalid={fieldState.invalid}>
           <Input
             minHeight={14}
             value={field.value}
             onChange={field.onChange}
             placeholder=" "
-            variant="dark"
+            // variant="dark"
           />
-          <FormLabel py={1}>Name your workspace</FormLabel>
-          <FormHelperText color="error.500">
+          <Field.Label py={1}>Name your workspace</Field.Label>
+          <Field.HelperText color="error.500">
             {fieldState.error?.message}
-          </FormHelperText>
-        </FormControl>
+          </Field.HelperText>
+        </Field.Root>
       )}
     />
-    <FormControl>
-      <Textarea
+    <Field.Root>
+      <TextArea
         size="lg"
         {...form.register('description')}
         placeholder="Description"
         bg={`grey.825`}
         borderColor={`grey.800`}
-        sx={{
+        css={{
           'textarea::placeholder': {
             color: 'grey.500',
           },
         }}
       />
-      <FormHelperText>Optional</FormHelperText>
-    </FormControl>
+      <Field.HelperText>Optional</Field.HelperText>
+    </Field.Root>
   </VStack>
 );
 
-interface CreateWorkspaceDialogProps extends Omit<ModalProps, 'children'> {
+interface CreateWorkspaceDialogProps extends Omit<any, 'children'> {
   handleCancel: () => void;
 }
 
@@ -93,7 +81,7 @@ const CreateWorkspaceDialog = (props: CreateWorkspaceDialogProps) => {
         base: 'full',
         sm: !tabs.is(CreateWorkspaceTabState.FORM) ? 'xl' : 'lg',
       }}
-      closeOnOverlayClick={false}
+      closeOnInteractOutside={false}
       {...props}
     >
       {tabs.is(CreateWorkspaceTabState.FORM) ? (
@@ -132,20 +120,20 @@ const CreateWorkspaceDialog = (props: CreateWorkspaceDialogProps) => {
         >
           <StepProgress length={tabs.length} value={tabs.tab} />
         </Box>
-        <Tabs index={tabs.tab}>
-          <TabPanels>
-            <TabPanel p={0}>
+        <Tabs.Root value={String(tabs.tab)}>
+          <Box>
+            <Box p={0}>
               <OnboardingStep
                 tabs={tabs}
                 onCancel={props.handleCancel}
                 onConfirm={() => tabs.set(CreateWorkspaceTabState.FORM)}
               />
-            </TabPanel>
+            </Box>
 
-            <TabPanel p={0}>
+            <Box p={0}>
               <CreateWorkspaceForm form={form} />
-            </TabPanel>
-            <TabPanel p={0}>
+            </Box>
+            <Box p={0}>
               <FeedbackSuccess
                 hasCloseButton
                 title="All set!"
@@ -157,9 +145,9 @@ const CreateWorkspaceDialog = (props: CreateWorkspaceDialogProps) => {
                 onSecondaryAction={handleConfigureMembers}
                 showAction
               />
-            </TabPanel>
-          </TabPanels>
-        </Tabs>
+            </Box>
+          </Box>
+        </Tabs.Root>
       </Dialog.Body>
 
       <Dialog.Actions
@@ -183,13 +171,13 @@ const CreateWorkspaceDialog = (props: CreateWorkspaceDialogProps) => {
           w="70%"
           onClick={form.handleCreateWorkspace}
           fontSize="md"
-          leftIcon={<SquarePlusIcon w={4} h={4} />}
-          isDisabled={request.isPending}
-          isLoading={request.isPending}
+          disabled={request.isPending}
+          loading={request.isPending}
           _hover={{
             opacity: 0.8,
           }}
         >
+          <SquarePlusIcon w={4} h={4} />
           Create Workspace
         </Dialog.PrimaryAction>
       </Dialog.Actions>

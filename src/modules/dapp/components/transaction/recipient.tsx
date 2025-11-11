@@ -1,8 +1,8 @@
-import { Avatar, Center, chakra, Divider, Text } from '@chakra-ui/react';
+import { Avatar, Center, Separator, Text } from 'bako-ui';
 import { AddressType, ChainName } from 'fuels';
 
 import { AddressCopy } from '@/components/addressCopy';
-import { Card } from '@/components/card';
+import { Card, CardProps } from '@/components/card';
 import { AddressUtils } from '@/modules/core';
 import { PredicateAndWorkspace } from '@/modules/vault';
 
@@ -16,17 +16,22 @@ interface RecipientProps {
   fullBorderRadius?: boolean;
 }
 
-export const RecipientCard = chakra(Card, {
-  baseStyle: {
-    py: 4,
-    w: 'full',
-    display: 'flex',
-    alignItems: 'center',
-    flexDirection: 'column',
-    minH: '100%',
-    alignSelf: 'stretch',
-  },
-});
+export const RecipientCard = (props: CardProps) => {
+  return (
+    <Card
+      css={{
+        py: 4,
+        w: 'full',
+        display: 'flex',
+        alignItems: 'center',
+        flexDirection: 'column',
+        minH: '100%',
+        alignSelf: 'stretch',
+      }}
+      {...props}
+    />
+  );
+};
 
 const DappTransactionRecipient = ({
   type,
@@ -48,23 +53,23 @@ const DappTransactionRecipient = ({
       h={149}
       w={174}
     >
-      <Text variant="description" textAlign="center" mt={-2} color="grey.250">
+      <Text textAlign="center" mt={-2} color="grey.250">
         {isSender ? 'From' : 'To'}
         {(!isSender && isContract && '(Contract)') ||
           (!isSender && isContract && !isVault && '(Contract)')}
         {isVault && '(Bako Safe)'}:
       </Text>
-      <Divider borderColor="dark.100" mt={1} mb="10px" />
+      <Separator borderColor="dark.100" mt={1} mb="10px" />
       <Center flexDirection="column" h={88}>
         <Avatar
           mb={2}
-          name={title}
           color="white"
           bgColor="grey.950"
-          variant="roundedSquare"
+          shape="rounded"
           boxSize="40px"
+          name={title}
         />
-        <Text textAlign="center" variant="title" mb={1} fontSize={14}>
+        <Text textAlign="center" mb={1} fontSize={14}>
           {title}
         </Text>
 

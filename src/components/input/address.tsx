@@ -1,17 +1,17 @@
 import {
-  CircularProgress,
-  FormLabel,
+  Field,
+  floatingStyles,
   Input,
   InputGroup,
   InputProps,
-  InputRightElement,
-} from '@chakra-ui/react';
+  Loader,
+} from 'bako-ui';
 import { isB256 } from 'fuels';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { UseAddressBookReturn } from '@/modules/addressBook/hooks';
 import { useBakoIDClient } from '@/modules/core/hooks/bako-id';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 import { AddressBookUtils } from '@/utils';
 
 interface AddressInputProps
@@ -129,31 +129,34 @@ const AddressInput = (props: AddressInputProps) => {
   }, [fetchResolveAddress.isLoading, fetchResolverName.isLoading, value]);
 
   return (
-    <InputGroup>
-      <InputRightElement
-        pr={1}
-        hidden={!fetchResolveAddress.isLoading && !fetchResolverName.isLoading}
-        top="1px"
-        right="2"
-        borderRadius={10}
-        bgColor={'grey.825'}
-        h="calc(100% - 3px)"
+    <Field.Root>
+      <InputGroup
+        endAddonProps={
+          <Loader
+            css={{ '--spinner-track-color': 'dark.100' }}
+            size="md"
+            color="brand.500"
+          />
+        }
       >
-        <CircularProgress
-          trackColor="dark.100"
-          size={18}
-          isIndeterminate
-          color="brand.500"
+        <Input
+          {...rest}
+          value={inputValue}
+          onChange={handleInputChange}
+          placeholder=" "
+          pt={2}
+          px={3}
         />
-      </InputRightElement>
-      <Input
-        {...rest}
-        value={inputValue}
-        onChange={handleInputChange}
-        placeholder=" "
-      />
-      <FormLabel>Address</FormLabel>
-    </InputGroup>
+      </InputGroup>
+      <Field.Label
+        css={floatingStyles({
+          withStartIcon: false,
+          hasValue: inputValue.length > 0,
+        })}
+      >
+        Address
+      </Field.Label>
+    </Field.Root>
   );
 };
 

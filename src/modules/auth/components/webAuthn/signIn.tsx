@@ -1,10 +1,15 @@
-import { VStack } from '@chakra-ui/react';
+import { Button, Card, Flex, Stack } from 'bako-ui';
+import { useCallback } from 'react';
 
-import { ProgressButton } from '@/components';
-import { useScreenSize } from '@/modules/core/hooks';
 import { TermsOfUseDialog } from '@/modules/termsOfUse/dialog';
 
-import { UseDappSignIn, UseWebAuthnSignIn, UseWebSignIn } from '../../hooks';
+import {
+  UseDappSignIn,
+  UseWebAuthnSignIn,
+  UseWebSignIn,
+  WebAuthnModeState,
+} from '../../hooks';
+import { AnimatedSignInCard } from './animatedSignInCard';
 import { WebAuthnForm } from './form';
 
 interface WebAuthnSignInProps {
@@ -14,6 +19,7 @@ interface WebAuthnSignInProps {
   inputBadge: UseWebAuthnSignIn['inputBadge'];
   handleInputChange: UseWebAuthnSignIn['handleInputChange'];
   handleRegister: UseWebAuthnSignIn['handleRegister'];
+  onModeChange: (mode: WebAuthnModeState) => void;
 }
 
 const WebAuthnSignIn = (props: WebAuthnSignInProps) => {
@@ -24,37 +30,59 @@ const WebAuthnSignIn = (props: WebAuthnSignInProps) => {
     inputBadge,
     handleInputChange,
     handleRegister,
+    onModeChange,
   } = props;
 
-  const { isMobile } = useScreenSize();
+  const handleChangeMode = useCallback(() => {
+    onModeChange(
+      formData.isRegisterMode
+        ? WebAuthnModeState.LOGIN
+        : WebAuthnModeState.REGISTER,
+    );
+  }, [onModeChange, formData.isRegisterMode]);
+
+  const mode = formData.isRegisterMode
+    ? WebAuthnModeState.REGISTER
+    : WebAuthnModeState.LOGIN;
 
   return (
-    <VStack w="full" spacing={isMobile ? 4 : 6}>
+    <Card.Root w="full" variant="subtle" bg="gray.700" rounded="2xl">
+      <Card.Body maxH={250}>
+        <AnimatedSignInCard mode={mode}>
+          <Stack
+            display="flex"
+            flexDirection="column"
+            gap={{ base: 6, md: 14 }}
+          >
+            <WebAuthnForm
+              formData={formData}
+              accountsOptions={accountsOptions}
+              isLoadingOptions={formState.isLoadingOptions}
+              accountSeachHandler={handleInputChange}
+              onSubmitUsingEnterKey={formState.handleActionUsingEnterKey}
+              inputBadge={inputBadge}
+              isDisabled={formState.disableInput}
+            />
+
+            <Flex justifyContent="space-between" alignItems="center" w="full">
+              <Button
+                fontSize="sm"
+                aria-label={formState.label}
+                onClick={formState.handleAction}
+                disabled={formState.isDisabled}
+              >
+                {formState.label}
+              </Button>
+
+              <Button variant="ghost" onClick={handleChangeMode}>
+                {formData.isRegisterMode ? 'Back to login' : 'Create new user'}
+              </Button>
+            </Flex>
+          </Stack>
+        </AnimatedSignInCard>
+      </Card.Body>
       <TermsOfUseDialog actionHandler={handleRegister} />
-
-      <WebAuthnForm
-        formData={formData}
-        accountsOptions={accountsOptions}
-        showAccountsOptions={formState.showAccountsOptions}
-        accountSeachHandler={handleInputChange}
-        onSubmitUsingEnterKey={formState.handleActionUsingEnterKey}
-        inputBadge={inputBadge}
-        isDisabled={formState.disableInput}
-      />
-
-      <ProgressButton
-        w="full"
-        variant="primary"
-        fontSize="sm"
-        aria-label={formState.label}
-        onClick={formState.handleAction}
-        _hover={{ opacity: formState.isDisabled && 0.8 }}
-        isDisabled={formState.isDisabled}
-        progress={formState.actionProgress}
-      >
-        {formState.label}
-      </ProgressButton>
-    </VStack>
+    </Card.Root>
   );
 };
 

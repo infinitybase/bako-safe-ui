@@ -1,10 +1,11 @@
-import { useDisclosure } from '@chakra-ui/react';
 import { useMemo, useState } from 'react';
+
+import { useGetParams } from '@/modules';
+import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
 
 import { useCreateAPIToken } from './create';
 import { useListAPITokens } from './list';
 import { useRemoveAPIToken } from './remove';
-import { useGetParams } from '@/modules';
 
 export enum TabState {
   LIST,

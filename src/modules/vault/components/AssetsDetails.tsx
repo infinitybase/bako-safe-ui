@@ -1,11 +1,11 @@
-import { Text, VStack } from '@chakra-ui/react';
+import { Text, VStack } from 'bako-ui';
 import { Fragment, MutableRefObject, useMemo } from 'react';
 import { To, useNavigate } from 'react-router-dom';
 
 import { useOrderAssetsByUSD } from '@/modules/core';
 import { AssetCard } from '@/modules/core/components';
 import { Asset, NFT } from '@/modules/core/utils';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { useVaultAssetsList } from '../hooks';
 
@@ -95,7 +95,7 @@ const AssetsDetails = ({
           p={4}
           borderRadius={10}
           bgColor="grey.950"
-          spacing={0}
+          gap={0}
           cursor="pointer"
           onClick={() => navigate(viewAllRedirect)}
         >

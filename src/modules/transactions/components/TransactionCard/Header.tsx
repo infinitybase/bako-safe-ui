@@ -1,4 +1,4 @@
-import { AccordionButton, Box, Grid, HStack } from '@chakra-ui/react';
+import { Accordion, Box, Grid } from 'bako-ui';
 import { memo } from 'react';
 
 import { TransactionState } from '@/modules/core';
@@ -30,9 +30,9 @@ export const Header = memo(
     isMint,
     isSigner,
   }: TransactionCardHeaderProps) => {
+    const Root = isMobile ? Box : Accordion.ItemTrigger;
     return (
-      <HStack
-        as={isMobile ? Box : AccordionButton}
+      <Root
         onClick={onOpenDialog}
         w="full"
         _hover={{ bgColor: 'transparent' }}
@@ -65,7 +65,7 @@ export const Header = memo(
             status={status}
           />
         </Grid>
-      </HStack>
+      </Root>
     );
   },
 );

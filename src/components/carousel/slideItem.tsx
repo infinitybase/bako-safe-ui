@@ -1,4 +1,4 @@
-import { Box, BoxProps } from '@chakra-ui/react';
+import { Box, BoxProps } from 'bako-ui';
 
 interface CarouselSlideItemProps extends BoxProps {
   children: React.ReactNode;

@@ -1,4 +1,4 @@
-import { Alert, Box, Icon, Text } from '@chakra-ui/react';
+import { Alert, Box, Icon, Text } from 'bako-ui';
 import React from 'react';
 
 import { DappWarning } from '@/components/icons/dapp-warning';

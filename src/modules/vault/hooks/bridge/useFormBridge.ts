@@ -21,7 +21,7 @@ import { useNetworks } from '@/modules/network/hooks';
 import { availableNetWorks, NetworkType } from '@/modules/network/services';
 import { useTransactionToast } from '@/modules/transactions/providers/toast';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { AssetItem } from '../../components/bridge';
 import {
@@ -29,11 +29,12 @@ import {
   useFormBridgeContext,
 } from '../../components/bridge/providers/FormBridgeProvider';
 import {
+  BridgeStepsForm,
   ErrorBridgeForm,
   formatEstimativeTime,
   optionsAssetsFuel,
 } from '../../components/bridge/utils';
-import { useVaultInfosContext } from '../../VaultInfosProvider';
+import { useVaultInfosContext } from '../../hooks';
 import { useCreateSwapBridge } from './useCreateSwapBridge';
 import { useCreateBridgeTransaction } from './useCreateTransactionBridge';
 import { useGetDestinationsBridge } from './useGetDestinationsBridge';
@@ -83,6 +84,9 @@ const useFormBridge = () => {
     saveLimits,
     saveErrorForm,
     saveToNetworkOptions,
+    setStepForm,
+    isSendingTx,
+    setIsSendingTx,
   } = useFormBridgeContext();
   const { watch } = form;
   const toast = useTransactionToast();
@@ -95,7 +99,6 @@ const useFormBridge = () => {
   const { getLimitsBridgeAsync } = useGetLimitsBridge();
   const { getQuoteBridgeAsync } = useGetQuoteBridge();
   const [toAssetOptions, setToAssetOptions] = useState<AssetFormItem[]>([]);
-  const [isSendingTx, setIsSendingTx] = useState<boolean>(false);
 
   const assetFromValue = watch('selectAssetFrom');
   const assetToValue = watch('selectAssetTo');
@@ -105,11 +108,10 @@ const useFormBridge = () => {
   const destinationAddress = watch('destinationAddress');
   const amount = watch('amount');
 
-  const assetFrom =
-    useMemo(
-      () => optionsAssetsFuel.find((a) => a.value === assetFromValue),
-      [assetFromValue],
-    ) ?? null;
+  const assetFrom = useMemo(
+    () => optionsAssetsFuel.find((a) => a.value === assetFromValue) ?? null,
+    [assetFromValue],
+  );
 
   const networkTo = useMemo(() => {
     const value = isMobile ? networkToMobile : networkToValueForm?.value;
@@ -183,14 +185,14 @@ const useFormBridge = () => {
 
   const getDestinations = useCallback(
     async (assetFrom?: AssetItem) => {
-      if (!assetFrom?.name) return;
+      if (!assetFrom) return;
 
       const isMainnet =
         currentNetwork.url === availableNetWorks[NetworkType.MAINNET].url;
 
       const data = await getDestinationsBridgeAsync({
         fromNetwork: isMainnet ? 'FUEL_MAINNET' : 'FUEL_TESTNET',
-        fromToken: assetFrom?.name ?? '',
+        fromToken: isMainnet ? assetFrom.name : assetFrom.symbol || '',
       });
 
       handleGetToNetworkOptions(data);
@@ -271,7 +273,7 @@ const useFormBridge = () => {
       const payload = {
         destinationAddress: destinationAddress,
         sourceNetwork: isMainnet ? 'FUEL_MAINNET' : 'FUEL_TESTNET',
-        sourceToken: assetFrom?.name ?? '',
+        sourceToken: (assetFrom?.symbol || assetFrom?.name) ?? '',
         destinationNetwork: isMobile
           ? networkToMobile
           : (networkToValueForm?.value ?? ''),
@@ -347,19 +349,6 @@ const useFormBridge = () => {
 
       try {
         const data = await getQuoteBridgeAsync(payload);
-        let receiveInUsd = '-';
-
-        if (assetFrom?.value) {
-          const usdData = tokensUSD.data[assetFrom?.value];
-          const usdAmount = usdData?.usdAmount ?? null;
-
-          const receiveValue = usdAmount * data.quote.receiveAmount;
-
-          receiveInUsd = new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD',
-          }).format(receiveValue);
-        }
 
         saveQuote({
           quote: {
@@ -368,7 +357,7 @@ const useFormBridge = () => {
               data.quote.avgCompletionTime,
             ),
           },
-          receiveInUsd: receiveInUsd,
+          receiveInUsd: '-',
         });
         if (ErrorBridgeForm.QUOTE) saveErrorForm(null);
         setTimeout(() => {
@@ -383,8 +372,6 @@ const useFormBridge = () => {
       }
     },
     [
-      assetFrom?.value,
-      tokensUSD,
       amount,
       getQuoteBridgeAsync,
       prepareCreateSwapPayload,
@@ -419,14 +406,14 @@ const useFormBridge = () => {
           undefined,
           transaction,
         ).finally(async () => {
-          setIsSendingTx(false);
           await refetchVaultTransactionsList();
           await refetchTransactionsList();
           await refetchHomeTransactionsList();
         });
+        form.reset();
+        setStepForm(BridgeStepsForm.FROM);
       } catch (error) {
         console.info('error sendtx bridge', error);
-        setIsSendingTx(false);
       }
     },
     [
@@ -440,13 +427,15 @@ const useFormBridge = () => {
       refetchTransactionsList,
       refetchVaultTransactionsList,
       createTransactionBridgeAsync,
+      form,
+      setStepForm,
     ],
   );
 
   const onSubmit = form.handleSubmit(async () => {
-    setIsSendingTx(true);
-
     try {
+      setIsSendingTx(true);
+
       const payload = await prepareCreateSwapPayload();
 
       const response = await createSwapBridgeAsync(payload);
@@ -455,9 +444,19 @@ const useFormBridge = () => {
       const callData = JSON.parse(depositActions.callData);
 
       const tx = transactionRequestify(callData.script);
-      if (!payload?.sourceAddress) return;
+      if (!payload?.sourceAddress) {
+        toast.error(
+          'Please, check the address corresponding the source network.',
+        );
+        setIsSendingTx(false);
+        return;
+      }
 
-      if (!vault) return;
+      if (!vault) {
+        toast.error('Internal error occurred. Please, try again later.');
+        setIsSendingTx(false);
+        return;
+      }
 
       const add = await vault.getResourcesToSpend(
         callData.quantities.map((qtd: { assetId: string; amount: string }) => ({
@@ -484,6 +483,7 @@ const useFormBridge = () => {
           'Please, check the address corresponding the destination network.',
         );
       }
+    } finally {
       setIsSendingTx(false);
     }
   });
@@ -503,7 +503,7 @@ const useFormBridge = () => {
     isFormComplete,
     isPendingSigner,
     isLoading: isPending,
-    isLoadingDestinations,
+    isLoadingDestinations: isLoadingDestinations || assets.isLoading,
     isLoadingQuote,
     isSendingTx,
     errorForm,
