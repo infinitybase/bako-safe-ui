@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { IApiError, queryClient } from '@/config';
 import { useContactToast } from '@/modules/addressBook';
 import { SettingsQueryKey } from '@/modules/core';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { useUpdateSettingsRequest } from './';
 import { useMySettingsRequest } from './useMySettingsRequest';
@@ -14,8 +14,6 @@ interface UseSettingsProps {
   onOpen?: () => void;
   onClose?: () => void;
 }
-
-const { MY_SETTINGS } = SettingsQueryKey;
 
 const useSettings = ({ onClose }: UseSettingsProps) => {
   const {
@@ -37,7 +35,9 @@ const useSettings = ({ onClose }: UseSettingsProps) => {
         { first_login: false, id: user.id },
         {
           onSuccess: () =>
-            queryClient.invalidateQueries({ queryKey: [MY_SETTINGS] }),
+            queryClient.invalidateQueries({
+              queryKey: [SettingsQueryKey.MY_SETTINGS],
+            }),
         },
       );
     }
@@ -60,7 +60,9 @@ const useSettings = ({ onClose }: UseSettingsProps) => {
         },
         {
           onSuccess: async () => {
-            queryClient.invalidateQueries({ queryKey: [MY_SETTINGS] });
+            queryClient.invalidateQueries({
+              queryKey: [SettingsQueryKey.MY_SETTINGS],
+            });
             onClose?.();
             successToast({
               title: 'Settings updated',

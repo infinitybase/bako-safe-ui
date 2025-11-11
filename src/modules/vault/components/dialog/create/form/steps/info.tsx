@@ -1,12 +1,4 @@
-import {
-  FormControl,
-  FormHelperText,
-  FormLabel,
-  Input,
-  TabPanel,
-  Textarea,
-  VStack,
-} from '@chakra-ui/react';
+import { Box, Field, floatingStyles, Input, TextArea, VStack } from 'bako-ui';
 import { ChangeEvent, useEffect } from 'react';
 import { Controller } from 'react-hook-form';
 
@@ -31,68 +23,72 @@ const VaultInfosStep = ({ form, vaultName }: VaultInfoStepProps) => {
   }, [formName]);
 
   return (
-    <TabPanel p={0}>
-      <VStack spacing={6}>
+    <Box p={0}>
+      <VStack gap={6}>
         <Controller
           control={form.control}
           name="name"
           render={({ field, fieldState }) => (
-            <FormControl>
-              <Input
-                id="vault_name"
-                variant="dark"
-                value={search}
-                defaultValue={search || form.watch('name')}
-                maxLength={27}
-                onChange={(e) => {
-                  searchHandler(e);
-                  field.onChange(e.target.value);
-                }}
-                placeholder=" "
-                isInvalid={
-                  fieldState.invalid ||
-                  (vaultNameIsAvailable && search.length > 0)
-                }
-              />
-              <FormLabel>Vault name</FormLabel>
-              <FormHelperText
+            <Field.Root
+              invalid={
+                fieldState.invalid ||
+                (vaultNameIsAvailable && search.length > 0)
+              }
+            >
+              <Box position="relative" w="full">
+                <Input
+                  id="vault_name"
+                  value={search}
+                  variant="subtle"
+                  defaultValue={search || form.watch('name')}
+                  maxLength={27}
+                  pt={2}
+                  onChange={(e) => {
+                    searchHandler(e);
+                    field.onChange(e.target.value);
+                  }}
+                  placeholder=" "
+                />
+                <Field.Label css={floatingStyles({ hasValue: !!field.value })}>
+                  Account name
+                </Field.Label>
+              </Box>
+              <Field.HelperText
                 color={
                   !!vaultNameIsAvailable || form.formState.errors.name?.message
                     ? 'error.500'
-                    : 'grey.500'
+                    : 'textSecondary'
                 }
               >
                 {!!vaultNameIsAvailable && search.length > 0
-                  ? 'Vault name already exists in this workspace'
+                  ? 'Account name already exists in this workspace'
                   : form.formState.errors.name?.message
                     ? form.formState.errors.name?.message
                     : search.length > 0
-                      ? 'This vault is available'
+                      ? 'This account is available'
                       : ''}
-              </FormHelperText>
-            </FormControl>
+              </Field.HelperText>
+            </Field.Root>
           )}
         />
-        <FormControl
-          sx={{
-            'textarea::placeholder': {
-              color: 'grey.500',
+        <Field.Root
+          css={{
+            'Aa::placeholder': {
+              color: 'gray.500',
             },
           }}
         >
-          <Textarea
+          <TextArea
             {...form.register('description')}
             id="vault_description"
             maxLength={199}
-            placeholder="Description"
-            bg={`grey.825`}
-            borderColor={`grey.800`}
-            resize="none"
+            variant="subtle"
+            rows={5}
+            placeholder="Description (optional)"
           />
-          <FormHelperText>Optional</FormHelperText>
-        </FormControl>
+        </Field.Root>
       </VStack>
-    </TabPanel>
+    </Box>
   );
 };
 

@@ -1,4 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
+import { DialogOpenChangeDetails } from 'bako-ui';
 import { IAssetGroupById } from 'bakosafe';
 import { BN, bn } from 'fuels';
 import debounce from 'lodash.debounce';
@@ -16,7 +17,7 @@ import {
   useGetTokenInfosArray,
 } from '@/modules/core';
 import { TransactionService } from '@/modules/transactions/services';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { useTransactionsContext } from '../../providers/TransactionsProvider';
 import { generateTransactionName } from '../../utils';
@@ -27,8 +28,8 @@ const recipientMock =
   'fuel1tn37x48zw6e3tylz2p0r6h6ua4l6swanmt8jzzpqt4jxmmkgw3lszpcedp';
 
 interface UseCreateTransactionParams {
-  onClose: () => void;
-  isOpen: boolean;
+  onClose?: (e: DialogOpenChangeDetails) => void;
+  open?: boolean;
   assets: Asset[] | undefined;
   nfts?: NFT[];
   hasAssetBalance: (assetId: string, value: string) => boolean;
@@ -222,6 +223,8 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     (assetId?: string) => {
       const assetToCheck = assetId ?? currentFieldAsset;
 
+      if (!assetToCheck) return '0.000';
+
       const currentAssetBalance = bn.parseUnits(
         formattedCurrentAssetBalance?.find(
           (asset) => asset.assetId === assetToCheck,
@@ -270,7 +273,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
   );
 
   const handleClose = () => {
-    props?.onClose();
+    props?.onClose?.({ open: false });
   };
 
   const transactionsForm = useWatch({

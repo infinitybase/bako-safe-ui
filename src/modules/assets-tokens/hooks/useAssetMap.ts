@@ -64,7 +64,7 @@ export const useMappedAssetStore = create(
               if (
                 asset.isNFT ||
                 asset?.totalSupply === '1' ||
-                asset?.totalSupply === null
+                (asset?.totalSupply === null && !('rate' in asset))
               ) {
                 const withNativeMetadata =
                   Object.keys(asset.metadata).filter(

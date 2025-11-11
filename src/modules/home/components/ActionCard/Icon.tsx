@@ -1,11 +1,10 @@
-import { As, Box, Flex, Icon as ChakraIcon } from '@chakra-ui/react';
+import { Box, Flex } from 'bako-ui';
 
 interface ActionCardIconProps {
-  icon: As;
-  isUpcoming?: boolean;
+  children: React.ReactNode;
 }
 
-const Icon = ({ icon, isUpcoming }: ActionCardIconProps) => {
+const Icon = ({ children }: ActionCardIconProps) => {
   return (
     <Flex
       alignItems="center"
@@ -16,11 +15,7 @@ const Icon = ({ icon, isUpcoming }: ActionCardIconProps) => {
       borderColor="rgba(255, 192, 16, 0.6)"
     >
       <Box backgroundColor="rgba(255, 192, 16, 0.1)" borderRadius={8} p={5}>
-        <ChakraIcon
-          fontSize={30}
-          as={icon}
-          color={isUpcoming ? 'grey.500' : 'brand.500'}
-        />
+        {children}
       </Box>
     </Flex>
   );

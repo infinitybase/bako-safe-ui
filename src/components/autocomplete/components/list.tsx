@@ -1,4 +1,4 @@
-import { Box, Flex, VStack } from '@chakra-ui/react';
+import { Box, Flex, VStack } from 'bako-ui';
 import React, { LegacyRef, memo } from 'react';
 
 interface AutocompleteOptionListProps {
@@ -10,16 +10,16 @@ const AutocompleteOptionList = memo(
   ({ children, rootRef }: AutocompleteOptionListProps) => {
     return (
       <Box
-        bg="dark.200"
+        bg="bg.muted"
         ref={rootRef}
-        color="grey.200"
+        color="textPrimary"
         fontSize="md"
-        borderColor="dark.100"
+        borderColor="bg.panel/80"
         borderWidth={1}
         borderRadius={10}
         padding={2}
         position="absolute"
-        zIndex={300}
+        zIndex={400}
         w="full"
         mt={2}
       >

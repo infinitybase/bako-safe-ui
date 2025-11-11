@@ -2,27 +2,14 @@ import {
   Badge as ChakraBadge,
   BadgeProps,
   Box,
-  chakra,
   Flex,
   FlexProps,
   Icon as ChakraIcon,
   IconProps,
-  MergeWithAs,
   Text,
   TextProps,
   VStack,
-} from '@chakra-ui/react';
-
-const MenuItem = chakra(Flex, {
-  baseStyle: {
-    w: '100%',
-    justifyContent: 'flex-start',
-    gap: 4,
-    alignItems: 'center',
-    pb: 5,
-    pt: 5,
-  },
-});
+} from 'bako-ui';
 
 const Container = ({
   children,
@@ -30,40 +17,64 @@ const Container = ({
   ...props
 }: FlexProps & { isActive?: boolean }) => (
   <Box
-    px={4}
+    p={3}
     w="full"
     cursor="pointer"
-    borderBottomWidth={1}
-    borderColor={isActive ? 'brand.500' : 'transparent'}
+    rounded="lg"
+    bg={isActive ? 'bg.muted' : 'transparent'}
+    data-active={isActive ? 'true' : 'false'}
+    border="1px solid"
+    borderColor="transparent"
+    transition="all 0.2s ease"
+    _hover={{
+      borderColor: 'bg.muted',
+      '& .menuTitle, .menuIcon': { color: 'gray.50' },
+    }}
   >
-    <MenuItem {...props}>{children}</MenuItem>
+    <Flex
+      css={{
+        w: '100%',
+        justifyContent: 'flex-start',
+        gap: 3,
+        alignItems: 'center',
+      }}
+      {...props}
+    >
+      {children}
+    </Flex>
   </Box>
 );
 
-const Icon = ({
-  isActive,
-  ...props
-}: MergeWithAs<IconProps, never> & { isActive?: boolean }) => (
+const Icon = ({ isActive, ...props }: IconProps & { isActive?: boolean }) => (
   <ChakraIcon
-    fontSize="lg"
+    w={4}
     {...props}
-    color={isActive ? 'grey.50' : 'grey.425'}
+    color={isActive ? 'gray.50' : 'textSecondary'}
+    transition="all 0.2s ease"
+    className="menuIcon"
   />
 );
 
 const Title = ({ isActive, ...props }: TextProps & { isActive?: boolean }) => (
   <Text
-    variant="subtitle"
-    fontSize="sm"
-    fontWeight={600}
-    color={isActive ? 'grey.50' : 'grey.425'}
-    lineHeight="16.94px"
+    fontSize="xs"
+    fontWeight={isActive ? 'semibold' : 'medium'}
+    color={isActive ? 'gray.50' : 'textSecondary'}
+    lineHeight="normal"
+    transition="all 0.2s ease"
+    className="menuTitle"
     {...props}
   />
 );
 
 const Badge = (props: BadgeProps) => (
-  <ChakraBadge variant="warning" fontWeight="normal" {...props} />
+  <ChakraBadge
+    colorPalette="yellow"
+    size="xs"
+    variant="outline"
+    fontWeight="normal"
+    {...props}
+  />
 );
 
 const SidebarMenu = {
@@ -71,7 +82,7 @@ const SidebarMenu = {
   Title,
   Badge,
   Container,
-  List: chakra(VStack),
+  List: VStack,
 };
 
 export { SidebarMenu };

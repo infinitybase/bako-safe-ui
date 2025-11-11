@@ -1,33 +1,33 @@
-import { StyleProps, useToast, UseToastOptions } from '@chakra-ui/react';
 import React from 'react';
 
-import { Notification } from '@/modules/notification/components';
+import { toaster } from '@/components/ui/toaster';
 
-const useNotification = (
-  options?: UseToastOptions,
-  createdAccountNotification?: boolean,
-) => {
-  const createdAccountNotificationStyle: StyleProps | null =
-    createdAccountNotification
-      ? {
-          position: 'absolute',
-          top: -14,
-          right: 5,
-        }
-      : null;
+interface UseToastOptions {
+  id?: string;
+  status?: 'success' | 'error' | 'warning' | 'info' | 'loading';
+  duration?: number;
+  isClosable?: boolean;
+  title?: string;
+  description?: string;
+  icon?: React.ReactNode;
+}
 
-  return useToast({
-    containerStyle: {
-      display: 'flex',
-      alignItems: 'flex-end',
-      flexDirection: 'column',
-      minW: 'min-content',
-      ...createdAccountNotificationStyle,
-    },
-    position: 'top-right',
-    render: (props) => <Notification {...props} />,
-    ...options,
-  });
+const useNotification = (options?: UseToastOptions) => {
+  return (toastOptions: UseToastOptions) => {
+    const status = toastOptions.status || options?.status || 'info';
+    const method = status === 'loading' ? toaster.loading : toaster.create;
+    method({
+      status,
+      id: toastOptions.id || options?.id || `toast-${Date.now()}`,
+      title: toastOptions.title || options?.title,
+      description: toastOptions.description || options?.description,
+      type: status,
+      duration: toastOptions.duration || options?.duration || 5000,
+      closable: toastOptions.isClosable || options?.isClosable || false,
+      ...options,
+      ...toastOptions,
+    });
+  };
 };
 
 export { useNotification };

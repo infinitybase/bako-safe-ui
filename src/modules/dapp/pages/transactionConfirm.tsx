@@ -1,4 +1,4 @@
-import { TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
+import { Box } from 'bako-ui';
 import { useState } from 'react';
 
 import { Dialog } from '@/components/dialog';
@@ -8,7 +8,7 @@ import { useMyWallet } from '@/modules/core/hooks/fuel';
 import CreateTxMenuButton, {
   ECreateTransactionMethods,
 } from '@/modules/transactions/components/dialog/create/createTxMenuButton';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { DappTransactionSuccess } from '../components/transaction/success';
 import { DappTransactionWrapper } from '../components/transaction/wrapper';
@@ -45,10 +45,12 @@ const TransactionConfirm = () => {
   const { isConnected: isEvmConnected } = useEvm();
   const { wallet: socialWallet } = useSocial();
 
+  const currentView = tabs.tab;
+
   return (
-    <Tabs isLazy index={tabs.tab}>
-      <TabPanels>
-        <TabPanel p={0}>
+    <Box>
+      {currentView === 0 && (
+        <Box p={0}>
           <DappTransactionWrapper
             title="Create transaction"
             startTime={startTime}
@@ -71,7 +73,7 @@ const TransactionConfirm = () => {
               ) : (
                 <Dialog.PrimaryAction
                   size="md"
-                  isLoading={isSending}
+                  loading={isSending}
                   onClick={sendTransaction}
                   fontSize={14}
                 >
@@ -80,9 +82,11 @@ const TransactionConfirm = () => {
               )
             }
           />
-        </TabPanel>
+        </Box>
+      )}
 
-        <TabPanel p={0}>
+      {currentView === 1 && (
+        <Box p={0}>
           <DappTransactionWrapper
             title="Sign transaction"
             startTime={startTime}
@@ -95,7 +99,7 @@ const TransactionConfirm = () => {
             primaryActionButton={
               <Dialog.PrimaryAction
                 size="md"
-                isLoading={isSigning}
+                loading={isSigning}
                 onClick={() => signTransaction(undefined, vault?.version)}
                 fontSize={14}
               >
@@ -103,23 +107,27 @@ const TransactionConfirm = () => {
               </Dialog.PrimaryAction>
             }
           />
-        </TabPanel>
+        </Box>
+      )}
 
-        <TabPanel p={0}>
+      {currentView === 2 && (
+        <Box p={0}>
           <DappTransactionSuccess
             title="Transaction created!"
             description="Your transaction is pending to be signed. Sign at Bako Safe."
           />
-        </TabPanel>
+        </Box>
+      )}
 
-        <TabPanel p={0}>
+      {currentView === 3 && (
+        <Box p={0}>
           <DappTransactionSuccess
             title="Transaction created and signed!"
             description="Your transaction is pending to be signed by others. You can check the transaction status at Bako Safe."
           />
-        </TabPanel>
-      </TabPanels>
-    </Tabs>
+        </Box>
+      )}
+    </Box>
   );
 };
 

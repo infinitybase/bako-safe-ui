@@ -1,30 +1,30 @@
 import {
+  Box,
   Button,
   ButtonGroup,
   Flex,
   InputGroup,
-  InputRightAddon,
   Stack,
   Text,
-  useDisclosure,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 import { bn } from 'fuels';
 import { useMemo, useRef } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
 import { CurrencyCode, CurrencyField } from '@/components';
 import { SelectedCurrency } from '@/modules/core/components';
+import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
 import { ICreateWidgetPayload } from '@/modules/core/models/meld';
 import {
   useListCryptoCurrencies,
   useListFiatCurrencies,
+  useVaultInfosContext,
 } from '@/modules/vault/hooks';
 import {
   formatMeldEthSlug,
   parseToBN,
   splitToFiat,
 } from '@/modules/vault/utils';
-import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
 import { moneyFormat } from '@/utils';
 import { FUEL_ETH_ID } from '@/utils/constants';
 import mergeRefs from '@/utils/merge-refs';
@@ -132,7 +132,7 @@ export const SourceCurrency = ({
           )}
           <CurrencyOptionsModal
             open={currencyModal.isOpen}
-            onClose={currencyModal.onClose}
+            onOpenChange={currencyModal.onOpenChange}
             onCurrencyChange={handleCurrencyChange}
             currentCurrencyCode={currentCurrencyCode}
             currencies={currencies}
@@ -204,62 +204,66 @@ export const SourceCurrency = ({
                 w="fit-content"
                 gap={2}
               >
-                <CurrencyField
-                  type={isOnRamp ? 'fiat' : 'crypto'}
-                  currency={
-                    isOnRamp ? (currentCurrencyCode as CurrencyCode) : undefined
-                  }
-                  isInvalid={!!errors.sourceAmount}
-                  textAlign="center"
-                  borderBottomWidth="0"
-                  minW={0}
-                  px={0}
-                  fontSize="3xl"
-                  {...(rest as any)}
-                  ref={mergeRefs(ref, inputRef)}
-                  value={value}
-                  onChange={onChange}
-                />
-                <InputMirror
-                  inputRef={inputRef}
-                  value={
-                    isOnRamp
-                      ? moneyFormat(value, fiatLocale, {
-                          currency: currentCurrency?.currencyCode || 'USD',
-                          style: 'decimal',
-                        })
-                      : value || '0'
-                  }
-                  isValueWithDecimals={isOnRamp}
-                />
-                <InputRightAddon alignSelf="end" color="section.200" px={0}>
-                  {currentCurrency?.currencyCode &&
-                    formatMeldEthSlug(currentCurrency.currencyCode)}
-                </InputRightAddon>
+                <>
+                  <CurrencyField
+                    type={isOnRamp ? 'fiat' : 'crypto'}
+                    currency={
+                      isOnRamp
+                        ? (currentCurrencyCode as CurrencyCode)
+                        : undefined
+                    }
+                    isInvalid={!!errors.sourceAmount}
+                    textAlign="center"
+                    borderBottomWidth="0"
+                    minW={0}
+                    px={0}
+                    fontSize="3xl"
+                    {...(rest as any)}
+                    ref={mergeRefs(ref, inputRef)}
+                    value={value}
+                    onChange={onChange}
+                  />
+                  <InputMirror
+                    inputRef={inputRef}
+                    value={
+                      isOnRamp
+                        ? moneyFormat(value, fiatLocale, {
+                            currency: currentCurrency?.currencyCode || 'USD',
+                            style: 'decimal',
+                          })
+                        : value || '0'
+                    }
+                    isValueWithDecimals={isOnRamp}
+                  />
+                  <Box alignSelf="end" color="section.200" px={0}>
+                    {currentCurrency?.currencyCode &&
+                      formatMeldEthSlug(currentCurrency.currencyCode)}
+                  </Box>
+                </>
               </InputGroup>
 
               <ButtonGroup mt={5} hidden={isOnRamp}>
                 <Button
                   onClick={() => handleSetCurrencyAmount(25)}
-                  variant="secondary"
+                  variant="outline"
                 >
                   25%
                 </Button>
                 <Button
                   onClick={() => handleSetCurrencyAmount(50)}
-                  variant="secondary"
+                  variant="outline"
                 >
                   50%
                 </Button>
                 <Button
                   onClick={() => handleSetCurrencyAmount(75)}
-                  variant="secondary"
+                  variant="outline"
                 >
                   75%
                 </Button>
                 <Button
                   onClick={() => handleSetCurrencyAmount(100)}
-                  variant="secondary"
+                  variant="outline"
                 >
                   Sell Max
                 </Button>

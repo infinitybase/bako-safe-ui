@@ -1,14 +1,4 @@
-import {
-  Drawer,
-  DrawerBody,
-  DrawerContent,
-  DrawerHeader,
-  DrawerOverlay,
-  HStack,
-  Image,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { Drawer, HStack, Image, Text, VStack } from 'bako-ui';
 import { UseFormReturn } from 'react-hook-form';
 
 import { useNetworks } from '@/modules/network/hooks';
@@ -81,10 +71,10 @@ export function SelectNetworkDrawerBridge({
   const { currentNetwork } = useNetworks();
 
   return (
-    <Drawer placement="bottom" onClose={onClose} isOpen={isOpen}>
-      <DrawerOverlay />
-      <DrawerContent padding={4} bg={'dark.950'}>
-        <DrawerHeader>
+    <Drawer.Root placement="bottom" onClose={onClose} open={isOpen}>
+      <Drawer.Backdrop />
+      <Drawer.Content padding={4} bg={'dark.950'}>
+        <Drawer.Header>
           <VStack fontWeight="normal" align="start">
             <Text fontSize={14} color="grey.50">
               Asset
@@ -93,8 +83,8 @@ export function SelectNetworkDrawerBridge({
               Select the asset of your choice.
             </Text>
           </VStack>
-        </DrawerHeader>
-        <DrawerBody>
+        </Drawer.Header>
+        <Drawer.Body>
           <VStack
             maxH={523}
             overflowY="auto"
@@ -123,8 +113,8 @@ export function SelectNetworkDrawerBridge({
               />
             ))}
           </VStack>
-        </DrawerBody>
-      </DrawerContent>
-    </Drawer>
+        </Drawer.Body>
+      </Drawer.Content>
+    </Drawer.Root>
   );
 }

@@ -1,15 +1,4 @@
-import {
-  Box,
-  Step,
-  StepDescription,
-  StepIndicator,
-  Stepper,
-  StepSeparator,
-  StepStatus,
-  StepTitle,
-  Text,
-  useSteps,
-} from '@chakra-ui/react';
+import { Box, Separator, Steps, Text, useSteps } from 'bako-ui';
 import { AddressUtils as BakoAddressUtils } from 'bakosafe';
 import { parseISO } from 'date-fns';
 import { enUS } from 'date-fns/locale';
@@ -17,7 +6,7 @@ import { formatInTimeZone } from 'date-fns-tz';
 import { memo, useEffect, useMemo } from 'react';
 
 import { AddressUtils } from '@/modules/core';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { ITransactionHistory, TransactionHistoryType } from '../../services';
 interface TransactionStepperProps {
@@ -65,11 +54,11 @@ const TransactionStepper = memo(({ steps }: TransactionStepperProps) => {
     addressBookInfos: {
       handlers: { contactByAddress },
     },
-    screenSizes: { isMobile, isLowerThanFourHundredAndThirty },
+    screenSizes: { isLowerThanFourHundredAndThirty },
   } = useWorkspaceContext();
 
-  const { activeStep, setActiveStep } = useSteps({
-    index: steps?.length,
+  const { value: activeStep, setStep: setActiveStep } = useSteps({
+    // index: steps?.length,
     count: steps?.length,
   });
 
@@ -87,77 +76,72 @@ const TransactionStepper = memo(({ steps }: TransactionStepperProps) => {
   }, [steps?.length]);
 
   return (
-    <Box display="flex" flexDirection="column" gap={8}>
+    <Box display="flex" flexDirection="column" gap={4}>
       <Text
-        color="grey.425"
+        color="gray.400"
         fontSize={isLowerThanFourHundredAndThirty ? 'xs' : 'sm'}
-        ml={isMobile ? 0 : 8}
         mb="7px"
       >
         Transaction History
       </Text>
 
-      <Stepper
-        index={isDeclined ? activeStep : steps?.length}
+      <Steps.Root
+        step={isDeclined ? activeStep : steps?.length}
         orientation="vertical"
         h="full"
         w="full"
-        minW="full"
         size="xs"
-        maxH="full"
         gap={0}
-        colorScheme="grey"
+        bg="gray.600"
+        rounded="lg"
+        p={4}
       >
-        {steps?.map((step, index) => {
-          const nickname = contactByAddress(step.owner.address)?.nickname;
-          const declined = step.type === TransactionHistoryType.DECLINE;
-          const failed = step.type === TransactionHistoryType.FAILED;
-          const canceled = step.type === TransactionHistoryType.CANCEL;
-          const sended = step.type === TransactionHistoryType.SEND;
+        <Steps.List w="full">
+          {steps?.map((step, index) => {
+            const nickname = contactByAddress(step.owner.address)?.nickname;
+            const declined = step.type === TransactionHistoryType.DECLINE;
+            const failed = step.type === TransactionHistoryType.FAILED;
+            const canceled = step.type === TransactionHistoryType.CANCEL;
+            const sended = step.type === TransactionHistoryType.SEND;
 
-          const badOptions = (declined || failed || canceled) && lastStep;
+            const badOptions = (declined || failed || canceled) && lastStep;
 
-          return (
-            <Step
-              key={index}
-              style={{
-                display: 'flex',
-                alignItems: 'flex-start',
-                justifyContent: 'center',
-                width: '100%',
-              }}
-            >
-              <StepIndicator rounded={5}>
-                <StepStatus
-                  key={index}
-                  complete={
-                    badOptions ? (
-                      <Box bgColor="error.500" boxSize={4} rounded={5} />
-                    ) : sended && lastStep ? (
-                      <Box bgColor="brand.500" boxSize={4} rounded={5} />
-                    ) : (
-                      <Box bgColor="grey.400" boxSize={4} rounded={5} />
-                    )
-                  }
-                />
-              </StepIndicator>
-
-              <StepSeparator />
-              <Box
-                pos="relative"
-                top={-6}
-                display="flex"
-                ml={2}
-                flexDir="column"
-                justifyContent="center"
-                borderColor="grey.950"
-                borderBottomWidth={1}
-                borderTopWidth={index === 0 ? 1 : 0}
-                pb={'7px'}
-                w="100%"
+            return (
+              <Steps.Item
+                key={index}
+                index={index}
+                css={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '100%',
+                  '--steps-size': '8px',
+                }}
               >
-                <Box py={2}>
-                  <StepTitle
+                <Steps.Indicator rounded="2xs">
+                  <Steps.Status
+                    complete={
+                      badOptions ? (
+                        <Box bgColor="error.500" boxSize="8px" />
+                      ) : sended && lastStep ? (
+                        <Box bgColor="primary.main" boxSize="8px" />
+                      ) : (
+                        <Box bgColor="gray.500" boxSize="8px" />
+                      )
+                    }
+                    incomplete={<Box bgColor="gray.500" boxSize="8px" />}
+                  />
+                </Steps.Indicator>
+                <Box
+                  display="flex"
+                  ml={2}
+                  alignItems="center"
+                  w="100%"
+                  py={4}
+                  gap={4}
+                  justifyContent="space-between"
+                >
+                  <Steps.Title
                     style={{
                       fontSize: '16px',
                       display: 'flex',
@@ -167,10 +151,10 @@ const TransactionStepper = memo(({ steps }: TransactionStepperProps) => {
                     {nickname && step.owner.address !== userInfos.address && (
                       <Text
                         fontSize="sm"
-                        color="grey.75"
-                        isTruncated
+                        color="gray.200"
+                        truncate
                         textOverflow="ellipsis"
-                        maxW={{ base: '150px', xs: '95px', xl: 'full' }}
+                        maxW={{ base: '150px', sm: '95px', xl: 'full' }}
                       >
                         {step.type !== TransactionHistoryType.SEND && nickname}
                       </Text>
@@ -181,7 +165,7 @@ const TransactionStepper = memo(({ steps }: TransactionStepperProps) => {
                           ? 'error.500'
                           : step.type === TransactionHistoryType.SEND
                             ? 'brand.500'
-                            : 'grey.75'
+                            : 'gray.200'
                       }
                       fontSize="sm"
                     >
@@ -218,15 +202,12 @@ const TransactionStepper = memo(({ steps }: TransactionStepperProps) => {
                             : null}
                         </Text>
                       )}
-                  </StepTitle>
-                  <StepDescription
-                    style={{
-                      fontSize: '14px',
-                      color: 'grey.425',
-                      marginTop: '16px',
-                    }}
-                  >
-                    <Text variant="description" color="grey.425" fontSize="xs">
+                  </Steps.Title>
+
+                  <Separator borderColor="gray.550" flex={1} />
+
+                  <Steps.Description flex={2}>
+                    <Text color="gray.400" fontSize="xs">
                       {formatInTimeZone(
                         parseISO(step.date),
                         Intl.DateTimeFormat().resolvedOptions().timeZone,
@@ -234,13 +215,24 @@ const TransactionStepper = memo(({ steps }: TransactionStepperProps) => {
                         { locale: enUS },
                       )}
                     </Text>
-                  </StepDescription>
+                  </Steps.Description>
                 </Box>
-              </Box>
-            </Step>
-          );
-        })}
-      </Stepper>
+
+                <Steps.Separator
+                  css={{
+                    position: 'absolute',
+                    width: '2px',
+                    top: 'calc(30px)',
+                    maxHeight: 'calc(100% - 8px)',
+                    left: 'calc(4px - 1px)',
+                    backgroundColor: 'gray.500',
+                  }}
+                />
+              </Steps.Item>
+            );
+          })}
+        </Steps.List>
+      </Steps.Root>
     </Box>
   );
 });

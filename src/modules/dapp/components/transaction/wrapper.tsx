@@ -1,4 +1,4 @@
-import { Box, Divider, Text, VStack } from '@chakra-ui/react';
+import { Box, Separator, Text, VStack } from 'bako-ui';
 import { ReactNode, useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 
@@ -12,11 +12,11 @@ import { Dapp } from '@/layouts/dapp';
 import { Container } from '@/layouts/dapp/container';
 import { useQueryParams } from '@/modules/auth/hooks';
 import { VaultItemBox } from '@/modules/vault/components/modal/box';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
+import { DappTransaction } from '.';
 import { UseTransactionSocket, useVerifyBrowserType } from '../../hooks';
 import { DappError } from '../connection';
-import { DappTransaction } from '.';
 
 interface DappTransactionWrapperProps {
   title: string;
@@ -97,9 +97,9 @@ const DappTransactionWrapper = (props: DappTransactionWrapperProps) => {
         </Dapp.Section>
 
         <CustomSkeleton
-          isLoaded={!isLoadingTransactionSummary && !!transactionSummary}
+          loading={isLoadingTransactionSummary && !transactionSummary}
         >
-          <Divider borderColor="dark.100" my={6} />
+          <Separator borderColor="dark.100" my={6} />
           {/* Essa box é usada como "parâmetro" para fechar o popover do max fee. */}
           <Box ref={inView?.ref} />
           {pendingSignerTransactions && (
@@ -134,7 +134,7 @@ const DappTransactionWrapper = (props: DappTransactionWrapperProps) => {
           <Text mb={2} fontWeight={700} fontSize={12}>
             Details:
           </Text>
-          <VStack spacing={1} mb={-4}>
+          <VStack gap={1} mb={-4}>
             {(isLoadingTransactionSummary || !transactionSummary) && (
               <DappTransaction.OperationSkeleton />
             )}
@@ -154,7 +154,7 @@ const DappTransactionWrapper = (props: DappTransactionWrapperProps) => {
             fee={transactionSummary?.fee}
           />
           {/* Actions */}
-          <Divider borderColor="grey.950" w="full" my={6} />
+          <Separator borderColor="grey.950" w="full" my={6} />
           <Dialog.Actions
             hideDivider
             hidden={isLoadingTransactionSummary || !transactionSummary}
@@ -165,7 +165,7 @@ const DappTransactionWrapper = (props: DappTransactionWrapperProps) => {
                 <Dialog.SecondaryAction
                   size="md"
                   onClick={cancel}
-                  isDisabled={primaryActionLoading}
+                  disabled={primaryActionLoading}
                   borderColor="grey.75"
                   fontSize={14}
                 >
@@ -180,7 +180,7 @@ const DappTransactionWrapper = (props: DappTransactionWrapperProps) => {
                   width="full"
                   onClick={cancel}
                   fontSize={14}
-                  isDisabled={primaryActionLoading}
+                  disabled={primaryActionLoading}
                 >
                   Back
                 </Dialog.SecondaryAction>

@@ -1,4 +1,4 @@
-import { Box, TabPanels, Tabs } from '@chakra-ui/react';
+import { Box, Tabs } from 'bako-ui';
 
 import { StepProgress } from '@/components';
 import { useFindTemplate } from '@/modules/template/hooks';
@@ -45,11 +45,11 @@ const CreateVaultForm = (props: CreateVaultFormProps) => {
 
   return (
     <Box w="full">
-      <Box hidden={stepAction.hide} mb={6} mt={{ sm: 8 }}>
-        <StepProgress length={stepLength} value={tabs.tab} />
+      <Box hidden={stepAction.hide} mb={6} mt={3}>
+        <StepProgress length={stepLength - 1} value={tabs.tab} />
       </Box>
-      <Tabs index={tabs.tab} colorScheme="green">
-        <TabPanels>
+      <Tabs.Root value={String(tabs.tab)}>
+        <Tabs.Content value="0" pt={0}>
           <VaultInfosStep
             form={form}
             vaultName={{
@@ -59,6 +59,8 @@ const CreateVaultForm = (props: CreateVaultFormProps) => {
               searchHandler: handleInputChange,
             }}
           />
+        </Tabs.Content>
+        <Tabs.Content value="1" pt={0}>
           <VaultAddressesStep
             form={form}
             addresses={addresses}
@@ -67,9 +69,11 @@ const CreateVaultForm = (props: CreateVaultFormProps) => {
             setTemplate={setTemplate}
             validateAddress={validateAddress}
           />
+        </Tabs.Content>
+        <Tabs.Content value="2" pt={0}>
           <VaultSuccessStep />
-        </TabPanels>
-      </Tabs>
+        </Tabs.Content>
+      </Tabs.Root>
     </Box>
   );
 };

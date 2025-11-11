@@ -1,4 +1,4 @@
-import { Box, Center, Image, Spinner } from '@chakra-ui/react';
+import { Box, Center, Image, ImageProps, Loader } from 'bako-ui';
 import { useEffect, useRef, useState } from 'react';
 
 import { CustomSkeleton } from '@/components';
@@ -15,7 +15,8 @@ export const NftImage = ({
   src,
   fallback = '/nft-empty.svg',
   timeout = DEFAULT_TIMEOUT,
-}: NftImageProps) => {
+  ...rest
+}: NftImageProps & ImageProps) => {
   const [state, setState] = useState({
     isLoading: true,
     isError: false,
@@ -69,12 +70,7 @@ export const NftImage = ({
   if (state.isLoading) {
     return (
       <Box w="full" h="full" position="relative">
-        <CustomSkeleton
-          startColor="dark.200"
-          endColor="dark.500"
-          w="full"
-          h="full"
-        />
+        <CustomSkeleton w="full" h="full" />
         <Center
           w="full"
           h="full"
@@ -83,7 +79,12 @@ export const NftImage = ({
           left={0}
           zIndex={1}
         >
-          <Spinner thickness="3px" speed="0.5s" color="grey.400" size="md" />
+          <Loader
+            borderWidth="3px"
+            animationDelay="0.5s"
+            color="grey.400"
+            size="md"
+          />
         </Center>
       </Box>
     );
@@ -95,10 +96,11 @@ export const NftImage = ({
       h="full"
       src={state.isError ? fallback : src}
       alt="NFT"
-      borderRadius={5}
+      className="nftImage"
       objectFit="cover"
       opacity={state.isLoading ? 0 : 1}
-      transition="opacity 0.3s ease"
+      transition="all 0.3s ease"
+      {...rest}
     />
   );
 };

@@ -1,4 +1,5 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
+import { useMemo } from 'react';
 
 import { DEFAULT_INITIAL_PAGE_PARAM } from '@/utils/constants';
 
@@ -29,8 +30,22 @@ const useUserVaultRequest = (
     staleTime: 500,
   });
 
+  const vaults = useMemo(
+    () =>
+      data?.pages.flatMap((page) =>
+        page.data.map((vault) => ({
+          ...vault,
+          configurable:
+            typeof vault.configurable === 'string'
+              ? JSON.parse(vault.configurable)
+              : vault.configurable,
+        })),
+      ) ?? [],
+    [data],
+  );
+
   return {
-    vaults: data?.pages.map((page) => page.data).flat() ?? [],
+    vaults,
     ...query,
   };
 };

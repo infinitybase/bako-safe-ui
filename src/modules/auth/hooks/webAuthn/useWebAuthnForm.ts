@@ -2,8 +2,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
-import { WebAuthnModeState } from '../signIn/useWebAuthnSignIn';
-
 export type UseWebAuthnForm = ReturnType<typeof useWebAuthnForm>;
 
 const createSchema = () =>

@@ -1,16 +1,15 @@
-import { Icon } from '@chakra-ui/icons';
 import {
   Box,
-  CircularProgress,
+  Field,
   Flex,
-  FormLabel,
+  Icon,
   Input,
   InputGroup,
   InputProps,
-  InputRightElement,
+  Loader,
   Text,
   VStack,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 import { useEffect, useRef, useState } from 'react';
 
 import { ArrowDownIcon } from '../icons';
@@ -41,6 +40,7 @@ interface SelectProps
   callbackOnSelectOption?: () => void;
   needShowOptionsAbove?: boolean;
   maxOptionsHeight?: number;
+  isInvalid?: boolean;
 }
 
 const Select = ({
@@ -48,14 +48,14 @@ const Select = ({
   options,
   label,
   isLoading,
-  isDisabled,
+  disabled,
   onChange,
-  isInvalid,
   style,
   isCreatingValue,
   callbackOnSelectOption,
   needShowOptionsAbove,
   maxOptionsHeight,
+  isInvalid,
   ...rest
 }: SelectProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -68,7 +68,7 @@ const Select = ({
 
   const isReadyToShowOptions =
     showOptions && options && options.length > 0 && !isLoading;
-  const showInputRightElement = isReadyToShowOptions || isDisabled;
+  const showInputRightElement = isReadyToShowOptions || disabled;
 
   const handleSelectOption = (value: string | number) => {
     callbackOnSelectOption && callbackOnSelectOption();
@@ -146,16 +146,29 @@ const Select = ({
 
   return (
     <Box position="relative" w="full">
-      <InputGroup>
+      <InputGroup
+        endElement={
+          <>
+            {isLoading ? (
+              <Loader
+                css={{ '--spinner-track-color': 'dark.100' }}
+                size="lg"
+                color="brand.500"
+              />
+            ) : (
+              <Icon as={ArrowDownIcon} fontSize={10} color="grey.200" />
+            )}
+          </>
+        }
+      >
         <Input
           ref={inputRef}
           value={inputValue}
           placeholder=" "
-          isReadOnly
-          disabled={isDisabled}
+          readOnly
+          disabled={disabled}
           onFocus={() => setShowOptions(true)}
           onBlur={() => setShowOptions(false)}
-          isInvalid={isInvalid}
           cursor="pointer"
           _readOnly={{
             boxShadow: isInvalid ? 'error.600' : 'none',
@@ -171,39 +184,13 @@ const Select = ({
           }
           {...rest}
         />
-
-        <FormLabel
-          fontSize={isCreatingValue ? { base: 'xs', xs: 'md' } : 'unset'}
-          pt={isCreatingValue ? { base: 1, xs: 'unset' } : 'unset'}
-        >
-          {label}
-        </FormLabel>
-
-        <InputRightElement
-          hidden={showInputRightElement}
-          px={3}
-          top="2px"
-          right="1px"
-          borderRadius={10}
-          bgColor={'dark.250'}
-          h="calc(100% - 3px)"
-          bg={isCreatingValue ? 'transparent' : 'unset'}
-          w={10}
-          onClick={handleRighElementClick}
-          cursor={isLoading ? 'default' : 'pointer'}
-        >
-          {isLoading ? (
-            <CircularProgress
-              trackColor="dark.100"
-              size={18}
-              isIndeterminate
-              color="brand.500"
-            />
-          ) : (
-            <Icon as={ArrowDownIcon} fontSize={10} color="grey.200" />
-          )}
-        </InputRightElement>
       </InputGroup>
+      <Field.Label
+        fontSize={isCreatingValue ? { base: 'xs', sm: 'md' } : 'unset'}
+        pt={isCreatingValue ? { base: 1, sm: 'unset' } : 'unset'}
+      >
+        {label}
+      </Field.Label>
 
       {isReadyToShowOptions && (
         <Box

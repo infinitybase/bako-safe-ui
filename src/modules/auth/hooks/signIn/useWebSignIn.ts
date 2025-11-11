@@ -27,7 +27,8 @@ const useWebSignIn = () => {
   }, []);
 
   const walletSignIn = useWalletSignIn(redirect);
-  const { formData, setMode, ...rest } = useWebAuthnSignIn(redirect);
+  const { formData, setMode, handleInputChange, ...rest } =
+    useWebAuthnSignIn(redirect);
   const { lastLoginUsername } = useWebAuthnLastLogin();
 
   useEffect(() => {
@@ -35,6 +36,7 @@ const useWebSignIn = () => {
       formData.form.setValue('username', lastLoginUsername ?? '', {
         shouldValidate: true,
       });
+      handleInputChange?.(lastLoginUsername);
       setMode(WebAuthnModeState.LOGIN);
     }
   }, []);
@@ -42,6 +44,8 @@ const useWebSignIn = () => {
   return {
     ...walletSignIn,
     ...rest,
+    handleInputChange,
+    setMode,
     formData,
   };
 };

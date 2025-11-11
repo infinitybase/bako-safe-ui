@@ -1,4 +1,4 @@
-import { CardBody, Flex, Spinner } from '@chakra-ui/react';
+import { Card, Flex, Loader as BakoLoader } from 'bako-ui';
 
 interface Props {
   h: number;
@@ -7,7 +7,7 @@ interface Props {
 
 function Loader({ h, w }: Props) {
   return (
-    <CardBody>
+    <Card.Body>
       <Flex
         w="100%"
         justifyContent="center"
@@ -15,9 +15,9 @@ function Loader({ h, w }: Props) {
         minH={h}
         minW={w}
       >
-        <Spinner color="brand.500" size="xl" />
+        <BakoLoader color="brand.500" size="xl" />
       </Flex>
-    </CardBody>
+    </Card.Body>
   );
 }
 

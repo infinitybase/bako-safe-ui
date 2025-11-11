@@ -1,4 +1,4 @@
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { PermissionRoles } from '../models/workspace';
 

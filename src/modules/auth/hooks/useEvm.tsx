@@ -23,7 +23,6 @@ const modal = createWeb3ModalInstance({
 export const useEvm = () => {
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [address, setAddress] = useState<string>('');
-  const [isReconnecting, setIsReconnecting] = useState<boolean>(true);
   const unwatchRef = useRef<(() => void) | null>(null);
 
   const connect = async () => {
@@ -131,8 +130,6 @@ export const useEvm = () => {
         setAddress(account.address || '');
       } catch (error) {
         console.error('Failed to reconnect:', error);
-      } finally {
-        setIsReconnecting(false);
       }
     };
 

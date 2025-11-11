@@ -1,7 +1,6 @@
-import { HStack, Icon, Text, useClipboard, VStack } from '@chakra-ui/react';
+import { HStack, Icon, Text, useClipboard } from 'bako-ui';
 
 import { CheckIcon, CopyIcon } from '@/components/icons';
-import { AddressUtils } from '@/modules/core/utils/address';
 
 interface CopyAddressProps {
   address: string;
@@ -9,28 +8,26 @@ interface CopyAddressProps {
 }
 
 const CopyAddress = ({ address, onClose }: CopyAddressProps) => {
-  const clipboard = useClipboard(address);
+  const clipboard = useClipboard({ value: address });
 
   return (
     <HStack
-      spacing={4}
-      px={4}
-      py={3}
+      gap={3}
+      p={3}
       cursor="pointer"
       onClick={() => {
-        clipboard.onCopy();
+        clipboard.copy();
         setTimeout(() => onClose?.(), 600);
       }}
     >
       <Icon
-        as={clipboard.hasCopied ? CheckIcon : CopyIcon}
-        color={clipboard.hasCopied ? 'success.700' : 'grey.50'}
-        fontSize="lg"
+        as={clipboard.copied ? CheckIcon : CopyIcon}
+        color={clipboard.copied ? 'gray.50' : 'gray.200'}
+        boxSize={3}
       />
-      <VStack alignItems="flex-start" spacing={0} fontSize="xs">
-        <Text color="grey.50">Copy address</Text>
-        <Text color="grey.425">{AddressUtils.format(address)}</Text>
-      </VStack>
+      <Text color="gray.200" fontSize="xs">
+        Copy address
+      </Text>
     </HStack>
   );
 };

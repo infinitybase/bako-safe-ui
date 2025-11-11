@@ -8,7 +8,7 @@ import {
 
 import { CookieName, CookiesConfig } from '@/config/cookies';
 import { authCredentials } from '@/modules/auth';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import {
   BakoSafeMutationFunction,

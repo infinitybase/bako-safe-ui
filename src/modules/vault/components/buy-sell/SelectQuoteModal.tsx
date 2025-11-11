@@ -1,23 +1,18 @@
-import { SearchIcon } from '@chakra-ui/icons';
 import {
   Badge,
   Box,
-  Divider,
+  DialogOpenChangeDetails,
   Flex,
-  FormControl,
-  FormLabel,
   Icon,
   Image,
   Input,
   InputGroup,
-  InputRightElement,
-  List,
-  ListItem,
   Stack,
   Text,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 import debounce from 'lodash.debounce';
 import { useCallback, useEffect, useState } from 'react';
+import { FiSearch as SearchIcon } from 'react-icons/fi';
 
 import { Dialog } from '@/components';
 import { Header } from '@/layouts/dashboard/header';
@@ -25,7 +20,7 @@ import { IQuote } from '@/modules/core/models/meld';
 
 interface SelectQuoteModalProps {
   open: boolean;
-  onClose: () => void;
+  onOpenChange: (open: DialogOpenChangeDetails) => void;
   quotes: (IQuote & {
     providerLogo?: string;
   })[];
@@ -35,7 +30,7 @@ interface SelectQuoteModalProps {
 }
 
 export const SelectQuoteModal = ({
-  onClose,
+  onOpenChange,
   open,
   quotes,
   currentProvider,
@@ -64,14 +59,14 @@ export const SelectQuoteModal = ({
 
   return (
     <Dialog.Modal
-      isOpen={open}
-      onClose={onClose}
+      open={open}
+      onOpenChange={onOpenChange}
       trapFocus={false}
       modalContentProps={{
         padding: 0,
       }}
     >
-      <Box display={{ base: 'block', xs: 'none' }} w="full">
+      <Box display={{ base: 'block', sm: 'none' }} w="full">
         <Header />
       </Box>
       <Dialog.Header
@@ -80,32 +75,23 @@ export const SelectQuoteModal = ({
         mt={3}
         mb={3}
         px={4}
-        onClose={onClose}
+        onClose={() => onOpenChange({ open: false })}
       />
-      <Dialog.Body py={{ base: 0, xs: 2 }}>
+      <Dialog.Body py={{ base: 0, sm: 2 }}>
         <Stack gap={4}>
-          <FormControl px={4}>
-            <InputGroup position="relative">
-              <InputRightElement
-                position="absolute"
-                right={4}
-                top="50%"
-                transform="translateY(-50%)"
-              >
-                <Icon as={SearchIcon} color="grey.500" />
-              </InputRightElement>
+          <Box px={4} position="relative">
+            <InputGroup endElement={<Icon as={SearchIcon} color="grey.500" />}>
               <Input
                 bg="dark.950"
                 onChange={(e) => debouncedSearch(e)}
-                placeholder=" "
+                placeholder="Search supplier"
               />
-              <FormLabel>Search supplier</FormLabel>
             </InputGroup>
-          </FormControl>
+          </Box>
 
-          <Divider borderColor="grey.950" />
+          <Box height="1px" bg="grey.950" />
 
-          <List
+          <Stack
             maxH={{
               base: 'full',
               sm: '300px',
@@ -114,14 +100,14 @@ export const SelectQuoteModal = ({
               base: 'auto',
               sm: 'scroll',
             }}
-            spacing={2}
+            gap={2}
             px={4}
-            sx={{
+            css={{
               '&::-webkit-scrollbar': {
                 width: '8px',
               },
               '&::-webkit-scrollbar-thumb': {
-                backgroundColor: 'grey.300',
+                backgroundColor: 'var(--chakra-colors-grey-300)',
                 borderRadius: '4px',
               },
               '&::-webkit-scrollbar-track': {
@@ -130,17 +116,17 @@ export const SelectQuoteModal = ({
             }}
           >
             {filteredQuotes.length === 0 && (
-              <ListItem
+              <Box
                 border="1px solid"
                 p={3}
                 borderRadius="lg"
                 borderColor="grey.950"
               >
                 <Text>No suppliers found</Text>
-              </ListItem>
+              </Box>
             )}
             {filteredQuotes.map((quote) => (
-              <ListItem
+              <Box
                 key={quote.serviceProvider}
                 border="1px solid"
                 p={3}
@@ -170,7 +156,7 @@ export const SelectQuoteModal = ({
                     <Text fontSize="sm">{quote.serviceProvider}</Text>
                     {bestProviderQuote === quote.serviceProvider && (
                       <Badge
-                        variant="blue"
+                        colorPalette="blue"
                         py={1}
                         px={2}
                         shadow="none"
@@ -197,9 +183,9 @@ export const SelectQuoteModal = ({
                     </Text>
                   </Flex>
                 </Flex>
-              </ListItem>
+              </Box>
             ))}
-          </List>
+          </Stack>
         </Stack>
       </Dialog.Body>
     </Dialog.Modal>

@@ -1,12 +1,14 @@
 import {
   Box,
+  Dialog,
   Heading,
   HeadingProps,
   HStack,
   StackProps,
   Text,
   VStack,
-} from '@chakra-ui/react';
+} from 'bako-ui';
+import { JSX } from 'react';
 
 import { LineCloseIcon } from '../icons';
 
@@ -32,13 +34,18 @@ const DialogHeader = ({
 }: DialogHeaderProps) => (
   <VStack
     w="full"
-    mb={{ base: 6, sm: 12 }}
-    mt={{ base: 0, sm: 6 }}
-    spacing={3}
+    mb={6}
+    mt={6}
+    gap={3}
     alignItems="flex-start"
     {...stackProps}
   >
-    <HStack w="full" justifyContent="space-between" alignItems="center">
+    <HStack
+      w="full"
+      justifyContent="space-between"
+      alignItems="center"
+      position="relative"
+    >
       <Heading
         fontSize={{ base: 'lg', sm: '3xl' }}
         color="white"
@@ -47,12 +54,17 @@ const DialogHeader = ({
         {title}
       </Heading>
       {!hideCloseButton && (
-        <LineCloseIcon
-          fontSize="24px"
-          aria-label="Close window"
-          cursor="pointer"
-          onClick={onClose}
-        />
+        <Dialog.CloseTrigger asChild>
+          <LineCloseIcon
+            w="16px"
+            aria-label="Close window"
+            cursor="pointer"
+            onClick={onClose}
+            position="relative"
+            insetInlineEnd={0}
+            top={0}
+          />
+        </Dialog.CloseTrigger>
       )}
     </HStack>
     <Box maxW={500} mb={{ base: 4, sm: 0 }}>
@@ -60,7 +72,7 @@ const DialogHeader = ({
         <Text
           color={descriptionColor}
           fontSize={{ base: 'sm', sm: descriptionFontSize }}
-          variant="description"
+          // variant="description"
         >
           {description}
         </Text>

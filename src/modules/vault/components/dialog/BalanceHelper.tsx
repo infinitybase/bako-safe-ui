@@ -1,15 +1,14 @@
-import { Heading, Text } from '@chakra-ui/react';
+import { Heading, Text } from 'bako-ui';
 
 import { Dialog, DialogModalProps } from '@/components';
 
 interface BalanceHelperProps extends Omit<DialogModalProps, 'children'> {}
 
 const BalanceHelperDialog = (props: BalanceHelperProps) => {
-  const { onClose, isOpen } = props;
   return (
     <Dialog.Modal
-      onClose={onClose}
-      isOpen={isOpen}
+      open={props.open}
+      onOpenChange={props.onOpenChange}
       size="md"
       modalContentProps={{ px: '32px', py: '30px' }}
       overlayProps={{
@@ -27,7 +26,7 @@ const BalanceHelperDialog = (props: BalanceHelperProps) => {
         borderColor="grey.425"
         pb={3}
         mb={6}
-        onClose={onClose}
+        onClose={() => props.onOpenChange?.({ open: false })}
       />
       <Dialog.Body>
         <Heading mb={6} color="grey.75" fontWeight={700} fontSize="xs">

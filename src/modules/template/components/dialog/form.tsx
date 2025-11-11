@@ -1,8 +1,8 @@
-import { Box, TabPanels, Tabs } from '@chakra-ui/react';
+import { Box } from 'bako-ui';
 
 import { Dialog, SquarePlusIcon, StepProgress } from '@/components';
 
-import { IStep, useSteps } from '../../hooks';
+import { useSteps } from '../../hooks';
 import { useTemplateStore } from '../../store';
 
 const CreateTemplateForm = () => {
@@ -16,9 +16,7 @@ const CreateTemplateForm = () => {
           <Box hidden={steps[step].hiddeProgressBar} mb={12}>
             <StepProgress length={steps.length} value={step} />
           </Box>
-          <Tabs index={step} colorScheme="green">
-            <TabPanels>{steps?.map((step: IStep) => step.component)}</TabPanels>
-          </Tabs>
+          <Box>{steps[step]?.component}</Box>
         </Box>
 
         <Dialog.Actions
@@ -32,10 +30,10 @@ const CreateTemplateForm = () => {
           <Dialog.PrimaryAction
             hidden={steps[step].hiddeFooter}
             type="submit"
-            leftIcon={<SquarePlusIcon />}
-            isDisabled={steps[step].isLoading}
-            isLoading={steps[step].isLoading}
+            disabled={steps[step].isLoading}
+            loading={steps[step].isLoading}
           >
+            <SquarePlusIcon />
             Continue
           </Dialog.PrimaryAction>
         </Dialog.Actions>

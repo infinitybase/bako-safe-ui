@@ -1,26 +1,18 @@
-import {
-  Flex,
-  Input,
-  InputGroup,
-  InputRightAddon,
-  Spinner,
-  Stack,
-  Text,
-  useDisclosure,
-} from '@chakra-ui/react';
+import { Box, Flex, Input, InputGroup, Loader, Stack, Text } from 'bako-ui';
 import { bn } from 'fuels';
 import { useMemo, useRef } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
 import { NativeAssetId } from '@/modules/core';
 import { SelectedCurrency } from '@/modules/core/components';
+import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
 import { ICreateWidgetPayload } from '@/modules/core/models/meld';
 import {
   useListCryptoCurrencies,
   useListFiatCurrencies,
+  useVaultInfosContext,
 } from '@/modules/vault/hooks';
 import { formatMeldEthSlug } from '@/modules/vault/utils';
-import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
 
 import { CardRoot } from '../CardRoot';
 import { CurrencyOptionsModal } from '../CurrencyOptionsModal';
@@ -90,7 +82,7 @@ export const DestinationCurrency = ({
           <Text color="section.500" fontSize="sm">
             You receive
           </Text>
-          {isLoadingQuotes && <Spinner size="xs" color="grey.200" />}
+          {isLoadingQuotes && <Loader size="xs" color="grey.200" />}
         </Flex>
 
         <Flex gap={2} alignItems="center">
@@ -111,7 +103,7 @@ export const DestinationCurrency = ({
           />
           <CurrencyOptionsModal
             open={currencyModal.isOpen}
-            onClose={currencyModal.onClose}
+            onOpenChange={currencyModal.onOpenChange}
             onCurrencyChange={handleCurrencyChange}
             currentCurrencyCode={currentCurrencyCode}
             currencies={options}
@@ -140,23 +132,28 @@ export const DestinationCurrency = ({
             w="fit-content"
             gap={2}
           >
-            <Input
-              name="destinationAmount"
-              textAlign="center"
-              borderBottomWidth="0"
-              minW={0}
-              px={0}
-              variant="filled"
-              fontSize="3xl"
-              ref={inputRef}
-              value={destinationAmount || '0'}
-              disabled
-            />
-            <InputMirror inputRef={inputRef} value={destinationAmount || '0'} />
-            <InputRightAddon alignSelf="end" color="section.200" px={0}>
-              {currentCurrency?.currencyCode &&
-                formatMeldEthSlug(currentCurrency.currencyCode)}
-            </InputRightAddon>
+            <>
+              <Input
+                name="destinationAmount"
+                textAlign="center"
+                borderBottomWidth="0"
+                minW={0}
+                px={0}
+                // variant="filled"
+                fontSize="3xl"
+                ref={inputRef}
+                value={destinationAmount || '0'}
+                disabled
+              />
+              <InputMirror
+                inputRef={inputRef}
+                value={destinationAmount || '0'}
+              />
+              <Box alignSelf="end" color="section.200" px={0}>
+                {currentCurrency?.currencyCode &&
+                  formatMeldEthSlug(currentCurrency.currencyCode)}
+              </Box>
+            </>
           </InputGroup>
         </Stack>
       </Stack>

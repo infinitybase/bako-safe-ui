@@ -1,12 +1,12 @@
+import { Box, IconProps, InputGroupProps, Stack, Text } from 'bako-ui';
 import {
-  Box,
-  ComponentWithAs,
-  IconProps,
-  InputGroupProps,
-  Stack,
-  Text,
-} from '@chakra-ui/react';
-import { forwardRef, memo, useCallback, useMemo, useState } from 'react';
+  forwardRef,
+  ForwardRefExoticComponent,
+  memo,
+  useCallback,
+  useMemo,
+  useState,
+} from 'react';
 
 import { AddressUtils } from '@/modules';
 
@@ -15,10 +15,13 @@ import Autocomplete from './components';
 import InputValueImage from './components/inputValueImage';
 
 export interface AddressAutocompleteValue extends AutocompleteOption {
-  image?: ComponentWithAs<'svg', IconProps>;
+  image?: ForwardRefExoticComponent<
+    IconProps & React.RefAttributes<SVGSVGElement>
+  >;
 }
 
-interface AddressAutocompleteProps extends Omit<InputGroupProps, 'onSelect'> {
+interface AddressAutocompleteProps
+  extends Omit<InputGroupProps, 'onSelect' | 'children'> {
   options: AddressAutocompleteValue[];
   label: string;
   value?: AddressAutocompleteValue;
@@ -107,9 +110,9 @@ const AddressAutocomplete = memo(
                       boxSize="32px"
                     />
                   </Box>
-                  <Stack spacing={0}>
-                    <Text color="section.200">{option.label}</Text>
-                    <Text color="section.500">
+                  <Stack gap={0}>
+                    <Text color="textPrimary">{option.label}</Text>
+                    <Text color="textSecondary">
                       {AddressUtils.format(option.value || '')}
                     </Text>
                   </Stack>

@@ -6,12 +6,12 @@ import {
   IconButton,
   Image,
   Text,
-  useDisclosure,
   VStack,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 
 import { LeftAndRightArrow } from '@/components';
 import { Asset } from '@/modules/core';
+import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
 import { useAmountBridge, useFormBridge } from '@/modules/vault/hooks/bridge';
 
 import { InputAmount } from '../inputAmount';
@@ -44,8 +44,8 @@ export function AmountBrigdeMobile({
   } = useAmountBridge({ stepsForm, setStepsForm, assets, setErrorAmount });
 
   return (
-    <Card
-      variant="outline"
+    <Card.Root
+      variant="subtle"
       padding={3}
       paddingBottom={1}
       w={'full'}
@@ -60,7 +60,7 @@ export function AmountBrigdeMobile({
         assetFrom={assetFrom}
       />
       <HStack w="full" justifyContent={'space-between'} align="start">
-        <Text color="grey.425" fontSize={12} fontWeight={400}>
+        <Text color="textPrimary" fontSize={12} fontWeight={400}>
           From
         </Text>
         <VStack justifyContent="flex-end" gap={0} p={1}>
@@ -70,8 +70,7 @@ export function AmountBrigdeMobile({
               {'Fuel Ignition'}
             </Text>
             <IconButton
-              icon={<LeftAndRightArrow />}
-              variant="unstyled"
+              variant="plain"
               display="flex"
               alignItems="center"
               justifyContent="center"
@@ -82,7 +81,9 @@ export function AmountBrigdeMobile({
               px={0}
               aria-label="Bridge"
               onClick={() => selectNetworkDrawer.onOpen()}
-            />
+            >
+              <LeftAndRightArrow />
+            </IconButton>
           </HStack>
           <Text color="grey.425" fontSize={12} fontWeight={400}>
             Balance:{' '}
@@ -107,8 +108,8 @@ export function AmountBrigdeMobile({
           color="grey.425"
           fontSize={12}
           fontWeight={400}
-          isTruncated
-          noOfLines={1}
+          truncate
+          lineClamp={1}
         >
           {assetFromUSD}
         </Text>
@@ -117,8 +118,8 @@ export function AmountBrigdeMobile({
         <Button
           maxH="28px"
           minW="48px"
-          isDisabled={!dataLimits.minAmount}
-          variant="secondary"
+          disabled={!dataLimits.minAmount}
+          variant="outline"
           borderRadius={6}
           padding={'4px 6px 4px 6px'}
           fontSize={10}
@@ -130,15 +131,15 @@ export function AmountBrigdeMobile({
         <Button
           maxH="28px"
           minW="48px"
-          isDisabled={!dataLimits.maxAmount}
-          variant="secondary"
+          disabled={!dataLimits.maxAmount}
+          variant="outline"
           onClick={handleGetFeeBeforeMaxAmount}
           borderRadius={6}
           padding={'4px 6px 4px 6px'}
           fontSize={10}
           fontWeight={500}
         >
-          <Text color="grey.425">MAX</Text>
+          <Text color="textPrimary">MAX</Text>
         </Button>
       </HStack>
       <HStack
@@ -152,6 +153,6 @@ export function AmountBrigdeMobile({
           </Text>
         )}
       </HStack>
-    </Card>
+    </Card.Root>
   );
 }

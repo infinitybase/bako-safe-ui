@@ -1,7 +1,7 @@
-import { useDisclosure } from '@chakra-ui/react';
 import { useCallback } from 'react';
 
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 const useDetailsDialog = () => {
   const detailsDialog = useDisclosure();

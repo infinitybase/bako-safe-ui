@@ -1,4 +1,4 @@
-import { Box, Flex, FlexProps, Icon, Text } from '@chakra-ui/react';
+import { Box, Flex, FlexProps, Icon, Text } from 'bako-ui';
 import { isB256 } from 'fuels';
 import { ReactNode } from 'react';
 
@@ -29,8 +29,8 @@ export const NftMetadataBlock = ({
       p={2}
       gap={2}
       alignItems="center"
-      borderRadius="md"
-      bg="grey.925"
+      borderRadius="lg"
+      bg="bg.muted"
       position="relative"
       _before={
         isUrl(value) && ['image', 'avatar'].includes(title.toLowerCase())
@@ -49,13 +49,13 @@ export const NftMetadataBlock = ({
               backgroundSize: 'cover',
               borderRadius: 'md',
             }
-          : ''
+          : {}
       }
       {...rest}
     >
       {icon && <Icon fontSize={25}>{icon}</Icon>}
       <Box>
-        <Text fontSize="xs" color="section.500">
+        <Text fontSize="xs" color="textSecondary">
           {title}
         </Text>
         <Flex gap={2}>

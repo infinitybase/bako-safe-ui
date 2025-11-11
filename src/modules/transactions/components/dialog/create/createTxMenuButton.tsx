@@ -1,13 +1,4 @@
-import {
-  Button,
-  Heading,
-  HStack,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
-  Text,
-} from '@chakra-ui/react';
+import { Button, Heading, HStack, Menu, Text } from 'bako-ui';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { Dialog } from '@/components';
@@ -61,112 +52,118 @@ const CreateTxMenuButton = ({
   }, [updateMenuWidth]);
 
   return (
-    <Menu
-      styleConfig={{
-        bgColor: 'transparent',
-      }}
-      placement="top-end"
-    >
+    <Menu.Root positioning={{ placement: 'top-end' }}>
       <HStack w="full" ref={actionMenuRef}>
-        <HStack w="full" spacing={0.5}>
+        <HStack w="full" gap={0.5}>
           <Dialog.PrimaryAction
+            w="auto"
+            flex={1}
             aria-label="Create Transaction Primary Action"
-            isDisabled={isDisabled}
-            isLoading={isLoading}
+            disabled={isDisabled}
+            loading={isLoading}
             onClick={() => handleCreateTransactionByMethod()}
             _hover={{
-              opacity: !isDisabled && 0.8,
+              opacity: !isDisabled ? 0.8 : 1,
             }}
             borderRadius="8px 0px 0px 8px"
           >
             {createTxMethod}
           </Dialog.PrimaryAction>
-          <MenuButton
+          <Menu.Trigger
             aria-label={'Menu select mode create tx'}
-            as={Button}
-            rightIcon={<ChevronDownIcon fontSize="24px" color="dark.950" />}
-            variant="primary"
+            asChild
             w="20px"
             pl={2}
             borderRadius="0px 8px 8px 0px"
-            isDisabled={isDisabled || isLoading}
-          />
+            disabled={isDisabled || isLoading}
+          >
+            <Button>
+              <ChevronDownIcon fontSize="24px" color="gray.700" />
+            </Button>
+          </Menu.Trigger>
         </HStack>
-
-        <MenuList
-          bg="dark.950"
-          borderRadius="xl"
-          overflow="hidden"
-          boxShadow="0px 4px 40px 0px rgba(0, 0, 0, 0.75);"
-          border="1px solid #2B2927"
-          width={`${menuWidth}px`}
-        >
-          <MenuItem
-            display="flex"
-            flexDir="column"
-            alignItems="start"
-            gap={2}
-            onClick={() =>
-              setCreateTxMethod(ECreateTransactionMethods.CREATE_AND_SIGN)
-            }
-            _hover={{ background: 'dark.150' }}
-            padding="12px 4px 12px 16px"
-          >
-            <Heading
-              fontSize="sm"
-              color={
-                createTxMethod === ECreateTransactionMethods.CREATE_AND_SIGN
-                  ? 'warning.500'
-                  : 'white'
-              }
-              fontWeight={400}
-              lineHeight="14.52px"
+        <Menu.Portal>
+          <Menu.Positioner zIndex="2000 !important">
+            <Menu.Content
+              bg="bg.panel"
+              borderRadius="xl"
+              overflow="hidden"
+              borderColor="bg.muted"
+              border="1px solid"
+              width={`${menuWidth}px`}
             >
-              {ECreateTransactionMethods.CREATE_AND_SIGN}
-            </Heading>
-            <Text
-              variant="description"
-              color={'grey.425'}
-              fontSize="xs"
-              lineHeight="12.1px"
-            >
-              Create and sign the transaction
-            </Text>
-          </MenuItem>
-          <MenuItem
-            display="flex"
-            flexDir="column"
-            aria-label="Menu item create tx"
-            alignItems="start"
-            gap={2}
-            onClick={() => setCreateTxMethod(ECreateTransactionMethods.CREATE)}
-            _hover={{ background: 'dark.150' }}
-            padding="12px 4px 12px 16px"
-          >
-            <Heading
-              fontSize="sm"
-              color={
-                createTxMethod === ECreateTransactionMethods.CREATE
-                  ? 'warning.500'
-                  : 'white'
-              }
-              fontWeight={400}
-              lineHeight="14.52px"
-            >
-              {ECreateTransactionMethods.CREATE}
-            </Heading>
-            <Text
-              variant="description"
-              color={'grey.425'}
-              fontSize="xs"
-              lineHeight="12.1px"
-            >
-              Just create the transaction
-            </Text>
-          </MenuItem>
-        </MenuList>
+              <Menu.Item
+                value="create-and-sing"
+                display="flex"
+                flexDir="column"
+                alignItems="start"
+                gap={2}
+                onClick={() =>
+                  setCreateTxMethod(ECreateTransactionMethods.CREATE_AND_SIGN)
+                }
+                _hover={{ background: 'dark.150' }}
+                padding="12px 4px 12px 16px"
+              >
+                <Heading
+                  fontSize="sm"
+                  color={
+                    createTxMethod === ECreateTransactionMethods.CREATE_AND_SIGN
+                      ? 'warning.500'
+                      : 'white'
+                  }
+                  fontWeight={400}
+                  lineHeight="14.52px"
+                >
+                  {ECreateTransactionMethods.CREATE_AND_SIGN}
+                </Heading>
+                <Text
+                  // variant="description"
+                  color={'grey.425'}
+                  fontSize="xs"
+                  lineHeight="12.1px"
+                >
+                  Create and sign the transaction
+                </Text>
+              </Menu.Item>
+              <Menu.Item
+                display="flex"
+                flexDir="column"
+                aria-label="Menu item create tx"
+                alignItems="start"
+                gap={2}
+                onClick={() =>
+                  setCreateTxMethod(ECreateTransactionMethods.CREATE)
+                }
+                _hover={{ background: 'dark.150' }}
+                padding="12px 4px 12px 16px"
+                value="create"
+              >
+                <Heading
+                  fontSize="sm"
+                  color={
+                    createTxMethod === ECreateTransactionMethods.CREATE
+                      ? 'warning.500'
+                      : 'white'
+                  }
+                  fontWeight={400}
+                  lineHeight="14.52px"
+                >
+                  {ECreateTransactionMethods.CREATE}
+                </Heading>
+                <Text
+                  // variant="description"
+                  color={'grey.425'}
+                  fontSize="xs"
+                  lineHeight="12.1px"
+                >
+                  Just create the transaction
+                </Text>
+              </Menu.Item>
+            </Menu.Content>
+          </Menu.Positioner>
+        </Menu.Portal>
       </HStack>
-    </Menu>
+    </Menu.Root>
   );
 };
 

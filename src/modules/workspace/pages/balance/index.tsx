@@ -1,21 +1,11 @@
-import {
-  Box,
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  Button,
-  Flex,
-  HStack,
-  Icon,
-  Text,
-} from '@chakra-ui/react';
+import { Box, Breadcrumb, Button, Flex, HStack, Icon, Text } from 'bako-ui';
 import { IoChevronBack } from 'react-icons/io5';
 
 import { CustomSkeleton, HomeIcon } from '@/components';
 import { EmptyState } from '@/components/emptyState';
 import { AssetsBalanceList } from '@/modules/core';
 
-import { useWorkspaceContext } from '../../WorkspaceProvider';
+import { useWorkspaceContext } from '../../hooks';
 
 const WorkspaceBalancePage = () => {
   const {
@@ -38,39 +28,37 @@ const WorkspaceBalancePage = () => {
       <HStack w="full" h="10" justifyContent="space-between" my={2}>
         <HStack>
           <Button
-            variant="primary"
+            colorPalette="primary"
             fontWeight="semibold"
             fontSize={15}
-            leftIcon={
-              <Box mr={-1}>
-                <IoChevronBack size={22} />
-              </Box>
-            }
             px={3}
             bg="dark.100"
             color="grey.200"
             onClick={() => goHome()}
           >
+            <IoChevronBack size={22} />
             Back home
           </Button>
 
-          <Breadcrumb display={{ base: 'none', sm: 'initial' }} ml={8}>
-            <BreadcrumbItem>
-              <BreadcrumbLink
-                fontSize="sm"
-                color="grey.200"
-                fontWeight="semibold"
-                onClick={() => goHome()}
-              >
-                <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
-                Home
-              </BreadcrumbLink>
-            </BreadcrumbItem>
+          <Breadcrumb.Root display={{ base: 'none', sm: 'initial' }} ml={8}>
+            <Breadcrumb.List>
+              <Breadcrumb.Item>
+                <Breadcrumb.Link
+                  fontSize="sm"
+                  color="grey.200"
+                  fontWeight="semibold"
+                  onClick={() => goHome()}
+                >
+                  <Icon mr={2} as={HomeIcon} w={6} color="grey.200" />
+                  Home
+                </Breadcrumb.Link>
+              </Breadcrumb.Item>
+              <Breadcrumb.Separator />
 
-            {/* Commented out code to temporarily disable workspaces. */}
+              {/* Commented out code to temporarily disable workspaces. */}
 
-            {/* <BreadcrumbItem>
-              <BreadcrumbLink
+              {/* <Breadcrumb.Item>
+              <Breadcrumb.Link
                 fontSize="sm"
                 color="grey.200"
                 fontWeight="semibold"
@@ -84,20 +72,21 @@ const WorkspaceBalancePage = () => {
                 }
               >
                 {limitCharacters(userInfos.workspace?.name ?? '', 10)}
-              </BreadcrumbLink>
-            </BreadcrumbItem> */}
+              </Breadcrumb.Link>
+            </Breadcrumb.Item> */}
 
-            <BreadcrumbItem>
-              <BreadcrumbLink
-                fontSize="sm"
-                color="grey.200"
-                fontWeight="semibold"
-                href="#"
-              >
-                Balance
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-          </Breadcrumb>
+              <Breadcrumb.Item>
+                <Breadcrumb.Link
+                  fontSize="sm"
+                  color="grey.200"
+                  fontWeight="semibold"
+                  href="#"
+                >
+                  Balance
+                </Breadcrumb.Link>
+              </Breadcrumb.Item>
+            </Breadcrumb.List>
+          </Breadcrumb.Root>
         </HStack>
       </HStack>
 
@@ -108,7 +97,7 @@ const WorkspaceBalancePage = () => {
           </Text>
         </Box>
 
-        <CustomSkeleton isLoaded={!workspaceBalance.isLoading} flex={1}>
+        <CustomSkeleton loading={workspaceBalance.isLoading} flex={1}>
           {workspaceBalance.balance.assetsBalance.length > 0 ? (
             <AssetsBalanceList
               assets={{ ...workspaceBalance.balance.assetsBalance }}

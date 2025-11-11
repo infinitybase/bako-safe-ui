@@ -1,4 +1,4 @@
-import { createContext, useContext } from 'react';
+import { createContext } from 'react';
 
 import { useVaultDetails, UseVaultDetailsReturn } from './hooks';
 
@@ -16,15 +16,6 @@ const VaultInfosProvider = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-const useVaultInfosContext = () => {
-  const context = useContext(VaultInfosContext);
-  if (!context) {
-    throw new Error(
-      'useVaultInfosContext must be used within VaultInfosProvider',
-    );
-  }
+export { VaultInfosProvider };
 
-  return context;
-};
-
-export { useVaultInfosContext, VaultInfosProvider };
+export default VaultInfosContext;

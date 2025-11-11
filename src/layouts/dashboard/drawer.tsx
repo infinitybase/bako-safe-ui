@@ -1,50 +1,52 @@
 import {
   Drawer as ChakraDrawer,
-  DrawerContent,
-  DrawerOverlay,
-  DrawerProps as ChakraDrawerProps,
-} from '@chakra-ui/react';
+  DrawerRootProps,
+  IconButton,
+  Portal,
+} from 'bako-ui';
 
 import { LineCloseIcon } from '@/components';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { Sidebar } from '../../modules/vault/layout/sidebar';
 
-interface DrawerProps extends Omit<ChakraDrawerProps, 'children'> {}
+interface DrawerProps extends Omit<DrawerRootProps, 'children'> {}
 
-const Drawer = ({ ...props }: DrawerProps) => {
-  const {
-    screenSizes: { isSmall },
-  } = useWorkspaceContext();
-  const { onClose } = props;
+const Drawer = ({ onOpenChange, ...props }: DrawerProps) => {
+  const handleClose = () => {
+    if (onOpenChange) {
+      onOpenChange({ open: false });
+    }
+  };
 
   return (
-    <ChakraDrawer
+    <ChakraDrawer.Root
       {...props}
-      size={isSmall ? 'xl' : 'xs'}
-      variant="solid"
-      placement="left"
+      size="xs"
+      placement="start"
+      onOpenChange={onOpenChange}
+      trapFocus={false}
     >
-      <DrawerOverlay mt={{ base: '64px', sm: '72px' }} />
-      <DrawerContent
-        p={0}
-        mt={{ base: '64px', sm: '72px' }}
-        bgColor="dark.950"
-        boxShadow="8px 0px 6px 0px rgba(0, 0, 0, 0.15)"
-      >
-        <LineCloseIcon
-          mt={3}
-          mr={4}
-          fontSize="24px"
-          aria-label="Close window"
-          cursor="pointer"
-          onClick={onClose}
-          alignSelf="end"
-        />
+      <Portal>
+        <ChakraDrawer.Backdrop />
+        <ChakraDrawer.Positioner>
+          <ChakraDrawer.Content p={0} maxW={{ smDown: '50%' }}>
+            <ChakraDrawer.CloseTrigger asChild>
+              <IconButton
+                variant="ghost"
+                onClick={handleClose}
+                aria-label="Close"
+                cursor="pointer"
+                zIndex={1600}
+              >
+                <LineCloseIcon w="24px" />
+              </IconButton>
+            </ChakraDrawer.CloseTrigger>
 
-        <Sidebar onClose={onClose} onDrawer />
-      </DrawerContent>
-    </ChakraDrawer>
+            <Sidebar onClose={handleClose} onDrawer />
+          </ChakraDrawer.Content>
+        </ChakraDrawer.Positioner>
+      </Portal>
+    </ChakraDrawer.Root>
   );
 };
 

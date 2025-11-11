@@ -1,15 +1,8 @@
-import {
-  Box,
-  CardProps,
-  Divider,
-  Heading,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { Box, CardRootProps, Heading, Separator, Text, VStack } from 'bako-ui';
 
 import { Card } from '@/components';
 
-interface ExtraVaultCardProps extends CardProps {
+interface ExtraVaultCardProps extends CardRootProps {
   extra: number;
 }
 
@@ -27,7 +20,7 @@ export const ExtraVaultCard = ({ extra, ...rest }: ExtraVaultCardProps) => (
     p={6}
     {...rest}
   >
-    <VStack textAlign="center" spacing={0}>
+    <VStack textAlign="center" gap={0}>
       <Box>
         <Box>
           <Heading fontSize={{ base: '3xl', sm: '2xl' }} color="grey.200">
@@ -39,10 +32,10 @@ export const ExtraVaultCard = ({ extra, ...rest }: ExtraVaultCardProps) => (
         </Heading>
       </Box>
 
-      <Divider borderColor="grey.600" mt={3} mb={4} />
+      <Separator borderColor="grey.600" mt={3} mb={4} />
 
       <Text
-        variant="description"
+        // variant="description"
         textAlign="center"
         maxW={180}
         color="grey.500"

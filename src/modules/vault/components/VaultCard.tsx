@@ -1,53 +1,49 @@
+import { useMutation } from '@tanstack/react-query';
 import {
-  Avatar,
-  AvatarGroup,
-  Badge,
-  Box,
-  CardProps,
-  Divider,
+  Card,
+  CardRootProps,
   Heading,
   HStack,
-  Spacer,
-  Spinner,
+  Icon,
+  Skeleton,
+  Stack,
   Text,
+  useClipboard,
   VStack,
-} from '@chakra-ui/react';
-import { useMutation } from '@tanstack/react-query';
-import { useEffect, useState } from 'react';
-import { FaEye, FaEyeSlash } from 'react-icons/fa';
+} from 'bako-ui';
+import { useEffect, useMemo, useState } from 'react';
+import { RiFileCopyFill } from 'react-icons/ri';
 
-import { Card } from '@/components';
-import { usePermissions } from '@/modules/core/hooks/usePermissions';
-import { PredicateMember } from '@/modules/core/models/predicate';
-import {
-  PermissionDetails,
-  WorkspacePermissionUtils,
-} from '@/modules/workspace/utils';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { TeamIcon } from '@/components';
+import { CopyTopMenuIcon } from '@/components/icons/copy-top-menu';
+import { useHasReservedCoins } from '@/modules';
+import { AddressUtils } from '@/modules/core';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
-import { PredicateWorkspace, VaultService } from '../services';
-import VaultCardMemberAvatar from './VaultCardMemberAvatar';
+import { VaultService } from '../services';
+import { VaultIconInfo } from './vaultIconInfo';
 
-interface VaultCardProps extends CardProps {
-  ownerId: string;
+interface VaultCardProps extends CardRootProps {
   name: string;
-  members: PredicateMember[];
-  workspace: PredicateWorkspace;
   inHome?: boolean;
   isHidden?: boolean;
   address: string;
+  signersCount: number;
+  requiredSigners: number;
+  id: string;
+  workspaceId: string;
 }
 export const VaultCard = ({
-  ownerId,
   name,
-  workspace,
-  members,
   inHome,
   isHidden,
   address,
+  requiredSigners,
+  signersCount,
+  id,
+  workspaceId,
   ...rest
 }: VaultCardProps) => {
-  const { role } = usePermissions(ownerId);
   const {
     screenSizes: { isExtraSmall },
     userVaults,
@@ -55,6 +51,11 @@ export const VaultCard = ({
       requests: { latestPredicates },
     },
   } = useWorkspaceContext();
+  const { data, isLoading: isLoadingBalance } = useHasReservedCoins(
+    id,
+    workspaceId,
+  );
+  const { copy, copied } = useClipboard({ value: address });
 
   const { mutate: toogleVisibility, isPending } = useMutation({
     mutationFn: VaultService.toggleVisibility,
@@ -75,26 +76,34 @@ export const VaultCard = ({
     setLocalHidden(isHidden);
   }, [isHidden]);
 
+  const balanceUSD = useMemo(
+    () =>
+      Intl.NumberFormat('en-US', {
+        style: 'decimal',
+        currency: 'USD',
+        maximumFractionDigits: 2,
+        minimumFractionDigits: 2,
+      }).format(Number(data?.currentBalanceUSD || 0)),
+    [data?.currentBalanceUSD],
+  );
+
   if (inHome && isHidden) return null;
 
   return (
-    <Card
-      borderColor="gradients.transaction-border"
-      bg="gradients.transaction-card"
-      borderWidth={1}
-      backdropFilter="blur(16px)"
-      dropShadow="0px 8px 6px 0px #00000026"
+    <Card.Root
+      bg="gray.700"
       w="100%"
+      variant="subtle"
       maxW={isExtraSmall ? 272 : 'full'}
-      my={{ base: 6, sm: 0 }}
       cursor="pointer"
+      rounded="2xl"
       zIndex={20}
       {...rest}
       position="relative"
       opacity={!localHidden ? 1 : 0.5}
       transition="opacity 0.3s ease-in-out, background 0.3s ease"
     >
-      {inHome ?? (
+      {/* {inHome ?? (
         <Box
           position="absolute"
           top={3}
@@ -110,108 +119,86 @@ export const VaultCard = ({
           onClick={isPending ? undefined : handleToggle}
         >
           {isPending ? (
-            <Spinner size="xs" color="grey.400" thickness="2px" speed="0.5s" />
+            <Loader
+              size="xs"
+              color="grey.400"
+              borderWidth="2px"
+              animationDuration="0.5s"
+            />
           ) : localHidden ? (
             <FaEyeSlash size={16} color="#fff" />
           ) : (
             <FaEye size={16} color="#fff" />
           )}
         </Box>
-      )}
-      <VStack alignItems="flex-start">
-        <HStack maxW="80%" justifyContent="space-between" mb={1}>
-          <HStack maxW="full">
-            <Avatar
-              variant="roundedSquare"
-              name={name}
-              color="white"
-              bg="grey.600"
-            />
-            <VStack ml={2} maxW="full" alignItems="flex-start" spacing={1}>
-              {/* Commented out code to temporarily disable workspaces. */}
-
-              {/* {!workspace.single && (
-                <HStack>
-                  <Icon
-                    w={4}
-                    h={4}
-                    as={HandbagIcon}
-                    fontSize={14}
-                    color="grey.200"
-                  />
-                  <Text
-                    color="grey.400"
-                    fontSize="sm"
-                    isTruncated
-                    maxW={{
-                      base: 150,
-                      sm: 130,
-                      lg: 200,
-                    }}
-                  >
-                    {workspace?.name}
-                  </Text>
-                </HStack>
-              )} */}
-              <Heading
-                maxW={{
-                  base: 150,
-                  lg: !workspace.single ? 140 : 200,
-                }}
-                variant="title-md"
-                color="grey.200"
-                isTruncated
-              >
-                {name}
-              </Heading>
-            </VStack>
-          </HStack>
-        </HStack>
-
-        <Divider borderColor="grey.600" my={1} />
-
-        <HStack w="full">
-          <Box>
-            <Text variant="description">Signers</Text>
-            <AvatarGroup
-              variant="roundedSquare"
-              max={5}
-              mt={1}
-              size="sm"
-              spacing={-2}
-              sx={{
-                '&>span': {
-                  height: '38px',
-                  width: '38px',
-                },
-              }}
+      )} */}
+      <Card.Header>
+        <HStack justifyContent="space-between" alignItems="start">
+          <VStack gap={2} alignItems="start">
+            <Heading
+              truncate
+              lineClamp={1}
+              fontSize="xs"
+              color="textPrimary"
+              fontWeight="semibold"
             >
-              {members.map((member) => (
-                <VaultCardMemberAvatar member={member} key={member.id} />
-              ))}
-            </AvatarGroup>
-          </Box>
+              {name}
+            </Heading>
 
-          <Spacer />
+            <Text fontSize="xs" color="gray.400" lineHeight="shorter">
+              {AddressUtils.format(address, 5)}
+            </Text>
+          </VStack>
 
-          <VStack spacing={1} alignItems="flex-end">
-            <Text variant="description">Role</Text>
-            <Badge
-              h={6}
-              rounded="full"
-              variant={
-                WorkspacePermissionUtils.permissions[
-                  role as keyof PermissionDetails
-                ].variant ?? 'warning'
+          <HStack gap={2}>
+            <VaultIconInfo
+              onClick={copy}
+              tooltipContent={copied ? 'Copied' : 'Copy Address'}
+              placement="top"
+            >
+              <Icon
+                as={copied ? RiFileCopyFill : CopyTopMenuIcon}
+                color="gray.200"
+                w="12px"
+              />
+            </VaultIconInfo>
+
+            <VaultIconInfo
+              placement="top"
+              tooltipContent={
+                <Stack gap={1} alignItems="center">
+                  <Text
+                    color="textPrimary"
+                    fontSize="xs"
+                  >{`${signersCount} members`}</Text>
+                  <Text
+                    color="textPrimary"
+                    fontSize="xs"
+                  >{`${requiredSigners} required signers`}</Text>
+                </Stack>
               }
             >
-              {WorkspacePermissionUtils.permissions[
-                role as keyof PermissionDetails
-              ]?.title ?? ''}
-            </Badge>
-          </VStack>
+              <Icon as={TeamIcon} color="gray.200" w="12px" />
+            </VaultIconInfo>
+          </HStack>
         </HStack>
-      </VStack>
-    </Card>
+      </Card.Header>
+      <Card.Footer pt={6}>
+        {isLoadingBalance && <Skeleton height="24px" width="170px" />}
+        {!isLoadingBalance && (
+          <Heading
+            fontSize="md"
+            color="gray.50"
+            fontWeight="bold"
+            letterSpacing="wider"
+          >
+            <Text as="span" color="gray.400">
+              ${' '}
+            </Text>
+            {balanceUSD}
+          </Heading>
+        )}
+      </Card.Footer>
+    </Card.Root>
   );
 };

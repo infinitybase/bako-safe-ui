@@ -1,4 +1,4 @@
-import { Avatar, Box, Flex, Text } from '@chakra-ui/react';
+import { Avatar, Box, Flex, Text } from 'bako-ui';
 
 import { CopyAddressButton } from '@/components';
 
@@ -17,7 +17,7 @@ export const VaultInfo = ({
         Vault
       </Text>
       <Flex gap={3} alignItems="center">
-        <Avatar size="sm" bg="grey.950" borderRadius="lg" name={name} />
+        <Avatar size="sm" name={name} bg="grey.950" borderRadius="lg" />
         <Box>
           <Text color="section.200">{name}</Text>
 

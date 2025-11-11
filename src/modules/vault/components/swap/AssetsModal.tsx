@@ -1,28 +1,25 @@
-import { SearchIcon } from '@chakra-ui/icons';
 import {
-  Box,
-  Divider,
-  FormControl,
-  FormLabel,
+  DialogOpenChangeDetails,
+  Field,
   Icon,
   Image,
   Input,
   InputGroup,
-  InputRightElement,
+  Separator,
   Stack,
   Text,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 import { BN } from 'fuels';
 import debounce from 'lodash.debounce';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { FiSearch as SearchIcon } from 'react-icons/fi';
 
 import { Dialog } from '@/components';
-import { Header } from '@/layouts/dashboard/header';
 import { Asset, CurrencyList } from '@/modules/core';
 
 interface AssetsModalProps {
   isOpen: boolean;
-  onClose: () => void;
+  onOpenChange: (isOpen: DialogOpenChangeDetails) => void;
   assets: (Asset & { balance: BN | null })[];
   isLoading?: boolean;
   onSelect: (asset: string) => void;
@@ -30,7 +27,7 @@ interface AssetsModalProps {
 
 export const AssetsModal = ({
   isOpen,
-  onClose,
+  onOpenChange,
   assets,
   isLoading = false,
   onSelect,
@@ -40,19 +37,21 @@ export const AssetsModal = ({
   const handleSelect = useCallback(
     (assetId: string) => {
       onSelect(assetId);
-      onClose();
+      onOpenChange({ open: false });
       setSearch('');
     },
-    [onSelect, onClose, setSearch],
+    [onSelect, onOpenChange, setSearch],
   );
 
-  const handleCloseModal = useCallback(() => {
-    setSearch('');
-    onClose();
-  }, [onClose, setSearch]);
+  const handleCloseModal = useCallback(
+    (e: DialogOpenChangeDetails) => {
+      setSearch('');
+      onOpenChange(e);
+    },
+    [onOpenChange, setSearch],
+  );
 
   const debouncedSearch = useCallback(
-    // eslint-disable-next-line react-compiler/react-compiler
     debounce((e: React.ChangeEvent<HTMLInputElement>) => {
       setSearch(e.target.value);
     }, 400),
@@ -81,43 +80,35 @@ export const AssetsModal = ({
   return (
     <Dialog.Modal
       modalContentProps={{ padding: 0 }}
-      isOpen={isOpen}
-      onClose={handleCloseModal}
+      open={isOpen}
+      onOpenChange={handleCloseModal}
+      size={{ base: 'full', sm: 'sm' }}
     >
-      <Box display={{ base: 'block', xs: 'none' }} w="full">
-        <Header />
-      </Box>
       <Dialog.Header
         mt={3}
         mb={3}
-        px={4}
+        px={6}
         title="Select Asset"
-        onClose={handleCloseModal}
+        onClose={() => handleCloseModal({ open: false })}
       />
-      <Dialog.Body py={{ base: 0, xs: 2 }}>
-        <Stack spacing={4}>
-          <FormControl px={4}>
-            <InputGroup position="relative">
-              <InputRightElement
-                position="absolute"
-                right={4}
-                top="50%"
-                transform="translateY(-50%)"
-              >
-                <Icon as={SearchIcon} color="grey.500" />
-              </InputRightElement>
+      <Dialog.Body>
+        <Stack gap={4}>
+          <Field.Root px={6}>
+            <InputGroup
+              position="relative"
+              endElement={<Icon as={SearchIcon} color="textPrimary" />}
+            >
               <Input
-                bg="dark.950"
+                variant="subtle"
                 onChange={(e) => debouncedSearch(e)}
-                placeholder=" "
+                placeholder="Search asset"
               />
-              <FormLabel>Search asset</FormLabel>
             </InputGroup>
-          </FormControl>
+          </Field.Root>
 
-          <Divider borderColor="grey.500" />
+          <Separator borderColor="grey.500" />
 
-          <CurrencyList.Root pr={2} pl={4}>
+          <CurrencyList.Root px={6}>
             {filteredAssets.map((asset) => (
               <CurrencyList.Item
                 key={asset.assetId}
@@ -129,17 +120,17 @@ export const AssetsModal = ({
                 gap={2}
               >
                 <Image boxSize="24px" src={asset.icon} alt={asset.name} />
-                <Stack spacing={0}>
-                  <Text fontSize="md" color="grey.50">
+                <Stack gap={0}>
+                  <Text fontSize="md" color="gray.50">
                     {asset.slug}
                   </Text>
-                  <Text fontSize="xs" color="grey.50">
+                  <Text fontSize="xs" color="gray.50">
                     {asset.name}
                   </Text>
                 </Stack>
 
                 {asset.balance && (
-                  <Text ml="auto" fontSize="xs" color="grey.50">
+                  <Text ml="auto" fontSize="xs" color="gray.50">
                     {asset.balance.formatUnits(asset.units)}
                   </Text>
                 )}

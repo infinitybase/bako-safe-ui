@@ -1,12 +1,4 @@
-import {
-  Button,
-  FormControl,
-  FormHelperText,
-  FormLabel,
-  Input,
-  Spinner,
-  VStack,
-} from '@chakra-ui/react';
+import { Button, Field, Input, Loader, VStack } from 'bako-ui';
 import { Controller } from 'react-hook-form';
 
 import { Dialog, DialogModalProps } from '@/components';
@@ -24,14 +16,14 @@ const NetworkDialog = ({ ...props }: NetworkDialogProps) => {
     handleClose,
     checkNetworkRequest: { isPending: loadingCheck },
     setValidNetwork,
-  } = useNetworks(props.onClose);
+  } = useNetworks(() => props.onOpenChange?.({ open: false }));
 
   return (
     <Dialog.Modal
       size={{ base: 'full', sm: 'lg' }}
-      isOpen={props.isOpen}
-      closeOnOverlayClick={false}
-      onClose={handleClose}
+      open={props.open}
+      closeOnInteractOutside={false}
+      onOpenChange={props.onOpenChange}
     >
       <Dialog.Header
         position="relative"
@@ -41,28 +33,28 @@ const NetworkDialog = ({ ...props }: NetworkDialogProps) => {
       />
 
       <Dialog.Body maxW={420} mt={{ base: -4, sm: -8 }}>
-        <VStack spacing={10}>
-          <VStack spacing={2} w="full">
+        <VStack gap={10}>
+          <VStack gap={2} w="full">
             <Controller
               control={networkForm.control}
               name="name"
               render={({ field, fieldState }) => (
-                <FormControl isInvalid={fieldState.invalid}>
+                <Field.Root invalid={fieldState.invalid}>
                   <Input
                     value={field.value}
                     onChange={field.onChange}
                     placeholder=" "
-                    variant="dark"
+                    // variant="dark"
                     bg={'grey.825'}
                     border={'1px solid'}
                     borderColor={'grey.125'}
                     disabled={true}
                   />
-                  <FormLabel>Name</FormLabel>
-                  <FormHelperText color="error.500">
+                  <Field.Label>Name</Field.Label>
+                  <Field.HelperText color="error.500">
                     {fieldState.error?.message}
-                  </FormHelperText>
-                </FormControl>
+                  </Field.HelperText>
+                </Field.Root>
               )}
             />
 
@@ -71,7 +63,7 @@ const NetworkDialog = ({ ...props }: NetworkDialogProps) => {
               name="url"
               rules={{ required: 'URL is required' }}
               render={({ field, fieldState }) => (
-                <FormControl isInvalid={fieldState.invalid}>
+                <Field.Root invalid={fieldState.invalid}>
                   <Input
                     value={field.value}
                     onChange={(e) => {
@@ -80,16 +72,16 @@ const NetworkDialog = ({ ...props }: NetworkDialogProps) => {
                       networkForm.clearErrors();
                     }}
                     placeholder=" "
-                    variant="dark"
+                    // variant="dark"
                     bg={'grey.825'}
                     border={'1px solid'}
                     borderColor={validNetwork ? 'brand.500' : 'grey.125'}
                   />
-                  <FormLabel>URL</FormLabel>
-                  <FormHelperText color="error.500">
+                  <Field.Label>URL</Field.Label>
+                  <Field.HelperText color="error.500">
                     {fieldState.error?.message}
-                  </FormHelperText>
-                </FormControl>
+                  </Field.HelperText>
+                </Field.Root>
               )}
             />
 
@@ -101,10 +93,10 @@ const NetworkDialog = ({ ...props }: NetworkDialogProps) => {
               borderColor={'grey.75'}
               onClick={handleCheckNetwork}
               _hover={{ borderColor: 'inherit', color: 'inherit' }}
-              sx={{ _active: { bg: 'inherit' } }}
+              css={{ _active: { bg: 'inherit' } }}
               disabled={loadingCheck}
             >
-              {loadingCheck ? <Spinner w={4} h={4} /> : 'Test connection'}
+              {loadingCheck ? <Loader w={4} h={4} /> : 'Test connection'}
             </Button>
           </VStack>
         </VStack>
@@ -113,10 +105,10 @@ const NetworkDialog = ({ ...props }: NetworkDialogProps) => {
       <Dialog.Actions mt="auto" maxW={420}>
         <Button
           w="100%"
-          variant="primary"
+          // variant="primary"
           fontWeight="bold"
           onClick={handleAddNetwork}
-          isDisabled={!validNetwork}
+          disabled={!validNetwork}
         >
           Add network
         </Button>

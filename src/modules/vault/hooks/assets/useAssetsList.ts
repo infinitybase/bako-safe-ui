@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Vault } from 'bakosafe';
 import { useMemo } from 'react';
 
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { useBaseAssetList } from './useBaseAssetList';
 

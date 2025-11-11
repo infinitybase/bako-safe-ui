@@ -1,5 +1,5 @@
-import { useAccordionItemState } from '@chakra-ui/react';
 import { QueryState, useQuery } from '@tanstack/react-query';
+import { useAccordionItemContext } from 'bako-ui';
 
 import { queryClient } from '@/config';
 import {
@@ -33,7 +33,7 @@ const useTransactionHistoryRequest = ({
   isTransactionSuccess,
   isDeposit,
 }: UseTransactionHistoryRequestProps) => {
-  const { isOpen } = useAccordionItemState();
+  const { expanded: isOpen } = useAccordionItemContext();
 
   const cachedData: QueryState<ITransactionHistory[] | undefined> | undefined =
     queryClient.getQueryState([
