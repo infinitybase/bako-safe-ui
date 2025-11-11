@@ -30,8 +30,6 @@ export type WorkspaceAuthentication = {
   workspace: string;
 };
 
-const PRIVY_TOKEN_KEY = 'privy:token';
-
 const useAuth = (): IUseAuthReturn => {
   const { infos, isLoading, isFetching, refetch } = useUserInfoRequest();
   const [invalidAccount, setInvalidAccount] = useState(false);
@@ -59,9 +57,7 @@ const useAuth = (): IUseAuthReturn => {
       callback?.();
     }
 
-    if (localStorage.getItem(PRIVY_TOKEN_KEY)) {
-      privyLogout();
-    }
+    privyLogout();
 
     setTimeout(() => {
       clearAuthCookies();
