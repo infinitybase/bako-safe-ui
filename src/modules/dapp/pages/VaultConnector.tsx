@@ -14,7 +14,7 @@ import { useEffect } from 'react';
 import { EmptyBox } from '@/components';
 import { useQueryParams } from '@/modules/auth';
 import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
-import { CreateVaultDialog } from '@/modules/vault';
+import { CreateVaultDialog, useHasReservedCoins } from '@/modules/vault';
 import { VaultItemBox } from '@/modules/vault/components/modal/box';
 import { useVaultDrawer } from '@/modules/vault/components/modal/hook';
 import { useWorkspaceContext } from '@/modules/workspace/hooks';
@@ -77,8 +77,8 @@ const VaultConnector = () => {
           {vaults?.map((vault) => {
             if (!vault) return null;
 
-            const { id, name, predicateAddress, workspace, members, root } =
-              vault;
+            const { id, name, predicateAddress, workspace, members, root } = vault;
+            const { SIGNATURES_COUNT } = typeof vault.configurable === 'string' ? JSON.parse(vault.configurable) : vault.configurable;
 
             if (id === currentVault && !selectedVaultId) setSelectedVaultId(id);
 
@@ -91,6 +91,7 @@ const VaultConnector = () => {
                 name={name}
                 workspace={workspace}
                 members={members?.length}
+                requiredSigners={SIGNATURES_COUNT}
                 address={predicateAddress}
                 root={false}
                 id={id}
@@ -151,7 +152,7 @@ const VaultConnector = () => {
                   textAlign="center"
                   fontWeight="medium"
                 >
-                  It seems like you {"haven't"} any Vault yet.
+                  It seems like you {"haven't"} any Vault yet. // TODO ASDF  AJUSTAR ESTILO
                 </Text>
               </Flex>
             </Card.Root>
