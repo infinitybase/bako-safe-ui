@@ -14,7 +14,7 @@ import { PredicateWorkspace } from '../../services';
 
 interface VaultItemBoxText {
   type: 'primary' | 'secondary';
-  children: React.ReactNode;
+  children?: React.ReactNode;
   isActive?: boolean;
   isLoading?: boolean;
 }
@@ -23,6 +23,7 @@ const VaultItemBoxText = (props: VaultItemBoxText) => {
   const { type, isActive, children, isLoading } = props;
 
   if (isLoading) return <Skeleton height="12px" width="40px" />;
+  if (!children) return;
 
   const isPrimary = type === 'primary';
   const color = isPrimary ? (isActive ? 'gray.50' : 'gray.200') : 'gray.300';
@@ -35,7 +36,7 @@ const VaultItemBoxText = (props: VaultItemBoxText) => {
   );
 };
 
-interface VaultDrawerBoxProps extends CardProps {
+interface VaultItemBoxComponentProps extends CardProps {
   id: string;
   name: string;
   address: string;
@@ -59,7 +60,7 @@ const VaultItemBoxComponent = ({
   id,
   workspace,
   ...rest
-}: VaultDrawerBoxProps) => {
+}: VaultItemBoxComponentProps) => {
   const { data, isLoading: isLoadingBalance } = useHasReservedCoins(
     id,
     workspace.id,
@@ -142,14 +143,16 @@ const VaultItemBoxComponent = ({
           isActive={isActive}
           isLoading={isLoadingBalance}
         >
-          {data ? moneyFormat(data.currentBalanceUSD) : ''}
+          {data && moneyFormat(data.currentBalanceUSD)}
         </VaultItemBoxText>
         <HStack gap={3}>
           {StatusBadge}
           {RootBadge}
-          <VaultItemBoxText type="secondary" isActive={isActive}>
-            {requiredSigners ?? 0}/{members} signers
-          </VaultItemBoxText>
+          {requiredSigners && members && (
+            <VaultItemBoxText type="secondary" isActive={isActive}>
+              {requiredSigners}/{members} signers
+            </VaultItemBoxText>
+          )}
         </HStack>
       </VStack>
     </Card>
