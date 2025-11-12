@@ -392,7 +392,7 @@ export const calculateTextWidth = (text: string): number => {
   return Math.max(min, width + SYMBOL_PADDING);
 };
 
-export const getSignaturesCount = (vault: PredicateAndWorkspace) => {
+export const getSignaturesCount = (vault: PredicateAndWorkspace): number => {
   try {
     const { SIGNATURES_COUNT } =
       typeof vault.configurable === 'string'

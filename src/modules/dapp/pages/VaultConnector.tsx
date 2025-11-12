@@ -80,7 +80,6 @@ const VaultConnector = () => {
 
             const { id, name, predicateAddress, workspace, members, root } =
               vault;
-            const { SIGNATURES_COUNT } = getSignaturesCount(vault);
 
             if (id === currentVault && !selectedVaultId) setSelectedVaultId(id);
 
@@ -93,7 +92,7 @@ const VaultConnector = () => {
                 name={name}
                 workspace={workspace}
                 members={members?.length}
-                requiredSigners={SIGNATURES_COUNT}
+                requiredSigners={getSignaturesCount(vault)}
                 address={predicateAddress}
                 root={false}
                 id={id}
