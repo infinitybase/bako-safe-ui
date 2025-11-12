@@ -18,12 +18,19 @@ export const EConnectorsInverse: Record<EConnectors, keyof typeof TypeUser> = {
   'EVM Wallet': 'EVM',
 };
 
+/**
+ * Enum with names of connectors used by the Fuel Connector that are linked to Bako Safe.
+ * Used to identify the connector type in the DApp sign-in flow.
+ */
 export enum EFuelConnectorsTypes {
   BAKO = 'Bako Safe',
   EVM = 'Ethereum Wallets',
   SOCIAL = 'Social Login',
 }
 
+/**
+ * Enum with labels for connectors available for logging into Bako Safe.
+ */
 export enum EConnectorsLabels {
   FUEL = 'Fuel',
   FUELET = 'Fuelet',
