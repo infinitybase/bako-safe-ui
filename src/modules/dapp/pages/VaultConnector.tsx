@@ -118,7 +118,7 @@ const VaultConnector = () => {
     <Dapp.Container>
       <Dapp.Profile />
 
-      <Dapp.ScrollableContent isLoading={isLoading}>
+      <Dapp.ScrollableContent isLoading={isLoadingVaults}>
         <CreateVaultDialog open={isOpen} onOpenChange={onOpenChange} />
 
         <Dapp.Header title="Accounts" />
