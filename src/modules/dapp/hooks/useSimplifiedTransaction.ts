@@ -18,8 +18,14 @@ export function useSimplifiedTransaction({
   txAccount,
 }: UseSimplifiedTransactionProps) {
   const transaction = useMemo<SimplifiedTransaction | undefined>(() => {
-    return simplifyTransaction(tx, txRequest, txAccount);
+    try {
+      return simplifyTransaction(tx, txRequest, txAccount);
+    } catch (err) {
+      console.error('Error simplifying transaction:', err);
+      return;
+    }
   }, [tx, txRequest, txAccount]);
+
   return {
     transaction,
     isReady: !!transaction,

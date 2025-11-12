@@ -41,8 +41,8 @@ export const useProfile = () => {
         (await fuel.disconnect());
 
       userInfos?.type.type === TypeUser.SOCIAL && (await privyLogout());
-      // eslint-disable-next-line no-empty
-    } catch {
+    } catch (error) {
+      console.error('Logout error:', error);
     } finally {
       handlers.logout?.();
     }
