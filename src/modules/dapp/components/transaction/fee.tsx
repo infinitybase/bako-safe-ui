@@ -1,5 +1,5 @@
-import { useState } from 'react';
 import { HStack, Text, Tooltip } from 'bako-ui';
+import { useState } from 'react';
 
 import { TooltipIcon } from '@/components/icons/tooltip';
 
