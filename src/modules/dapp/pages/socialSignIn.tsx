@@ -9,7 +9,7 @@ const DappSocialSignInPage = () => {
 
   useEffect(() => {
     if (!isModalOpen && !modalAlreadyOpened.current) connect();
-  }, [isModalOpen, modalAlreadyOpened.current]);
+  }, [isModalOpen, modalAlreadyOpened, connect]);
 
   return (
     <DappSignInContainer
