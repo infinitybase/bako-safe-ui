@@ -1,6 +1,6 @@
 import { usePrivy } from '@privy-io/react-auth';
 import { TypeUser } from 'bakosafe';
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { useContactToast } from '@/modules/addressBook';
@@ -14,7 +14,8 @@ import { useSocial } from '../useSocial';
 import { useCreateUserRequest, useSignInRequest } from '../useUserRequest';
 
 export const useSocialSignIn = () => {
-  const modalAlreadyOpened = useRef(false);
+  const [autoConnectTried, setAutoConnectTried] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const navigate = useNavigate();
   const { location } = useQueryParams();
@@ -32,7 +33,14 @@ export const useSocialSignIn = () => {
   }, [login]);
 
   const disconnect = useCallback(async () => {
-    await logout();
+    try {
+      setIsLoggingOut(true);
+      await logout();
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsLoggingOut(false);
+    }
   }, [logout]);
 
   const redirect = useCallback(() => {
@@ -107,6 +115,7 @@ export const useSocialSignIn = () => {
       walletsReady &&
       !!wallet &&
       authenticated &&
+      autoConnectTried &&
       user?.wallet?.address
     ) {
       handleSignIn(wallet.address);
@@ -118,15 +127,44 @@ export const useSocialSignIn = () => {
     walletsReady,
     authDetails.userInfos.address,
     wallet,
+    autoConnectTried,
   ]);
 
   useEffect(() => {
-    if (isModalOpen) modalAlreadyOpened.current = true;
+    if (isModalOpen) setAutoConnectTried(true);
   }, [isModalOpen]);
 
-  return {
+  useEffect(() => {
+    // Waiting for Privy SDK to be ready
+    if (!ready) return;
+
+    // If user is authenticated and has not yet attempted to connect automatically => disconnect
+    if (authenticated && !isLoggingOut && !autoConnectTried) {
+      disconnect();
+      return;
+    }
+
+    // If SDK is ready, user is not authenticated and
+    // has not attempted to connect automatically yet => connect
+    if (!authenticated && !isModalOpen && !isLoggingOut && !autoConnectTried) {
+      connect();
+    }
+  }, [
+    ready,
+    authenticated,
     isModalOpen,
-    modalAlreadyOpened,
+    isLoggingOut,
+    autoConnectTried,
+    connect,
+    disconnect,
+  ]);
+
+  return {
+    ready,
+    authenticated,
+    isModalOpen,
+    autoConnectTried,
+    isLoggingOut,
     connect,
     disconnect,
   };

@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
 import { useFuel } from '@fuels/react';
-import { usePrivy } from '@privy-io/react-auth';
 import { TypeUser } from 'bakosafe';
 import { Provider } from 'fuels';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { BAKO_SUPPORT_SEARCH } from '@/components/floatingCard';
@@ -30,14 +29,11 @@ export type WorkspaceAuthentication = {
   workspace: string;
 };
 
-const PRIVY_READY_TIMEOUT = 5000;
-
 const useAuth = (): IUseAuthReturn => {
   const [invalidAccount, setInvalidAccount] = useState(false);
 
   const { infos, isLoading, isFetching, refetch } = useUserInfoRequest();
   const { fuel } = useFuel();
-  const { ready, authenticated, logout: privyLogout } = usePrivy();
   const { setAuthCookies, clearAuthCookies, userAuthCookiesInfo } =
     useAuthCookies();
   const signOutRequest = useSignOut();
@@ -52,39 +48,13 @@ const useAuth = (): IUseAuthReturn => {
     setAuthCookies(params);
   };
 
-  const waitUntilPrivyReady = useCallback(
-    (timeout = PRIVY_READY_TIMEOUT): Promise<void> =>
-      new Promise((resolve) => {
-        if (ready) return resolve();
-
-        const start = Date.now();
-
-        const checkReady = () => {
-          if (ready || Date.now() - start > timeout) {
-            resolve();
-          } else {
-            setTimeout(checkReady, 50);
-          }
-        };
-
-        checkReady();
-      }),
-    [ready],
-  );
-
   const logout = async (removeTokenFromDb = true, callback?: () => void) => {
     localStorage.setItem(BAKO_SUPPORT_SEARCH, 'false');
     window.dispatchEvent(new Event('bako-storage-change'));
 
-    await waitUntilPrivyReady();
-
     if (accessToken && removeTokenFromDb) {
       await signOutRequest.mutateAsync();
       callback?.();
-    }
-
-    if (authenticated) {
-      await privyLogout();
     }
 
     setTimeout(() => {
