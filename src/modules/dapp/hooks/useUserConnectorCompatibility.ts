@@ -2,6 +2,10 @@ import { TypeUser } from 'bakosafe';
 
 import { EFuelConnectorsTypes } from '@/modules/core/hooks/fuel/useListConnectors';
 
+/**
+ * Hook to check compatibility between connector type and user type.
+ * @returns Object with checkCompatibility function that validates whether the connector is compatible with the user type.
+ */
 export const useUserConnectorCompatibility = () => {
   const checkCompatibility = (
     connectorType: string,
