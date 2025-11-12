@@ -15,7 +15,7 @@ import {
   VStack,
 } from 'bako-ui';
 import { AddressUtils as BakoAddressUtils, TypeUser } from 'bakosafe';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { RiLogoutBoxRLine } from 'react-icons/ri';
 
 import { CustomSkeleton, EmptyBox, LineCloseIcon } from '@/components';
@@ -29,19 +29,20 @@ import { useVaultDrawer } from '@/modules/vault/components/modal/hook';
 
 import { DappTransaction } from '../components';
 import { useAuthSocket, useVerifyBrowserType } from '../hooks';
-import { useUserConnectorCompatibility } from '../hooks/useUserConnectorCompatibility';
+import {
+  UserConnectorCompatibilityState,
+  useUserConnectorCompatibility,
+} from '../hooks/useUserConnectorCompatibility';
 
 const VaultConnector = () => {
-  const [isUserCompatibleWithConnector, setIsUserCompatibleWithConnector] =
-    useState<boolean | null>(null);
-
   const { name, origin, sessionId, request_id, connectorType } =
     useQueryParams();
 
   const { userInfos, handlers } = useAuth();
   const { ready } = usePrivy();
   const { isSafariBrowser } = useVerifyBrowserType();
-  const { checkCompatibility } = useUserConnectorCompatibility();
+  const { compatibilityState, setCompatibilityState, checkCompatibility } =
+    useUserConnectorCompatibility();
 
   const { fuel } = useFuel();
   const { logout: privyLogout } = usePrivy();
@@ -62,7 +63,7 @@ const VaultConnector = () => {
     isLoading ||
     userInfos.isLoading ||
     !ready ||
-    !isUserCompatibleWithConnector;
+    compatibilityState !== UserConnectorCompatibilityState.COMPATIBLE;
   const isWebAuthn = userInfos?.type.type === TypeUser.WEB_AUTHN;
 
   const logout = async () => {
@@ -102,7 +103,7 @@ const VaultConnector = () => {
       sessionId &&
       request_id &&
       userInfos.address &&
-      isUserCompatibleWithConnector
+      compatibilityState === UserConnectorCompatibilityState.COMPATIBLE
     ) {
       send.mutate({
         name: name,
@@ -113,7 +114,7 @@ const VaultConnector = () => {
         userAddress: userInfos.address,
       });
     }
-  }, [userInfos.address, vaults.length, isUserCompatibleWithConnector]);
+  }, [userInfos.address, vaults.length, compatibilityState]);
 
   useEffect(() => {
     if (
@@ -124,7 +125,11 @@ const VaultConnector = () => {
       !userInfos?.isLoading
     ) {
       const isCompatible = checkCompatibility(connector, userInfos.type.type);
-      setIsUserCompatibleWithConnector(isCompatible);
+      setCompatibilityState(
+        isCompatible
+          ? UserConnectorCompatibilityState.COMPATIBLE
+          : UserConnectorCompatibilityState.INCOMPATIBLE,
+      );
     }
   }, [
     connector,
@@ -135,8 +140,9 @@ const VaultConnector = () => {
   ]);
 
   useEffect(() => {
-    if (isUserCompatibleWithConnector === false) handlers.logout?.();
-  }, [isUserCompatibleWithConnector]);
+    if (compatibilityState === UserConnectorCompatibilityState.INCOMPATIBLE)
+      handlers.logout?.();
+  }, [compatibilityState]);
 
   return (
     <VStack

@@ -1,12 +1,23 @@
 import { TypeUser } from 'bakosafe';
+import { useState } from 'react';
 
 import { EFuelConnectorsTypes } from '@/modules/core/hooks/fuel/useListConnectors';
 
+export enum UserConnectorCompatibilityState {
+  CHECKING = 'checking',
+  COMPATIBLE = 'compatible',
+  INCOMPATIBLE = 'incompatible',
+}
+
 /**
  * Hook to check compatibility between connector type and user type.
- * @returns Object with checkCompatibility function that validates whether the connector is compatible with the user type.
  */
 export const useUserConnectorCompatibility = () => {
+  const [compatibilityState, setCompatibilityState] =
+    useState<UserConnectorCompatibilityState>(
+      UserConnectorCompatibilityState.CHECKING,
+    );
+
   const checkCompatibility = (
     connectorType: string,
     userType: TypeUser,
@@ -30,5 +41,5 @@ export const useUserConnectorCompatibility = () => {
     }
   };
 
-  return { checkCompatibility };
+  return { compatibilityState, setCompatibilityState, checkCompatibility };
 };
