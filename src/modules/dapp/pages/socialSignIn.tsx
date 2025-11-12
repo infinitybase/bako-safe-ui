@@ -1,15 +1,15 @@
 import { useEffect } from 'react';
 
-import { useSocialSignIn } from '@/modules/auth/hooks/signIn/useSocialSignIn';
+import { useSocialSignIn } from '@/modules/auth/hooks';
 
 import { DappSignInContainer } from '../components/signIn';
 
 const DappSocialSignInPage = () => {
-  const { isModalOpen, connect } = useSocialSignIn();
+  const { isModalOpen, modalAlreadyOpened, connect } = useSocialSignIn();
 
   useEffect(() => {
-    connect();
-  }, []);
+    if (!isModalOpen && !modalAlreadyOpened.current) connect();
+  }, [isModalOpen, modalAlreadyOpened.current]);
 
   return (
     <DappSignInContainer

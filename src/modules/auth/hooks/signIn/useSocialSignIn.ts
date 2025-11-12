@@ -1,6 +1,6 @@
 import { usePrivy } from '@privy-io/react-auth';
 import { TypeUser } from 'bakosafe';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { useContactToast } from '@/modules/addressBook';
@@ -14,6 +14,8 @@ import { useSocial } from '../useSocial';
 import { useCreateUserRequest, useSignInRequest } from '../useUserRequest';
 
 export const useSocialSignIn = () => {
+  const modalAlreadyOpened = useRef(false);
+
   const navigate = useNavigate();
   const { location } = useQueryParams();
 
@@ -118,10 +120,13 @@ export const useSocialSignIn = () => {
     wallet,
   ]);
 
+  useEffect(() => {
+    if (isModalOpen) modalAlreadyOpened.current = true;
+  }, [isModalOpen]);
+
   return {
-    isAuthenticated: authenticated,
-    user,
     isModalOpen,
+    modalAlreadyOpened,
     connect,
     disconnect,
   };

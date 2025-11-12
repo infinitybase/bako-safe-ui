@@ -39,6 +39,7 @@ const VaultConnector = () => {
     useQueryParams();
 
   const { userInfos, handlers } = useAuth();
+  const { ready } = usePrivy();
   const { isSafariBrowser } = useVerifyBrowserType();
   const { checkCompatibility } = useUserConnectorCompatibility();
 
@@ -57,6 +58,11 @@ const VaultConnector = () => {
 
   const connector = decodeURIComponent(connectorType || '');
   const noVaultsAvailable = isSuccess && !vaults.length;
+  const isLoadingVaults =
+    isLoading ||
+    userInfos.isLoading ||
+    !ready ||
+    !isUserCompatibleWithConnector;
   const isWebAuthn = userInfos?.type.type === TypeUser.WEB_AUTHN;
 
   const logout = async () => {
@@ -241,7 +247,7 @@ const VaultConnector = () => {
               )}
             </HStack>
 
-            <CustomSkeleton loading={isLoading} mt={4}>
+            <CustomSkeleton loading={isLoadingVaults} mt={4}>
               {/* Result */}
               <VStack
                 w="full"
@@ -388,9 +394,8 @@ const VaultConnector = () => {
                 disabled={
                   !selectedVaultId ||
                   !vaults.length ||
-                  isLoading ||
                   send.isPending ||
-                  !isUserCompatibleWithConnector
+                  isLoadingVaults
                 }
                 onClick={() => {
                   send.mutate({
