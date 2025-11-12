@@ -58,15 +58,16 @@ const useAuth = (): IUseAuthReturn => {
         if (ready) return resolve();
 
         const start = Date.now();
-        const interval = setInterval(() => {
-          if (ready) {
-            clearInterval(interval);
+
+        const checkReady = () => {
+          if (ready || Date.now() - start > timeout) {
             resolve();
-          } else if (Date.now() - start > timeout) {
-            clearInterval(interval);
-            resolve();
+          } else {
+            setTimeout(checkReady, 50);
           }
-        }, 50);
+        };
+
+        checkReady();
       }),
     [ready],
   );
