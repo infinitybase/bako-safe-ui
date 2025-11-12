@@ -23,6 +23,7 @@ export const DappSignInContainer = (props: DappSignInContainerProps) => {
           {message}
         </Text>
         <Button
+          aria-label="Connect"
           w="full"
           maxW={{ base: 190, sm: 230 }}
           variant="subtle"
