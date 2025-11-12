@@ -223,11 +223,14 @@ function getOperationDepth(
 ) {
   let depth = 0;
 
-  // biome-ignore lint/suspicious/noExplicitAny: Type mismatch, id is sometimes available.
-  const receiptIndex = parsedReceipts.findIndex((r: any) =>
+  type ReceiptWithId = Receipt & { id?: string };
+
+  const receiptIndex = parsedReceipts.findIndex((r: ParsedReceiptData) =>
     operation.receipts?.some(
-      // biome-ignore lint/suspicious/noExplicitAny: Type mismatch, id is sometimes available.
-      (operationReceipt: any) => operationReceipt.id === r.data.id,
+      (operationReceipt) =>
+        'id' in operationReceipt &&
+        'id' in r.data &&
+        (operationReceipt as ReceiptWithId).id === (r.data as ReceiptWithId).id,
     ),
   );
 
@@ -237,45 +240,16 @@ function getOperationDepth(
   return depth;
 }
 
-function toBNSafe(value?: string | number | BN | null, decimals = 9): BN {
-  try {
-    if (!value) return new BN(0);
-
-    if (typeof value === 'string') {
-      // Se for hexadecimal
-      if (/^0x[0-9a-fA-F]+$/.test(value)) {
-        return new BN(value.replace(/^0x/, ''), 16);
-      }
-
-      // Se for decimal (ex: "0.000016774")
-      if (value.includes('.')) {
-        const [whole, fraction = ''] = value.split('.');
-        const cleanFraction = fraction.padEnd(decimals, '0').slice(0, decimals);
-        return new BN(whole + cleanFraction);
-      }
-
-      // Se for número como string
-      if (/^\d+$/.test(value)) {
-        return new BN(value, 10);
-      }
-
-      console.warn('Invalid BN string:', value);
-      return new BN(0);
-    }
-
-    return new BN(value);
-  } catch (err) {
-    console.error('BN Conversion Error:', err, value);
-    return new BN(0);
-  }
-}
-
 export function simplifyTransaction(
   summary?: TransactionSummary | TransactionResult,
   request?: TransactionRequest,
   currentAccount?: string,
 ): SimplifiedTransaction | undefined {
-  if (!summary) return undefined;
+  if (!summary) {
+    console.warn('simplifyTransaction called with undefined summary');
+    return;
+  }
+
   const parsedReceipts = parseReceipts(summary.receipts);
   const operations = transformOperations(
     summary,
@@ -285,19 +259,18 @@ export function simplifyTransaction(
 
   const categorizedOperations = categorizeOperationsV2(operations);
 
-  const simplifiedTransaction = {
+  return {
     id: summary.id,
     operations,
     categorizedOperations,
     fee: {
-      total: toBNSafe(summary?.fee),
-      network: toBNSafe(summary?.fee).sub(toBNSafe(request?.tip)),
-      tip: toBNSafe(request?.tip),
-      gasUsed: toBNSafe(summary?.gasUsed),
+      total: summary.fee,
+      network: summary.fee.sub(request?.tip || new BN(0)),
+      tip: request?.tip || new BN(0),
+      gasUsed: summary.gasUsed,
       gasPrice: new BN(0),
     },
   };
-  return simplifiedTransaction;
 }
 
 function groupOpsFromCurrentAccountToContract(
@@ -313,11 +286,12 @@ function groupOpsFromCurrentAccountToContract(
     })
     .reduce(
       (acc, op) => {
-        return {
-          // biome-ignore lint/performance/noAccumulatingSpread: <explanation>
-          ...acc,
-          [op.from.address]: [...(acc[op.from.address] || []), op],
-        };
+        const key = op.from.address;
+        if (!acc[key]) {
+          acc[key] = [];
+        }
+        acc[key].push(op);
+        return acc;
       },
       {} as Record<string, SimplifiedOperation[]>,
     );
