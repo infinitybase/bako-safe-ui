@@ -2,14 +2,7 @@ import { memo } from 'react';
 
 import { PredicateAndWorkspace } from '../../services';
 import { VaultItemBox } from './box';
-
-const getSignaturesCount = (vault: PredicateAndWorkspace) => {
-  const { SIGNATURES_COUNT } =
-    typeof vault.configurable === 'string'
-      ? JSON.parse(vault.configurable)
-      : vault.configurable;
-  return SIGNATURES_COUNT;
-};
+import { getSignaturesCount } from '../../utils';
 
 interface VaultListProps {
   vaults: PredicateAndWorkspace[];

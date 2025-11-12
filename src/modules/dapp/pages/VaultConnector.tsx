@@ -22,6 +22,7 @@ import { Dapp } from '@/layouts';
 
 import { DappTransaction } from '../components';
 import { useAuthSocket } from '../hooks';
+import { getSignaturesCount } from '@/modules/vault/utils';
 
 const VaultConnector = () => {
   const { name, origin, sessionId, request_id } = useQueryParams();
@@ -79,10 +80,7 @@ const VaultConnector = () => {
 
             const { id, name, predicateAddress, workspace, members, root } =
               vault;
-            const { SIGNATURES_COUNT } =
-              typeof vault.configurable === 'string'
-                ? JSON.parse(vault.configurable)
-                : vault.configurable;
+            const { SIGNATURES_COUNT } = getSignaturesCount(vault);
 
             if (id === currentVault && !selectedVaultId) setSelectedVaultId(id);
 
