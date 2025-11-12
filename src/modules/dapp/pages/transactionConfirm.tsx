@@ -1,9 +1,5 @@
 import { Box, Button } from 'bako-ui';
-import {
-  TransactionRequest,
-  TransactionResult,
-  TransactionSummary,
-} from 'fuels';
+import { TransactionRequest, TransactionSummary } from 'fuels';
 import { useState } from 'react';
 
 import { useEvm } from '@/modules/auth/hooks';
@@ -18,6 +14,15 @@ import { DappTransactionSuccess } from '../components/transaction/success';
 import { DappTransactionWrapper } from '../components/transaction/wrapper';
 import { useTransactionSocket } from '../hooks';
 import { useSimplifiedTransaction } from '../hooks/useSimplifiedTransaction';
+
+const isTransactionSummary = (obj: unknown): obj is TransactionSummary => {
+  return (
+    typeof obj === 'object' &&
+    obj !== null &&
+    'id' in obj &&
+    'operations' in obj
+  );
+};
 
 const TransactionConfirm = () => {
   const [createTxMethod, setCreateTxMethod] =
@@ -52,10 +57,9 @@ const TransactionConfirm = () => {
   const { wallet: socialWallet } = useSocial();
 
   const { transaction } = useSimplifiedTransaction({
-    tx: summary.transactionSummary as
-      | TransactionSummary
-      | TransactionResult
-      | undefined,
+    tx: isTransactionSummary(summary.transactionSummary)
+      ? summary.transactionSummary
+      : undefined,
     txRequest: tx as TransactionRequest | undefined,
     txAccount: vault.address,
   });
