@@ -19,7 +19,7 @@ const isTransactionSummary = (obj: unknown): obj is TransactionSummary => {
   return (
     typeof obj === 'object' &&
     obj !== null &&
-    'id' in obj &&
+    'fee' in obj &&
     'operations' in obj
   );
 };
