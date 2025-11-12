@@ -1,5 +1,4 @@
 import { useFuel } from '@fuels/react';
-import { usePrivy } from '@privy-io/react-auth';
 import {
   Avatar,
   Box,
@@ -63,7 +62,6 @@ const UserBox = () => {
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const { fuel } = useFuel();
   const { disconnect: evmDisconnect } = useEvm();
-  const { logout: privyLogout } = usePrivy();
   const settingsDrawer = useDisclosure();
   const notificationDrawerState = useDisclosure();
   const { unreadCounter, setUnreadCounter } = useAppNotifications();
@@ -110,9 +108,6 @@ const UserBox = () => {
 
       authDetails.userInfos?.type.type === TypeUser.EVM &&
         (await evmDisconnect());
-
-      authDetails.userInfos?.type.type === TypeUser.SOCIAL &&
-        (await privyLogout());
 
       // TODO: Disconnect Fuelet, `fuel.disconnect()` should do that but it doesn't work for fuelet
     } catch (error) {
