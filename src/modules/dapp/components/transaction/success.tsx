@@ -1,8 +1,10 @@
-import { Button, Flex, Icon, Text, VStack } from 'bako-ui';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { Button, Text } from 'bako-ui';
+import { useCallback } from 'react';
 
-import { DoneIcon } from '@/components/icons/done-icon';
+import { CheckIcon } from '@/components';
 import { Container } from '@/layouts/dapp/container';
+import { FixedFooter } from '@/layouts/dapp/fixed-footer';
+import { ScrollableContent } from '@/layouts/dapp/scrollable-content';
 
 interface DappTransactionSuccessProps {
   title: string;
@@ -12,56 +14,43 @@ interface DappTransactionSuccessProps {
 const DappTransactionSuccess = (props: DappTransactionSuccessProps) => {
   const { title, description } = props;
 
-  const titleRef = useRef<HTMLParagraphElement>(null);
-  const [titleWidth, setTitleWidth] = useState('auto');
+  const origin = window.location.origin;
 
   const handleRedirectToBakoSafe = useCallback(() => {
     window.close();
-    window.open(window.location.origin, '_BLANK');
-  }, []);
-
-  useEffect(() => {
-    if (titleRef.current) {
-      setTitleWidth(`${titleRef.current.offsetWidth}px`);
-    }
-  }, [title]);
+    window.open(origin, '_BLANK');
+  }, [origin]);
 
   return (
-    <Container flex={1}>
-      <VStack h="full" justifyContent="center" w="full" px={6} py={8}>
-        <VStack mt="auto" textAlign="center" gap={4}>
-          <Icon fontSize={98} as={DoneIcon} />
-          <Text ref={titleRef} fontWeight={700} fontSize="20px" color="grey.75">
-            {title}
-          </Text>
-          <Text
-            color="grey.250"
-            fontSize="xs"
-            fontWeight={400}
-            lineHeight="16.8px"
-            maxWidth={titleWidth}
-          >
-            {description}
-          </Text>
-        </VStack>
-        <Flex w="full" mt="auto" justifyContent="center">
-          <Button
-            variant="outline"
-            onClick={() => handleRedirectToBakoSafe()}
-            w="full"
-            maxW={356}
-            borderColor="grey.75"
-            fontWeight={500}
-            fontSize="sm"
-            letterSpacing=".5px"
-            color="grey.75"
-            _hover={{}}
-            _active={{}}
-          >
-            Go to Bako Safe
-          </Button>
-        </Flex>
-      </VStack>
+    <Container>
+      <ScrollableContent justify="center">
+        <CheckIcon boxSize={12} color="gray.50" />
+        <Text fontWeight={700} fontSize="md" color="gray.50">
+          {title}
+        </Text>
+        <Text
+          color="gray.400"
+          fontSize="sm"
+          fontWeight={500}
+          lineHeight="140%"
+          textAlign="center"
+        >
+          {description}
+        </Text>
+      </ScrollableContent>
+      <FixedFooter bg="none">
+        <Button
+          variant="subtle"
+          color="gray.300"
+          bgColor="gray.600"
+          px="20px"
+          w="full"
+          fontWeight={400}
+          onClick={() => handleRedirectToBakoSafe()}
+        >
+          Go to Bako Safe
+        </Button>
+      </FixedFooter>
     </Container>
   );
 };

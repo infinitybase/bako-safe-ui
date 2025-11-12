@@ -1,7 +1,11 @@
-import { Box } from 'bako-ui';
+import { Box, Button } from 'bako-ui';
+import {
+  TransactionRequest,
+  TransactionResult,
+  TransactionSummary,
+} from 'fuels';
 import { useState } from 'react';
 
-import { Dialog } from '@/components/dialog';
 import { useEvm } from '@/modules/auth/hooks';
 import { useSocial } from '@/modules/auth/hooks/useSocial';
 import { useMyWallet } from '@/modules/core/hooks/fuel';
@@ -13,6 +17,7 @@ import { useWorkspaceContext } from '@/modules/workspace/hooks';
 import { DappTransactionSuccess } from '../components/transaction/success';
 import { DappTransactionWrapper } from '../components/transaction/wrapper';
 import { useTransactionSocket } from '../hooks';
+import { useSimplifiedTransaction } from '../hooks/useSimplifiedTransaction';
 
 const TransactionConfirm = () => {
   const [createTxMethod, setCreateTxMethod] =
@@ -24,6 +29,7 @@ const TransactionConfirm = () => {
     vault,
     pendingSignerTransactions,
     summary,
+    tx,
     startTime,
     validAt,
     tabs,
@@ -45,6 +51,15 @@ const TransactionConfirm = () => {
   const { isConnected: isEvmConnected } = useEvm();
   const { wallet: socialWallet } = useSocial();
 
+  const { transaction } = useSimplifiedTransaction({
+    tx: summary.transactionSummary as
+      | TransactionSummary
+      | TransactionResult
+      | undefined,
+    txRequest: tx as TransactionRequest | undefined,
+    txAccount: vault.address,
+  });
+
   const currentView = tabs.tab;
 
   return (
@@ -52,7 +67,7 @@ const TransactionConfirm = () => {
       {currentView === 0 && (
         <Box p={0}>
           <DappTransactionWrapper
-            title="Create transaction"
+            title="Review transaction"
             startTime={startTime}
             validAt={validAt}
             vault={vault}
@@ -60,25 +75,29 @@ const TransactionConfirm = () => {
             summary={summary}
             primaryActionLoading={isSending}
             cancel={cancelSendTransaction}
+            transaction={transaction}
             primaryActionButton={
               type && (wallet || webauthn || isEvmConnected || socialWallet) ? (
                 <CreateTxMenuButton
                   createTxMethod={createTxMethod}
                   setCreateTxMethod={setCreateTxMethod}
                   isLoading={isSending}
-                  isDisabled={isSending}
+                  isDisabled={isSending || pendingSignerTransactions}
                   handleCreateTransaction={sendTransaction}
                   handleCreateAndSignTransaction={sendTransactionAndSign}
                 />
               ) : (
-                <Dialog.PrimaryAction
-                  size="md"
-                  loading={isSending}
-                  onClick={sendTransaction}
+                <Button
+                  flex={1}
+                  colorPalette="primary"
+                  fontWeight={600}
                   fontSize={14}
+                  loading={isSending}
+                  disabled={isSending || pendingSignerTransactions}
+                  onClick={sendTransaction}
                 >
                   Create
-                </Dialog.PrimaryAction>
+                </Button>
               )
             }
           />
@@ -96,15 +115,19 @@ const TransactionConfirm = () => {
             summary={summary}
             primaryActionLoading={isSigning}
             cancel={cancelSignTransaction}
+            transaction={transaction}
             primaryActionButton={
-              <Dialog.PrimaryAction
-                size="md"
-                loading={isSigning}
-                onClick={() => signTransaction(undefined, vault?.version)}
+              <Button
+                flex={1}
+                colorPalette="primary"
+                fontWeight={600}
                 fontSize={14}
+                loading={isSigning}
+                disabled={isSending || pendingSignerTransactions}
+                onClick={() => signTransaction(undefined, vault?.version)}
               >
                 Sign
-              </Dialog.PrimaryAction>
+              </Button>
             }
           />
         </Box>

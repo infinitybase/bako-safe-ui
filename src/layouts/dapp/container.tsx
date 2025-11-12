@@ -1,32 +1,29 @@
-import { Box, BoxProps, Flex } from 'bako-ui';
+import { Flex, VStack, VStackProps } from 'bako-ui';
 
-export const DAPP_CONTAINER_SIZES = {
-  width: 500,
-  height: 750,
-};
-
-interface ContainerProps extends BoxProps {}
+interface ContainerProps extends VStackProps {}
 
 const Container = (props: ContainerProps) => {
+  const { children, ...rest } = props;
+
   return (
     <Flex
-      justifyContent="center"
+      h="100vh"
       w="100vw"
-      h="$100vh"
+      justify="center"
+      align="stretch"
       overflowX="hidden"
-      css={{
-        '&::-webkit-scrollbar': { width: '0' },
-        scrollbarWidth: 'none',
-      }}
-      bgColor="dark.950"
     >
-      <Box
-        maxW={DAPP_CONTAINER_SIZES.width}
-        maxH={DAPP_CONTAINER_SIZES.height}
-        {...props}
+      <VStack
+        h="full"
+        w="full"
+        maxW={500}
+        minW={404}
+        overflow="hidden"
+        gap={0}
+        {...rest}
       >
-        {props.children}
-      </Box>
+        {children}
+      </VStack>
     </Flex>
   );
 };

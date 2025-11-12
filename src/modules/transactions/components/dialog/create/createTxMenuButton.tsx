@@ -73,23 +73,18 @@ const CreateTxMenuButton = ({
             aria-label={'Menu select mode create tx'}
             asChild
             w="20px"
-            pl={2}
             borderRadius="0px 8px 8px 0px"
             disabled={isDisabled || isLoading}
           >
             <Button>
-              <ChevronDownIcon fontSize="24px" color="gray.700" />
+              <ChevronDownIcon transform="rotate(180deg)" fontSize="24px" color="gray.700" />
             </Button>
           </Menu.Trigger>
         </HStack>
         <Menu.Portal>
           <Menu.Positioner zIndex="2000 !important">
             <Menu.Content
-              bg="bg.panel"
-              borderRadius="xl"
               overflow="hidden"
-              borderColor="bg.muted"
-              border="1px solid"
               width={`${menuWidth}px`}
             >
               <Menu.Item
@@ -101,8 +96,8 @@ const CreateTxMenuButton = ({
                 onClick={() =>
                   setCreateTxMethod(ECreateTransactionMethods.CREATE_AND_SIGN)
                 }
-                _hover={{ background: 'dark.150' }}
-                padding="12px 4px 12px 16px"
+                _hover={{ bg: "gray.500" }}
+                borderRadius="12px"
               >
                 <Heading
                   fontSize="sm"
@@ -134,8 +129,8 @@ const CreateTxMenuButton = ({
                 onClick={() =>
                   setCreateTxMethod(ECreateTransactionMethods.CREATE)
                 }
-                _hover={{ background: 'dark.150' }}
-                padding="12px 4px 12px 16px"
+                _hover={{ bg: "gray.500" }}
+                borderRadius="12px"
                 value="create"
               >
                 <Heading
