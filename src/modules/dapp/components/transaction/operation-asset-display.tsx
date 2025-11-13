@@ -7,6 +7,8 @@ import { AddressUtils } from '@/modules/core';
 
 import { SimplifiedAsset } from '../../services/simplify-transaction';
 
+const MIN_DISPLAY_AMOUNT = '0.000000001';
+
 function formatUsdEstimate(
   amount: string | undefined,
   assetId: string | undefined,
@@ -28,7 +30,7 @@ function formatAssetLabel(
   assetSlug: string | undefined,
   assetId: string,
 ): string {
-  if (assetAmount === '0.000000001') return '';
+  if (assetAmount === MIN_DISPLAY_AMOUNT) return '';
   if (!assetSlug || assetSlug === 'UNK') {
     return `${assetAmount} NFT ${AddressUtils.format(assetId, 8)}`;
   }

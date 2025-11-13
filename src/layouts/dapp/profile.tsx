@@ -28,7 +28,7 @@ export const Profile = () => {
               fontSize="xs"
               lineHeight="12px"
             >
-              {getUserAddress()}
+              {getUserAddress() || 'Address not available'}
             </Text>
             {isWebAuthn && (
               <Text

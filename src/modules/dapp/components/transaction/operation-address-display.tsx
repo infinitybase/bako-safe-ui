@@ -11,6 +11,7 @@ import { useCallback } from 'react';
 import { PiCopyThin } from 'react-icons/pi';
 
 import { AddressUtils } from '@/modules/core';
+import { useNotification } from '@/modules/notification';
 
 interface AddressDisplayProps {
   address: string;
@@ -29,13 +30,25 @@ export const OperationAddressDisplay = ({
   onCopy,
   hasCopied,
 }: AddressDisplayProps) => {
-  const handleCopy = useCallback(() => {
-    if (isCurrentAccount && vaultAddress) {
-      onCopy();
-    } else {
-      navigator.clipboard.writeText(address);
+  const toast = useNotification();
+
+  const handleCopy = useCallback(async () => {
+    try {
+      if (isCurrentAccount && vaultAddress) {
+        onCopy();
+      } else {
+        await navigator.clipboard.writeText(address);
+      }
+    } catch (error) {
+      console.error('Failed to copy address:', error);
+      toast({
+        title: 'Copy error!',
+        status: 'error',
+        description: 'Failed to copy address. Please try again.',
+      });
     }
-  }, [isCurrentAccount, vaultAddress, onCopy, address]);
+  }, [isCurrentAccount, vaultAddress, onCopy, address, toast]);
+
   return (
     <Flex w="full" alignItems="center" bg="gray.700" borderRadius={8} p={4}>
       <HStack gap={3} align="center">
