@@ -6,9 +6,9 @@ import {
 } from 'fuels';
 import { useState } from 'react';
 
-import { useEvm } from '@/modules/auth/hooks';
-import { useSocial } from '@/modules/auth/hooks/useSocial';
+import { useEvm, useQueryParams } from '@/modules/auth/hooks';
 import { useMyWallet } from '@/modules/core/hooks/fuel';
+import { EFuelConnectorsTypes } from '@/modules/core/hooks/fuel/useListConnectors';
 import CreateTxMenuButton, {
   ECreateTransactionMethods,
 } from '@/modules/transactions/components/dialog/create/createTxMenuButton';
@@ -49,7 +49,6 @@ const TransactionConfirm = () => {
   } = useWorkspaceContext();
   const { data: wallet } = useMyWallet();
   const { isConnected: isEvmConnected } = useEvm();
-  const { wallet: socialWallet } = useSocial();
 
   const { transaction } = useSimplifiedTransaction({
     tx: summary.transactionSummary as
@@ -59,6 +58,13 @@ const TransactionConfirm = () => {
     txRequest: tx as TransactionRequest | undefined,
     txAccount: vault.address,
   });
+
+  const { connectorType } = useQueryParams();
+
+  const connector = decodeURIComponent(connectorType || '');
+  const isEvmOrSocialConnector =
+    connector === EFuelConnectorsTypes.EVM ||
+    connector === EFuelConnectorsTypes.SOCIAL;
 
   const currentView = tabs.tab;
 
@@ -77,7 +83,19 @@ const TransactionConfirm = () => {
             cancel={cancelSendTransaction}
             transaction={transaction}
             primaryActionButton={
-              type && (wallet || webauthn || isEvmConnected || socialWallet) ? (
+              isEvmOrSocialConnector ? (
+                <Button
+                  flex={1}
+                  colorPalette="primary"
+                  fontWeight={600}
+                  fontSize={14}
+                  loading={isSending}
+                  disabled={isSending || pendingSignerTransactions}
+                  onClick={sendTransactionAndSign}
+                >
+                  {ECreateTransactionMethods.CREATE_AND_SIGN}
+                </Button>
+              ) : type && (wallet || webauthn || isEvmConnected) ? (
                 <CreateTxMenuButton
                   createTxMethod={createTxMethod}
                   setCreateTxMethod={setCreateTxMethod}
