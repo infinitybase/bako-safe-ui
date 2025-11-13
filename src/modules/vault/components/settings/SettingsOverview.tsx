@@ -156,7 +156,6 @@ const SettingsOverview = ({
                 fontSize="xs"
                 lineHeight="shorter"
               >
-                {/* daqui vem a parada o predicate */}
                 {AddressUtils.format(predicateVersion || '', 4)}
                 <Clipboard.Indicator
                   copied={<Icon as={RiFileCopyFill} w="12px" />}
