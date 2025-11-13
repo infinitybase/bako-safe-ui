@@ -37,7 +37,7 @@ const SettingsOverview = ({
     );
 
   if (!vault) return null;
-  const predicateVersion = vault.data?.configurable?.version;
+  const predicateVersion = vault.data?.version;
   const predicateAddress = vault.data?.predicateAddress
     ? new Address(vault.data.predicateAddress).toString()
     : '';
@@ -156,6 +156,7 @@ const SettingsOverview = ({
                 fontSize="xs"
                 lineHeight="shorter"
               >
+                {/* daqui vem a parada o predicate */}
                 {AddressUtils.format(predicateVersion || '', 4)}
                 <Clipboard.Indicator
                   copied={<Icon as={RiFileCopyFill} w="12px" />}
