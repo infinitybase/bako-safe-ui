@@ -1,10 +1,11 @@
+import { TypeUser } from 'bakosafe';
 import { useCallback, useMemo, useState } from 'react';
 
 import { LocalStorageConfig } from '@/config';
 import { useDebounce } from '@/modules/core';
 import { AutocompleteBadgeStatus } from '@/modules/core/utils/enum';
 
-import { localStorageKeys, TypeUser } from '../../services/methods';
+import { localStorageKeys } from '../../services/methods';
 import { WebAuthnModeState } from '../signIn';
 import {
   useCheckNickname,

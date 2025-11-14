@@ -1,9 +1,10 @@
 import { usePrivy } from '@privy-io/react-auth';
-import { useCallback, useEffect } from 'react';
+import { TypeUser } from 'bakosafe';
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { useContactToast } from '@/modules/addressBook';
-import { Encoder, localStorageKeys, TypeUser } from '@/modules/auth/services';
+import { Encoder, localStorageKeys } from '@/modules/auth/services';
 import { Pages } from '@/modules/core';
 import { useNetworks } from '@/modules/network/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/hooks';
@@ -13,6 +14,9 @@ import { useSocial } from '../useSocial';
 import { useCreateUserRequest, useSignInRequest } from '../useUserRequest';
 
 export const useSocialSignIn = () => {
+  const [autoConnectTried, setAutoConnectTried] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
   const navigate = useNavigate();
   const { location } = useQueryParams();
 
@@ -29,7 +33,14 @@ export const useSocialSignIn = () => {
   }, [login]);
 
   const disconnect = useCallback(async () => {
-    await logout();
+    try {
+      setIsLoggingOut(true);
+      await logout();
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsLoggingOut(false);
+    }
   }, [logout]);
 
   const redirect = useCallback(() => {
@@ -104,6 +115,7 @@ export const useSocialSignIn = () => {
       walletsReady &&
       !!wallet &&
       authenticated &&
+      autoConnectTried &&
       user?.wallet?.address
     ) {
       handleSignIn(wallet.address);
@@ -115,12 +127,44 @@ export const useSocialSignIn = () => {
     walletsReady,
     authDetails.userInfos.address,
     wallet,
+    autoConnectTried,
+  ]);
+
+  useEffect(() => {
+    if (isModalOpen) setAutoConnectTried(true);
+  }, [isModalOpen]);
+
+  useEffect(() => {
+    // Waiting for Privy SDK to be ready
+    if (!ready) return;
+
+    // If user is authenticated and has not yet attempted to connect automatically => disconnect
+    if (authenticated && !isLoggingOut && !autoConnectTried) {
+      disconnect();
+      return;
+    }
+
+    // If SDK is ready, user is not authenticated and
+    // has not attempted to connect automatically yet => connect
+    if (!authenticated && !isModalOpen && !isLoggingOut && !autoConnectTried) {
+      connect();
+    }
+  }, [
+    ready,
+    authenticated,
+    isModalOpen,
+    isLoggingOut,
+    autoConnectTried,
+    connect,
+    disconnect,
   ]);
 
   return {
-    isAuthenticated: authenticated,
-    user,
+    ready,
+    authenticated,
     isModalOpen,
+    autoConnectTried,
+    isLoggingOut,
     connect,
     disconnect,
   };

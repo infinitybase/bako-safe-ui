@@ -8,11 +8,11 @@ import {
   Stack,
   Text,
 } from 'bako-ui';
+import { TypeUser } from 'bakosafe';
 import { useMemo } from 'react';
 
 import { AddAddressBook, UpRightArrow } from '@/components';
 import { ListContactsResponse } from '@/modules/addressBook/services';
-import { TypeUser } from '@/modules/auth';
 import { AddressUtils } from '@/modules/core';
 import { useBakoIdAvatar } from '@/modules/core/hooks/bako-id';
 import { useAddressNicknameResolver } from '@/modules/core/hooks/useAddressNicknameResolver';

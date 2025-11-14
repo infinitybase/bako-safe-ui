@@ -1,11 +1,11 @@
-import { Button, Text, VStack } from 'bako-ui';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { useWalletSignIn } from '@/modules/auth';
-import { SigninContainerMobile } from '@/modules/auth/components';
 import { EConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
 import { Pages } from '@/modules/core/routes';
+
+import { DappSignInContainer } from '../components';
 
 const DappEVMSignInPage = () => {
   const navigate = useNavigate();
@@ -18,17 +18,11 @@ const DappEVMSignInPage = () => {
   }, []);
 
   return (
-    <SigninContainerMobile>
-      <VStack flex={1} justifyContent="center" alignItems="center">
-        <Text>Sign in with your Ethereum wallet</Text>
-        <Button
-          disabled={isAnyWalletConnectorOpen}
-          onClick={() => handleSelectWallet(EConnectors.EVM)}
-        >
-          Connect
-        </Button>
-      </VStack>
-    </SigninContainerMobile>
+    <DappSignInContainer
+      message="Sign in with your Ethereum Wallet"
+      disableConnect={isAnyWalletConnectorOpen}
+      onConnect={() => handleSelectWallet(EConnectors.EVM)}
+    />
   );
 };
 

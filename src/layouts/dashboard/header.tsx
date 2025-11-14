@@ -1,5 +1,4 @@
 import { useFuel } from '@fuels/react';
-import { usePrivy } from '@privy-io/react-auth';
 import {
   Avatar,
   Box,
@@ -15,7 +14,7 @@ import {
   Text,
   VStack,
 } from 'bako-ui';
-import { AddressUtils as BakoAddressUtils } from 'bakosafe';
+import { AddressUtils as BakoAddressUtils, TypeUser } from 'bakosafe';
 import { Address, Network } from 'fuels';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -34,7 +33,6 @@ import {
   useEvm,
   useUserWorkspacesRequest,
 } from '@/modules';
-import { TypeUser } from '@/modules/auth/services';
 import { useBakoIdAvatar } from '@/modules/core/hooks/bako-id';
 import { EConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
 import { useSocketEvent } from '@/modules/core/hooks/socket/useSocketEvent';
@@ -64,7 +62,6 @@ const UserBox = () => {
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const { fuel } = useFuel();
   const { disconnect: evmDisconnect } = useEvm();
-  const { logout: privyLogout } = usePrivy();
   const settingsDrawer = useDisclosure();
   const notificationDrawerState = useDisclosure();
   const { unreadCounter, setUnreadCounter } = useAppNotifications();
@@ -111,9 +108,6 @@ const UserBox = () => {
 
       authDetails.userInfos?.type.type === TypeUser.EVM &&
         (await evmDisconnect());
-
-      authDetails.userInfos?.type.type === TypeUser.SOCIAL &&
-        (await privyLogout());
 
       // TODO: Disconnect Fuelet, `fuel.disconnect()` should do that but it doesn't work for fuelet
     } catch (error) {

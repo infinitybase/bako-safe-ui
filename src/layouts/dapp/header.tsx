@@ -1,30 +1,56 @@
-import { Box, Heading, StackProps, Text, VStack } from 'bako-ui';
-import React from 'react';
+import { Heading, HStack, Text, VStack } from 'bako-ui';
 
-interface HeaderProps extends StackProps {
+import { LineCloseIcon } from '@/components';
+
+import { useHeader } from './hooks/useHeader';
+
+interface HeaderProps {
   title: string;
-  description: string;
-  titleFontSize?: string;
-  descriptionFontSize?: string;
+  description?: string;
+  onClose?: () => void;
 }
 
 const Header = ({
   title,
   description,
-  titleFontSize,
-  descriptionFontSize,
-  ...stackProps
-}: HeaderProps) => (
-  <VStack w="full" mb={12} gap={4} alignItems="flex-start" {...stackProps}>
-    <Heading fontSize={titleFontSize ? titleFontSize : '2xl'} color="grey.200">
-      {title}
-    </Heading>
-    <Box maxW={345}>
-      <Text fontSize={descriptionFontSize ? descriptionFontSize : 'unset'}>
-        {description}
-      </Text>
-    </Box>
-  </VStack>
-);
+  onClose = window.close,
+}: HeaderProps) => {
+  const { renderCloseIcon } = useHeader();
+
+  return (
+    <HStack w="full" justifyContent="space-between" alignItems="center" py={4}>
+      <VStack gap={4} align="flex-start">
+        <Heading
+          fontSize={14}
+          fontWeight={600}
+          lineHeight="10px"
+          color="gray.100"
+        >
+          {title}
+        </Heading>
+        {description && (
+          <Text
+            fontWeight={400}
+            truncate
+            color="gray.300"
+            fontSize="xs"
+            lineHeight="12px"
+          >
+            {description}
+          </Text>
+        )}
+      </VStack>
+      {renderCloseIcon && (
+        <LineCloseIcon
+          mr={2}
+          onClick={onClose}
+          cursor="pointer"
+          fontSize="24px"
+          aria-label="Close window"
+        />
+      )}
+    </HStack>
+  );
+};
 
 export { Header };

@@ -1,4 +1,4 @@
-import { ITransactionResume, TransactionType, Vault } from 'bakosafe';
+import { ITransactionResume, TransactionType, TypeUser, Vault } from 'bakosafe';
 import { Operation } from 'fuels';
 
 import {
@@ -49,12 +49,6 @@ export enum TransactionTypeBridge {
 }
 
 export type ITransactionStatusFilter = TransactionStatus[] | string[] | string;
-
-export enum TypeUser {
-  FUEL = 'FUEL',
-  WEB_AUTHN = 'WEB_AUTHN',
-  EVM = 'EVM',
-}
 
 export interface ITransactionHistory {
   type: TransactionHistoryType;

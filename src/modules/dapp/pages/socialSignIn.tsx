@@ -1,25 +1,17 @@
-import { Button, Text, VStack } from 'bako-ui';
-import { useEffect } from 'react';
+import { useSocialSignIn } from '@/modules/auth/hooks';
 
-import { SigninContainerMobile } from '@/modules/auth/components';
-import { useSocialSignIn } from '@/modules/auth/hooks/signIn/useSocialSignIn';
+import { DappSignInContainer } from '../components/signIn';
 
 const DappSocialSignInPage = () => {
-  const { isModalOpen, connect } = useSocialSignIn();
-
-  useEffect(() => {
-    connect();
-  }, []);
+  const { ready, authenticated, isModalOpen, isLoggingOut, connect } =
+    useSocialSignIn();
 
   return (
-    <SigninContainerMobile>
-      <VStack flex={1} justifyContent="center" alignItems="center">
-        <Text>Sign in with your Email or Google account</Text>
-        <Button disabled={isModalOpen} onClick={connect}>
-          Connect
-        </Button>
-      </VStack>
-    </SigninContainerMobile>
+    <DappSignInContainer
+      message="Sign in with your Email or Google Account"
+      disableConnect={!ready || authenticated || isModalOpen || isLoggingOut}
+      onConnect={connect}
+    />
   );
 };
 

@@ -285,6 +285,7 @@ export const useTransactionSocket = () => {
   return {
     vault: vaultRef.current,
     summary,
+    tx,
     startTime,
     validAt,
     pendingSignerTransactions: vaultRef.current?.pending_tx ?? true,

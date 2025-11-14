@@ -1,8 +1,7 @@
-import { Avatar, Badge, Flex, HStack, Icon, Text, VStack } from 'bako-ui';
+import { Avatar, Badge, HStack, Icon, Text, VStack } from 'bako-ui';
 import { memo, useMemo } from 'react';
-import { LuUser2, LuUsers2 } from 'react-icons/lu';
 
-import { Card, CardProps } from '@/components';
+import { Card, CardProps, TeamIcon } from '@/components';
 import { AddressUtils } from '@/modules/core';
 import {
   useTransactionsSignaturePending,
@@ -37,11 +36,6 @@ const VaultItemBoxComponent = ({
   const needSignature = isPending.data?.pendingSignature;
   const isRootAndPending = showPending && root;
 
-  const userIcon = useMemo(
-    () => (members === 1 ? LuUser2 : LuUsers2),
-    [members],
-  );
-
   const StatusBadge = useMemo(() => {
     if (!showPending && !needSignature) return null;
 
@@ -73,14 +67,22 @@ const VaultItemBoxComponent = ({
   const MembersBadge = useMemo(
     () =>
       members !== undefined ? (
-        <HStack gap={1} align="center">
-          <Text fontSize="sm" color="grey.75" lineHeight="20px">
+        <HStack gap={2} align="center">
+          <Text
+            fontSize="2xs"
+            color={isActive ? 'gray.100' : 'gray.300'}
+            lineHeight="12px"
+          >
             {members}
           </Text>
-          <Icon as={userIcon} boxSize={5} color="grey.75" />
+          <Icon
+            as={TeamIcon}
+            color={isActive ? 'gray.100' : 'gray.300'}
+            w="12px"
+          />
         </HStack>
       ) : null,
-    [members, userIcon],
+    [members, isActive],
   );
 
   return (
@@ -88,73 +90,76 @@ const VaultItemBoxComponent = ({
       {...rest}
       w="100%"
       cursor="pointer"
-      borderColor={isActive ? 'brand.500' : 'dark.100'}
-      borderWidth="1px"
-      h={76}
+      borderColor={'gray.50'}
+      bg={isActive ? 'gray.600' : 'gray.700'}
+      borderLeft={isActive ? '2px solid' : 'none'}
+      borderWidth={0}
+      borderRadius={8}
       p={3}
       display="flex"
       alignItems="center"
+      justifyContent="space-between"
     >
-      <Flex w="100%" align="center" justify="space-between">
-        <HStack gap={4} align="center">
-          <Avatar
-            shape="rounded"
-            color="grey.250"
-            bgColor="grey.950"
-            size={'md'}
-            css={{
-              '> div': {
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                lineHeight: 'normal',
-              },
-            }}
-            name={name}
-          />
-          <VStack gap={2} align="flex-start">
-            <Text
-              // variant="subtitle"
-              truncate
-              maxW={{ base: 120, sm: 250 }}
-              color="grey.75"
-              fontSize="xs"
-              lineHeight="16px"
-            >
-              {name}
-            </Text>
-            <Text
-              fontSize="xs"
-              color="grey.500"
-              lineHeight="16px"
-              truncate
-              maxW={{ base: 120, sm: 250 }}
-            >
-              {AddressUtils.format(address ?? '', 4)}
-            </Text>
-          </VStack>
-        </HStack>
+      <HStack gap={3} align="center">
+        <Avatar
+          shape="rounded"
+          color="gray.100"
+          bgColor="gray.500"
+          size={'sm'}
+          css={{
+            '> div': {
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              lineHeight: 'normal',
+            },
+          }}
+          name={name}
+        />
+        <VStack gap={2} align="flex-start">
+          <Text
+            fontWeight={500}
+            truncate
+            maxW={{ base: 120, sm: 250 }}
+            color={isActive ? 'gray.100' : 'gray.200'}
+            fontSize="xs"
+            lineHeight="12px"
+          >
+            {name}
+          </Text>
+          <Text
+            fontSize="xs"
+            color="gray.300"
+            lineHeight="12px"
+            truncate
+            maxW={{ base: 120, sm: 250 }}
+          >
+            {AddressUtils.format(address ?? '', 4)}
+          </Text>
+        </VStack>
+      </HStack>
 
-        <VStack gap={2} align="flex-end">
-          {isRootAndPending ? (
-            <>
-              <HStack gap={3}>
-                {RootBadge}
-                {MembersBadge}
-              </HStack>
-              {StatusBadge}
-            </>
-          ) : (
-            <>
+      <VStack gap={2} align="flex-end">
+        {isRootAndPending ? (
+          <>
+            <HStack gap={3}>
+              {RootBadge}
               {MembersBadge}
+            </HStack>
+            {StatusBadge}
+          </>
+        ) : (
+          <>
+            {MembersBadge}
+            {root && !showPending && !needSignature &&
               <HStack gap={2}>
                 {root && RootBadge}
                 {StatusBadge}
               </HStack>
-            </>
-          )}
-        </VStack>
-      </Flex>
+            }
+          </>
+        )}
+      </VStack>
     </Card>
   );
 };

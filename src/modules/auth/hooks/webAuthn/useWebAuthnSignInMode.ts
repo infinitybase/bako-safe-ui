@@ -1,3 +1,4 @@
+import { TypeUser } from 'bakosafe';
 import { useState } from 'react';
 
 import { LocalStorageConfig } from '@/config';
@@ -5,7 +6,7 @@ import { useContactToast } from '@/modules/addressBook/hooks';
 import { useNetworks } from '@/modules/network/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
-import { localStorageKeys, TypeUser, UserService } from '../../services';
+import { localStorageKeys, UserService } from '../../services';
 import { WebAuthnModeState } from '../signIn/useWebAuthnSignIn';
 import { UseWebAuthnForm } from './useWebAuthnForm';
 import { useWebAuthnLastLogin } from './useWebAuthnLastLogin';

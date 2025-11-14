@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
 import { useFuel } from '@fuels/react';
-import { usePrivy } from '@privy-io/react-auth';
+import { TypeUser } from 'bakosafe';
 import { Provider } from 'fuels';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -18,12 +18,7 @@ import {
   useQueryParams,
   useSignOut,
 } from '..';
-import {
-  AuthenticateParams,
-  IUseAuthReturn,
-  TypeUser,
-  UserType,
-} from '../services';
+import { AuthenticateParams, IUseAuthReturn, UserType } from '../services';
 import { useUserInfoRequest } from './useUserInfoRequest';
 
 export type SingleAuthentication = {
@@ -34,13 +29,11 @@ export type WorkspaceAuthentication = {
   workspace: string;
 };
 
-const PRIVY_TOKEN_KEY = 'privy:token';
-
 const useAuth = (): IUseAuthReturn => {
-  const { infos, isLoading, isFetching, refetch } = useUserInfoRequest();
   const [invalidAccount, setInvalidAccount] = useState(false);
+
+  const { infos, isLoading, isFetching, refetch } = useUserInfoRequest();
   const { fuel } = useFuel();
-  const { logout: privyLogout } = usePrivy();
   const { setAuthCookies, clearAuthCookies, userAuthCookiesInfo } =
     useAuthCookies();
   const signOutRequest = useSignOut();
@@ -58,13 +51,10 @@ const useAuth = (): IUseAuthReturn => {
   const logout = async (removeTokenFromDb = true, callback?: () => void) => {
     localStorage.setItem(BAKO_SUPPORT_SEARCH, 'false');
     window.dispatchEvent(new Event('bako-storage-change'));
+
     if (accessToken && removeTokenFromDb) {
       await signOutRequest.mutateAsync();
       callback?.();
-    }
-
-    if (localStorage.getItem(PRIVY_TOKEN_KEY)) {
-      privyLogout();
     }
 
     setTimeout(() => {
@@ -92,9 +82,7 @@ const useAuth = (): IUseAuthReturn => {
   };
 
   const userProvider = async () => {
-    const _userProvider =
-      infos?.type?.type === TypeUser.FUEL ||
-      infos?.type?.type === TypeUser.FULLET;
+    const _userProvider = infos?.type?.type === TypeUser.FUEL;
 
     return {
       provider: new Provider(
