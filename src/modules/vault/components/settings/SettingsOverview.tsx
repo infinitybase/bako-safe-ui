@@ -37,7 +37,7 @@ const SettingsOverview = ({
     );
 
   if (!vault) return null;
-  const predicateVersion = vault.data?.configurable?.version;
+  const predicateVersion = vault.data?.version;
   const predicateAddress = vault.data?.predicateAddress
     ? new Address(vault.data.predicateAddress).toString()
     : '';
