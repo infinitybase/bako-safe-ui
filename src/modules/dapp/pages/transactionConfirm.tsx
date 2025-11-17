@@ -6,9 +6,8 @@ import {
 } from 'fuels';
 import { useState } from 'react';
 
-import { useEvm, useQueryParams } from '@/modules/auth/hooks';
+import { useEvm } from '@/modules/auth/hooks';
 import { useMyWallet } from '@/modules/core/hooks/fuel';
-import { EFuelConnectorsTypes } from '@/modules/core/hooks/fuel/useListConnectors';
 import CreateTxMenuButton, {
   ECreateTransactionMethods,
 } from '@/modules/transactions/components/dialog/create/createTxMenuButton';
@@ -28,6 +27,7 @@ const TransactionConfirm = () => {
   const {
     vault,
     pendingSignerTransactions,
+    isEvmOrSocialConnector,
     summary,
     tx,
     startTime,
@@ -58,13 +58,6 @@ const TransactionConfirm = () => {
     txRequest: tx as TransactionRequest | undefined,
     txAccount: vault.address,
   });
-
-  const { connectorType } = useQueryParams();
-
-  const connector = decodeURIComponent(connectorType || '');
-  const isEvmOrSocialConnector =
-    connector === EFuelConnectorsTypes.EVM ||
-    connector === EFuelConnectorsTypes.SOCIAL;
 
   const currentView = tabs.tab;
 

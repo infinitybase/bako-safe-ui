@@ -1,7 +1,7 @@
 import { TypeUser } from 'bakosafe';
 import { useState } from 'react';
 
-import { EFuelConnectorsTypes } from '@/modules/core/hooks/fuel/useListConnectors';
+import { EFuelConnectorsTypes } from '@/modules/core/hooks';
 
 export enum UserConnectorCompatibilityState {
   CHECKING = 'checking',
