@@ -259,12 +259,15 @@ export const useTransactionSocket = () => {
     socket.emit(SocketEvents.TX_SIGN, data);
   };
 
-  const emitDeleteTransactionEvent = (hash: string) => {
-    console.log('[EMITTING DELETE TRANSACTION]');
-    socket.emit(SocketEvents.TX_DELETE, {
-      hash,
-    });
-  };
+  const emitDeleteTransactionEvent = useCallback(
+    (hash: string) => {
+      console.log('[EMITTING DELETE TRANSACTION]');
+      socket.emit(SocketEvents.TX_DELETE, {
+        hash,
+      });
+    },
+    [socket],
+  );
 
   const cancelEvmOrSocialSignTransaction = () => {
     window.close();
@@ -302,7 +305,7 @@ export const useTransactionSocket = () => {
 
     window.addEventListener('beforeunload', onUnload);
     return () => window.removeEventListener('beforeunload', onUnload);
-  }, [isEvmOrSocialConnector, hash, isSigned]);
+  }, [isEvmOrSocialConnector, hash, isSigned, emitDeleteTransactionEvent]);
 
   return {
     vault: vaultRef.current,
