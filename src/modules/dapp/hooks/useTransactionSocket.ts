@@ -14,6 +14,7 @@ import {
   useWalletSignMessage,
 } from '@/modules/core/hooks';
 import { EnumUtils } from '@/modules/core/utils';
+import { decodeConnectorType } from '@/utils';
 
 import { useTransactionSummary } from './useTransactionSummary';
 
@@ -80,9 +81,7 @@ export const useTransactionSocket = () => {
     defaultTab: TabState.CREATE,
   });
 
-  const _connectorType = decodeURIComponent(
-    connectorType || '',
-  ) as EFuelConnectorsTypes;
+  const _connectorType = decodeConnectorType(connectorType || '');
   const isEvmOrSocialConnector =
     _connectorType === EFuelConnectorsTypes.EVM ||
     _connectorType === EFuelConnectorsTypes.SOCIAL;
