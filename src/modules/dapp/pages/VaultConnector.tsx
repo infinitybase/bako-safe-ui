@@ -22,6 +22,7 @@ import { Dapp } from '@/layouts';
 
 import { DappTransaction } from '../components';
 import { useAuthSocket } from '../hooks';
+import { getSignaturesCount } from '@/modules/vault/utils';
 
 const VaultConnector = () => {
   const { name, origin, sessionId, request_id } = useQueryParams();
@@ -91,6 +92,7 @@ const VaultConnector = () => {
                 name={name}
                 workspace={workspace}
                 members={members?.length}
+                requiredSigners={getSignaturesCount(vault)}
                 address={predicateAddress}
                 root={false}
                 id={id}

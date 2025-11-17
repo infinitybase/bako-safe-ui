@@ -6,7 +6,7 @@ import {
   ReadonlyMiraAmm,
 } from 'mira-dex-ts';
 
-import { Asset, PredicateMember } from '..';
+import { Asset, PredicateAndWorkspace, PredicateMember } from '..';
 import { IPredicate } from '../core/hooks/bakosafe/utils/types';
 import { BridgeStepsForm } from './components/bridge/utils';
 import { SwapMode } from './components/swap/Root';
@@ -193,13 +193,13 @@ const formatSwapBatchResponse = (
     .map((asset, i) =>
       asset
         ? {
-            mode,
-            route: routes[i],
-            assetIdIn: { bits: routes[i].assetIn.assetId },
-            assetIdOut: { bits: routes[i].assetOut.assetId },
-            amountIn: isSell ? amount : asset[1],
-            amountOut: isSell ? asset[1] : amount,
-          }
+          mode,
+          route: routes[i],
+          assetIdIn: { bits: routes[i].assetIn.assetId },
+          assetIdOut: { bits: routes[i].assetOut.assetId },
+          amountIn: isSell ? amount : asset[1],
+          amountOut: isSell ? asset[1] : amount,
+        }
         : null,
     )
     .filter((quote): quote is SwapQuote => quote !== null);
@@ -390,4 +390,17 @@ export const calculateTextWidth = (text: string): number => {
   const min = text.length === 0 ? MIN_WIDTH_WITHOUT_VALUE : MIN_WIDTH;
 
   return Math.max(min, width + SYMBOL_PADDING);
+};
+
+export const getSignaturesCount = (vault: PredicateAndWorkspace): number => {
+  try {
+    const { SIGNATURES_COUNT } =
+      typeof vault.configurable === 'string'
+        ? JSON.parse(vault.configurable)
+        : vault.configurable;
+    return SIGNATURES_COUNT ?? 0;
+  } catch (error) {
+    console.error('Failed to parse vault configurable:', error);
+    return 0;
+  }
 };
