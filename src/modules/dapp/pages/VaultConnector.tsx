@@ -238,8 +238,9 @@ const VaultConnector = () => {
               disabled={
                 !selectedVaultId ||
                 !vaults.length ||
+                isLoadingVaults ||
                 send.isPending ||
-                isLoadingVaults
+                send.isSuccess
               }
               onClick={() => {
                 send.mutate({
@@ -251,7 +252,7 @@ const VaultConnector = () => {
                   userAddress: userInfos.address,
                 });
               }}
-              loading={send.isPending}
+              loading={send.isPending || send.isSuccess}
             >
               Connect
             </Button>
