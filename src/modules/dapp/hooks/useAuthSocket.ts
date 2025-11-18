@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom';
 
 import { useQueryParams } from '@/modules/auth/hooks';
 import { Pages } from '@/modules/core/routes';
-
 import { useWorkspaceContext } from '@/modules/workspace/hooks';
+
 import { useCreateConnections } from './useCreateConnection';
 import { useGetCurrentVaultRequest } from './useGetCurrentVaultRequest';
 
