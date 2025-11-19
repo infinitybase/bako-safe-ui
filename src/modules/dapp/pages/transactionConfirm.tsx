@@ -7,7 +7,6 @@ import {
 import { useState } from 'react';
 
 import { useEvm } from '@/modules/auth/hooks';
-import { useSocial } from '@/modules/auth/hooks/useSocial';
 import { useMyWallet } from '@/modules/core/hooks/fuel';
 import CreateTxMenuButton, {
   ECreateTransactionMethods,
@@ -28,6 +27,7 @@ const TransactionConfirm = () => {
   const {
     vault,
     pendingSignerTransactions,
+    isEvmOrSocialConnector,
     summary,
     tx,
     startTime,
@@ -49,7 +49,6 @@ const TransactionConfirm = () => {
   } = useWorkspaceContext();
   const { data: wallet } = useMyWallet();
   const { isConnected: isEvmConnected } = useEvm();
-  const { wallet: socialWallet } = useSocial();
 
   const { transaction } = useSimplifiedTransaction({
     tx: summary.transactionSummary as
@@ -77,7 +76,19 @@ const TransactionConfirm = () => {
             cancel={cancelSendTransaction}
             transaction={transaction}
             primaryActionButton={
-              type && (wallet || webauthn || isEvmConnected || socialWallet) ? (
+              isEvmOrSocialConnector ? (
+                <Button
+                  flex={1}
+                  colorPalette="primary"
+                  fontWeight={600}
+                  fontSize={14}
+                  loading={isSending}
+                  disabled={isSending || pendingSignerTransactions}
+                  onClick={sendTransactionAndSign}
+                >
+                  {ECreateTransactionMethods.CREATE_AND_SIGN}
+                </Button>
+              ) : type && (wallet || webauthn || isEvmConnected) ? (
                 <CreateTxMenuButton
                   createTxMethod={createTxMethod}
                   setCreateTxMethod={setCreateTxMethod}

@@ -19,6 +19,7 @@ import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
 import { CreateVaultDialog } from '@/modules/vault';
 import { VaultItemBox } from '@/modules/vault/components/modal/box';
 import { useVaultDrawer } from '@/modules/vault/components/modal/hook';
+import { decodeConnectorType } from '@/utils';
 
 import { DappTransaction } from '../components';
 import { useAuthSocket } from '../hooks';
@@ -46,7 +47,7 @@ const VaultConnector = () => {
 
   const { isOpen, onOpenChange, onOpen } = useDisclosure();
 
-  const connector = decodeURIComponent(connectorType || '');
+  const connector = decodeConnectorType(connectorType || '');
   const noVaultsAvailable = isSuccess && !vaults.length;
   const isLoadingVaults =
     isLoading ||

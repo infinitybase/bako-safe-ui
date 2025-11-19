@@ -14,7 +14,7 @@ export enum SocketEvents {
   TX_CREATE = '[TX_EVENT_CREATED]',
   TX_SIGN = '[TX_EVENT_SIGNED]',
   TX_REQUEST = '[TX_EVENT_REQUESTED]',
-  SIGN_CONFIRMED = '[SIGN_CONFIRMED]',
+  TX_DELETE = '[TX_EVENT_DELETED]',
 
   TRANSACTION = '[TRANSACTION]',
   TRANSACTION_CREATED = '[CREATED]',
@@ -39,10 +39,27 @@ export enum SocketUsernames {
   API = '[API]',
 }
 
+/**
+ * Enum with names of connectors used by the Fuel Connector that are linked to Bako Safe.
+ * Used to identify the connector type in the DApp sign-in flow.
+ */
+export enum EFuelConnectorsTypes {
+  BAKO = 'Bako Safe',
+  EVM = 'Ethereum Wallets',
+  SOCIAL = 'Social Login',
+}
+
 export interface IEventTX_CREATE {
   tx?: TransactionRequestLike;
   operations: any;
   sign?: boolean;
+  connectorType?: EFuelConnectorsTypes;
+}
+
+export interface IEventTX_SIGN {
+  hash: string;
+  signedMessage: string;
+  connectorType?: EFuelConnectorsTypes;
 }
 
 export interface IDefaultMessage<D extends any> {
