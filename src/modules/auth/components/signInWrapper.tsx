@@ -1,7 +1,7 @@
 import { Box, Tabs, Text, VStack } from 'bako-ui';
 import { useEffect, useMemo } from 'react';
 
-import { useQueryParams } from '@/modules';
+import { useQueryParams, UseSocialSignIn } from '@/modules';
 import { useContactToast } from '@/modules/addressBook/hooks';
 import { useListConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
 import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
@@ -19,6 +19,7 @@ import {
 import { ConnectorsList } from './connector';
 import { SigninContainer, SigninContainerMobile } from './container';
 import { SignInFooter } from './footer';
+import { SocialSignIn } from './social';
 import { WebAuthnAccountCreated, WebAuthnSignIn } from './webAuthn';
 import { LoadingCard } from './webAuthn/loading';
 
@@ -36,6 +37,8 @@ interface SignInWrapperProps {
   handleSelectWallet: UseWalletSignIn['handleSelectWallet'];
   handleRegister: UseWebAuthnSignIn['handleRegister'];
   currentOpenConnector: UseWalletSignIn['currentOpenConnector'];
+  handleSocialConnect: UseSocialSignIn['connect'];
+  unableToConnectWithSocial: UseSocialSignIn['unableToConnect'];
 }
 
 const SignInWrapper = (props: SignInWrapperProps) => {
@@ -47,12 +50,14 @@ const SignInWrapper = (props: SignInWrapperProps) => {
     accountsOptions,
     inputBadge,
     createdAcccountUsername,
+    mode,
+    currentOpenConnector,
+    unableToConnectWithSocial,
     handleInputChange,
     handleSelectWallet,
     handleRegister,
-    mode,
+    handleSocialConnect,
     setMode,
-    currentOpenConnector,
   } = props;
 
   const { byConnector } = useQueryParams();
@@ -145,6 +150,13 @@ const SignInWrapper = (props: SignInWrapperProps) => {
                   />
 
                   {/* Show with hidden for prevent flick in the box */}
+                  <SocialSignIn
+                    hidden
+                    onConnect={handleSocialConnect}
+                    unableToConnect={unableToConnectWithSocial}
+                  />
+
+                  {/* Show with hidden for prevent flick in the box */}
                   <ConnectorsList
                     connectors={connectors}
                     hidden
@@ -163,6 +175,11 @@ const SignInWrapper = (props: SignInWrapperProps) => {
                     handleInputChange={handleInputChange}
                     handleRegister={handleRegister}
                     onModeChange={setMode}
+                  />
+
+                  <SocialSignIn
+                    onConnect={handleSocialConnect}
+                    unableToConnect={unableToConnectWithSocial}
                   />
 
                   <ConnectorsList

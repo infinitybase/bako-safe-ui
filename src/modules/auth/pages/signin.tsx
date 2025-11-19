@@ -10,12 +10,14 @@ const WebSignInPage = () => {
     accountsOptions,
     createdAcccountUsername,
     inputBadge,
+    mode,
+    currentOpenConnector,
+    unableToConnect,
     handleRegister,
     handleSelectWallet,
     handleInputChange,
-    mode,
     setMode,
-    currentOpenConnector,
+    connect,
   } = useWebSignIn();
 
   return (
@@ -28,11 +30,13 @@ const WebSignInPage = () => {
       inputBadge={inputBadge}
       createdAcccountUsername={createdAcccountUsername}
       isAnyWalletConnectorOpen={isAnyWalletConnectorOpen}
+      currentOpenConnector={currentOpenConnector}
+      unableToConnectWithSocial={unableToConnect}
       handleInputChange={handleInputChange}
       handleSelectWallet={handleSelectWallet}
       handleRegister={handleRegister}
+      handleSocialConnect={connect}
       setMode={setMode}
-      currentOpenConnector={currentOpenConnector}
     />
   );
 };
