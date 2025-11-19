@@ -10,10 +10,12 @@ const DappSignInPage = () => {
     accountsOptions,
     createdAcccountUsername,
     inputBadge,
+    mode,
+    currentOpenConnector,
+    setMode,
     handleSelectWallet,
     handleInputChange,
     handleRegister,
-    mode,
   } = useDappSignIn();
 
   return (
@@ -26,9 +28,11 @@ const DappSignInPage = () => {
       inputBadge={inputBadge}
       createdAcccountUsername={createdAcccountUsername}
       isAnyWalletConnectorOpen={isAnyWalletConnectorOpen}
+      currentOpenConnector={currentOpenConnector}
       handleInputChange={handleInputChange}
       handleSelectWallet={handleSelectWallet}
       handleRegister={handleRegister}
+      setMode={setMode}
     />
   );
 };

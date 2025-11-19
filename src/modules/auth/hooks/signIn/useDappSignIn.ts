@@ -99,6 +99,7 @@ const useDappSignIn = () => {
     formData,
     formState: customFormState[mode],
     mode,
+    setMode,
     isRegistering,
   };
 };
