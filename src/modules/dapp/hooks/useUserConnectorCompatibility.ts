@@ -24,7 +24,10 @@ export const useUserConnectorCompatibility = () => {
   ): boolean => {
     switch (userType) {
       case TypeUser.SOCIAL:
-        return connectorType === EFuelConnectorsTypes.SOCIAL;
+        return (
+          connectorType === EFuelConnectorsTypes.BAKO ||
+          connectorType === EFuelConnectorsTypes.SOCIAL
+        );
 
       case TypeUser.EVM:
         return (
