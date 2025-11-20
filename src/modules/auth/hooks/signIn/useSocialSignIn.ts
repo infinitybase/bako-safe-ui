@@ -130,14 +130,13 @@ export const useSocialSignIn = (
     // Waiting for Privy SDK to be ready
     if (!ready) return;
 
-    // If user is authenticated and has not yet attempted to connect automatically => disconnect
+    // If user is authenticated and has not yet attempted to connect => disconnect
     if (authenticated && !isLoggingOut && !triedToConnect) {
       disconnect();
       return;
     }
 
-    // If SDK is ready, user is not authenticated and
-    // has not attempted to connect automatically yet => connect
+    // If SDK is ready, user is not authenticated and has not yet attempted to connect => connect
     if (
       !authenticated &&
       !isModalOpen &&
