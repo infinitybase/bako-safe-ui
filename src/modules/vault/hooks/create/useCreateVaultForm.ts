@@ -135,7 +135,7 @@ const getUserAddress = (type?: TypeUser, account?: string): string => {
     return BakoAddressUtils.parseFuelAddressToEth(account as string);
   }
 
-  if (type === TypeUser.WEB_AUTHN) {
+  if (type === TypeUser.WEB_AUTHN && account) {
     return AddressUtils.toBech32(account as Batch32) as string;
   }
 

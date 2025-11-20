@@ -249,8 +249,9 @@ const UserBox = () => {
                   )}
                   <AddressWithCopyBtn
                     value={
-                      authDetails.userInfos?.type.type === TypeUser.WEB_AUTHN
-                        ? AddressUtils.toBech32(authDetails.userInfos?.address)
+                      authDetails.userInfos?.type.type === TypeUser.WEB_AUTHN &&
+                      authDetails.userInfos?.address
+                        ? AddressUtils.toBech32(authDetails.userInfos.address)
                         : (authDetails.userInfos?.address ?? '')
                     }
                     justifyContent="start"
