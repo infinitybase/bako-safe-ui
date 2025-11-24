@@ -12,7 +12,7 @@ const SocialSignIn = (props: SocialSignInProps) => {
   const { hidden, unableToConnect, onConnect } = props;
 
   return (
-    <Stack hidden={hidden} gap={{ base: 6, md: 8 }} w="full" px={6}>
+    <Stack hidden={hidden} w="full" px={{ base: 0, xs: 6 }}>
       <Button
         variant="subtle"
         bg="bg.panel"
@@ -27,7 +27,7 @@ const SocialSignIn = (props: SocialSignInProps) => {
       >
         <HStack w="full">
           <Icon as={GoogleIcon} boxSize={4} />
-          <Text flex={1}>Login with E-mail</Text>
+          <Text flex={1}>Login with Google or E-mail</Text>
         </HStack>
       </Button>
     </Stack>
