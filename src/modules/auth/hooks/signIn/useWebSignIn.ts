@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Pages } from '@/modules/core/routes';
 
 import { useWebAuthnLastLogin } from '../webAuthn/useWebAuthnLastLogin';
+import { useSocialSignIn } from './useSocialSignIn';
 import { useWalletSignIn } from './useWalletSignIn';
 import { useWebAuthnSignIn, WebAuthnModeState } from './useWebAuthnSignIn';
 
@@ -30,6 +31,7 @@ const useWebSignIn = () => {
   const { formData, setMode, handleInputChange, ...rest } =
     useWebAuthnSignIn(redirect);
   const { lastLoginUsername } = useWebAuthnLastLogin();
+  const socialSignIn = useSocialSignIn(redirect);
 
   useEffect(() => {
     if (lastLoginUsername) {
@@ -44,6 +46,7 @@ const useWebSignIn = () => {
   return {
     ...walletSignIn,
     ...rest,
+    ...socialSignIn,
     handleInputChange,
     setMode,
     formData,

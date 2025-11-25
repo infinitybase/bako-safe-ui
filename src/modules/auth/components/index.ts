@@ -5,4 +5,5 @@ export * from './header';
 export * from './redirectAuthUser';
 export * from './redirectFromLandingPage';
 export * from './signInWrapper';
+export * from './social';
 export * from './webAuthn';

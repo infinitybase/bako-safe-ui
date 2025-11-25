@@ -1,32 +1,36 @@
 import { usePrivy } from '@privy-io/react-auth';
 import { TypeUser } from 'bakosafe';
-import { useCallback, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { useContactToast } from '@/modules/addressBook';
 import { Encoder, localStorageKeys } from '@/modules/auth/services';
-import { Pages } from '@/modules/core';
 import { useNetworks } from '@/modules/network/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
-import { useQueryParams } from '../usePopup';
 import { useSocial } from '../useSocial';
 import { useCreateUserRequest, useSignInRequest } from '../useUserRequest';
 
-export const useSocialSignIn = () => {
-  const [autoConnectTried, setAutoConnectTried] = useState(false);
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
+export type UseSocialSignIn = ReturnType<typeof useSocialSignIn>;
 
-  const navigate = useNavigate();
-  const { location } = useQueryParams();
+export const useSocialSignIn = (
+  signInCallback: (vaultId?: string, workspaceId?: string) => void,
+  tryAutoConnect = false,
+) => {
+  const [triedToConnect, setTriedToConnect] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const { ready, authenticated, user, isModalOpen, login, logout } = usePrivy();
   const { wallet, walletsReady, signMessage } = useSocial();
   const { fromConnector } = useNetworks();
-  const { authDetails, invalidateGifAnimationRequest } = useWorkspaceContext();
+  const { authDetails } = useWorkspaceContext();
   const createUserRequest = useCreateUserRequest();
   const signInRequest = useSignInRequest();
   const { errorToast } = useContactToast();
+
+  const unableToConnect = useMemo(
+    () => !ready || authenticated || isModalOpen || isLoggingOut,
+    [ready, authenticated, isModalOpen, isLoggingOut],
+  );
 
   const connect = useCallback(async () => {
     login();
@@ -42,17 +46,6 @@ export const useSocialSignIn = () => {
       setIsLoggingOut(false);
     }
   }, [logout]);
-
-  const redirect = useCallback(() => {
-    const isRedirectToPrevious = !!location.state?.from;
-
-    if (isRedirectToPrevious) {
-      navigate(location.state.from);
-      return;
-    }
-
-    navigate(`${Pages.dappAuth()}${location.search}`);
-  }, [location.search, location.state?.from, navigate]);
 
   const handleSignIn = async (address: string) => {
     try {
@@ -86,8 +79,7 @@ export const useSocialSignIn = () => {
         first_login: result.first_login,
       });
 
-      invalidateGifAnimationRequest();
-      redirect();
+      signInCallback(result.rootWallet, result.workspace.id);
     } catch (e) {
       const message =
         typeof e === 'object' && e !== null && 'message' in e
@@ -115,7 +107,7 @@ export const useSocialSignIn = () => {
       walletsReady &&
       !!wallet &&
       authenticated &&
-      autoConnectTried &&
+      triedToConnect &&
       user?.wallet?.address
     ) {
       handleSignIn(wallet.address);
@@ -127,26 +119,31 @@ export const useSocialSignIn = () => {
     walletsReady,
     authDetails.userInfos.address,
     wallet,
-    autoConnectTried,
+    triedToConnect,
   ]);
 
   useEffect(() => {
-    if (isModalOpen) setAutoConnectTried(true);
+    if (isModalOpen) setTriedToConnect(true);
   }, [isModalOpen]);
 
   useEffect(() => {
     // Waiting for Privy SDK to be ready
     if (!ready) return;
 
-    // If user is authenticated and has not yet attempted to connect automatically => disconnect
-    if (authenticated && !isLoggingOut && !autoConnectTried) {
+    // If user is authenticated and has not yet attempted to connect => disconnect
+    if (authenticated && !isLoggingOut && !triedToConnect) {
       disconnect();
       return;
     }
 
-    // If SDK is ready, user is not authenticated and
-    // has not attempted to connect automatically yet => connect
-    if (!authenticated && !isModalOpen && !isLoggingOut && !autoConnectTried) {
+    // If SDK is ready, user is not authenticated and has not yet attempted to connect => connect
+    if (
+      !authenticated &&
+      !isModalOpen &&
+      !isLoggingOut &&
+      !triedToConnect &&
+      tryAutoConnect
+    ) {
       connect();
     }
   }, [
@@ -154,7 +151,7 @@ export const useSocialSignIn = () => {
     authenticated,
     isModalOpen,
     isLoggingOut,
-    autoConnectTried,
+    triedToConnect,
     connect,
     disconnect,
   ]);
@@ -163,8 +160,10 @@ export const useSocialSignIn = () => {
     ready,
     authenticated,
     isModalOpen,
-    autoConnectTried,
+    triedToConnect,
     isLoggingOut,
+    unableToConnect,
+    setTriedToConnect,
     connect,
     disconnect,
   };

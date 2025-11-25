@@ -9,6 +9,7 @@ import {
 
 import { useQueryParams } from '../usePopup';
 import { useWebAuthnLastLogin } from '../webAuthn';
+import { useSocialSignIn } from './useSocialSignIn';
 import { useWalletSignIn } from './useWalletSignIn';
 import { useWebAuthnSignIn, WebAuthnModeState } from './useWebAuthnSignIn';
 
@@ -43,6 +44,7 @@ const useDappSignIn = () => {
     ...rest
   } = useWebAuthnSignIn(redirect);
   const { lastLoginUsername } = useWebAuthnLastLogin();
+  const socialSignIn = useSocialSignIn(redirect);
 
   const handleLoginOnSafariBrowser = useCallback(() => {
     const username = formData.form.getValues('username');
@@ -96,9 +98,11 @@ const useDappSignIn = () => {
   return {
     ...walletSignIn,
     ...rest,
+    ...socialSignIn,
     formData,
     formState: customFormState[mode],
     mode,
+    setMode,
     isRegistering,
   };
 };
