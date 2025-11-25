@@ -66,8 +66,8 @@ importers:
         specifier: 0.5.2
         version: 0.5.2(@chakra-ui/react@3.28.0(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(recharts@3.3.0(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react-is@16.13.1)(react@19.2.0)(redux@5.0.1))
       bakosafe:
-        specifier: 0.5.2
-        version: 0.5.2(bufferutil@4.0.9)(fuels@0.101.3(vitest@3.0.9(@types/debug@4.1.12)(@types/node@20.5.1)(terser@5.43.1)))(typescript@5.4.5)(utf-8-validate@5.0.10)(zod@3.25.76)
+        specifier: 0.5.3
+        version: 0.5.3(bufferutil@4.0.9)(fuels@0.101.3(vitest@3.0.9(@types/debug@4.1.12)(@types/node@20.5.1)(terser@5.43.1)))(typescript@5.4.5)(utf-8-validate@5.0.10)(zod@3.25.76)
       bech32:
         specifier: ^2.0.0
         version: 2.0.0
@@ -3254,8 +3254,8 @@ packages:
       react: ^18.0.0 || ^19.0.0
       react-dom: ^18.0.0 || ^19.0.0
 
-  bakosafe@0.5.2:
-    resolution: {integrity: sha512-ucX03xD3Y+HS/7aDr0k7vAAqK/Ho1b813txrRstQpvvEoXxigslvrjwLl7q7gzBv55Qk3gSckiMJGKIkx/kvhw==}
+  bakosafe@0.5.3:
+    resolution: {integrity: sha512-Jc05eb2ntahxpAo0hO5xlBkTSYddeSZ3cXelVw5O2jQUUdYOeVxAE6QDEjKgXJDG1UTWoHCcHRfZWN1fdavF4Q==}
     peerDependencies:
       fuels: ^0.101.0
 
@@ -13614,7 +13614,7 @@ snapshots:
     transitivePeerDependencies:
       - recharts
 
-  bakosafe@0.5.2(bufferutil@4.0.9)(fuels@0.101.3(vitest@3.0.9(@types/debug@4.1.12)(@types/node@20.5.1)(terser@5.43.1)))(typescript@5.4.5)(utf-8-validate@5.0.10)(zod@3.25.76):
+  bakosafe@0.5.3(bufferutil@4.0.9)(fuels@0.101.3(vitest@3.0.9(@types/debug@4.1.12)(@types/node@20.5.1)(terser@5.43.1)))(typescript@5.4.5)(utf-8-validate@5.0.10)(zod@3.25.76):
     dependencies:
       '@ethereumjs/util': 9.0.3
       '@ethersproject/bytes': 5.7.0
