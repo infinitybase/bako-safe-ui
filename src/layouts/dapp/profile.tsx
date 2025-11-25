@@ -1,4 +1,5 @@
 import { Avatar, Box, Button, Flex, HStack, Text, VStack } from 'bako-ui';
+import { Bech32Prefix } from 'bakosafe';
 import { RiArrowLeftRightLine } from 'react-icons/ri';
 
 import { AddressUtils } from '@/modules/core';
@@ -39,7 +40,10 @@ export const Profile = () => {
                 lineHeight="12px"
               >
                 {AddressUtils.format(
-                  AddressUtils.toBech32(userInfos.address),
+                  AddressUtils.toBech32(
+                    userInfos.address,
+                    Bech32Prefix.PASSKEY,
+                  ),
                   15,
                 )}
               </Text>
