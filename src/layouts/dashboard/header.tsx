@@ -51,6 +51,7 @@ import { useMySettingsRequest } from '@/modules/settings/hooks/useMySettingsRequ
 import { SelectWorkspaceDialog } from '@/modules/workspace/components';
 import { useWorkspaceContext } from '@/modules/workspace/hooks';
 import { limitCharacters } from '@/utils';
+import { formatAddressByUserType } from '@/utils/format-address-by-user-type';
 
 import NetworkSelect from './network';
 
@@ -281,9 +282,12 @@ const UserBox = () => {
                   )}
                   <AddressWithCopyBtn
                     value={
-                      authDetails.userInfos?.type.type === TypeUser.WEB_AUTHN &&
-                      authDetails.userInfos?.address
-                        ? AddressUtils.toBech32(authDetails.userInfos.address)
+                      authDetails.userInfos?.address &&
+                      authDetails.userInfos?.type?.type
+                        ? formatAddressByUserType(
+                            authDetails.userInfos.address,
+                            authDetails.userInfos.type.type,
+                          )
                         : (authDetails.userInfos?.address ?? '')
                     }
                     justifyContent="start"
