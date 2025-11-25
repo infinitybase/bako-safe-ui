@@ -198,7 +198,10 @@ const useCreateTransactionForm = (params: UseCreateTransactionFormParams) => {
               const isValid =
                 AddressUtils.isValid(address) && !isAssetIdOrAssetAddress;
               if (!isValid) return false;
-              if (AddressUtils.isPasskey(address)) {
+              if (
+                AddressUtils.isPasskey(address) ||
+                AddressUtils.isSocial(address)
+              ) {
                 return false;
               }
               return addressValidator.isValid(address);
