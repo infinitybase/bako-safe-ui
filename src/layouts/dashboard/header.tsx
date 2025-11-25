@@ -295,7 +295,12 @@ const UserBox = () => {
                       color: hasNickName ? 'grey.400' : 'textPrimary',
                     }}
                     onClick={() => {
-                      if (authDetails.userInfos.type.type === TypeUser.EVM) {
+                      if (
+                        authDetails.userInfos.type.type === TypeUser.EVM ||
+                        authDetails.userInfos.type.type ===
+                          TypeUser.WEB_AUTHN ||
+                        authDetails.userInfos.type.type === TypeUser.SOCIAL
+                      ) {
                         toast({
                           duration: 3000,
                           isClosable: false,
