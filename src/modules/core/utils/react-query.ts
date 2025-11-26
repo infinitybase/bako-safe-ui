@@ -40,6 +40,10 @@ const IMMUTABLE_QUERY_KEYS = [
   'cachedImage',
   // GIF loading animation - UI only
   'gif-animation-loading',
+  // User settings - not network dependent
+  'my-settings',
+  // Notifications - not network dependent
+  'notifications',
 ];
 
 /**

@@ -1,9 +1,11 @@
+import { useQueryClient } from '@tanstack/react-query';
 import { Provider } from 'fuels';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useLocation } from 'react-router-dom';
 
 import { useAuth } from '@/modules';
+import { LATEST_INFO_QUERY_KEY } from '@/modules/auth/hooks/useUserInfoRequest';
 import { localStorageKeys } from '@/modules/auth/services';
 import { invalidateQueriesOnNetworkSwitch } from '@/modules/core/utils/react-query';
 
@@ -46,6 +48,7 @@ const useNetworks = (onClose?: () => void) => {
   const { search } = useLocation();
   const fromConnector = !!new URLSearchParams(search).get('sessionId');
 
+  const queryClient = useQueryClient();
   const checkNetworkRequest = useCheckNetworkRequest();
   const { data: networks, refetch: refetchNetworks } = useListNetworksRequest();
   const selectNetworkRequest = useSelectNetworkRequest();
@@ -67,9 +70,10 @@ const useNetworks = (onClose?: () => void) => {
         url: url!,
         chainId,
       });
+      // Only refetch if we actually created a new network
+      refetchNetworks();
     }
-
-    refetchNetworks();
+    // Skip refetch if network already exists - no changes to list
   };
 
   const handleAddNetwork = networkForm.handleSubmit((data) => {
@@ -116,6 +120,24 @@ const useNetworks = (onClose?: () => void) => {
       return;
     }
 
+    // Close drawer immediately for better UX
+    handleClose();
+
+    // Find the selected network data for optimistic update
+    const selectedNetwork = networks?.find((n) => n.url === url);
+
+    // Optimistic update: immediately update userInfos.network in cache
+    if (selectedNetwork) {
+      queryClient.setQueryData(LATEST_INFO_QUERY_KEY, (oldData: unknown) => {
+        if (!oldData || typeof oldData !== 'object') return oldData;
+        return {
+          ...oldData,
+          network: selectedNetwork,
+        };
+      });
+    }
+
+    // Save network in background (only creates Provider if network doesn't exist)
     saveNetwork(url!);
 
     selectNetworkRequest.mutate(
@@ -125,7 +147,10 @@ const useNetworks = (onClose?: () => void) => {
           // Smart invalidation: preserves immutable data (assets, Bako ID, etc.)
           // while invalidating network-dependent queries
           invalidateQueriesOnNetworkSwitch();
-          handleClose();
+        },
+        onError: () => {
+          // Rollback optimistic update on error
+          queryClient.invalidateQueries({ queryKey: LATEST_INFO_QUERY_KEY });
         },
       },
     );
@@ -180,13 +205,12 @@ const useNetworks = (onClose?: () => void) => {
   };
 
   useEffect(() => {
-    saveNetwork(currentNetwork.url);
-
+    // Only update localStorage, saveNetwork is called when needed
     localStorage.setItem(
       localStorageKeys.SELECTED_CHAIN_ID,
       JSON.stringify(currentNetwork.chainId),
     );
-  }, [currentNetwork]);
+  }, [currentNetwork.chainId]);
 
   return {
     currentNetwork,
