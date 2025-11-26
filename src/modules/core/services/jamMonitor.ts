@@ -1005,6 +1005,140 @@ class JamMonitorService {
     const start = Date.now();
     return () => Date.now() - start;
   }
+
+  /**
+   * Generate a plain text report of all events - easy to copy/paste
+   * Usage: window.bakoMonitor.getReport()
+   */
+  getReport(): string {
+    const lines: string[] = [];
+    const now = new Date();
+
+    lines.push('='.repeat(60));
+    lines.push(`BAKO SAFE MONITOR REPORT`);
+    lines.push(`Generated: ${now.toISOString()}`);
+    lines.push(`Session Duration: ${Math.round((Date.now() - this.sessionStartTime) / 1000)}s`);
+    lines.push('='.repeat(60));
+    lines.push('');
+
+    // Duplicate Stats
+    const dupes = this.getDuplicateStats();
+    if (dupes.api.length > 0 || dupes.query.length > 0) {
+      lines.push('⚠️  DUPLICATE CALLS DETECTED:');
+      lines.push('-'.repeat(40));
+      dupes.api.forEach(d => {
+        lines.push(`  API: ${d.key} (${d.count}x)`);
+        d.callers.forEach(c => lines.push(`       └─ ${c}`));
+      });
+      dupes.query.forEach(d => {
+        lines.push(`  QUERY: ${d.key.substring(0, 50)}... (${d.count}x)`);
+        d.callers.forEach(c => lines.push(`       └─ ${c}`));
+      });
+      lines.push('');
+    }
+
+    // Recent Events
+    lines.push('📋 RECENT EVENTS (last 100):');
+    lines.push('-'.repeat(40));
+
+    this.eventBuffer.forEach((event, index) => {
+      const time = new Date(event.timestamp).toISOString().split('T')[1].split('.')[0];
+      const type = event.type;
+      const data = JSON.stringify(event.data, null, 0).substring(0, 200);
+
+      // Highlight errors
+      const prefix = type.includes('error') ? '❌' :
+                     type.includes('success') ? '✅' :
+                     type.includes('start') ? '🔄' :
+                     type.includes('duplicate') ? '⚠️' : '  ';
+
+      lines.push(`${prefix} [${time}] ${type}`);
+      lines.push(`   ${data}`);
+    });
+
+    lines.push('');
+    lines.push('='.repeat(60));
+    lines.push('Copy this report and paste it to Claude for analysis');
+    lines.push('='.repeat(60));
+
+    return lines.join('\n');
+  }
+
+  /**
+   * Print report to console with formatting
+   */
+  printReport(): void {
+    console.log(this.getReport());
+  }
+
+  /**
+   * Copy report to clipboard
+   */
+  async copyReport(): Promise<void> {
+    const report = this.getReport();
+    try {
+      await navigator.clipboard.writeText(report);
+      console.log('%c✅ Report copied to clipboard!', 'color: #4CAF50; font-weight: bold;');
+    } catch {
+      console.log('%c❌ Failed to copy. Here is the report:', 'color: #f44336;');
+      console.log(report);
+    }
+  }
+
+  /**
+   * Download report as a file
+   * Usage: window.bakoMonitor.downloadReport()
+   */
+  downloadReport(): void {
+    const report = this.getReport();
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    const filename = `bako-monitor-${timestamp}.txt`;
+
+    const blob = new Blob([report], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    link.style.display = 'none';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    console.log(`%c✅ Report downloaded as: ${filename}`, 'color: #4CAF50; font-weight: bold;');
+  }
+
+  /**
+   * Export events as JSON for detailed analysis
+   * Usage: window.bakoMonitor.downloadJSON()
+   */
+  downloadJSON(): void {
+    const data = {
+      generatedAt: new Date().toISOString(),
+      sessionDuration: Date.now() - this.sessionStartTime,
+      duplicateStats: this.getDuplicateStats(),
+      events: this.eventBuffer,
+      userContext: this.userContext,
+    };
+
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    const filename = `bako-monitor-${timestamp}.json`;
+
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    link.style.display = 'none';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    console.log(`%c✅ JSON exported as: ${filename}`, 'color: #4CAF50; font-weight: bold;');
+  }
 }
 
 // Export singleton instance
@@ -1016,11 +1150,13 @@ if (typeof window !== 'undefined') {
 
   // Add helper commands
   console.log(
-    '%c[BakoSafe Monitor] Available debug commands:',
-    'color: #4CAF50; font-weight: bold;'
+    '%c[BakoSafe Monitor] Debug commands available:',
+    'color: #4CAF50; font-weight: bold; font-size: 14px;'
   );
-  console.log('  window.bakoMonitor.getDuplicateStats() - Show duplicate API/query calls');
-  console.log('  window.bakoMonitor.getEventBuffer() - Show recent events');
-  console.log('  window.bakoMonitor.clearDuplicateTrackers() - Reset duplicate tracking');
-  console.log('  window.bakoMonitor.setDuplicateThreshold(ms) - Change duplicate detection window');
+  console.log('%c  window.bakoMonitor.downloadReport() %c← Download .txt report (recommended)', 'color: #2196F3; font-weight: bold;', 'color: #666;');
+  console.log('%c  window.bakoMonitor.downloadJSON()   %c← Download .json with all data', 'color: #2196F3; font-weight: bold;', 'color: #666;');
+  console.log('  window.bakoMonitor.copyReport() - Copy report to clipboard');
+  console.log('  window.bakoMonitor.printReport() - Print report to console');
+  console.log('  window.bakoMonitor.getDuplicateStats() - Show duplicate calls');
+  console.log('  window.bakoMonitor.getEventBuffer() - Get raw events array');
 }
