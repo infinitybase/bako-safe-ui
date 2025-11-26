@@ -123,34 +123,28 @@ const useNetworks = (onClose?: () => void) => {
     // Close drawer immediately for better UX
     handleClose();
 
-    // Find the selected network data for optimistic update
-    const selectedNetwork = networks?.find((n) => n.url === url);
-
-    // Optimistic update: immediately update userInfos.network in cache
-    if (selectedNetwork) {
-      queryClient.setQueryData(LATEST_INFO_QUERY_KEY, (oldData: unknown) => {
-        if (!oldData || typeof oldData !== 'object') return oldData;
-        return {
-          ...oldData,
-          network: selectedNetwork,
-        };
-      });
-    }
-
     // Save network in background (only creates Provider if network doesn't exist)
     saveNetwork(url!);
 
     selectNetworkRequest.mutate(
       { url },
       {
-        onSuccess: () => {
+        onSuccess: (response) => {
+          // Update userInfos.network with the response from API
+          // This is more reliable than optimistic update since API returns the actual network
+          if (response?.network) {
+            queryClient.setQueryData(LATEST_INFO_QUERY_KEY, (oldData: unknown) => {
+              if (!oldData || typeof oldData !== 'object') return oldData;
+              return {
+                ...oldData,
+                network: response.network,
+              };
+            });
+          }
+
           // Smart invalidation: preserves immutable data (assets, Bako ID, etc.)
           // while invalidating network-dependent queries
           invalidateQueriesOnNetworkSwitch();
-        },
-        onError: () => {
-          // Rollback optimistic update on error
-          queryClient.invalidateQueries({ queryKey: LATEST_INFO_QUERY_KEY });
         },
       },
     );
