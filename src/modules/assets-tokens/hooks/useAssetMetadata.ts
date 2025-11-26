@@ -5,9 +5,6 @@ import { getChainId } from '@/modules/core';
 
 import { useMappedAssetStore } from './useAssetMap';
 
-// Cache asset metadata for 10 minutes
-const ASSET_METADATA_STALE_TIME = 10 * 60 * 1000;
-
 export const useAssetMetadata = (assetId: string) => {
   const store = useMappedAssetStore();
   const chainId = useMemo(() => getChainId(), []);
@@ -19,8 +16,11 @@ export const useAssetMetadata = (assetId: string) => {
       return map[assetId];
     },
     enabled: !!assetId,
-    staleTime: ASSET_METADATA_STALE_TIME,
+    // Asset metadata is immutable on blockchain - never needs refetch
+    staleTime: Number.POSITIVE_INFINITY,
     refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
   });
 
   return { asset, ...rest };

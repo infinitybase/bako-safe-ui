@@ -5,9 +5,6 @@ import { useMappedAssetStore } from '@/modules/assets-tokens/hooks/useAssetMap';
 import { localStorageKeys } from '@/modules/auth';
 import { Asset } from '@/modules/core';
 
-// Cache asset metadata for 10 minutes
-const ASSETS_METADATA_STALE_TIME = 10 * 60 * 1000;
-
 export const useGetAssetsMetadata = (assets: string[]) => {
   const assetStore = useMappedAssetStore();
   const chainId =
@@ -47,8 +44,11 @@ export const useGetAssetsMetadata = (assets: string[]) => {
       );
       return assetsWithMetadata;
     },
-    staleTime: ASSETS_METADATA_STALE_TIME,
+    // Asset metadata is immutable on blockchain - never needs refetch
+    staleTime: Number.POSITIVE_INFINITY,
     refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
   });
 
   return { assets: data, ...rest };
