@@ -3,9 +3,9 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useLocation } from 'react-router-dom';
 
-import { queryClient } from '@/config';
 import { useAuth } from '@/modules';
 import { localStorageKeys } from '@/modules/auth/services';
+import { invalidateQueriesOnNetworkSwitch } from '@/modules/core/utils/react-query';
 
 import {
   availableNetWorks,
@@ -122,7 +122,9 @@ const useNetworks = (onClose?: () => void) => {
       { url },
       {
         onSuccess: () => {
-          queryClient.clear();
+          // Smart invalidation: preserves immutable data (assets, Bako ID, etc.)
+          // while invalidating network-dependent queries
+          invalidateQueriesOnNetworkSwitch();
           handleClose();
         },
       },

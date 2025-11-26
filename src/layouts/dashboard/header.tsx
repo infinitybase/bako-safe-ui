@@ -25,7 +25,7 @@ import { AddressBook2Icon } from '@/components/icons/address-book-2';
 import { DisconnectIcon } from '@/components/icons/disconnect';
 import { FeedbackIcon } from '@/components/icons/feedback';
 import { SettingsTopMenuIcon } from '@/components/icons/settings-top-menu';
-import { queryClient } from '@/config';
+import { invalidateQueriesOnNetworkSwitch } from '@/modules/core/utils/react-query';
 import {
   IDefaultMessage,
   Pages,
@@ -131,7 +131,8 @@ const UserBox = () => {
   useSocketEvent<IDefaultMessage<Network>>(SocketEvents.SWITCH_NETWORK, [
     (message) => {
       if (message.type === SocketEvents.SWITCH_NETWORK) {
-        queryClient.invalidateQueries();
+        // Smart invalidation: preserves immutable data while invalidating network-dependent queries
+        invalidateQueriesOnNetworkSwitch();
       }
     },
   ]);
