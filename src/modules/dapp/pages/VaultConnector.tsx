@@ -19,6 +19,7 @@ import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
 import { CreateVaultDialog } from '@/modules/vault';
 import { VaultItemBox } from '@/modules/vault/components/modal/box';
 import { useVaultDrawer } from '@/modules/vault/components/modal/hook';
+import { getSignaturesCount } from '@/modules/vault/utils';
 import { decodeConnectorType } from '@/utils';
 
 import { DappTransaction } from '../components';
@@ -142,13 +143,12 @@ const VaultConnector = () => {
                 name={name}
                 workspace={workspace}
                 members={members?.length}
+                requiredSigners={getSignaturesCount(vault)}
                 address={predicateAddress}
-                root={false}
                 id={id}
                 isActive={selectedVaultId === id}
                 isSingleWorkspace={workspace.single}
                 onClick={() => setSelectedVaultId(id)}
-                isInDapp
                 mt={0}
               />
             );
