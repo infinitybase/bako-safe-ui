@@ -34,6 +34,7 @@ import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
 import { NetworkService } from '@/modules/network/services';
 
 import { UseVaultDetailsReturn, useVaultInfosContext } from '../../hooks';
+import { getSignaturesCount } from '../../utils';
 import BalanceHelperDrawer from '../BalanceHelperDrawer';
 import BalanceHelperDialog from '../dialog/BalanceHelper';
 import { TooltipPendingTx } from '../TooltipPendingTx';
@@ -92,8 +93,8 @@ export const AccountOverview = memo(
 
     const EyeIcon = visibleBalance ? EyeOpenIcon : EyeCloseIcon;
 
-    const signers = vault?.data?.members?.length || 0;
-    const requiredSigners = vault?.data?.configurable?.SIGNATURES_COUNT || 0;
+    const signers = vault?.data?.members?.length || 1;
+    const requiredSigners = getSignaturesCount(vault?.data);
 
     const handleNavigateToSendPage = () => {
       navigate(
