@@ -16,6 +16,10 @@ import {
 import { WorkspaceService } from '@/modules/workspace/services';
 import { requestWithTimeout } from '@/utils/request';
 
+// Request deduplication - prevents multiple simultaneous requests for the same asset
+const pendingTokenRequests: Map<string, Promise<AssetMap[''] | null>> = new Map();
+const pendingNftRequests: Map<string, Promise<AssetMap[''] | null>> = new Map();
+
 type Store = {
   mappedTokens: AssetMap;
   mappedNfts: AssetMap;
@@ -35,8 +39,10 @@ export const useMappedAssetStore = create(
       fetchAssets: async (assetIds, chainId) => {
         const cachedTokens = get().mappedTokens;
 
-        // Separate cached and uncached assets
-        const uncachedIds = assetIds.filter((id) => !cachedTokens[id]);
+        // Separate cached and uncached assets (also check pending requests)
+        const uncachedIds = assetIds.filter(
+          (id) => !cachedTokens[id] && !pendingTokenRequests.has(id),
+        );
         const cachedAssets: AssetMap = {};
 
         // Get cached assets immediately
@@ -46,37 +52,65 @@ export const useMappedAssetStore = create(
           }
         }
 
-        // Fetch uncached assets in parallel
-        const fetchPromises = uncachedIds.map(async (assetId) => {
-          try {
-            const apiResponse = await WorkspaceService.getTokenFuelApi(
-              assetId,
-              chainId,
-            );
-            return { assetId, data: apiResponse };
-          } catch {
-            return { assetId, data: null };
+        // Wait for any pending requests for assets we need
+        const pendingPromises: Promise<{ assetId: string; data: AssetMap[''] | null }>[] = [];
+        for (const id of assetIds) {
+          const pending = pendingTokenRequests.get(id);
+          if (pending && !cachedTokens[id]) {
+            pendingPromises.push(pending.then((data) => ({ assetId: id, data })));
           }
+        }
+
+        // Fetch uncached assets in parallel with deduplication
+        const fetchPromises = uncachedIds.map(async (assetId) => {
+          const requestPromise = (async () => {
+            try {
+              const apiResponse = await WorkspaceService.getTokenFuelApi(
+                assetId,
+                chainId,
+              );
+              return apiResponse;
+            } catch {
+              return null;
+            } finally {
+              // Remove from pending after completion
+              pendingTokenRequests.delete(assetId);
+            }
+          })();
+
+          // Register this request as pending
+          pendingTokenRequests.set(assetId, requestPromise);
+
+          const data = await requestPromise;
+          return { assetId, data };
         });
 
-        const results = await Promise.all(fetchPromises);
+        // Wait for both new fetches and pending requests
+        const [newResults, pendingResults] = await Promise.all([
+          Promise.all(fetchPromises),
+          Promise.all(pendingPromises),
+        ]);
+
+        const allResults = [...newResults, ...pendingResults];
         const fetchedAssets: AssetMap = {};
 
-        for (const { assetId, data } of results) {
+        for (const { assetId, data } of allResults) {
           if (data) {
             fetchedAssets[assetId] = data;
           }
         }
 
         const allAssets = { ...cachedAssets, ...fetchedAssets };
-        set({ mappedTokens: { ...cachedTokens, ...fetchedAssets } });
+        set({ mappedTokens: { ...get().mappedTokens, ...fetchedAssets } });
         return allAssets;
       },
       fetchNfts: async (assetIds, chainId) => {
         const cachedNfts = get().mappedNfts;
 
-        // Separate cached and uncached NFTs
-        const uncachedIds = assetIds.filter((id) => !cachedNfts[id]);
+        // Separate cached and uncached NFTs (also check pending requests)
+        const uncachedIds = assetIds.filter(
+          (id) => !cachedNfts[id] && !pendingNftRequests.has(id),
+        );
         const cachedAssets: AssetMap = {};
 
         // Get cached NFTs immediately
@@ -86,87 +120,102 @@ export const useMappedAssetStore = create(
           }
         }
 
-        // Helper function to process a single NFT
+        // Wait for any pending requests for NFTs we need
+        const pendingPromises: Promise<{ assetId: string; data: AssetMap[''] | null }>[] = [];
+        for (const id of assetIds) {
+          const pending = pendingNftRequests.get(id);
+          if (pending && !cachedNfts[id]) {
+            pendingPromises.push(pending.then((data) => ({ assetId: id, data })));
+          }
+        }
+
+        // Helper function to process a single NFT with deduplication
         const processNft = async (
           assetId: string,
         ): Promise<{ assetId: string; data: AssetMap[''] | null }> => {
-          try {
-            const apiResponse = await WorkspaceService.getTokenFuelApi(
-              assetId,
-              chainId,
-            );
-            if (!apiResponse) {
-              return { assetId, data: null };
-            }
-
-            let asset = apiResponse;
-            const isNft =
-              asset.isNFT ||
-              asset?.totalSupply === '1' ||
-              (asset?.totalSupply === null && !('rate' in asset));
-
-            if (!isNft) {
-              return { assetId, data: null };
-            }
-
-            const withNativeMetadata =
-              Object.keys(asset.metadata || {}).filter(
-                (metadata) => !['uri', 'image'].includes(metadata),
-              ).length > 0;
-
-            if (!withNativeMetadata && asset.metadata?.uri) {
-              try {
-                const data = await requestWithTimeout<Record<string, string>>(
-                  parseURI(asset.metadata.uri),
-                  3000,
-                );
-                if (data) {
-                  const formattedMetadata = formatMetadataFromIpfs(data);
-                  return {
-                    assetId,
-                    data: { ...asset, metadata: formattedMetadata },
-                  };
-                }
-              } catch {
-                // IPFS fetch failed, use fallback
-              }
-              return {
+          const requestPromise = (async (): Promise<AssetMap[''] | null> => {
+            try {
+              const apiResponse = await WorkspaceService.getTokenFuelApi(
                 assetId,
-                data: {
+                chainId,
+              );
+              if (!apiResponse) {
+                return null;
+              }
+
+              let asset = apiResponse;
+              const isNft =
+                asset.isNFT ||
+                asset?.totalSupply === '1' ||
+                (asset?.totalSupply === null && !('rate' in asset));
+
+              if (!isNft) {
+                return null;
+              }
+
+              const withNativeMetadata =
+                Object.keys(asset.metadata || {}).filter(
+                  (metadata) => !['uri', 'image'].includes(metadata),
+                ).length > 0;
+
+              if (!withNativeMetadata && asset.metadata?.uri) {
+                try {
+                  const data = await requestWithTimeout<Record<string, string>>(
+                    parseURI(asset.metadata.uri),
+                    3000,
+                  );
+                  if (data) {
+                    const formattedMetadata = formatMetadataFromIpfs(data);
+                    return { ...asset, metadata: formattedMetadata };
+                  }
+                } catch {
+                  // IPFS fetch failed, use fallback
+                }
+                return {
                   ...asset,
                   metadata: {
                     ...asset.metadata,
                     ...(asset.description && { description: asset.description }),
                     ...(asset.name && { name: asset.name }),
                   },
-                },
-              };
-            }
+                };
+              }
 
-            return {
-              assetId,
-              data: {
+              return {
                 ...asset,
                 metadata: formatMetadataFromIpfs(asset.metadata ?? {}),
-              },
-            };
-          } catch {
-            return { assetId, data: null };
-          }
+              };
+            } catch {
+              return null;
+            } finally {
+              pendingNftRequests.delete(assetId);
+            }
+          })();
+
+          // Register this request as pending
+          pendingNftRequests.set(assetId, requestPromise);
+
+          const data = await requestPromise;
+          return { assetId, data };
         };
 
         // Fetch uncached NFTs in parallel
-        const results = await Promise.all(uncachedIds.map(processNft));
+        const [newResults, pendingResults] = await Promise.all([
+          Promise.all(uncachedIds.map(processNft)),
+          Promise.all(pendingPromises),
+        ]);
+
+        const allResults = [...newResults, ...pendingResults];
         const fetchedAssets: AssetMap = {};
 
-        for (const { assetId, data } of results) {
+        for (const { assetId, data } of allResults) {
           if (data) {
             fetchedAssets[assetId] = data;
           }
         }
 
         const allAssets = { ...cachedAssets, ...fetchedAssets };
-        set({ mappedNfts: { ...cachedNfts, ...fetchedAssets } });
+        set({ mappedNfts: { ...get().mappedNfts, ...fetchedAssets } });
         return allAssets;
       },
     }),
