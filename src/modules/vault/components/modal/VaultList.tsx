@@ -18,7 +18,7 @@ const VaultListComponent = ({
   return vaults?.map((vault) => (
     <VaultItemBox
       key={vault.id}
-      mt={2}
+      mt={4}
       id={vault.id}
       name={vault.name}
       address={vault.predicateAddress}
