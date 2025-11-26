@@ -17,6 +17,26 @@ export const useGetAssetsMetadata = (assets: string[]) => {
     [assets.join(',')],
   );
 
+  // Check if all assets are already cached - prevents unnecessary API calls
+  const cachedData = useMemo(() => {
+    const result: Record<string, Asset> = {};
+    let allCached = true;
+
+    for (const assetId of assets) {
+      const cached =
+        assetStore.mappedTokens[assetId] || assetStore.mappedNfts[assetId];
+      if (cached) {
+        result[assetId] = cached;
+      } else {
+        allCached = false;
+      }
+    }
+
+    return allCached && assets.length > 0 ? result : undefined;
+  }, [assets, assetStore.mappedTokens, assetStore.mappedNfts]);
+
+  const hasCachedData = !!cachedData;
+
   const { data, ...rest } = useQuery({
     queryKey: ['assetsMetadata', sortedAssets],
     queryFn: async () => {
@@ -44,6 +64,8 @@ export const useGetAssetsMetadata = (assets: string[]) => {
       );
       return assetsWithMetadata;
     },
+    enabled: !hasCachedData,
+    initialData: cachedData,
     // Asset metadata is immutable on blockchain - never needs refetch
     staleTime: Number.POSITIVE_INFINITY,
     refetchOnWindowFocus: false,
@@ -51,5 +73,5 @@ export const useGetAssetsMetadata = (assets: string[]) => {
     refetchOnReconnect: false,
   });
 
-  return { assets: data, ...rest };
+  return { assets: data ?? cachedData, ...rest };
 };
