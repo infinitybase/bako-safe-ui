@@ -172,7 +172,20 @@ export const useMappedAssetStore = create(
     }),
     {
       name: localStorageKeys.FUEL_MAPPED_ASSETS,
-      version: 0,
+      version: 1,
+      migrate: (persistedState, version) => {
+        const state = persistedState as Store;
+        // Increment version number to force cache refresh
+        // Version 0 -> 1: Initial migration, clear all cached data
+        if (version < 1) {
+          return {
+            ...state,
+            mappedTokens: {},
+            mappedNfts: {},
+          };
+        }
+        return state;
+      },
     },
   ),
 );
@@ -180,6 +193,43 @@ export const useMappedAssetStore = create(
 export const getAssetInfo = (assetId: string) => {
   const state = useMappedAssetStore.getState();
   return state.mappedTokens[assetId] || state.mappedNfts[assetId];
+};
+
+/**
+ * Manual invalidation functions for asset cache
+ * Use these when you need to force a refresh of cached asset data
+ */
+export const invalidateAssetCache = {
+  /**
+   * Clear all cached asset data (tokens and NFTs)
+   */
+  all: () => {
+    useMappedAssetStore.setState({ mappedTokens: {}, mappedNfts: {} });
+  },
+  /**
+   * Clear only token cache
+   */
+  tokens: () => {
+    useMappedAssetStore.setState({ mappedTokens: {} });
+  },
+  /**
+   * Clear only NFT cache
+   */
+  nfts: () => {
+    useMappedAssetStore.setState({ mappedNfts: {} });
+  },
+  /**
+   * Remove a specific asset from cache
+   */
+  asset: (assetId: string) => {
+    const state = useMappedAssetStore.getState();
+    const { [assetId]: _token, ...restTokens } = state.mappedTokens;
+    const { [assetId]: _nft, ...restNfts } = state.mappedNfts;
+    useMappedAssetStore.setState({
+      mappedTokens: restTokens,
+      mappedNfts: restNfts,
+    });
+  },
 };
 
 export const useAssetMap = (chainId: number) => {
