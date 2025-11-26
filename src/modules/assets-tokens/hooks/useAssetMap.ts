@@ -33,77 +33,141 @@ export const useMappedAssetStore = create(
       setAssetMap: (mappedTokens) => set({ mappedTokens }),
       getAssetByAssetId: (assetId) => get().mappedTokens[assetId],
       fetchAssets: async (assetIds, chainId) => {
-        const assets: AssetMap = {};
-        for (const assetId of assetIds) {
-          let asset = get().mappedTokens[assetId];
-          if (!asset) {
+        const cachedTokens = get().mappedTokens;
+
+        // Separate cached and uncached assets
+        const uncachedIds = assetIds.filter((id) => !cachedTokens[id]);
+        const cachedAssets: AssetMap = {};
+
+        // Get cached assets immediately
+        for (const id of assetIds) {
+          if (cachedTokens[id]) {
+            cachedAssets[id] = cachedTokens[id];
+          }
+        }
+
+        // Fetch uncached assets in parallel
+        const fetchPromises = uncachedIds.map(async (assetId) => {
+          try {
             const apiResponse = await WorkspaceService.getTokenFuelApi(
               assetId,
               chainId,
             );
-            if (apiResponse) {
-              asset = apiResponse;
-            }
+            return { assetId, data: apiResponse };
+          } catch {
+            return { assetId, data: null };
           }
-          assets[assetId] = asset;
+        });
+
+        const results = await Promise.all(fetchPromises);
+        const fetchedAssets: AssetMap = {};
+
+        for (const { assetId, data } of results) {
+          if (data) {
+            fetchedAssets[assetId] = data;
+          }
         }
-        set({ mappedTokens: { ...get().mappedTokens, ...assets } });
-        return assets;
+
+        const allAssets = { ...cachedAssets, ...fetchedAssets };
+        set({ mappedTokens: { ...cachedTokens, ...fetchedAssets } });
+        return allAssets;
       },
       fetchNfts: async (assetIds, chainId) => {
-        const assets: AssetMap = {};
-        for (const assetId of assetIds) {
-          let asset = get().mappedNfts[assetId];
-          if (!asset) {
+        const cachedNfts = get().mappedNfts;
+
+        // Separate cached and uncached NFTs
+        const uncachedIds = assetIds.filter((id) => !cachedNfts[id]);
+        const cachedAssets: AssetMap = {};
+
+        // Get cached NFTs immediately
+        for (const id of assetIds) {
+          if (cachedNfts[id]) {
+            cachedAssets[id] = cachedNfts[id];
+          }
+        }
+
+        // Helper function to process a single NFT
+        const processNft = async (
+          assetId: string,
+        ): Promise<{ assetId: string; data: AssetMap[''] | null }> => {
+          try {
             const apiResponse = await WorkspaceService.getTokenFuelApi(
               assetId,
               chainId,
             );
-            if (apiResponse) {
-              asset = apiResponse;
-              if (
-                asset.isNFT ||
-                asset?.totalSupply === '1' ||
-                (asset?.totalSupply === null && !('rate' in asset))
-              ) {
-                const withNativeMetadata =
-                  Object.keys(asset.metadata).filter(
-                    (metadata) => !['uri', 'image'].includes(metadata),
-                  ).length > 0;
+            if (!apiResponse) {
+              return { assetId, data: null };
+            }
 
-                if (!withNativeMetadata && asset.metadata.uri) {
-                  const data = await requestWithTimeout<Record<string, string>>(
-                    parseURI(asset.metadata.uri),
-                    3000, // 3 seconds timeout
-                  );
-                  if (data) {
-                    const formattedMetadata = formatMetadataFromIpfs(data);
-                    assets[assetId] = { ...asset, metadata: formattedMetadata };
-                  } else {
-                    assets[assetId] = {
-                      ...asset,
-                      metadata: {
-                        ...asset.metadata,
-                        ...(asset.description && {
-                          description: asset.description,
-                        }),
-                        ...(asset.name && { name: asset.name }),
-                      },
-                    };
-                  }
-                } else {
-                  assets[assetId] = {
-                    ...asset,
-                    metadata: formatMetadataFromIpfs(asset.metadata ?? {}),
+            let asset = apiResponse;
+            const isNft =
+              asset.isNFT ||
+              asset?.totalSupply === '1' ||
+              (asset?.totalSupply === null && !('rate' in asset));
+
+            if (!isNft) {
+              return { assetId, data: null };
+            }
+
+            const withNativeMetadata =
+              Object.keys(asset.metadata || {}).filter(
+                (metadata) => !['uri', 'image'].includes(metadata),
+              ).length > 0;
+
+            if (!withNativeMetadata && asset.metadata?.uri) {
+              try {
+                const data = await requestWithTimeout<Record<string, string>>(
+                  parseURI(asset.metadata.uri),
+                  3000,
+                );
+                if (data) {
+                  const formattedMetadata = formatMetadataFromIpfs(data);
+                  return {
+                    assetId,
+                    data: { ...asset, metadata: formattedMetadata },
                   };
                 }
+              } catch {
+                // IPFS fetch failed, use fallback
               }
+              return {
+                assetId,
+                data: {
+                  ...asset,
+                  metadata: {
+                    ...asset.metadata,
+                    ...(asset.description && { description: asset.description }),
+                    ...(asset.name && { name: asset.name }),
+                  },
+                },
+              };
             }
+
+            return {
+              assetId,
+              data: {
+                ...asset,
+                metadata: formatMetadataFromIpfs(asset.metadata ?? {}),
+              },
+            };
+          } catch {
+            return { assetId, data: null };
+          }
+        };
+
+        // Fetch uncached NFTs in parallel
+        const results = await Promise.all(uncachedIds.map(processNft));
+        const fetchedAssets: AssetMap = {};
+
+        for (const { assetId, data } of results) {
+          if (data) {
+            fetchedAssets[assetId] = data;
           }
         }
-        const storeAssets = { ...assets, ...get().mappedNfts };
-        set({ mappedNfts: storeAssets });
-        return storeAssets;
+
+        const allAssets = { ...cachedAssets, ...fetchedAssets };
+        set({ mappedNfts: { ...cachedNfts, ...fetchedAssets } });
+        return allAssets;
       },
     }),
     {
