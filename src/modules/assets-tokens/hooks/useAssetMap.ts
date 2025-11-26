@@ -4,7 +4,6 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
 import { localStorageKeys } from '@/modules/auth/services/methods';
-import { jamMonitor } from '@/modules/core/services/jamMonitor';
 import {
   AssetMap,
   assetsMapFromFormattedFn,
@@ -45,13 +44,6 @@ export const useMappedAssetStore = create(
             if (apiResponse) {
               asset = apiResponse;
             }
-          } else {
-            // Log cache hit
-            jamMonitor.assetFetchCacheHit({
-              assetId,
-              assetName: asset.name,
-              assetSymbol: asset.symbol,
-            });
           }
           assets[assetId] = asset;
         }
@@ -80,60 +72,14 @@ export const useMappedAssetStore = create(
                   ).length > 0;
 
                 if (!withNativeMetadata && asset.metadata.uri) {
-                  const metadataUrl = parseURI(asset.metadata.uri);
-                  const timer = jamMonitor.startTimer();
-
-                  // Log NFT metadata fetch start
-                  jamMonitor.nftMetadataFetchStart({
-                    assetId,
-                    url: metadataUrl,
-                  });
-
-                  try {
-                    const data = await requestWithTimeout<Record<string, string>>(
-                      metadataUrl,
-                      3000, // 3 seconds timeout
-                    );
-                    if (data) {
-                      const formattedMetadata = formatMetadataFromIpfs(data);
-                      assets[assetId] = { ...asset, metadata: formattedMetadata };
-
-                      // Log NFT metadata fetch success
-                      jamMonitor.nftMetadataFetchSuccess({
-                        assetId,
-                        url: metadataUrl,
-                        duration: timer(),
-                        assetName: formattedMetadata.name || asset.name,
-                      });
-                    } else {
-                      // Log timeout/empty response
-                      jamMonitor.nftMetadataFetchError({
-                        assetId,
-                        url: metadataUrl,
-                        error: { message: 'Request timeout or empty response' },
-                      });
-
-                      assets[assetId] = {
-                        ...asset,
-                        metadata: {
-                          ...asset.metadata,
-                          ...(asset.description && {
-                            description: asset.description,
-                          }),
-                          ...(asset.name && { name: asset.name }),
-                        },
-                      };
-                    }
-                  } catch (error) {
-                    // Log NFT metadata fetch error
-                    jamMonitor.nftMetadataFetchError({
-                      assetId,
-                      url: metadataUrl,
-                      error: {
-                        message: error instanceof Error ? error.message : String(error),
-                      },
-                    });
-
+                  const data = await requestWithTimeout<Record<string, string>>(
+                    parseURI(asset.metadata.uri),
+                    3000, // 3 seconds timeout
+                  );
+                  if (data) {
+                    const formattedMetadata = formatMetadataFromIpfs(data);
+                    assets[assetId] = { ...asset, metadata: formattedMetadata };
+                  } else {
                     assets[assetId] = {
                       ...asset,
                       metadata: {
@@ -153,13 +99,6 @@ export const useMappedAssetStore = create(
                 }
               }
             }
-          } else {
-            // Log cache hit for NFT
-            jamMonitor.assetFetchCacheHit({
-              assetId,
-              assetName: asset.name,
-              isNFT: true,
-            });
           }
         }
         const storeAssets = { ...assets, ...get().mappedNfts };

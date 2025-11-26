@@ -8,7 +8,6 @@ import {
   IPagination,
   IPermission,
   IPermissions,
-  jamMonitor,
   Predicate,
   WitnessStatus,
   Workspace,
@@ -176,62 +175,18 @@ export class WorkspaceService {
   static async getTokenFuelApi(assetId: string, chainId: number) {
     const fiatCurrency = FIAT_CURRENCIES_ASSET_MAP[assetId];
     if (fiatCurrency) {
-      // Log cache hit for fiat currency
-      jamMonitor.assetFetchCacheHit({
-        assetId,
-        assetName: fiatCurrency.name,
-        assetSymbol: fiatCurrency.symbol,
-      });
       return fiatCurrency;
     }
-
     const _chainId: { [key: number]: string } = {
       [9889]: 'https://mainnet-explorer.fuel.network',
       [0]: 'https://explorer-indexer-testnet.fuel.network',
     };
 
     const url = `${_chainId[chainId]}/assets/${assetId}`;
-    const timer = jamMonitor.startTimer();
 
-    // Log fetch start
-    jamMonitor.assetFetchStart({
-      assetId,
-      chainId,
-      url,
-      source: 'explorer',
-    });
+    const response = await request<AssetMap['']>(url);
 
-    try {
-      const response = await request<AssetMap['']>(url);
-
-      // Log fetch success
-      jamMonitor.assetFetchSuccess({
-        assetId,
-        chainId,
-        url,
-        source: 'explorer',
-        duration: timer(),
-        assetName: response?.name,
-        assetSymbol: response?.symbol,
-        isNFT: response?.isNFT || response?.totalSupply === '1',
-      });
-
-      return response;
-    } catch (error) {
-      // Log fetch error
-      jamMonitor.assetFetchError({
-        assetId,
-        chainId,
-        url,
-        source: 'explorer',
-        error: {
-          message: error instanceof Error ? error.message : String(error),
-          status: (error as { status?: number })?.status,
-        },
-      });
-
-      throw error;
-    }
+    return response;
   }
 
   static async deleteMember(payload: DeleteWorkspaceMemberPayload) {

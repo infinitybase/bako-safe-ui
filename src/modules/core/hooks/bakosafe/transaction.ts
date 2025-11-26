@@ -14,7 +14,6 @@ import {
 } from '@/modules/transactions/services';
 
 import { AssetMap } from '../..';
-import { jamMonitor } from '../../services/jamMonitor';
 import { instantiateVault } from './instantiateVault';
 import { sendTransaction } from './sendTransaction';
 import { useBakoSafeMutation, useBakoSafeQuery } from './utils';
@@ -53,70 +52,29 @@ const useBakoSafeCreateTransaction = ({
   return useBakoSafeMutation(
     TRANSACTION_QUERY_KEYS.DEFAULT,
     async (payload: IPayloadTransfer) => {
-      const timer = jamMonitor.startTimer();
+      const { hashTxId } = await vault.transaction({
+        name: payload.name!,
+        assets: payload.assets.map((asset) => {
+          const info = getAssetInfo(asset.assetId);
+          const units = info?.units ?? info?.decimals ?? 9;
 
-      // Log transaction creation start
-      jamMonitor.txCreateStart({
-        transactionName: payload.name,
-        predicateAddress: vault?.address?.toString(),
-        assets: payload.assets.map((asset) => ({
-          assetId: asset.assetId,
-          amount: asset.amount,
-          to: asset.to,
-        })),
+          return {
+            ...asset,
+            amount: bn
+              .parseUnits(
+                asset.amount.replace(/,/g, ''),
+                info.isNFT ? undefined : units,
+              )
+              .format(),
+          };
+        }),
       });
 
-      try {
-        const { hashTxId } = await vault.transaction({
-          name: payload.name!,
-          assets: payload.assets.map((asset) => {
-            const info = getAssetInfo(asset.assetId);
-            const units = info?.units ?? info?.decimals ?? 9;
+      const transaction = await TransactionService.getByHash(hashTxId, [
+        TransactionStatus.AWAIT_REQUIREMENTS,
+      ]);
 
-            return {
-              ...asset,
-              amount: bn
-                .parseUnits(
-                  asset.amount.replace(/,/g, ''),
-                  info.isNFT ? undefined : units,
-                )
-                .format(),
-            };
-          }),
-        });
-
-        const transaction = await TransactionService.getByHash(hashTxId, [
-          TransactionStatus.AWAIT_REQUIREMENTS,
-        ]);
-
-        // Log transaction creation success
-        jamMonitor.txCreateSuccess({
-          transactionId: transaction.id,
-          transactionHash: transaction.hash,
-          transactionName: transaction.name,
-          predicateId: transaction.predicateId,
-          status: transaction.status,
-          duration: timer(),
-        });
-
-        return transaction;
-      } catch (error) {
-        // Log transaction creation error
-        jamMonitor.txCreateError({
-          transactionName: payload.name,
-          predicateAddress: vault?.address?.toString(),
-          assets: payload.assets.map((asset) => ({
-            assetId: asset.assetId,
-            amount: asset.amount,
-            to: asset.to,
-          })),
-          error: {
-            message: error instanceof Error ? error.message : String(error),
-            stack: error instanceof Error ? error.stack : undefined,
-          },
-        });
-        throw error;
-      }
+      return transaction;
     },
     {
       onSuccess,
@@ -173,46 +131,16 @@ const useBakoSafeTransactionSend = (
   return useBakoSafeMutation(
     TRANSACTION_QUERY_KEYS.SEND(),
     async ({ transaction, providerUrl }: BakoSafeTransactionSendVariables) => {
-      const timer = jamMonitor.startTimer();
-
-      // Log transaction send start
-      jamMonitor.txSendStart({
-        transactionId: transaction.id,
-        transactionHash: transaction.hash,
-        predicateId: transaction.predicateId,
+      const vaultInstance = await instantiateVault({
         predicateAddress: transaction.predicateAddress,
+        providerUrl,
       });
 
       try {
-        const vaultInstance = await instantiateVault({
-          predicateAddress: transaction.predicateAddress,
-          providerUrl,
-        });
-
         const txResult = await sendTransaction(vaultInstance, transaction.hash);
-
-        // Log transaction send success
-        jamMonitor.txSendSuccess({
-          transactionId: txResult.id,
-          transactionHash: txResult.hash,
-          status: txResult.status,
-          gasUsed: txResult.gasUsed,
-          duration: timer(),
-        });
 
         return txResult;
       } catch (e) {
-        // Log transaction send error
-        jamMonitor.txSendError({
-          transactionId: transaction.id,
-          transactionHash: transaction.hash,
-          predicateId: transaction.predicateId,
-          error: {
-            message: e instanceof Error ? e.message : String(e),
-            stack: e instanceof Error ? e.stack : undefined,
-          },
-        });
-
         options?.onError?.(transaction, e);
         throw e;
       }

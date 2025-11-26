@@ -1,7 +1,7 @@
 import { QueryKey } from '@tanstack/react-query';
 import { useCallback } from 'react';
 
-import { HomeQueryKey, jamMonitor, SocketEvents, WorkspacesQueryKey } from '@/modules/core';
+import { HomeQueryKey, SocketEvents, WorkspacesQueryKey } from '@/modules/core';
 import { useSocketEvent } from '@/modules/core/hooks/socket/useSocketEvent';
 import { useReactQueryUpdate } from '@/modules/core/hooks/useReactQueryUpdate';
 import {
@@ -76,39 +76,9 @@ export const useTransactionSocketListener = (key?: QueryKey) => {
   const { refetch: updateSignaturePending } = useTransactionsSignaturePending();
   const handleSignaturePending = () => updateSignaturePending();
 
-  // Log socket transaction events for Jam monitoring
-  const handleJamMonitor = useCallback((event: ITransactionReactQueryUpdate) => {
-    if (!event) return;
-
-    jamMonitor.socketTxUpdate({
-      event: SocketEvents.TRANSACTION,
-      transactionId: event.transaction?.id,
-      type: event.type,
-      metadata: {
-        status: event.transaction?.status,
-        predicateId: event.transaction?.predicateId,
-      },
-    });
-
-    // Log specific event types
-    if (event.type === '[CREATED]') {
-      jamMonitor.socketTxCreated({
-        event: SocketEvents.TRANSACTION,
-        transactionId: event.transaction?.id,
-      });
-    } else if (event.type === '[UPDATED]') {
-      jamMonitor.txStatusChange({
-        transactionId: event.transaction?.id,
-        transactionHash: event.transaction?.hash,
-        status: event.transaction?.status,
-      });
-    }
-  }, []);
-
   useSocketEvent<ITransactionReactQueryUpdate>(SocketEvents.TRANSACTION, [
     updateTransactions,
     updateHistory,
     handleSignaturePending,
-    handleJamMonitor,
   ]);
 };
