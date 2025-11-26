@@ -14,6 +14,7 @@ const useCheckVaultByAddressRequest = (address: string, enabled: boolean) => {
     queryFn: () => VaultService.checkByAddress(address),
     refetchOnWindowFocus: false,
     enabled,
+    staleTime: 1000 * 60 * 5, // 5 minutes
   });
 };
 

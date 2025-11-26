@@ -15,7 +15,8 @@ const useUnreadNotificationsCounterRequest = () => {
         page: DEFAULT_INITIAL_PAGE_PARAM,
       }),
     refetchInterval: false,
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: false,
+    staleTime: 1000 * 60 * 2, // 2 minutes
   });
 };
 

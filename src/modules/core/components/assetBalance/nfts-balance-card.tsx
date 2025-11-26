@@ -1,5 +1,5 @@
 import { Box, Card, Text } from 'bako-ui';
-import { useState } from 'react';
+import { memo, useState } from 'react';
 
 import { AddressUtils, NFT } from '@/modules/core/utils';
 import { useWorkspaceContext } from '@/modules/workspace/hooks';
@@ -8,7 +8,7 @@ import { useGetNftsInfos } from '../../hooks';
 import { NftDialog } from './nft-dialog';
 import { NftImage } from './nft-image';
 
-const NftBalanceCard = ({ nft }: { nft: NFT }) => {
+const NftBalanceCard = memo(function NftBalanceCard({ nft }: { nft: NFT }) {
   const { nftList } = useWorkspaceContext();
 
   const { nftsInfo, nftImageUrl } = useGetNftsInfos({
@@ -73,6 +73,6 @@ const NftBalanceCard = ({ nft }: { nft: NFT }) => {
       />
     </>
   );
-};
+});
 
 export { NftBalanceCard };

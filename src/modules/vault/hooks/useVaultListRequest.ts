@@ -17,7 +17,8 @@ const useVaultListRequest = (
         page: pageParam || DEFAULT_INITIAL_PAGE_PARAM,
       }),
     initialPageParam: DEFAULT_INITIAL_PAGE_PARAM,
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: false,
+    staleTime: 1000 * 60 * 5, // 5 minutes - socket events handle real-time updates
     getNextPageParam: (lastPage) =>
       lastPage.currentPage !== lastPage.totalPages
         ? lastPage.nextPage

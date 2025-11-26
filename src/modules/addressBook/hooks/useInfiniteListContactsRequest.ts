@@ -41,6 +41,8 @@ const useInfiniteListcontactsRequest = (
       initialPageParam: DEFAULT_INITIAL_PAGE_PARAM,
       getNextPageParam: (lastPage) =>
         lastPage.data.length < lastPage.perPage ? undefined : lastPage.nextPage,
+      refetchOnWindowFocus: false,
+      staleTime: 1000 * 60 * 5, // 5 minutes
     });
 
   const observer = useRef<IntersectionObserver | null>(null);

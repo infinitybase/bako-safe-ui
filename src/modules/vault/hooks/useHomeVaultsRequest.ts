@@ -23,6 +23,8 @@ const useHomeVaultsRequest = (vaultsPerPage: number) => {
         orderBy: TransactionOrderBy.CREATED_AT,
         sort: SortOption.DESC,
       }),
+    refetchOnWindowFocus: false,
+    staleTime: 1000 * 60 * 5, // 5 minutes - socket events handle real-time updates
   });
 };
 
