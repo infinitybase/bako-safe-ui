@@ -10,7 +10,17 @@ import { BakoProvider } from 'bakosafe';
 import { Provider } from 'fuels';
 import { useCallback } from 'react';
 
+import { queryClient } from '@/config/query-client';
+
 const client = new BakoIDClient();
+
+// Cache configuration for Bako ID - data rarely changes but can be manually invalidated
+const BAKO_ID_CACHE_CONFIG = {
+  staleTime: Number.POSITIVE_INFINITY,
+  refetchOnWindowFocus: false,
+  refetchOnMount: false,
+  refetchOnReconnect: false,
+} as const;
 
 const BAKOID_QUERY_KEYS = {
   base: ['bako-id'] as QueryKey,
@@ -44,6 +54,7 @@ export const useBakoIDResolveNames = (options: {
       return client.names(addresses, await provider.getChainId());
     },
     enabled: addresses.length > 0,
+    ...BAKO_ID_CACHE_CONFIG,
   });
 };
 
@@ -69,6 +80,7 @@ export const useResolverNameQuery = (
       );
       return nameResolved;
     },
+    ...BAKO_ID_CACHE_CONFIG,
     ...options,
   });
 
@@ -92,6 +104,7 @@ export const useResolverAddressQuery = (
       );
       return addressResolved;
     },
+    ...BAKO_ID_CACHE_CONFIG,
     ...options,
   });
 
@@ -180,9 +193,51 @@ export const useBakoIdAvatar = (name: string, chainId: number) => {
     },
     queryKey: [...BAKOID_QUERY_KEYS.avatar(name), chainId],
     enabled: !!name,
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
+    ...BAKO_ID_CACHE_CONFIG,
   });
 
   return { avatar, ...rest };
+};
+
+// Manual invalidation functions for Bako ID cache
+export const invalidateBakoIDCache = {
+  /**
+   * Invalidate all Bako ID cached data
+   */
+  all: () => {
+    queryClient.invalidateQueries({ queryKey: BAKOID_QUERY_KEYS.base });
+  },
+  /**
+   * Invalidate cache for a specific address (name resolution)
+   */
+  address: (address: string) => {
+    queryClient.invalidateQueries({
+      queryKey: BAKOID_QUERY_KEYS.address(address),
+    });
+  },
+  /**
+   * Invalidate cache for a specific name (address resolution)
+   */
+  name: (name: string) => {
+    queryClient.invalidateQueries({ queryKey: BAKOID_QUERY_KEYS.name(name) });
+  },
+  /**
+   * Invalidate avatar cache for a specific name
+   */
+  avatar: (name: string) => {
+    queryClient.invalidateQueries({ queryKey: BAKOID_QUERY_KEYS.avatar(name) });
+  },
+  /**
+   * Invalidate cache for multiple addresses
+   */
+  addresses: (addresses: string[]) => {
+    addresses.forEach((address) => {
+      queryClient.invalidateQueries({
+        queryKey: BAKOID_QUERY_KEYS.address(address),
+      });
+    });
+    queryClient.invalidateQueries({
+      queryKey: BAKOID_QUERY_KEYS.names(addresses),
+    });
+  },
 };

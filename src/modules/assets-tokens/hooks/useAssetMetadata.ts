@@ -16,6 +16,11 @@ export const useAssetMetadata = (assetId: string) => {
       return map[assetId];
     },
     enabled: !!assetId,
+    // Asset metadata is immutable on blockchain - never needs refetch
+    staleTime: Number.POSITIVE_INFINITY,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
   });
 
   return { asset, ...rest };
