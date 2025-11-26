@@ -13,7 +13,8 @@
  * - Wallet interactions (signatures, connections)
  */
 
-import { TransactionStatus } from '@/modules/core';
+// Import directly from the model to avoid circular dependency
+import { TransactionStatus } from '@/modules/core/models/transaction';
 
 declare global {
   interface Window {
