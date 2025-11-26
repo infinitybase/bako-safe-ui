@@ -2,7 +2,7 @@ import { TransactionStatus } from 'bakosafe';
 
 import { queryClient } from '@/config';
 import { useAuth } from '@/modules';
-import { useBakoSafeTransactionSend, WitnessStatus } from '@/modules/core';
+import { jamMonitor, useBakoSafeTransactionSend, WitnessStatus } from '@/modules/core';
 import { ITransaction } from '@/modules/core/hooks/bakosafe/utils/types';
 import { useNotificationsStore } from '@/modules/notifications/store';
 import { TransactionService } from '@/modules/transactions/services';
@@ -36,6 +36,14 @@ const useSendTransaction = ({ onTransactionSuccess }: IUseSendTransaction) => {
 
   const validateResult = (transaction: ITransaction, isCompleted?: boolean) => {
     if (transaction.status == TransactionStatus.SUCCESS || isCompleted) {
+      // Log success
+      jamMonitor.txSendSuccess({
+        transactionId: transaction.id,
+        transactionHash: transaction.hash,
+        status: transaction.status,
+        gasUsed: transaction.gasUsed,
+      });
+
       toast.success(transaction);
       setIsCurrentTxPending({ isPending: false, transactionId: '' });
       queryClient.invalidateQueries({
@@ -48,6 +56,14 @@ const useSendTransaction = ({ onTransactionSuccess }: IUseSendTransaction) => {
     }
 
     if (transaction.status == TransactionStatus.FAILED) {
+      // Log failure
+      jamMonitor.txSendError({
+        transactionId: transaction.id,
+        transactionHash: transaction.hash,
+        status: transaction.status,
+        error: { message: 'Transaction failed on chain' },
+      });
+
       toast.error(transaction.id, 'Transaction failed');
       setIsCurrentTxPending({ isPending: false, transactionId: '' });
     }
@@ -56,6 +72,13 @@ const useSendTransaction = ({ onTransactionSuccess }: IUseSendTransaction) => {
       transaction.status == TransactionStatus.PROCESS_ON_CHAIN &&
       !isCompleted
     ) {
+      // Log pending on chain
+      jamMonitor.txSendPending({
+        transactionId: transaction.id,
+        transactionHash: transaction.hash,
+        status: transaction.status,
+      });
+
       toast.loading(transaction);
     }
     setHasNewNotification(true);

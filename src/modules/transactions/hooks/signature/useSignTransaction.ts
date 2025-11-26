@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { queryClient } from '@/config';
 import { CookieName, CookiesConfig } from '@/config/cookies';
 import { useContactToast } from '@/modules/addressBook/hooks/useContactToast';
-import { instantiateVault, useWalletSignMessage } from '@/modules/core';
+import { instantiateVault, jamMonitor, useWalletSignMessage } from '@/modules/core';
 import { ITransaction } from '@/modules/core/hooks/bakosafe/utils/types';
 import { VAULT_TRANSACTIONS_LIST_PAGINATION } from '@/modules/vault/hooks/list/useVaultTransactionsRequest';
 
@@ -67,7 +67,10 @@ const useSignTransaction = ({
   });
 
   const signMessageRequest = useWalletSignMessage({
-    onError: () => {
+    onError: (error) => {
+      jamMonitor.walletSignError({
+        error: error instanceof Error ? error.message : String(error),
+      });
       warningToast({
         title: 'Signature failed',
         description: 'Please try again!',
@@ -84,6 +87,9 @@ const useSignTransaction = ({
       });
     },
     onError: () => {
+      jamMonitor.txSignError({
+        error: { message: 'Invalid signature' },
+      });
       toast.generalError(randomBytes.toString(), 'Invalid signature');
     },
   });
@@ -93,6 +99,8 @@ const useSignTransaction = ({
     callback?: () => void,
     transactionInformations?: TransactionWithVault,
   ) => {
+    const timer = jamMonitor.startTimer();
+
     const transaction = transactionInformations
       ? {
           hash: transactionInformations?.hash,
@@ -108,6 +116,18 @@ const useSignTransaction = ({
 
     setSelectedTransaction(transaction);
 
+    // Log sign start
+    jamMonitor.txSignStart({
+      transactionId: transaction?.id,
+      transactionHash: transaction?.hash,
+      predicateId: transaction?.predicateId,
+      signers: transaction?.resume ? {
+        total: transaction.resume.totalSigners,
+        signed: transaction.resume.witnesses?.filter(w => w.status === 'DONE').length ?? 0,
+        required: transaction.resume.requiredSigners,
+      } : undefined,
+    });
+
     let predicateVersion = undefined;
 
     if (
@@ -120,6 +140,11 @@ const useSignTransaction = ({
       });
       predicateVersion = vault.predicateVersion;
     }
+
+    // Log wallet sign message
+    jamMonitor.walletSignMessage({
+      action: 'sign_transaction',
+    });
 
     const signedMessage = await signMessageRequest.mutateAsync({
       message: transaction?.hash,
@@ -135,6 +160,14 @@ const useSignTransaction = ({
       },
       {
         onSuccess: async () => {
+          // Log sign success
+          jamMonitor.txSignSuccess({
+            transactionId: transaction?.id,
+            transactionHash: transaction?.hash,
+            predicateId: transaction?.predicateId,
+            duration: timer(),
+          });
+
           setIsSignConfirmed(true);
           executeTransaction(transaction);
           callback && callback();
@@ -144,6 +177,11 @@ const useSignTransaction = ({
   };
 
   const declineTransaction = async (transactionHash: string) => {
+    // Log decline start
+    jamMonitor.txSignDecline({
+      transactionHash,
+    });
+
     await request.mutateAsync(
       {
         confirm: false,

@@ -1,9 +1,18 @@
-import axios from 'axios';
+import axios, { InternalAxiosRequestConfig } from 'axios';
 
+import { jamMonitor } from '@/modules/core/services/jamMonitor';
 import { GifLoadingRequestQueryKey } from '@/modules/workspace/hooks/useGifLoadingRequest';
 
 import { CookieName, CookiesConfig } from './cookies';
 import { queryClient } from './query-client';
+
+// Extend axios config to store request metadata
+declare module 'axios' {
+  interface InternalAxiosRequestConfig {
+    _requestId?: string;
+    _startTime?: number;
+  }
+}
 
 const { VITE_API_URL } = import.meta.env;
 const { ACCESS_TOKEN, ADDRESS } = CookieName;
@@ -41,6 +50,10 @@ const api = axios.create({
   timeout: 10 * 1000, // limit to try other requests
 });
 
+// Generate unique request ID
+const generateRequestId = () =>
+  `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+
 const setupAxiosInterceptors = ({
   isTxFromDapp,
   isTokenExpired,
@@ -48,21 +61,69 @@ const setupAxiosInterceptors = ({
   logout,
 }: ISetupAxiosInterceptors) => {
   api.interceptors.request.use(
-    (value) => {
+    (config: InternalAxiosRequestConfig) => {
       const accessToken = CookiesConfig.getCookie(ACCESS_TOKEN);
       const address = CookiesConfig.getCookie(ADDRESS);
 
-      if (accessToken) value.headers['authorization'] = accessToken;
-      if (address) value.headers['signerAddress'] = address;
+      if (accessToken) config.headers['authorization'] = accessToken;
+      if (address) config.headers['signerAddress'] = address;
 
-      return value;
+      // Add monitoring metadata
+      config._requestId = generateRequestId();
+      config._startTime = Date.now();
+
+      // Log API call start with duplicate detection
+      const endpoint = config.url?.replace(VITE_API_URL || '', '') || config.url || '';
+      jamMonitor.apiCallStart({
+        method: config.method?.toUpperCase() || 'GET',
+        url: `${config.baseURL || ''}${config.url || ''}`,
+        endpoint,
+        requestId: config._requestId,
+        params: config.params,
+      });
+
+      return config;
     },
     (error) => error,
   );
 
   api.interceptors.response.use(
-    async (config) => config,
+    async (response) => {
+      // Log successful API call
+      const config = response.config;
+      const duration = config._startTime ? Date.now() - config._startTime : 0;
+      const endpoint = config.url?.replace(VITE_API_URL || '', '') || config.url || '';
+
+      jamMonitor.apiCallSuccess({
+        method: config.method?.toUpperCase() || 'GET',
+        url: `${config.baseURL || ''}${config.url || ''}`,
+        endpoint,
+        requestId: config._requestId || '',
+        status: response.status,
+        duration,
+        responseSize: JSON.stringify(response.data).length,
+      });
+
+      return response;
+    },
     async (error) => {
+      // Log API error
+      const config = error.config;
+      if (config) {
+        const duration = config._startTime ? Date.now() - config._startTime : 0;
+        const endpoint = config.url?.replace(VITE_API_URL || '', '') || config.url || '';
+
+        jamMonitor.apiCallError({
+          method: config.method?.toUpperCase() || 'GET',
+          url: `${config.baseURL || ''}${config.url || ''}`,
+          endpoint,
+          requestId: config._requestId || '',
+          status: error.response?.status,
+          error: error.message || error.response?.data?.detail || 'Unknown error',
+          duration,
+        });
+      }
+
       const unauthorizedError = error.response?.status === 401;
 
       if (unauthorizedError && !isTokenExpired && !isTxFromDapp) {
