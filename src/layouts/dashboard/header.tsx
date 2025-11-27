@@ -1,4 +1,5 @@
 import { useFuel } from '@fuels/react';
+import { useIsFetching } from '@tanstack/react-query';
 import {
   Avatar,
   Box,
@@ -16,7 +17,7 @@ import {
 } from 'bako-ui';
 import { AddressUtils as BakoAddressUtils, TypeUser } from 'bakosafe';
 import { Address, Network } from 'fuels';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import logo from '@/assets/bakoLogoWhite.svg';
@@ -57,7 +58,11 @@ const UserBox = () => {
   const [openMenu, setOpenMenu] = useState(false);
   const { authDetails } = useWorkspaceContext();
   const { currentNetwork } = useNetworks();
-  const { startNetworkSwitch, finishNetworkSwitch } = useNetworkSwitch();
+  const {
+    isSwitchingNetwork,
+    startNetworkSwitch,
+    finishNetworkSwitch,
+  } = useNetworkSwitch();
   const networkDrawerState = useDisclosure();
   const networkDialogState = useDisclosure();
   const toast = useNotification();
@@ -71,6 +76,8 @@ const UserBox = () => {
     authDetails.userInfos?.address,
   );
   const navigate = useNavigate();
+  const isFetching = useIsFetching();
+  const hasStartedNetworkSwitch = useRef(false);
 
   const { avatar, isLoading: isLoadingAvatar } = useBakoIdAvatar(
     authDetails.userInfos?.address,
@@ -130,19 +137,23 @@ const UserBox = () => {
     setUnreadCounter(unreadCounter);
   }, []);
 
+  // Finish network switch when all queries are done fetching
+  useEffect(() => {
+    if (hasStartedNetworkSwitch.current && isSwitchingNetwork && isFetching === 0) {
+      finishNetworkSwitch();
+      hasStartedNetworkSwitch.current = false;
+    }
+  }, [isFetching, isSwitchingNetwork, finishNetworkSwitch]);
+
   useSocketEvent<IDefaultMessage<Network>>(SocketEvents.SWITCH_NETWORK, [
     (message) => {
       if (message.type === SocketEvents.SWITCH_NETWORK) {
         // Start network switch loading state
+        hasStartedNetworkSwitch.current = true;
         startNetworkSwitch();
 
         // Smart invalidation: preserves immutable data while invalidating network-dependent queries
-        invalidateQueriesOnNetworkSwitch().then(() => {
-          // Finish network switch loading state after queries are invalidated
-          setTimeout(() => {
-            finishNetworkSwitch();
-          }, 500);
-        });
+        invalidateQueriesOnNetworkSwitch();
       }
     },
   ]);
