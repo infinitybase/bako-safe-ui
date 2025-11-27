@@ -11,9 +11,8 @@ import {
 } from 'bako-ui';
 import { RiFileCopyFill } from 'react-icons/ri';
 
-import { EditIcon, RemoveIcon } from '@/components';
+import { EditIcon, IconTooltipButton, RemoveIcon } from '@/components';
 import { CopyTopMenuIcon } from '@/components/icons/copy-top-menu';
-import { VaultIconInfo } from '@/modules/vault/components/vaultIconInfo';
 import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 interface ContactCardProps extends CardRootProps {
@@ -86,7 +85,7 @@ const ContactCard = ({
             </Heading>
 
             <HStack>
-              <VaultIconInfo
+              <IconTooltipButton
                 onClick={copy}
                 tooltipContent={copied ? 'Copied' : 'Copy Address'}
                 placement="top"
@@ -96,27 +95,27 @@ const ContactCard = ({
                   color="gray.200"
                   w="12px"
                 />
-              </VaultIconInfo>
+              </IconTooltipButton>
 
               {showActionButtons && (
                 <>
-                  <VaultIconInfo
+                  <IconTooltipButton
                     aria-label="Edit"
                     tooltipContent="Edit"
                     onClick={handleEdit}
                     placement="top"
                   >
                     <Icon as={EditIcon} color="gray.200" w="12px" />
-                  </VaultIconInfo>
+                  </IconTooltipButton>
 
-                  <VaultIconInfo
+                  <IconTooltipButton
                     aria-label="Delete"
                     tooltipContent="Delete"
                     onClick={handleDelete}
                     placement="top"
                   >
                     <Icon as={RemoveIcon} color="gray.200" w="12px" />
-                  </VaultIconInfo>
+                  </IconTooltipButton>
                 </>
               )}
             </HStack>
