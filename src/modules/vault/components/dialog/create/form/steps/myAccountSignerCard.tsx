@@ -64,16 +64,14 @@ export const MyAccountSignerCard = memo(
                 boxSize="36px"
               />
               <Stack gap={2}>
-                {name && (
-                  <Text
-                    color="textPrimary"
-                    fontSize="xs"
-                    lineHeight="shorter"
-                    fontWeight="medium"
-                  >
-                    {name}
-                  </Text>
-                )}
+                <Text
+                  color="textPrimary"
+                  fontSize="xs"
+                  lineHeight="shorter"
+                  fontWeight="medium"
+                >
+                  {name ?? 'You'}
+                </Text>
                 <Flex alignItems="center" gap={2}>
                   <Tooltip positioning={{ placement: 'top' }} content={address}>
                     <Text color="gray.400" fontSize="xs" lineHeight="shorter">
