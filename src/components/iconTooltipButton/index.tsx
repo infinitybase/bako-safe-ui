@@ -1,9 +1,10 @@
 import { IconButton, IconButtonProps, Tooltip } from 'bako-ui';
+import { ReactNode } from 'react';
 
-interface VaultIconInfoProps {
-  children: React.ReactNode;
+interface IconTooltipButtonProps {
+  children: ReactNode;
   onClick?: IconButtonProps['onClick'];
-  tooltipContent: React.ReactNode;
+  tooltipContent: ReactNode;
   placement?:
     | 'top'
     | 'bottom'
@@ -19,12 +20,12 @@ interface VaultIconInfoProps {
     | 'left-end';
 }
 
-export const VaultIconInfo = ({
+const IconTooltipButton = ({
   children,
   tooltipContent,
   placement = 'right',
   onClick,
-}: VaultIconInfoProps) => {
+}: IconTooltipButtonProps) => {
   return (
     <Tooltip
       content={tooltipContent}
@@ -53,3 +54,5 @@ export const VaultIconInfo = ({
     </Tooltip>
   );
 };
+
+export { IconTooltipButton };
