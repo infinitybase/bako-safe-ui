@@ -296,9 +296,15 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
                           inputProps={{
                             placeholder: `Address ${index + 1}`,
                             _focusVisible: {
+                              border: '0px solid',
                               borderLeft: '2px solid',
                               borderLeftColor: 'textPrimary',
+                              outline: 'none',
                             },
+                            _hover: {
+                              bg: 'gray.550',
+                            },
+                            transition: 'all 0.2s ease-in-out',
                           }}
                         />
 
