@@ -6,20 +6,15 @@ import {
   GridItem,
   HStack,
   Icon,
-  Stack,
-  Text,
   VStack,
 } from 'bako-ui';
 import { FaRegPlusSquare } from 'react-icons/fa';
 import { IoChevronBack } from 'react-icons/io5';
 
-import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
+import { CustomSkeleton, HomeIcon } from '@/components';
 import { EmptyState } from '@/components/emptyState';
-import { AddressBookIcon } from '@/components/icons/address-book';
-import { TransactionsIcon } from '@/components/icons/transactions';
 import { Pages, PermissionRoles } from '@/modules/core';
 import { useAddressNicknameResolver } from '@/modules/core/hooks/useAddressNicknameResolver';
-import { ActionCard } from '@/modules/home/components/ActionCard';
 import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import {
@@ -46,12 +41,7 @@ const AddressBookPage = () => {
       },
       contacts: { contactToDelete, contactToEdit },
       dialog: { contactDialog, deleteContactDialog },
-      handlers: {
-        handleDeleteContact,
-        handleOpenDialog,
-        navigate,
-        setContactToDelete,
-      },
+      handlers: { handleDeleteContact, handleOpenDialog, setContactToDelete },
     },
     screenSizes: { isExtraSmall },
   } = useWorkspaceContext();
@@ -189,81 +179,10 @@ const AddressBookPage = () => {
                 onClick={() => handleOpenDialog({})}
               >
                 <FaRegPlusSquare />
-                Add new favorite
+                Add new
               </Button>
             </Box>
           )}
-        </Box>
-
-        <Stack w="full" direction={{ base: 'column', md: 'row' }} gap={6}>
-          <ActionCard.Container
-            flex={1}
-            onClick={() =>
-              navigate(Pages.userVaults({ workspaceId: workspace?.id }))
-            }
-          >
-            <ActionCard.Icon>
-              <VaultIcon boxSize={6} />
-            </ActionCard.Icon>
-            <Box>
-              <ActionCard.Title>Vaults</ActionCard.Title>
-              <ActionCard.Description>
-                Access and Manage All Your Vaults in One Place.
-              </ActionCard.Description>
-            </Box>
-          </ActionCard.Container>
-
-          <ActionCard.Container
-            flex={1}
-            onClick={() => {
-              return navigate(
-                Pages.userTransactions({
-                  workspaceId: workspace?.id,
-                }),
-              );
-            }}
-          >
-            <ActionCard.Icon>
-              <TransactionsIcon boxSize={6} />
-            </ActionCard.Icon>
-            <Box>
-              <ActionCard.Title>Transactions</ActionCard.Title>
-              <ActionCard.Description>
-                Manage Transactions Across All Vaults in One Place.
-              </ActionCard.Description>
-            </Box>
-          </ActionCard.Container>
-
-          <ActionCard.Container
-            flex={1}
-            onClick={() =>
-              navigate(Pages.addressBook({ workspaceId: workspace?.id }))
-            }
-          >
-            <ActionCard.Icon>
-              <AddressBookIcon boxSize={6} />
-            </ActionCard.Icon>
-            <Box>
-              <ActionCard.Title>Address book</ActionCard.Title>
-              <ActionCard.Description>
-                Access and Manage Your Contacts for Easy Transfers and Vault
-                Creation.
-              </ActionCard.Description>
-            </Box>
-          </ActionCard.Container>
-        </Stack>
-
-        <Box
-          w="full"
-          display="flex"
-          alignItems={'center'}
-          flexDir={isExtraSmall ? 'column' : 'row'}
-          gap={isExtraSmall ? 2 : 4}
-          mt={6}
-        >
-          <Text fontWeight="semibold" color="grey.75">
-            Address book
-          </Text>
         </Box>
 
         <Grid
@@ -271,9 +190,7 @@ const AddressBookPage = () => {
           templateColumns={{
             base: 'repeat(1, 1fr)',
             sm: 'repeat(2, 1fr)',
-            md: 'repeat(3, 1fr)',
-            xl: 'repeat(3, 1fr)',
-            '2xl': 'repeat(4, 1fr)',
+            lg: 'repeat(3, 1fr)',
           }}
           gap={6}
           pb={0}
@@ -289,8 +206,6 @@ const AddressBookPage = () => {
               (contact) => contact.handle_info?.resolver === user?.address,
             )?.handle_info;
 
-            // commit
-
             const _contact = user?.address
               ? resolveAddressContactHandle(
                   user.address,
@@ -304,7 +219,6 @@ const AddressBookPage = () => {
                   nickname={nickname}
                   address={user.address}
                   avatar={user.avatar}
-                  dialog={deleteContactDialog}
                   showActionButtons={hasPermission([
                     PermissionRoles?.OWNER,
                     PermissionRoles?.ADMIN,
