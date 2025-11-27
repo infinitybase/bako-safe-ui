@@ -299,12 +299,15 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
                               border: '0px solid',
                               borderLeft: '2px solid',
                               borderLeftColor: 'textPrimary',
+                              bg: 'gray.550',
                               outline: 'none',
                             },
                             _hover: {
                               bg: 'gray.550',
+                              borderLeft: '2px solid',
+                              borderLeftColor: 'textPrimary',
                             },
-                            transition: 'all 0.2s ease-in-out',
+                            transition: 'all 0.3s',
                           }}
                         />
 
