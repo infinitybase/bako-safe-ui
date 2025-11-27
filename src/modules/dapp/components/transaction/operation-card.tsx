@@ -13,7 +13,6 @@ import { bn } from 'fuels';
 import { useCallback, useMemo } from 'react';
 import { PiCopyThin } from 'react-icons/pi';
 
-import { ChevronDown2Icon } from '@/components';
 import { useWorkspaceContext } from '@/modules';
 import { AddressUtils } from '@/modules/core';
 
@@ -23,19 +22,7 @@ import {
   SimplifiedOperation,
   TxCategory,
 } from '../../services/simplify-transaction';
-
-interface OperationArrowDisplayProps {
-  label: string;
-}
-
-const OperationArrowDisplay = ({ label }: OperationArrowDisplayProps) => (
-  <Flex w="full" alignItems="center" p={4} gap={3} align="center">
-    <ChevronDown2Icon color="gray.400" w={9} h={4} />
-    <Text fontWeight={500} color="gray.400" fontSize="xs" lineHeight="12px">
-      {label}
-    </Text>
-  </Flex>
-);
+import { DappCommon } from '../common';
 
 interface AssetDisplayProps {
   assets?: SimplifiedAsset[];
@@ -227,7 +214,7 @@ export const DappTransactionOperationCard = (
 
       {!isContract && <AssetDisplay assets={operation.assets} />}
 
-      <OperationArrowDisplay
+      <DappCommon.OperationArrow
         label={isContract ? 'Calling contract' : 'Sending funds'}
       />
 
@@ -244,7 +231,7 @@ export const DappTransactionOperationCard = (
         <>
           <AssetDisplay assets={operation.assetsToFrom} />
 
-          <OperationArrowDisplay label="Sends funds" />
+          <DappCommon.OperationArrow label="Sends funds" />
 
           <AddressDisplay
             address={operation.from.address}
