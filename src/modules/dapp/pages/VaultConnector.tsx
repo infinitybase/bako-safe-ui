@@ -21,7 +21,7 @@ import { VaultItemBox } from '@/modules/vault/components/modal/box';
 import { useVaultDrawer } from '@/modules/vault/components/modal/hook';
 import { decodeConnectorType } from '@/utils';
 
-import { DappTransaction } from '../components';
+import { DappCommon } from '../components';
 import { useAuthSocket } from '../hooks';
 import {
   UserConnectorCompatibilityState,
@@ -214,7 +214,7 @@ const VaultConnector = () => {
       </Dapp.ScrollableContent>
 
       <Dapp.FixedFooter>
-        <DappTransaction.RequestingFrom name={name} origin={origin} />
+        <DappCommon.RequestingFrom name={name} origin={origin} />
         <HStack gap={6} w="full">
           <Button
             variant="subtle"
