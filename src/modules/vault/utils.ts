@@ -392,8 +392,12 @@ export const calculateTextWidth = (text: string): number => {
   return Math.max(min, width + SYMBOL_PADDING);
 };
 
-export const getSignaturesCount = (vault: PredicateAndWorkspace): number => {
+export const getSignaturesCount = (
+  vault?: PredicateAndWorkspace | IPredicate,
+): number => {
   try {
+    if (!vault) return 1;
+
     const { SIGNATURES_COUNT } =
       typeof vault.configurable === 'string'
         ? JSON.parse(vault.configurable)
@@ -401,6 +405,6 @@ export const getSignaturesCount = (vault: PredicateAndWorkspace): number => {
     return SIGNATURES_COUNT ?? 1;
   } catch (error) {
     console.error('Failed to parse vault configurable:', error);
-    return 0;
+    return 1;
   }
 };
