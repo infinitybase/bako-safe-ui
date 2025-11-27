@@ -9,6 +9,7 @@ export * from './bako';
 export * from './bako-id';
 export * from './bit-coin';
 export * from './bookmark';
+export * from './bookmark-favorite';
 export * from './bridge';
 export * from './chart-bullet';
 export * from './check-icon';
