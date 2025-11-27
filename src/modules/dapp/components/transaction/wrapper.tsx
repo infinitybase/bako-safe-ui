@@ -93,8 +93,6 @@ export const DappTransactionWrapper = (props: DappTransactionWrapperProps) => {
         />
       </Box>
 
-      <Dapp.Profile />
-
       <Dapp.ScrollableContent isLoading={isLoading}>
         <Dapp.Header title={title} onClose={cancel} />
         <DappTransaction.OperationPanel
