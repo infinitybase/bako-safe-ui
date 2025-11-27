@@ -16,7 +16,7 @@ import { Address, isB256, isEvmAddress } from 'fuels';
 import { useMemo, useRef, useState } from 'react';
 import { Controller } from 'react-hook-form';
 
-import { Autocomplete, RemoveIcon } from '@/components';
+import { Autocomplete, CloseCircle } from '@/components';
 import { Plus2Icon } from '@/components/icons/plus2';
 import {
   AddToAddressBook,
@@ -123,34 +123,53 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
         isEdit={false}
       />
 
-      <Box p={0} maxH={500}>
+      <Box p={0} h="full">
         <VStack
           w="full"
-          overflowY="scroll"
           aria-label="Scroll vault form"
           justifyContent="space-between"
-          css={{
-            '&::-webkit-scrollbar': {
-              display: 'none',
-            },
-          }}
-          onWheel={(e) => {
-            e.stopPropagation();
-          }}
-          h={{ base: '60vh', sm: 500 }}
+          h="full"
         >
           <VStack
             mt={4}
             w="full"
             gap={2}
+            overflowY="scroll"
             flex={1}
             onClick={() => {
               handleFirstIsFirstLoad();
             }}
             ref={optionsScrollableContainerRef}
+            css={{
+              '&::-webkit-scrollbar': {
+                display: 'none',
+              },
+            }}
+            onWheel={(e) => {
+              e.stopPropagation();
+            }}
+            h={{ base: '60vh', sm: 500 }}
           >
             {addresses.fields.map(({ id }, index) => {
               const first = index === 0;
+
+              if (first) {
+                return (
+                  <Controller
+                    key={id}
+                    name={`addresses.${index}.value`}
+                    control={form.control}
+                    render={({ field }) => {
+                      return (
+                        <MyAccountSignerCard
+                          address={field.value!}
+                          providerInstance={providerInstance}
+                        />
+                      );
+                    }}
+                  />
+                );
+              }
 
               return (
                 <Controller
@@ -174,7 +193,6 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
                     const value = field.value || '';
 
                     const showAddToAddressBook =
-                      !first &&
                       !fieldState.invalid &&
                       AddressUtils.isValid(value) &&
                       optionsRequests[index].isSuccess &&
@@ -189,24 +207,13 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
                             : value,
                         );
 
-                    if (first && field.value) {
-                      return (
-                        <MyAccountSignerCard
-                          address={field.value}
-                          providerInstance={providerInstance}
-                        />
-                      );
-                    }
-
                     return (
                       <Field.Root
                         invalid={fieldState.invalid}
                         id={`Address ${index + 1}`}
+                        gap={0}
                       >
                         <Autocomplete
-                          label={
-                            first ? 'Your address' : `Address ${index + 1}`
-                          }
                           actionOnFocus={() => {
                             if (index !== lastAddressIndex) {
                               setCurrentInputIndex(index);
@@ -269,10 +276,9 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
                           clearable={false}
                           rightElement={
                             <Icon
-                              as={RemoveIcon}
+                              as={CloseCircle}
                               fontSize="md"
                               cursor="pointer"
-                              display={first ? 'none' : 'block'}
                               onClick={() => {
                                 const minSigners = form.getValues('minSigners');
                                 const addressesLength =
@@ -287,9 +293,16 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
                               }}
                             />
                           }
+                          inputProps={{
+                            placeholder: `Address ${index + 1}`,
+                            _focusVisible: {
+                              borderLeft: '2px solid',
+                              borderLeftColor: 'textPrimary',
+                            },
+                          }}
                         />
 
-                        <Field.HelperText color="error.500">
+                        <Field.HelperText color="red.500" mt={1}>
                           {fieldState.error?.message}
                         </Field.HelperText>
 
@@ -320,7 +333,7 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
             <Button
               w="full"
               variant="subtle"
-              bg="bg.panel"
+              bg="bg.muted"
               disabled={isDisabled}
               onClick={() => {
                 addresses.append();
