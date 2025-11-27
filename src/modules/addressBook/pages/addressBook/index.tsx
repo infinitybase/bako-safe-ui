@@ -1,17 +1,6 @@
-import {
-  Box,
-  Breadcrumb,
-  Button,
-  Grid,
-  GridItem,
-  HStack,
-  Icon,
-  VStack,
-} from 'bako-ui';
-import { FaRegPlusSquare } from 'react-icons/fa';
-import { IoChevronBack } from 'react-icons/io5';
+import { Box, Button, Grid, GridItem, HStack, VStack } from 'bako-ui';
 
-import { CustomSkeleton, HomeIcon } from '@/components';
+import { BookmarkFavoriteIcon, CustomSkeleton, HomeIcon } from '@/components';
 import { EmptyState } from '@/components/emptyState';
 import { Pages, PermissionRoles } from '@/modules/core';
 import { useAddressNicknameResolver } from '@/modules/core/hooks/useAddressNicknameResolver';
@@ -43,7 +32,7 @@ const AddressBookPage = () => {
       dialog: { contactDialog, deleteContactDialog },
       handlers: { handleDeleteContact, handleOpenDialog, setContactToDelete },
     },
-    screenSizes: { isExtraSmall },
+    screenSizes: { isExtraSmall, isSmall },
   } = useWorkspaceContext();
 
   const { data: contacts } = listContactsRequest;
@@ -89,15 +78,19 @@ const AddressBookPage = () => {
           rowGap={4}
           mb={isExtraSmall ? 4 : 'unset'}
         >
-          <HStack w={isExtraSmall ? 'full' : 'unset'}>
+          <HStack w={isExtraSmall ? 'full' : 'unset'} gap={3}>
             <Button
-              w={isExtraSmall ? 'full' : 'unset'}
-              colorPalette="primary"
               fontWeight="semibold"
-              fontSize={15}
-              px={3}
-              bg="dark.100"
-              color="grey.200"
+              fontSize="2xs"
+              size="xs"
+              bgColor="gray.600"
+              color="gray.200"
+              _hover={{
+                bg: 'gray.550',
+                color: 'textPrimary',
+              }}
+              gap={2}
+              p={2}
               onClick={() =>
                 onSingleWorkspace
                   ? goHome()
@@ -109,61 +102,24 @@ const AddressBookPage = () => {
                     )
               }
             >
-              <IoChevronBack size={22} />
-              Back home
+              <HomeIcon w={5} color="gray.200" />
+              {isSmall ? '' : 'HOME'}
             </Button>
 
-            <Breadcrumb.Root display={{ base: 'none', sm: 'initial' }} ml={8}>
-              <Breadcrumb.List>
-                <Breadcrumb.Item>
-                  <Breadcrumb.Link
-                    fontSize="sm"
-                    color="grey.200"
-                    fontWeight="semibold"
-                    onClick={() => goHome()}
-                  >
-                    <Icon mr={2} as={HomeIcon} w={4} color="grey.200" />
-                    Home
-                  </Breadcrumb.Link>
-                </Breadcrumb.Item>
-
-                {/* Commented out code to temporarily disable workspaces. */}
-
-                {/* <BreadcrumbItem hidden={onSingleWorkspace}>
-                {workspace?.id && (
-                  <BreadcrumbLink
-                    fontSize="sm"
-                    color="grey.200"
-                    fontWeight="semibold"
-                    onClick={() =>
-                      handleWorkspaceSelection(
-                        workspace?.id,
-                        Pages.workspace({
-                          workspaceId: workspace?.id,
-                        }),
-                      )
-                    }
-                    maxW={40}
-                    isTruncated
-                  >
-                    {workspace?.name}
-                  </BreadcrumbLink>
-                )}
-              </BreadcrumbItem> */}
-                <Breadcrumb.Separator />
-                <Breadcrumb.Item>
-                  <Breadcrumb.Link
-                    id="adressbookBread"
-                    fontSize="sm"
-                    color="grey.200"
-                    fontWeight="semibold"
-                    href="#"
-                  >
-                    Address book
-                  </Breadcrumb.Link>
-                </Breadcrumb.Item>
-              </Breadcrumb.List>
-            </Breadcrumb.Root>
+            <Button
+              flex={isExtraSmall ? 1 : 'unset'}
+              fontWeight="semibold"
+              fontSize="2xs"
+              size="xs"
+              bgColor="gray.550"
+              color="gray.200"
+              cursor="default"
+              gap={2}
+              p={2}
+            >
+              <BookmarkFavoriteIcon w={4} color="gray.200" />
+              ADDRESS BOOK
+            </Button>
           </HStack>
 
           {hasPermission([
@@ -174,11 +130,16 @@ const AddressBookPage = () => {
             <Box w={isExtraSmall ? 'full' : 'unset'}>
               <Button
                 w="full"
-                colorPalette="primary"
-                fontWeight="bold"
+                _hover={{
+                  bg: 'bg.muted',
+                  color: 'textPrimary',
+                }}
+                bgColor="gray.700"
+                size="xs"
+                px={3}
+                color="gray.300"
                 onClick={() => handleOpenDialog({})}
               >
-                <FaRegPlusSquare />
                 Add new
               </Button>
             </Box>
