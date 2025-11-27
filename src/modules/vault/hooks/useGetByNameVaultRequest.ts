@@ -10,6 +10,7 @@ const useCheckVaultName = (name: string, ignoreId?: string) => {
     queryFn: () => VaultService.getByName(name, ignoreId),
     refetchOnWindowFocus: false,
     enabled: !!name && name.length > 0,
+    staleTime: 1000 * 60 * 5, // 5 minutes
   });
 };
 

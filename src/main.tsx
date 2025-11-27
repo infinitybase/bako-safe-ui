@@ -13,6 +13,8 @@ import { Provider } from '@/components/ui/provider';
 import { BakoSafeQueryClientProvider } from '@/config';
 
 import { SocketProvider } from './config/socket';
+import { NetworkSwitchOverlay } from './modules/network/components/NetworkSwitchOverlay';
+import { NetworkSwitchProvider } from './modules/network/providers/NetworkSwitchProvider';
 import TransactionsProvider from './modules/transactions/providers/TransactionsProvider';
 import { WorkspaceProvider } from './modules/workspace/WorkspaceProvider';
 import { getEnvironment } from './utils/enviroment';
@@ -83,13 +85,16 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
           >
             <BakoSafeQueryClientProvider>
               <BrowserRouter>
-                <TransactionsProvider>
-                  <WorkspaceProvider>
-                    <SocketProvider>
-                      <App />
-                    </SocketProvider>
-                  </WorkspaceProvider>
-                </TransactionsProvider>
+                <NetworkSwitchProvider>
+                  <TransactionsProvider>
+                    <WorkspaceProvider>
+                      <SocketProvider>
+                        <NetworkSwitchOverlay />
+                        <App />
+                      </SocketProvider>
+                    </WorkspaceProvider>
+                  </TransactionsProvider>
+                </NetworkSwitchProvider>
               </BrowserRouter>
             </BakoSafeQueryClientProvider>
           </PrivyProvider>

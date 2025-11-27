@@ -9,7 +9,7 @@ import { useTransactionsContext } from '@/modules/transactions/providers/Transac
 import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 const HomeTransactions = () => {
-  const inView = useInView();
+  const { ref: inViewRef, inView } = useInView({ threshold: 0.1 });
   const {
     homeTransactions: {
       transactions,
@@ -120,7 +120,7 @@ const HomeTransactions = () => {
           </Box>
         ))}
 
-      <Box ref={inView.ref} />
+      <Box ref={inViewRef} />
     </Box>
   );
 };

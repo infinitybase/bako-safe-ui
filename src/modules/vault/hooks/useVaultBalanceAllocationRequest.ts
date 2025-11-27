@@ -7,7 +7,8 @@ export const useVaultAllocationRequest = (predicateId: string) => {
     queryKey: ['predicate-allocation', predicateId],
     queryFn: () => VaultService.getBalanceAllocation(predicateId),
     enabled: !!predicateId,
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: false,
+    staleTime: 1000 * 60 * 5, // 5 minutes - socket events handle real-time updates
   });
 
   return { allocation, ...rest };

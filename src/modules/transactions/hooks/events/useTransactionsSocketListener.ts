@@ -1,13 +1,11 @@
-import { QueryKey } from '@tanstack/react-query';
+import { QueryKey, useQueryClient } from '@tanstack/react-query';
 import { useCallback } from 'react';
 
 import { HomeQueryKey, SocketEvents, WorkspacesQueryKey } from '@/modules/core';
 import { useSocketEvent } from '@/modules/core/hooks/socket/useSocketEvent';
 import { useReactQueryUpdate } from '@/modules/core/hooks/useReactQueryUpdate';
-import {
-  getTransactionHistoryQueryKey,
-  useTransactionsSignaturePending,
-} from '@/modules/transactions/hooks';
+import { getTransactionHistoryQueryKey } from '@/modules/transactions/hooks';
+import { PENDING_TRANSACTIONS_QUERY_KEY } from '@/modules/transactions/hooks/list/useTotalSignaturesPendingRequest';
 import { TransactionService } from '@/modules/transactions/services';
 import {
   ITransactionInfinityQueryData,
@@ -18,6 +16,7 @@ import { vaultInfinityQueryKey } from '@/modules/vault/hooks/list/useVaultTransa
 import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 export const useTransactionSocketListener = (key?: QueryKey) => {
+  const queryClient = useQueryClient();
   const {
     authDetails: { userInfos },
   } = useWorkspaceContext();
@@ -73,8 +72,13 @@ export const useTransactionSocketListener = (key?: QueryKey) => {
     TransactionService.updateTransactionHistoryReactQuery,
   );
 
-  const { refetch: updateSignaturePending } = useTransactionsSignaturePending();
-  const handleSignaturePending = () => updateSignaturePending();
+  // Invalidate pending signatures cache instead of forcing refetch
+  // This only triggers a refetch if the query is actively being observed
+  const handleSignaturePending = useCallback(() => {
+    queryClient.invalidateQueries({
+      queryKey: [PENDING_TRANSACTIONS_QUERY_KEY],
+    });
+  }, [queryClient]);
 
   useSocketEvent<ITransactionReactQueryUpdate>(SocketEvents.TRANSACTION, [
     updateTransactions,

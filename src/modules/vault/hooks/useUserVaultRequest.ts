@@ -27,7 +27,7 @@ const useUserVaultRequest = (
     refetchOnWindowFocus: false,
     enabled: window.location.pathname != '/',
     refetchOnMount: false,
-    staleTime: 500,
+    staleTime: 1000 * 60 * 5, // 5 minutes - socket events handle real-time updates
   });
 
   const vaults = useMemo(

@@ -1,4 +1,5 @@
 import { useFuel } from '@fuels/react';
+import { useIsFetching } from '@tanstack/react-query';
 import {
   Avatar,
   Box,
@@ -16,7 +17,7 @@ import {
 } from 'bako-ui';
 import { AddressUtils as BakoAddressUtils, TypeUser } from 'bakosafe';
 import { Address, Network } from 'fuels';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import logo from '@/assets/bakoLogoWhite.svg';
@@ -25,7 +26,7 @@ import { AddressBook2Icon } from '@/components/icons/address-book-2';
 import { DisconnectIcon } from '@/components/icons/disconnect';
 import { FeedbackIcon } from '@/components/icons/feedback';
 import { SettingsTopMenuIcon } from '@/components/icons/settings-top-menu';
-import { queryClient } from '@/config';
+import { invalidateQueriesOnNetworkSwitch } from '@/modules/core/utils/react-query';
 import {
   IDefaultMessage,
   Pages,
@@ -33,6 +34,7 @@ import {
   useEvm,
   useUserWorkspacesRequest,
 } from '@/modules';
+import { useNetworkSwitch } from '@/modules/network/providers/NetworkSwitchProvider';
 import { useBakoIdAvatar } from '@/modules/core/hooks/bako-id';
 import { EConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
 import { useSocketEvent } from '@/modules/core/hooks/socket/useSocketEvent';
@@ -56,6 +58,11 @@ const UserBox = () => {
   const [openMenu, setOpenMenu] = useState(false);
   const { authDetails } = useWorkspaceContext();
   const { currentNetwork } = useNetworks();
+  const {
+    isSwitchingNetwork,
+    startNetworkSwitch,
+    finishNetworkSwitch,
+  } = useNetworkSwitch();
   const networkDrawerState = useDisclosure();
   const networkDialogState = useDisclosure();
   const toast = useNotification();
@@ -69,6 +76,8 @@ const UserBox = () => {
     authDetails.userInfos?.address,
   );
   const navigate = useNavigate();
+  const isFetching = useIsFetching();
+  const hasStartedNetworkSwitch = useRef(false);
 
   const { avatar, isLoading: isLoadingAvatar } = useBakoIdAvatar(
     authDetails.userInfos?.address,
@@ -128,10 +137,23 @@ const UserBox = () => {
     setUnreadCounter(unreadCounter);
   }, []);
 
+  // Finish network switch when all queries are done fetching
+  useEffect(() => {
+    if (hasStartedNetworkSwitch.current && isSwitchingNetwork && isFetching === 0) {
+      finishNetworkSwitch();
+      hasStartedNetworkSwitch.current = false;
+    }
+  }, [isFetching, isSwitchingNetwork, finishNetworkSwitch]);
+
   useSocketEvent<IDefaultMessage<Network>>(SocketEvents.SWITCH_NETWORK, [
     (message) => {
       if (message.type === SocketEvents.SWITCH_NETWORK) {
-        queryClient.invalidateQueries();
+        // Start network switch loading state
+        hasStartedNetworkSwitch.current = true;
+        startNetworkSwitch();
+
+        // Smart invalidation: preserves immutable data while invalidating network-dependent queries
+        invalidateQueriesOnNetworkSwitch();
       }
     },
   ]);
