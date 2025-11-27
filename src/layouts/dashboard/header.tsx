@@ -33,6 +33,7 @@ import {
   useEvm,
   useUserWorkspacesRequest,
 } from '@/modules';
+import { useNetworkSwitch } from '@/modules/network/providers/NetworkSwitchProvider';
 import { useBakoIdAvatar } from '@/modules/core/hooks/bako-id';
 import { EConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
 import { useSocketEvent } from '@/modules/core/hooks/socket/useSocketEvent';
@@ -56,6 +57,7 @@ const UserBox = () => {
   const [openMenu, setOpenMenu] = useState(false);
   const { authDetails } = useWorkspaceContext();
   const { currentNetwork } = useNetworks();
+  const { startNetworkSwitch, finishNetworkSwitch } = useNetworkSwitch();
   const networkDrawerState = useDisclosure();
   const networkDialogState = useDisclosure();
   const toast = useNotification();
@@ -131,8 +133,16 @@ const UserBox = () => {
   useSocketEvent<IDefaultMessage<Network>>(SocketEvents.SWITCH_NETWORK, [
     (message) => {
       if (message.type === SocketEvents.SWITCH_NETWORK) {
+        // Start network switch loading state
+        startNetworkSwitch();
+
         // Smart invalidation: preserves immutable data while invalidating network-dependent queries
-        invalidateQueriesOnNetworkSwitch();
+        invalidateQueriesOnNetworkSwitch().then(() => {
+          // Finish network switch loading state after queries are invalidated
+          setTimeout(() => {
+            finishNetworkSwitch();
+          }, 500);
+        });
       }
     },
   ]);

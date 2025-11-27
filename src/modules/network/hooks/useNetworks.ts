@@ -1,6 +1,6 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { Provider } from 'fuels';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useLocation } from 'react-router-dom';
 
@@ -8,6 +8,8 @@ import { useAuth } from '@/modules';
 import { LATEST_INFO_QUERY_KEY } from '@/modules/auth/hooks/useUserInfoRequest';
 import { localStorageKeys } from '@/modules/auth/services';
 import { invalidateQueriesOnNetworkSwitch } from '@/modules/core/utils/react-query';
+
+import NetworkSwitchContext from '../providers/NetworkSwitchProvider';
 
 import {
   availableNetWorks,
@@ -48,6 +50,7 @@ const useNetworks = (onClose?: () => void) => {
   const { search } = useLocation();
   const fromConnector = !!new URLSearchParams(search).get('sessionId');
 
+  const networkSwitchContext = useContext(NetworkSwitchContext);
   const queryClient = useQueryClient();
   const checkNetworkRequest = useCheckNetworkRequest();
   const { data: networks, refetch: refetchNetworks } = useListNetworksRequest();
@@ -123,6 +126,9 @@ const useNetworks = (onClose?: () => void) => {
     // Close drawer immediately for better UX
     handleClose();
 
+    // Start network switch loading state
+    networkSwitchContext?.startNetworkSwitch();
+
     // Save network in background (only creates Provider if network doesn't exist)
     saveNetwork(url!);
 
@@ -144,7 +150,17 @@ const useNetworks = (onClose?: () => void) => {
 
           // Smart invalidation: preserves immutable data (assets, Bako ID, etc.)
           // while invalidating network-dependent queries
-          invalidateQueriesOnNetworkSwitch();
+          invalidateQueriesOnNetworkSwitch().then(() => {
+            // Finish network switch loading state after queries are invalidated
+            // Small delay to allow React Query to start fetching
+            setTimeout(() => {
+              networkSwitchContext?.finishNetworkSwitch();
+            }, 500);
+          });
+        },
+        onError: () => {
+          // Finish network switch loading state on error
+          networkSwitchContext?.finishNetworkSwitch();
         },
       },
     );
