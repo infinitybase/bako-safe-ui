@@ -144,7 +144,7 @@ const getUserAddress = (type?: TypeUser, account?: string): string => {
     return BakoAddressUtils.parseFuelAddressToEth(account as string);
   }
 
-  if (type && account) {
+  if ((type === TypeUser.WEB_AUTHN || type === TypeUser.SOCIAL) && account) {
     return formatAddressByUserType(account, type);
   }
 
