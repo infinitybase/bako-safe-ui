@@ -80,8 +80,7 @@ const ContactCard = ({
               lineHeight="normal"
               truncate
             >
-              {nickname +
-                'asiasfuoashdfuhau fhuadfhaiusdfu asdufhuasdufuasdfu uasdfuhihuasdfh hfhfffffffff'}
+              {nickname}
             </Heading>
 
             <HStack>
