@@ -8,6 +8,7 @@ import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { UseTransactionSocket } from '../../hooks';
 import { SimplifiedTransaction } from '../../services/simplify-transaction';
+import { DappCommon } from '..';
 import { DappTransaction } from '.';
 import { TransactionAlert } from './alert';
 
@@ -104,7 +105,7 @@ export const DappTransactionWrapper = (props: DappTransactionWrapperProps) => {
 
       <Dapp.FixedFooter>
         <DappTransaction.Fee fee={transactionSummary?.fee} />
-        <DappTransaction.RequestingFrom name={name} origin={origin} />
+        <DappCommon.RequestingFrom name={name} origin={origin} />
         <Alert
           isLoading={isLoading}
           pendingSignerTransactions={pendingSignerTransactions}
