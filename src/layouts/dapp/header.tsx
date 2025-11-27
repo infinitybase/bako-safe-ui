@@ -29,7 +29,7 @@ const Header = ({
           {title}
         </Heading>
         {description && (
-          <Text fontWeight={400} color="gray.300" fontSize="xs">
+          <Text fontWeight={400} color="gray.400" fontSize="xs">
             {description}
           </Text>
         )}
