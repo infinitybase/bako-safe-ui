@@ -11,7 +11,7 @@ import {
   useClipboard,
   VStack,
 } from 'bako-ui';
-import { useEffect, useMemo, useState } from 'react';
+import { memo, useEffect, useMemo, useState } from 'react';
 import { RiFileCopyFill } from 'react-icons/ri';
 
 import { TeamIcon } from '@/components';
@@ -33,7 +33,7 @@ interface VaultCardProps extends CardRootProps {
   id: string;
   workspaceId: string;
 }
-export const VaultCard = ({
+export const VaultCard = memo(function VaultCard({
   name,
   inHome,
   isHidden,
@@ -43,7 +43,7 @@ export const VaultCard = ({
   id,
   workspaceId,
   ...rest
-}: VaultCardProps) => {
+}: VaultCardProps) {
   const {
     screenSizes: { isExtraSmall },
     userVaults,
@@ -201,4 +201,4 @@ export const VaultCard = ({
       </Card.Footer>
     </Card.Root>
   );
-};
+});

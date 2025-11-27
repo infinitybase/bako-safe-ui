@@ -65,9 +65,11 @@ const useVaultTransactionsRequest = (
         return data;
       }),
     refetchOnReconnect: false,
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: false,
     enabled: !!params.predicateId && !!params.predicateId[0],
     initialPageParam: { offsetDb: 0, offsetFuel: 0 },
+    // Socket events handle real-time updates
+    staleTime: 1000 * 60 * 2, // 2 minutes
     getNextPageParam: (lastPage) => {
       if (lastPage?.data?.length === 0) {
         return undefined;

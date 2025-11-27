@@ -15,7 +15,8 @@ import {
   Text,
   VStack,
 } from 'bako-ui';
-import { useRef } from 'react';
+import { bn } from 'fuels';
+import { useMemo, useRef } from 'react';
 import { FaRegPlusSquare } from 'react-icons/fa';
 import { IoChevronBack } from 'react-icons/io5';
 import { Outlet } from 'react-router-dom';
@@ -36,6 +37,7 @@ import { TransactionsIcon } from '@/components/icons/transactions';
 import { Pages, PermissionRoles } from '@/modules/core';
 import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
 import { ActionCard } from '@/modules/home/components/ActionCard';
+import { useUserAllocationRequest } from '@/modules/home/hooks/useUserAllocationRequest';
 import {
   AssetsDetails,
   CreateVaultDialog,
@@ -70,8 +72,31 @@ const WorkspacePage = () => {
       workspaceVaults: { vaultsMax, extraCount },
     },
     screenSizes: { isMobile },
-    tokensUSD,
   } = useWorkspaceContext();
+
+  // Derive tokensUSD from allocation data instead of making a separate API call
+  const { allocation } = useUserAllocationRequest();
+  const tokensUSD = useMemo(() => {
+    if (!allocation?.data) return {};
+
+    return allocation.data.reduce<Record<string, { usdAmount: number }>>(
+      (acc, item) => {
+        if (!item.assetId) return acc;
+
+        // Calculate unit price: amountInUSD / amount
+        const amountFormatted = bn(item.amount).formatUnits();
+        const amountNumber = Number(amountFormatted.replace(/,/g, ''));
+
+        // Avoid division by zero
+        const unitPrice =
+          amountNumber > 0 ? item.amountInUSD / amountNumber : 0;
+
+        acc[item.assetId.toLowerCase()] = { usdAmount: unitPrice };
+        return acc;
+      },
+      {},
+    );
+  }, [allocation?.data]);
 
   const recentVaults = latestPredicates.data?.predicates?.data;
 
@@ -385,7 +410,7 @@ const WorkspacePage = () => {
                         viewAllRedirect={Pages.balanceWorkspace({
                           workspaceId,
                         })}
-                        tokensUSD={tokensUSD.data}
+                        tokensUSD={tokensUSD}
                       />
                     </HStack>
                   )}

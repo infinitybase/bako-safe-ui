@@ -37,10 +37,11 @@ const useHomeTransactionsRequest = ({
 
       return { offsetDb: lastPage.offsetDb, offsetFuel: lastPage.offsetFuel };
     },
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: false,
     enabled: !!workspaceId && location.pathname != '/',
     refetchOnMount: false,
-    staleTime: 500, // 500ms second to prevent request spam
+    // Socket events handle real-time updates, no need for aggressive refetch
+    staleTime: 1000 * 60 * 2, // 2 minutes
   });
 };
 
