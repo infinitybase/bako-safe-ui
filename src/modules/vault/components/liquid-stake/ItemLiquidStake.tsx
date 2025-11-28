@@ -28,7 +28,8 @@ export function ItemLiquidStake({
       as={GridItem}
       borderRadius="lg"
       flex={1}
-      borderColor="bg.muted"
+      borderWidth={1}
+      borderColor="gray.600"
       width="full"
       minW={value.length > 9 ? '190px' : '140px'}
     >
