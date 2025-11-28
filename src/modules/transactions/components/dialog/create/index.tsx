@@ -105,16 +105,11 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
   return (
     <Dialog.Modal
       {...props}
-      open
-      onOpenChange={(e) => {
-        if (!e.open) handleClose();
-      }}
       closeOnInteractOutside={false}
       size={{ base: 'full', sm: 'md' }}
       modalContentProps={{ py: 6 }}
     >
       <Dialog.Header
-        onClose={handleClose}
         position={{ base: 'static', sm: 'relative' }}
         mb={0}
         maxH={40}
