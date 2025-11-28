@@ -113,6 +113,7 @@ const useAddressBookAutocompleteOptions = ({
       includePersonal,
       canRepeatAddresses ? '' : excludeContactsQueryKey,
       canRepeatAddresses ? [''] : excludeContacts,
+      15,
     );
 
   const formattedQueries = useMemo(() => {
@@ -135,6 +136,7 @@ const useAddressBookAutocompleteOptions = ({
     optionsRequests: formattedQueries,
     handleFieldOptions,
     optionRef: lastElementRef,
+    infinityContacts: handleQueryData(infinityContacts || []),
   };
 };
 
