@@ -246,7 +246,7 @@ const Autocomplete = ({
           borderRadius="8px"
           padding={2}
           position="absolute"
-          zIndex={300}
+          zIndex={9000}
           w="full"
           top="100%"
         >
