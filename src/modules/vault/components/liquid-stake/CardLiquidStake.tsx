@@ -1,18 +1,9 @@
-import {
-  Box,
-  Button,
-  Card,
-  Grid,
-  HStack,
-  Icon,
-  Stack,
-  Text,
-  VStack,
-} from 'bako-ui';
+import { Box, Button, Card, Grid, HStack, Image, Text, VStack } from 'bako-ui';
 import { Vault } from 'bakosafe';
 import { useMemo, useState } from 'react';
 
-import { FuelIcon, RigIcon, TooltipNotEnoughBalance } from '@/components';
+import poweredByRig from '@/assets/svg/powered-by-rig.svg';
+import { TooltipNotEnoughBalance } from '@/components';
 import { Tooltip } from '@/components/ui/tooltip';
 import { useGetTokenInfos, useScreenSize } from '@/modules/core';
 import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
@@ -237,13 +228,12 @@ export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
               justifyContent="flex-end"
               display={{ base: 'none', md: 'flex' }}
             >
-              <Stack gap={1} alignItems="flex-end">
-                <Text fontSize="8px" color="gray.400">
-                  powered by
-                </Text>
-                <RigIcon w="32px" color="gray.400" />
-              </Stack>
-              <Icon as={FuelIcon} width="32px" />
+              <Image
+                src={poweredByRig}
+                alt="Powered by Rig"
+                w="auto"
+                maxH={8}
+              />
             </HStack>
 
             {Number(stFuelTokens) > 0 ? (
