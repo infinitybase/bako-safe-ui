@@ -18,17 +18,12 @@ import { Controller } from 'react-hook-form';
 
 import { Autocomplete, CloseCircle } from '@/components';
 import { Plus2Icon } from '@/components/icons/plus2';
-import {
-  AddToAddressBook,
-  CreateContactDialog,
-} from '@/modules/addressBook/components';
-import {
-  AddressesFields,
-  useAddressBookAutocompleteOptions,
-} from '@/modules/addressBook/hooks';
+import { AddToAddressBook } from '@/modules';
+import { CreateContactDialog } from '@/modules/addressBook/components';
+import { useAddressBookAutocompleteOptions } from '@/modules/addressBook/hooks';
+import { AddressUtils } from '@/modules/core';
 import { useBakoIDClient } from '@/modules/core/hooks/bako-id';
 import { ITemplate } from '@/modules/core/models';
-import { AddressUtils } from '@/modules/core/utils/address';
 import { UseCreateVaultReturn } from '@/modules/vault/hooks/create/useCreateVault';
 import { useWorkspaceContext } from '@/modules/workspace/hooks';
 import { AddressBookUtils } from '@/utils';
@@ -55,8 +50,8 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
       dialog: { contactDialog },
       requests: { listContactsRequest, createContactRequest },
       form: contactForm,
-      inView,
       workspaceId,
+      inView,
     },
     providerInstance,
   } = useWorkspaceContext();
@@ -76,14 +71,14 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
     }
   };
 
-  const { optionsRequests, handleFieldOptions, optionRef } =
+  const { optionsRequests, optionRef, infinityContacts } =
     useAddressBookAutocompleteOptions({
       workspaceId: workspaceId!,
       includePersonal: !userInfos.onSingleWorkspace,
       contacts: listContactsRequest.data!,
-      fields: form.watch('addresses') as AddressesFields,
+      fields: form.watch('addresses') || [],
       errors: form.formState.errors.addresses,
-      isUsingTemplate: true,
+      isUsingTemplate: false,
       isFirstLoading: isFirstLoad,
       dynamicCurrentIndex: currentInputIndex,
     });
@@ -177,12 +172,6 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
                   name={`addresses.${index}.value`}
                   control={form.control}
                   render={({ field, fieldState }) => {
-                    const appliedOptions = handleFieldOptions(
-                      field.value || '',
-                      optionsRequests[index]?.options ?? [],
-                      first,
-                    );
-
                     if (index && !fieldState.invalid && field.value) {
                       validateAddress.handler(field.value, index);
                     }
@@ -269,11 +258,11 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
 
                             return result;
                           }}
-                          options={appliedOptions}
+                          options={infinityContacts}
                           isLoading={isLoading}
                           disabled={first}
-                          inView={inView}
                           clearable={false}
+                          inView={inView}
                           rightElement={
                             <Icon
                               as={CloseCircle}
