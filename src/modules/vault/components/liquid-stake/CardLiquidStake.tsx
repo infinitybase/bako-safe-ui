@@ -278,7 +278,7 @@ export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
           </HStack>
           <Grid
             templateColumns={{ base: 'repeat(1, 1fr)', lg: 'repeat(2, 1fr)' }}
-            gap={6}
+            gap={3}
             flex={1}
             display={{ base: 'none', md: 'grid' }}
           >
