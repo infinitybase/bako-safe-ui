@@ -1,4 +1,4 @@
-import { Accordion, HStack, Text } from 'bako-ui';
+import { Accordion, HStack, Image, Span, Text } from 'bako-ui';
 import { memo, useCallback, useMemo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
@@ -37,8 +37,6 @@ const RecipientItem = ({
   accordion,
   isFeeCalcLoading,
   getBalanceAvailable,
-  hasEthForFee,
-  ethAssetId,
 }: RecipientItemProps) => {
   const { getFieldState, control } = useFormContext<ITransactionForm>();
   const {
@@ -53,10 +51,12 @@ const RecipientItem = ({
 
   const transaction = useWatch({ control, name: `transactions.${index}` });
 
-  const assetSlug = useMemo(
-    () => assets.getAssetInfo(transaction?.asset || '')?.slug,
+  const assetInfo = useMemo(
+    () => assets.getAssetInfo(transaction?.asset || ''),
     [assets, transaction?.asset],
   );
+
+  const assetSlug = useMemo(() => assetInfo?.slug, [assetInfo]);
 
   const fieldState = getFieldState(`transactions.${index}`);
 
@@ -111,20 +111,13 @@ const RecipientItem = ({
   return (
     <Accordion.Item
       value={index.toString()}
-      mb={6}
-      borderWidth={1}
-      borderColor={
-        !hasEthForFee &&
-        transaction?.asset === ethAssetId &&
-        !isCurrentAmountZero
-          ? 'red.500'
-          : 'bg.muted'
-      }
-      borderRadius={10}
-      backgroundColor="bg.panel"
+      my={3}
+      borderRadius="8px"
+      bg="bg.muted"
     >
       <TransactionAccordion.Item
         title={`Recipient ${index + 1}`}
+        assetLogo={<Image src={assetInfo?.icon} width="36px" height="36px" />}
         actions={
           <TransactionAccordion.Actions>
             <HStack gap={4}>
@@ -148,11 +141,11 @@ const RecipientItem = ({
         }
         resume={
           !hasEmptyField && (
-            <Text fontSize="sm" color="grey.500" mt={2}>
-              <b>
+            <Text fontSize="xs" color="textSecondary" mt={2}>
+              <Span color="textPrimary">
                 {isNFT ? 'NFT' : transaction?.amount} {isNFT ? '' : assetSlug}
-              </b>{' '}
-              to <b> {recipientLabel}</b>
+              </Span>{' '}
+              to <Span color="textPrimary"> {recipientLabel}</Span>
             </Text>
           )
         }

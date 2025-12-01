@@ -1,19 +1,20 @@
 import {
   Accordion,
   Box,
+  Flex,
   Heading,
+  Stack,
   useAccordionItemContext,
   VStack,
 } from 'bako-ui';
-import React, { useMemo } from 'react';
-
-import { useWorkspaceContext } from '@/modules/workspace/hooks';
+import React from 'react';
 
 interface AccordionItemProps {
   title: string;
   actions: React.ReactNode;
   resume: React.ReactNode;
   children: React.ReactNode;
+  assetLogo?: React.ReactNode;
 }
 
 const AccordionItem = ({
@@ -21,34 +22,34 @@ const AccordionItem = ({
   actions,
   children,
   resume,
+  assetLogo,
 }: AccordionItemProps) => {
-  const {
-    screenSizes: { isExtraSmall },
-  } = useWorkspaceContext();
   const { expanded: isOpen } = useAccordionItemContext();
-
-  const flexDirection = useMemo(
-    () => (isExtraSmall ? 'column' : 'row'),
-    [isExtraSmall],
-  );
 
   return (
     <>
       <Box p={0} alignItems="center" justifyContent="space-between">
-        <VStack w="full" py={5} px={5} alignItems="flex-start" gap={0}>
+        <VStack w="full" p={4} alignItems="flex-start" gap={0}>
           <Box
             w="full"
             display="flex"
-            flexDir={flexDirection}
-            alignItems="start"
+            flexDir={{ base: 'column', sm: 'row' }}
+            alignItems={{ base: 'start', sm: 'center' }}
             rowGap={6}
           >
-            <Box w="full" flex={2}>
-              <Heading fontSize="lg" fontWeight="extrabold" color="grey.200">
-                {title}
-              </Heading>
-              {!isOpen && resume}
-            </Box>
+            <Flex w="full" flex={2} alignItems="center" gap={3}>
+              {!isOpen && assetLogo && assetLogo}
+              <Stack gap={0}>
+                <Heading
+                  fontSize="xs"
+                  lineHeight="shorter"
+                  color="textSecondary"
+                >
+                  {title}
+                </Heading>
+                {!isOpen && resume}
+              </Stack>
+            </Flex>
             {actions}
           </Box>
         </VStack>
