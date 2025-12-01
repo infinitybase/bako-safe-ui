@@ -228,7 +228,7 @@ const useCreateTransactionForm = (params: UseCreateTransactionFormParams) => {
       name: '',
       transactions: [
         {
-          asset: NativeAssetId,
+          asset: '',
           value: '',
           amount: '',
           fee: '',
