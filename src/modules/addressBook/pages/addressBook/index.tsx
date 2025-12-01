@@ -65,14 +65,17 @@ const AddressBookPage = () => {
 
   return (
     <>
-      <CreateContactDialog
-        form={form}
-        dialog={contactDialog}
-        isLoading={
-          createContactRequest.isPending || updateContactRequest.isPending
-        }
-        isEdit={!!contactToEdit?.id}
-      />
+      {contactDialog.isOpen && (
+        <CreateContactDialog
+          form={form}
+          dialog={contactDialog}
+          isLoading={
+            createContactRequest.isPending || updateContactRequest.isPending
+          }
+          address={contactToEdit?.address}
+          isEdit={!!contactToEdit?.id}
+        />
+      )}
 
       {hasContacts && contactToDelete.nickname && (
         <DeleteContactDialog
@@ -319,7 +322,7 @@ const AddressBookPage = () => {
                     })
                   }
                   handleDelete={() => {
-                    setContactToDelete({ id, nickname });
+                    setContactToDelete({ id, nickname, address: user.address });
                     deleteContactDialog.onOpen();
                   }}
                 />
