@@ -58,7 +58,7 @@ export const RecipientList = ({
     >
       {children}
 
-      <Center mt={6} flexDirection="column" w="full">
+      <Center mt={3} flexDirection="column" w="full">
         {!hasEthForFee ? (
           <Text
             color="error.500"
