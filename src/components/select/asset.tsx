@@ -4,6 +4,7 @@ import {
   Flex,
   floatingStyles,
   HStack,
+  Loader,
   Select,
   Stack,
   Text,
@@ -130,7 +131,11 @@ const AssetSelect = ({
           <AssetSelectValue label={label} placeholder={placeholder} />
         </Select.Trigger>
         <Select.IndicatorGroup>
-          <Select.Indicator color="textPrimary" />
+          {isLoading ? (
+            <Loader size="sm" color="primary.main" />
+          ) : (
+            <Select.Indicator color="textPrimary" />
+          )}
         </Select.IndicatorGroup>
       </Select.Control>
       <Select.Portal>

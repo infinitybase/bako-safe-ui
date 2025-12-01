@@ -70,30 +70,33 @@ const RecipientFormAsset = ({
           onChange={(e) => {
             handleUpdateAmount(isNFTAsset(e), e);
           }}
+          isLoading={assets.isLoading}
         />
-        <Field.HelperText color={error?.message ? 'error.500' : 'grey.425'}>
-          {!isNFT && (
-            <Text display="flex" alignItems="center" mt={1}>
-              {value && parseFloat(balanceAvailable) > 0 ? (
-                isFeeCalcLoading ? (
-                  <>
-                    Balance (available):{' '}
-                    <Loader
-                      css={{ '--spinner-track-color': 'dark.100' }}
-                      size="xs"
-                      color="grey.425"
-                      ml={1}
-                    />
-                  </>
-                ) : (
-                  <>
-                    Balance (available): {slug} {balanceAvailable}
-                  </>
-                )
-              ) : null}
-            </Text>
-          )}
-        </Field.HelperText>
+        {value && (
+          <Field.HelperText color={error?.message ? 'error.500' : 'grey.425'}>
+            {!isNFT && (
+              <Text display="flex" alignItems="center" mt={1}>
+                {parseFloat(balanceAvailable) > 0 ? (
+                  isFeeCalcLoading ? (
+                    <>
+                      Balance (available):{' '}
+                      <Loader
+                        css={{ '--spinner-track-color': 'dark.100' }}
+                        size="xs"
+                        color="grey.425"
+                        ml={1}
+                      />
+                    </>
+                  ) : (
+                    <>
+                      Balance (available): {slug} {balanceAvailable}
+                    </>
+                  )
+                ) : null}
+              </Text>
+            )}
+          </Field.HelperText>
+        )}
       </Field.Root>
     </HStack>
   );
