@@ -1,6 +1,5 @@
 import {
   Box,
-  Breadcrumb,
   Button,
   Grid,
   GridItem,
@@ -12,7 +11,7 @@ import {
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { IoChevronBack } from 'react-icons/io5';
 
-import { CustomSkeleton, HomeIcon } from '@/components';
+import { CustomSkeleton } from '@/components';
 import { EmptyState } from '@/components/emptyState';
 import { Pages, PermissionRoles } from '@/modules/core';
 import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
@@ -80,54 +79,6 @@ const UserVaultsPage = () => {
             <IoChevronBack size={22} />
             Back home
           </Button>
-          <Breadcrumb.Root ml={8}>
-            <Breadcrumb.List>
-              <Breadcrumb.Item>
-                <Breadcrumb.Link
-                  fontSize="sm"
-                  color="grey.200"
-                  fontWeight="semibold"
-                  onClick={() => goHome()}
-                >
-                  <Icon mr={2} as={HomeIcon} w={3} color="grey.200" />
-                  Home
-                </Breadcrumb.Link>
-              </Breadcrumb.Item>
-              <Breadcrumb.Separator />
-              {/* Commented out code to temporarily disable workspaces. */}
-              {/* {!userInf.os.onSingleWorkspace && (
-              <Breadcrumb.Item>
-                <BreadcrumbLink
-                  fontSize="sm"
-                  color="grey.200"
-                  fontWeight="semibold"
-                  onClick={() =>
-                    handleWorkspaceSelection(
-                      workspaceId,
-                      Pages.workspace({
-                        workspaceId,
-                      }),
-                    )
-                  }
-                  maxW={40}
-                  isTruncated
-                >
-                  {userInfos.workspace?.name}
-                </Breadcrumb.Link>
-              </Breadcrumb.Item>
-            )} */}
-              <Breadcrumb.Item>
-                <Breadcrumb.Link
-                  fontSize="sm"
-                  color="grey.200"
-                  fontWeight="semibold"
-                  href="#"
-                >
-                  Vaults
-                </Breadcrumb.Link>
-              </Breadcrumb.Item>
-            </Breadcrumb.List>
-          </Breadcrumb.Root>
         </HStack>
       </HStack>
 
@@ -249,6 +200,7 @@ const UserVaultsPage = () => {
                       workspaceId={workspace.id}
                       title={description}
                       isHidden={isHidden}
+                      showHideButton
                       onClick={() =>
                         handleWorkspaceSelection(
                           workspace.id,

@@ -4,6 +4,7 @@ interface VaultIconInfoProps {
   children: React.ReactNode;
   onClick?: IconButtonProps['onClick'];
   tooltipContent: React.ReactNode;
+  disabled?: boolean;
   placement?:
     | 'top'
     | 'bottom'
@@ -22,6 +23,7 @@ interface VaultIconInfoProps {
 export const VaultIconInfo = ({
   children,
   tooltipContent,
+  disabled,
   placement = 'right',
   onClick,
 }: VaultIconInfoProps) => {
@@ -47,6 +49,7 @@ export const VaultIconInfo = ({
         minW="20px"
         rounded="sm"
         onClick={onClick}
+        disabled={disabled}
       >
         {children}
       </IconButton>
