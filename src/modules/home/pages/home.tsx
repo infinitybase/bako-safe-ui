@@ -1,4 +1,4 @@
-import { Box, Grid, GridItem, VStack } from 'bako-ui';
+import { Box, Grid, GridItem, Heading, VStack } from 'bako-ui';
 import { useMemo } from 'react';
 
 import { HomeQueryKey } from '@/modules/core';
@@ -39,11 +39,19 @@ const HomePage = () => {
   return (
     <VStack id="top" w="full" gap={10}>
       {/* RECENT VAULTS */}
-      <Grid templateColumns={{ base: '1fr', lg: '2fr 3fr' }} gap={10} w="full">
+      <Grid
+        templateColumns={{ base: '1fr', lg: '2fr 3fr' }}
+        gap={10}
+        w="full"
+        alignItems="stretch"
+      >
         <GridItem>
           <BalanceAllocationCard />
         </GridItem>
-        <GridItem>
+        <GridItem spaceY={6}>
+          <Heading color="textPrimary" fontSize="sm" fontWeight="semibold">
+            My accounts
+          </Heading>
           <RecentVaultsList
             predicates={recentVaults}
             isLoading={latestPredicates.isLoading}
