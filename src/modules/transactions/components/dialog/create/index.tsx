@@ -205,7 +205,7 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
           </Text>
         </Flex>
 
-        <Dialog.Actions hideDivider>
+        <Dialog.Actions>
           <Dialog.SecondaryAction onClick={handleClose}>
             Cancel
           </Dialog.SecondaryAction>

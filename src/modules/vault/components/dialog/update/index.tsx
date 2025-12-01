@@ -44,7 +44,7 @@ export const UpdateVaultDialog = ({
       <Dialog.Header
         title="Edit Vault"
         onClose={onClose}
-        mt={{ base: 4, xs: 0 }}
+        mt={{ base: 4, sm: 0 }}
       />
       <Dialog.Body flex={1}>
         <UpdateVaultForm
@@ -53,7 +53,7 @@ export const UpdateVaultDialog = ({
           vaultId={initialValues.id}
         />
       </Dialog.Body>
-      <Dialog.Actions position="relative" hideDivider mt={4}>
+      <Dialog.Actions position="relative" mt={4}>
         <Button variant="outline" disabled={isPending} onClick={onClose} px={6}>
           Cancel
         </Button>

@@ -94,7 +94,6 @@ const CreateVaultDialog = memo((props: CreateVaultDialogProps) => {
       /> */}
 
       <Dialog.Actions
-        hideDivider
         w="full"
         p={6}
         bgColor="bg.muted"

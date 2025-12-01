@@ -163,7 +163,6 @@ const TermsOfUseDialog = (props: TermsOfUseDialogProps) => {
 
       <Dialog.Actions
         w="full"
-        hideDivider
         maxW={617}
         css={{ '&>hr': { mt: 0, mb: 8 } }}
         position={isMobile ? 'absolute' : 'unset'}

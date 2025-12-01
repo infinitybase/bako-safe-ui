@@ -151,7 +151,6 @@ const SelectWorkspaceDialog = ({
         px={{ base: 6, sm: 'unset' }}
         mt={{ base: 'unset', sm: 'auto' }}
         maxW={480}
-        hideDivider={listIsEmpty}
         css={{
           '& > hr': {
             marginTop: '0',

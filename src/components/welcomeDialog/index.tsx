@@ -123,7 +123,6 @@ const WelcomeDialog = ({
           bg={isMobile ? 'dark.950' : 'unset'}
           borderRadius={isMobile && !isSmall ? '20px' : 'unset'}
           pb={isMobile && !isSmall ? 5 : 'unset'}
-          hideDivider
           justifyContent="flex-end"
         >
           <Flex w="full" justifyContent="flex-end">
