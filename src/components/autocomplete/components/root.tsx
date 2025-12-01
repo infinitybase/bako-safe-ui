@@ -23,7 +23,7 @@ export interface CustomAutocompleteValue extends AutocompleteOption {
 
 interface AutocompleteRootProps extends Omit<InputGroupProps, 'children'> {
   children: React.ReactNode;
-  label: string;
+  placeholder?: string;
   isLoading?: boolean;
   inputProps?: React.ComponentProps<typeof AutocompleteInput>;
   rightElement?: React.ReactNode;
@@ -33,7 +33,15 @@ interface AutocompleteRootProps extends Omit<InputGroupProps, 'children'> {
 const AutocompleteRoot = memo(
   forwardRef<HTMLDivElement, AutocompleteRootProps>(
     (
-      { children, label, isLoading, rightElement, inputProps, value, ...rest },
+      {
+        children,
+        isLoading,
+        rightElement,
+        inputProps,
+        value,
+        placeholder,
+        ...rest
+      },
       ref,
     ) => {
       return (
@@ -58,7 +66,7 @@ const AutocompleteRoot = memo(
                   gap={2}
                   pl={4}
                   align="center"
-                  bg="bg.muted"
+                  bg="gray.550"
                   h="40px"
                   rounded="sm"
                 >
@@ -66,9 +74,9 @@ const AutocompleteRoot = memo(
                     image={value.image}
                     label={value.label || ''}
                   />
-                  <Text fontSize="sm" color="textPrimary">
+                  <Text fontSize="sm" color="textPrimary" lineHeight="shorter">
                     {value.label}{' '}
-                    <Text as="span" color="textSecondary">
+                    <Text as="span" color="textSecondary" lineHeight="shorter">
                       ({AddressUtils.format(value.value)})
                     </Text>
                   </Text>
@@ -78,7 +86,7 @@ const AutocompleteRoot = memo(
               <AutocompleteInput
                 hidden={!!value?.value}
                 {...inputProps}
-                placeholder={label}
+                placeholder={placeholder}
               />
             </>
           </InputGroup>
