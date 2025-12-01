@@ -1,4 +1,4 @@
-import { Box, Grid, GridItem, Heading, VStack } from 'bako-ui';
+import { Box, Grid, GridItem, VStack } from 'bako-ui';
 import { useMemo } from 'react';
 
 import { HomeQueryKey } from '@/modules/core';
@@ -7,6 +7,7 @@ import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import BalanceAllocationCard from '../components/BalanceAllocationCard';
 import HomeTransactions from '../components/HomeTransactions';
+import RecentVaultsHeader from '../components/RecentVaultsHeader';
 import RecentVaultsList from '../components/RecentVaultsList';
 
 const HomePage = () => {
@@ -49,9 +50,7 @@ const HomePage = () => {
           <BalanceAllocationCard />
         </GridItem>
         <GridItem spaceY={6}>
-          <Heading color="textPrimary" fontSize="sm" fontWeight="semibold">
-            My accounts
-          </Heading>
+          <RecentVaultsHeader />
           <RecentVaultsList
             predicates={recentVaults}
             isLoading={latestPredicates.isLoading}

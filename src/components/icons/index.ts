@@ -56,6 +56,7 @@ export * from './pending';
 export * from './pie-chart-icon';
 export * from './play-icon';
 export * from './plus';
+export * from './plus2';
 export * from './question';
 export * from './recovery';
 export * from './refresh';
