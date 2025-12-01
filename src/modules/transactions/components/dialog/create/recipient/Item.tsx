@@ -128,7 +128,6 @@ const RecipientItem = ({
     return assetInfo.metadata?.image || assetInfo.metadata?.['image:png'];
   }, [assetInfo]);
 
-  console.log(assetInfo);
 
   return (
     <Accordion.Item
