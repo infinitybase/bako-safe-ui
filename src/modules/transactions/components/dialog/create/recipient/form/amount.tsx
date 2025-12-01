@@ -1,17 +1,8 @@
-import {
-  Button,
-  Field,
-  floatingStyles,
-  HStack,
-  InputGroup,
-  Text,
-} from 'bako-ui';
+import { Button, Field, HStack, InputGroup, Text } from 'bako-ui';
 import { memo, useMemo } from 'react';
 import { FieldError, useFormContext } from 'react-hook-form';
 
 import { AmountInput } from '@/components';
-
-import Clear from './clear';
 
 interface RecipientFormAmountProps {
   index: number;
@@ -66,56 +57,38 @@ const RecipientFormAmount = memo(
             endElement={
               <>
                 {!isNFT && (
-                  <HStack gap={1}>
-                    <Clear
-                      position="relative"
-                      transform="none"
-                      _hover={{
-                        bg: 'transparent',
-                      }}
-                      onClear={() => onChange('')}
-                    />
-                    <Button
-                      size="2xs"
-                      borderRadius="lg"
-                      lineHeight="1"
-                      variant="subtle"
-                      bg="bg.panel"
-                      disabled={isLoadingFee}
-                      onClick={() => {
-                        const max = getBalanceAvailable();
-                        onChange(max);
-                      }}
-                    >
-                      MAX
-                    </Button>
-                  </HStack>
+                  <Button
+                    size="2xs"
+                    borderRadius="lg"
+                    lineHeight="1"
+                    variant="ghost"
+                    disabled={isLoadingFee}
+                    onClick={() => {
+                      const max = getBalanceAvailable();
+                      onChange(max);
+                    }}
+                  >
+                    MAX
+                  </Button>
                 )}
               </>
             }
           >
-            <>
-              <AmountInput
-                placeholder=" "
-                variant="subtle"
-                value={isNFT ? '1' : value}
-                onFocus={() => {
-                  if (value === '.00' || value === '0.00') {
-                    value = '';
-                  }
-                }}
-                pt={value || isNFT ? 2 : 0}
-                onChange={({ target }) => onChange(target.value)}
-                isInvalid={!!error?.message}
-                disabled={isNFT}
-              />
-              <Field.Label
-                data-testid="transaction_amount"
-                css={floatingStyles({ hasValue: !!value })}
-              >
-                Amount
-              </Field.Label>
-            </>
+            <AmountInput
+              placeholder="Amount"
+              variant="subtle"
+              value={isNFT ? '1' : value}
+              onFocus={() => {
+                if (value === '.00' || value === '0.00') {
+                  value = '';
+                }
+              }}
+              pt={value || isNFT ? 2 : 0}
+              onChange={({ target }) => onChange(target.value)}
+              isInvalid={!!error?.message}
+              disabled={isNFT}
+              bg="gray.550"
+            />
           </InputGroup>
 
           <Field.HelperText color={error?.message ? 'red' : 'gray.400'}>
