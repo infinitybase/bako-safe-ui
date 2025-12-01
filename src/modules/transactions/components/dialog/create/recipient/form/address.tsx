@@ -19,6 +19,7 @@ import {
   useResolverNameQuery,
 } from '@/modules/core/hooks/bako-id';
 import { useWorkspaceContext } from '@/modules/workspace/hooks';
+import { HandleUtils } from '@/utils';
 
 import Clear from './clear';
 
@@ -70,7 +71,7 @@ const RecipientFormAddress = ({
 
   const bakoIdData = useMemo(
     () => ({
-      label: name ? `@${name}` : inputValue,
+      label: name ? HandleUtils.toHandle(name) : inputValue,
       value: address || inputValue,
       image: BakoIdIcon,
     }),
@@ -168,7 +169,12 @@ const RecipientFormAddress = ({
           optionsRef={optionsRef}
           emptyOptionsText={emptyOptionsText}
         />
-        <Field.HelperText color="error.500">{error?.message}</Field.HelperText>
+
+        {error?.message && (
+          <Field.HelperText color="error.500">
+            {error?.message}
+          </Field.HelperText>
+        )}
         <AddToAddressBook
           visible={showAddToAddressBook}
           onAdd={() => handleOpenDialog?.(value!)}
