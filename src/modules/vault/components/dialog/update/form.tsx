@@ -44,6 +44,7 @@ export const UpdateVaultForm = ({
                   placeholder=" "
                   {...field}
                   pt={2}
+                  maxLength={27}
                   type="text"
                 />
                 <Field.Label css={floatingStyles({ hasValue: !!field.value })}>
