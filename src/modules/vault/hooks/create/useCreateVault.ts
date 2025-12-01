@@ -11,8 +11,8 @@ import { TemplateService } from '@/modules/template/services/methods';
 import { useTemplateStore } from '@/modules/template/store';
 import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
-import { useCreateVaultForm, useValidateAddress } from '.';
 import { useCheckVaultName } from '../useGetByNameVaultRequest';
+import { useCreateVaultForm, useValidateAddress } from '.';
 
 export enum TabState {
   INFO,
@@ -73,10 +73,7 @@ const useCreateVault = () => {
     setCurrentValidateAddressIndex,
   } = useValidateAddress();
 
-  let vaultNameIsAvailable = false;
-
-  const checkVaultNameResult = useCheckVaultName(searchRequest);
-  vaultNameIsAvailable = checkVaultNameResult.data ?? false;
+  const { data: vaultNameAlreadyExists } = useCheckVaultName(searchRequest);
 
   const debouncedSearchHandler = useCallback(
     debounce((value: string) => {
@@ -194,7 +191,7 @@ const useCreateVault = () => {
       handleCreateVault,
     },
     handleInputChange,
-    vaultNameIsAvailable,
+    vaultNameAlreadyExists: !!vaultNameAlreadyExists,
     vaultId,
     search,
     setSearch,
