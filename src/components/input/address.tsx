@@ -1,28 +1,24 @@
-import {
-  Field,
-  floatingStyles,
-  Input,
-  InputGroup,
-  InputProps,
-  Loader,
-} from 'bako-ui';
+import { Field, Input, InputGroup, InputProps, Loader } from 'bako-ui';
 import { isB256 } from 'fuels';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useFormContext } from 'react-hook-form';
 
-import { UseAddressBookReturn } from '@/modules/addressBook/hooks';
+import { ICreateContactFormData } from '@/modules/addressBook/hooks';
 import { useBakoIDClient } from '@/modules/core/hooks/bako-id';
 import { useWorkspaceContext } from '@/modules/workspace/hooks';
 import { AddressBookUtils } from '@/utils';
+
+import { CloseCircle } from '../icons';
 
 interface AddressInputProps
   extends Omit<InputProps, 'value' | 'onChange' | 'placeholder'> {
   value: string;
   onChange: (value: string) => void;
-  adbForm: UseAddressBookReturn['form'];
 }
 
 const AddressInput = (props: AddressInputProps) => {
-  const { onChange, value, adbForm, ...rest } = props;
+  const { onChange, value, ...rest } = props;
+  const adbForm = useFormContext<ICreateContactFormData>();
 
   const [inputValue, setInputValue] = useState<string>(value);
   const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
@@ -128,9 +124,24 @@ const AddressInput = (props: AddressInputProps) => {
     }
   }, [fetchResolveAddress.isLoading, fetchResolverName.isLoading, value]);
 
+  const handleClearAddress = () => {
+    setInputValue('');
+    onChange('');
+    adbForm.setValue('handle', '');
+    adbForm.setValue('resolver', '');
+    adbForm.setValue('address', '');
+  };
+
   return (
     <Field.Root>
       <InputGroup
+        endElement={
+          <CloseCircle
+            boxSize={4}
+            color="gray.200"
+            onClick={handleClearAddress}
+          />
+        }
         endAddonProps={
           <Loader
             css={{ '--spinner-track-color': 'dark.100' }}
@@ -143,19 +154,11 @@ const AddressInput = (props: AddressInputProps) => {
           {...rest}
           value={inputValue}
           onChange={handleInputChange}
-          placeholder=" "
-          pt={2}
-          px={3}
+          placeholder="Address"
+          variant="subtle"
+          p={3}
         />
       </InputGroup>
-      <Field.Label
-        css={floatingStyles({
-          withStartIcon: false,
-          hasValue: inputValue.length > 0,
-        })}
-      >
-        Address
-      </Field.Label>
     </Field.Root>
   );
 };
