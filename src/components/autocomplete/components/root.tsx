@@ -60,7 +60,6 @@ const AutocompleteRoot = memo(
           >
             <>
               {value?.value && (
-                // <AutocompleteInput as="div" minH="50px">
                 <Flex
                   w="full"
                   gap={2}
@@ -81,7 +80,6 @@ const AutocompleteRoot = memo(
                     </Text>
                   </Text>
                 </Flex>
-                // </AutocompleteInput>
               )}
               <AutocompleteInput
                 hidden={!!value?.value}
