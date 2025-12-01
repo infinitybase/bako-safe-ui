@@ -5,6 +5,7 @@ import { useFormContext, useWatch } from 'react-hook-form';
 import { ListContactsResponse } from '@/modules/addressBook/services';
 import { AddressUtils } from '@/modules/core';
 import { useBakoIDClient } from '@/modules/core/hooks/bako-id';
+import { parseURI } from '@/modules/core/utils/formatter';
 import {
   ITransactionForm,
   UseCreateTransaction,
@@ -42,7 +43,7 @@ const RecipientItem = ({
   const {
     providerInstance,
     vaultDetails: {
-      assets: { isNFTAsset },
+      assets: { isNFTAsset, nfts },
     },
   } = useWorkspaceContext();
   const {
@@ -52,11 +53,19 @@ const RecipientItem = ({
   const transaction = useWatch({ control, name: `transactions.${index}` });
 
   const assetInfo = useMemo(
-    () => assets.getAssetInfo(transaction?.asset || ''),
-    [assets, transaction?.asset],
+    () =>
+      isNFTAsset(transaction?.asset || '')
+        ? nfts?.find((nft) => nft.assetId === transaction?.asset)
+        : assets.getAssetInfo(transaction?.asset || ''),
+    [assets, nfts, isNFTAsset, transaction?.asset],
   );
 
-  const assetSlug = useMemo(() => assetInfo?.slug, [assetInfo]);
+  const assetSlug = useMemo(() => {
+    if (!assetInfo) return undefined;
+    return 'slug' in assetInfo && assetInfo.slug
+      ? assetInfo.slug
+      : assetInfo.symbol;
+  }, [assetInfo]);
 
   const fieldState = getFieldState(`transactions.${index}`);
 
@@ -108,6 +117,19 @@ const RecipientItem = ({
     [accordion],
   );
 
+  const assetLogo = useMemo(() => {
+    if (!assetInfo) return undefined;
+    if ('icon' in assetInfo && assetInfo.icon) {
+      return assetInfo.icon;
+    }
+    if ('image' in assetInfo && assetInfo.image) {
+      return assetInfo.image;
+    }
+    return assetInfo.metadata?.image || assetInfo.metadata?.['image:png'];
+  }, [assetInfo]);
+
+  console.log(assetInfo);
+
   return (
     <Accordion.Item
       value={index.toString()}
@@ -117,7 +139,14 @@ const RecipientItem = ({
     >
       <TransactionAccordion.Item
         title={`Recipient ${index + 1}`}
-        assetLogo={<Image src={assetInfo?.icon} width="36px" height="36px" />}
+        assetLogo={
+          <Image
+            src={parseURI(assetLogo || '')}
+            width="36px"
+            height="36px"
+            borderRadius="lg"
+          />
+        }
         actions={
           <TransactionAccordion.Actions>
             <HStack gap={4}>

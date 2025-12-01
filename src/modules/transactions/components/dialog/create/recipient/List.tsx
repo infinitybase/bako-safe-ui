@@ -81,6 +81,7 @@ export const RecipientList = ({
               w="full"
               size="sm"
               variant="subtle"
+              bg="bg.muted"
               _hover={{
                 opacity: 0.8,
               }}
