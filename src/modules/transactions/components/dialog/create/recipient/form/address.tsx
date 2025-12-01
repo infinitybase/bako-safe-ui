@@ -160,7 +160,12 @@ const RecipientFormAddress = ({
           label={`Recipient ${index + 1} address`}
           aria-label={`Autocomplete Recipient Address ${index + 1}`}
           value={currentValue}
-          rightElement={<Clear onClear={handleClear} />}
+          rightElement={
+            <Clear
+              onClear={handleClear}
+              display={currentValue ? 'block' : 'none'}
+            />
+          }
           onInputChange={handleChange}
           inputValue={inputValue}
           isLoading={isLoadingOptions}
