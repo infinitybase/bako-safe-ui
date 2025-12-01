@@ -42,7 +42,7 @@ export const UpdateVaultDialog = ({
       modalBodyProps={{ px: 4 }}
     >
       <Dialog.Header
-        title="Edit Vault"
+        title="Edit Account"
         onClose={onClose}
         mt={{ base: 4, xs: 0 }}
       />
