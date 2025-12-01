@@ -144,7 +144,7 @@ const VaultDetailsPage = () => {
         w="full"
         display="flex"
         flexDir={{ base: 'row', sm: isSmall ? 'column' : 'row' }}
-        alignItems={{ base: 'center', sm: 'start' }}
+        alignItems="center"
         gap={4}
         mt={{ md: 10, base: 4 }}
         mb={{ base: 4, md: 6 }}
@@ -156,7 +156,7 @@ const VaultDetailsPage = () => {
           alignItems={{ base: 'start', sm: isSmall ? 'unset' : 'center' }}
           gap={isSmall ? 2 : 4}
         >
-          <Text fontWeight={700} fontSize="md" color="grey.50">
+          <Text as="h2" fontWeight="semibold" fontSize="sm" color="textPrimary">
             Transactions
           </Text>
           <WaitingSignatureBadge
