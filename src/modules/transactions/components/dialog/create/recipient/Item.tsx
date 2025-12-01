@@ -25,8 +25,6 @@ interface RecipientItemProps {
   accordion: UseCreateTransaction['accordion'];
   isFeeCalcLoading: boolean;
   getBalanceAvailable: UseCreateTransaction['getBalanceAvailable'];
-  hasEthForFee: boolean;
-  ethAssetId: string | undefined;
 }
 
 const RecipientItem = ({
@@ -127,7 +125,6 @@ const RecipientItem = ({
     }
     return assetInfo.metadata?.image || assetInfo.metadata?.['image:png'];
   }, [assetInfo]);
-
 
   return (
     <Accordion.Item

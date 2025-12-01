@@ -123,8 +123,6 @@ const CreateTransactionForm = (props: CreateTransactionFormProps) => {
               onDelete={transactionsFields.remove}
               nicks={nicks}
               index={index}
-              hasEthForFee={hasEthForFee}
-              ethAssetId={baseAssetId}
             />
           ))}
         </Recipient.List>
