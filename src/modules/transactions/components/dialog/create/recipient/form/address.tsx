@@ -4,7 +4,7 @@ import { Address, isB256 } from 'fuels';
 import { memo, useCallback, useMemo, useState } from 'react';
 import { FieldError, useFormContext } from 'react-hook-form';
 
-import { BakoIdIcon } from '@/components';
+import { BakoIdIcon, CloseCircle } from '@/components';
 import AddressAutocomplete from '@/components/autocomplete/address';
 import { AddressBookIcon } from '@/components/icons/address-book';
 import {
@@ -20,8 +20,6 @@ import {
 } from '@/modules/core/hooks/bako-id';
 import { useWorkspaceContext } from '@/modules/workspace/hooks';
 import { HandleUtils } from '@/utils';
-
-import Clear from './clear';
 
 interface RecipientFormAddressProps {
   index: number;
@@ -157,13 +155,15 @@ const RecipientFormAddress = ({
     <HStack align="start" gap={2} position="relative" width="100%">
       <Field.Root invalid={!!error?.message} flex="1">
         <AddressAutocomplete
-          label={`Recipient ${index + 1} address`}
+          label="Address destination"
           aria-label={`Autocomplete Recipient Address ${index + 1}`}
           value={currentValue}
           rightElement={
-            <Clear
-              onClear={handleClear}
-              display={currentValue ? 'block' : 'none'}
+            <CloseCircle
+              onClick={handleClear}
+              size="xs"
+              cursor="pointer"
+              display={currentValue ? 'inline-flex' : 'none'}
             />
           }
           onInputChange={handleChange}

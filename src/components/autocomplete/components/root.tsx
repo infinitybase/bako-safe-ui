@@ -63,7 +63,7 @@ const AutocompleteRoot = memo(
                 <Flex
                   w="full"
                   gap={2}
-                  pl={4}
+                  pl={3}
                   align="center"
                   bg="gray.550"
                   h="40px"
