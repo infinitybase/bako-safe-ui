@@ -1,4 +1,13 @@
-import { Flex, Icon, Popover, Separator, Text, VStack } from 'bako-ui';
+import {
+  CloseButton,
+  Flex,
+  Heading,
+  Icon,
+  Popover,
+  Stack,
+  Text,
+  VStack,
+} from 'bako-ui';
 import { useMemo, useState } from 'react';
 import { useWatch } from 'react-hook-form';
 
@@ -111,19 +120,23 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
       }}
       closeOnInteractOutside={false}
       size={{ base: 'full', sm: 'md' }}
-      modalContentProps={{ py: 6 }}
+      modalContentProps={{ sm: { minH: '700px' }, p: '0 !important' }}
+      xsBreakPointPy={0}
     >
-      <Dialog.Header
-        onClose={handleClose}
-        position={{ base: 'static', sm: 'relative' }}
-        mb={0}
-        maxH={40}
-        px={6}
-        title="Create Transaction"
-        description={`Send single or batch payments with multi assets. \n You can send multiple types of assets to different addresses.`}
-      />
+      <Stack p={6} gap={3}>
+        <Flex alignItems="center" justifyContent="space-between">
+          <Heading fontSize="sm" color="textPrimary" lineHeight="short">
+            Create Transaction
+          </Heading>
+          <CloseButton size="2xs" onClick={handleClose} />
+        </Flex>
+        <Text fontSize="xs" color="textSecondary">
+          Send single or batch payments with multi assets. You can send multiple
+          types of assets to different addresses.
+        </Text>
+      </Stack>
 
-      <Dialog.Body px={6} maxH={'full'} mt={{ sm: 4 }}>
+      <Dialog.Body px={6} maxH={'full'} mt={{ sm: 4 }} flex={1}>
         <CreateTransactionForm
           form={form}
           nicks={nicks}
@@ -137,11 +150,11 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
 
       <VStack
         w="full"
-        bg={isMobile ? 'bg.panel' : 'unset'}
-        px={6}
+        bg="bg.muted"
+        p={6}
         justifySelf="center"
         mt={6}
-        pb={4}
+        roundedBottom={{ base: 'none', sm: '2xl' }}
       >
         <Flex
           wrap="wrap"
@@ -150,10 +163,10 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
           mb={{ base: 3, sm: 6 }}
           mt={0.5}
         >
-          <Separator mb={2} w="full" borderColor="textSecondary" />
           <Text
             visibility={!transactionFee ? 'hidden' : 'visible'}
-            // variant="description"
+            fontSize="xs"
+            lineHeight="shorter"
           >
             Max fee:{' '}
             {isMobile ? (
@@ -196,12 +209,12 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
                 // padding={4}
                 closeOnScroll
               >
-                <Icon color="grey.200" boxSize="14px" as={TooltipIcon} />
+                <Icon color="gray.200" boxSize="14px" as={TooltipIcon} />
               </Tooltip>
             )}
           </Text>
-          <Text>
-            {transactionFee} {transactionFee && 'ETH'}
+          <Text fontSize="xs" lineHeight="shorter">
+            {transactionFee && `< ${transactionFee} ETH`}
           </Text>
         </Flex>
 
