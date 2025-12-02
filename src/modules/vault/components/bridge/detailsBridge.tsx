@@ -72,6 +72,13 @@ export function DetailsBridge({ assets }: DetailsBridgeProps) {
     }).format(receiveValue);
   }, [dataQuote, tokensUSD, assetFrom]);
 
+  const showEnoughETHWarning = useMemo(
+    () =>
+      (!isEnoughETH && stepForm >= BridgeStepsForm.RESUME) ||
+      notEnoughBalanceETH,
+    [isEnoughETH, stepForm, notEnoughBalanceETH],
+  );
+
   return (
     <Card.Root
       variant="subtle"
@@ -216,14 +223,14 @@ export function DetailsBridge({ assets }: DetailsBridgeProps) {
           }
           loading={isSendingTx || isLoading}
           fontWeight={600}
-          fontSize={16}
+          fontSize={14}
           letterSpacing={'2%'}
           type="submit"
           mt={4}
         >
           {isPendingSigner
             ? TitleButtonsForm.PENDING_TX
-            : notEnoughBalanceETH
+            : showEnoughETHWarning
               ? TitleButtonsForm.INSUFFICIENT_ETH
               : TitleButtonsForm.BRIDGE}
         </Button>
