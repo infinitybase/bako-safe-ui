@@ -52,7 +52,7 @@ const AddressInput = (props: AddressInputProps) => {
 
       return result;
     },
-    [adbForm],
+    [fetchResolveAddress, fetchResolverName],
   );
 
   const handleInputChange = useCallback(
@@ -82,7 +82,7 @@ const AddressInput = (props: AddressInputProps) => {
         }
       }, 1500); // 1.5s debounce delay
     },
-    [setInputValue],
+    [adbForm, onChange, setAddressBookInputValue],
   );
 
   useEffect(() => {
