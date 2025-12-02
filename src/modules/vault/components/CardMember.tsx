@@ -1,13 +1,4 @@
-import {
-  Avatar,
-  Flex,
-  Heading,
-  HStack,
-  Icon,
-  Skeleton,
-  Stack,
-  Text,
-} from 'bako-ui';
+import { Avatar, Flex, HStack, Icon, Skeleton, Stack, Text } from 'bako-ui';
 import { TypeUser } from 'bakosafe';
 import { useMemo } from 'react';
 
@@ -94,9 +85,14 @@ const CardMember = ({ member, isOwner, contacts }: CardMemberProps) => {
       <Stack gap={2} flex={1}>
         <Flex justifyContent="space-between">
           <HStack w="full" gap={2} align="center">
-            <Heading fontSize="xs" color="textPrimary" fontWeight="medium">
+            <Text
+              as="span"
+              fontSize="xs"
+              color="textPrimary"
+              fontWeight="medium"
+            >
               {memberName}
-            </Heading>
+            </Text>
 
             {isOwner && (
               <Text
