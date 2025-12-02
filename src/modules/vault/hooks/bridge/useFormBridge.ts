@@ -181,7 +181,7 @@ const useFormBridge = () => {
 
       const data = await getDestinationsBridgeAsync({
         fromNetwork: isMainnet ? 'FUEL_MAINNET' : 'FUEL_TESTNET',
-        fromToken: isMainnet ? assetFrom.name : assetFrom.symbol || '',
+        fromToken: assetFrom.symbol || '',
       });
 
       handleGetToNetworkOptions(data);
