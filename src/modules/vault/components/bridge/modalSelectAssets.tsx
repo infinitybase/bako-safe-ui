@@ -112,7 +112,7 @@ export function ModalSelectAssetsBridge({
             .includes(searchValue.toLocaleLowerCase()),
       ) || [];
 
-    // Deduplicate by value to prevent duplicates
+    // Deduplicate by id to prevent duplicates
     const seen = new Set<string>();
     return filtered.filter((option) => {
       if (seen.has(option.id)) {
