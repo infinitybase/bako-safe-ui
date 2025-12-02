@@ -10,7 +10,7 @@ import {
   Text,
   VStack,
 } from 'bako-ui';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
 import { Dialog, SearchIcon } from '@/components';
@@ -35,7 +35,7 @@ export interface AssetItemBrigdeProps {
 export interface ModalSelectAssetsProps {
   title: string;
   isOpen?: boolean;
-  options?: AssetItem[];
+  options?: Array<AssetItem & { id: string }>;
   onOpenChange?: (open: DialogOpenChangeDetails) => void;
   onSelect: (asset: AssetItem) => void;
 }
@@ -84,14 +84,12 @@ export function ModalSelectAssetsBridge({
   const { control } = useFormContext<ITransferBridgePayload>();
   const { tokensUSD } = useWorkspaceContext();
   const { form, getOperationLimits } = useFormBridge();
-  const [filteredAssets, setFilteredAssets] = useState<AssetItem[]>([]);
   const [assetSelected, setAssetSelected] = useState<AssetItem>(
     {} as AssetItem,
   );
   const [searchValue, setSearchValue] = useState('');
 
   const handleClose = () => {
-    setFilteredAssets(options ?? []);
     if (assetSelected?.value) {
       onSelect(assetSelected);
     } else {
@@ -99,42 +97,48 @@ export function ModalSelectAssetsBridge({
     }
 
     form.resetField('searchAsset');
-    setSearchValue('');
+    // setSearchValue('');
     onOpenChange?.({ open: false });
   };
 
-  const orderOptions = useCallback(
-    (optionsOrder: AssetItem[]) => {
-      return optionsOrder?.sort((a, b) => {
-        const usdA = tokensUSD.data[a.value.toLowerCase()]?.usdAmount;
-        const usdB = tokensUSD.data[b.value.toLowerCase()]?.usdAmount;
+  const filteredOptions = useMemo(() => {
+    const filtered =
+      options?.filter(
+        (option) =>
+          option.symbol
+            ?.toLocaleLowerCase()
+            .includes(searchValue.toLocaleLowerCase()) ||
+          option.name
+            .toLocaleLowerCase()
+            .includes(searchValue.toLocaleLowerCase()),
+      ) || [];
 
-        if (usdA != null && usdB != null) {
-          return usdB - usdA;
-        }
+    // Deduplicate by value to prevent duplicates
+    const seen = new Set<string>();
+    return filtered.filter((option) => {
+      if (seen.has(option.id)) {
+        return false;
+      }
+      seen.add(option.id);
+      return true;
+    });
+  }, [options, searchValue]);
 
-        if (usdA != null) return -1;
-        if (usdB != null) return 1;
+  const sortedOptions = useMemo(() => {
+    return [...filteredOptions].sort((a, b) => {
+      const usdA = tokensUSD.data[a.value.toLowerCase()]?.usdAmount;
+      const usdB = tokensUSD.data[b.value.toLowerCase()]?.usdAmount;
 
-        return Number(b.balance) - Number(a.balance);
-      });
-    },
-    [tokensUSD.data],
-  );
+      if (usdA != null && usdB != null) {
+        return usdB - usdA;
+      }
 
-  useEffect(() => {
-    if (!options) return;
+      if (usdA != null) return -1;
+      if (usdB != null) return 1;
 
-    let result = options;
-
-    if (searchValue.trim()) {
-      result = options.filter((asset) =>
-        asset.name.toLowerCase().includes(searchValue.toLowerCase()),
-      );
-    }
-
-    setFilteredAssets(orderOptions(result));
-  }, [options, orderOptions, searchValue]);
+      return Number(b.balance) - Number(a.balance);
+    });
+  }, [filteredOptions, tokensUSD.data]);
 
   const handleSearch = useCallback((value: string) => {
     setSearchValue(value);
@@ -145,20 +149,10 @@ export function ModalSelectAssetsBridge({
       onSelect(asset);
       setAssetSelected(asset);
       getOperationLimits(asset);
-      setFilteredAssets(options ?? []);
       form.resetField('searchAsset');
-      setSearchValue('');
       onOpenChange?.({ open: false });
     },
-    [
-      form,
-      options,
-      setFilteredAssets,
-      setSearchValue,
-      onSelect,
-      onOpenChange,
-      getOperationLimits,
-    ],
+    [form, onSelect, onOpenChange, getOperationLimits],
   );
 
   return (
@@ -168,7 +162,7 @@ export function ModalSelectAssetsBridge({
       closeOnInteractOutside={false}
       size={{ base: 'full', sm: 'sm' }}
     >
-      <Dialog.Body minH={650} maxH={650} flex={1}>
+      <Dialog.Body minH={650} maxH={650} flex={1} overflow="hidden">
         <Dialog.Header
           position={{ base: 'static', sm: 'relative' }}
           title={title}
@@ -210,8 +204,7 @@ export function ModalSelectAssetsBridge({
         <VStack
           maxH={523}
           overflowY="auto"
-          px={6}
-          pt={6}
+          p={6}
           css={{
             '&::-webkit-scrollbar': {
               display: 'none',
@@ -222,18 +215,16 @@ export function ModalSelectAssetsBridge({
             },
           }}
         >
-          {filteredAssets.length > 0 ? (
-            filteredAssets.map((asset) => (
+          {sortedOptions.length > 0 ? (
+            sortedOptions.map((asset) => (
               <AssetItem
-                key={asset.value}
+                key={asset.id}
                 asset={asset}
                 onSelect={handleSelectAsset}
               />
             ))
           ) : (
-            <Text color="grey.50" fontSize="sm">
-              No assets found
-            </Text>
+            <Text fontSize="sm">No assets found</Text>
           )}
         </VStack>
       </Dialog.Body>
