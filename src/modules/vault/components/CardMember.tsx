@@ -119,12 +119,7 @@ const CardMember = ({ member, isOwner, contacts }: CardMemberProps) => {
           </Flex>
         </Flex>
 
-        <Text
-          truncate
-          fontSize="xs"
-          color="gray.400"
-          maxW={{ base: '200px', md: '400px' }}
-        >
+        <Text as="span" fontSize="xs" color="gray.400" wordBreak="break-word">
           {address}
         </Text>
       </Stack>
