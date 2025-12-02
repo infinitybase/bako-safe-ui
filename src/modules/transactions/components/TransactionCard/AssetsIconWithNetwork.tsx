@@ -1,4 +1,4 @@
-import { Avatar, Box, Float, HStack, Icon } from 'bako-ui';
+import { Avatar, Box, Float, HStack, Icon, Image } from 'bako-ui';
 import { memo } from 'react';
 
 import { DoubleArrowIcon } from '@/components';
@@ -10,12 +10,26 @@ interface AssetsIconWithNetworkProps {
   size?: number;
 }
 
+const AssetIconFallback = memo(({ size }: { size: number }) => {
+  const { assetsMap } = useWorkspaceContext();
+  const unknownAssetIcon = assetsMap['UNKNOWN']?.icon;
+
+  return (
+    <Image
+      w={size}
+      h={size}
+      borderRadius="full"
+      objectFit="cover"
+      src={unknownAssetIcon}
+      alt="Unknown asset"
+    />
+  );
+});
+
+AssetIconFallback.displayName = 'AssetIconFallback';
+
 export const AssetsIconWithNetwork = memo(
   ({ from, to, size = 6 }: AssetsIconWithNetworkProps) => {
-    const { assetsMap } = useWorkspaceContext();
-
-    const unknownAssetIcon = assetsMap['UNKNOWN']?.icon;
-
     return (
       <HStack gap={1} alignItems="center">
         <Box position="relative">
@@ -23,7 +37,7 @@ export const AssetsIconWithNetwork = memo(
             w={size}
             h={size}
             src={from.assetIcon}
-            fallback={unknownAssetIcon}
+            fallback={<AssetIconFallback size={size} />}
           />
           <Float placement="bottom-end" offsetX="1" offsetY="1">
             <Avatar
@@ -32,7 +46,7 @@ export const AssetsIconWithNetwork = memo(
               src={from.networkIcon}
               border="1px solid"
               borderColor="bg.panel"
-              fallback={unknownAssetIcon}
+              fallback={<AssetIconFallback size={size / 2} />}
             />
           </Float>
         </Box>
@@ -44,14 +58,14 @@ export const AssetsIconWithNetwork = memo(
             w={size}
             h={size}
             src={to.assetIcon}
-            fallback={unknownAssetIcon}
+            fallback={<AssetIconFallback size={size} />}
           />
           <Float placement="bottom-end" offsetX="1" offsetY="1">
             <Avatar
               w={size / 2}
               h={size / 2}
               src={to.networkIcon}
-              fallback={unknownAssetIcon}
+              fallback={<AssetIconFallback size={size / 2} />}
               border="1px solid"
               borderColor="bg.panel"
             />
