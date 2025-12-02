@@ -37,8 +37,8 @@ const DialogModal = (props: DialogModalProps) => {
         <Dialog.Positioner>
           <Dialog.Content
             rounded={{ sm: '3xl' }}
-            py={{ base: 2, sm: props.xsBreakPointPy ?? 6 }}
-            px={{ base: 2, sm: props.contentPadding ?? 0 }}
+            py={6}
+            px={6}
             minH={{ sm: 'auto' }}
             {...props.modalContentProps}
           >
