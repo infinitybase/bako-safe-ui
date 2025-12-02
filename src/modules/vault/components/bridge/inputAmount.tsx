@@ -32,6 +32,9 @@ const InputAmountComponent = ({
 
   const handleChange = useCallback(
     (newValue: string) => {
+      if (newValue === '.' || newValue === '0') {
+        newValue = '0.';
+      }
       onChange?.(newValue);
     },
     [onChange],
