@@ -97,7 +97,6 @@ export function ModalSelectAssetsBridge({
     }
 
     form.resetField('searchAsset');
-    // setSearchValue('');
     onOpenChange?.({ open: false });
   };
 
