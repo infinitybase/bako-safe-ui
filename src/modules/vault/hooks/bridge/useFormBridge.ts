@@ -1,6 +1,7 @@
 import { AxiosError } from 'axios';
 import {
   bn,
+  hashMessage,
   randomBytes,
   TransactionRequest,
   transactionRequestify,
@@ -160,6 +161,7 @@ const useFormBridge = () => {
       if (!data || data.length === 0) return;
 
       const options: AssetFormItem[] = data.map((item) => ({
+        id: item.name.replace(/\s+/g, '_').toLowerCase(),
         value: item.name,
         image: item.logo,
         name: item.displayName,
@@ -212,6 +214,7 @@ const useFormBridge = () => {
           .replace(/,/g, '') ?? '';
 
       options.push({
+        id: hashMessage(token.symbol),
         value: assetId,
         image: token.logo,
         name: assetMapped?.name || token.symbol,
