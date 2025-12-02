@@ -1,4 +1,4 @@
-import { Field, Input, InputGroup, InputProps, Loader } from 'bako-ui';
+import { Field, Input, InputGroup, InputProps } from 'bako-ui';
 import { isB256 } from 'fuels';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
@@ -143,13 +143,6 @@ const AddressInput = (props: AddressInputProps) => {
               onClick={handleClearAddress}
             />
           )
-        }
-        endAddonProps={
-          <Loader
-            css={{ '--spinner-track-color': 'dark.100' }}
-            size="md"
-            color="brand.500"
-          />
         }
       >
         <Input
