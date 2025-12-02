@@ -22,6 +22,8 @@ const CreateContactForm = memo(({ address }: CreateContactFormProps) => {
     setValue('nickname', '');
   }, [setValue]);
 
+  const name = form.watch('nickname');
+
   return (
     <VStack gap={6}>
       <RhfInput
@@ -31,7 +33,7 @@ const CreateContactForm = memo(({ address }: CreateContactFormProps) => {
         slotProps={{
           input: { placeholder: 'Name', padding: 3, variant: 'subtle' },
           inputGroup: {
-            endElement: (
+            endElement: name && (
               <CloseCircle
                 boxSize={4}
                 color="gray.200"
