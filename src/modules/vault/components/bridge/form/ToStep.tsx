@@ -95,20 +95,22 @@ export const ToFormStep = ({ assets, setErrorAmount }: ToFormStepProps) => {
                     />
                   </HStack>
                 </Box>
-                <ModalSelectNetworkBridge
-                  title="Select Network"
-                  isOpen={dialogSelectNetwork.isOpen}
-                  onOpenChange={dialogSelectNetwork.onOpenChange}
-                  onClose={dialogSelectNetwork.onClose}
-                  options={toNetworkOptions}
-                  isLoadingOptions={isLoadingDestinations}
-                  onSelect={(value) => {
-                    resetField('selectAssetTo');
-                    resetField('selectAssetToMobile');
-                    // checkResetSteps();
-                    field.onChange(value);
-                  }}
-                />
+                {dialogSelectNetwork.isOpen && (
+                  <ModalSelectNetworkBridge
+                    isOpen
+                    title="Select Network"
+                    onOpenChange={dialogSelectNetwork.onOpenChange}
+                    onClose={dialogSelectNetwork.onClose}
+                    options={toNetworkOptions}
+                    isLoadingOptions={isLoadingDestinations}
+                    onSelect={(value) => {
+                      resetField('selectAssetTo');
+                      resetField('selectAssetToMobile');
+                      // checkResetSteps();
+                      field.onChange(value);
+                    }}
+                  />
+                )}
               </Field.Root>
             )}
           />
@@ -163,20 +165,22 @@ export const ToFormStep = ({ assets, setErrorAmount }: ToFormStepProps) => {
                     />
                   </HStack>
                 </Box>
-                <ModalSelectAssetsBridge
-                  title="Select Asset"
-                  isOpen={dialogSelectAsset.isOpen}
-                  onOpenChange={dialogSelectAsset.onOpenChange}
-                  options={toAssetOptions}
-                  onSelect={(value) => {
-                    field.onChange(value);
-                    setStepForm(BridgeStepsForm.AMOUNT);
-                    // Trigger amount recalculation on asset change
-                    if (amount) {
-                      handleSourceChange(amount);
-                    }
-                  }}
-                />
+                {dialogSelectAsset.isOpen && (
+                  <ModalSelectAssetsBridge
+                    isOpen
+                    title="Select Asset"
+                    onOpenChange={dialogSelectAsset.onOpenChange}
+                    options={toAssetOptions}
+                    onSelect={(value) => {
+                      field.onChange(value);
+                      setStepForm(BridgeStepsForm.AMOUNT);
+                      // Trigger amount recalculation on asset change
+                      if (amount) {
+                        handleSourceChange(amount);
+                      }
+                    }}
+                  />
+                )}
               </Field.Root>
             )}
           />
