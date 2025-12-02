@@ -46,7 +46,7 @@ const TermsOfUseDialog = (props: TermsOfUseDialogProps) => {
 
   return (
     <Dialog.Modal
-      size={{ base: 'full', md: 'md' }}
+      size={{ base: 'full', md: 'lg' }}
       {...props}
       open={modalIsOpen}
       onOpenChange={onOpenChange}
