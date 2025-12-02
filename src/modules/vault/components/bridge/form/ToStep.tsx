@@ -106,7 +106,6 @@ export const ToFormStep = ({ assets, setErrorAmount }: ToFormStepProps) => {
                     onSelect={(value) => {
                       resetField('selectAssetTo');
                       resetField('selectAssetToMobile');
-                      // checkResetSteps();
                       field.onChange(value);
                     }}
                   />
