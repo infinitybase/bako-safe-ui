@@ -24,7 +24,7 @@ export function AmountBrigde({
   setErrorAmount,
   decimals,
 }: AmountBridgeProps) {
-  const { stepForm, setStepForm } = useFormBridgeContext();
+  const { stepForm, setStepForm, isLoadingQuote } = useFormBridgeContext();
   const { watch } = useFormContext();
   const amount = watch('amount');
 
@@ -129,6 +129,7 @@ export function AmountBrigde({
                 alignSelf="flex-end"
                 onClick={handleContinue}
                 disabled={!!errorAmount}
+                loading={isLoadingQuote}
               >
                 Continue
               </Button>
