@@ -136,11 +136,13 @@ const AddressInput = (props: AddressInputProps) => {
     <Field.Root>
       <InputGroup
         endElement={
-          <CloseCircle
-            boxSize={4}
-            color="gray.200"
-            onClick={handleClearAddress}
-          />
+          inputValue && (
+            <CloseCircle
+              boxSize={4}
+              color="gray.200"
+              onClick={handleClearAddress}
+            />
+          )
         }
         endAddonProps={
           <Loader
