@@ -74,6 +74,7 @@ const CardConnector = (props: CardConnectorProps) => {
       aria-label={`Connect ${connector.label}`}
       cursor={connector.isEnabled ? 'pointer' : 'initial'}
       border="none"
+      borderRadius={8}
       onClick={selectConnector}
       position="relative"
       transition="0.5s"
