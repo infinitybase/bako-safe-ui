@@ -32,7 +32,7 @@ const useWalletSignIn = (
     signAndValidate: evmSignAndValidate,
     modal: evmModal,
     getCurrentAccount: evmGetCurrentAccount,
-  } = useEvm();
+  } = useEvm(setIsAnyWalletConnectorOpen);
 
   const [evmModalIsOpen, setEvmModalIsOpen] = useState<boolean>(false);
 
