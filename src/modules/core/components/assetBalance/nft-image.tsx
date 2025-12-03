@@ -1,7 +1,5 @@
-import { Box, Center, Image, ImageProps, Loader } from 'bako-ui';
+import { Box, Center, Image, ImageProps, Loader, Skeleton } from 'bako-ui';
 import { useEffect, useRef, useState } from 'react';
-
-import { CustomSkeleton } from '@/components';
 
 const DEFAULT_TIMEOUT = 6000;
 
@@ -70,7 +68,7 @@ export const NftImage = ({
   if (state.isLoading) {
     return (
       <Box w="full" h="full" position="relative">
-        <CustomSkeleton w="full" h="full" />
+        <Skeleton w="full" h="full" borderTopRadius="16px" />
         <Center
           w="full"
           h="full"
