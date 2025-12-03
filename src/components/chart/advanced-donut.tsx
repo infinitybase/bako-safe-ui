@@ -5,8 +5,9 @@ import { Cell, Label, Legend, Pie, PieChart, Sector } from 'recharts';
 import { moneyFormat } from '@/utils';
 
 import { ChartLabel } from './chart-label';
+import { ChartLegend } from './chart-legend';
 
-interface ChartData {
+export interface ChartData {
   label: string;
   value: number;
   color: string;
@@ -32,6 +33,10 @@ const AdvancedDonut = ({
 }: AdvancedDonutProps) => {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const chart = useChart({ data });
+  const [legendHeight, setLegendHeight] = useState<number | null>(null);
+
+  const legendFlexDirection =
+    legendProps?.layout === 'vertical' ? 'column' : 'row';
 
   const onLegendFocusEnter = useCallback((index: number) => {
     setActiveIndex(index);
@@ -71,7 +76,7 @@ const AdvancedDonut = ({
       css={{
         '& .recharts-default-legend': {
           display: 'flex',
-          flexDirection: legendProps?.layout === 'vertical' ? 'column' : 'row',
+          flexDirection: legendFlexDirection,
           alignItems: 'center',
           flexWrap: 'wrap',
         },
@@ -95,17 +100,20 @@ const AdvancedDonut = ({
           stroke="none"
           {...pieProps}
         >
-          <Label
-            position="middle"
-            content={({ viewBox }) => (
-              <ChartLabel
-                viewBox={viewBox}
-                title={labelData.title}
-                label={labelData.label}
-                percentage={labelData.percentage}
-              />
-            )}
-          />
+          {legendHeight !== null && (
+            <Label
+              position="middle"
+              content={({ viewBox }) => (
+                <ChartLabel
+                  viewBox={viewBox}
+                  title={labelData.title}
+                  label={labelData.label}
+                  percentage={labelData.percentage}
+                  legendHeight={legendHeight}
+                />
+              )}
+            />
+          )}
 
           {chart.data.map((item, index) => (
             <Cell
@@ -118,14 +126,15 @@ const AdvancedDonut = ({
         </Pie>
 
         <Legend
-          align="left"
-          iconType="circle"
           iconSize={12}
           {...legendProps}
           wrapperStyle={{
             bottom: 0,
             ...legendProps?.wrapperStyle,
           }}
+          content={(props) => (
+            <ChartLegend {...props} setLegendHeight={setLegendHeight} />
+          )}
         />
       </PieChart>
     </Chart.Root>
