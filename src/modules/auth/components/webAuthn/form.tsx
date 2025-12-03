@@ -61,6 +61,9 @@ const WebAuthnForm = (props: WebAuthnFormProps) => {
           isLoadingOptions={isLoadingOptions}
           onInputValueChange={accountSeachHandler}
           options={accountsOptions}
+          slotProps={{
+            input: { pr: '40px' }, // clear trigger overflow
+          }}
           clearTriggerIcon={<CloseCircle />}
         />
       </Field.Root>
