@@ -1,10 +1,10 @@
 import {
-  Button,
   Card,
   Flex,
   Heading,
   HStack,
   Icon,
+  IconButton,
   Text,
   Tooltip,
   useClipboard,
@@ -114,98 +114,101 @@ const SettingsOverview = ({
           w={{ base: 'full', md: '241px' }}
           justifyContent="space-between"
           bg="bg.muted"
-          rounded="md"
-          pl={2.5}
+          rounded="sm"
+          px={2}
+          py={1.5}
         >
           <Text color="gray.400" fontSize="xs" lineHeight="shorter">
             Address
           </Text>
-
-          <Tooltip
-            content={copiedAddress ? 'Copied' : 'Copy Address'}
-            contentProps={{
-              bg: 'bg.muted',
-              color: 'textPrimary',
-              borderRadius: 'lg',
-            }}
-            positioning={{ placement: 'top' }}
-            showArrow={false}
-          >
-            <Button
-              variant="subtle"
-              size="xs"
-              bg="bg.muted"
-              justifyContent="space-between"
+          <HStack gap={1}>
+            <Text
+              as="div"
+              display="flex"
               alignItems="center"
-              rounded="md"
-              onClick={copyAddress}
+              gap={1}
+              color="gray.200"
+              fontSize="xs"
+              lineHeight="shorter"
             >
-              <Text
-                as="div"
-                display="flex"
-                alignItems="center"
-                gap={1}
-                color="gray.200"
-                fontSize="xs"
-                lineHeight="shorter"
+              {AddressUtils.format(predicateAddress, 4)}
+            </Text>
+            <Tooltip
+              content={copiedAddress ? 'Copied' : 'Copy Address'}
+              contentProps={{
+                bg: 'bg.muted',
+                color: 'textPrimary',
+                borderRadius: 'lg',
+              }}
+              positioning={{ placement: 'top' }}
+              showArrow={false}
+            >
+              <IconButton
+                variant="plain"
+                cursor="pointer"
+                size="xs"
+                boxSize="20px"
+                minW="20px"
+                onClick={copyAddress}
               >
-                {AddressUtils.format(predicateAddress, 4)}
-
                 <Icon
                   as={copiedAddress ? RiFileCopyFill : CopyTopMenuIcon}
                   w="12px"
+                  color="gray.200"
                 />
-              </Text>
-            </Button>
-          </Tooltip>
+              </IconButton>
+            </Tooltip>
+          </HStack>
         </HStack>
         <HStack
           w={{ base: 'full', md: '241px' }}
           justifyContent="space-between"
           bg="bg.muted"
-          rounded="md"
-          pl={2.5}
+          rounded="sm"
+          px={2}
+          py={1.5}
         >
           <Text color="gray.400" fontSize="xs" lineHeight="shorter">
             Predicate
           </Text>
-          <Tooltip
-            content={copiedVersion ? 'Copied' : 'Copy Predicate'}
-            contentProps={{
-              bg: 'bg.muted',
-              color: 'textPrimary',
-              borderRadius: 'lg',
-            }}
-            positioning={{ placement: 'top' }}
-            showArrow={false}
-          >
-            <Button
-              variant="subtle"
-              size="xs"
-              bg="bg.muted"
-              justifyContent="space-between"
-              rounded="md"
+          <HStack gap={1}>
+            <Text
+              as="div"
+              display="flex"
               alignItems="center"
-              onClick={copyVersion}
+              gap={1}
+              color="gray.200"
+              fontSize="xs"
+              lineHeight="shorter"
             >
-              <Text
-                as="div"
-                display="flex"
-                alignItems="center"
-                gap={1}
-                color="gray.200"
-                fontSize="xs"
-                lineHeight="shorter"
+              {AddressUtils.format(predicateVersion, 4)}
+            </Text>
+            <Tooltip
+              content={copiedVersion ? 'Copied' : 'Copy Predicate'}
+              contentProps={{
+                bg: 'bg.muted',
+                color: 'textPrimary',
+                borderRadius: 'lg',
+              }}
+              positioning={{ placement: 'top' }}
+              showArrow={false}
+            >
+              <IconButton
+                variant="plain"
+                cursor="pointer"
+                size="xs"
+                boxSize="20px"
+                minW="20px"
+                onClick={copyVersion}
               >
-                {AddressUtils.format(predicateVersion, 4)}
-
                 <Icon
                   as={copiedVersion ? RiFileCopyFill : CopyTopMenuIcon}
                   w="12px"
+                  color="gray.200"
                 />
-              </Text>
-            </Button>
-          </Tooltip>
+              </IconButton>
+            </Tooltip>
+          </HStack>
         </HStack>
       </Card.Footer>
 
