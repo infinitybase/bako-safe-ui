@@ -109,7 +109,7 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
               </VStack>
             </Drawer.Header>
 
-            <Separator borderColor="gray.400" my={10} />
+            <Separator borderColor="gray.400" my={10} mx={1} />
 
             <Drawer.Body
               css={{
