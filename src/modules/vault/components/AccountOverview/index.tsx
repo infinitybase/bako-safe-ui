@@ -254,7 +254,10 @@ export const AccountOverview = memo(
               </Flex>
               <VStack
                 gap={2}
-                hidden={!hasBalance}
+                hidden={
+                  !hasBalance ||
+                  (!isPendingSigner && !isEthBalanceLowerThanReservedAmount)
+                }
                 alignItems={{ base: 'flex-end', sm: 'flex-start' }}
               >
                 {isEthBalanceLowerThanReservedAmount && isPendingSigner && (
