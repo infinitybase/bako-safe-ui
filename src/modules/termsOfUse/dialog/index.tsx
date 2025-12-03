@@ -23,13 +23,13 @@ const TermsOfUseDialog = (props: TermsOfUseDialogProps) => {
   } = useTermsDialog();
 
   const scrollRef = useRef<HTMLDivElement | null>(null);
-  const [showChevron, setShowChevron] = useState(true);
+  const [showBottomChevron, setShowBottomChevron] = useState(true);
 
   const handleScroll = useCallback(() => {
     if (!scrollRef.current) return;
     const { scrollTop, scrollHeight, clientHeight } = scrollRef.current;
     const atBottom = scrollTop + clientHeight >= scrollHeight - 4;
-    setShowChevron(!atBottom);
+    setShowBottomChevron(!atBottom);
   }, []);
 
   const scrollToBottom = useCallback(() => {
@@ -38,6 +38,14 @@ const TermsOfUseDialog = (props: TermsOfUseDialogProps) => {
       top: scrollRef.current.scrollHeight,
       behavior: 'smooth',
     });
+    setShowBottomChevron(false);
+  }, []);
+
+  const scrollToTop = useCallback(() => {
+    if (!scrollRef.current) return;
+
+    scrollRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+    setShowBottomChevron(true);
   }, []);
 
   useEffect(() => {
@@ -156,7 +164,7 @@ const TermsOfUseDialog = (props: TermsOfUseDialogProps) => {
               ))}
             </VStack>
           </VStack>
-          {showChevron && (
+          {showBottomChevron && (
             <>
               <Box
                 position="absolute"
@@ -177,6 +185,37 @@ const TermsOfUseDialog = (props: TermsOfUseDialogProps) => {
                 transform="translateX(-50%)"
                 zIndex={10}
                 onClick={scrollToBottom}
+                cursor="pointer"
+              >
+                <ChevronDownIcon
+                  fontSize={24}
+                  color="textPrimary"
+                  style={{ filter: 'drop-shadow(0 0 6px rgba(0,0,0,0.55))' }}
+                />
+              </Box>
+            </>
+          )}
+          {!showBottomChevron && (
+            <>
+              <Box
+                position="absolute"
+                left={0}
+                top={0}
+                w="full"
+                h="70px"
+                pointerEvents="none"
+                style={{
+                  background:
+                    'linear-gradient(0deg, rgba(21, 20, 19, 0.00) 0%, rgba(21, 20, 19, 0.75) 30%, #151413 100%)',
+                }}
+              />
+              <Box
+                position="absolute"
+                top={4}
+                left="50%"
+                transform="translateX(-50%) rotate(180deg)"
+                zIndex={10}
+                onClick={scrollToTop}
                 cursor="pointer"
               >
                 <ChevronDownIcon
