@@ -196,6 +196,15 @@ const UserBox = () => {
     handleCloseMenu();
   }, [navigate, authDetails?.userInfos?.workspace?.id, handleCloseMenu]);
 
+  useEffect(() => {
+    const overflow = openMenu ? 'hidden' : 'auto';
+    document.body.style.overflow = overflow;
+
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [openMenu]);
+
   return (
     <>
       <SettingsDrawer
