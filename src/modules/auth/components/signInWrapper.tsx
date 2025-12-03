@@ -143,7 +143,7 @@ const SignInWrapper = (props: SignInWrapperProps) => {
                           : 'Creating new user...'
                     }
                     subtitle={
-                      currentOpenConnector ||
+                      (isAnyWalletConnectorOpen && currentOpenConnector) ||
                       formData.form.getValues('username') ||
                       ''
                     }

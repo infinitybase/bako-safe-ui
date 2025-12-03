@@ -32,6 +32,10 @@ const WebauthnInputBadge: Record<string, IWebauthnInputBadge> = {
     status: AutocompleteBadgeStatus.CONFLICT,
     label: 'This username is already in use',
   },
+  NOT_FOUND: {
+    status: AutocompleteBadgeStatus.ERROR,
+    label: 'Username not found',
+  },
 };
 
 const useWebAuthnInput = (
@@ -89,9 +93,12 @@ const useWebAuthnInput = (
       return WebauthnInputBadge.SEARCHING;
     }
 
-    if (mode === WebAuthnModeState.LOGIN) {
+    if ([WebAuthnModeState.LOGIN, WebAuthnModeState.SEARCH].includes(mode!)) {
       if (checkNicknameRequest.data?.type === TypeUser.WEB_AUTHN) {
         return WebauthnInputBadge.INFO;
+      }
+      if (checkNicknameRequest.isFetched) {
+        return WebauthnInputBadge.NOT_FOUND;
       }
       return WebauthnInputBadge.ERROR;
     }
@@ -104,6 +111,7 @@ const useWebAuthnInput = (
     }
   }, [
     checkNicknameRequest.isLoading,
+    checkNicknameRequest.isFetched,
     checkNicknameRequest.data,
     mode,
     debouncedInputValue,
