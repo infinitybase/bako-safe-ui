@@ -1,11 +1,19 @@
-import { Box, HStack, Icon, Text, useClipboard, VStack } from 'bako-ui';
-import { FiCheck as CheckIcon } from 'react-icons/fi';
+import {
+  Box,
+  HStack,
+  Icon,
+  IconButton,
+  Text,
+  Tooltip,
+  useClipboard,
+  VStack,
+} from 'bako-ui';
+import { RiFileCopyFill } from 'react-icons/ri';
 
-import { CopyIcon } from '@/components';
+import { CopyTopMenuIcon } from '@/components/icons/copy-top-menu';
 import { DoneIcon } from '@/components/icons/done-icon';
 import { UseAPITokenReturn } from '@/modules/cli/hooks';
 import { AddressUtils } from '@/modules/core/utils';
-import { useNotification } from '@/modules/notification/hooks';
 
 interface CreateAPITokenSuccessProps {
   step: UseAPITokenReturn['steps']['step'];
@@ -15,8 +23,7 @@ interface CreateAPITokenSuccessProps {
 const CreateAPITokenSuccess = (props: CreateAPITokenSuccessProps) => {
   const { step, createdAPIKey } = props;
 
-  const clipboard = useClipboard({ value: createdAPIKey });
-  const toast = useNotification();
+  const { copy, copied } = useClipboard({ value: createdAPIKey });
 
   return (
     <Box p={0} h="full">
@@ -57,25 +64,32 @@ const CreateAPITokenSuccess = (props: CreateAPITokenSuccessProps) => {
             <Text fontSize="xs" color="grey.75" truncate>
               {AddressUtils.format(createdAPIKey, 25)}
             </Text>
-            <Icon
-              as={CopyIcon}
-              color="grey.425"
-              fontSize="sm"
-              cursor="pointer"
-              id={'copy_form_api_token'}
-              onClick={() => {
-                clipboard.copy();
-                toast({
-                  position: 'top-right',
-                  duration: 2000,
-                  isClosable: false,
-                  title: 'Copied to clipboard',
-                  icon: (
-                    <Icon fontSize="2xl" color="brand.500" as={CheckIcon} />
-                  ),
-                });
+            <Tooltip
+              content={copied ? 'Copied' : 'Copy'}
+              contentProps={{
+                bg: 'bg.muted',
+                color: 'textPrimary',
+                borderRadius: 'lg',
               }}
-            />
+              positioning={{ placement: 'top' }}
+              showArrow={false}
+            >
+              <IconButton
+                variant="plain"
+                cursor="pointer"
+                size="xs"
+                boxSize="20px"
+                minW="20px"
+                aria-label="Copy API Token"
+                onClick={copy}
+              >
+                <Icon
+                  as={copied ? RiFileCopyFill : CopyTopMenuIcon}
+                  w="16px"
+                  color="textPrimary"
+                />
+              </IconButton>
+            </Tooltip>
           </HStack>
         </HStack>
       </VStack>
