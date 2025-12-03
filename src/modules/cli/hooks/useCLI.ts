@@ -1,11 +1,6 @@
 import { useMemo, useState } from 'react';
 
-import {
-  BitCoinIcon,
-  CoinsIcon,
-  MoreLessIcon,
-  RecoveryIcon,
-} from '@/components';
+import { BitCoinIcon, KeyIcon, MoreLessIcon, RecoveryIcon } from '@/components';
 import { PredicateAndWorkspace, Workspace } from '@/modules';
 import { PermissionRoles } from '@/modules/core/models';
 
@@ -65,7 +60,7 @@ const useCLI = ({ currentWorkspace, userId, vault }: IUseCLIProps) => {
   const settings = [
     {
       label: CLIFeaturesLabels.API_TOKEN,
-      icon: CoinsIcon,
+      icon: KeyIcon,
       disabled: !hasPermission,
       onClick: () => {
         hasToken ? tabs.set(TabState.LIST) : tabs.set(TabState.CREATE);

@@ -39,6 +39,7 @@ export * from './forward-icon';
 export * from './google';
 export * from './home';
 export * from './information';
+export * from './key';
 export * from './layerswap-icon';
 export * from './left-and-right-arrow';
 export * from './line-close-icon';
