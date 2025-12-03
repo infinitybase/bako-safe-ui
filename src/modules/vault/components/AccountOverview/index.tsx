@@ -14,11 +14,11 @@ import {
 } from 'bako-ui';
 import { motion } from 'framer-motion';
 import { memo, useMemo } from 'react';
-import { HiArrowDownLeft } from 'react-icons/hi2';
 import { RiFileCopyFill } from 'react-icons/ri';
 import { useNavigate } from 'react-router-dom';
 
 import {
+  DownLeftArrow,
   ErrorTooltip,
   TeamIcon,
   TooltipNotEnoughBalance,
@@ -238,13 +238,17 @@ export const AccountOverview = memo(
                   showArrow
                   positioning={{ placement: 'top' }}
                 >
-                  <Button variant="subtle" onClick={handleNavigateToSendPage}>
+                  <Button
+                    variant="subtle"
+                    size="xs"
+                    onClick={handleNavigateToSendPage}
+                  >
                     <UpRightArrow w={4} />
                     Send
                   </Button>
                 </Tooltip>
-                <Button variant="subtle" onClick={onAddAssets}>
-                  <HiArrowDownLeft width={4} />
+                <Button variant="subtle" size="xs" onClick={onAddAssets}>
+                  <DownLeftArrow width={4} />
                   Deposit
                 </Button>
               </Flex>
