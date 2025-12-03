@@ -90,8 +90,18 @@ const VaultBox = (props: VaultBoxPropx) => {
             },
           }}
         >
-          <Icon as={HomeIcon} w={4} color="gray.50" opacity={0.6} />
-          <Text opacity={0.6} textTransform="uppercase" fontSize="2xs">
+          <Icon
+            as={HomeIcon}
+            w={{ base: 3, sm: 4 }}
+            color="gray.50"
+            opacity={0.6}
+          />
+          <Text
+            opacity={0.6}
+            textTransform="uppercase"
+            fontSize="2xs"
+            lineHeight="shorter"
+          >
             Home
           </Text>
         </Button>
@@ -111,8 +121,18 @@ const VaultBox = (props: VaultBoxPropx) => {
             },
           }}
         >
-          <Icon as={LeftAndRightArrow} w={4} color="gray.50" opacity={0.6} />
-          <Text opacity={0.6} textTransform="uppercase" fontSize="2xs">
+          <Icon
+            as={LeftAndRightArrow}
+            w={{ base: 3, sm: 4 }}
+            color="gray.50"
+            opacity={0.6}
+          />
+          <Text
+            opacity={0.6}
+            textTransform="uppercase"
+            fontSize="2xs"
+            lineHeight="shorter"
+          >
             Account
           </Text>
         </Button>
