@@ -68,9 +68,7 @@ const WelcomeCard = ({
           minW={{ base: '60px', sm: 'unset' }}
           gap={2}
           animate={
-            !isMobile && {
-              y: isHovered ? -10 : 0,
-            }
+            !isMobile ? { y: isHovered ? -10 : 0 } : undefined
           }
           transition={{
             type: 'spring',
