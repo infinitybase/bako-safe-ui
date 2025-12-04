@@ -96,10 +96,12 @@ const WelcomeCard = ({
             initial={!isMobile ? { opacity: 0, y: -10 } : undefined}
             display={{ base: 'block', sm: !isHovered ? 'none' : 'block' }}
             animate={
-              !isMobile && {
-                opacity: isHovered ? 1 : 0,
-                y: isHovered ? -10 : 0,
-              }
+              !isMobile
+                ? {
+                    opacity: isHovered ? 1 : 0,
+                    y: isHovered ? -10 : 0,
+                  }
+                : undefined
             }
             transition={{
               opacity: { duration: 0.2, ease: 'easeInOut' },
