@@ -63,4 +63,4 @@ export const ChartLegend = memo((props: ChartLegendProps) => {
   );
 });
 
-ChartLegend.displayName = 'ChartLabel';
+ChartLegend.displayName = 'ChartLegend';
