@@ -204,9 +204,6 @@ export function DetailsBridge({ assets }: DetailsBridgeProps) {
             !isEnoughETH
           }
           loading={isSendingTx || isLoading}
-          fontWeight={600}
-          fontSize={16}
-          letterSpacing={'2%'}
           type="submit"
           mt={4}
         >
