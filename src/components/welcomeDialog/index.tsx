@@ -135,6 +135,7 @@ const WelcomeDialog = ({
           <Flex w="full" justifyContent="flex-end">
             <Button
               variant="ghost"
+              size="sm"
               onClick={handleClose}
               fontWeight="normal"
               color="gray.300"
