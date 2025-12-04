@@ -29,12 +29,15 @@ const WelcomeCard = ({
     <Card.Root
       w="full"
       h="full"
-      minH={140}
+      minH={104}
       variant="subtle"
+      bg="bg.muted"
+      borderRadius="lg"
       onClick={onClick}
       opacity={0.6}
       _hover={{
         opacity: 1,
+        bg: 'gray.550',
       }}
       cursor={commingSoon ? 'auto' : 'pointer'}
       onMouseEnter={() => setIsHovered(true)}
@@ -46,18 +49,17 @@ const WelcomeCard = ({
         flexDirection="column"
         gap={2}
         p={4}
+        py={2}
         alignItems="center"
         justifyContent="center"
         position="relative"
         overflow="hidden"
       >
         <MotionVStack
+          layout
           alignItems="center"
           w="full"
           gap={2}
-          animate={{
-            y: isHovered ? -10 : 0,
-          }}
           transition={{
             type: 'spring',
             stiffness: 200,
@@ -66,7 +68,7 @@ const WelcomeCard = ({
         >
           <Icon as={icon} color="textPrimary" w={iconSize} />
           <Heading
-            fontSize="sm"
+            fontSize="2xs"
             color="textPrimary"
             textAlign="center"
             lineHeight="short"
@@ -80,12 +82,9 @@ const WelcomeCard = ({
           color="textSecondary"
           textAlign="center"
           lineHeight="short"
-          initial={{ opacity: 0, y: -10 }}
+          initial={{ opacity: 0 }}
           hidden={!isHovered}
-          animate={{
-            opacity: isHovered ? 1 : 0,
-            y: isHovered ? -10 : 0,
-          }}
+          animate={{ opacity: isHovered ? 1 : 0 }}
           transition={{
             opacity: { duration: 0.2, ease: 'easeInOut' },
             y: {

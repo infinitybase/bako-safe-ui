@@ -1,4 +1,4 @@
-import { Button, DialogOpenChangeDetails, Flex, HStack } from 'bako-ui';
+import { Button, DialogOpenChangeDetails, Flex, Stack } from 'bako-ui';
 
 import { useNetworks } from '@/modules/network/hooks';
 import { NetworkType } from '@/modules/network/services';
@@ -21,7 +21,6 @@ const WelcomeDialog = ({
   onOpenChange,
 }: IWelcomeDialogProps) => {
   const {
-    screenSizes: { isMobile, isSmall },
     authDetails: {
       userInfos: { first_login, id, refetch },
     },
@@ -78,56 +77,71 @@ const WelcomeDialog = ({
           mb={0}
           onClose={() => handleClose()}
           w="full"
-          maxW={{ base: 480, sm: 'unset' }}
           title="Welcome to Bako Safe!"
           description={`Let's start by adding some funds to your personal vault.`}
           descriptionFontSize="12px"
           descriptionColor="textSecondary"
           titleSxProps={{
-            fontSize: '16px',
-            fontWeight: 700,
-            lineHeight: '19.36px',
+            fontSize: '14px',
+            fontWeight: 600,
+            color: 'textPrimary',
+            lineHeight: '100%',
           }}
           pb={3}
         />
 
-        <HStack w="full" my={3} gap={4}>
+        <Stack
+          flexDirection={{ base: 'column', sm: 'row' }}
+          w="full"
+          mt={3}
+          mb={6}
+          gap={4}
+        >
           <WelcomeCard
-            title="Bridge"
+            title="BRIDGE"
             description="Crypto from Ethereum network to Fuel mainnet."
             icon={BridgeIcon}
+            iconSize="18px"
             commingSoon={isTestnet}
             onClick={isTestnet ? undefined : () => handleRedirectToMainNet()}
           />
           <WelcomeCard
-            title="Deposit"
+            title="DEPOSIT"
             description="Deposit using QR Code or vault address"
             icon={DownLeftArrow2}
             iconSize="22px"
             onClick={handleOpenDepositDialog}
           />
           <WelcomeCard
-            title="Purchase"
+            title="PURCHASE"
             description="Buy crypto using card or bank account."
             icon={CoinsIcon}
             commingSoon
             iconSize="22px"
           />
-        </HStack>
+        </Stack>
         <Dialog.Actions
-          position={isMobile ? 'absolute' : 'relative'}
+          position={{ base: 'absolute', sm: 'relative' }}
           bottom={0}
           left={0}
           right={0}
-          px={isMobile ? 10 : 'unset'}
-          bg={isMobile ? 'dark.950' : 'unset'}
-          borderRadius={isMobile && !isSmall ? '20px' : 'unset'}
-          pb={isMobile && !isSmall ? 5 : 'unset'}
+          px={{ base: 10, sm: 'unset' }}
+          bg={{ base: 'dark.950', sm: 'unset' }}
+          borderRadius={{ base: 20, sm: 'unset' }}
+          pb={{ base: 5, sm: 'unset' }}
           hideDivider
           justifyContent="flex-end"
         >
           <Flex w="full" justifyContent="flex-end">
-            <Button variant="ghost" onClick={handleClose}>
+            <Button
+              variant="ghost"
+              onClick={handleClose}
+              fontWeight="normal"
+              color="gray.300"
+              _hover={{
+                color: 'textPrimary',
+              }}
+            >
               Skip
             </Button>
           </Flex>

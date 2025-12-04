@@ -4,7 +4,7 @@ import { useUpdateSettingsRequest } from '@/modules/settings/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { Dialog } from '../dialog';
-import { BridgeIcon, CoinsIcon, DownLeftArrow } from '../icons';
+import { BridgeIcon, CoinsIcon, DownLeftArrow2 } from '../icons';
 import WelcomeCard from '../welcomeDialog/card';
 
 interface IWelcomeDialogProps {
@@ -19,12 +19,7 @@ const AddAssetsDialog = ({
   onOpenChange,
 }: IWelcomeDialogProps) => {
   const {
-    screenSizes: {
-      isMobile,
-      isSmall,
-      isLitteSmall,
-      isLowerThanFourHundredAndThirty,
-    },
+    screenSizes: { isMobile, isLitteSmall, isLowerThanFourHundredAndThirty },
     authDetails: {
       userInfos: { id, refetch },
     },
@@ -72,14 +67,15 @@ const AddAssetsDialog = ({
           mb={0}
           onClose={() => handleClose()}
           w="full"
-          maxW={{ base: 480, sm: 'unset' }}
           title="Add your assets"
           description={`Select your preferred method for adding funds to your personal vault.`}
           descriptionFontSize="12px"
+          descriptionColor="textSecondary"
           titleSxProps={{
-            fontSize: '16px',
-            fontWeight: 700,
-            lineHeight: '19.36px',
+            fontSize: '14px',
+            fontWeight: 600,
+            color: 'textPrimary',
+            lineHeight: '100%',
           }}
           borderBottomWidth={1}
           borderColor="grey.425"
@@ -88,21 +84,21 @@ const AddAssetsDialog = ({
 
         <VStack w="full" my={6} pb={isMobile ? 8 : 0} gap={4}>
           <WelcomeCard
-            title="Deposit"
+            title="DEPOSIT"
             description="Deposit using QR Code or vault adress."
-            icon={DownLeftArrow}
-            iconSize="22px"
+            icon={DownLeftArrow2}
+            iconSize="18px"
             onClick={() => handleOpenDepositDialog()}
           />
           <WelcomeCard
-            title="Bridge"
+            title="BRIDGE"
             description="Transfer between different networks."
             iconSize="22px"
             icon={BridgeIcon}
             onClick={() => handleRedirectToMainNet()}
           />
           <WelcomeCard
-            title="Purchase"
+            title="PURCHASE"
             description="Buy crypto using card or bank account."
             icon={CoinsIcon}
             commingSoon
@@ -111,14 +107,14 @@ const AddAssetsDialog = ({
         </VStack>
 
         <Dialog.Actions
-          position={isMobile ? 'absolute' : 'relative'}
+          position={{ base: 'absolute', sm: 'relative' }}
           bottom={0}
           left={0}
           right={0}
-          px={isMobile ? 10 : 'unset'}
-          bg={isMobile ? 'dark.950' : 'unset'}
-          borderRadius={isMobile && !isSmall ? '20px' : 'unset'}
-          pb={isMobile && !isSmall ? 5 : 'unset'}
+          px={{ base: 10, sm: 'unset' }}
+          bg={{ base: 'dark.950', sm: 'unset' }}
+          borderRadius={{ base: 20, sm: 'unset' }}
+          pb={{ base: 5, sm: 'unset' }}
           hideDivider
           css={{
             '&>hr': {
