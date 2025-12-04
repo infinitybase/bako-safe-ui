@@ -184,7 +184,6 @@ const SignInWrapper = (props: SignInWrapperProps) => {
 
                   <ConnectorsList
                     connectors={connectors}
-                    // hidden={isSafariBrowser}
                     onConnectorSelect={handleSelectWallet}
                     isAnyWalletConnectorOpen={isAnyWalletConnectorOpen}
                   />
