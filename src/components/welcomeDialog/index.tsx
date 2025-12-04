@@ -87,14 +87,12 @@ const WelcomeDialog = ({
             color: 'textPrimary',
             lineHeight: '100%',
           }}
-          pb={3}
         />
 
         <Stack
           flexDirection={{ base: 'column', sm: 'row' }}
           w="full"
-          mt={3}
-          mb={6}
+          my={6}
           gap={4}
         >
           <WelcomeCard
