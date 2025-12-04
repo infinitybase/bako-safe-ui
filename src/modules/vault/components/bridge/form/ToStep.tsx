@@ -5,7 +5,6 @@ import { ChevronDownIcon } from '@/components';
 import { Asset } from '@/modules/core';
 import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
 import { useAmountBridge, useFormBridge } from '@/modules/vault/hooks/bridge';
-import { limitCharacters } from '@/utils';
 
 import { ModalSelectAssetsBridge } from '..';
 import { ModalSelectNetworkBridge } from '../modalSelectNetwork';
@@ -35,7 +34,11 @@ export const ToFormStep = ({ assets, setErrorAmount }: ToFormStepProps) => {
 
   return (
     <Card.Root variant="subtle" bg="bg.panel" w="full" rounded="2xl">
-      <Card.Body flexDirection="row" gap={4} alignItems="center">
+      <Card.Body
+        flexDirection={{ base: 'column', sm: 'row' }}
+        alignItems={{ base: 'stretch', sm: 'center' }}
+        gap={4}
+      >
         <Heading
           color="textPrimary"
           fontSize="sm"
@@ -44,12 +47,17 @@ export const ToFormStep = ({ assets, setErrorAmount }: ToFormStepProps) => {
         >
           To
         </Heading>
-        <HStack gap={3} flex={1} justifyContent="flex-end">
+        <HStack
+          gap={3}
+          flex={1}
+          justifyContent="flex-end"
+          flexDir={{ base: 'column', sm: 'row' }}
+        >
           <Controller
             control={control}
             name="selectNetworkTo"
             render={({ field }) => (
-              <Field.Root maxW="170px">
+              <Field.Root maxW={{ sm: '170px' }}>
                 <Box
                   position="relative"
                   display="flex"
@@ -82,9 +90,7 @@ export const ToFormStep = ({ assets, setErrorAmount }: ToFormStepProps) => {
                         lineClamp={1}
                         truncate
                       >
-                        {field.value
-                          ? limitCharacters(field.value.name ?? '', 10)
-                          : 'Network'}
+                        {field.value ? field.value.name : 'Network'}
                       </Text>
                     </HStack>
 
@@ -117,7 +123,7 @@ export const ToFormStep = ({ assets, setErrorAmount }: ToFormStepProps) => {
             control={control}
             name="selectAssetTo"
             render={({ field }) => (
-              <Field.Root maxW="170px">
+              <Field.Root maxW={{ sm: '170px' }}>
                 <Box
                   position="relative"
                   w="full"
@@ -150,9 +156,7 @@ export const ToFormStep = ({ assets, setErrorAmount }: ToFormStepProps) => {
                         lineClamp={1}
                         truncate
                       >
-                        {field.value
-                          ? limitCharacters(field.value.name ?? '', 10)
-                          : 'Asset'}
+                        {field.value ? field.value.name : 'Asset'}
                       </Text>
                     </HStack>
 
