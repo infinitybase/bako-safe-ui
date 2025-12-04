@@ -124,9 +124,11 @@ const WelcomeCard = ({
               alignSelf="flex-start"
               initial={!isMobile && { opacity: 0 }}
               animate={
-                !isMobile && {
-                  opacity: isHovered ? 1 : 0,
-                }
+                !isMobile
+                  ? {
+                      opacity: isHovered ? 1 : 0,
+                    }
+                  : undefined
               }
               transition={{
                 opacity: { duration: 0.2, ease: 'easeInOut', delay: 0.05 },
