@@ -124,7 +124,7 @@ const WelcomeCard = ({
               right={2}
               size="xs"
               alignSelf="flex-start"
-              initial={!isMobile && { opacity: 0 }}
+              initial={!isMobile ? { opacity: 0 } : undefined}
               animate={
                 !isMobile
                   ? {
