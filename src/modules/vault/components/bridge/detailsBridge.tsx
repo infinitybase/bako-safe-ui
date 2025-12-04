@@ -206,6 +206,7 @@ export function DetailsBridge({ assets }: DetailsBridgeProps) {
           loading={isSendingTx || isLoading}
           type="submit"
           mt={4}
+          minW="120px"
         >
           {isPendingSigner
             ? TitleButtonsForm.PENDING_TX

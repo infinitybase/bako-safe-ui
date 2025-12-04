@@ -2,6 +2,7 @@ import { Button, Card, Heading, HStack, Text } from 'bako-ui';
 import { useFormContext } from 'react-hook-form';
 
 import { Asset } from '@/modules/core';
+import { useWorkspaceContext } from '@/modules/workspace';
 
 import { useAmountBridge } from '../../hooks/bridge';
 import { ExpandableCardSection } from './ExpandableCardSection';
@@ -24,6 +25,10 @@ export function AmountBrigde({
   setErrorAmount,
   decimals,
 }: AmountBridgeProps) {
+  const {
+    screenSizes: { isExtraSmall },
+  } = useWorkspaceContext();
+
   const { stepForm, setStepForm } = useFormBridgeContext();
   const { watch } = useFormContext();
   const amount = watch('amount');
@@ -125,7 +130,7 @@ export function AmountBrigde({
           <HStack flex={1} justifyContent="flex-end">
             {isCurrentStep && amountGreaterThanZero && (
               <Button
-                w="auto"
+                w={isExtraSmall ? 'auto' : '120px'}
                 alignSelf="flex-end"
                 onClick={handleContinue}
                 disabled={!!errorAmount}

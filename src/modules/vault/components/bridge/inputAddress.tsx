@@ -98,7 +98,7 @@ export function InputAddressBridge() {
         {isCurrentStep && (
           <Button
             alignSelf="self-end"
-            w="auto"
+            w="120px"
             onClick={handleContinue}
             disabled={!currentDestinationAddress}
           >
