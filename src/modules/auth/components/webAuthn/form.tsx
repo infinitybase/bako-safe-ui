@@ -41,12 +41,7 @@ const WebAuthnForm = (props: WebAuthnFormProps) => {
 
   const isError =
     errors.username ||
-    (inputBadge
-      ? [
-          AutocompleteBadgeStatus.ERROR,
-          AutocompleteBadgeStatus.CONFLICT,
-        ].includes(inputBadge.status)
-      : false);
+    (inputBadge ? inputBadge.status === AutocompleteBadgeStatus.ERROR : false);
 
   const showErrorColor = isError && name.length > 0;
 
