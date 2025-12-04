@@ -32,16 +32,19 @@ const DEFAULT_CONNECTORS = [
     name: EConnectors.FUEL,
     label: EConnectorsLabels.FUEL,
     icon: FuelIcon,
+    supportMobile: false,
   },
   {
     name: EConnectors.FULLET,
     label: EConnectorsLabels.FUELET,
     icon: FueletIcon,
+    supportMobile: false,
   },
   {
     name: EConnectors.EVM,
     label: EConnectorsLabels.EVM,
     icon: EvmIcon,
+    supportMobile: true,
   },
 ];
 
