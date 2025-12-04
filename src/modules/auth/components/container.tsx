@@ -1,7 +1,7 @@
 import { Box, Container, Image, VStack } from 'bako-ui';
 import React from 'react';
 
-import bakoSymbol from '@/assets/images/bako-safe.png';
+import bakoSymbol from '@/assets/bako-safe.svg';
 
 interface SigninContainerProps {
   children: React.ReactNode;
@@ -21,7 +21,7 @@ const SigninContainerMobile = (props: SigninContainerProps) => {
       <Box w="full" mt="-90px" display="flex" justifyContent="center">
         <Image
           src={bakoSymbol}
-          alt=""
+          alt="Bako Safe"
           style={{
             height: '100%',
           }}
