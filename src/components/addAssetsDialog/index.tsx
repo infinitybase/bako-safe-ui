@@ -1,4 +1,4 @@
-import { Button, DialogOpenChangeDetails, VStack } from 'bako-ui';
+import { Button, DialogOpenChangeDetails, Stack } from 'bako-ui';
 
 import { useUpdateSettingsRequest } from '@/modules/settings/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/hooks';
@@ -57,8 +57,8 @@ const AddAssetsDialog = ({
       closeOnInteractOutside={false}
       size={{ base: 'full', sm: 'lg' }}
       modalContentProps={{
-        px: 10,
-        py: 10,
+        px: 6,
+        py: 6,
       }}
     >
       <Dialog.Body>
@@ -77,23 +77,25 @@ const AddAssetsDialog = ({
             color: 'textPrimary',
             lineHeight: '100%',
           }}
-          borderBottomWidth={1}
-          borderColor="grey.425"
-          pb={6}
         />
 
-        <VStack w="full" my={6} pb={isMobile ? 8 : 0} gap={4}>
+        <Stack
+          flexDirection={{ base: 'column', sm: 'row' }}
+          w="full"
+          my={6}
+          gap={4}
+        >
           <WelcomeCard
             title="DEPOSIT"
             description="Deposit using QR Code or vault adress."
             icon={DownLeftArrow2}
-            iconSize="18px"
+            iconSize="22px"
             onClick={() => handleOpenDepositDialog()}
           />
           <WelcomeCard
             title="BRIDGE"
             description="Transfer between different networks."
-            iconSize="22px"
+            iconSize="18px"
             icon={BridgeIcon}
             onClick={() => handleRedirectToMainNet()}
           />
@@ -104,7 +106,7 @@ const AddAssetsDialog = ({
             commingSoon
             iconSize="22px"
           />
-        </VStack>
+        </Stack>
 
         <Dialog.Actions
           position={{ base: 'absolute', sm: 'relative' }}
