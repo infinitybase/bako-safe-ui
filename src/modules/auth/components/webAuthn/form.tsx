@@ -51,7 +51,7 @@ const WebAuthnForm = (props: WebAuthnFormProps) => {
   const showErrorColor = isError && name.length > 0;
 
   return (
-    <VStack w="full" alignItems="flex-start" gap={{ base: 4, md: 8 }}>
+    <VStack w="full" alignItems="flex-start" gap={12}>
       <Text
         color="grey.250"
         lineHeight="14.52px"
