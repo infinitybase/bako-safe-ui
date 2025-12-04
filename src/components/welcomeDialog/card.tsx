@@ -93,7 +93,7 @@ const WelcomeCard = ({
             color="textSecondary"
             textAlign={{ sm: 'center' }}
             lineHeight="short"
-            initial={!isMobile && { opacity: 0, y: -10 }}
+            initial={!isMobile ? { opacity: 0, y: -10 } : undefined}
             display={{ base: 'block', sm: !isHovered ? 'none' : 'block' }}
             animate={
               !isMobile && {
