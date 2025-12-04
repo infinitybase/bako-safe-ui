@@ -1,4 +1,4 @@
-import { Button, DialogOpenChangeDetails, Flex, HStack } from 'bako-ui';
+import { Button, DialogOpenChangeDetails, Flex, Stack } from 'bako-ui';
 
 import { useNetworks } from '@/modules/network/hooks';
 import { NetworkType } from '@/modules/network/services';
@@ -8,6 +8,8 @@ import { useWorkspaceContext } from '@/modules/workspace/hooks';
 import { Dialog } from '../dialog';
 import { BridgeIcon, CoinsIcon, DownLeftArrow2 } from '../icons';
 import WelcomeCard from './card';
+import { WelcomeHeader } from './header';
+import { WelcomeRoot } from './root';
 
 interface IWelcomeDialogProps {
   isOpen: boolean;
@@ -21,7 +23,7 @@ const WelcomeDialog = ({
   onOpenChange,
 }: IWelcomeDialogProps) => {
   const {
-    screenSizes: { isMobile, isSmall },
+    screenSizes: { isSmall },
     authDetails: {
       userInfos: { first_login, id, refetch },
     },
@@ -60,44 +62,33 @@ const WelcomeDialog = ({
   };
 
   return (
-    <Dialog.Modal
+    <WelcomeRoot
       onOpenChange={onOpenChange}
       open={(first_login && first_login && isOpen) ?? false}
-      closeOnEscape={false}
-      trapFocus={false}
-      closeOnInteractOutside={false}
-      size={{ base: 'full', sm: 'lg' }}
-      modalContentProps={{
-        px: 6,
-        py: 6,
-      }}
+      isMobile={isSmall}
     >
       <Dialog.Body>
-        <Dialog.Header
-          mt={0}
-          mb={0}
+        <WelcomeHeader
           onClose={() => handleClose()}
-          w="full"
-          maxW={{ base: 480, sm: 'unset' }}
           title="Welcome to Bako Safe!"
-          description={`Let's start by adding some funds to your personal vault.`}
-          descriptionFontSize="12px"
-          descriptionColor="textSecondary"
-          titleSxProps={{
-            fontSize: '16px',
-            fontWeight: 700,
-            lineHeight: '19.36px',
-          }}
-          pb={3}
+          subtitle="Let's start by adding some funds to your personal vault."
+          isMobile={isSmall}
         />
 
-        <HStack w="full" my={3} gap={4}>
+        <Stack
+          w="full"
+          my={{ sm: 3 }}
+          gap={4}
+          flexDir={{ base: 'column', sm: 'row' }}
+          px={{ base: 6, sm: 0 }}
+        >
           <WelcomeCard
             title="Bridge"
             description="Crypto from Ethereum network to Fuel mainnet."
             icon={BridgeIcon}
             commingSoon={isTestnet}
             onClick={isTestnet ? undefined : () => handleRedirectToMainNet()}
+            isMobile={isSmall}
           />
           <WelcomeCard
             title="Deposit"
@@ -105,6 +96,7 @@ const WelcomeDialog = ({
             icon={DownLeftArrow2}
             iconSize="22px"
             onClick={handleOpenDepositDialog}
+            isMobile={isSmall}
           />
           <WelcomeCard
             title="Purchase"
@@ -112,19 +104,13 @@ const WelcomeDialog = ({
             icon={CoinsIcon}
             commingSoon
             iconSize="22px"
+            isMobile={isSmall}
           />
-        </HStack>
+        </Stack>
         <Dialog.Actions
-          position={isMobile ? 'absolute' : 'relative'}
-          bottom={0}
-          left={0}
-          right={0}
-          px={isMobile ? 10 : 'unset'}
-          bg={isMobile ? 'dark.950' : 'unset'}
-          borderRadius={isMobile && !isSmall ? '20px' : 'unset'}
-          pb={isMobile && !isSmall ? 5 : 'unset'}
           hideDivider
           justifyContent="flex-end"
+          p={{ base: 6, sm: 0 }}
         >
           <Flex w="full" justifyContent="flex-end">
             <Button variant="ghost" onClick={handleClose}>
@@ -133,7 +119,7 @@ const WelcomeDialog = ({
           </Flex>
         </Dialog.Actions>
       </Dialog.Body>
-    </Dialog.Modal>
+    </WelcomeRoot>
   );
 };
 
