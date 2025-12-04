@@ -47,13 +47,9 @@ const WebAuthnSignIn = (props: WebAuthnSignInProps) => {
 
   return (
     <Card.Root w="full" variant="subtle" bg="gray.700" rounded="2xl">
-      <Card.Body maxH={250}>
+      <Card.Body maxH={{ md: 250 }}>
         <AnimatedSignInCard mode={mode}>
-          <Stack
-            display="flex"
-            flexDirection="column"
-            gap={{ base: 6, md: 14 }}
-          >
+          <Stack display="flex" flexDirection="column" gap={12}>
             <WebAuthnForm
               formData={formData}
               accountsOptions={accountsOptions}
@@ -67,6 +63,7 @@ const WebAuthnSignIn = (props: WebAuthnSignInProps) => {
             <Flex justifyContent="space-between" alignItems="center" w="full">
               <Button
                 fontSize="sm"
+                h={9}
                 aria-label={formState.label}
                 onClick={formState.handleAction}
                 disabled={formState.isDisabled}
@@ -74,7 +71,7 @@ const WebAuthnSignIn = (props: WebAuthnSignInProps) => {
                 {formState.label}
               </Button>
 
-              <Button variant="ghost" onClick={handleChangeMode}>
+              <Button variant="ghost" onClick={handleChangeMode} h={9}>
                 {formData.isRegisterMode ? 'Back to login' : 'Create new user'}
               </Button>
             </Flex>
