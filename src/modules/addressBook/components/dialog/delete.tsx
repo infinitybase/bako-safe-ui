@@ -25,9 +25,9 @@ const DeleteContactDialog = ({
   return (
     <Dialog.Modal
       size={{ base: 'full', sm: 'lg' }}
-      onClose={dialog.onClose}
-      isOpen={dialog.isOpen}
-      closeOnOverlayClick={false}
+      onOpenChange={dialog.onClose}
+      open={dialog.isOpen}
+      closeOnInteractOutside={false}
     >
       <Dialog.Header
         mb={0}
@@ -71,10 +71,10 @@ const DeleteContactDialog = ({
         <Dialog.SecondaryAction
           aria-label={'Delete adb'}
           w={32}
-          isLoading={isLoading}
+          loading={isLoading}
           onClick={() => handleDelete(contactToDelete.id)}
         >
-          Yes, delete it!
+          Yes, remove it!
         </Dialog.SecondaryAction>
       </Dialog.Actions>
     </Dialog.Modal>

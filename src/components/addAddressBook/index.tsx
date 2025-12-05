@@ -1,9 +1,9 @@
 import { Icon, IconProps } from 'bako-ui';
 
 import { CreateContactDialog } from '@/modules/addressBook/components/dialog';
-import { VaultIconInfo } from '@/modules/vault/components/vaultIconInfo';
 import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
+import { IconTooltipButton } from '..';
 import { BookmarkIcon } from '../icons';
 
 interface AddAddressBookProps {
@@ -37,7 +37,7 @@ const AddAddressBook = ({
       />
 
       {hasAdd && (
-        <VaultIconInfo
+        <IconTooltipButton
           tooltipContent="Add to Address Book"
           placement="top"
           onClick={() =>
@@ -47,7 +47,7 @@ const AddAddressBook = ({
           }
         >
           <Icon as={BookmarkIcon} color="gray.200" w="12px" {...iconProps} />
-        </VaultIconInfo>
+        </IconTooltipButton>
       )}
     </>
   );
