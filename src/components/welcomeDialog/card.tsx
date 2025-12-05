@@ -18,7 +18,7 @@ interface IWelcomeCardProps {
   onClick?: () => void;
   iconSize?: string;
   commingSoon?: boolean;
-  isMobile: boolean;
+  isMobile?: boolean;
 }
 
 const MotionVStack = motion(VStack);
