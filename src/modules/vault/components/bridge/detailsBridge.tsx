@@ -74,7 +74,7 @@ export function DetailsBridge({ assets }: DetailsBridgeProps) {
 
   const showEnoughETHWarning = useMemo(
     () =>
-      (!isEnoughETH && stepForm >= BridgeStepsForm.RESUME) ||
+      (isEnoughETH === false && stepForm >= BridgeStepsForm.RESUME) ||
       notEnoughBalanceETH,
     [isEnoughETH, stepForm, notEnoughBalanceETH],
   );
