@@ -42,15 +42,16 @@ const AutocompleteOptionList = memo(
     }, [anchorRef]);
 
     useEffect(() => {
+      const el = anchorRef.current;
+      if (!el) return;
+
       updatePosition();
+
+      const resizeObserver = new ResizeObserver(updatePosition);
+      resizeObserver.observe(el);
 
       window.addEventListener('scroll', updatePosition, true);
       window.addEventListener('resize', updatePosition);
-
-      const resizeObserver = new ResizeObserver(updatePosition);
-      if (anchorRef.current) {
-        resizeObserver.observe(anchorRef.current);
-      }
 
       return () => {
         window.removeEventListener('scroll', updatePosition, true);
