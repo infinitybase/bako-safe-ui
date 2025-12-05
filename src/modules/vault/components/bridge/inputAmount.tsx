@@ -32,10 +32,11 @@ const InputAmountComponent = ({
 
   const handleChange = useCallback(
     (newValue: string) => {
+      let value = newValue;
       if (newValue === '.' || newValue === '0') {
-        newValue = '0.';
+        value = '0.';
       }
-      onChange?.(newValue);
+      onChange?.(value);
     },
     [onChange],
   );
