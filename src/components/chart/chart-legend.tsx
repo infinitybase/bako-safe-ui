@@ -54,7 +54,11 @@ export const ChartLegend = memo((props: ChartLegendProps) => {
               lineHeight={0}
             />
           </List.Indicator>
-          <Text fontSize={fontSize} fontWeight={fontWeight} color={entry.color}>
+          <Text
+            fontSize={fontSize}
+            fontWeight={fontWeight}
+            color="textSecondary"
+          >
             {entry.value}
           </Text>
         </List.Item>
