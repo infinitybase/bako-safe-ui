@@ -128,7 +128,12 @@ export const AccountOverview = memo(
                 alignItems="center"
                 w="full"
               >
-                <Heading color="textPrimary" fontSize="sm">
+                <Heading
+                  color="textPrimary"
+                  fontSize="sm"
+                  truncate
+                  lineClamp={1}
+                >
                   {accountName}
                 </Heading>
 

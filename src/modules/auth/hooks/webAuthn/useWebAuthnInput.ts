@@ -28,9 +28,9 @@ const WebauthnInputBadge: Record<string, IWebauthnInputBadge> = {
     label: 'Username available',
   },
   ERROR: { status: AutocompleteBadgeStatus.ERROR, label: 'Invalid username' },
-  CONFLICT: {
-    status: AutocompleteBadgeStatus.CONFLICT,
-    label: 'This username is already in use',
+  NOT_FOUND: {
+    status: AutocompleteBadgeStatus.ERROR,
+    label: 'Username not found',
   },
 };
 
@@ -89,7 +89,7 @@ const useWebAuthnInput = (
       return WebauthnInputBadge.SEARCHING;
     }
 
-    if (mode === WebAuthnModeState.LOGIN) {
+    if ([WebAuthnModeState.LOGIN, WebAuthnModeState.SEARCH].includes(mode!)) {
       if (checkNicknameRequest.data?.type === TypeUser.WEB_AUTHN) {
         return WebauthnInputBadge.INFO;
       }

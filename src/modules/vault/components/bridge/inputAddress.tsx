@@ -4,6 +4,7 @@ import { Controller, useFormContext } from 'react-hook-form';
 import { LineCloseIcon } from '@/components';
 import { AddressUtils } from '@/modules/core';
 
+import { BRIDGE_STEPS_HEIGHTS } from '../../utils';
 import { ExpandableCardSection } from './ExpandableCardSection';
 import {
   ITransferBridgePayload,
@@ -34,6 +35,7 @@ export function InputAddressBridge() {
       rounded="2xl"
       w="full"
       minH="88px"
+      maxH={BRIDGE_STEPS_HEIGHTS.EXPANDED.DESTINATION}
       bg="bg.panel"
       overflow="hidden"
     >

@@ -20,7 +20,7 @@ const modal = createWeb3ModalInstance({
   wagmiConfig,
 });
 
-export const useEvm = () => {
+export const useEvm = (onOpenChange?: (open: boolean) => void) => {
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [address, setAddress] = useState<string>('');
   const unwatchRef = useRef<(() => void) | null>(null);
@@ -28,7 +28,9 @@ export const useEvm = () => {
   const connect = async () => {
     try {
       await modal.open();
+      onOpenChange?.(true);
     } catch (error) {
+      onOpenChange?.(false);
       console.error('Connection failed:', error);
       throw error;
     }
@@ -38,6 +40,7 @@ export const useEvm = () => {
     const account = getAccount(wagmiConfig);
 
     if (!account.isConnected || !account.connector) {
+      onOpenChange?.(false);
       throw new Error('Wallet not connected');
     }
 
