@@ -72,7 +72,18 @@ const Sidebar = memo(({ onDrawer, ...rest }: SidebarProps) => {
       h="dvh"
       {...rest}
     >
-      <VStack p={4} h="full" gap={4}>
+      <VStack
+        p={4}
+        h="full"
+        minH={0}
+        gap={4}
+        overflowY="scroll"
+        css={{
+          '&::-webkit-scrollbar': {
+            display: 'none',
+          },
+        }}
+      >
         <Flex>
           <Image src={logo} alt="Bako" w="75px" h="75px" />
         </Flex>

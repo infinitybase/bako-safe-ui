@@ -1,29 +1,33 @@
 import {
   Avatar,
   Box,
+  Grid,
+  GridItem,
   Heading,
   HStack,
   Icon,
-  Stack,
   Text,
   VStack,
 } from 'bako-ui';
 import React, { useCallback, useMemo } from 'react';
 
 import { Card } from '@/components';
-import { useScreenSize } from '@/modules/core/hooks';
+import { useScreenSize } from '@/modules';
 type ConnectorType = {
   name: string;
   label: string;
   icon?: React.ElementType;
   imageUrl?: string;
   isEnabled?: boolean;
+  supportMobile: boolean;
 };
 
 interface CardConnectorProps {
   connector: ConnectorType;
   onClick: (connector: string) => void;
   isAnyWalletConnectorOpen: boolean;
+  supportMobile: boolean;
+  isEnabled?: boolean;
 }
 
 interface ConnectorsListProps {
@@ -33,9 +37,14 @@ interface ConnectorsListProps {
   isAnyWalletConnectorOpen: boolean;
 }
 
-const CardConnector = (props: CardConnectorProps) => {
-  const { connector, isAnyWalletConnectorOpen, onClick } = props;
-
+const CardConnector = ({
+  connector,
+  isAnyWalletConnectorOpen,
+  onClick,
+  supportMobile,
+  isEnabled,
+}: CardConnectorProps) => {
+  const { isSmall } = useScreenSize();
   const ConnectorIcon = useMemo(() => {
     if (connector.imageUrl) {
       return (
@@ -58,21 +67,24 @@ const CardConnector = (props: CardConnectorProps) => {
   }, [connector]);
 
   const selectConnector = useCallback(() => {
-    if (!connector.isEnabled) return;
+    if (!isEnabled) return;
+    if (isSmall && !supportMobile) return;
     onClick(connector.name);
-  }, [connector.isEnabled, connector.name, onClick]);
+  }, [isEnabled, connector.name, onClick, isSmall, supportMobile]);
 
   return (
     <Card
       as={HStack}
       w="100%"
+      minW={100}
       h="100%"
       gap={2}
-      p={4}
+      py={4}
+      px={{ base: 2, sm: 4 }}
       flexDirection="column"
       alignItems="center"
       aria-label={`Connect ${connector.label}`}
-      cursor={connector.isEnabled ? 'pointer' : 'initial'}
+      cursor={isEnabled ? 'pointer' : 'initial'}
       border="none"
       borderRadius={8}
       onClick={selectConnector}
@@ -88,7 +100,10 @@ const CardConnector = (props: CardConnectorProps) => {
         h="full"
         top={0}
         left={0}
-        hidden={connector.isEnabled}
+        display={{
+          base: supportMobile && isEnabled ? 'none' : 'block',
+          sm: isEnabled ? 'none' : 'block',
+        }}
         position="absolute"
         borderRadius={10}
         backgroundColor="#121212d7"
@@ -96,7 +111,7 @@ const CardConnector = (props: CardConnectorProps) => {
       {ConnectorIcon}
       <Box flex={1}>
         <Heading
-          fontSize="xs"
+          fontSize="2xs"
           fontWeight="semibold"
           color="gray.50"
           lineHeight={1.2}
@@ -116,26 +131,32 @@ const ConnectorsList = ({
   onConnectorSelect,
   isAnyWalletConnectorOpen,
 }: ConnectorsListProps) => {
-  const { isLitteSmall } = useScreenSize();
-
   return (
-    <VStack hidden={hidden} gap={{ base: 6, md: 8 }} w="full" px={6}>
+    <VStack
+      hidden={hidden}
+      gap={{ base: 6, sm: 8 }}
+      w="full"
+      px={{ base: 0, xs: 6 }}
+    >
       <HStack w="full" gap={5}>
         <Text color="gray.200" fontSize="sm" fontWeight="light">
           Or connect wallet
         </Text>
       </HStack>
 
-      <Stack flexDirection={isLitteSmall ? 'column' : 'row'} w="full" gap={2}>
+      <Grid gap={2} gridTemplateColumns="repeat(3, 1fr)" w="full">
         {connectors.map((connector) => (
-          <CardConnector
-            isAnyWalletConnectorOpen={isAnyWalletConnectorOpen}
-            key={connector.name}
-            connector={connector}
-            onClick={onConnectorSelect}
-          />
+          <GridItem key={connector.name}>
+            <CardConnector
+              isAnyWalletConnectorOpen={isAnyWalletConnectorOpen}
+              connector={connector}
+              onClick={onConnectorSelect}
+              isEnabled={connector.isEnabled}
+              supportMobile={connector.supportMobile}
+            />
+          </GridItem>
         ))}
-      </Stack>
+      </Grid>
     </VStack>
   );
 };

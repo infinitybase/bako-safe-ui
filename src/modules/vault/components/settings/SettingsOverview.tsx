@@ -13,7 +13,7 @@ import { Address } from 'fuels';
 import { JSX } from 'react';
 import { RiFileCopyFill } from 'react-icons/ri';
 
-import { EditIcon2, UpRightArrow } from '@/components';
+import { EditIcon2, IconTooltipButton, UpRightArrow } from '@/components';
 import { CopyTopMenuIcon } from '@/components/icons/copy-top-menu';
 import { useWorkspaceContext } from '@/modules';
 import { AddressUtils } from '@/modules/core';
@@ -22,7 +22,6 @@ import { NetworkService } from '@/modules/network/services';
 
 import { UseVaultDetailsReturn } from '../../hooks/details';
 import { UpdateVaultDialog } from '../dialog/update';
-import { VaultIconInfo } from '../vaultIconInfo';
 
 export interface CardDetailsProps {
   assets: UseVaultDetailsReturn['assets'];
@@ -78,20 +77,20 @@ const SettingsOverview = ({
           {vault.data?.name}
         </Heading>
         <Flex alignItems="center" gap={2}>
-          <VaultIconInfo
+          <IconTooltipButton
             onClick={updateDialog.onOpen}
             tooltipContent="Update Account"
             placement="top"
           >
             <Icon as={EditIcon2} color="gray.200" w="12px" />
-          </VaultIconInfo>
-          <VaultIconInfo
+          </IconTooltipButton>
+          <IconTooltipButton
             onClick={redirectToNetwork}
             tooltipContent="View on Explorer"
             placement="top"
           >
             <Icon as={UpRightArrow} color="gray.200" w="12px" />
-          </VaultIconInfo>
+          </IconTooltipButton>
         </Flex>
       </Card.Header>
       <Card.Body justifyContent="center">

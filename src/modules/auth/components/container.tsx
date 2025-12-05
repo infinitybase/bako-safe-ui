@@ -13,22 +13,19 @@ const SigninContainerMobile = (props: SigninContainerProps) => {
       position="relative"
       w="100%"
       minH="100vh"
-      gap={0}
       overflow="hidden"
+      px={4}
+      py={6}
+      gap={12}
       justifyContent="center"
-      gapY={20}
+      maxW="440px"
+      mx="auto"
     >
-      <Box w="full" mt="-90px" display="flex" justifyContent="center">
-        <Image
-          src={bakoSymbol}
-          alt="Bako Safe"
-          style={{
-            height: '100%',
-          }}
-        />
+      <Box w="full" display="flex" justifyContent="center">
+        <Image src={bakoSymbol} alt="" height="100%" />
       </Box>
 
-      <VStack flex={{ base: 0, md: 1 }} w="full">
+      <VStack flex={{ base: 0, md: 1 }} w="full" gap={0}>
         {props.children}
       </VStack>
     </VStack>

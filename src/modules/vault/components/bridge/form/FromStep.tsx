@@ -23,7 +23,11 @@ export const FromFormStep = ({ setErrorAmount }: FromFormStepProps) => {
 
   return (
     <Card.Root variant="subtle" bg="bg.panel" w="full" rounded="2xl">
-      <Card.Body flexDirection="row" gap={4} alignItems="center">
+      <Card.Body
+        flexDirection={{ base: 'column', sm: 'row' }}
+        alignItems={{ base: 'stretch', sm: 'center' }}
+        gap={4}
+      >
         <Heading
           color="textPrimary"
           fontSize="sm"
@@ -32,7 +36,7 @@ export const FromFormStep = ({ setErrorAmount }: FromFormStepProps) => {
         >
           From
         </Heading>
-        <HStack gap={3} flex={1}>
+        <HStack gap={3} flex={1} flexDir={{ base: 'column', sm: 'row' }}>
           <Controller
             control={control}
             name="selectNetworkFrom"

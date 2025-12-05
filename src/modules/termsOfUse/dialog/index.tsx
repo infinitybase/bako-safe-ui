@@ -1,8 +1,8 @@
 import { Box, HStack, Separator, Text, VStack } from 'bako-ui';
-import { useMemo } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { Dialog } from '@/components';
-import { useWorkspaceContext } from '@/modules/workspace/hooks';
+import { ChevronDownIcon } from '@/components/icons/chevron-down';
 
 import { useTermsDialog } from '../hooks/useTermsDialog';
 import { privacyPolicy, termsOfUse } from '../utils/data';
@@ -13,16 +13,6 @@ type TermsOfUseDialogProps = {
 
 const TermsOfUseDialog = (props: TermsOfUseDialogProps) => {
   const {
-    screenSizes: {
-      screenHeights: {
-        isLargerThan600,
-        isLargerThan660,
-        isLargerThan768,
-        isLargerThan900,
-      },
-    },
-  } = useWorkspaceContext();
-  const {
     isSafariBrowser,
     isMobile,
     read,
@@ -32,22 +22,35 @@ const TermsOfUseDialog = (props: TermsOfUseDialogProps) => {
     onOpenChange,
   } = useTermsDialog();
 
-  const textHeight = useMemo(() => {
-    if (isMobile) {
-      if (isLargerThan900) return 600;
-      if (isLargerThan768) return 460;
-      if (isLargerThan660) return 340;
-      if (isLargerThan600) return 300;
-      return 200;
-    }
-    return 420;
-  }, [
-    isLargerThan600,
-    isLargerThan660,
-    isLargerThan768,
-    isLargerThan900,
-    isMobile,
-  ]);
+  const scrollRef = useRef<HTMLDivElement | null>(null);
+  const [showBottomChevron, setShowBottomChevron] = useState(true);
+
+  const handleScroll = useCallback(() => {
+    if (!scrollRef.current) return;
+    const { scrollTop, scrollHeight, clientHeight } = scrollRef.current;
+    const atBottom = scrollTop + clientHeight >= scrollHeight - 4;
+    setShowBottomChevron(!atBottom);
+  }, []);
+
+  const scrollToBottom = useCallback(() => {
+    if (!scrollRef.current) return;
+    scrollRef.current.scrollTo({
+      top: scrollRef.current.scrollHeight,
+      behavior: 'smooth',
+    });
+    setShowBottomChevron(false);
+  }, []);
+
+  const scrollToTop = useCallback(() => {
+    if (!scrollRef.current) return;
+
+    scrollRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+    setShowBottomChevron(true);
+  }, []);
+
+  useEffect(() => {
+    handleScroll();
+  }, [handleScroll]);
 
   return (
     <Dialog.Modal
@@ -56,15 +59,15 @@ const TermsOfUseDialog = (props: TermsOfUseDialogProps) => {
       open={modalIsOpen}
       onOpenChange={onOpenChange}
       closeOnInteractOutside={false}
+      modalContentProps={{ px: 0, py: 0 }}
     >
       <Dialog.Header
         hideCloseButton={isSafariBrowser && isMobile}
         onClose={handleClose}
-        maxW={617}
         px={6}
+        pt={6}
         mb={0}
-        mt={isMobile ? 10 : 0}
-        pt={isSafariBrowser && isMobile ? 6 : isMobile ? 0 : 'unset'}
+        mt={0}
         title="Terms of Use"
         titleSxProps={{ fontSize: 'sm' }}
         description={
@@ -73,105 +76,160 @@ const TermsOfUseDialog = (props: TermsOfUseDialogProps) => {
         descriptionFontSize="xs"
       />
 
-      <Dialog.Body flex={1} maxH="100vh" maxW={617} p={6}>
-        <VStack
-          h={textHeight}
-          flex={1}
-          aria-label="Terms of Use"
-          gap={0}
-          overflowY={'scroll'}
-          pr={4}
-          css={{
-            '&::-webkit-scrollbar': {
-              width: '6px',
-              maxHeight: '330px',
-              backgroundColor: 'grey.900',
-              borderRadius: '30px',
-            },
-            '&::-webkit-scrollbar-thumb': {
-              backgroundColor: 'brand.500',
-              borderRadius: '30px',
-              height: '10px',
-            },
-          }}
-        >
-          <VStack w="full" alignItems={'flex-start'}>
-            {termsOfUse.map(({ title, paragraphs }, index) => (
-              <Box key={title}>
-                <Text
-                  fontSize="sm"
-                  color="textPrimary"
-                  fontWeight="bold"
-                  mb={4}
-                  mt={!index ? 0 : 4}
+      <Dialog.Body flex={1} p={6} display="flex" maxH="80vh">
+        <Box position="relative" flex={1}>
+          <VStack
+            maxH="full"
+            flex={1}
+            aria-label="Terms of Use"
+            gap={0}
+            overflowY={'scroll'}
+            ref={scrollRef}
+            onScroll={handleScroll}
+            css={{
+              '&::-webkit-scrollbar': {
+                width: '6px',
+                maxHeight: '330px',
+                backgroundColor: 'grey.900',
+                borderRadius: '30px',
+              },
+              '&::-webkit-scrollbar-thumb': {
+                backgroundColor: 'brand.500',
+                borderRadius: '30px',
+                height: '10px',
+              },
+            }}
+          >
+            <VStack w="full" alignItems={'flex-start'}>
+              {termsOfUse.map(({ title, paragraphs }, index) => (
+                <Box key={title}>
+                  <Text
+                    fontSize="sm"
+                    color="textPrimary"
+                    fontWeight="bold"
+                    mb={4}
+                    mt={!index ? 0 : 4}
+                  >
+                    {title}
+                  </Text>
+                  <VStack alignItems="flex-start">
+                    {paragraphs.map((paragraph) => (
+                      <Text
+                        key={paragraph}
+                        fontSize="xs"
+                        color="textPrimary"
+                        fontWeight={400}
+                      >
+                        {paragraph}
+                      </Text>
+                    ))}
+                  </VStack>
+                </Box>
+              ))}
+            </VStack>
+
+            <Separator my={10} w="full" />
+
+            <Text fontSize="sm" fontWeight={'bold'}>
+              Bako Safe Privacy Policy
+            </Text>
+
+            <VStack w="full" alignItems="flex-start">
+              {privacyPolicy.map(({ title, paragraphs }, index) => (
+                <Box
+                  key={title}
+                  ref={privacyPolicy.length - 1 === index ? inView.ref : null}
                 >
-                  {title}
-                </Text>
-                <VStack alignItems="flex-start">
-                  {paragraphs.map((paragraph) => (
-                    <Text
-                      key={paragraph}
-                      fontSize="sm"
-                      color="textPrimary"
-                      fontWeight={400}
-                    >
-                      {paragraph}
-                    </Text>
-                  ))}
-                </VStack>
-              </Box>
-            ))}
+                  <Text
+                    fontSize="sm"
+                    color="textPrimary"
+                    fontWeight="bold"
+                    my={4}
+                  >
+                    {title}
+                  </Text>
+                  <VStack alignItems={'flex-start'}>
+                    {paragraphs.map((paragraph) => (
+                      <Text
+                        key={paragraph}
+                        fontSize="xs"
+                        color="textPrimary"
+                        fontWeight={400}
+                      >
+                        {paragraph}
+                      </Text>
+                    ))}
+                  </VStack>
+                </Box>
+              ))}
+            </VStack>
           </VStack>
-
-          <Separator my={10} w="full" />
-
-          <Text fontSize="sm" fontWeight={'bold'}>
-            Bako Safe Privacy Policy
-          </Text>
-
-          <VStack w="full" alignItems="flex-start">
-            {privacyPolicy.map(({ title, paragraphs }, index) => (
+          {showBottomChevron && (
+            <>
               <Box
-                key={title}
-                ref={privacyPolicy.length - 1 === index ? inView.ref : null}
+                position="absolute"
+                left={0}
+                bottom={0}
+                w="full"
+                h="70px"
+                pointerEvents="none"
+                style={{
+                  background:
+                    'linear-gradient(180deg, rgba(21, 20, 19, 0.00) 0%, rgba(21, 20, 19, 0.75) 30%, #151413 100%)',
+                }}
+              />
+              <Box
+                position="absolute"
+                bottom={4}
+                left="50%"
+                transform="translateX(-50%)"
+                zIndex={10}
+                onClick={scrollToBottom}
+                cursor="pointer"
               >
-                <Text
-                  fontSize={'sm'}
-                  color={'grey.75'}
-                  fontWeight={'bold'}
-                  my={4}
-                >
-                  {title}
-                </Text>
-                <VStack alignItems={'flex-start'}>
-                  {paragraphs.map((paragraph) => (
-                    <Text
-                      key={paragraph}
-                      fontSize={'sm'}
-                      color={'grey.75'}
-                      fontWeight={400}
-                    >
-                      {paragraph}
-                    </Text>
-                  ))}
-                </VStack>
+                <ChevronDownIcon
+                  fontSize={24}
+                  color="textPrimary"
+                  style={{ filter: 'drop-shadow(0 0 6px rgba(0,0,0,0.55))' }}
+                />
               </Box>
-            ))}
-          </VStack>
-        </VStack>
+            </>
+          )}
+          {!showBottomChevron && (
+            <>
+              <Box
+                position="absolute"
+                left={0}
+                top={0}
+                w="full"
+                h="70px"
+                pointerEvents="none"
+                style={{
+                  background:
+                    'linear-gradient(0deg, rgba(21, 20, 19, 0.00) 0%, rgba(21, 20, 19, 0.75) 30%, #151413 100%)',
+                }}
+              />
+              <Box
+                position="absolute"
+                top={4}
+                left="50%"
+                transform="translateX(-50%) rotate(180deg)"
+                zIndex={10}
+                onClick={scrollToTop}
+                cursor="pointer"
+              >
+                <ChevronDownIcon
+                  fontSize={24}
+                  color="textPrimary"
+                  style={{ filter: 'drop-shadow(0 0 6px rgba(0,0,0,0.55))' }}
+                />
+              </Box>
+            </>
+          )}
+        </Box>
       </Dialog.Body>
-
-      <Dialog.Actions
-        w="full"
-        hideDivider
-        maxW={617}
-        css={{ '&>hr': { mt: 0, mb: 8 } }}
-        position={isMobile ? 'absolute' : 'unset'}
-        bottom={2}
-        px={6}
-        mb={2}
-      >
-        <VStack w="full" alignItems="center" zIndex={999}>
+      <Dialog.Actions w="full" hideDivider px={6} pb={6}>
+        <VStack w="full" alignItems="center">
           <HStack w="full" justifyContent="space-between">
             <Dialog.SecondaryAction w="50%" onClick={handleClose}>
               Decline

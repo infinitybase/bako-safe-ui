@@ -8,7 +8,7 @@ interface CarouselRootProps extends BoxProps {
 
 const CarouselRoot = ({ children, emblaRef, ...rest }: CarouselRootProps) => {
   return (
-    <Box ref={emblaRef} overflow="hidden" width="100%" {...rest}>
+    <Box ref={emblaRef} overflow="hidden" width="100%" flexShrink={0} {...rest}>
       {children}
     </Box>
   );

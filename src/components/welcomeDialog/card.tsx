@@ -1,4 +1,13 @@
-import { Badge, Card, Heading, Icon, IconProps, Text, VStack } from 'bako-ui';
+import {
+  Badge,
+  Card,
+  Heading,
+  Icon,
+  IconProps,
+  Stack,
+  Text,
+  VStack,
+} from 'bako-ui';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 
@@ -9,6 +18,7 @@ interface IWelcomeCardProps {
   onClick?: () => void;
   iconSize?: string;
   commingSoon?: boolean;
+  isMobile: boolean;
 }
 
 const MotionVStack = motion(VStack);
@@ -22,6 +32,7 @@ const WelcomeCard = ({
   onClick,
   iconSize,
   commingSoon,
+  isMobile,
 }: IWelcomeCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
 
@@ -29,9 +40,9 @@ const WelcomeCard = ({
     <Card.Root
       w="full"
       h="full"
-      minH={104}
+      minH={isMobile ? 'unset' : 104}
       variant="subtle"
-      bg="bg.muted"
+      bg={isMobile ? 'unset' : 'bg.muted'}
       borderRadius="lg"
       onClick={onClick}
       opacity={0.6}
@@ -46,19 +57,20 @@ const WelcomeCard = ({
       <Card.Body
         w="full"
         display="flex"
-        flexDirection="column"
-        gap={2}
+        flexDirection={isMobile ? 'row' : 'column'}
+        gap={isMobile ? 6 : 2}
         p={4}
-        py={2}
+        py={isMobile ? 4 : 2}
         alignItems="center"
-        justifyContent="center"
+        justifyContent={isMobile ? 'flex-start' : 'center'}
         position="relative"
         overflow="hidden"
       >
         <MotionVStack
           layout
           alignItems="center"
-          w="full"
+          w={isMobile ? 'unset' : 'full'}
+          minW={isMobile ? '60px' : 'unset'}
           gap={2}
           transition={{
             type: 'spring',
@@ -72,50 +84,64 @@ const WelcomeCard = ({
             color="textPrimary"
             textAlign="center"
             lineHeight="short"
+            letterSpacing="8%"
           >
             {title}
           </Heading>
         </MotionVStack>
 
-        <MotionText
-          fontSize="xs"
-          color="textSecondary"
-          textAlign="center"
-          lineHeight="short"
-          initial={{ opacity: 0 }}
-          hidden={!isHovered}
-          animate={{ opacity: isHovered ? 1 : 0 }}
-          transition={{
-            opacity: { duration: 0.2, ease: 'easeInOut' },
-            y: {
-              type: 'spring',
-              stiffness: 200,
-              damping: 25,
-            },
-          }}
-        >
-          {description}
-        </MotionText>
-
-        {commingSoon && (
-          <MotionBadge
-            variant="solid"
-            colorPalette="yellow"
-            position="absolute"
-            top={2}
-            right={2}
-            size="xs"
-            initial={{ opacity: 0 }}
-            animate={{
-              opacity: isHovered ? 1 : 0,
-            }}
+        <Stack gap={0}>
+          <MotionText
+            fontSize="xs"
+            color="textSecondary"
+            textAlign={isMobile ? 'unset' : 'center'}
+            lineHeight="short"
+            initial={!isMobile ? { opacity: 0 } : undefined}
+            display={isMobile ? 'block' : !isHovered ? 'none' : 'block'}
+            animate={
+              !isMobile
+                ? {
+                    opacity: isHovered ? 1 : 0,
+                  }
+                : undefined
+            }
             transition={{
-              opacity: { duration: 0.2, ease: 'easeInOut', delay: 0.05 },
+              opacity: { duration: 0.2, ease: 'easeInOut' },
+              y: {
+                type: 'spring',
+                stiffness: 200,
+                damping: 25,
+              },
             }}
           >
-            Coming soon
-          </MotionBadge>
-        )}
+            {description}
+          </MotionText>
+
+          {commingSoon && (
+            <MotionBadge
+              variant="solid"
+              colorPalette="yellow"
+              position={isMobile ? 'relative' : 'absolute'}
+              top={2}
+              right={2}
+              size="xs"
+              alignSelf="flex-start"
+              initial={!isMobile ? { opacity: 0 } : undefined}
+              animate={
+                !isMobile
+                  ? {
+                      opacity: isHovered ? 1 : 0,
+                    }
+                  : undefined
+              }
+              transition={{
+                opacity: { duration: 0.2, ease: 'easeInOut', delay: 0.05 },
+              }}
+            >
+              Coming soon
+            </MotionBadge>
+          )}
+        </Stack>
       </Card.Body>
     </Card.Root>
   );

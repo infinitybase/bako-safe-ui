@@ -19,7 +19,7 @@ const AddAssetsDialog = ({
   onOpenChange,
 }: IWelcomeDialogProps) => {
   const {
-    screenSizes: { isMobile, isLitteSmall, isLowerThanFourHundredAndThirty },
+    screenSizes: { isLitteSmall, isLowerThanFourHundredAndThirty },
     authDetails: {
       userInfos: { id, refetch },
     },

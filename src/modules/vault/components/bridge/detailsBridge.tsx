@@ -6,6 +6,7 @@ import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { UseVaultDetailsReturn } from '../../hooks';
 import { useFormBridge } from '../../hooks/bridge';
+import { BRIDGE_STEPS_HEIGHTS } from '../../utils';
 import { AssetsResume } from './assetsResume';
 import { ExpandableCardSection } from './ExpandableCardSection';
 import { useFormBridgeContext } from './providers/FormBridgeProvider';
@@ -79,6 +80,10 @@ export function DetailsBridge({ assets }: DetailsBridgeProps) {
       rounded="2xl"
       minH="88px"
       justifyContent="center"
+      maxH={{
+        base: BRIDGE_STEPS_HEIGHTS.EXPANDED.RESUME_MOBILE,
+        sm: BRIDGE_STEPS_HEIGHTS.EXPANDED.RESUME,
+      }}
     >
       <Card.Header pb={!isExpanded ? 6 : 0}>
         <Heading

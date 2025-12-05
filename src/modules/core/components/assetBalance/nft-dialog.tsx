@@ -32,6 +32,12 @@ export const NftDialog = ({
       onOpenChange={onClose}
       open={isOpen}
       trapFocus={false}
+      positionerProps={{
+        alignItems: { base: 'flex-start', sm: 'center' },
+      }}
+      modalContentProps={{
+        height: { base: '100dvh', sm: 'auto' },
+      }}
     >
       <Dialog.Body
         h="full"
@@ -40,7 +46,6 @@ export const NftDialog = ({
         alignItems={{ base: 'center', md: 'stretch' }}
         justifyContent="space-between"
         gap={6}
-        px={{ sm: 3 }}
         maxH={{ sm: '480px' }}
         overflowY={{
           md: 'hidden',
@@ -52,7 +57,6 @@ export const NftDialog = ({
           w="full"
           alignItems="center"
           justifyContent="space-between"
-          mt={300}
           display={{
             base: 'flex',
             sm: 'none',
@@ -76,11 +80,16 @@ export const NftDialog = ({
           mx="auto"
           borderRadius="lg"
         >
-          <NftImage src={imageSrc} rounded="16px" aspectRatio="1/1" />
+          <NftImage
+            src={imageSrc}
+            rounded="16px"
+            aspectRatio="1/1"
+            objectFit="unset"
+          />
         </Box>
 
         <VStack
-          flex={1}
+          w={{ base: 'full', md: '50%' }}
           justifyContent="space-between"
           alignItems="flex-start"
           maxH={{ md: '490px' }}

@@ -5,6 +5,7 @@ import { Asset } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace';
 
 import { useAmountBridge } from '../../hooks/bridge';
+import { BRIDGE_STEPS_HEIGHTS } from '../../utils';
 import { ExpandableCardSection } from './ExpandableCardSection';
 import { InputAmount } from './inputAmount';
 import { useFormBridgeContext } from './providers/FormBridgeProvider';
@@ -57,6 +58,7 @@ export function AmountBrigde({
       minH="88px"
       bg="bg.panel"
       position="relative"
+      maxH={BRIDGE_STEPS_HEIGHTS.EXPANDED.AMOUNT}
       overflow="hidden"
       justifyContent="center"
     >

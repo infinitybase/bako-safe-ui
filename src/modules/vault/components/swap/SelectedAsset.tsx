@@ -40,7 +40,12 @@ export const SelectedAsset = memo(
     }).format(Number(balance));
 
     return (
-      <Select.ValueText placeholder="Select asset" onClick={onClick} px={3}>
+      <Select.ValueText
+        placeholder="Select asset"
+        onClick={onClick}
+        px={3}
+        overflow="unset"
+      >
         <HStack alignItems="center" gap={2} h="40px">
           <SkeletonCircle loading={isLoading}>
             <Avatar src={icon} boxSize={5} />

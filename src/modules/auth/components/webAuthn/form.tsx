@@ -1,6 +1,6 @@
 import { Field, RhfCombobox, Text, VStack } from 'bako-ui';
 
-import { CloseCircle } from '@/components';
+import { AutocompleteBadgeStatus, CloseCircle } from '@/components';
 
 import { UseWebAuthnSignIn } from '../../hooks';
 
@@ -29,6 +29,7 @@ const WebAuthnForm = (props: WebAuthnFormProps) => {
     form: {
       control,
       formState: { errors },
+      watch,
     },
     isRegisterMode,
   } = formData;
@@ -36,8 +37,16 @@ const WebAuthnForm = (props: WebAuthnFormProps) => {
   const visibility =
     errors.username || inputBadge?.label ? 'visible' : 'hidden';
 
+  const name = watch('username') || '';
+
+  const isError =
+    errors.username ||
+    (inputBadge ? inputBadge.status === AutocompleteBadgeStatus.ERROR : false);
+
+  const showErrorColor = isError && name.length > 0;
+
   return (
-    <VStack w="full" alignItems="flex-start" gap={{ base: 4, md: 8 }}>
+    <VStack w="full" alignItems="flex-start" gap={12}>
       <Text
         color="textPrimary"
         lineHeight="100%"
@@ -61,6 +70,12 @@ const WebAuthnForm = (props: WebAuthnFormProps) => {
           isLoadingOptions={isLoadingOptions}
           onInputValueChange={accountSeachHandler}
           options={accountsOptions}
+          slotProps={{
+            input: {
+              pr: '40px', // clear trigger overflow
+              color: showErrorColor ? 'red' : 'textPrimary',
+            },
+          }}
           clearTriggerIcon={<CloseCircle />}
         />
       </Field.Root>

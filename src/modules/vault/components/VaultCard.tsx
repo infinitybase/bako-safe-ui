@@ -14,14 +14,13 @@ import {
 import { memo, useEffect, useMemo, useState } from 'react';
 import { RiFileCopyFill } from 'react-icons/ri';
 
-import { TeamIcon } from '@/components';
+import { IconTooltipButton, TeamIcon } from '@/components';
 import { CopyTopMenuIcon } from '@/components/icons/copy-top-menu';
 import { useHasReservedCoins } from '@/modules';
 import { AddressUtils } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { VaultService } from '../services';
-import { VaultIconInfo } from './vaultIconInfo';
 
 interface VaultCardProps extends CardRootProps {
   name: string;
@@ -151,7 +150,7 @@ export const VaultCard = memo(function VaultCard({
           </VStack>
 
           <HStack gap={2}>
-            <VaultIconInfo
+            <IconTooltipButton
               onClick={copy}
               tooltipContent={copied ? 'Copied' : 'Copy Address'}
               placement="top"
@@ -161,9 +160,9 @@ export const VaultCard = memo(function VaultCard({
                 color="gray.200"
                 w="12px"
               />
-            </VaultIconInfo>
+            </IconTooltipButton>
 
-            <VaultIconInfo
+            <IconTooltipButton
               placement="top"
               tooltipContent={
                 <Stack gap={1} alignItems="center">
@@ -179,7 +178,7 @@ export const VaultCard = memo(function VaultCard({
               }
             >
               <Icon as={TeamIcon} color="gray.200" w="12px" />
-            </VaultIconInfo>
+            </IconTooltipButton>
           </HStack>
         </HStack>
       </Card.Header>
