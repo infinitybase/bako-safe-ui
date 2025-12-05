@@ -72,7 +72,14 @@ export function DetailsBridge({ assets }: DetailsBridgeProps) {
   }, [dataQuote, tokensUSD, assetFrom]);
 
   return (
-    <Card.Root variant="subtle" w="full" bg="bg.panel" rounded="2xl">
+    <Card.Root
+      variant="subtle"
+      w="full"
+      bg="bg.panel"
+      rounded="2xl"
+      minH="88px"
+      justifyContent="center"
+    >
       <Card.Header pb={!isExpanded ? 6 : 0}>
         <Heading
           color={isExpanded ? 'textPrimary' : 'textSecondary'}

@@ -36,6 +36,7 @@ export function InputAddressBridge() {
       minH="88px"
       bg="bg.panel"
       overflow="hidden"
+      justifyContent="center"
     >
       <Card.Header
         pb={!isCurrentStep ? 6 : 0}

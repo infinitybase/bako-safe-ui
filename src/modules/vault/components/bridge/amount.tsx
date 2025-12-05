@@ -58,6 +58,7 @@ export function AmountBrigde({
       bg="bg.panel"
       position="relative"
       overflow="hidden"
+      justifyContent="center"
     >
       <Card.Header
         pb={!isCurrentStep ? 6 : 0}
