@@ -81,8 +81,8 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
         <Drawer.Backdrop />
         <Drawer.Positioner>
           <Drawer.Content maxW={456} p={6}>
-            <Drawer.Header>
-              <VStack alignItems="flex-start" gap={6}>
+            <Drawer.Header p={0}>
+              <VStack alignItems="flex-start" gap={6} w="full">
                 <HStack
                   gap={2}
                   alignItems="center"
@@ -109,7 +109,7 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
               </VStack>
             </Drawer.Header>
 
-            <Separator borderColor="gray.400" my={10} mx={1} />
+            <Separator borderColor="gray.400" my={10} />
 
             <Drawer.Body
               css={{
@@ -118,9 +118,10 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
               }}
               flex={1}
               display="flex"
-              px={0}
+              p={0}
+              mb={6}
             >
-              <VStack alignItems="flex-start" p={1} flex={1}>
+              <VStack alignItems="flex-start" flex={1}>
                 <VStack gap={3} w="full" mb={2}>
                   <Controller
                     control={form.control}
@@ -243,22 +244,29 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
                     </RadioGroup>
                   )}
                 />
-
-                <HStack w="full" justifyContent="center" mt="auto">
-                  <Button variant="subtle" flex={1} onClick={onCloseDrawer}>
-                    Cancel
-                  </Button>
-                  <Button
-                    disabled={disableUpdateButton}
-                    onClick={handleSubmitSettings}
-                    loading={isLoading}
-                    flex={1}
-                  >
-                    Update
-                  </Button>
-                </HStack>
               </VStack>
             </Drawer.Body>
+
+            <Drawer.Footer
+              w="full"
+              display="flex"
+              gap={2}
+              justifyContent="center"
+              mt="auto"
+              p={0}
+            >
+              <Button variant="subtle" flex={1} onClick={onCloseDrawer}>
+                Cancel
+              </Button>
+              <Button
+                disabled={disableUpdateButton}
+                onClick={handleSubmitSettings}
+                loading={isLoading}
+                flex={1}
+              >
+                Update
+              </Button>
+            </Drawer.Footer>
           </Drawer.Content>
         </Drawer.Positioner>
       </Portal>
