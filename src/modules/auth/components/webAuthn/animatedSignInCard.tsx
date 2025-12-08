@@ -33,7 +33,7 @@ const AnimatedSignInCard = ({ mode, children }: AnimatedSignInCardProps) => {
   const direction = mode === WebAuthnModeState.REGISTER ? 1 : -1;
 
   return (
-    <Box position="relative" w="full" overflow="hidden" minH="205px">
+    <Box position="relative" w="full" overflow="hidden" minH="210px">
       <AnimatePresence initial={false} mode="popLayout" custom={direction}>
         <MotionBox
           key={mode}

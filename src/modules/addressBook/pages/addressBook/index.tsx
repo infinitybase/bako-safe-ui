@@ -1,25 +1,9 @@
-import {
-  Box,
-  Breadcrumb,
-  Button,
-  Grid,
-  GridItem,
-  HStack,
-  Icon,
-  Stack,
-  Text,
-  VStack,
-} from 'bako-ui';
-import { FaRegPlusSquare } from 'react-icons/fa';
-import { IoChevronBack } from 'react-icons/io5';
+import { Box, Button, Grid, GridItem, HStack, VStack } from 'bako-ui';
 
-import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
+import { BookmarkFavoriteIcon, CustomSkeleton, HomeIcon } from '@/components';
 import { EmptyState } from '@/components/emptyState';
-import { AddressBookIcon } from '@/components/icons/address-book';
-import { TransactionsIcon } from '@/components/icons/transactions';
 import { Pages, PermissionRoles } from '@/modules/core';
 import { useAddressNicknameResolver } from '@/modules/core/hooks/useAddressNicknameResolver';
-import { ActionCard } from '@/modules/home/components/ActionCard';
 import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import {
@@ -46,14 +30,9 @@ const AddressBookPage = () => {
       },
       contacts: { contactToDelete, contactToEdit },
       dialog: { contactDialog, deleteContactDialog },
-      handlers: {
-        handleDeleteContact,
-        handleOpenDialog,
-        navigate,
-        setContactToDelete,
-      },
+      handlers: { handleDeleteContact, handleOpenDialog, setContactToDelete },
     },
-    screenSizes: { isExtraSmall },
+    screenSizes: { isExtraSmall, isSmall },
   } = useWorkspaceContext();
 
   const { data: contacts } = listContactsRequest;
@@ -102,15 +81,19 @@ const AddressBookPage = () => {
           rowGap={4}
           mb={isExtraSmall ? 4 : 'unset'}
         >
-          <HStack w={isExtraSmall ? 'full' : 'unset'}>
+          <HStack w={isExtraSmall ? 'full' : 'unset'} gap={3}>
             <Button
-              w={isExtraSmall ? 'full' : 'unset'}
-              colorPalette="primary"
               fontWeight="semibold"
-              fontSize={15}
-              px={3}
-              bg="dark.100"
-              color="grey.200"
+              fontSize="2xs"
+              size="xs"
+              bgColor="gray.600"
+              color="gray.200"
+              _hover={{
+                bg: 'gray.550',
+                color: 'textPrimary',
+              }}
+              gap={2}
+              p={2}
               onClick={() =>
                 onSingleWorkspace
                   ? goHome()
@@ -122,61 +105,24 @@ const AddressBookPage = () => {
                     )
               }
             >
-              <IoChevronBack size={22} />
-              Back home
+              <HomeIcon w={5} color="gray.200" />
+              {isSmall ? '' : 'HOME'}
             </Button>
 
-            <Breadcrumb.Root display={{ base: 'none', sm: 'initial' }} ml={8}>
-              <Breadcrumb.List>
-                <Breadcrumb.Item>
-                  <Breadcrumb.Link
-                    fontSize="sm"
-                    color="grey.200"
-                    fontWeight="semibold"
-                    onClick={() => goHome()}
-                  >
-                    <Icon mr={2} as={HomeIcon} w={4} color="grey.200" />
-                    Home
-                  </Breadcrumb.Link>
-                </Breadcrumb.Item>
-
-                {/* Commented out code to temporarily disable workspaces. */}
-
-                {/* <BreadcrumbItem hidden={onSingleWorkspace}>
-                {workspace?.id && (
-                  <BreadcrumbLink
-                    fontSize="sm"
-                    color="grey.200"
-                    fontWeight="semibold"
-                    onClick={() =>
-                      handleWorkspaceSelection(
-                        workspace?.id,
-                        Pages.workspace({
-                          workspaceId: workspace?.id,
-                        }),
-                      )
-                    }
-                    maxW={40}
-                    isTruncated
-                  >
-                    {workspace?.name}
-                  </BreadcrumbLink>
-                )}
-              </BreadcrumbItem> */}
-                <Breadcrumb.Separator />
-                <Breadcrumb.Item>
-                  <Breadcrumb.Link
-                    id="adressbookBread"
-                    fontSize="sm"
-                    color="grey.200"
-                    fontWeight="semibold"
-                    href="#"
-                  >
-                    Address book
-                  </Breadcrumb.Link>
-                </Breadcrumb.Item>
-              </Breadcrumb.List>
-            </Breadcrumb.Root>
+            <Button
+              flex={isExtraSmall ? 1 : 'unset'}
+              fontWeight="semibold"
+              fontSize="2xs"
+              size="xs"
+              bgColor="gray.550"
+              color="gray.200"
+              cursor="default"
+              gap={2}
+              p={2}
+            >
+              <BookmarkFavoriteIcon w={4} color="gray.200" />
+              ADDRESS BOOK
+            </Button>
           </HStack>
 
           {hasPermission([
@@ -187,86 +133,20 @@ const AddressBookPage = () => {
             <Box w={isExtraSmall ? 'full' : 'unset'}>
               <Button
                 w="full"
-                colorPalette="primary"
-                fontWeight="bold"
+                _hover={{
+                  bg: 'bg.muted',
+                  color: 'textPrimary',
+                }}
+                bgColor="gray.700"
+                size="xs"
+                px={3}
+                color="gray.300"
                 onClick={() => handleOpenDialog({})}
               >
-                <FaRegPlusSquare />
-                Add new favorite
+                Add new
               </Button>
             </Box>
           )}
-        </Box>
-
-        <Stack w="full" direction={{ base: 'column', md: 'row' }} gap={6}>
-          <ActionCard.Container
-            flex={1}
-            onClick={() =>
-              navigate(Pages.userVaults({ workspaceId: workspace?.id }))
-            }
-          >
-            <ActionCard.Icon>
-              <VaultIcon boxSize={6} />
-            </ActionCard.Icon>
-            <Box>
-              <ActionCard.Title>Vaults</ActionCard.Title>
-              <ActionCard.Description>
-                Access and Manage All Your Vaults in One Place.
-              </ActionCard.Description>
-            </Box>
-          </ActionCard.Container>
-
-          <ActionCard.Container
-            flex={1}
-            onClick={() => {
-              return navigate(
-                Pages.userTransactions({
-                  workspaceId: workspace?.id,
-                }),
-              );
-            }}
-          >
-            <ActionCard.Icon>
-              <TransactionsIcon boxSize={6} />
-            </ActionCard.Icon>
-            <Box>
-              <ActionCard.Title>Transactions</ActionCard.Title>
-              <ActionCard.Description>
-                Manage Transactions Across All Vaults in One Place.
-              </ActionCard.Description>
-            </Box>
-          </ActionCard.Container>
-
-          <ActionCard.Container
-            flex={1}
-            onClick={() =>
-              navigate(Pages.addressBook({ workspaceId: workspace?.id }))
-            }
-          >
-            <ActionCard.Icon>
-              <AddressBookIcon boxSize={6} />
-            </ActionCard.Icon>
-            <Box>
-              <ActionCard.Title>Address book</ActionCard.Title>
-              <ActionCard.Description>
-                Access and Manage Your Contacts for Easy Transfers and Vault
-                Creation.
-              </ActionCard.Description>
-            </Box>
-          </ActionCard.Container>
-        </Stack>
-
-        <Box
-          w="full"
-          display="flex"
-          alignItems={'center'}
-          flexDir={isExtraSmall ? 'column' : 'row'}
-          gap={isExtraSmall ? 2 : 4}
-          mt={6}
-        >
-          <Text fontWeight="semibold" color="grey.75">
-            Address book
-          </Text>
         </Box>
 
         <Grid
@@ -274,9 +154,7 @@ const AddressBookPage = () => {
           templateColumns={{
             base: 'repeat(1, 1fr)',
             sm: 'repeat(2, 1fr)',
-            md: 'repeat(3, 1fr)',
-            xl: 'repeat(3, 1fr)',
-            '2xl': 'repeat(4, 1fr)',
+            lg: 'repeat(3, 1fr)',
           }}
           gap={6}
           pb={0}
@@ -292,8 +170,6 @@ const AddressBookPage = () => {
               (contact) => contact.handle_info?.resolver === user?.address,
             )?.handle_info;
 
-            // commit
-
             const _contact = user?.address
               ? resolveAddressContactHandle(
                   user.address,
@@ -307,7 +183,6 @@ const AddressBookPage = () => {
                   nickname={nickname}
                   address={user.address}
                   avatar={user.avatar}
-                  dialog={deleteContactDialog}
                   showActionButtons={hasPermission([
                     PermissionRoles?.OWNER,
                     PermissionRoles?.ADMIN,

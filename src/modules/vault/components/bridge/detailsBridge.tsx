@@ -6,6 +6,7 @@ import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { UseVaultDetailsReturn } from '../../hooks';
 import { useFormBridge } from '../../hooks/bridge';
+import { BRIDGE_STEPS_HEIGHTS } from '../../utils';
 import { AssetsResume } from './assetsResume';
 import { ExpandableCardSection } from './ExpandableCardSection';
 import { useFormBridgeContext } from './providers/FormBridgeProvider';
@@ -71,8 +72,25 @@ export function DetailsBridge({ assets }: DetailsBridgeProps) {
     }).format(receiveValue);
   }, [dataQuote, tokensUSD, assetFrom]);
 
+  const showEnoughETHWarning = useMemo(
+    () =>
+      (isEnoughETH === false && stepForm >= BridgeStepsForm.RESUME) ||
+      notEnoughBalanceETH,
+    [isEnoughETH, stepForm, notEnoughBalanceETH],
+  );
+
   return (
-    <Card.Root variant="subtle" w="full" bg="bg.panel" rounded="2xl">
+    <Card.Root
+      variant="subtle"
+      w="full"
+      bg="bg.panel"
+      rounded="2xl"
+      minH="88px"
+      maxH={{
+        base: BRIDGE_STEPS_HEIGHTS.EXPANDED.RESUME_MOBILE,
+        sm: BRIDGE_STEPS_HEIGHTS.EXPANDED.RESUME,
+      }}
+    >
       <Card.Header pb={!isExpanded ? 6 : 0}>
         <Heading
           color={isExpanded ? 'textPrimary' : 'textSecondary'}
@@ -205,14 +223,14 @@ export function DetailsBridge({ assets }: DetailsBridgeProps) {
           }
           loading={isSendingTx || isLoading}
           fontWeight={600}
-          fontSize={16}
+          fontSize={14}
           letterSpacing={'2%'}
           type="submit"
           mt={4}
         >
           {isPendingSigner
             ? TitleButtonsForm.PENDING_TX
-            : notEnoughBalanceETH
+            : showEnoughETHWarning
               ? TitleButtonsForm.INSUFFICIENT_ETH
               : TitleButtonsForm.BRIDGE}
         </Button>

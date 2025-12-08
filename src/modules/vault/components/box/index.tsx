@@ -13,7 +13,12 @@ import { Address } from 'fuels';
 import { useCallback, useMemo } from 'react';
 import { RiFileCopyFill } from 'react-icons/ri';
 
-import { HomeIcon, LeftAndRightArrow, UpRightArrow } from '@/components';
+import {
+  HomeIcon,
+  IconTooltipButton,
+  LeftAndRightArrow,
+  UpRightArrow,
+} from '@/components';
 import { CopyTopMenuIcon } from '@/components/icons/copy-top-menu';
 import { EyeCloseIcon } from '@/components/icons/eye-close';
 import { EyeOpenIcon } from '@/components/icons/eye-open';
@@ -21,7 +26,6 @@ import { AddressUtils } from '@/modules/core';
 import { NetworkService } from '@/modules/network/services';
 import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
-import { VaultIconInfo } from '../vaultIconInfo';
 import { VaultInfoBoxSkeleton } from './vaultInfoBoxSkeleton';
 
 interface VaultBoxPropx {
@@ -90,8 +94,18 @@ const VaultBox = (props: VaultBoxPropx) => {
             },
           }}
         >
-          <Icon as={HomeIcon} w={4} color="gray.50" opacity={0.6} />
-          <Text opacity={0.6} textTransform="uppercase" fontSize="2xs">
+          <Icon
+            as={HomeIcon}
+            w={{ base: 3, sm: 4 }}
+            color="gray.50"
+            opacity={0.6}
+          />
+          <Text
+            opacity={0.6}
+            textTransform="uppercase"
+            fontSize="2xs"
+            lineHeight="shorter"
+          >
             Home
           </Text>
         </Button>
@@ -111,8 +125,18 @@ const VaultBox = (props: VaultBoxPropx) => {
             },
           }}
         >
-          <Icon as={LeftAndRightArrow} w={4} color="gray.50" opacity={0.6} />
-          <Text opacity={0.6} textTransform="uppercase" fontSize="2xs">
+          <Icon
+            as={LeftAndRightArrow}
+            w={{ base: 3, sm: 4 }}
+            color="gray.50"
+            opacity={0.6}
+          />
+          <Text
+            opacity={0.6}
+            textTransform="uppercase"
+            fontSize="2xs"
+            lineHeight="shorter"
+          >
             Account
           </Text>
         </Button>
@@ -144,19 +168,19 @@ const VaultBox = (props: VaultBoxPropx) => {
               >
                 {name}
               </Heading>
-              <VaultIconInfo
+              <IconTooltipButton
                 onClick={redirectToNetwork}
                 tooltipContent="View on Explorer"
               >
                 <Icon as={UpRightArrow} color="gray.200" w="12px" />
-              </VaultIconInfo>
+              </IconTooltipButton>
             </Flex>
 
             <Flex justifyContent="space-between" alignItems="center">
               <Text fontSize="xs" color="textSecondary">
                 {AddressUtils.format(addressWithChecksum, 6)}
               </Text>
-              <VaultIconInfo
+              <IconTooltipButton
                 onClick={copy}
                 tooltipContent={copied ? 'Copied' : 'Copy Address'}
               >
@@ -165,7 +189,7 @@ const VaultBox = (props: VaultBoxPropx) => {
                   color="gray.200"
                   w="12px"
                 />
-              </VaultIconInfo>
+              </IconTooltipButton>
             </Flex>
 
             <Flex justifyContent="space-between" alignItems="center">
@@ -178,14 +202,14 @@ const VaultBox = (props: VaultBoxPropx) => {
                 </Text>
               )}
               {!visibleBalance && <Text color="gray.50">-----</Text>}
-              <VaultIconInfo
+              <IconTooltipButton
                 tooltipContent={
                   visibleBalance ? 'Hide Balance' : 'Show Balance'
                 }
                 onClick={handleToggleBalanceVisibility}
               >
                 <Icon as={EyeIcon} color="gray.200" w="16px" />
-              </VaultIconInfo>
+              </IconTooltipButton>
             </Flex>
           </Card.Body>
         </Card.Root>

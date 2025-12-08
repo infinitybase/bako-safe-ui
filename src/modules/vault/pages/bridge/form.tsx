@@ -2,6 +2,8 @@ import { VStack } from 'bako-ui';
 import { motion } from 'framer-motion';
 import { useCallback, useMemo, useState } from 'react';
 
+import { useScreenSize } from '@/modules';
+
 import {
   AmountBrigde,
   DetailsBridge,
@@ -24,6 +26,7 @@ const MotionBox = motion(VStack);
 
 export function FormPageBrigde({ assets }: FormPageBrigdeProps) {
   const [errorAmount, setErrorAmount] = useState<string | null>(null);
+  const { isSmall } = useScreenSize();
 
   const { assetFrom, onSubmit } = useFormBridge();
   const { stepForm, setStepForm } = useFormBridgeContext();
@@ -65,7 +68,8 @@ export function FormPageBrigde({ assets }: FormPageBrigdeProps) {
       as="form"
       onSubmit={onSubmit}
       w="full"
-      h="600px"
+      h={{ base: 'auto', md: '600px' }}
+      minH="520px"
       px={{ base: 2, sm: 0 }}
       justifyContent="center"
       align="center"
@@ -86,7 +90,11 @@ export function FormPageBrigde({ assets }: FormPageBrigdeProps) {
           w="full"
           animate={{
             opacity: getOpacityForStep(BridgeStepsForm.FROM),
-            y: getYPositionForBridgeStep(BridgeStepsForm.FROM, stepForm),
+            y: getYPositionForBridgeStep(
+              BridgeStepsForm.FROM,
+              stepForm,
+              isSmall,
+            ),
           }}
           transition={commonTransition}
           style={{
@@ -103,7 +111,7 @@ export function FormPageBrigde({ assets }: FormPageBrigdeProps) {
           w="full"
           animate={{
             opacity: getOpacityForStep(BridgeStepsForm.TO),
-            y: getYPositionForBridgeStep(BridgeStepsForm.TO, stepForm),
+            y: getYPositionForBridgeStep(BridgeStepsForm.TO, stepForm, isSmall),
           }}
           transition={commonTransition}
           style={{
@@ -120,7 +128,11 @@ export function FormPageBrigde({ assets }: FormPageBrigdeProps) {
           w="full"
           animate={{
             opacity: getOpacityForStep(BridgeStepsForm.AMOUNT),
-            y: getYPositionForBridgeStep(BridgeStepsForm.AMOUNT, stepForm),
+            y: getYPositionForBridgeStep(
+              BridgeStepsForm.AMOUNT,
+              stepForm,
+              isSmall,
+            ),
           }}
           transition={commonTransition}
           style={{
@@ -143,7 +155,11 @@ export function FormPageBrigde({ assets }: FormPageBrigdeProps) {
           w="full"
           animate={{
             opacity: getOpacityForStep(BridgeStepsForm.DESTINATION),
-            y: getYPositionForBridgeStep(BridgeStepsForm.DESTINATION, stepForm),
+            y: getYPositionForBridgeStep(
+              BridgeStepsForm.DESTINATION,
+              stepForm,
+              isSmall,
+            ),
           }}
           transition={commonTransition}
           style={{
@@ -161,7 +177,11 @@ export function FormPageBrigde({ assets }: FormPageBrigdeProps) {
             w="full"
             animate={{
               opacity: getOpacityForStep(BridgeStepsForm.RESUME),
-              y: getYPositionForBridgeStep(BridgeStepsForm.RESUME, stepForm),
+              y: getYPositionForBridgeStep(
+                BridgeStepsForm.RESUME,
+                stepForm,
+                isSmall,
+              ),
             }}
             transition={commonTransition}
             style={{

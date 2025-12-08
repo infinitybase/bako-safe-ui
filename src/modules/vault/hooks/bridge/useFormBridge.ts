@@ -1,6 +1,7 @@
 import { AxiosError } from 'axios';
 import {
   bn,
+  hashMessage,
   randomBytes,
   TransactionRequest,
   transactionRequestify,
@@ -14,9 +15,7 @@ import {
   IInfoBridgeSwapPayload,
   IQuoteFormLayersSwap,
   useBakoSafeVault,
-  useScreenSize,
 } from '@/modules/core';
-import { tokensIDS } from '@/modules/core/utils/assets/address';
 import { useNetworks } from '@/modules/network/hooks';
 import { availableNetWorks, NetworkType } from '@/modules/network/services';
 import { useTransactionToast } from '@/modules/transactions/providers/toast';
@@ -91,7 +90,6 @@ const useFormBridge = () => {
   const { watch } = form;
   const toast = useTransactionToast();
   const { assets } = useVaultInfosContext();
-  const { isMobile } = useScreenSize();
   const { createSwapBridgeAsync, isPending } = useCreateSwapBridge();
   const { createTransactionBridgeAsync } = useCreateBridgeTransaction();
   const { getDestinationsBridgeAsync, isPending: isLoadingDestinations } =
@@ -102,8 +100,6 @@ const useFormBridge = () => {
 
   const assetFromValue = watch('selectAssetFrom');
   const assetToValue = watch('selectAssetTo');
-  const assetToMobile = watch('selectAssetToMobile');
-  const networkToMobile = watch('selectNetworkToMobile');
   const networkToValueForm = watch('selectNetworkTo');
   const destinationAddress = watch('destinationAddress');
   const amount = watch('amount');
@@ -114,12 +110,12 @@ const useFormBridge = () => {
   );
 
   const networkTo = useMemo(() => {
-    const value = isMobile ? networkToMobile : networkToValueForm?.value;
+    const value = networkToValueForm?.value;
 
     const foundOption = toNetworkOptions.find((a) => a.value === value);
 
     return foundOption ?? null;
-  }, [isMobile, toNetworkOptions, networkToValueForm, networkToMobile]);
+  }, [toNetworkOptions, networkToValueForm]);
 
   const assetFromUSD = useMemo(() => {
     if (!amount || amount === '0') return '$0';
@@ -139,28 +135,22 @@ const useFormBridge = () => {
 
   const assetTo =
     useMemo(() => {
-      if (!isMobile) return assetToValue;
-      const assettOFinded = toAssetOptions.find(
-        (a) => a.value === assetToMobile,
-      );
-      return assettOFinded;
-    }, [assetToMobile, assetToValue, isMobile, toAssetOptions]) ?? null;
+      return assetToValue;
+    }, [assetToValue]) ?? null;
 
   const isFormComplete = useMemo(() => {
     const amountTreated = Number(amount.replace(/,/g, ''));
 
     return (
       !!assetFromValue &&
-      (!!networkToValueForm || !!networkToMobile) &&
+      !!networkToValueForm &&
       !!destinationAddress &&
-      (!!assetToValue || !!assetToMobile) &&
+      !!assetToValue &&
       amountTreated > 0
     );
   }, [
     assetFromValue,
     assetToValue,
-    assetToMobile,
-    networkToMobile,
     amount,
     networkToValueForm,
     destinationAddress,
@@ -171,6 +161,7 @@ const useFormBridge = () => {
       if (!data || data.length === 0) return;
 
       const options: AssetFormItem[] = data.map((item) => ({
+        id: item.name.replace(/\s+/g, '_').toLowerCase(),
         value: item.name,
         image: item.logo,
         name: item.displayName,
@@ -192,27 +183,13 @@ const useFormBridge = () => {
 
       const data = await getDestinationsBridgeAsync({
         fromNetwork: isMainnet ? 'FUEL_MAINNET' : 'FUEL_TESTNET',
-        fromToken: isMainnet ? assetFrom.name : assetFrom.symbol || '',
+        fromToken: assetFrom.symbol || '',
       });
 
       handleGetToNetworkOptions(data);
     },
     [currentNetwork.url, getDestinationsBridgeAsync, handleGetToNetworkOptions],
   );
-
-  useEffect(() => {
-    if ((!assetFromValue || assetFromValue === '') && isMobile) {
-      form.setValue('selectAssetFrom', tokensIDS.ETH);
-      const AssetItem = {
-        value: tokensIDS.ETH,
-        image: 'ETH',
-        name: 'ETH',
-        symbol: 'ETH',
-      };
-
-      getDestinations(AssetItem);
-    }
-  }, [assetFromValue, isMobile, form, getDestinations]);
 
   const getToAssetsOptions = useCallback(() => {
     const tokensNetwork = toNetworkOptions.find(
@@ -237,6 +214,7 @@ const useFormBridge = () => {
           .replace(/,/g, '') ?? '';
 
       options.push({
+        id: hashMessage(token.symbol),
         value: assetId,
         image: token.logo,
         name: assetMapped?.name || token.symbol,
@@ -258,7 +236,6 @@ const useFormBridge = () => {
     toNetworkOptions,
     assets.assets,
     assetsMap,
-    assetToMobile,
     assetToValue,
     getToAssetsOptions,
     form,
@@ -274,9 +251,7 @@ const useFormBridge = () => {
         destinationAddress: destinationAddress,
         sourceNetwork: isMainnet ? 'FUEL_MAINNET' : 'FUEL_TESTNET',
         sourceToken: (assetFrom?.symbol || assetFrom?.name) ?? '',
-        destinationNetwork: isMobile
-          ? networkToMobile
-          : (networkToValueForm?.value ?? ''),
+        destinationNetwork: networkToValueForm?.value ?? '',
         destinationToken: finalAssetTo?.symbol ?? '',
         amount: Number(amount?.replace(/,/g, '')) || 0,
         sourceAddress: vault?.address.toString(),
@@ -295,8 +270,6 @@ const useFormBridge = () => {
       amount,
       vault,
       destinationAddress,
-      networkToMobile,
-      isMobile,
       networkToValueForm?.value,
       currentNetwork.url,
     ],
@@ -311,25 +284,6 @@ const useFormBridge = () => {
     },
     [getLimitsBridgeAsync, prepareCreateSwapPayload, saveLimits],
   );
-
-  const getReceiveQuoteMobile = useCallback(() => {
-    if (assetFromValue && isMobile) {
-      const usdData = tokensUSD.data[assetFromValue];
-      const usdAmount = usdData?.usdAmount ?? null;
-
-      const receiveValue = usdAmount * dataQuote?.quote?.receiveAmount;
-
-      const receiveInUsd = new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-      }).format(receiveValue);
-
-      saveQuote({
-        ...dataQuote,
-        receiveInUsd,
-      });
-    }
-  }, [isMobile, assetFromValue, tokensUSD.data, dataQuote, saveQuote]);
 
   const getOperationQuotes = useCallback(
     async (amountForm = '0', payloadOverride?: ICreateSwapBridgePayload) => {
@@ -512,7 +466,6 @@ const useFormBridge = () => {
     getOperationLimits,
     getOperationQuotes,
     prepareCreateSwapPayload,
-    getReceiveQuoteMobile,
     onSubmit,
   };
 };

@@ -44,12 +44,12 @@ const CreateVaultForm = (props: CreateVaultFormProps) => {
   const stepLength = Object.keys(steps.actions).length;
 
   return (
-    <Box w="full">
+    <Box w="full" display="flex" flexDirection="column" flex={1}>
       <Box hidden={stepAction.hide} mb={6} mt={3}>
         <StepProgress length={stepLength - 1} value={tabs.tab} />
       </Box>
-      <Tabs.Root value={String(tabs.tab)}>
-        <Tabs.Content value="0" pt={0}>
+      <Tabs.Root value={String(tabs.tab)} flex={1}>
+        <Tabs.Content value="0" pt={0} h="full">
           <VaultInfosStep
             form={form}
             vaultName={{
@@ -60,7 +60,7 @@ const CreateVaultForm = (props: CreateVaultFormProps) => {
             }}
           />
         </Tabs.Content>
-        <Tabs.Content value="1" pt={0}>
+        <Tabs.Content value="1" pt={0} h="full">
           <VaultAddressesStep
             form={form}
             addresses={addresses}
@@ -70,7 +70,7 @@ const CreateVaultForm = (props: CreateVaultFormProps) => {
             validateAddress={validateAddress}
           />
         </Tabs.Content>
-        <Tabs.Content value="2" pt={0}>
+        <Tabs.Content value="2" pt={0} h="full">
           <VaultSuccessStep />
         </Tabs.Content>
       </Tabs.Root>

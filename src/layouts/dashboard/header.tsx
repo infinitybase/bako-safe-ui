@@ -26,7 +26,6 @@ import { AddressBook2Icon } from '@/components/icons/address-book-2';
 import { DisconnectIcon } from '@/components/icons/disconnect';
 import { FeedbackIcon } from '@/components/icons/feedback';
 import { SettingsTopMenuIcon } from '@/components/icons/settings-top-menu';
-import { invalidateQueriesOnNetworkSwitch } from '@/modules/core/utils/react-query';
 import {
   IDefaultMessage,
   Pages,
@@ -34,15 +33,16 @@ import {
   useEvm,
   useUserWorkspacesRequest,
 } from '@/modules';
-import { useNetworkSwitch } from '@/modules/network/providers/NetworkSwitchProvider';
 import { useBakoIdAvatar } from '@/modules/core/hooks/bako-id';
 import { EConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
 import { useSocketEvent } from '@/modules/core/hooks/socket/useSocketEvent';
 import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
 import { AddressUtils } from '@/modules/core/utils/address';
+import { invalidateQueriesOnNetworkSwitch } from '@/modules/core/utils/react-query';
 import { NetworkDialog } from '@/modules/network/components/dialog';
 import { NetworkDrawer } from '@/modules/network/components/drawer';
 import { useNetworks } from '@/modules/network/hooks';
+import { useNetworkSwitch } from '@/modules/network/providers/NetworkSwitchProvider';
 import { useNotification } from '@/modules/notification';
 import { NotificationsDrawer } from '@/modules/notifications/components';
 import { useAppNotifications } from '@/modules/notifications/hooks';
@@ -51,6 +51,7 @@ import { useMySettingsRequest } from '@/modules/settings/hooks/useMySettingsRequ
 import { SelectWorkspaceDialog } from '@/modules/workspace/components';
 import { useWorkspaceContext } from '@/modules/workspace/hooks';
 import { limitCharacters } from '@/utils';
+import { formatAddressByUserType } from '@/utils/format-address-by-user-type';
 
 import NetworkSelect from './network';
 
@@ -58,11 +59,8 @@ const UserBox = () => {
   const [openMenu, setOpenMenu] = useState(false);
   const { authDetails } = useWorkspaceContext();
   const { currentNetwork } = useNetworks();
-  const {
-    isSwitchingNetwork,
-    startNetworkSwitch,
-    finishNetworkSwitch,
-  } = useNetworkSwitch();
+  const { isSwitchingNetwork, startNetworkSwitch, finishNetworkSwitch } =
+    useNetworkSwitch();
   const networkDrawerState = useDisclosure();
   const networkDialogState = useDisclosure();
   const toast = useNotification();
@@ -139,7 +137,11 @@ const UserBox = () => {
 
   // Finish network switch when all queries are done fetching
   useEffect(() => {
-    if (hasStartedNetworkSwitch.current && isSwitchingNetwork && isFetching === 0) {
+    if (
+      hasStartedNetworkSwitch.current &&
+      isSwitchingNetwork &&
+      isFetching === 0
+    ) {
       finishNetworkSwitch();
       hasStartedNetworkSwitch.current = false;
     }
@@ -194,6 +196,15 @@ const UserBox = () => {
     );
     handleCloseMenu();
   }, [navigate, authDetails?.userInfos?.workspace?.id, handleCloseMenu]);
+
+  useEffect(() => {
+    const overflow = openMenu ? 'hidden' : 'auto';
+    document.body.style.overflow = overflow;
+
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [openMenu]);
 
   return (
     <>
@@ -271,9 +282,12 @@ const UserBox = () => {
                   )}
                   <AddressWithCopyBtn
                     value={
-                      authDetails.userInfos?.type.type === TypeUser.WEB_AUTHN &&
-                      authDetails.userInfos?.address
-                        ? AddressUtils.toBech32(authDetails.userInfos.address)
+                      authDetails.userInfos?.address &&
+                      authDetails.userInfos?.type?.type
+                        ? formatAddressByUserType(
+                            authDetails.userInfos.address,
+                            authDetails.userInfos.type.type,
+                          )
                         : (authDetails.userInfos?.address ?? '')
                     }
                     justifyContent="start"
@@ -285,7 +299,12 @@ const UserBox = () => {
                       color: hasNickName ? 'grey.400' : 'textPrimary',
                     }}
                     onClick={() => {
-                      if (authDetails.userInfos.type.type === TypeUser.EVM) {
+                      if (
+                        authDetails.userInfos.type.type === TypeUser.EVM ||
+                        authDetails.userInfos.type.type ===
+                          TypeUser.WEB_AUTHN ||
+                        authDetails.userInfos.type.type === TypeUser.SOCIAL
+                      ) {
                         toast({
                           duration: 3000,
                           isClosable: false,

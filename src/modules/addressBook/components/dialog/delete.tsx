@@ -30,7 +30,6 @@ const DeleteContactDialog = ({
       onOpenChange={dialog.onClose}
       open={dialog.isOpen}
       closeOnInteractOutside={false}
-      modalContentProps={{ px: 6, py: 6 }}
       modalBodyProps={{ gap: 6 }}
     >
       <Dialog.Header

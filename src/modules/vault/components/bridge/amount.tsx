@@ -4,6 +4,7 @@ import { useFormContext } from 'react-hook-form';
 import { Asset } from '@/modules/core';
 
 import { useAmountBridge } from '../../hooks/bridge';
+import { BRIDGE_STEPS_HEIGHTS } from '../../utils';
 import { ExpandableCardSection } from './ExpandableCardSection';
 import { InputAmount } from './inputAmount';
 import { useFormBridgeContext } from './providers/FormBridgeProvider';
@@ -24,7 +25,7 @@ export function AmountBrigde({
   setErrorAmount,
   decimals,
 }: AmountBridgeProps) {
-  const { stepForm, setStepForm } = useFormBridgeContext();
+  const { stepForm, setStepForm, isLoadingQuote } = useFormBridgeContext();
   const { watch } = useFormContext();
   const amount = watch('amount');
 
@@ -52,6 +53,7 @@ export function AmountBrigde({
       minH="88px"
       bg="bg.panel"
       position="relative"
+      maxH={BRIDGE_STEPS_HEIGHTS.EXPANDED.AMOUNT}
       overflow="hidden"
     >
       <Card.Header
@@ -129,6 +131,7 @@ export function AmountBrigde({
                 alignSelf="flex-end"
                 onClick={handleContinue}
                 disabled={!!errorAmount}
+                loading={isLoadingQuote}
               >
                 Continue
               </Button>

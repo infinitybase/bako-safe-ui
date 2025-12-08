@@ -5,7 +5,6 @@ import { ChevronDownIcon } from '@/components';
 import { Asset } from '@/modules/core';
 import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
 import { useAmountBridge, useFormBridge } from '@/modules/vault/hooks/bridge';
-import { limitCharacters } from '@/utils';
 
 import { ModalSelectAssetsBridge } from '..';
 import { ModalSelectNetworkBridge } from '../modalSelectNetwork';
@@ -35,7 +34,11 @@ export const ToFormStep = ({ assets, setErrorAmount }: ToFormStepProps) => {
 
   return (
     <Card.Root variant="subtle" bg="bg.panel" w="full" rounded="2xl">
-      <Card.Body flexDirection="row" gap={4} alignItems="center">
+      <Card.Body
+        flexDirection={{ base: 'column', sm: 'row' }}
+        alignItems={{ base: 'stretch', sm: 'center' }}
+        gap={4}
+      >
         <Heading
           color="textPrimary"
           fontSize="sm"
@@ -44,12 +47,17 @@ export const ToFormStep = ({ assets, setErrorAmount }: ToFormStepProps) => {
         >
           To
         </Heading>
-        <HStack gap={3} flex={1} justifyContent="flex-end">
+        <HStack
+          gap={3}
+          flex={1}
+          justifyContent="flex-end"
+          flexDir={{ base: 'column', sm: 'row' }}
+        >
           <Controller
             control={control}
             name="selectNetworkTo"
             render={({ field }) => (
-              <Field.Root maxW="170px">
+              <Field.Root maxW={{ sm: '170px' }}>
                 <Box
                   position="relative"
                   display="flex"
@@ -82,9 +90,7 @@ export const ToFormStep = ({ assets, setErrorAmount }: ToFormStepProps) => {
                         lineClamp={1}
                         truncate
                       >
-                        {field.value
-                          ? limitCharacters(field.value.name ?? '', 10)
-                          : 'Network'}
+                        {field.value ? field.value.name : 'Network'}
                       </Text>
                     </HStack>
 
@@ -95,20 +101,21 @@ export const ToFormStep = ({ assets, setErrorAmount }: ToFormStepProps) => {
                     />
                   </HStack>
                 </Box>
-                <ModalSelectNetworkBridge
-                  title="Select Network"
-                  isOpen={dialogSelectNetwork.isOpen}
-                  onOpenChange={dialogSelectNetwork.onOpenChange}
-                  onClose={dialogSelectNetwork.onClose}
-                  options={toNetworkOptions}
-                  isLoadingOptions={isLoadingDestinations}
-                  onSelect={(value) => {
-                    resetField('selectAssetTo');
-                    resetField('selectAssetToMobile');
-                    // checkResetSteps();
-                    field.onChange(value);
-                  }}
-                />
+                {dialogSelectNetwork.isOpen && (
+                  <ModalSelectNetworkBridge
+                    isOpen
+                    title="Select Network"
+                    onOpenChange={dialogSelectNetwork.onOpenChange}
+                    onClose={dialogSelectNetwork.onClose}
+                    options={toNetworkOptions}
+                    isLoadingOptions={isLoadingDestinations}
+                    onSelect={(value) => {
+                      resetField('selectAssetTo');
+                      resetField('selectAssetToMobile');
+                      field.onChange(value);
+                    }}
+                  />
+                )}
               </Field.Root>
             )}
           />
@@ -117,7 +124,7 @@ export const ToFormStep = ({ assets, setErrorAmount }: ToFormStepProps) => {
             control={control}
             name="selectAssetTo"
             render={({ field }) => (
-              <Field.Root maxW="170px">
+              <Field.Root maxW={{ sm: '170px' }}>
                 <Box
                   position="relative"
                   w="full"
@@ -150,9 +157,7 @@ export const ToFormStep = ({ assets, setErrorAmount }: ToFormStepProps) => {
                         lineClamp={1}
                         truncate
                       >
-                        {field.value
-                          ? limitCharacters(field.value.name ?? '', 10)
-                          : 'Asset'}
+                        {field.value ? field.value.name : 'Asset'}
                       </Text>
                     </HStack>
 
@@ -163,20 +168,22 @@ export const ToFormStep = ({ assets, setErrorAmount }: ToFormStepProps) => {
                     />
                   </HStack>
                 </Box>
-                <ModalSelectAssetsBridge
-                  title="Select Asset"
-                  isOpen={dialogSelectAsset.isOpen}
-                  onOpenChange={dialogSelectAsset.onOpenChange}
-                  options={toAssetOptions}
-                  onSelect={(value) => {
-                    field.onChange(value);
-                    setStepForm(BridgeStepsForm.AMOUNT);
-                    // Trigger amount recalculation on asset change
-                    if (amount) {
-                      handleSourceChange(amount);
-                    }
-                  }}
-                />
+                {dialogSelectAsset.isOpen && (
+                  <ModalSelectAssetsBridge
+                    isOpen
+                    title="Select Asset"
+                    onOpenChange={dialogSelectAsset.onOpenChange}
+                    options={toAssetOptions}
+                    onSelect={(value) => {
+                      field.onChange(value);
+                      setStepForm(BridgeStepsForm.AMOUNT);
+                      // Trigger amount recalculation on asset change
+                      if (amount) {
+                        handleSourceChange(amount);
+                      }
+                    }}
+                  />
+                )}
               </Field.Root>
             )}
           />

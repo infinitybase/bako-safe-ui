@@ -1,3 +1,4 @@
+import { Bech32 } from 'bakosafe';
 import { Address } from 'fuels';
 import debounce from 'lodash.debounce';
 import { ChangeEvent, useCallback, useEffect, useState } from 'react';
@@ -11,8 +12,8 @@ import { TemplateService } from '@/modules/template/services/methods';
 import { useTemplateStore } from '@/modules/template/store';
 import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
-import { useCreateVaultForm, useValidateAddress } from '.';
 import { useCheckVaultName } from '../useGetByNameVaultRequest';
+import { useCreateVaultForm, useValidateAddress } from '.';
 
 export enum TabState {
   INFO,
@@ -96,9 +97,11 @@ const useCreateVault = () => {
 
     const addresses =
       data.addresses?.map((address: { value: string }) => {
-        const _a = AddressUtils.isPasskey(address.value)
-          ? AddressUtils.fromBech32(address.value as `passkey.${string}`)
-          : address.value;
+        const _a =
+          AddressUtils.isPasskey(address.value) ||
+          AddressUtils.isSocial(address.value)
+            ? AddressUtils.fromBech32(address.value as Bech32)
+            : address.value;
 
         return new Address(_a).toString();
       }) ?? [];
