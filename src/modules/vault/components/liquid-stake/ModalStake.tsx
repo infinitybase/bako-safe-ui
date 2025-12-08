@@ -208,7 +208,7 @@ export function ModalLiquidStake({
             </VStack>
           </Card.Root>
         </VStack>
-        <Dialog.Actions hideDivider={true} onClick={createTxLiquidStake}>
+        <Dialog.Actions onClick={createTxLiquidStake}>
           <Button
             width="full"
             loading={isDepositing}

@@ -167,7 +167,6 @@ const VaultListModal = ({
                 marginTop: '0',
               },
             }}
-            hideDivider
           >
             <Button
               fontWeight="normal"

@@ -21,6 +21,7 @@ export type IUseAddressBookFormHandlersProps = {
   setContactToEdit: React.Dispatch<
     React.SetStateAction<{
       id: string;
+      address: string;
     }>
   >;
   contactDialog: UseDisclosureReturn;
@@ -51,7 +52,7 @@ const useAddressBookFormHandlers = ({
     form.setValue('address', '');
     form.setValue('nickname', '');
 
-    setContactToEdit({ id: contactToEdit ?? '' });
+    setContactToEdit({ id: contactToEdit ?? '', address: address ?? '' });
     if (address) form.setValue('address', address);
     if (nickname) form.setValue('nickname', nickname);
     if (handle) {

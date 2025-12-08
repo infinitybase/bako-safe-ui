@@ -228,7 +228,7 @@ const TermsOfUseDialog = (props: TermsOfUseDialogProps) => {
           )}
         </Box>
       </Dialog.Body>
-      <Dialog.Actions w="full" hideDivider px={6} pb={6}>
+      <Dialog.Actions w="full" px={6} pb={6}>
         <VStack w="full" alignItems="center">
           <HStack w="full" justifyContent="space-between">
             <Dialog.SecondaryAction w="50%" onClick={handleClose}>

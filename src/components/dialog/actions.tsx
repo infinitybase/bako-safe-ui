@@ -1,32 +1,23 @@
-import { Box, BoxProps, Button, ButtonProps, HStack, Separator } from 'bako-ui';
+import { Box, BoxProps, Button, ButtonProps, HStack } from 'bako-ui';
 
-export interface DialogActionsProps extends BoxProps {
-  hideDivider?: boolean;
-  dividerBorderColor?: string;
-}
+export interface DialogActionsProps extends BoxProps {}
 export interface DialogActionProps extends ButtonProps {}
 
 const DialogActions = ({
   children,
-  dividerBorderColor,
   flexWrap,
   flexDir,
   flexDirection,
-  hideDivider,
   ...rest
 }: DialogActionsProps) => (
   <Box w="full" {...rest}>
-    <Separator
-      hidden={hideDivider}
-      my={{ base: 3, sm: 6 }}
-      borderColor={dividerBorderColor ?? 'unset'}
-    />
     <HStack
       flexDir={flexDir}
       flexDirection={flexDirection}
       flexWrap={flexWrap}
       gap={4}
       justifyContent="center"
+      flex={1}
     >
       {children}
     </HStack>
