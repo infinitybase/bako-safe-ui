@@ -33,8 +33,8 @@ const AccordionItem = ({
           <Box
             w="full"
             display="flex"
-            flexDir={{ base: 'column', sm: 'row' }}
-            alignItems={{ base: 'start', sm: 'center' }}
+            flexDir="row"
+            alignItems="center"
             rowGap={6}
           >
             <Flex w="full" flex={2} alignItems="center" gap={3}>
