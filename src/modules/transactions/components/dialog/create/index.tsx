@@ -1,18 +1,15 @@
-import { Flex, Icon, Popover, Separator, Text, VStack } from 'bako-ui';
+import { CloseButton, Flex, Heading, Stack, Text, VStack } from 'bako-ui';
 import { useMemo, useState } from 'react';
 import { useWatch } from 'react-hook-form';
 
 import { Dialog, DialogModalProps } from '@/components';
-import { TooltipIcon } from '@/components/icons/tooltip';
-import { Tooltip } from '@/components/ui/tooltip';
-import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
 import { useCreateTransaction } from '@/modules/transactions/hooks';
 import { useVaultInfosContext } from '@/modules/vault/hooks';
-import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import CreateTxMenuButton, {
   ECreateTransactionMethods,
 } from './createTxMenuButton';
+import { FeeSummary } from './feeSummary';
 import { CreateTransactionForm } from './form';
 
 const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
@@ -56,11 +53,6 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
     getBalanceAvailable,
     handleClose,
   } = useCreateTransaction(createTransactionParams);
-
-  const { isOpen, onToggle, onOpenChange } = useDisclosure();
-  const {
-    screenSizes: { isMobile },
-  } = useWorkspaceContext();
 
   const currentAmount = useWatch({
     control: form.control,
@@ -107,18 +99,23 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
       {...props}
       closeOnInteractOutside={false}
       size={{ base: 'full', sm: 'md' }}
-      modalContentProps={{ py: 6 }}
+      modalContentProps={{ sm: { minH: '700px' }, p: '0 !important' }}
+      xsBreakPointPy={0}
     >
-      <Dialog.Header
-        position={{ base: 'static', sm: 'relative' }}
-        mb={0}
-        maxH={40}
-        px={6}
-        title="Create Transaction"
-        description={`Send single or batch payments with multi assets. \n You can send multiple types of assets to different addresses.`}
-      />
+      <Stack p={6} gap={3}>
+        <Flex alignItems="center" justifyContent="space-between">
+          <Heading fontSize="sm" color="textPrimary" lineHeight="short">
+            Create Transaction
+          </Heading>
+          <CloseButton size="2xs" onClick={handleClose} />
+        </Flex>
+        <Text fontSize="xs" color="textSecondary">
+          Send single or batch payments with multi assets. You can send multiple
+          types of assets to different addresses.
+        </Text>
+      </Stack>
 
-      <Dialog.Body px={6} maxH={'full'} mt={{ sm: 4 }}>
+      <Dialog.Body px={6} maxH={'full'} mt={{ sm: 4 }} flex={1}>
         <CreateTransactionForm
           form={form}
           nicks={nicks}
@@ -132,75 +129,15 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
 
       <VStack
         w="full"
-        bg={isMobile ? 'bg.panel' : 'unset'}
-        px={6}
+        bg="bg.muted"
+        p={6}
         justifySelf="center"
         mt={6}
-        pb={4}
+        roundedBottom={{ base: 'none', sm: '2xl' }}
       >
-        <Flex
-          wrap="wrap"
-          justifyContent="space-between"
-          w="full"
-          mb={{ base: 3, sm: 6 }}
-          mt={0.5}
-        >
-          <Separator mb={2} w="full" borderColor="textSecondary" />
-          <Text
-            visibility={!transactionFee ? 'hidden' : 'visible'}
-            // variant="description"
-          >
-            Max fee:{' '}
-            {isMobile ? (
-              <Popover.Root
-                positioning={{ placement: 'top-start' }}
-                open={isOpen}
-                onOpenChange={onOpenChange}
-              >
-                <Popover.Trigger>
-                  <Icon
-                    color="textPrimary"
-                    boxSize="14px"
-                    as={TooltipIcon}
-                    onClick={onToggle}
-                  />
-                </Popover.Trigger>
-                <Popover.Content
-                  bg="bg.muted"
-                  p={2}
-                  borderColor="bg.panel/80"
-                  maxW={270}
-                  display={!isOpen ? 'none' : 'block'}
-                  _focus={{ ring: 'none' }}
-                >
-                  <Popover.CloseTrigger />
-                  <Popover.Body color="white">
-                    {`Max Fee is the most that you might pay for the transaction. Only the actual fee will be deducted from your wallet. 100% of this fee goes to the network.`}
-                  </Popover.Body>
-                </Popover.Content>
-              </Popover.Root>
-            ) : (
-              <Tooltip
-                content="Max Fee is the most that you might pay for the transaction. Only the actual fee will be deducted from your wallet. 100% of this fee goes to the network."
-                // fontSize="xs"
-                // bg="grey.825"
-                // rounded={8}
-                // maxW={270}
-                // overflow="hidden"
-                positioning={{ placement: 'top-start' }}
-                // padding={4}
-                closeOnScroll
-              >
-                <Icon color="grey.200" boxSize="14px" as={TooltipIcon} />
-              </Tooltip>
-            )}
-          </Text>
-          <Text>
-            {transactionFee} {transactionFee && 'ETH'}
-          </Text>
-        </Flex>
+        <FeeSummary transactionFee={transactionFee} />
 
-        <Dialog.Actions hideDivider>
+        <Dialog.Actions>
           <Dialog.SecondaryAction onClick={handleClose}>
             Cancel
           </Dialog.SecondaryAction>

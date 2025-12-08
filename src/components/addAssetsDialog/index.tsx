@@ -119,7 +119,6 @@ const AddAssetsDialog = ({
           bg={isMobile ? 'dark.950' : 'unset'}
           borderRadius={isMobile && !isSmall ? '20px' : 'unset'}
           pb={isMobile && !isSmall ? 5 : 'unset'}
-          hideDivider
           css={{
             '&>hr': {
               marginTop: '0',

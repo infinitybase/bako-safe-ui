@@ -4,7 +4,7 @@ import { Address, isB256 } from 'fuels';
 import { memo, useCallback, useMemo, useState } from 'react';
 import { FieldError, useFormContext } from 'react-hook-form';
 
-import { BakoIdIcon } from '@/components';
+import { BakoIdIcon, CloseCircle } from '@/components';
 import AddressAutocomplete from '@/components/autocomplete/address';
 import { AddressBookIcon } from '@/components/icons/address-book';
 import {
@@ -19,8 +19,7 @@ import {
   useResolverNameQuery,
 } from '@/modules/core/hooks/bako-id';
 import { useWorkspaceContext } from '@/modules/workspace/hooks';
-
-import Clear from './clear';
+import { HandleUtils } from '@/utils';
 
 interface RecipientFormAddressProps {
   index: number;
@@ -70,7 +69,7 @@ const RecipientFormAddress = ({
 
   const bakoIdData = useMemo(
     () => ({
-      label: name ? `@${name}` : inputValue,
+      label: name ? HandleUtils.toHandle(name) : inputValue,
       value: address || inputValue,
       image: BakoIdIcon,
     }),
@@ -156,10 +155,17 @@ const RecipientFormAddress = ({
     <HStack align="start" gap={2} position="relative" width="100%">
       <Field.Root invalid={!!error?.message} flex="1">
         <AddressAutocomplete
-          label={`Recipient ${index + 1} address`}
+          label="Address destination"
           aria-label={`Autocomplete Recipient Address ${index + 1}`}
           value={currentValue}
-          rightElement={<Clear onClear={handleClear} />}
+          rightElement={
+            <CloseCircle
+              onClick={handleClear}
+              size="xs"
+              cursor="pointer"
+              display={currentValue ? 'inline-flex' : 'none'}
+            />
+          }
           onInputChange={handleChange}
           inputValue={inputValue}
           isLoading={isLoadingOptions}
@@ -168,7 +174,10 @@ const RecipientFormAddress = ({
           optionsRef={optionsRef}
           emptyOptionsText={emptyOptionsText}
         />
-        <Field.HelperText color="error.500">{error?.message}</Field.HelperText>
+
+        {error?.message && (
+          <Field.HelperText>{error?.message}</Field.HelperText>
+        )}
         <AddToAddressBook
           visible={showAddToAddressBook}
           onAdd={() => handleOpenDialog?.(value!)}

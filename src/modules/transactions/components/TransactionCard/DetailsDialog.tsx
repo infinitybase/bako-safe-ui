@@ -215,7 +215,6 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
       </Dialog.Body>
 
       <Dialog.Actions
-        hideDivider
         position="fixed"
         bottom={0}
         left={0}

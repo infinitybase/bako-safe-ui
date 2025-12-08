@@ -4,6 +4,7 @@ import {
   Flex,
   floatingStyles,
   HStack,
+  Loader,
   Select,
   Stack,
   Text,
@@ -28,17 +29,28 @@ interface AssetSelectProps {
   name?: string;
   readonly?: boolean;
   onChange: (value: string) => void;
+  placeholder?: string;
 }
 
-const AssetSelectValue = ({ label }: { label: string | undefined }) => {
+const AssetSelectValue = ({
+  label,
+  placeholder = ' ',
+}: {
+  label: string | undefined;
+  placeholder?: string;
+}) => {
   const select = useSelectContext();
   const items = select.selectedItems as AssetSelectOption[];
   const image = items?.[0]?.image;
   const name = items?.[0]?.name;
   const description = items?.[0]?.description;
 
+  if (!name && !label && !image) {
+    return <Select.ValueText color="textSecondary" placeholder={placeholder} />;
+  }
+
   return (
-    <Select.ValueText placeholder=" " pt={label && name ? 2.5 : 0}>
+    <Select.ValueText placeholder={placeholder} pt={label && name ? 2.5 : 0}>
       <HStack>
         <Avatar
           shape="rounded"
@@ -85,6 +97,7 @@ const AssetSelect = ({
   isInvalid,
   readonly,
   name,
+  placeholder,
 }: AssetSelectProps) => {
   const collection = createListCollection({
     items: options || [],
@@ -114,11 +127,15 @@ const AssetSelect = ({
         </Select.Label>
       )}
       <Select.Control>
-        <Select.Trigger>
-          <AssetSelectValue label={label} />
+        <Select.Trigger bg="gray.550">
+          <AssetSelectValue label={label} placeholder={placeholder} />
         </Select.Trigger>
         <Select.IndicatorGroup>
-          <Select.Indicator color="textPrimary" />
+          {isLoading ? (
+            <Loader size="sm" color="primary.main" />
+          ) : (
+            <Select.Indicator color="textPrimary" />
+          )}
         </Select.IndicatorGroup>
       </Select.Control>
       <Select.Portal>

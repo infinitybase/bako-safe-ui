@@ -1,7 +1,7 @@
 import { Accordion, Button, Center, Text } from 'bako-ui';
 import { memo, useCallback } from 'react';
 
-import { UserAddIcon } from '@/components';
+import { Plus2Icon } from '@/components/icons/plus2';
 import { Tooltip } from '@/components/ui/tooltip';
 import { delay } from '@/modules/core';
 import { UseCreateTransaction } from '@/modules/transactions/hooks';
@@ -58,7 +58,7 @@ export const RecipientList = ({
     >
       {children}
 
-      <Center mt={6} flexDirection="column" w="full">
+      <Center mt={3} flexDirection="column" w="full">
         {!hasEthForFee ? (
           <Text
             color="error.500"
@@ -79,9 +79,9 @@ export const RecipientList = ({
             <Button
               id="add_more_recipient"
               w="full"
-              colorPalette="primary"
-              bgColor="grey.200"
-              border="none"
+              size="sm"
+              variant="subtle"
+              bg="bg.muted"
               _hover={{
                 opacity: 0.8,
               }}
@@ -92,7 +92,7 @@ export const RecipientList = ({
               disabled={allAssetsUsed}
               onClick={handleAddMoreRecipient}
             >
-              <UserAddIcon />
+              <Plus2Icon />
               Add more recipients
             </Button>
           </Tooltip>

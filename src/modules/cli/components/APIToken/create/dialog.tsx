@@ -56,14 +56,7 @@ const CreateAPITokenDialog = (props: CreateAPITokenDialogProps) => {
         </Tabs.Root>
       </Dialog.Body>
 
-      <Dialog.Actions
-        w="full"
-        maxW={440}
-        dividerBorderColor="grey.425"
-        position="relative"
-        hideDivider
-        mt={4}
-      >
+      <Dialog.Actions w="full" maxW={440} position="relative" mt={4}>
         <HStack w="full" justifyContent="space-between" gap={6}>
           <Dialog.SecondaryAction
             flex={1}

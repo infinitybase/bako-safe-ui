@@ -5,6 +5,7 @@ import {
   memo,
   useCallback,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 
@@ -55,6 +56,7 @@ const AddressAutocomplete = memo(
       },
       ref,
     ) => {
+      const anchorRef = useRef<HTMLDivElement>(null);
       const [isFocused, setIsFocused] = useState<boolean>(false);
 
       const isOpen = useMemo(
@@ -79,8 +81,8 @@ const AddressAutocomplete = memo(
 
       return (
         <Autocomplete.Root
-          ref={ref}
-          label={label}
+          ref={anchorRef}
+          placeholder={label}
           isLoading={isLoading}
           rightElement={rightElement}
           value={value}
@@ -89,11 +91,12 @@ const AddressAutocomplete = memo(
             onFocus: handleFocus,
             onBlur: handleOnBlur,
             onChange: handleInputChange,
+            ref,
           }}
           {...rest}
         >
           {isOpen && (
-            <Autocomplete.List rootRef={optionsRef}>
+            <Autocomplete.List anchorRef={anchorRef} rootRef={optionsRef}>
               {options.map((option) => (
                 <Autocomplete.ListItem
                   value={option.value}
@@ -103,16 +106,26 @@ const AddressAutocomplete = memo(
                   alignItems="center"
                   gap={2}
                 >
-                  <Box rounded="full" boxSize={8} overflow="hidden">
+                  <Box rounded="full" boxSize="24px" overflow="hidden">
                     <InputValueImage
                       image={option.image}
                       label={option.label || ''}
-                      boxSize="32px"
+                      boxSize="24px"
                     />
                   </Box>
                   <Stack gap={0}>
-                    <Text color="textPrimary">{option.label}</Text>
-                    <Text color="textSecondary">
+                    <Text
+                      color="textPrimary"
+                      fontSize="sm"
+                      lineHeight="shorter"
+                    >
+                      {option.label}
+                    </Text>
+                    <Text
+                      color="textSecondary"
+                      fontSize="xs"
+                      lineHeight="shorter"
+                    >
                       {AddressUtils.format(option.value || '')}
                     </Text>
                   </Stack>

@@ -33,10 +33,12 @@ const AccordionEditAction = memo((props: AccordionActionProp) => {
       _hover={{}}
       _active={{}}
       bgColor="transparent"
+      height={4}
+      minWidth={4}
       aria-label="Edit transaction"
       onClick={props.onClick}
     >
-      <Icon w={6} color="grey.200" as={EditIcon} />
+      <Icon w={4} color="gray.200" as={EditIcon} />
     </IconButton>
   );
 });
@@ -53,7 +55,8 @@ const AccordionConfirmAction = memo((props: AccordionActionProp) => {
       border="none"
       p={2}
       borderRadius={6}
-      size="sm"
+      minW={0}
+      boxSize={5}
       onClick={props.onClick}
       _hover={{
         opacity: !props.disabled ? 0.8 : 1,
@@ -65,7 +68,7 @@ const AccordionConfirmAction = memo((props: AccordionActionProp) => {
         <Icon
           fontSize="sm"
           color="primary.contrast"
-          height="24px"
+          boxSize="24px"
           as={CheckIcon}
         />
       </Accordion.ItemTrigger>
@@ -87,7 +90,7 @@ const AccordionDeleteAction = memo(
       aria-label="Remove transaction"
       {...props}
     >
-      <Icon w={6} color="grey.200" as={RemoveIcon} />
+      <Icon w={4} color="gray.200" as={RemoveIcon} />
     </IconButton>
   ),
 );
