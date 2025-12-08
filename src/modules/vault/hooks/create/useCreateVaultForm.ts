@@ -2,6 +2,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import {
   AddressUtils as BakoAddressUtils,
   BakoProvider,
+  Bech32,
   TypeUser,
 } from 'bakosafe';
 import { Assets } from 'fuels';
@@ -9,8 +10,9 @@ import { useFieldArray, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
 import { CookieName, CookiesConfig } from '@/config/cookies';
-import { AddressUtils, Batch32 } from '@/modules/core/utils';
+import { AddressUtils } from '@/modules/core/utils';
 import { useWorkspaceContext } from '@/modules/workspace/hooks';
+import { formatAddressByUserType } from '@/utils';
 
 const schema = (
   providerInstance: Promise<BakoProvider>,
@@ -31,9 +33,9 @@ const schema = (
             .string()
             .required('Empty address')
             .test('is-valid-address', 'Invalid address', (address) =>
-              AddressUtils.isPasskey(address)
+              AddressUtils.isPasskey(address) || AddressUtils.isSocial(address)
                 ? AddressUtils.isValid(
-                    AddressUtils.fromBech32(address as Batch32),
+                    AddressUtils.fromBech32(address as Bech32),
                   )
                 : AddressUtils.isValid(address),
             )
@@ -42,15 +44,20 @@ const schema = (
               'Address registered',
               (address, context) => {
                 const schema = context.from?.at(1);
-                const _address = AddressUtils.isPasskey(address)
-                  ? AddressUtils.fromBech32(address as Batch32)
-                  : address;
+                const _address =
+                  AddressUtils.isPasskey(address) ||
+                  AddressUtils.isSocial(address)
+                    ? AddressUtils.fromBech32(address as Bech32)
+                    : address;
                 const addresses = schema?.value.addresses.map(
                   (_address: { value: string }) => {
                     let _a = _address.value;
 
-                    if (AddressUtils.isPasskey(_address.value)) {
-                      _a = AddressUtils.fromBech32(_address.value as Batch32);
+                    if (
+                      AddressUtils.isPasskey(_address.value) ||
+                      AddressUtils.isSocial(_address.value)
+                    ) {
+                      _a = AddressUtils.fromBech32(_address.value as Bech32);
                     }
 
                     if (BakoAddressUtils.isEvm(_address.value)) {
@@ -84,9 +91,11 @@ const schema = (
               'This address can not receive assets from Bako.',
               async (address) => {
                 try {
-                  const _address = AddressUtils.isPasskey(address)
-                    ? AddressUtils.fromBech32(address as Batch32)
-                    : address;
+                  const _address =
+                    AddressUtils.isPasskey(address) ||
+                    AddressUtils.isSocial(address)
+                      ? AddressUtils.fromBech32(address as Bech32)
+                      : address;
 
                   if (
                     _address === CookiesConfig.getCookie(CookieName.ADDRESS)
@@ -135,8 +144,8 @@ const getUserAddress = (type?: TypeUser, account?: string): string => {
     return BakoAddressUtils.parseFuelAddressToEth(account as string);
   }
 
-  if (type === TypeUser.WEB_AUTHN && account) {
-    return AddressUtils.toBech32(account as Batch32) as string;
+  if ((type === TypeUser.WEB_AUTHN || type === TypeUser.SOCIAL) && account) {
+    return formatAddressByUserType(account, type);
   }
 
   return account as string;

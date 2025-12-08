@@ -19,6 +19,7 @@ import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
 import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { CreateVaultDialog, VaultCard } from '../../components';
+import { getSignaturesCount } from '../../utils';
 
 const UserVaultsPage = () => {
   const { isOpen, onOpenChange, onOpen } = useDisclosure();
@@ -229,41 +230,31 @@ const UserVaultsPage = () => {
               '2xl': 'repeat(4, 1fr)',
             }}
           >
-            {vaults?.map(
-              ({
-                id,
-                name,
-                workspace,
-                description,
-                configurable,
-                isHidden,
-                predicateAddress,
-              }) => (
-                <CustomSkeleton loading={isLoading} key={id} maxH="180px">
-                  <GridItem>
-                    <VaultCard
-                      id={id}
-                      name={name}
-                      requiredSigners={configurable?.SIGNATURES_COUNT || 0}
-                      signersCount={configurable?.SIGNERS?.length || 0}
-                      workspaceId={workspace.id}
-                      title={description}
-                      isHidden={isHidden}
-                      onClick={() =>
-                        handleWorkspaceSelection(
-                          workspace.id,
-                          Pages.detailsVault({
-                            workspaceId: workspace.id,
-                            vaultId: id,
-                          }),
-                        )
-                      }
-                      address={predicateAddress}
-                    />
-                  </GridItem>
-                </CustomSkeleton>
-              ),
-            )}
+            {vaults?.map((vault) => (
+              <CustomSkeleton loading={isLoading} key={vault.id} maxH="180px">
+                <GridItem>
+                  <VaultCard
+                    id={vault.id}
+                    name={vault.name}
+                    requiredSigners={getSignaturesCount(vault)}
+                    signersCount={vault?.members?.length || 1}
+                    workspaceId={vault.workspace.id}
+                    title={vault.description}
+                    isHidden={vault.isHidden}
+                    onClick={() =>
+                      handleWorkspaceSelection(
+                        vault.workspace.id,
+                        Pages.detailsVault({
+                          workspaceId: vault.workspace.id,
+                          vaultId: vault.id,
+                        }),
+                      )
+                    }
+                    address={vault.predicateAddress}
+                  />
+                </GridItem>
+              </CustomSkeleton>
+            ))}
           </Grid>
           <Box ref={inView.ref} />
         </Box>

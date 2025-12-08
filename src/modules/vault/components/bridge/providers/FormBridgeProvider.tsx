@@ -18,6 +18,7 @@ export interface AssetFormItem extends AssetItem {
     decimals: number;
     logo: string;
   }[];
+  id: string;
 }
 
 export interface ITransferBridgePayload {

@@ -2,6 +2,7 @@ import {
   Box,
   Field,
   Flex,
+  floatingStyles,
   HStack,
   Input,
   InputGroup,
@@ -12,6 +13,7 @@ import {
 } from 'bako-ui';
 import {
   ChangeEvent,
+  ComponentProps,
   CSSProperties,
   LegacyRef,
   ReactNode,
@@ -54,6 +56,7 @@ interface AutocompleteProps
   actionOnRemoveInput?: () => void;
   actionOnBlur?: () => void;
   inputRef?: Ref<HTMLInputElement>;
+  inputProps?: Omit<ComponentProps<typeof Input>, 'onChange' | 'value' | 'ref'>;
 }
 
 const Autocomplete = ({
@@ -77,6 +80,7 @@ const Autocomplete = ({
   // actionOnRemoveInput = () => {},
   actionOnBlur = () => {},
   inputRef,
+  inputProps,
   ...rest
 }: AutocompleteProps) => {
   const [inputValue, setInputValue] = useState<string>(value ?? '');
@@ -177,7 +181,7 @@ const Autocomplete = ({
   }, []);
 
   return (
-    <Field.Root>
+    <Field.Root position="relative">
       <InputGroup
         endElement={
           <>
@@ -207,9 +211,11 @@ const Autocomplete = ({
         <Input
           aria-label={ariaLabel ?? 'Autocomplete Input'}
           value={inputValue}
+          variant="subtle"
           placeholder=" "
           disabled={disabled}
           autoComplete="off"
+          rounded="8px"
           onChange={handleInputChange}
           onBlur={handleOnBlur}
           onPaste={handlePaste}
@@ -217,24 +223,32 @@ const Autocomplete = ({
           style={inputStyle}
           ref={inputRef}
           paddingInlineEnd={'2.2rem !important'}
+          {...inputProps}
         />
       </InputGroup>
-      <Field.Label color="grey.500">{label}</Field.Label>
+      {label && (
+        <Field.Label
+          color="grey.500"
+          css={floatingStyles({ hasValue: !!inputValue })}
+        >
+          {label}
+        </Field.Label>
+      )}
 
       {isOpen && (
         <Box
           ref={optionsContainerRef}
-          bg="dark.200"
-          color="grey.200"
+          bg="bg.muted"
+          color="gray.200"
           fontSize="md"
-          borderColor="dark.100"
+          borderColor="bg.panel"
           borderWidth={1}
-          borderRadius={10}
+          borderRadius="8px"
           padding={2}
           position="absolute"
-          zIndex={300}
+          zIndex={9000}
           w="full"
-          mt={2}
+          top="100%"
         >
           <Flex display="flex" justifyContent="center" alignItems="center">
             <VStack
@@ -255,9 +269,9 @@ const Autocomplete = ({
                     key={option.value}
                     w="full"
                     p={2}
-                    borderRadius={10}
+                    borderRadius="8px"
                     cursor="pointer"
-                    _hover={{ background: 'dark.150' }}
+                    _hover={{ background: 'bg.panel' }}
                     onMouseDown={() => handleSelect(option)}
                   >
                     <Text

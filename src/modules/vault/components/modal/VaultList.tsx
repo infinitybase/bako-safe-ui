@@ -1,6 +1,7 @@
 import { memo } from 'react';
 
 import { PredicateAndWorkspace } from '../../services';
+import { getSignaturesCount } from '../../utils';
 import { VaultItemBox } from './box';
 
 interface VaultListProps {
@@ -21,12 +22,11 @@ const VaultListComponent = ({
       id={vault.id}
       name={vault.name}
       address={vault.predicateAddress}
-      root={vault.root}
-      // workspace={vault.workspace}
+      workspace={vault.workspace}
+      requiredSigners={getSignaturesCount(vault)}
       isActive={currentVaultId === vault.id}
       members={vault.members?.length}
       onClick={() => onSelectVault(vault)}
-      // isSingleWorkspace={vault.workspace.single}
     />
   ));
 };

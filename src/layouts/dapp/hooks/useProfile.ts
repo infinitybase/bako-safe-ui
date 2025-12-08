@@ -5,6 +5,7 @@ import { useCallback, useMemo } from 'react';
 import { useWorkspaceContext } from '@/modules';
 import { AddressUtils } from '@/modules/core';
 import { EConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
+import { formatAddressByUserType } from '@/utils';
 
 export const useProfile = () => {
   const {
@@ -20,6 +21,16 @@ export const useProfile = () => {
   const getUserAddress = useCallback(() => {
     if (!userInfos?.address) return '';
 
+    if (isWebAuthn) return userInfos?.name;
+
+    if (userInfos?.type.type === TypeUser.SOCIAL) {
+      const formattedAddress = formatAddressByUserType(
+        userInfos.address,
+        userInfos.type.type,
+      );
+      return AddressUtils.format(formattedAddress, 10);
+    }
+
     if (BakoAddressUtils.isEvm(userInfos.address)) {
       return AddressUtils.format(
         BakoAddressUtils.parseFuelAddressToEth(userInfos.address),
@@ -27,10 +38,8 @@ export const useProfile = () => {
       );
     }
 
-    return isWebAuthn
-      ? userInfos?.name
-      : AddressUtils.format(userInfos?.address, 4);
-  }, [userInfos?.address, userInfos?.name, isWebAuthn]);
+    return AddressUtils.format(userInfos?.address, 4);
+  }, [userInfos?.address, userInfos?.name, userInfos?.type.type, isWebAuthn]);
 
   const logout = useCallback(async () => {
     try {

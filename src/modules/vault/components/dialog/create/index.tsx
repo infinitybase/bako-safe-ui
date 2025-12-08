@@ -67,7 +67,7 @@ const CreateVaultDialog = memo((props: CreateVaultDialogProps) => {
         mt={0}
       />
 
-      <Dialog.Body px={6} flex={1}>
+      <Dialog.Body px={6} flex={1} display="flex">
         <CreateVaultForm
           tabs={tabs}
           form={form}
@@ -97,12 +97,21 @@ const CreateVaultDialog = memo((props: CreateVaultDialogProps) => {
         hideDivider
         w="full"
         p={6}
-        bgColor="bg.muted"
+        bgColor={tabs.tab !== TabState.SUCCESS ? 'bg.muted' : 'bg.panel'}
         borderRadius="2xl"
-        css={{ boxShadow: '0px -12px 8px 0px #0D0D0C99' }}
+        css={{
+          boxShadow:
+            tabs.tab !== TabState.SUCCESS
+              ? '0px -12px 8px 0px #0D0D0C99'
+              : 'none',
+        }}
       >
         <VStack w="full" alignItems="center" gap={6} zIndex={999}>
-          <HStack w="full" justifyContent="space-between">
+          <HStack
+            w="full"
+            justifyContent="space-between"
+            display={tabs.tab === TabState.SUCCESS ? 'none' : 'flex'}
+          >
             <Text
               as="div"
               fontSize="xs"
@@ -126,12 +135,12 @@ const CreateVaultDialog = memo((props: CreateVaultDialogProps) => {
           {tabs.tab === 2 && (
             <CreateVaultWarning
               mb={4}
-              message="Before initiating high-value deposits, first conduct smaller deposits and transactions to confirm that all signers have access to their wallets and that the accounts funds can be transferred securely."
+              message="Before initiating high-value deposits, first conduct smaller deposits and transactions to confirm that all signers have access to their wallets and that the vault’s funds can be transferred securely."
             />
           )}
           <HStack w="full" justifyContent="space-between">
             <Dialog.SecondaryAction
-              variant="ghost"
+              variant={tabs.tab !== TabState.SUCCESS ? 'ghost' : 'subtle'}
               w={tabs.tab !== TabState.SUCCESS ? '25%' : '100%'}
               onClick={() => {
                 tabs.tab === TabState.SUCCESS
