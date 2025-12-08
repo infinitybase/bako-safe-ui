@@ -6,6 +6,8 @@ const useFindTemplate = () => {
   const { data, isLoading, isError } = useQuery({
     queryKey: ['findTemplate'],
     queryFn: () => TemplateService.getAll(),
+    // IS TEMPORARY - TEMPLATES ARE NOT READY YET
+    enabled: false,
   });
 
   return {

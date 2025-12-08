@@ -114,7 +114,7 @@ export function ModalSelectNetworkBridge({
       closeOnInteractOutside={false}
       size={{ base: 'full', sm: 'sm' }}
     >
-      <Dialog.Body minH={650} maxH={650} flex={1}>
+      <Dialog.Body minH={650} maxH={650} flex={1} overflow="hidden">
         <Dialog.Header
           position={{ base: 'static', sm: 'relative' }}
           title={title}
@@ -147,9 +147,7 @@ export function ModalSelectNetworkBridge({
           maxH={523}
           overflowY="auto"
           m={0}
-          p={0}
-          px={6}
-          pt={6}
+          p={6}
           css={{
             '&::-webkit-scrollbar': {
               display: 'none',
@@ -160,17 +158,19 @@ export function ModalSelectNetworkBridge({
             },
           }}
         >
-          {isLoadingOptions ? (
-            <Loader color="textPrimary" size="md" />
-          ) : filteredNetworks.length > 0 ? (
+          {isLoadingOptions && <Loader color="textPrimary" size="md" />}
+
+          {!isLoadingOptions &&
+            filteredNetworks.length > 0 &&
             filteredNetworks.map((net) => (
               <AssetItem
                 key={net.value}
                 asset={net}
                 onSelect={handleSelectAsset}
               />
-            ))
-          ) : (
+            ))}
+
+          {!isLoadingOptions && !filteredNetworks.length && (
             <Text color="gray.50" fontSize="sm">
               No networks found
             </Text>

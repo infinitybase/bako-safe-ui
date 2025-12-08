@@ -1,11 +1,10 @@
-import { AddressUtils as BakoAddressUtils, BakoProvider } from 'bakosafe';
+import {
+  AddressUtils as BakoAddressUtils,
+  BakoProvider,
+  Bech32,
+  Bech32Prefix,
+} from 'bakosafe';
 import { Address, isB256 } from 'fuels';
-
-export enum Batch32Prefix {
-  PASSKEY = 'passkey',
-}
-
-export type Batch32 = `${Batch32Prefix}.${string}`;
 
 export class AddressUtils {
   static isValid(address: string, allowEvm = true) {
@@ -13,6 +12,7 @@ export class AddressUtils {
       return (
         (allowEvm && BakoAddressUtils.isEvm(address)) ||
         BakoAddressUtils.isPasskey(address) ||
+        BakoAddressUtils.isSocial(address) ||
         isB256(address)
       );
     } catch (e) {
@@ -31,9 +31,15 @@ export class AddressUtils {
     return BakoAddressUtils.isPasskey(value);
   }
 
-  static toBech32 = BakoAddressUtils.toPasskey;
+  static isSocial(value: string): boolean {
+    return BakoAddressUtils.isSocial(value);
+  }
 
-  static fromBech32 = (address: Batch32) => {
+  static toBech32(address: string, prefix: Bech32Prefix) {
+    return BakoAddressUtils.toBech32(address, prefix);
+  }
+
+  static fromBech32 = (address: Bech32) => {
     return BakoAddressUtils.fromBech32(address);
   };
 

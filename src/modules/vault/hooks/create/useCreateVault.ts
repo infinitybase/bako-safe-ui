@@ -1,3 +1,4 @@
+import { Bech32 } from 'bakosafe';
 import { Address } from 'fuels';
 import debounce from 'lodash.debounce';
 import { ChangeEvent, useCallback, useEffect, useState } from 'react';
@@ -93,9 +94,11 @@ const useCreateVault = () => {
 
     const addresses =
       data.addresses?.map((address: { value: string }) => {
-        const _a = AddressUtils.isPasskey(address.value)
-          ? AddressUtils.fromBech32(address.value as `passkey.${string}`)
-          : address.value;
+        const _a =
+          AddressUtils.isPasskey(address.value) ||
+          AddressUtils.isSocial(address.value)
+            ? AddressUtils.fromBech32(address.value as Bech32)
+            : address.value;
 
         return new Address(_a).toString();
       }) ?? [];

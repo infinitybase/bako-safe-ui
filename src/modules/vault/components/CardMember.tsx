@@ -9,6 +9,7 @@ import { useBakoIdAvatar } from '@/modules/core/hooks/bako-id';
 import { useAddressNicknameResolver } from '@/modules/core/hooks/useAddressNicknameResolver';
 import { useNetworks } from '@/modules/network/hooks';
 import { NetworkService } from '@/modules/network/services';
+import { formatAddressByUserType } from '@/utils';
 
 interface CardMemberProps {
   member: {
@@ -45,10 +46,9 @@ const CardMember = ({ member, isOwner, contacts }: CardMemberProps) => {
 
   const memberName =
     handle || contact || AddressUtils.format(member.address, 4);
-  const address =
-    member?.type === TypeUser.WEB_AUTHN
-      ? AddressUtils.toBech32(member.address)
-      : member.address;
+  const address = member?.type
+    ? formatAddressByUserType(member.address, member.type)
+    : member.address;
 
   const redirectToNetwork = () =>
     window.open(

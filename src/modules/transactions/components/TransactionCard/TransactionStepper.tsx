@@ -1,5 +1,5 @@
 import { Box, Separator, Steps, Text, useSteps } from 'bako-ui';
-import { AddressUtils as BakoAddressUtils } from 'bakosafe';
+import { AddressUtils as BakoAddressUtils, Bech32Prefix } from 'bakosafe';
 import { parseISO } from 'date-fns';
 import { enUS } from 'date-fns/locale';
 import { formatInTimeZone } from 'date-fns-tz';
@@ -175,10 +175,21 @@ const TransactionStepper = memo(({ steps }: TransactionStepperProps) => {
                       step.owner.type === 'WEB_AUTHN' && (
                         <Text fontSize="sm" color="grey.425">
                           {step.owner.address !== userInfos.address
-                            ? `(${AddressUtils.format(AddressUtils.toBech32(step.owner.address))})`
+                            ? `(${AddressUtils.format(AddressUtils.toBech32(step.owner.address, Bech32Prefix.PASSKEY))})`
                             : null}
                         </Text>
                       )}
+
+                    {!nickname &&
+                      step.type !== TransactionHistoryType.SEND &&
+                      step.owner.type === 'SOCIAL' && (
+                        <Text fontSize="sm" color="grey.425">
+                          {step.owner.address !== userInfos.address
+                            ? `(${AddressUtils.format(AddressUtils.toBech32(step.owner.address, Bech32Prefix.SOCIAL))})`
+                            : null}
+                        </Text>
+                      )}
+
                     {!nickname &&
                       step.type !== TransactionHistoryType.SEND &&
                       step.owner.type === 'EVM' && (
@@ -194,6 +205,7 @@ const TransactionStepper = memo(({ steps }: TransactionStepperProps) => {
                     {!nickname &&
                       step.type !== TransactionHistoryType.SEND &&
                       step.owner.type !== 'WEB_AUTHN' &&
+                      step.owner.type !== 'SOCIAL' &&
                       step.owner.type !== 'EVM' && (
                         <Text fontSize="sm" color="grey.425">
                           {step.owner.address !== userInfos.address
