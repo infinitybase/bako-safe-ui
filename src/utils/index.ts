@@ -2,6 +2,7 @@ export * from './address-book';
 export * from './currency-configs';
 export * from './current-path';
 export * from './decode-connector-type';
+export * from './format-address-by-user-type';
 export * from './format-amount';
 export * from './format-asset-amount';
 export * from './format-decimals';

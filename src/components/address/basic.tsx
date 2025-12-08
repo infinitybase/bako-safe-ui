@@ -38,13 +38,14 @@ const Address = (props: AddressProps) => {
   } = useWorkspaceContext();
 
   const isPasskey = AddressUtils.isPasskey(value);
+  const isSocial = AddressUtils.isSocial(value);
   const isEvm = BakoAddressUtils.isEvm(value);
   const getB256Address = () => {
     if (isEvm) {
       return 'eth:' + value;
     }
 
-    return value && !isPasskey
+    return value && !isPasskey && !isSocial
       ? FuelsAddress.fromString(value).toString()
       : (value ?? '');
   };
