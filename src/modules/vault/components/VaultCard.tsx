@@ -179,7 +179,7 @@ export const VaultCard = memo(function VaultCard({
         </HStack>
       </Card.Header>
       <Card.Footer pt={6}>
-        {isLoadingBalance && <Skeleton height="24px" width="170px" />}
+        {isLoadingBalance && <Skeleton height="30px" width="170px" />}
         {!isLoadingBalance && (
           <Heading
             fontSize="md"
