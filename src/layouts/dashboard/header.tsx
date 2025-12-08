@@ -341,22 +341,26 @@ const UserBox = () => {
                       Notifications
                     </Text>
                     {unreadCounter > 0 && (
-                      <Text
-                        fontSize="2xs"
+                      <Flex
+                        alignItems="center"
+                        justifyContent="center"
                         rounded="full"
-                        ml="auto"
-                        bgColor="red"
-                        color="gray.50"
-                        fontWeight="bold"
-                        border="none"
+                        bgColor="red.200"
                         minW="16px"
                         h="16px"
-                        lineHeight="shorter"
-                        textAlign="center"
                         px={unreadCounter > 99 ? '0.5' : '0'}
+                        ml="auto"
                       >
-                        {unreadCounter > 99 ? '+99' : unreadCounter}
-                      </Text>
+                        <Text
+                          color="gray.50"
+                          fontSize="2xs"
+                          fontWeight="bold"
+                          lineHeight="shorter"
+                          textAlign="center"
+                        >
+                          {unreadCounter > 99 ? '+99' : unreadCounter}
+                        </Text>
+                      </Flex>
                     )}
                   </HStack>
                 </VStack>
