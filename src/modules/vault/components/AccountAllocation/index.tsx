@@ -2,12 +2,15 @@ import { Card, Flex, Heading, Icon } from 'bako-ui';
 import { memo, useCallback, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { ListHorizontalIcon, PieChartIcon } from '@/components';
+import {
+  IconTooltipButton,
+  ListHorizontalIcon,
+  PieChartIcon,
+} from '@/components';
 import { ChevronRightIcon } from '@/components/icons/chevron-right';
 import { Pages } from '@/modules/core';
 
 import { useVaultAllocationRequest, UseVaultDetailsReturn } from '../../hooks';
-import { VaultIconInfo } from '../vaultIconInfo';
 import { AssetsList } from './AssetList';
 import Donut from './Donut';
 import { AllocationSkeleton } from './Skeleton';
@@ -62,7 +65,7 @@ export const AccountAllocation = memo(
                   Allocation
                 </Heading>
                 <Flex align="center" gap={2}>
-                  <VaultIconInfo
+                  <IconTooltipButton
                     tooltipContent={
                       mode === 'assets' ? 'Chart View' : 'List View'
                     }
@@ -74,14 +77,14 @@ export const AccountAllocation = memo(
                       w="12px"
                       color="gray.200"
                     />
-                  </VaultIconInfo>
-                  <VaultIconInfo
+                  </IconTooltipButton>
+                  <IconTooltipButton
                     tooltipContent="View all"
                     placement="top"
                     onClick={handleNavigateToAssets}
                   >
                     <Icon as={ChevronRightIcon} w="12px" color="gray.200" />
-                  </VaultIconInfo>
+                  </IconTooltipButton>
                 </Flex>
               </Flex>
             </Card.Header>

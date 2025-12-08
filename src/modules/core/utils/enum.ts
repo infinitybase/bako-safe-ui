@@ -16,7 +16,6 @@ export enum AutocompleteBadgeStatus {
   SUCCESS = 1,
   ERROR = 2,
   INFO = 3,
-  CONFLICT = 4,
 }
 
 export { EnumUtils };

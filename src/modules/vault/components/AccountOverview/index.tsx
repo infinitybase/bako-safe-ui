@@ -20,6 +20,7 @@ import { useNavigate } from 'react-router-dom';
 
 import {
   ErrorTooltip,
+  IconTooltipButton,
   TeamIcon,
   TooltipNotEnoughBalance,
   UpRightArrow,
@@ -36,7 +37,6 @@ import { UseVaultDetailsReturn, useVaultInfosContext } from '../../hooks';
 import BalanceHelperDrawer from '../BalanceHelperDrawer';
 import BalanceHelperDialog from '../dialog/BalanceHelper';
 import { TooltipPendingTx } from '../TooltipPendingTx';
-import { VaultIconInfo } from '../vaultIconInfo';
 import OverviewSkeleton from './skeleton';
 
 interface AccountOverviewProps {
@@ -128,12 +128,17 @@ export const AccountOverview = memo(
                 alignItems="center"
                 w="full"
               >
-                <Heading color="textPrimary" fontSize="sm">
+                <Heading
+                  color="textPrimary"
+                  fontSize="sm"
+                  truncate
+                  lineClamp={1}
+                >
                   {accountName}
                 </Heading>
 
                 <Flex gap={1} alignItems="center">
-                  <VaultIconInfo
+                  <IconTooltipButton
                     onClick={copy}
                     tooltipContent={copied ? 'Copied' : 'Copy Address'}
                     placement="top"
@@ -143,9 +148,9 @@ export const AccountOverview = memo(
                       color="gray.200"
                       w="12px"
                     />
-                  </VaultIconInfo>
+                  </IconTooltipButton>
 
-                  <VaultIconInfo
+                  <IconTooltipButton
                     placement="top"
                     tooltipContent={
                       <Stack gap={1} alignItems="center">
@@ -161,16 +166,16 @@ export const AccountOverview = memo(
                     }
                   >
                     <Icon as={TeamIcon} color="gray.200" w="12px" />
-                  </VaultIconInfo>
+                  </IconTooltipButton>
 
-                  <VaultIconInfo
+                  <IconTooltipButton
                     onClick={redirectToNetwork}
                     tooltipContent="View on Explorer"
                     placement="top"
                   >
                     <Icon as={UpRightArrow} color="gray.200" w="12px" />
-                  </VaultIconInfo>
-                  <VaultIconInfo
+                  </IconTooltipButton>
+                  <IconTooltipButton
                     tooltipContent={
                       visibleBalance ? 'Hide Balance' : 'Show Balance'
                     }
@@ -182,8 +187,8 @@ export const AccountOverview = memo(
                       color="gray.200"
                       w={visibleBalance ? '16px' : '12px'}
                     />
-                  </VaultIconInfo>
-                  <VaultIconInfo
+                  </IconTooltipButton>
+                  <IconTooltipButton
                     tooltipContent={isUpdating ? 'Updating...' : 'Update'}
                     onClick={handleManualRefetch}
                     placement="top"
@@ -199,7 +204,7 @@ export const AccountOverview = memo(
                           : { duration: 0 }
                       }
                     />
-                  </VaultIconInfo>
+                  </IconTooltipButton>
                 </Flex>
               </HStack>
               <Text fontSize="xs" color="gray.400">

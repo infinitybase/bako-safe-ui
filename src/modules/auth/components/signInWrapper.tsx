@@ -122,7 +122,7 @@ const SignInWrapper = (props: SignInWrapperProps) => {
         flex={1}
         w="full"
         display="flex"
-        px={4}
+        px={{ md: 4 }}
       >
         <Tabs.Content value="0" flex={1}>
           <Box h="full" p={0}>
@@ -143,7 +143,7 @@ const SignInWrapper = (props: SignInWrapperProps) => {
                           : 'Creating new user...'
                     }
                     subtitle={
-                      currentOpenConnector ||
+                      (isAnyWalletConnectorOpen && currentOpenConnector) ||
                       formData.form.getValues('username') ||
                       ''
                     }
@@ -184,7 +184,6 @@ const SignInWrapper = (props: SignInWrapperProps) => {
 
                   <ConnectorsList
                     connectors={connectors}
-                    hidden={isSafariBrowser}
                     onConnectorSelect={handleSelectWallet}
                     isAnyWalletConnectorOpen={isAnyWalletConnectorOpen}
                   />

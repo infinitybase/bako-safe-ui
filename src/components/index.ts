@@ -14,6 +14,7 @@ export * from './dialog';
 export * from './feedback';
 export * from './handle';
 export * from './icons';
+export * from './iconTooltipButton';
 export * from './input';
 export * from './loader';
 export * from './progress';

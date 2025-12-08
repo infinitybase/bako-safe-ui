@@ -42,6 +42,7 @@ export const UpdateVaultForm = ({
                 <Input
                   variant="subtle"
                   placeholder=" "
+                  maxLength={27}
                   {...field}
                   pt={2}
                   maxLength={27}

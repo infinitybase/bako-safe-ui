@@ -30,7 +30,7 @@ export type UseWebAuthnSignIn = ReturnType<typeof useWebAuthnSignIn>;
 const useWebAuthnSignIn = (
   signInCallback: (vaultId?: string, workspaceId?: string) => void,
 ) => {
-  const [mode, setMode] = useState(WebAuthnModeState.SEARCH);
+  const [mode, setMode] = useState(WebAuthnModeState.LOGIN);
   const [createdAcccountUsername, setCreatedAcccountUsername] = useState('');
 
   const tabs = useTab({

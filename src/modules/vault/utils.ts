@@ -296,6 +296,19 @@ const calculateCarouselYPosition = (
   return yPosition;
 };
 
+export const BRIDGE_STEPS_HEIGHTS = {
+  EXPANDED: {
+    RESUME: 305,
+    RESUME_MOBILE: 322,
+    AMOUNT: 248,
+    DESTINATION: 246,
+  },
+  COLLAPSED: {
+    COMMON: 88,
+  },
+  NON_EXPANDABLE: 173,
+};
+
 /**
  * @description Calculates the Y position for each bridge step
  * @param step The bridge step to get the Y position for
@@ -305,22 +318,38 @@ const calculateCarouselYPosition = (
 export const getYPositionForBridgeStep = (
   step: BridgeStepsForm,
   stepForm: BridgeStepsForm,
+  isMobile = false,
 ): number => {
-  const collapsedHeight = 88;
-
   const getHeightForStep = (stepNum: BridgeStepsForm): number => {
-    if (stepNum === BridgeStepsForm.FROM) return collapsedHeight;
-    if (stepNum === BridgeStepsForm.TO) return collapsedHeight;
+    if ([BridgeStepsForm.FROM, BridgeStepsForm.TO].includes(stepNum)) {
+      const height = isMobile
+        ? BRIDGE_STEPS_HEIGHTS.NON_EXPANDABLE
+        : BRIDGE_STEPS_HEIGHTS.COLLAPSED.COMMON;
+      return height;
+    }
+
     if (stepNum === BridgeStepsForm.AMOUNT) {
-      return stepForm === BridgeStepsForm.AMOUNT ? 248 : collapsedHeight;
+      return stepForm === BridgeStepsForm.AMOUNT
+        ? BRIDGE_STEPS_HEIGHTS.EXPANDED.AMOUNT
+        : BRIDGE_STEPS_HEIGHTS.COLLAPSED.COMMON;
     }
+
     if (stepNum === BridgeStepsForm.DESTINATION) {
-      return stepForm === BridgeStepsForm.DESTINATION ? 246 : collapsedHeight;
+      return stepForm === BridgeStepsForm.DESTINATION
+        ? BRIDGE_STEPS_HEIGHTS.EXPANDED.DESTINATION
+        : BRIDGE_STEPS_HEIGHTS.COLLAPSED.COMMON;
     }
+
     if (stepNum === BridgeStepsForm.RESUME) {
-      return stepForm >= BridgeStepsForm.RESUME ? 305 : collapsedHeight;
+      const expandedHeight = isMobile
+        ? BRIDGE_STEPS_HEIGHTS.EXPANDED.RESUME_MOBILE
+        : BRIDGE_STEPS_HEIGHTS.EXPANDED.RESUME;
+      return stepForm >= BridgeStepsForm.RESUME
+        ? expandedHeight
+        : BRIDGE_STEPS_HEIGHTS.COLLAPSED.COMMON;
     }
-    return collapsedHeight;
+
+    return BRIDGE_STEPS_HEIGHTS.COLLAPSED.COMMON;
   };
 
   return calculateCarouselYPosition(step, stepForm, getHeightForStep);

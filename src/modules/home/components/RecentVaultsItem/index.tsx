@@ -11,7 +11,7 @@ interface RecentVaultsItemProps {
 const RecentVaultsItem = memo(
   ({ predicate, handleWorkspaceSelection }: RecentVaultsItemProps) => {
     return (
-      <GridItem>
+      <GridItem maxW={{ lg: '300px' }}>
         <VaultCard
           name={predicate.name}
           title={predicate.description}

@@ -2,15 +2,13 @@ import { Avatar, Flex, HStack, Icon, Skeleton, Stack, Text } from 'bako-ui';
 import { TypeUser } from 'bakosafe';
 import { useMemo } from 'react';
 
-import { AddAddressBook, UpRightArrow } from '@/components';
+import { AddAddressBook, IconTooltipButton, UpRightArrow } from '@/components';
 import { ListContactsResponse } from '@/modules/addressBook/services';
 import { AddressUtils } from '@/modules/core';
 import { useBakoIdAvatar } from '@/modules/core/hooks/bako-id';
 import { useAddressNicknameResolver } from '@/modules/core/hooks/useAddressNicknameResolver';
 import { useNetworks } from '@/modules/network/hooks';
 import { NetworkService } from '@/modules/network/services';
-
-import { VaultIconInfo } from './vaultIconInfo';
 
 interface CardMemberProps {
   member: {
@@ -109,13 +107,13 @@ const CardMember = ({ member, isOwner, contacts }: CardMemberProps) => {
           <Flex alignItems="center" gap={2}>
             <AddAddressBook address={member.address} hasAdd={hasAdd} />
 
-            <VaultIconInfo
+            <IconTooltipButton
               onClick={redirectToNetwork}
               tooltipContent="View on Explorer"
               placement="top"
             >
               <Icon as={UpRightArrow} color="gray.200" w="12px" />
-            </VaultIconInfo>
+            </IconTooltipButton>
           </Flex>
         </Flex>
 

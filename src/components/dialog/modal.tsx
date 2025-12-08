@@ -3,6 +3,7 @@ import {
   DialogBackdropProps,
   DialogBodyProps,
   DialogContentProps,
+  DialogPositionerProps,
   DialogRootProps,
   Portal,
 } from 'bako-ui';
@@ -16,10 +17,11 @@ export interface DialogModalProps extends Omit<DialogRootProps, 'children'> {
   xsBreakPointPy?: number;
   overlayProps?: DialogBackdropProps;
   children?: React.ReactNode;
+  positionerProps?: DialogPositionerProps;
 }
 
 const DialogModal = (props: DialogModalProps) => {
-  const { children, ...rest } = props;
+  const { children, positionerProps, ...rest } = props;
   const {
     screenSizes: { isMobile },
   } = useWorkspaceContext();
@@ -34,11 +36,11 @@ const DialogModal = (props: DialogModalProps) => {
     >
       <Portal>
         <Dialog.Backdrop {...props.overlayProps} />
-        <Dialog.Positioner>
+        <Dialog.Positioner {...positionerProps}>
           <Dialog.Content
             rounded={{ sm: '3xl' }}
-            py={{ base: 2, sm: props.xsBreakPointPy ?? 6 }}
-            px={{ base: 2, sm: props.contentPadding ?? 0 }}
+            py={6}
+            px={6}
             minH={{ sm: 'auto' }}
             {...props.modalContentProps}
           >

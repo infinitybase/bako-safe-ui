@@ -27,7 +27,7 @@ export const VaultSwapPage = () => {
   );
 
   return (
-    <Container w="full" px={0}>
+    <Container w="full" px={0} display="flex" alignItems="center">
       <RootSwap
         vault={bakoVault}
         assets={assets}
