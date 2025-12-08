@@ -74,10 +74,7 @@ const useCreateVault = () => {
     setCurrentValidateAddressIndex,
   } = useValidateAddress();
 
-  let vaultNameIsAvailable = false;
-
-  const checkVaultNameResult = useCheckVaultName(searchRequest);
-  vaultNameIsAvailable = checkVaultNameResult.data ?? false;
+  const { data: vaultNameAlreadyExists } = useCheckVaultName(searchRequest);
 
   const debouncedSearchHandler = useCallback(
     debounce((value: string) => {
@@ -197,7 +194,7 @@ const useCreateVault = () => {
       handleCreateVault,
     },
     handleInputChange,
-    vaultNameIsAvailable,
+    vaultNameAlreadyExists: !!vaultNameAlreadyExists,
     vaultId,
     search,
     setSearch,

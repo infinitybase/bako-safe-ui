@@ -66,7 +66,7 @@ const AssetsBalanceList = ({ assets, predicateId }: AssetsBalanceProps) => {
               Balance allocation
             </Heading>
           </Card.Header>
-          <Card.Body justifyContent={isEmpty ? 'center' : 'flex-start'}>
+          <Card.Body justifyContent="center" alignItems="center">
             {!isEmpty && <AdvancedDonut data={data} />}
 
             {isEmpty && !isLoading && (

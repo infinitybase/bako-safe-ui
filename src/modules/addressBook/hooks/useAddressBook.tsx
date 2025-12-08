@@ -20,11 +20,12 @@ const useAddressBook = (
   providerInstance: Promise<BakoProvider>,
   fuelsTokens?: Assets,
 ) => {
-  const [contactToEdit, setContactToEdit] = useState({ id: '' });
+  const [contactToEdit, setContactToEdit] = useState({ id: '', address: '' });
   const [search, setSearch] = useState('');
   const [contactToDelete, setContactToDelete] = useState({
     id: '',
     nickname: '',
+    address: '',
   });
 
   const contactDialog = useDisclosure();

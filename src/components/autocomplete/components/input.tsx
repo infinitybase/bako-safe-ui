@@ -13,6 +13,7 @@ const AutocompleteInput = memo(
           autoComplete="off"
           placeholder=" "
           variant="subtle"
+          bg="gray.550"
           {...props}
         />
       );

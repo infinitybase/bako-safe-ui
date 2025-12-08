@@ -7,6 +7,7 @@ import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import BalanceAllocationCard from '../components/BalanceAllocationCard';
 import HomeTransactions from '../components/HomeTransactions';
+import RecentVaultsHeader from '../components/RecentVaultsHeader';
 import RecentVaultsList from '../components/RecentVaultsList';
 
 const HomePage = () => {
@@ -39,11 +40,17 @@ const HomePage = () => {
   return (
     <VStack id="top" w="full" gap={10}>
       {/* RECENT VAULTS */}
-      <Grid templateColumns={{ base: '1fr', lg: '2fr 3fr' }} gap={10} w="full">
+      <Grid
+        templateColumns={{ base: '1fr', lg: '2fr 3fr' }}
+        gap={10}
+        w="full"
+        alignItems="stretch"
+      >
         <GridItem>
           <BalanceAllocationCard />
         </GridItem>
-        <GridItem>
+        <GridItem spaceY={6}>
+          <RecentVaultsHeader />
           <RecentVaultsList
             predicates={recentVaults}
             isLoading={latestPredicates.isLoading}

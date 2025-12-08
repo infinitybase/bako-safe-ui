@@ -125,7 +125,7 @@ export function ModalWithdrawalsLiquidStake({
             />
           ))}
         </HStack>
-        <Dialog.Actions hideDivider={true}>
+        <Dialog.Actions>
           <Button
             colorPalette="primary"
             width="full"

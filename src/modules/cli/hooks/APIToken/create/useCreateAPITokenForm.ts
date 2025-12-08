@@ -3,8 +3,8 @@ import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
 const schema = yup.object({
-  name: yup.string().required('Key name is required.'),
-  transactionName: yup.string(),
+  name: yup.string().required('Key name is required.').trim(),
+  transactionName: yup.string().trim(),
 });
 
 export type UseCreateVaultFormFields = yup.InferType<typeof schema>;

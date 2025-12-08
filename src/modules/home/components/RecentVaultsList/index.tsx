@@ -1,12 +1,10 @@
-import { Grid, GridItem, HStack, Skeleton } from 'bako-ui';
+import { Grid, GridItem, Skeleton } from 'bako-ui';
 import { memo, useMemo } from 'react';
 
 import { PredicateAndWorkspace } from '@/modules/vault';
 import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
-import CreateNewAccountCard from '../CreateNewAccountCard';
 import RecentVaultsItem from '../RecentVaultsItem';
-import ViewAllCard from '../ViewAllCard';
 
 interface RecentVaultsListProps {
   predicates: PredicateAndWorkspace[];
@@ -18,22 +16,14 @@ const RecentVaultsList = memo(
     const {
       workspaceInfos: {
         handlers: { handleWorkspaceSelection },
-        workspaceVaults: { extraCount, vaultsMax },
+        workspaceVaults: { vaultsMax },
       },
-      authDetails: { userInfos },
     } = useWorkspaceContext();
 
     const firstFivePredicates = useMemo(
       () => predicates.slice(0, vaultsMax),
       [predicates, vaultsMax],
     );
-
-    const workspaceId = useMemo(
-      () => userInfos.workspace?.id ?? '',
-      [userInfos.workspace?.id],
-    );
-
-    const showViewAll = useMemo(() => extraCount > 0, [extraCount]);
 
     return (
       <Grid
@@ -59,13 +49,6 @@ const RecentVaultsList = memo(
             <Skeleton height="150px" rounded="2xl" />
           </GridItem>
         )}
-
-        <GridItem>
-          <HStack w="full" h="full" justify="stretch" gap={2.5}>
-            <CreateNewAccountCard />
-            {showViewAll && <ViewAllCard workspaceId={workspaceId} />}
-          </HStack>
-        </GridItem>
       </Grid>
     );
   },

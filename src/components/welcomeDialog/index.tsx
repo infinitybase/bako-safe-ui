@@ -108,11 +108,7 @@ const WelcomeDialog = ({
             isMobile={isMobile}
           />
         </Stack>
-        <Dialog.Actions
-          hideDivider
-          justifyContent="flex-end"
-          p={isMobile ? 6 : 0}
-        >
+        <Dialog.Actions justifyContent="flex-end" p={{ base: 6, sm: 0 }}>
           <Flex w="full" justifyContent="flex-end">
             <Button
               variant="ghost"

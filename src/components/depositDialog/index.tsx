@@ -169,7 +169,6 @@ const DepositDialog = ({
           right={0}
           px={isMobile ? 10 : 'unset'}
           bg={isMobile ? 'dark.950' : 'unset'}
-          hideDivider
           css={{
             '&>hr': {
               display: 'none',

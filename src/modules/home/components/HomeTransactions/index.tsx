@@ -61,11 +61,11 @@ const HomeTransactions = () => {
       >
         <Box
           display="flex"
-          flexDir="'row'"
+          flexDir="row"
           alignItems="center"
           gap={{ base: 2, md: 4 }}
         >
-          <Text fontWeight={700} fontSize="md" color="grey.50">
+          <Text as="h2" fontWeight="semibold" fontSize="sm" color="textPrimary">
             Transactions
           </Text>
           <WaitingSignatureBadge

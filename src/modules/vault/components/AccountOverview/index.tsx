@@ -183,7 +183,11 @@ export const AccountOverview = memo(
                     onClick={handleToggleBalanceVisibility}
                     placement="top"
                   >
-                    <Icon as={EyeIcon} color="gray.200" w="16px" />
+                    <Icon
+                      as={EyeIcon}
+                      color="gray.200"
+                      w={visibleBalance ? '16px' : '12px'}
+                    />
                   </IconTooltipButton>
                   <IconTooltipButton
                     tooltipContent={isUpdating ? 'Updating...' : 'Update'}

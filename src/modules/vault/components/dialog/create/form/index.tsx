@@ -17,7 +17,7 @@ export interface CreateVaultFormProps {
   steps: UseCreateVaultDialogReturn['steps'];
   isLoading?: boolean;
   onCancel: () => void;
-  vaultNameIsAvailable: UseCreateVaultDialogReturn['vaultNameIsAvailable'];
+  vaultNameAlreadyExists: UseCreateVaultDialogReturn['vaultNameAlreadyExists'];
   search: UseCreateVaultDialogReturn['search'];
   setSearch: UseCreateVaultDialogReturn['setSearch'];
   handleInputChange: UseCreateVaultDialogReturn['handleInputChange'];
@@ -35,7 +35,7 @@ const CreateVaultForm = (props: CreateVaultFormProps) => {
     search,
     setSearch,
     handleInputChange,
-    vaultNameIsAvailable,
+    vaultNameAlreadyExists,
     validateAddress,
   } = props;
 
@@ -55,7 +55,7 @@ const CreateVaultForm = (props: CreateVaultFormProps) => {
             vaultName={{
               search,
               setSearch,
-              vaultNameIsAvailable,
+              vaultNameAlreadyExists,
               searchHandler: handleInputChange,
             }}
           />

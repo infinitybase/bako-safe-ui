@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
-import { Box, BoxProps, Heading, RhfInput, Separator } from 'bako-ui';
+import { Box, BoxProps, Field, Icon, Input, InputGroup } from 'bako-ui';
 import { bn } from 'fuels';
 import { useMemo } from 'react';
-import { FormProvider } from 'react-hook-form';
+import { Controller, FormProvider } from 'react-hook-form';
 
-import { Dialog } from '@/components';
+import { CloseCircle } from '@/components';
 import { UseCreateTransaction } from '@/modules/transactions/hooks';
 import { UseVaultDetailsReturn } from '@/modules/vault';
 import { useWorkspaceContext } from '@/modules/workspace/hooks';
@@ -74,26 +74,35 @@ const CreateTransactionForm = (props: CreateTransactionFormProps) => {
   return (
     <FormProvider {...form}>
       <Box w="full" {...props}>
-        <Separator mt={2} mb={7} borderColor="textSecondary" />
-
-        <RhfInput
+        <Controller
+          control={form.control}
           name="name"
-          control={form.control as any}
-          label="Transaction name"
-          error={form.formState.errors.name}
-          defaultValue=""
-        />
-
-        <Dialog.Section
-          mb={8}
-          mt={7}
-          title={
-            <Heading fontSize="lg" fontWeight="bold" color="white">
-              Who for?
-            </Heading>
-          }
-          description="Set the recipient(s) for this transfer. You can set up to 10 recipients."
-          descriptionFontSize="sm"
+          render={({ field, fieldState }) => (
+            <Field.Root invalid={!!fieldState.error}>
+              <InputGroup
+                bg="gray.600"
+                rounded="8px"
+                endElement={
+                  <Icon
+                    as={CloseCircle}
+                    display={field.value ? 'block' : 'none'}
+                    onClick={() => field.onChange('')}
+                  />
+                }
+              >
+                <Input
+                  variant="subtle"
+                  placeholder="Transaction name"
+                  _placeholder={{
+                    color: 'textSecondary',
+                  }}
+                  {...field}
+                  onChange={({ target }) => field.onChange(target.value)}
+                />
+              </InputGroup>
+              <Field.ErrorText>{fieldState.error?.message}</Field.ErrorText>
+            </Field.Root>
+          )}
         />
 
         <Recipient.List
@@ -114,8 +123,6 @@ const CreateTransactionForm = (props: CreateTransactionFormProps) => {
               onDelete={transactionsFields.remove}
               nicks={nicks}
               index={index}
-              hasEthForFee={hasEthForFee}
-              ethAssetId={baseAssetId}
             />
           ))}
         </Recipient.List>

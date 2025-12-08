@@ -48,14 +48,16 @@ const AssetsBalanceCard = ({
           <Text fontSize="xs" color="textSecondary" maxW="full" truncate>
             {assetsInfo?.name}
           </Text>
-          <Text fontSize="xs" color="textSecondary" maxW="full" truncate>
+
+          <Text fontSize="xs" color="textSecondary">
+            {transactionAmount > 0 ? formattedAmount : ''}
+          </Text>
+
+          <Text fontSize="sm" color="gray.50" maxW="full" mt={4} truncate>
             {assetAmount}{' '}
-            <Text as="span" color="textSecondary" fontSize="xs">
+            <Text as="span" color="gray.50" fontSize="sm">
               {assetsInfo?.slug?.toUpperCase() ?? ''}
             </Text>
-          </Text>
-          <Text fontSize="sm" color="gray.50" mt={4}>
-            {transactionAmount > 0 ? formattedAmount : ''}
           </Text>
         </VStack>
       </VStack>

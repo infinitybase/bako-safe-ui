@@ -69,15 +69,7 @@ const CommingSoonDialog = ({
         </VStack>
       </Dialog.Body>
 
-      <Dialog.Actions
-        w="full"
-        maxW={385}
-        dividerBorderColor="grey.425"
-        position="relative"
-        hideDivider
-        px={4}
-        mb={4}
-      >
+      <Dialog.Actions w="full" maxW={385} position="relative" px={4} mb={4}>
         <Dialog.PrimaryAction
           flex={3}
           hidden={false}

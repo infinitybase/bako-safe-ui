@@ -236,7 +236,7 @@ export const CoinBox = memo(
             {error ? (
               <Text
                 fontSize="xs"
-                color="red.500"
+                color="primary.main"
                 lineClamp={1}
                 truncate
                 ml="auto"

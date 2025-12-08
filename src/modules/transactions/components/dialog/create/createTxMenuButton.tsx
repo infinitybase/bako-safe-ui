@@ -1,5 +1,5 @@
 import { Button, Heading, HStack, Menu, Text } from 'bako-ui';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback } from 'react';
 
 import { Dialog } from '@/components';
 import { ChevronDownIcon } from '@/components/icons/chevron-down';
@@ -26,34 +26,15 @@ const CreateTxMenuButton = ({
   createTxMethod,
   setCreateTxMethod,
 }: CreateTxMenuButtonProps) => {
-  const actionMenuRef = useRef<HTMLDivElement>(null);
-  const [menuWidth, setMenuWidth] = useState(0);
-
-  const updateMenuWidth = useCallback(() => {
-    if (actionMenuRef.current) {
-      setMenuWidth(actionMenuRef.current.offsetWidth);
-    }
-  }, []);
-
   const handleCreateTransactionByMethod = useCallback(() => {
     return createTxMethod === ECreateTransactionMethods.CREATE
       ? handleCreateTransaction?.()
       : handleCreateAndSignTransaction?.();
   }, [createTxMethod, handleCreateTransaction, handleCreateAndSignTransaction]);
 
-  useEffect(() => {
-    updateMenuWidth();
-
-    window.addEventListener('resize', updateMenuWidth);
-
-    return () => {
-      window.removeEventListener('resize', updateMenuWidth);
-    };
-  }, [updateMenuWidth]);
-
   return (
     <Menu.Root positioning={{ placement: 'top-end' }}>
-      <HStack w="full" ref={actionMenuRef}>
+      <HStack w="full">
         <HStack w="full" gap={0.5}>
           <Dialog.PrimaryAction
             w="auto"
@@ -64,6 +45,9 @@ const CreateTxMenuButton = ({
             onClick={() => handleCreateTransactionByMethod()}
             _hover={{
               opacity: !isDisabled ? 0.8 : 1,
+            }}
+            _disabled={{
+              backgroundColor: 'colorPalette.solid/24',
             }}
             borderRadius="8px 0px 0px 8px"
           >
@@ -76,17 +60,23 @@ const CreateTxMenuButton = ({
             borderRadius="0px 8px 8px 0px"
             disabled={isDisabled || isLoading}
           >
-            <Button>
-              <ChevronDownIcon transform="rotate(180deg)" fontSize="24px" color="gray.700" />
+            <Button
+              _disabled={{
+                backgroundColor: 'colorPalette.solid/24',
+              }}
+              disabled={isDisabled || isLoading}
+            >
+              <ChevronDownIcon
+                transform="rotate(180deg)"
+                fontSize="24px"
+                color="gray.700"
+              />
             </Button>
           </Menu.Trigger>
         </HStack>
         <Menu.Portal>
           <Menu.Positioner zIndex="2000 !important">
-            <Menu.Content
-              overflow="hidden"
-              width={`${menuWidth}px`}
-            >
+            <Menu.Content overflow="hidden">
               <Menu.Item
                 value="create-and-sing"
                 display="flex"
@@ -96,7 +86,7 @@ const CreateTxMenuButton = ({
                 onClick={() =>
                   setCreateTxMethod(ECreateTransactionMethods.CREATE_AND_SIGN)
                 }
-                _hover={{ bg: "gray.500" }}
+                _hover={{ bg: 'gray.500' }}
                 borderRadius="12px"
               >
                 <Heading
@@ -129,7 +119,7 @@ const CreateTxMenuButton = ({
                 onClick={() =>
                   setCreateTxMethod(ECreateTransactionMethods.CREATE)
                 }
-                _hover={{ bg: "gray.500" }}
+                _hover={{ bg: 'gray.500' }}
                 borderRadius="12px"
                 value="create"
               >

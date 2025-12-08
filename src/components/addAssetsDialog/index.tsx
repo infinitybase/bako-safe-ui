@@ -117,7 +117,6 @@ const AddAssetsDialog = ({
           bg={{ base: 'dark.950', sm: 'unset' }}
           borderRadius={{ base: 20, sm: 'unset' }}
           pb={{ base: 5, sm: 'unset' }}
-          hideDivider
           css={{
             '&>hr': {
               marginTop: '0',

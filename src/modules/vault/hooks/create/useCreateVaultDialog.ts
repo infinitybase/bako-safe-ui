@@ -22,7 +22,7 @@ const useCreateVaultDialog = (props: UseCreateVaultDialogProps) => {
   const {
     form,
     tabs,
-    vaultNameIsAvailable,
+    vaultNameAlreadyExists,
     vaultId,
     validateAddress,
     addresses,
@@ -139,7 +139,7 @@ const useCreateVaultDialog = (props: UseCreateVaultDialogProps) => {
       step: stepActions[tabs.tab],
       actions: stepActions,
     },
-    vaultNameIsAvailable,
+    vaultNameAlreadyExists,
     validateAddress,
     addresses,
     bakoSafeVault,
