@@ -201,14 +201,22 @@ const VaultBox = (props: VaultBoxPropx) => {
                   {balance}
                 </Text>
               )}
-              {!visibleBalance && <Text color="gray.50">-----</Text>}
+              {!visibleBalance && (
+                <Text color="gray.50" fontSize="sm">
+                  -----
+                </Text>
+              )}
               <IconTooltipButton
                 tooltipContent={
                   visibleBalance ? 'Hide Balance' : 'Show Balance'
                 }
                 onClick={handleToggleBalanceVisibility}
               >
-                <Icon as={EyeIcon} color="gray.200" w="16px" />
+                <Icon
+                  as={EyeIcon}
+                  color="gray.200"
+                  w={visibleBalance ? '16px' : '12px'}
+                />
               </IconTooltipButton>
             </Flex>
           </Card.Body>

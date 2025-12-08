@@ -80,7 +80,6 @@ const TransactionStepper = memo(({ steps }: TransactionStepperProps) => {
       <Text
         color="gray.400"
         fontSize={isLowerThanFourHundredAndThirty ? 'xs' : 'sm'}
-        mb="7px"
       >
         Transaction History
       </Text>

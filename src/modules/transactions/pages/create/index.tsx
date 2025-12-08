@@ -9,8 +9,8 @@ const CreateTransactionPage = () => {
 
   return (
     <CreateTransactionDialog
-      onOpenChange={(e) => {
-        handleClose();
+      onOpenChange={({ open }) => {
+        if (!open) handleClose();
       }}
       open
     />

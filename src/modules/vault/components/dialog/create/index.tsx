@@ -24,7 +24,7 @@ const CreateVaultDialog = memo((props: CreateVaultDialogProps) => {
     setFormWithTemplate,
     onSaveTemplate,
     handleInputChange,
-    vaultNameIsAvailable,
+    vaultNameAlreadyExists,
     search,
     setSearch,
     validateAddress,
@@ -78,7 +78,7 @@ const CreateVaultDialog = memo((props: CreateVaultDialogProps) => {
           selectedTemplate={selectedTemplate}
           setTemplate={setFormWithTemplate}
           onSaveTemplate={onSaveTemplate}
-          vaultNameIsAvailable={vaultNameIsAvailable}
+          vaultNameAlreadyExists={vaultNameAlreadyExists}
           search={search}
           setSearch={setSearch}
           handleInputChange={handleInputChange}

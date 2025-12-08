@@ -16,6 +16,8 @@ import { RiFileCopyFill } from 'react-icons/ri';
 
 import { IconTooltipButton, TeamIcon } from '@/components';
 import { CopyTopMenuIcon } from '@/components/icons/copy-top-menu';
+import { EyeCloseIcon } from '@/components/icons/eye-close';
+import { EyeOpenIcon } from '@/components/icons/eye-open';
 import { useHasReservedCoins } from '@/modules';
 import { AddressUtils } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/hooks';
@@ -26,6 +28,7 @@ interface VaultCardProps extends CardRootProps {
   name: string;
   inHome?: boolean;
   isHidden?: boolean;
+  showHideButton?: boolean;
   address: string;
   signersCount: number;
   requiredSigners: number;
@@ -36,6 +39,7 @@ export const VaultCard = memo(function VaultCard({
   name,
   inHome,
   isHidden,
+  showHideButton = false,
   address,
   requiredSigners,
   signersCount,
@@ -102,35 +106,6 @@ export const VaultCard = memo(function VaultCard({
       opacity={!localHidden ? 1 : 0.5}
       transition="opacity 0.3s ease-in-out, background 0.3s ease"
     >
-      {/* {inHome ?? (
-        <Box
-          position="absolute"
-          top={3}
-          right={3}
-          cursor={isPending ? 'not-allowed' : 'pointer'}
-          zIndex={10}
-          bg="#F5F5F50D"
-          borderRadius="6px"
-          boxSize={8}
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          onClick={isPending ? undefined : handleToggle}
-        >
-          {isPending ? (
-            <Loader
-              size="xs"
-              color="grey.400"
-              borderWidth="2px"
-              animationDuration="0.5s"
-            />
-          ) : localHidden ? (
-            <FaEyeSlash size={16} color="#fff" />
-          ) : (
-            <FaEye size={16} color="#fff" />
-          )}
-        </Box>
-      )} */}
       <Card.Header>
         <HStack justifyContent="space-between" alignItems="start">
           <VStack gap={2} alignItems="start">
@@ -161,6 +136,27 @@ export const VaultCard = memo(function VaultCard({
                 w="12px"
               />
             </IconTooltipButton>
+
+            {showHideButton && (
+              <IconTooltipButton
+                placement="top"
+                onClick={handleToggle}
+                disabled={isPending}
+                tooltipContent={
+                  <Stack gap={1} alignItems="center">
+                    <Text color="textPrimary" fontSize="xs">
+                      {localHidden ? 'Activate account' : 'Deactivate account'}
+                    </Text>
+                  </Stack>
+                }
+              >
+                <Icon
+                  as={localHidden ? EyeCloseIcon : EyeOpenIcon}
+                  color="gray.200"
+                  w={localHidden ? '12px' : '16px'}
+                />
+              </IconTooltipButton>
+            )}
 
             <IconTooltipButton
               placement="top"

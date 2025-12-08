@@ -9,13 +9,13 @@ export interface VaultInfoStepProps {
   vaultName: {
     search: string;
     setSearch: (value: string) => void;
-    vaultNameIsAvailable: UseCreateVaultReturn['vaultNameIsAvailable'];
+    vaultNameAlreadyExists: UseCreateVaultReturn['vaultNameAlreadyExists'];
     searchHandler: (event: ChangeEvent<HTMLInputElement>) => void;
   };
 }
 
 const VaultInfosStep = ({ form, vaultName }: VaultInfoStepProps) => {
-  const { search, searchHandler, vaultNameIsAvailable } = vaultName;
+  const { search, searchHandler, vaultNameAlreadyExists } = vaultName;
   const formName = form.watch('name');
 
   useEffect(() => {
@@ -32,7 +32,7 @@ const VaultInfosStep = ({ form, vaultName }: VaultInfoStepProps) => {
             <Field.Root
               invalid={
                 fieldState.invalid ||
-                (vaultNameIsAvailable && search.length > 0)
+                (vaultNameAlreadyExists && search.length > 0)
               }
             >
               <Box position="relative" w="full">
@@ -55,13 +55,13 @@ const VaultInfosStep = ({ form, vaultName }: VaultInfoStepProps) => {
               </Box>
               <Field.HelperText
                 color={
-                  !!vaultNameIsAvailable || form.formState.errors.name?.message
-                    ? 'error.500'
+                  vaultNameAlreadyExists || form.formState.errors.name?.message
+                    ? 'red.400'
                     : 'textSecondary'
                 }
               >
-                {!!vaultNameIsAvailable && search.length > 0
-                  ? 'Account name already exists in this workspace'
+                {vaultNameAlreadyExists && search.length > 0
+                  ? 'Account name already exists'
                   : form.formState.errors.name?.message
                     ? form.formState.errors.name?.message
                     : search.length > 0

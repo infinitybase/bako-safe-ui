@@ -29,7 +29,7 @@ const BalanceAllocationCard = memo(() => {
       bg="bg.panel"
       h="full"
       rounded="2xl"
-      maxH="356px"
+      maxH="388px"
     >
       <Card.Header>
         <Heading

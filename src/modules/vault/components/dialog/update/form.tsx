@@ -48,12 +48,12 @@ export const UpdateVaultForm = ({
                   type="text"
                 />
                 <Field.Label css={floatingStyles({ hasValue: !!field.value })}>
-                  Name
+                  Account name
                 </Field.Label>
               </Box>
               {(error || alreadyExists) && (
                 <Field.ErrorText color="error.500">
-                  {error?.message || 'Vault name already exists'}
+                  {error?.message || 'Account name already exists'}
                 </Field.ErrorText>
               )}
             </Field.Root>

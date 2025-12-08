@@ -97,10 +97,6 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
   return (
     <Dialog.Modal
       {...props}
-      open
-      onOpenChange={(e) => {
-        if (!e.open) handleClose();
-      }}
       closeOnInteractOutside={false}
       size={{ base: 'full', sm: 'md' }}
       modalContentProps={{ sm: { minH: '700px' }, p: '0 !important' }}
