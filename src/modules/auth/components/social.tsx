@@ -12,7 +12,7 @@ const SocialSignIn = (props: SocialSignInProps) => {
   const { hidden, unableToConnect, onConnect } = props;
 
   return (
-    <Stack hidden={hidden} w="full" px={{ base: 0, xs: 6 }}>
+    <Stack hidden={hidden} w="full">
       <Button
         variant="subtle"
         bg="bg.panel"
