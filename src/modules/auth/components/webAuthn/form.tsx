@@ -66,6 +66,7 @@ const WebAuthnForm = (props: WebAuthnFormProps) => {
           name="username"
           variant="subtle"
           defaultValue=""
+          placeholder="Username"
           disabled={isDisabled}
           isLoadingOptions={isLoadingOptions}
           onInputValueChange={accountSeachHandler}
