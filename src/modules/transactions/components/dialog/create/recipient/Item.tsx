@@ -1,10 +1,11 @@
-import { Accordion, HStack, Text } from 'bako-ui';
+import { Accordion, HStack, Image, Span, Text } from 'bako-ui';
 import { memo, useCallback, useMemo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 import { ListContactsResponse } from '@/modules/addressBook/services';
 import { AddressUtils } from '@/modules/core';
 import { useBakoIDClient } from '@/modules/core/hooks/bako-id';
+import { parseURI } from '@/modules/core/utils/formatter';
 import {
   ITransactionForm,
   UseCreateTransaction,
@@ -24,8 +25,6 @@ interface RecipientItemProps {
   accordion: UseCreateTransaction['accordion'];
   isFeeCalcLoading: boolean;
   getBalanceAvailable: UseCreateTransaction['getBalanceAvailable'];
-  hasEthForFee: boolean;
-  ethAssetId: string | undefined;
 }
 
 const RecipientItem = ({
@@ -37,14 +36,12 @@ const RecipientItem = ({
   accordion,
   isFeeCalcLoading,
   getBalanceAvailable,
-  hasEthForFee,
-  ethAssetId,
 }: RecipientItemProps) => {
   const { getFieldState, control } = useFormContext<ITransactionForm>();
   const {
     providerInstance,
     vaultDetails: {
-      assets: { isNFTAsset },
+      assets: { isNFTAsset, nfts },
     },
   } = useWorkspaceContext();
   const {
@@ -53,10 +50,20 @@ const RecipientItem = ({
 
   const transaction = useWatch({ control, name: `transactions.${index}` });
 
-  const assetSlug = useMemo(
-    () => assets.getAssetInfo(transaction?.asset || '')?.slug,
-    [assets, transaction?.asset],
+  const assetInfo = useMemo(
+    () =>
+      isNFTAsset(transaction?.asset || '')
+        ? nfts?.find((nft) => nft.assetId === transaction?.asset)
+        : assets.getAssetInfo(transaction?.asset || ''),
+    [assets, nfts, isNFTAsset, transaction?.asset],
   );
+
+  const assetSlug = useMemo(() => {
+    if (!assetInfo) return undefined;
+    return 'slug' in assetInfo && assetInfo.slug
+      ? assetInfo.slug
+      : assetInfo.symbol;
+  }, [assetInfo]);
 
   const fieldState = getFieldState(`transactions.${index}`);
 
@@ -108,23 +115,34 @@ const RecipientItem = ({
     [accordion],
   );
 
+  const assetLogo = useMemo(() => {
+    if (!assetInfo) return undefined;
+    if ('icon' in assetInfo && assetInfo.icon) {
+      return assetInfo.icon;
+    }
+    if ('image' in assetInfo && assetInfo.image) {
+      return assetInfo.image;
+    }
+    return assetInfo.metadata?.image || assetInfo.metadata?.['image:png'];
+  }, [assetInfo]);
+
   return (
     <Accordion.Item
       value={index.toString()}
-      mb={6}
-      borderWidth={1}
-      borderColor={
-        !hasEthForFee &&
-        transaction?.asset === ethAssetId &&
-        !isCurrentAmountZero
-          ? 'red.500'
-          : 'bg.muted'
-      }
-      borderRadius={10}
-      backgroundColor="bg.panel"
+      my={3}
+      borderRadius="8px"
+      bg="bg.muted"
     >
       <TransactionAccordion.Item
         title={`Recipient ${index + 1}`}
+        assetLogo={
+          <Image
+            src={parseURI(assetLogo || '')}
+            width="36px"
+            height="36px"
+            borderRadius="lg"
+          />
+        }
         actions={
           <TransactionAccordion.Actions>
             <HStack gap={4}>
@@ -148,11 +166,11 @@ const RecipientItem = ({
         }
         resume={
           !hasEmptyField && (
-            <Text fontSize="sm" color="grey.500" mt={2}>
-              <b>
+            <Text fontSize="xs" color="textSecondary" mt={2}>
+              <Span color="textPrimary">
                 {isNFT ? 'NFT' : transaction?.amount} {isNFT ? '' : assetSlug}
-              </b>{' '}
-              to <b> {recipientLabel}</b>
+              </Span>{' '}
+              to <Span color="textPrimary"> {recipientLabel}</Span>
             </Text>
           )
         }

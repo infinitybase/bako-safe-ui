@@ -10,6 +10,6 @@ export class HandleUtils {
   }
 
   static toHandle(value: string): string {
-    return `@${value}`;
+    return value.startsWith('@') ? value : `@${value}`;
   }
 }

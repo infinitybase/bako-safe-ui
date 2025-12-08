@@ -19,10 +19,11 @@ const AutocompleteOptionListItem = memo(
     return (
       <Box
         w="full"
-        p={2}
-        borderRadius={10}
+        px={2}
+        py={1.5}
+        borderRadius="l1"
         cursor="pointer"
-        _hover={{ background: 'dark.150' }}
+        _hover={{ background: 'bg.emphasized/60' }}
         opacity={disabled ? 0.5 : 1}
         onMouseDown={() => {
           if (!disabled) {
