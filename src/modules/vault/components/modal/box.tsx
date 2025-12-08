@@ -1,24 +1,50 @@
-import { Avatar, Badge, HStack, Icon, Text, VStack } from 'bako-ui';
+import { Avatar, Badge, HStack, Skeleton, Text, VStack } from 'bako-ui';
 import { memo, useMemo } from 'react';
 
-import { Card, CardProps, TeamIcon } from '@/components';
+import { Card, CardProps } from '@/components';
 import { AddressUtils } from '@/modules/core';
 import {
   useTransactionsSignaturePending,
   WaitingSignatureBadge,
 } from '@/modules/transactions';
+import { moneyFormat } from '@/utils';
 
+import { useHasReservedCoins } from '../../hooks';
 import { PredicateWorkspace } from '../../services';
 
-interface VaultDrawerBoxProps extends CardProps {
-  id?: string;
+interface VaultItemBoxText {
+  type: 'primary' | 'secondary';
+  children?: React.ReactNode;
   isActive?: boolean;
+  isLoading?: boolean;
+}
+
+const VaultItemBoxText = (props: VaultItemBoxText) => {
+  const { type, isActive, children, isLoading } = props;
+
+  if (isLoading) return <Skeleton height="12px" width="40px" />;
+  if (!children) return;
+
+  const isPrimary = type === 'primary';
+  const color = isPrimary ? (isActive ? 'gray.50' : 'gray.200') : 'gray.300';
+  const fontWeight = isPrimary ? 500 : 400;
+
+  return (
+    <Text color={color} fontWeight={fontWeight} fontSize="xs" lineHeight="12px">
+      {children}
+    </Text>
+  );
+};
+
+interface VaultItemBoxComponentProps extends CardProps {
+  id: string;
   name: string;
   address: string;
-  workspace?: PredicateWorkspace;
+  workspace: PredicateWorkspace;
+  isActive?: boolean;
   isSingleWorkspace?: boolean;
-  isInDapp?: boolean;
   members?: number;
+  requiredSigners?: number;
   root?: boolean;
 }
 
@@ -27,17 +53,22 @@ const VaultItemBoxComponent = ({
   name,
   address,
   members,
+  requiredSigners,
   root,
   id,
+  workspace,
   ...rest
-}: VaultDrawerBoxProps) => {
+}: VaultItemBoxComponentProps) => {
+  const { data, isLoading: isLoadingBalance } = useHasReservedCoins(
+    id,
+    workspace.id,
+  );
   const isPending = useTransactionsSignaturePending([id!]);
   const showPending = isPending.data?.transactionsBlocked;
   const needSignature = isPending.data?.pendingSignature;
-  const isRootAndPending = showPending && root;
 
   const StatusBadge = useMemo(() => {
-    if (!showPending && !needSignature) return null;
+    if (!showPending && !needSignature) return;
 
     return (
       <WaitingSignatureBadge
@@ -48,8 +79,10 @@ const VaultItemBoxComponent = ({
     );
   }, [isPending.data?.ofUser, isPending.isLoading, needSignature, showPending]);
 
-  const RootBadge = useMemo(
-    () => (
+  const RootBadge = useMemo(() => {
+    if (!root) return;
+
+    return (
       <Badge
         colorPalette="gray"
         fontSize="2xs"
@@ -60,30 +93,18 @@ const VaultItemBoxComponent = ({
       >
         Personal
       </Badge>
-    ),
-    [],
-  );
+    );
+  }, [root]);
 
-  const MembersBadge = useMemo(
-    () =>
-      members !== undefined ? (
-        <HStack gap={2} align="center">
-          <Text
-            fontSize="2xs"
-            color={isActive ? 'gray.100' : 'gray.300'}
-            lineHeight="12px"
-          >
-            {members}
-          </Text>
-          <Icon
-            as={TeamIcon}
-            color={isActive ? 'gray.100' : 'gray.300'}
-            w="12px"
-          />
-        </HStack>
-      ) : null,
-    [members, isActive],
-  );
+  const SignersCount = useMemo(() => {
+    if (!requiredSigners || !members) return;
+
+    return (
+      <VaultItemBoxText type="secondary" isActive={isActive}>
+        {requiredSigners}/{members} signers
+      </VaultItemBoxText>
+    );
+  }, [requiredSigners, members, isActive]);
 
   return (
     <Card
@@ -117,48 +138,30 @@ const VaultItemBoxComponent = ({
           name={name}
         />
         <VStack gap={2} align="flex-start">
-          <Text
-            fontWeight={500}
-            truncate
-            maxW={{ base: 120, sm: 250 }}
-            color={isActive ? 'gray.100' : 'gray.200'}
-            fontSize="xs"
-            lineHeight="12px"
-          >
+          <VaultItemBoxText type="primary" isActive={isActive}>
             {name}
-          </Text>
-          <Text
-            fontSize="xs"
-            color="gray.300"
-            lineHeight="12px"
-            truncate
-            maxW={{ base: 120, sm: 250 }}
-          >
+          </VaultItemBoxText>
+
+          <VaultItemBoxText type="secondary" isActive={isActive}>
             {AddressUtils.format(address ?? '', 4)}
-          </Text>
+          </VaultItemBoxText>
         </VStack>
       </HStack>
 
       <VStack gap={2} align="flex-end">
-        {isRootAndPending ? (
-          <>
-            <HStack gap={3}>
-              {RootBadge}
-              {MembersBadge}
-            </HStack>
-            {StatusBadge}
-          </>
-        ) : (
-          <>
-            {MembersBadge}
-            {root && !showPending && !needSignature &&
-              <HStack gap={2}>
-                {root && RootBadge}
-                {StatusBadge}
-              </HStack>
-            }
-          </>
-        )}
+        <VaultItemBoxText
+          type="primary"
+          isActive={isActive}
+          isLoading={isLoadingBalance}
+        >
+          {data && moneyFormat(data.currentBalanceUSD)}
+        </VaultItemBoxText>
+
+        <HStack gap={3}>
+          {StatusBadge}
+          {RootBadge}
+          {SignersCount}
+        </HStack>
       </VStack>
     </Card>
   );
