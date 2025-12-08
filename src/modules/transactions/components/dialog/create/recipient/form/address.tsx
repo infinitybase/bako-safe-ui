@@ -176,9 +176,7 @@ const RecipientFormAddress = ({
         />
 
         {error?.message && (
-          <Field.HelperText color="error.500">
-            {error?.message}
-          </Field.HelperText>
+          <Field.HelperText>{error?.message}</Field.HelperText>
         )}
         <AddToAddressBook
           visible={showAddToAddressBook}

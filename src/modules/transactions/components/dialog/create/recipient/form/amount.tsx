@@ -83,7 +83,6 @@ const RecipientFormAmount = memo(
                   value = '';
                 }
               }}
-              pt={value || isNFT ? 2 : 0}
               onChange={({ target }) => onChange(target.value)}
               isInvalid={!!error?.message}
               disabled={isNFT}
@@ -91,14 +90,14 @@ const RecipientFormAmount = memo(
             />
           </InputGroup>
 
-          <Field.HelperText color={error?.message ? 'red' : 'gray.400'}>
+          <Field.HelperText>
             {error?.message ? (
-              <Text fontSize="sm" lineHeight="short">
+              <Text fontSize="xs" lineHeight="short">
                 {error.message}
               </Text>
             ) : !isNFT ? (
               <Text
-                fontSize="sm"
+                fontSize="xs"
                 lineHeight="short"
                 color="gray.400"
                 opacity={usdNumber > 0 ? 1 : 0}
