@@ -78,15 +78,13 @@ const CancelTransactionButton = ({
     <Button
       h={9}
       px={3}
-      // variant="error"
       colorPalette="red"
-      size={{ base: 'sm', sm: 'xs', lg: 'sm' }}
-      fontSize={{ base: 'unset', sm: 14, lg: 'unset' }}
+      size="sm"
       loading={isLocalLoading}
       disabled={isSigningTransaction || (!isClicked && isCancelingTransaction)}
       onClick={handleCancel}
     >
-      <TrashIcon />
+      <TrashIcon boxSize={4} />
       Cancel transaction
     </Button>
   );
