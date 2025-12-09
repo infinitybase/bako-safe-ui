@@ -54,7 +54,6 @@ const TransactionStepper = memo(({ steps }: TransactionStepperProps) => {
     addressBookInfos: {
       handlers: { contactByAddress },
     },
-    screenSizes: { isLowerThanFourHundredAndThirty },
   } = useWorkspaceContext();
 
   const { value: activeStep, setStep: setActiveStep } = useSteps({
@@ -77,11 +76,8 @@ const TransactionStepper = memo(({ steps }: TransactionStepperProps) => {
 
   return (
     <Box display="flex" flexDirection="column" gap={4}>
-      <Text
-        color="gray.400"
-        fontSize={isLowerThanFourHundredAndThirty ? 'xs' : 'sm'}
-      >
-        Transaction History
+      <Text color="gray.400" fontSize="xs" fontWeight="medium">
+        Transaction history
       </Text>
 
       <Steps.Root
