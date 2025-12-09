@@ -271,7 +271,7 @@ const AssetBoxInfo = memo(
             </Stack>
           )}
 
-          <Center p={{ base: 1.5, sm: 3 }}>
+          <Center>
             <Icon
               color="gray.400"
               boxSize={isDeploy ? '12.8px' : !isContract ? '18px' : '12.8px'}
