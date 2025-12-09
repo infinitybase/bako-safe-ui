@@ -1,4 +1,4 @@
-import { Icon as ChackraIcon, Flex } from 'bako-ui';
+import { Flex, Icon as ChackraIcon } from 'bako-ui';
 import { memo, useMemo } from 'react';
 
 import { useVerifyTransactionInformations } from '../../hooks';
@@ -57,7 +57,7 @@ export const Icon = memo(
         borderRadius="10px 0 0 10px"
         h="auto"
       >
-        <ChackraIcon as={IconComponent} mt={8} boxSize={size} />
+        <ChackraIcon as={IconComponent} mt="1.575rem" boxSize={size} />
       </Flex>
     );
   },

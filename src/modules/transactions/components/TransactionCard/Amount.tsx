@@ -173,11 +173,11 @@ const Amount = ({
             textAlign="start"
           >
             {isMultiToken ? (
-              <Text color="gray.400" fontSize="xs">
+              <Text color="gray.400" fontSize="xs" lineHeight="21.5px">
                 Send multi tokens
               </Text>
             ) : (
-              <Text color="textPrimary" fontSize="sm">
+              <Text color="textPrimary" fontSize="sm" lineHeight="21.5px">
                 {formattedAmount}
               </Text>
             )}
@@ -185,6 +185,7 @@ const Amount = ({
               as="div"
               fontSize={isMultiToken ? 'sm' : 'xs'}
               color="textSecondary"
+              lineHeight="21.5px"
             >
               <CustomSkeleton loading={tokensUSD?.isLoading}>
                 <AmountUSD amount={txUSDAmount} isNFT={isNFT} />

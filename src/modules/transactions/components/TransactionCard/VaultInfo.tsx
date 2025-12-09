@@ -6,7 +6,6 @@ import { limitCharacters } from '@/utils';
 interface TransactionBasicInfosProps extends StackProps {
   vault: PredicateAndWorkspace;
   transactionName: string;
-  spacingBetweenNameAndDesc?: boolean;
   nameSxProps?: BoxProps;
   descSxProps?: BoxProps;
 }
@@ -14,7 +13,6 @@ interface TransactionBasicInfosProps extends StackProps {
 const BasicInfos = ({
   vault,
   transactionName,
-  spacingBetweenNameAndDesc = true,
   nameSxProps,
   descSxProps,
   ...rest
@@ -27,8 +25,8 @@ const BasicInfos = ({
         fontSize="xs"
         wordBreak="break-all"
         lineClamp={1}
+        lineHeight="22.5px"
         {...nameSxProps}
-        mb={spacingBetweenNameAndDesc ? 2 : 0}
       >
         {limitCharacters(transactionName, 28)}
       </Text>
@@ -38,6 +36,7 @@ const BasicInfos = ({
         wordBreak="break-all"
         lineClamp={1}
         fontSize="xs"
+        lineHeight="22.5px"
         {...descSxProps}
       >
         {vault.name}
