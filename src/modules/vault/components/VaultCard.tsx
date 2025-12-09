@@ -18,7 +18,8 @@ import { IconTooltipButton, TeamIcon } from '@/components';
 import { CopyTopMenuIcon } from '@/components/icons/copy-top-menu';
 import { EyeCloseIcon } from '@/components/icons/eye-close';
 import { EyeOpenIcon } from '@/components/icons/eye-open';
-import { useHasReservedCoins } from '@/modules';
+import { queryClient } from '@/config';
+import { useHasReservedCoins, USER_ALLOCATION_QUERY_KEY } from '@/modules';
 import { AddressUtils } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
@@ -65,6 +66,9 @@ export const VaultCard = memo(function VaultCard({
     onSuccess: () => {
       userVaults.request.refetch();
       latestPredicates.refetch();
+      queryClient.invalidateQueries({
+        queryKey: [USER_ALLOCATION_QUERY_KEY],
+      });
     },
   });
   const [localHidden, setLocalHidden] = useState(isHidden);
