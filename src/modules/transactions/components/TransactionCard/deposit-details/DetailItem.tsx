@@ -59,7 +59,7 @@ const DetailItem = ({ asset, sentBy }: DetailItemProps) => {
     <Grid
       gridTemplateColumns={{
         base: '1fr',
-        md: 'repeat(5, minmax(0, 1fr))',
+        sm: isMobile ? '1fr' : 'repeat(5, minmax(0, 1fr))',
       }}
       alignItems="center"
       w="full"
