@@ -345,7 +345,7 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
               }}
             >
               <Icon as={Plus2Icon} color="textSecondary" w={5} h={5} />
-              Add more addresses
+              Add more signers
             </Button>
           </VStack>
 
