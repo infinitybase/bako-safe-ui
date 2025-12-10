@@ -125,7 +125,7 @@ const CreateVaultDialog = memo((props: CreateVaultDialogProps) => {
               />
             </Text>
             <Text color="textPrimary" fontSize="xs">
-              Vault creation is free on Fuel Network
+              Account creation is free on Fuel Network
             </Text>
           </HStack>
           {tabs.tab === 1 && (
