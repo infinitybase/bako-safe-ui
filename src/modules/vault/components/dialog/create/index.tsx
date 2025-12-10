@@ -40,12 +40,8 @@ const CreateVaultDialog = memo((props: CreateVaultDialogProps) => {
       closeOnInteractOutside={false}
       modalContentProps={{
         maxH: '100vh',
+        h: '780px',
         p: '0 !important',
-        shadow: 'none',
-      }}
-      modalBodyProps={{
-        maxH: '100vh',
-        minH: { sm: '780px' },
       }}
     >
       <Dialog.Header
@@ -65,7 +61,7 @@ const CreateVaultDialog = memo((props: CreateVaultDialogProps) => {
         descriptionColor="textSecondary"
       />
 
-      <Dialog.Body px={6} flex={1} display="flex">
+      <Dialog.Body px={6} flex={1} display="flex" overflowY="auto">
         <CreateVaultForm
           tabs={tabs}
           form={form}
@@ -83,13 +79,6 @@ const CreateVaultDialog = memo((props: CreateVaultDialogProps) => {
           validateAddress={validateAddress}
         />
       </Dialog.Body>
-      {/* 
-      <Box
-        w="full"
-        mt="auto"
-        height="56px"
-        background="linear-gradient(180deg, rgba(21, 20, 19, 0) 0%, rgba(21, 20, 19, 0.75) 30%, #151413 100%);"
-      /> */}
 
       <Dialog.Actions
         w="full"
@@ -97,12 +86,10 @@ const CreateVaultDialog = memo((props: CreateVaultDialogProps) => {
         bgColor={tabs.tab !== TabState.SUCCESS ? 'bg.muted' : 'bg.panel'}
         roundedTop="2xl"
         roundedBottom={{ base: 'none', sm: '2xl' }}
-        css={{
-          boxShadow:
-            tabs.tab !== TabState.SUCCESS
-              ? '0px -12px 8px 0px #0D0D0C99'
-              : 'none',
-        }}
+        boxShadow={
+          tabs.tab !== TabState.SUCCESS ? '0px -12px 8px 0px #0D0D0C99' : 'none'
+        }
+        zIndex={1410}
       >
         <VStack w="full" alignItems="center" gap={6} zIndex={999}>
           <HStack
