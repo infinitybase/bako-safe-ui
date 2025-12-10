@@ -61,7 +61,23 @@ const CreateVaultDialog = memo((props: CreateVaultDialogProps) => {
         descriptionColor="textSecondary"
       />
 
-      <Dialog.Body px={6} flex={1} display="flex" overflowY="auto">
+      <Dialog.Body
+        px={6}
+        flex={1}
+        display="flex"
+        overflowY="auto"
+        css={{
+          '&::-webkit-scrollbar': {
+            width: '5px',
+            maxHeight: '330px',
+          },
+          '&::-webkit-scrollbar-thumb': {
+            backgroundColor: 'gray.550',
+            borderRadius: '30px',
+            height: '10px',
+          },
+        }}
+      >
         <CreateVaultForm
           tabs={tabs}
           form={form}
