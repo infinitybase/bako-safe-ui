@@ -325,8 +325,8 @@ const Autocomplete = ({
                       onMouseDown={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
+                        handleSelect(option);
                       }}
-                      onClick={() => handleSelect(option)}
                     >
                       <Text
                         whiteSpace="nowrap"
