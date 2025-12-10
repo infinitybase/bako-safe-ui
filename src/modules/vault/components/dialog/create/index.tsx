@@ -40,9 +40,7 @@ const CreateVaultDialog = memo((props: CreateVaultDialogProps) => {
       closeOnInteractOutside={false}
       modalContentProps={{
         maxH: '100vh',
-        borderRadius: '2xl',
-        py: 0,
-        pt: 6,
+        p: '0 !important',
         shadow: 'none',
       }}
       modalBodyProps={{
@@ -52,8 +50,9 @@ const CreateVaultDialog = memo((props: CreateVaultDialogProps) => {
     >
       <Dialog.Header
         onClose={handleCancel}
-        px={6}
-        mb={0}
+        p={6}
+        pb={0}
+        my={0}
         hidden={steps.step?.hide}
         title={steps.step?.title ?? ''}
         titleSxProps={{
@@ -64,7 +63,6 @@ const CreateVaultDialog = memo((props: CreateVaultDialogProps) => {
         description={steps.step?.description ?? ''}
         descriptionFontSize="xs"
         descriptionColor="textSecondary"
-        mt={0}
       />
 
       <Dialog.Body px={6} flex={1} display="flex">
@@ -97,7 +95,8 @@ const CreateVaultDialog = memo((props: CreateVaultDialogProps) => {
         w="full"
         p={6}
         bgColor={tabs.tab !== TabState.SUCCESS ? 'bg.muted' : 'bg.panel'}
-        borderRadius="2xl"
+        roundedTop="2xl"
+        roundedBottom={{ base: 'none', sm: '2xl' }}
         css={{
           boxShadow:
             tabs.tab !== TabState.SUCCESS
@@ -137,10 +136,10 @@ const CreateVaultDialog = memo((props: CreateVaultDialogProps) => {
               message="Before initiating high-value deposits, first conduct smaller deposits and transactions to confirm that all signers have access to their wallets and that the vault’s funds can be transferred securely."
             />
           )}
-          <HStack w="full" justifyContent="space-between">
+          <HStack w="full" justifyContent="space-between" gap={4}>
             <Dialog.SecondaryAction
               variant={tabs.tab !== TabState.SUCCESS ? 'ghost' : 'subtle'}
-              w={tabs.tab !== TabState.SUCCESS ? '25%' : '100%'}
+              flex={tabs.tab !== TabState.SUCCESS ? 'unset' : 1}
               onClick={() => {
                 tabs.tab === TabState.SUCCESS
                   ? steps.step.onContinue()
@@ -150,7 +149,7 @@ const CreateVaultDialog = memo((props: CreateVaultDialogProps) => {
               {steps.step.closeText}
             </Dialog.SecondaryAction>
             <Dialog.PrimaryAction
-              w="65%"
+              flex={1}
               aria-label="Create Vault Primary Action"
               hidden={steps.step?.hide}
               onClick={steps.step?.onContinue}
