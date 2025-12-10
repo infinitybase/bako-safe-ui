@@ -142,7 +142,7 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
         <FeeSummary transactionFee={transactionFee} />
 
         <Dialog.Actions>
-          <Dialog.SecondaryAction onClick={handleClose}>
+          <Dialog.SecondaryAction variant="ghost" onClick={handleClose}>
             Cancel
           </Dialog.SecondaryAction>
 
