@@ -23,9 +23,16 @@ import {
   useRef,
   useState,
 } from 'react';
+import { createPortal } from 'react-dom';
 import { InViewHookResponse } from 'react-intersection-observer';
 
 import { LineCloseIcon } from '../icons';
+
+interface MenuPosition {
+  top: number;
+  left: number;
+  width: number;
+}
 
 export interface AutocompleteOption {
   value: string;
@@ -85,8 +92,14 @@ const Autocomplete = ({
 }: AutocompleteProps) => {
   const [inputValue, setInputValue] = useState<string>(value ?? '');
   const [isFocused, setIsFocused] = useState<boolean>(false);
+  const [menuPosition, setMenuPosition] = useState<MenuPosition>({
+    top: 0,
+    left: 0,
+    width: 0,
+  });
 
   const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
+  const fieldRootRef = useRef<HTMLDivElement>(null);
 
   const displayedOptions =
     filterSelectedOption && options
@@ -141,6 +154,16 @@ const Autocomplete = ({
   const handleFocus = () => {
     actionOnFocus();
     setIsFocused(true);
+
+    // Calculate menu position
+    if (fieldRootRef.current) {
+      const rect = fieldRootRef.current.getBoundingClientRect();
+      setMenuPosition({
+        top: rect.bottom,
+        left: rect.left,
+        width: rect.width,
+      });
+    }
   };
 
   const handleClear = () => {
@@ -173,6 +196,29 @@ const Autocomplete = ({
   }, [value]);
 
   useEffect(() => {
+    if (!isFocused || !fieldRootRef.current) return;
+
+    const handleScroll = () => {
+      if (fieldRootRef.current) {
+        const rect = fieldRootRef.current.getBoundingClientRect();
+        setMenuPosition({
+          top: rect.bottom,
+          left: rect.left,
+          width: rect.width,
+        });
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, true);
+    window.addEventListener('resize', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll, true);
+      window.removeEventListener('resize', handleScroll);
+    };
+  }, [isFocused]);
+
+  useEffect(() => {
     return () => {
       if (debounceTimeout.current) {
         clearTimeout(debounceTimeout.current);
@@ -181,7 +227,7 @@ const Autocomplete = ({
   }, []);
 
   return (
-    <Field.Root position="relative">
+    <Field.Root position="relative" ref={fieldRootRef}>
       <InputGroup
         endElement={
           <>
@@ -235,60 +281,69 @@ const Autocomplete = ({
         </Field.Label>
       )}
 
-      {isOpen && (
-        <Box
-          ref={optionsContainerRef}
-          bg="bg.muted"
-          color="gray.200"
-          fontSize="md"
-          borderColor="bg.panel"
-          borderWidth={1}
-          borderRadius="8px"
-          padding={2}
-          position="absolute"
-          zIndex={9000}
-          w="full"
-          top="100%"
-        >
-          <Flex display="flex" justifyContent="center" alignItems="center">
-            <VStack
-              w="full"
-              maxH={194}
-              gap={0}
-              overflowY="scroll"
-              css={{
-                '&::-webkit-scrollbar': { width: '0' },
-                scrollbarWidth: 'none',
-              }}
-            >
-              {displayedOptions
-                .filter((option) => option.value !== value)
-                .map((option) => (
-                  <Box
-                    ref={optionsRef}
-                    key={option.value}
-                    w="full"
-                    p={2}
-                    borderRadius="8px"
-                    cursor="pointer"
-                    _hover={{ background: 'bg.panel' }}
-                    onMouseDown={() => handleSelect(option)}
-                  >
-                    <Text
-                      whiteSpace="nowrap"
-                      overflow="hidden"
-                      textOverflow="ellipsis"
+      {isOpen &&
+        createPortal(
+          <Box
+            ref={optionsContainerRef}
+            bg="bg.muted"
+            color="gray.200"
+            fontSize="md"
+            borderColor="bg.panel"
+            borderWidth={1}
+            borderRadius="8px"
+            padding={2}
+            position="fixed"
+            zIndex={9000}
+            w={`${menuPosition.width}px`}
+            top={`${menuPosition.top}px`}
+            left={`${menuPosition.left}px`}
+            css={{ pointerEvents: 'auto' }}
+          >
+            <Flex display="flex" justifyContent="center" alignItems="center">
+              <VStack
+                w="full"
+                maxH={194}
+                gap={0}
+                overflowY="scroll"
+                css={{
+                  '&::-webkit-scrollbar': { width: '0' },
+                  scrollbarWidth: 'none',
+                }}
+              >
+                {displayedOptions
+                  .filter((option) => option.value !== value)
+                  .map((option) => (
+                    <Box
+                      ref={optionsRef}
+                      key={option.value}
                       w="full"
+                      p={2}
+                      borderRadius="8px"
+                      cursor="pointer"
+                      _hover={{ background: 'bg.panel' }}
+                      pointerEvents="auto"
+                      onMouseDown={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                      }}
+                      onClick={() => handleSelect(option)}
                     >
-                      {option.label}
-                    </Text>
-                  </Box>
-                ))}
-              <Box ref={inView?.ref} />
-            </VStack>
-          </Flex>
-        </Box>
-      )}
+                      <Text
+                        whiteSpace="nowrap"
+                        overflow="hidden"
+                        textOverflow="ellipsis"
+                        w="full"
+                      >
+                        {option.label}
+                      </Text>
+                    </Box>
+                  ))}
+                <Box ref={inView?.ref} />
+              </VStack>
+            </Flex>
+          </Box>,
+          document.body,
+        )}
     </Field.Root>
   );
 };
