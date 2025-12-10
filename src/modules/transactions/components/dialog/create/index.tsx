@@ -133,6 +133,7 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
         p={6}
         justifySelf="center"
         mt={6}
+        roundedTop="2xl"
         roundedBottom={{ base: 'none', sm: '2xl' }}
       >
         <FeeSummary transactionFee={transactionFee} />
