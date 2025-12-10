@@ -135,6 +135,9 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
         mt={6}
         roundedTop="2xl"
         roundedBottom={{ base: 'none', sm: '2xl' }}
+        css={{
+          boxShadow: '0px -12px 8px 0px #0D0D0C99',
+        }}
       >
         <FeeSummary transactionFee={transactionFee} />
 
