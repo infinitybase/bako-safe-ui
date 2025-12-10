@@ -41,7 +41,7 @@ const CreateVaultDialog = memo((props: CreateVaultDialogProps) => {
       modalContentProps={{
         maxH: '100vh',
         h: '780px',
-        p: '0',
+        p: 0,
       }}
     >
       <Dialog.Header
