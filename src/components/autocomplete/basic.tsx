@@ -210,11 +210,11 @@ const Autocomplete = ({
       }
     };
 
-    window.addEventListener('scroll', handleScroll, true);
+    window.addEventListener('scroll', handleScroll, { capture: true });
     window.addEventListener('resize', handleScroll);
 
     return () => {
-      window.removeEventListener('scroll', handleScroll, true);
+      window.removeEventListener('scroll', handleScroll, { capture: true });
       window.removeEventListener('resize', handleScroll);
     };
   }, [isFocused]);
