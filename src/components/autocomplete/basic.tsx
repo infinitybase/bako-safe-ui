@@ -155,8 +155,9 @@ const Autocomplete = ({
     actionOnFocus();
     setIsFocused(true);
 
-    // Calculate menu position
+    // Check if field is still mounted
     if (fieldRootRef.current) {
+      // Calculate menu position
       const rect = fieldRootRef.current.getBoundingClientRect();
       setMenuPosition({
         top: rect.bottom,
