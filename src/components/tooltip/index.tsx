@@ -18,7 +18,9 @@ const Tooltip = ({ text, placment }: TooltipProps) => {
     <div>
       {isMobile ? (
         <Popover.Root
-          positioning={{ placement: placment ?? 'top-start' }}
+          positioning={{
+            placement: placment ?? 'top-start',
+          }}
           open={isOpen}
           onOpenChange={onOpenChange}
         >
@@ -30,20 +32,20 @@ const Tooltip = ({ text, placment }: TooltipProps) => {
               onClick={onToggle}
             />
           </Popover.Trigger>
-          <Popover.Content
-            bg="bg.muted"
-            py={4}
-            px={2}
-            maxW={270}
-            display={!isOpen ? 'none' : 'block'}
-            _focus={{ ring: 'none' }}
-          >
-            <Popover.CloseTrigger />
-            <Popover.Body color="textPrimary">
-              {text ??
-                `Max Fee is the most that you might pay for the transaction. Only the actual fee will be deducted from your wallet. 100% of this fee goes to the network.`}
-            </Popover.Body>
-          </Popover.Content>
+          <Popover.Positioner>
+            <Popover.Content
+              bg="bg.muted"
+              p={2}
+              maxW={270}
+              display={!isOpen ? 'none' : 'block'}
+              _focus={{ ring: 'none' }}
+            >
+              <Popover.Body color="textPrimary">
+                {text ??
+                  `Max Fee is the most that you might pay for the transaction. Only the actual fee will be deducted from your wallet. 100% of this fee goes to the network.`}
+              </Popover.Body>
+            </Popover.Content>
+          </Popover.Positioner>
         </Popover.Root>
       ) : (
         <ChakraTooltip
