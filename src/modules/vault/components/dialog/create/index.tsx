@@ -7,6 +7,8 @@ import { TabState, useCreateVaultDialog } from '@/modules/vault/hooks';
 import CreateVaultWarning from '../../CreateVaultWarning';
 import { CreateVaultForm } from './form';
 
+const FOOTER_Z_INDEX = 1410;
+
 interface CreateVaultDialogProps extends Omit<DialogModalProps, 'children'> {
   onCreate?: () => void;
 }
@@ -105,7 +107,7 @@ const CreateVaultDialog = memo((props: CreateVaultDialogProps) => {
         boxShadow={
           tabs.tab !== TabState.SUCCESS ? '0px -12px 8px 0px #0D0D0C99' : 'none'
         }
-        zIndex={1410}
+        zIndex={FOOTER_Z_INDEX}
       >
         <VStack w="full" alignItems="center" gap={6} zIndex={999}>
           <HStack
