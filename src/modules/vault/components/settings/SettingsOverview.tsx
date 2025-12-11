@@ -1,4 +1,14 @@
-import { Button, Card, Clipboard, Flex, Heading, Icon, Text } from 'bako-ui';
+import {
+  Card,
+  Flex,
+  Heading,
+  HStack,
+  Icon,
+  IconButton,
+  Text,
+  Tooltip,
+  useClipboard,
+} from 'bako-ui';
 import { Address } from 'fuels';
 import { JSX } from 'react';
 import { RiFileCopyFill } from 'react-icons/ri';
@@ -26,8 +36,21 @@ const SettingsOverview = ({
   const {
     authDetails: { userInfos },
   } = useWorkspaceContext();
+
   const { balanceUSD, visibleBalance } = assets;
   const workspaceId = userInfos?.workspace.id || '';
+
+  const predicateAddress = vault.data?.predicateAddress
+    ? new Address(vault.data.predicateAddress).toString()
+    : '';
+  const predicateVersion = vault.data?.version || '';
+
+  const { copied: copiedAddress, copy: copyAddress } = useClipboard({
+    value: predicateAddress,
+  });
+  const { copied: copiedVersion, copy: copyVersion } = useClipboard({
+    value: predicateVersion,
+  });
 
   const redirectToNetwork = () =>
     window.open(
@@ -36,10 +59,6 @@ const SettingsOverview = ({
     );
 
   if (!vault) return null;
-  const predicateVersion = vault.data?.version;
-  const predicateAddress = vault.data?.predicateAddress
-    ? new Address(vault.data.predicateAddress).toString()
-    : '';
 
   return (
     <Card.Root
@@ -90,81 +109,106 @@ const SettingsOverview = ({
         )}
       </Card.Body>
       <Card.Footer gap={{ base: 2, md: 6 }} flexWrap={{ mdDown: 'wrap' }}>
-        {/* Address */}
-        <Clipboard.Root
-          value={predicateAddress}
+        <HStack
           w={{ base: 'full', md: '241px' }}
+          justifyContent="space-between"
+          bg="bg.muted"
+          rounded="sm"
+          px={2}
+          py={1.5}
         >
-          <Clipboard.Trigger asChild>
-            <Button
-              variant="subtle"
-              size="xs"
-              w="full"
-              bg="bg.muted"
-              justifyContent="space-between"
+          <Text color="gray.400" fontSize="xs" lineHeight="shorter">
+            Address
+          </Text>
+          <HStack gap={1}>
+            <Text
+              as="div"
+              display="flex"
               alignItems="center"
-              rounded="md"
+              gap={1}
+              color="gray.200"
+              fontSize="xs"
+              lineHeight="shorter"
             >
-              <Text color="gray.400" fontSize="xs" lineHeight="shorter">
-                Address
-              </Text>
-              <Text
-                as="div"
-                display="flex"
-                alignItems="center"
-                gap={1}
-                color="gray.200"
-                fontSize="xs"
-                lineHeight="shorter"
+              {AddressUtils.format(predicateAddress, 4)}
+            </Text>
+            <Tooltip
+              content={copiedAddress ? 'Copied' : 'Copy Address'}
+              contentProps={{
+                bg: 'bg.muted',
+                color: 'textPrimary',
+                borderRadius: 'lg',
+              }}
+              positioning={{ placement: 'top' }}
+              showArrow={false}
+            >
+              <IconButton
+                variant="plain"
+                cursor="pointer"
+                size="xs"
+                boxSize="20px"
+                minW="20px"
+                onClick={copyAddress}
               >
-                {AddressUtils.format(predicateAddress || '', 4)}
-                <Clipboard.Indicator
-                  copied={<Icon as={RiFileCopyFill} w="12px" />}
-                >
-                  <CopyTopMenuIcon w="12px" />
-                </Clipboard.Indicator>
-              </Text>
-            </Button>
-          </Clipboard.Trigger>
-        </Clipboard.Root>
-
-        {/* Predicate */}
-        <Clipboard.Root
-          value={predicateVersion || ''}
+                <Icon
+                  as={copiedAddress ? RiFileCopyFill : CopyTopMenuIcon}
+                  w="12px"
+                  color="gray.200"
+                />
+              </IconButton>
+            </Tooltip>
+          </HStack>
+        </HStack>
+        <HStack
           w={{ base: 'full', md: '241px' }}
+          justifyContent="space-between"
+          bg="bg.muted"
+          rounded="sm"
+          px={2}
+          py={1.5}
         >
-          <Clipboard.Trigger asChild>
-            <Button
-              variant="subtle"
-              size="xs"
-              w="full"
-              bg="bg.muted"
-              justifyContent="space-between"
-              rounded="md"
+          <Text color="gray.400" fontSize="xs" lineHeight="shorter">
+            Predicate
+          </Text>
+          <HStack gap={1}>
+            <Text
+              as="div"
+              display="flex"
               alignItems="center"
+              gap={1}
+              color="gray.200"
+              fontSize="xs"
+              lineHeight="shorter"
             >
-              <Text color="gray.400" fontSize="xs" lineHeight="shorter">
-                Predicate
-              </Text>
-              <Text
-                as="div"
-                display="flex"
-                alignItems="center"
-                gap={1}
-                color="gray.200"
-                fontSize="xs"
-                lineHeight="shorter"
+              {AddressUtils.format(predicateVersion, 4)}
+            </Text>
+            <Tooltip
+              content={copiedVersion ? 'Copied' : 'Copy Predicate'}
+              contentProps={{
+                bg: 'bg.muted',
+                color: 'textPrimary',
+                borderRadius: 'lg',
+              }}
+              positioning={{ placement: 'top' }}
+              showArrow={false}
+            >
+              <IconButton
+                variant="plain"
+                cursor="pointer"
+                size="xs"
+                boxSize="20px"
+                minW="20px"
+                onClick={copyVersion}
               >
-                {AddressUtils.format(predicateVersion || '', 4)}
-                <Clipboard.Indicator
-                  copied={<Icon as={RiFileCopyFill} w="12px" />}
-                >
-                  <CopyTopMenuIcon w="12px" />
-                </Clipboard.Indicator>
-              </Text>
-            </Button>
-          </Clipboard.Trigger>
-        </Clipboard.Root>
+                <Icon
+                  as={copiedVersion ? RiFileCopyFill : CopyTopMenuIcon}
+                  w="12px"
+                  color="gray.200"
+                />
+              </IconButton>
+            </Tooltip>
+          </HStack>
+        </HStack>
       </Card.Footer>
 
       {/* UPDATE ACCOUNT DIALOG */}

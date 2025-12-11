@@ -86,6 +86,7 @@ export function DetailsBridge({ assets }: DetailsBridgeProps) {
       bg="bg.panel"
       rounded="2xl"
       minH="88px"
+      justifyContent="center"
       maxH={{
         base: BRIDGE_STEPS_HEIGHTS.EXPANDED.RESUME_MOBILE,
         sm: BRIDGE_STEPS_HEIGHTS.EXPANDED.RESUME,
@@ -222,11 +223,9 @@ export function DetailsBridge({ assets }: DetailsBridgeProps) {
             !isEnoughETH
           }
           loading={isSendingTx || isLoading}
-          fontWeight={600}
-          fontSize={14}
-          letterSpacing={'2%'}
           type="submit"
           mt={4}
+          minW="120px"
         >
           {isPendingSigner
             ? TitleButtonsForm.PENDING_TX

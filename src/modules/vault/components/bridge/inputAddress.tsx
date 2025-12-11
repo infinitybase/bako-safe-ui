@@ -38,6 +38,7 @@ export function InputAddressBridge() {
       maxH={BRIDGE_STEPS_HEIGHTS.EXPANDED.DESTINATION}
       bg="bg.panel"
       overflow="hidden"
+      justifyContent="center"
     >
       <Card.Header
         pb={!isCurrentStep ? 6 : 0}
@@ -100,7 +101,7 @@ export function InputAddressBridge() {
         {isCurrentStep && (
           <Button
             alignSelf="self-end"
-            w="auto"
+            w="120px"
             onClick={handleContinue}
             disabled={!currentDestinationAddress}
           >

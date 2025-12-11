@@ -18,7 +18,7 @@ interface IWelcomeCardProps {
   onClick?: () => void;
   iconSize?: string;
   commingSoon?: boolean;
-  isMobile: boolean;
+  isMobile?: boolean;
 }
 
 const MotionVStack = motion(VStack);
@@ -40,12 +40,15 @@ const WelcomeCard = ({
     <Card.Root
       w="full"
       h="full"
-      minH={{ sm: 140 }}
+      minH={isMobile ? 'unset' : 104}
       variant="subtle"
+      bg={isMobile ? 'unset' : 'bg.muted'}
+      borderRadius="lg"
       onClick={onClick}
       opacity={0.6}
       _hover={{
         opacity: 1,
+        bg: 'gray.550',
       }}
       cursor={commingSoon ? 'auto' : 'pointer'}
       onMouseEnter={() => setIsHovered(true)}
@@ -54,22 +57,21 @@ const WelcomeCard = ({
       <Card.Body
         w="full"
         display="flex"
-        flexDirection={{ base: 'row', sm: 'column' }}
-        gap={{ sm: 2, base: 6 }}
+        flexDirection={isMobile ? 'row' : 'column'}
+        gap={isMobile ? 6 : 2}
         p={4}
+        py={isMobile ? 4 : 2}
         alignItems="center"
-        justifyContent={{ sm: 'center', base: 'flex-start' }}
+        justifyContent={isMobile ? 'flex-start' : 'center'}
         position="relative"
         overflow="hidden"
       >
         <MotionVStack
+          layout
           alignItems="center"
-          w={{ sm: 'full' }}
-          minW={{ base: '60px', sm: 'unset' }}
+          w={isMobile ? 'unset' : 'full'}
+          minW={isMobile ? '60px' : 'unset'}
           gap={2}
-          animate={
-            !isMobile ? { y: isHovered ? -10 : 0 } : undefined
-          }
           transition={{
             type: 'spring',
             stiffness: 200,
@@ -78,10 +80,11 @@ const WelcomeCard = ({
         >
           <Icon as={icon} color="textPrimary" w={iconSize} />
           <Heading
-            fontSize="xs"
+            fontSize="2xs"
             color="textPrimary"
             textAlign="center"
             lineHeight="short"
+            letterSpacing="8%"
           >
             {title}
           </Heading>
@@ -91,15 +94,14 @@ const WelcomeCard = ({
           <MotionText
             fontSize="xs"
             color="textSecondary"
-            textAlign={{ sm: 'center' }}
+            textAlign={isMobile ? 'unset' : 'center'}
             lineHeight="short"
-            initial={!isMobile ? { opacity: 0, y: -10 } : undefined}
-            display={{ base: 'block', sm: !isHovered ? 'none' : 'block' }}
+            initial={!isMobile ? { opacity: 0 } : undefined}
+            display={isMobile ? 'block' : !isHovered ? 'none' : 'block'}
             animate={
               !isMobile
                 ? {
                     opacity: isHovered ? 1 : 0,
-                    y: isHovered ? -10 : 0,
                   }
                 : undefined
             }
@@ -119,7 +121,7 @@ const WelcomeCard = ({
             <MotionBadge
               variant="solid"
               colorPalette="yellow"
-              position={{ base: 'relative', sm: 'absolute' }}
+              position={isMobile ? 'relative' : 'absolute'}
               top={2}
               right={2}
               size="xs"

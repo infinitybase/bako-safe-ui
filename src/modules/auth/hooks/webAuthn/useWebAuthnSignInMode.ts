@@ -15,7 +15,7 @@ import { useSignMessageWebAuthn } from './useWebauthnRequests';
 interface UseWebAuthnSignInParams {
   form: UseWebAuthnForm['form'];
   setMode: (mode: WebAuthnModeState) => void;
-  callback: (vaultId?: string, workspaceId?: string) => void;
+  callback: (username: string, vaultId?: string, workspaceId?: string) => void;
 }
 
 const getByName = async (name: string) => {
@@ -88,7 +88,7 @@ const useWebAuthnSignInMode = (params: UseWebAuthnSignInParams) => {
               webAuthn,
               provider_url: import.meta.env.VITE_PROVIDER_URL,
             });
-            callback(rootWallet, workspace.id);
+            callback(username, rootWallet, workspace.id);
           }, 800);
 
           if (fromConnector) {

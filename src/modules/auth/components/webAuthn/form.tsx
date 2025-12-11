@@ -48,10 +48,10 @@ const WebAuthnForm = (props: WebAuthnFormProps) => {
   return (
     <VStack w="full" alignItems="flex-start" gap={12}>
       <Text
-        color="grey.250"
-        lineHeight="14.52px"
-        fontSize="xs"
-        fontWeight={400}
+        color="textPrimary"
+        lineHeight="100%"
+        fontSize="sm"
+        fontWeight="semibold"
       >
         {isRegisterMode ? 'Create new user' : 'Login'}
       </Text>
@@ -66,6 +66,7 @@ const WebAuthnForm = (props: WebAuthnFormProps) => {
           name="username"
           variant="subtle"
           defaultValue=""
+          placeholder="Username"
           disabled={isDisabled}
           isLoadingOptions={isLoadingOptions}
           onInputValueChange={accountSeachHandler}

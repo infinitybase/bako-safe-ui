@@ -62,7 +62,7 @@ const NftBalanceCard = memo(function NftBalanceCard({ nft }: { nft: NFT }) {
         <Card.Body>
           <Text
             fontSize="sm"
-            color="gray.50"
+            color="gray.200"
             truncate
             textAlign="center"
             letterSpacing="wider"
