@@ -175,9 +175,7 @@ const RecipientFormAddress = ({
           emptyOptionsText={emptyOptionsText}
         />
 
-        {error?.message && (
-          <Field.HelperText>{error?.message}</Field.HelperText>
-        )}
+        {error?.message && <Field.ErrorText>{error?.message}</Field.ErrorText>}
         <AddToAddressBook
           visible={showAddToAddressBook}
           onAdd={() => handleOpenDialog?.(value!)}
