@@ -1,6 +1,7 @@
 import { Button, DialogOpenChangeDetails } from 'bako-ui';
 
 import { Dialog } from '@/components';
+import { useContactToast } from '@/modules/addressBook';
 import { PredicateUpdatePayload } from '@/modules/core';
 import {
   useUpdateVaultForm,
@@ -29,6 +30,7 @@ export const UpdateVaultDialog = ({
     vaultId: initialValues.id,
   });
   const { isPending, updateVault } = useUpdateVaultRequest(workspaceId);
+  const { errorToast } = useContactToast();
 
   const handleVaultUpdate = (data: PredicateUpdatePayload) => {
     updateVault(
@@ -36,6 +38,12 @@ export const UpdateVaultDialog = ({
       {
         onSuccess: () => {
           onClose();
+        },
+        onError: () => {
+          errorToast({
+            title: 'Error editing account!',
+            description: 'An error occurred while editing the account',
+          });
         },
       },
     );
