@@ -258,7 +258,7 @@ export const AccountOverview = memo(
                   </Button>
                 </Tooltip>
                 <Button variant="subtle" size="xs" onClick={onAddAssets}>
-                  <DownLeftArrow width={4} />
+                  <DownLeftArrow w={4} />
                   Deposit
                 </Button>
               </Flex>
