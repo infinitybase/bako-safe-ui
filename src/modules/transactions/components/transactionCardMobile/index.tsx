@@ -30,7 +30,10 @@ interface TransactionCardMobileProps extends CardRootProps {
 }
 
 const TransactionCardMobile = memo((props: TransactionCardMobileProps) => {
-  const { assetsMap } = useWorkspaceContext();
+  const {
+    assetsMap,
+    screenSizes: { isSmall, isLitteSmall },
+  } = useWorkspaceContext();
   const { transaction, account, isSigner, ...rest } = props;
   const { isOpen, onOpen, onOpenChange } = useDetailsDialog();
 
@@ -191,6 +194,15 @@ const TransactionCardMobile = memo((props: TransactionCardMobileProps) => {
                     color="textPrimary"
                     lineHeight="shorter"
                     fontWeight="medium"
+                    maxW={{
+                      base: isLitteSmall
+                        ? '125px'
+                        : isSmall
+                          ? '175px'
+                          : '275px',
+                      sm: '375px',
+                    }}
+                    truncate
                   >
                     {transactionName}
                   </Text>
