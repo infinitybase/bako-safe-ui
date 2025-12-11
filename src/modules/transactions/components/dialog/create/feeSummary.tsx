@@ -1,4 +1,4 @@
-import { Box, Flex, HStack, Icon, Popover, Text } from 'bako-ui';
+import { Center, Flex, HStack, Icon, Popover, Text } from 'bako-ui';
 import { memo } from 'react';
 
 import { ChevronRightIcon } from '@/components';
@@ -28,7 +28,7 @@ export const FeeSummary = memo(
           >
             Max fee:
           </Text>
-          <Box>
+          <Center>
             {isMobile ? (
               <Popover.Root
                 positioning={{
@@ -39,7 +39,11 @@ export const FeeSummary = memo(
                 open={isOpen}
                 onOpenChange={onOpenChange}
               >
-                <Popover.Trigger>
+                <Popover.Trigger
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                >
                   <Icon
                     color="textPrimary"
                     boxSize="14px"
@@ -77,7 +81,7 @@ export const FeeSummary = memo(
                 <Icon color="gray.200" boxSize="14px" as={TooltipIcon} />
               </Tooltip>
             )}
-          </Box>
+          </Center>
         </HStack>
         <HStack align="center" gap={1}>
           <Flex align="center" justifyContent="center">
