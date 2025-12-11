@@ -48,6 +48,7 @@ const VaultInfosStep = ({ form, vaultName }: VaultInfoStepProps) => {
                     field.onChange(e.target.value);
                   }}
                   placeholder=" "
+                  className="peer"
                 />
                 <Field.Label css={floatingStyles({ hasValue: !!field.value })}>
                   Account name

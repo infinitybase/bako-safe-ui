@@ -135,6 +135,7 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
                             placeholder=" "
                             pt={2}
                             value={inputValue}
+                            className="peer"
                             onChange={(e) => {
                               handleInputChange(e.target.value.toLowerCase());
                               field.onChange(e.target.value.toLowerCase());
@@ -191,6 +192,7 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
                             pt={2}
                             onChange={field.onChange}
                             placeholder=" "
+                            className="peer"
                           />
                           <Field.Label
                             css={floatingStyles({ hasValue: !!field.value })}

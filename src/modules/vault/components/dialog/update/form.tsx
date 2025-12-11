@@ -46,6 +46,7 @@ export const UpdateVaultForm = ({
                   {...field}
                   pt={2}
                   type="text"
+                  className="peer"
                 />
                 <Field.Label css={floatingStyles({ hasValue: !!field.value })}>
                   Account name

@@ -102,6 +102,7 @@ const VaultListModal = ({
                   onChange={search.handler}
                   pt={2}
                   px={3}
+                  className="peer"
                 />
                 <Field.Label
                   css={floatingStyles({
