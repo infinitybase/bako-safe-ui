@@ -8,9 +8,6 @@ import ViewAllButton from '../ViewAllButton';
 
 const RecentVaultsHeader = memo(() => {
   const {
-    workspaceInfos: {
-      workspaceVaults: { extraCount },
-    },
     authDetails: { userInfos },
   } = useWorkspaceContext();
 
@@ -18,8 +15,6 @@ const RecentVaultsHeader = memo(() => {
     () => userInfos.workspace?.id ?? '',
     [userInfos.workspace?.id],
   );
-
-  const showViewAll = useMemo(() => extraCount > 0, [extraCount]);
 
   return (
     <HStack w="full" justifyContent="space-between">
@@ -29,7 +24,7 @@ const RecentVaultsHeader = memo(() => {
 
       <HStack flex={1} justifyContent="flex-end">
         <CreateNewAccountButton />
-        {showViewAll && <ViewAllButton workspaceId={workspaceId} />}
+        <ViewAllButton workspaceId={workspaceId} />
       </HStack>
     </HStack>
   );

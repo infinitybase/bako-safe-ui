@@ -43,11 +43,12 @@ const AmountsInfo = memo(({ asset, txUSDAmount, isNFT }: AmountsInfoProps) => {
   }, [isNFT, txUSDAmount]);
 
   return (
-    <VStack w={{ base: '105px', sm: 'fit-content' }}>
+    <VStack w={{ base: '105px', sm: 'fit-content' }} gap={1}>
       <Text
         textAlign={isMobile ? 'end' : 'center'}
         color="textPrimary"
         fontSize="xs"
+        lineHeight="100%"
       >
         {assetAmount} {assetMetadata.slug}
       </Text>
@@ -55,8 +56,8 @@ const AmountsInfo = memo(({ asset, txUSDAmount, isNFT }: AmountsInfoProps) => {
         <Text
           textAlign={isMobile ? 'end' : 'center'}
           fontSize="xs"
-          mt={1}
           color="gray.400"
+          lineHeight="100%"
         >
           <AmountUSD amount={txUSDAmount} isNFT={isNFT} />
         </Text>

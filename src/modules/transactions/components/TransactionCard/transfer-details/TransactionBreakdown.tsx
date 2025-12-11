@@ -31,7 +31,7 @@ const TransactionBreakdown = memo(
       useVerifyTransactionInformations(transaction);
 
     const {
-      screenSizes: { isMobile, isLowerThanFourHundredAndThirty },
+      screenSizes: { isMobile },
       tokensUSD,
     } = useWorkspaceContext();
 
@@ -86,10 +86,7 @@ const TransactionBreakdown = memo(
         {isMobile && <Separator my={6} borderColor="gray.400" />}
 
         <Box mb={4} mt={{ base: 3, md: 0 }}>
-          <Text
-            color="gray.400"
-            fontSize={isLowerThanFourHundredAndThirty ? 'xs' : 'sm'}
-          >
+          <Text color="gray.400" fontSize="xs" fontWeight="medium">
             Transaction breakdown
           </Text>
         </Box>

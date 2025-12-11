@@ -3,10 +3,10 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useContactToast } from '@/modules/addressBook';
 import { HomeQueryKey, PredicateUpdatePayload } from '@/modules/core';
 
-import { VaultService } from '../services';
-import { VAULT_TRANSACTIONS_LIST_PAGINATION } from './list/useVaultTransactionsRequest';
+import { VaultService } from '../../services';
+import { VAULT_TRANSACTIONS_LIST_PAGINATION } from '../list/useVaultTransactionsRequest';
 
-export const useUpdateVault = (workspaceId: string) => {
+export const useUpdateVaultRequest = (workspaceId: string) => {
   const queryClient = useQueryClient();
   const { successToast, errorToast } = useContactToast();
 

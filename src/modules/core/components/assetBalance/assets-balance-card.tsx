@@ -35,7 +35,7 @@ const AssetsBalanceCard = ({
         bg: 'bg.muted',
       }}
     >
-      <VStack alignItems="flex-start" gap={4}>
+      <VStack alignItems="flex-start" gap={4} h="full">
         <Image
           w={7}
           h={7}
@@ -44,16 +44,30 @@ const AssetsBalanceCard = ({
           alt="Asset Icon"
           objectFit="cover"
         />
-        <VStack alignItems="flex-start" gap={0} w="full">
-          <Text fontSize="xs" color="textSecondary" maxW="full" truncate>
-            {assetsInfo?.name}
-          </Text>
+        <VStack
+          gap={4}
+          w="full"
+          flex={1}
+          alignItems="flex-start"
+          justifyContent="space-between"
+        >
+          <VStack
+            gap={0}
+            w="full"
+            minH="2.25rem"
+            alignItems="flex-start"
+            justifyContent="flex-start"
+          >
+            <Text fontSize="xs" color="textSecondary" maxW="full" truncate>
+              {assetsInfo?.name}
+            </Text>
 
-          <Text fontSize="xs" color="textSecondary">
-            {transactionAmount > 0 ? formattedAmount : ''}
-          </Text>
+            <Text fontSize="xs" color="textSecondary">
+              {transactionAmount > 0 ? formattedAmount : ''}
+            </Text>
+          </VStack>
 
-          <Text fontSize="sm" color="gray.50" maxW="full" mt={4} truncate>
+          <Text fontSize="sm" color="gray.50" maxW="full" truncate>
             {assetAmount}{' '}
             <Text as="span" color="gray.50" fontSize="sm">
               {assetsInfo?.slug?.toUpperCase() ?? ''}
