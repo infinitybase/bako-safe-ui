@@ -17,7 +17,7 @@ const VaultBalancePage = () => {
   if (!vault) return null;
 
   return (
-    <Flex w="full" direction="column" flex={1}>
+    <Flex w="full" direction="column" flex={1} mb={{ base: 0, sm: 4 }}>
       <Flex w="full" direction="column" flex={1}>
         <Tabs.Root variant="subtle" defaultValue="tokens" lazyMount>
           <Tabs.List gap={3}>

@@ -1,34 +1,21 @@
-import { yupResolver } from '@hookform/resolvers/yup';
 import { Box, Field, floatingStyles, Input, TextArea, VStack } from 'bako-ui';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller } from 'react-hook-form';
 
-import { PredicateUpdatePayload, useDebounce } from '@/modules/core';
-import { useCheckVaultName } from '@/modules/vault/hooks/useGetByNameVaultRequest';
-
-import schema from './schema';
+import { PredicateUpdatePayload } from '@/modules/core';
+import { UseUpdateVaultForm } from '@/modules/vault/hooks';
 
 interface UpdateVaultFormProps {
-  initialValues: PredicateUpdatePayload;
-  vaultId: string;
+  form: UseUpdateVaultForm['form'];
+  nameAlreadyExists: boolean;
   onSubmit: (data: PredicateUpdatePayload) => void;
 }
 
-export const UpdateVaultForm = ({
-  initialValues,
-  onSubmit,
-  vaultId,
-}: UpdateVaultFormProps) => {
-  const { control, handleSubmit, watch } = useForm({
-    defaultValues: {
-      name: initialValues.name,
-      description: initialValues.description,
-    },
-    resolver: yupResolver(schema),
-    mode: 'onBlur',
-  });
-  const currentName = watch('name');
-  const debouncedName = useDebounce(currentName, 600);
-  const { data: alreadyExists } = useCheckVaultName(debouncedName, vaultId);
+export const UpdateVaultForm = (props: UpdateVaultFormProps) => {
+  const {
+    form: { control, handleSubmit },
+    nameAlreadyExists,
+    onSubmit,
+  } = props;
 
   return (
     <form id="update-vault-form" onSubmit={handleSubmit(onSubmit)}>
@@ -37,7 +24,7 @@ export const UpdateVaultForm = ({
           control={control}
           name="name"
           render={({ field, fieldState: { error } }) => (
-            <Field.Root invalid={!!error || !!alreadyExists}>
+            <Field.Root invalid={!!error || !!nameAlreadyExists}>
               <Box position="relative" w="full">
                 <Input
                   variant="subtle"
@@ -52,7 +39,7 @@ export const UpdateVaultForm = ({
                   Account name
                 </Field.Label>
               </Box>
-              {(error || alreadyExists) && (
+              {(error || nameAlreadyExists) && (
                 <Field.ErrorText color="error.500">
                   {error?.message || 'Account name already exists'}
                 </Field.ErrorText>

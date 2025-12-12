@@ -47,7 +47,7 @@ export const Header = memo(
         >
           {transaction.predicate && (
             <TransactionCard.BasicInfos
-              h={'59px'}
+              h="45px"
               justifyContent={'center'}
               vault={transaction.predicate}
               transactionName={isFuelFriday ? 'Fuel Friday' : transaction.name}

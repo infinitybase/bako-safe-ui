@@ -52,7 +52,7 @@ const TransactionFilters = ({
           variant="subtle"
           px={3}
         >
-          Pending
+          <Text display={{ sm: 'inline', base: 'none' }}>Pending</Text>
           <Icon
             boxSize={4}
             as={Warning2Icon}

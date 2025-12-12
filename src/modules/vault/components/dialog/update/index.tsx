@@ -1,8 +1,12 @@
 import { Button, DialogOpenChangeDetails } from 'bako-ui';
 
 import { Dialog } from '@/components';
+import { useContactToast } from '@/modules/addressBook';
 import { PredicateUpdatePayload } from '@/modules/core';
-import { useUpdateVault } from '@/modules/vault/hooks';
+import {
+  useUpdateVaultForm,
+  useUpdateVaultRequest,
+} from '@/modules/vault/hooks';
 
 import { UpdateVaultForm } from './form';
 
@@ -21,7 +25,12 @@ export const UpdateVaultDialog = ({
   workspaceId,
   onOpenChange,
 }: UpdateVaultDialogProps) => {
-  const { isPending, updateVault } = useUpdateVault(workspaceId);
+  const { form, nameAlreadyExists } = useUpdateVaultForm({
+    initialValues,
+    vaultId: initialValues.id,
+  });
+  const { isPending, updateVault } = useUpdateVaultRequest(workspaceId);
+  const { errorToast } = useContactToast();
 
   const handleVaultUpdate = (data: PredicateUpdatePayload) => {
     updateVault(
@@ -29,6 +38,12 @@ export const UpdateVaultDialog = ({
       {
         onSuccess: () => {
           onClose();
+        },
+        onError: () => {
+          errorToast({
+            title: 'Error editing account!',
+            description: 'An error occurred while editing the account',
+          });
         },
       },
     );
@@ -45,20 +60,27 @@ export const UpdateVaultDialog = ({
         title="Edit Account"
         onClose={onClose}
         mt={{ base: 4, sm: 0 }}
+        mb={3}
+        titleSxProps={{
+          fontSize: 'sm',
+          fontWeight: 'semibold',
+          color: 'textPrimary',
+        }}
       />
       <Dialog.Body flex={1}>
         <UpdateVaultForm
-          initialValues={initialValues}
+          form={form}
+          nameAlreadyExists={nameAlreadyExists}
           onSubmit={handleVaultUpdate}
-          vaultId={initialValues.id}
         />
       </Dialog.Body>
-      <Dialog.Actions position="relative" mt={4}>
+      <Dialog.Actions position="relative" mt={6}>
         <Button variant="outline" disabled={isPending} onClick={onClose} px={6}>
           Cancel
         </Button>
         <Button
           loading={isPending}
+          disabled={!form.formState.isValid || nameAlreadyExists}
           form="update-vault-form"
           flex={1}
           type="submit"

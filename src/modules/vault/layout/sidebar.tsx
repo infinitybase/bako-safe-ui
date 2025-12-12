@@ -12,7 +12,6 @@ import {
   BridgeIcon,
   Carousel,
   CoinsIcon,
-  Exchange2Icon,
   ExchangeIcon,
   OverviewIcon,
   PendingIcon,
@@ -159,7 +158,8 @@ const Sidebar = memo(({ onDrawer, ...rest }: SidebarProps) => {
             </SidebarMenu.Title>
           </SidebarMenu.Container>
 
-          <SidebarMenu.Container
+          {/* Hidden until release */}
+          {/* <SidebarMenu.Container
             isActive={menuItems.buySell}
             id={'buy-sell_tab_sidebar'}
             onClick={() =>
@@ -175,7 +175,7 @@ const Sidebar = memo(({ onDrawer, ...rest }: SidebarProps) => {
             <SidebarMenu.Title isActive={menuItems.buySell}>
               Buy / Sell Crypto
             </SidebarMenu.Title>
-          </SidebarMenu.Container>
+          </SidebarMenu.Container> */}
 
           <SidebarMenu.Container
             isActive={menuItems.swap}

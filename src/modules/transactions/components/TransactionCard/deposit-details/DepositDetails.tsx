@@ -91,8 +91,8 @@ const DepositDetails = ({ transaction }: DepositDetailsProps) => {
           </Box>
         )}
 
-        <Box pb={6} w="full">
-          <Text color="gray.400" fontSize="xs">
+        <Box pb={2} w="full">
+          <Text color="gray.400" fontSize="xs" fontWeight="medium">
             Transaction breakdown
           </Text>
         </Box>

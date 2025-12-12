@@ -35,7 +35,7 @@ export const LoadingCard = ({ title, subtitle }: LoadingCardProps) => {
         </Heading>
       </Card.Body>
       <Card.Footer>
-        <Text color="textSecondary" fontSize="sm">
+        <Text color="textSecondary" fontSize="sm" truncate>
           {subtitle}
         </Text>
       </Card.Footer>

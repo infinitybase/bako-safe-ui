@@ -20,7 +20,11 @@ import { ConnectorsList } from './connector';
 import { SigninContainer, SigninContainerMobile } from './container';
 import { SignInFooter } from './footer';
 import { SocialSignIn } from './social';
-import { WebAuthnAccountCreated, WebAuthnSignIn } from './webAuthn';
+import {
+  WebAuthnAccountCreated,
+  WebAuthnSignIn,
+  WebAuthnWelcome,
+} from './webAuthn';
 import { LoadingCard } from './webAuthn/loading';
 
 interface SignInWrapperProps {
@@ -194,6 +198,7 @@ const SignInWrapper = (props: SignInWrapperProps) => {
             </VStack>
           </Box>
         </Tabs.Content>
+
         <Tabs.Content value="1" flex={1} display="flex" justifyContent="center">
           <Box
             h="full"
@@ -207,6 +212,21 @@ const SignInWrapper = (props: SignInWrapperProps) => {
               username={createdAcccountUsername}
               formState={formState}
             />
+
+            <SignInFooter />
+          </Box>
+        </Tabs.Content>
+
+        <Tabs.Content value="2" flex={1} display="flex" justifyContent="center">
+          <Box
+            h="full"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            w="full"
+            maxW={{ md: 440 }}
+          >
+            <WebAuthnWelcome username={createdAcccountUsername} />
 
             <SignInFooter />
           </Box>

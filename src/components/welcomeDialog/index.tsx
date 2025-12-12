@@ -23,7 +23,7 @@ const WelcomeDialog = ({
   onOpenChange,
 }: IWelcomeDialogProps) => {
   const {
-    screenSizes: { isSmall },
+    screenSizes: { isMobile },
     authDetails: {
       userInfos: { first_login, id, refetch },
     },
@@ -65,51 +65,61 @@ const WelcomeDialog = ({
     <WelcomeRoot
       onOpenChange={onOpenChange}
       open={(first_login && first_login && isOpen) ?? false}
-      isMobile={isSmall}
+      isMobile={isMobile}
     >
       <Dialog.Body>
         <WelcomeHeader
           onClose={() => handleClose()}
           title="Welcome to Bako Safe!"
           subtitle="Let's start by adding some funds to your personal vault."
-          isMobile={isSmall}
+          isMobile={isMobile}
         />
 
         <Stack
           w="full"
-          my={{ sm: 3 }}
+          my={isMobile ? 'unset' : 6}
           gap={4}
-          flexDir={{ base: 'column', sm: 'row' }}
-          px={{ base: 6, sm: 0 }}
+          flexDir={isMobile ? 'column' : 'row'}
+          px={isMobile ? 6 : 0}
         >
           <WelcomeCard
-            title="Bridge"
+            title="BRIDGE"
             description="Crypto from Ethereum network to Fuel mainnet."
             icon={BridgeIcon}
+            iconSize="18px"
             commingSoon={isTestnet}
             onClick={isTestnet ? undefined : () => handleRedirectToMainNet()}
-            isMobile={isSmall}
+            isMobile={isMobile}
           />
           <WelcomeCard
-            title="Deposit"
+            title="DEPOSIT"
             description="Deposit using QR Code or vault address"
             icon={DownLeftArrow2}
             iconSize="22px"
             onClick={handleOpenDepositDialog}
-            isMobile={isSmall}
+            isMobile={isMobile}
           />
           <WelcomeCard
-            title="Purchase"
+            title="PURCHASE"
             description="Buy crypto using card or bank account."
             icon={CoinsIcon}
             commingSoon
             iconSize="22px"
-            isMobile={isSmall}
+            isMobile={isMobile}
           />
         </Stack>
         <Dialog.Actions justifyContent="flex-end" p={{ base: 6, sm: 0 }}>
           <Flex w="full" justifyContent="flex-end">
-            <Button variant="ghost" onClick={handleClose}>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleClose}
+              fontWeight="normal"
+              color="gray.300"
+              _hover={{
+                color: 'textPrimary',
+              }}
+            >
               Skip
             </Button>
           </Flex>

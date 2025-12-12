@@ -86,6 +86,7 @@ const CardConnector = ({
       aria-label={`Connect ${connector.label}`}
       cursor={isEnabled ? 'pointer' : 'initial'}
       border="none"
+      borderRadius={8}
       onClick={selectConnector}
       position="relative"
       transition="0.5s"
@@ -131,12 +132,7 @@ const ConnectorsList = ({
   isAnyWalletConnectorOpen,
 }: ConnectorsListProps) => {
   return (
-    <VStack
-      hidden={hidden}
-      gap={{ base: 6, sm: 8 }}
-      w="full"
-      px={{ base: 0, xs: 6 }}
-    >
+    <VStack hidden={hidden} gap={{ base: 6, sm: 8 }} w="full">
       <HStack w="full" gap={5}>
         <Text color="gray.200" fontSize="sm" fontWeight="light">
           Or connect wallet

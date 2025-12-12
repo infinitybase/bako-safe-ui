@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { AutocompleteBadgeStatus } from '@/components';
 import { useTab } from '@/modules/core/hooks';
@@ -16,6 +16,7 @@ import {
 export enum WebAuthnTabState {
   LOGIN = 0,
   ACCOUNT_CREATED = 1,
+  WELCOME = 2,
 }
 
 export enum WebAuthnModeState {
@@ -41,10 +42,20 @@ const useWebAuthnSignIn = (
   const { form } = useWebAuthnForm();
   const { checkNicknameRequest, accountsRequest, badge, ...rest } =
     useWebAuthnInput(!form.formState.errors.username, undefined, mode);
+
+  const handleSignInCallback = useCallback(
+    (username: string, vaultId?: string, workspaceId?: string) => {
+      setCreatedAcccountUsername(username);
+      tabs.set(WebAuthnTabState.WELCOME);
+      setTimeout(() => signInCallback(vaultId, workspaceId), 1500);
+    },
+    [signInCallback, tabs],
+  );
+
   const { handleLogin, isSigningIn } = useWebAuthnSignInMode({
     form,
     setMode,
-    callback: signInCallback,
+    callback: handleSignInCallback,
   });
   const { isRegistering, handleRegister } = useWebAuthnRegisterMode({
     form,

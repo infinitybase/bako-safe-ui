@@ -40,9 +40,9 @@ export const WelcomeHeader = ({
       titleSxProps={{
         fontSize: '14px',
         fontWeight: 600,
-        lineHeight: '16px',
+        color: 'textPrimary',
+        lineHeight: '100%',
       }}
-      pb={3}
     />
   );
 };

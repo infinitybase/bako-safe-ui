@@ -21,11 +21,11 @@ const WebAuthnAccountCreated = (props: WebAuthnAccountCreatedProps) => {
           alignItems="start"
           justifyContent="flex-end"
         >
-          <VStack gap={2} alignItems="start">
+          <VStack gap={2} alignItems="start" w="full">
             <Heading fontSize="3xl" color="textPrimary">
               Account created!
             </Heading>
-            <Text color="textSecondary" fontSize="sm">
+            <Text color="textSecondary" fontSize="sm" w="full" truncate>
               {username}
             </Text>
           </VStack>
