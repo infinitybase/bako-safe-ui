@@ -18,7 +18,6 @@ import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
 import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { CreateVaultDialog, VaultCard } from '../../components';
-import { getSignaturesCount } from '../../utils';
 
 const UserVaultsPage = () => {
   const { isOpen, onOpenChange, onOpen } = useDisclosure();
@@ -187,8 +186,6 @@ const UserVaultsPage = () => {
                   <VaultCard
                     id={vault.id}
                     name={vault.name}
-                    requiredSigners={getSignaturesCount(vault)}
-                    signersCount={vault?.members?.length || 1}
                     workspaceId={vault.workspace.id}
                     title={vault.description}
                     isHidden={vault.isHidden}

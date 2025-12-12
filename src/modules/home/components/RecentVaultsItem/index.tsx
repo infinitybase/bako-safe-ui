@@ -2,7 +2,6 @@ import { GridItem } from 'bako-ui';
 import { memo } from 'react';
 
 import { Pages, PredicateAndWorkspace, VaultCard } from '@/modules';
-import { getSignaturesCount } from '@/modules/vault/utils';
 
 interface RecentVaultsItemProps {
   predicate: PredicateAndWorkspace;
@@ -26,8 +25,6 @@ const RecentVaultsItem = memo(
             )
           }
           inHome
-          signersCount={predicate?.members?.length || 1}
-          requiredSigners={getSignaturesCount(predicate)}
           isHidden={predicate.isHidden}
           id={predicate.id}
           workspaceId={predicate.workspace.id}
