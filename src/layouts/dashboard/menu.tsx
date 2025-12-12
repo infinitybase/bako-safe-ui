@@ -14,6 +14,7 @@ import {
 const Container = ({
   children,
   isActive,
+  onClick,
   ...props
 }: FlexProps & { isActive?: boolean }) => (
   <Box
@@ -30,6 +31,7 @@ const Container = ({
       borderColor: 'bg.muted',
       '& .menuTitle, .menuIcon': { color: 'gray.50' },
     }}
+    onClick={onClick}
   >
     <Flex
       css={{
