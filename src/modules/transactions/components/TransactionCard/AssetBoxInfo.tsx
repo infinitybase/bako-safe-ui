@@ -227,12 +227,12 @@ const AssetBoxInfo = memo(
             </VStack>
           )}
 
-          <VStack mt={0.5} flex={1}>
+          <VStack flex={1}>
             <Text
               textAlign="center"
               color="textPrimary"
               fontSize="xs"
-              lineHeight="shorter"
+              lineHeight="100%"
             >
               {displayAmount} {assetInfo?.slug}
             </Text>
@@ -241,7 +241,7 @@ const AssetBoxInfo = memo(
                 textAlign="center"
                 fontSize="xs"
                 color="gray.400"
-                lineHeight="shorter"
+                lineHeight="100%"
               >
                 <AmountUSD amount={amount} isNFT={isNFT} />
               </Text>
