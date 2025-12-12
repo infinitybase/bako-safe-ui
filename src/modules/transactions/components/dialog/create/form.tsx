@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { Box, BoxProps, Field, Icon, Input, InputGroup } from 'bako-ui';
 import { bn } from 'fuels';
-import { useMemo } from 'react';
+import { useMemo, useRef } from 'react';
 import { Controller, FormProvider } from 'react-hook-form';
 
 import { CloseCircle } from '@/components';
@@ -31,6 +31,8 @@ const CreateTransactionForm = (props: CreateTransactionFormProps) => {
     isFeeCalcLoading,
     getBalanceAvailable,
   } = props;
+  const recipientsListRef = useRef<HTMLDivElement>(null);
+
   const { providerInstance } = useWorkspaceContext();
   const { data: baseAssetId } = useQuery({
     queryKey: ['baseAssetId'],
@@ -106,6 +108,7 @@ const CreateTransactionForm = (props: CreateTransactionFormProps) => {
         />
 
         <Recipient.List
+          ref={recipientsListRef}
           accordion={accordion}
           transactions={transactionsFields}
           allAssetsUsed={form.allAssetsUsed}
@@ -123,6 +126,7 @@ const CreateTransactionForm = (props: CreateTransactionFormProps) => {
               onDelete={transactionsFields.remove}
               nicks={nicks}
               index={index}
+              listRef={recipientsListRef}
             />
           ))}
         </Recipient.List>

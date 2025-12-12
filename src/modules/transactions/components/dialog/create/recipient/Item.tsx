@@ -1,5 +1,5 @@
 import { Accordion, HStack, Image, Span, Text } from 'bako-ui';
-import { memo, useCallback, useMemo } from 'react';
+import { memo, RefObject, useCallback, useMemo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 import { ListContactsResponse } from '@/modules/addressBook/services';
@@ -25,6 +25,7 @@ interface RecipientItemProps {
   accordion: UseCreateTransaction['accordion'];
   isFeeCalcLoading: boolean;
   getBalanceAvailable: UseCreateTransaction['getBalanceAvailable'];
+  listRef?: RefObject<HTMLDivElement | null>;
 }
 
 const RecipientItem = ({
@@ -36,6 +37,7 @@ const RecipientItem = ({
   accordion,
   isFeeCalcLoading,
   getBalanceAvailable,
+  listRef,
 }: RecipientItemProps) => {
   const { getFieldState, control } = useFormContext<ITransactionForm>();
   const {
@@ -180,6 +182,7 @@ const RecipientItem = ({
           assets={assets}
           isFeeCalcLoading={isFeeCalcLoading}
           getBalanceAvailable={getBalanceAvailable}
+          listRef={listRef}
         />
       </TransactionAccordion.Item>
     </Accordion.Item>

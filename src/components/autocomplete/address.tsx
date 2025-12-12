@@ -3,6 +3,7 @@ import {
   forwardRef,
   ForwardRefExoticComponent,
   memo,
+  RefObject,
   useCallback,
   useMemo,
   useRef,
@@ -33,6 +34,7 @@ interface AddressAutocompleteProps
   optionsRef?: (node: HTMLDivElement) => void;
   onSelect: (value: string) => void;
   emptyOptionsText?: string;
+  boundaryRef?: RefObject<HTMLDivElement | null>;
 }
 
 /**
@@ -52,6 +54,7 @@ const AddressAutocomplete = memo(
         inputValue,
         onSelect,
         emptyOptionsText,
+        boundaryRef,
         ...rest
       },
       ref,
@@ -96,7 +99,11 @@ const AddressAutocomplete = memo(
           {...rest}
         >
           {isOpen && (
-            <Autocomplete.List anchorRef={anchorRef} rootRef={optionsRef}>
+            <Autocomplete.List
+              anchorRef={anchorRef}
+              rootRef={optionsRef}
+              boundaryRef={boundaryRef}
+            >
               {options.map((option) => (
                 <Autocomplete.ListItem
                   value={option.value}

@@ -1,4 +1,12 @@
-import { Box, Flex, VStack } from 'bako-ui';
+import {
+  autoUpdate,
+  flip,
+  hide,
+  offset,
+  size,
+  useFloating,
+} from '@floating-ui/react';
+import { Box, VStack } from 'bako-ui';
 import {
   LegacyRef,
   memo,
@@ -12,96 +20,128 @@ interface AutocompleteOptionListProps {
   children: React.ReactNode;
   rootRef?: LegacyRef<HTMLDivElement>;
   anchorRef: RefObject<HTMLDivElement | null>;
-}
-
-interface Position {
-  top: number;
-  left: number;
-  width: number;
+  boundaryRef?: RefObject<HTMLDivElement | null>;
 }
 
 const ANCHOR_OFFSET = 8;
+const MAX_HEIGHT = 182;
 
 const AutocompleteOptionList = memo(
-  ({ children, rootRef, anchorRef }: AutocompleteOptionListProps) => {
-    const [position, setPosition] = useState<Position>({
-      top: 0,
-      left: 0,
-      width: 0,
+  ({
+    children,
+    anchorRef,
+    boundaryRef,
+    rootRef,
+  }: AutocompleteOptionListProps) => {
+    const [isReferenceVisible, setIsReferenceVisible] = useState(true);
+
+    const boundaryEl = boundaryRef?.current ?? undefined;
+
+    const { refs, floatingStyles, update } = useFloating({
+      placement: 'bottom-start',
+      strategy: 'fixed',
+      middleware: [
+        offset(ANCHOR_OFFSET),
+        flip({ boundary: boundaryEl }),
+        hide({
+          strategy: 'referenceHidden',
+          boundary: boundaryEl,
+        }),
+        size({
+          apply({ rects, elements }) {
+            Object.assign(elements.floating.style, {
+              width: `${rects.reference.width}px`,
+              maxHeight: `${MAX_HEIGHT}px`,
+            });
+          },
+        }),
+      ],
     });
 
-    const updatePosition = useCallback(() => {
-      if (!anchorRef.current) return;
+    // rootRef (LegacyRef) + floatingRef
+    const setFloating = useCallback(
+      (node: HTMLDivElement | null) => {
+        refs.setFloating(node);
 
-      const anchor = anchorRef.current;
-
-      const container = anchor.offsetParent as HTMLElement;
-      if (!container) return;
-
-      const anchorRect = anchor.getBoundingClientRect();
-      const containerRect = container.getBoundingClientRect();
-
-      setPosition({
-        top: anchorRect.bottom - containerRect.top + ANCHOR_OFFSET,
-        left: anchorRect.left - containerRect.left,
-        width: anchorRect.width,
-      });
-    }, [anchorRef]);
+        if (typeof rootRef === 'function') {
+          rootRef(node);
+        } else if (rootRef && 'current' in rootRef) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (rootRef as any).current = node;
+        }
+      },
+      [refs, rootRef],
+    );
 
     useEffect(() => {
-      const el = anchorRef.current;
-      if (!el) return;
+      if (anchorRef.current) refs.setReference(anchorRef.current);
+    }, [anchorRef, refs]);
 
-      updatePosition();
+    useEffect(() => {
+      const reference = anchorRef.current;
+      const floating = refs.floating.current;
+      if (!reference || !floating) return;
 
-      const resizeObserver = new ResizeObserver(updatePosition);
-      resizeObserver.observe(el);
-
-      // observe scroll do container do modal, não da janela
-      const scrollContainer = el.offsetParent;
-      scrollContainer?.addEventListener('scroll', updatePosition, {
-        passive: true,
+      return autoUpdate(reference, floating, update, {
+        ancestorScroll: true,
+        ancestorResize: true,
       });
+    }, [anchorRef, refs, update]);
 
-      window.addEventListener('resize', updatePosition);
+    useEffect(() => {
+      const reference = anchorRef.current;
+      if (!reference) return;
+
+      const root = boundaryRef?.current ?? null; // null -> viewport
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          const e = entries[0];
+          const visible = !!e && e.isIntersecting;
+          setIsReferenceVisible(visible);
+        },
+        {
+          root,
+          threshold: 0,
+        },
+      );
+
+      observer.observe(reference);
 
       return () => {
-        resizeObserver.disconnect();
-        scrollContainer?.removeEventListener('scroll', updatePosition);
-        window.removeEventListener('resize', updatePosition);
+        observer.disconnect();
       };
-    }, [anchorRef, updatePosition]);
+    }, [anchorRef, boundaryRef]);
+
+    if (!isReferenceVisible) {
+      return null;
+    }
 
     return (
       <Box
-        ref={rootRef}
+        ref={setFloating}
+        style={{
+          ...floatingStyles,
+        }}
         bg="bg.panel"
         color="textPrimary"
-        fontSize="md"
         borderRadius="sm"
         padding={1 / 2}
-        position="absolute"
         zIndex={400}
-        style={{
-          top: `${position.top}px`,
-          left: `${position.left}px`,
-          width: `${position.width}px`,
-        }}
+        overflow="hidden"
       >
-        <Flex justifyContent="center" alignItems="center">
-          <VStack
-            w="full"
-            maxH={178}
-            gap={0}
-            overflowY="auto"
-            css={{
-              '&::-webkit-scrollbar': { width: '0' },
-              scrollbarWidth: 'none',
-            }}
-          >
-            {children}
-          </VStack>
-        </Flex>
+        <VStack
+          w="full"
+          gap={0}
+          maxH={MAX_HEIGHT}
+          overflowY="auto"
+          css={{
+            '&::-webkit-scrollbar': { width: '0' },
+            scrollbarWidth: 'none',
+          }}
+        >
+          {children}
+        </VStack>
       </Box>
     );
   },
