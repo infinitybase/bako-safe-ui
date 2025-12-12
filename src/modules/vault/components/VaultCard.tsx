@@ -69,6 +69,11 @@ export const VaultCard = memo(function VaultCard({
   });
   const [localHidden, setLocalHidden] = useState(isHidden);
 
+  const handleCopy = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    copy();
+  };
+
   const handleToggle = (e: React.MouseEvent) => {
     e.stopPropagation();
     setLocalHidden((prev) => !prev);
@@ -126,7 +131,7 @@ export const VaultCard = memo(function VaultCard({
 
           <HStack gap={2}>
             <IconTooltipButton
-              onClick={copy}
+              onClick={handleCopy}
               tooltipContent={copied ? 'Copied' : 'Copy Address'}
               placement="top"
             >
