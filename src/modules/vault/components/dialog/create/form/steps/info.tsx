@@ -23,7 +23,7 @@ const VaultInfosStep = ({ form, vaultName }: VaultInfoStepProps) => {
   }, [formName]);
 
   return (
-    <Box p={0}>
+    <Box p={0} pb={6}>
       <VStack gap={6}>
         <Controller
           control={form.control}
@@ -48,6 +48,7 @@ const VaultInfosStep = ({ form, vaultName }: VaultInfoStepProps) => {
                     field.onChange(e.target.value);
                   }}
                   placeholder=" "
+                  className="peer"
                 />
                 <Field.Label css={floatingStyles({ hasValue: !!field.value })}>
                   Account name
