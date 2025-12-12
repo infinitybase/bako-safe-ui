@@ -1,5 +1,5 @@
 import { Box, Flex, VStack } from 'bako-ui';
-import React, {
+import {
   LegacyRef,
   memo,
   RefObject,
@@ -31,13 +31,20 @@ const AutocompleteOptionList = memo(
     });
 
     const updatePosition = useCallback(() => {
-      if (!anchorRef?.current) return;
+      if (!anchorRef.current) return;
 
-      const rect = anchorRef.current.getBoundingClientRect();
+      const anchor = anchorRef.current;
+
+      const container = anchor.offsetParent as HTMLElement;
+      if (!container) return;
+
+      const anchorRect = anchor.getBoundingClientRect();
+      const containerRect = container.getBoundingClientRect();
+
       setPosition({
-        top: rect.bottom + window.scrollY + ANCHOR_OFFSET,
-        left: rect.left + window.scrollX,
-        width: rect.width,
+        top: anchorRect.bottom - containerRect.top + ANCHOR_OFFSET,
+        left: anchorRect.left - containerRect.left,
+        width: anchorRect.width,
       });
     }, [anchorRef]);
 
@@ -50,25 +57,30 @@ const AutocompleteOptionList = memo(
       const resizeObserver = new ResizeObserver(updatePosition);
       resizeObserver.observe(el);
 
-      window.addEventListener('scroll', updatePosition, true);
+      // observe scroll do container do modal, não da janela
+      const scrollContainer = el.offsetParent;
+      scrollContainer?.addEventListener('scroll', updatePosition, {
+        passive: true,
+      });
+
       window.addEventListener('resize', updatePosition);
 
       return () => {
-        window.removeEventListener('scroll', updatePosition, true);
-        window.removeEventListener('resize', updatePosition);
         resizeObserver.disconnect();
+        scrollContainer?.removeEventListener('scroll', updatePosition);
+        window.removeEventListener('resize', updatePosition);
       };
     }, [anchorRef, updatePosition]);
 
     return (
       <Box
-        bg="bg.panel"
         ref={rootRef}
+        bg="bg.panel"
         color="textPrimary"
         fontSize="md"
-        borderRadius="l1"
+        borderRadius="sm"
         padding={1 / 2}
-        position="fixed"
+        position="absolute"
         zIndex={400}
         style={{
           top: `${position.top}px`,
@@ -76,12 +88,12 @@ const AutocompleteOptionList = memo(
           width: `${position.width}px`,
         }}
       >
-        <Flex display="flex" justifyContent="center" alignItems="center">
+        <Flex justifyContent="center" alignItems="center">
           <VStack
             w="full"
-            maxH={194}
+            maxH={178}
             gap={0}
-            overflowY="scroll"
+            overflowY="auto"
             css={{
               '&::-webkit-scrollbar': { width: '0' },
               scrollbarWidth: 'none',

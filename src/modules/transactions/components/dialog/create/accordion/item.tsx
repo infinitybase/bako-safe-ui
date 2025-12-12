@@ -7,7 +7,7 @@ import {
   useAccordionItemContext,
   VStack,
 } from 'bako-ui';
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 interface AccordionItemProps {
   title: string;
@@ -24,7 +24,34 @@ const AccordionItem = ({
   resume,
   assetLogo,
 }: AccordionItemProps) => {
+  const contentRef = useRef<HTMLDivElement>(null);
+
   const { expanded: isOpen } = useAccordionItemContext();
+
+  const [allowOverflow, setAllowOverflow] = useState(false);
+
+  // Prevent content overflow during accordion open/close animation
+  useEffect(() => {
+    const el = contentRef.current;
+    if (!el) return;
+
+    if (isOpen) {
+      setAllowOverflow(false);
+
+      const handleAnimationEnd = () => setAllowOverflow(true);
+      const handleTransitionEnd = () => setAllowOverflow(true);
+
+      el.addEventListener('animationend', handleAnimationEnd);
+      el.addEventListener('transitionend', handleTransitionEnd);
+
+      return () => {
+        el.removeEventListener('animationend', handleAnimationEnd);
+        el.removeEventListener('transitionend', handleTransitionEnd);
+      };
+    }
+
+    setAllowOverflow(false);
+  }, [isOpen]);
 
   return (
     <>
@@ -55,7 +82,13 @@ const AccordionItem = ({
         </VStack>
       </Box>
       {isOpen && (
-        <Accordion.ItemContent px={5}>{children}</Accordion.ItemContent>
+        <Accordion.ItemContent
+          ref={contentRef}
+          px={5}
+          overflow={allowOverflow ? 'visible' : 'hidden'}
+        >
+          {children}
+        </Accordion.ItemContent>
       )}
     </>
   );
