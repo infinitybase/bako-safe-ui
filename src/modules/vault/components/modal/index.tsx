@@ -60,7 +60,7 @@ const VaultListModal = ({
       <Dialog.Modal
         onOpenChange={(e) => (e.open ? undefined : drawer.onClose())}
         open={props.open}
-        size="md"
+        size={{ base: 'full', sm: 'md' }}
         modalContentProps={{
           px: 10,
           py: 10,
@@ -76,7 +76,6 @@ const VaultListModal = ({
             mb={0}
             onClose={drawer.onClose}
             w="full"
-            maxW={{ base: 480, sm: 'unset' }}
             title="Select account"
             description="Select the account or create new one"
             descriptionFontSize="12px"
