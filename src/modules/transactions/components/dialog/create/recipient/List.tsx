@@ -83,7 +83,7 @@ export const RecipientList = ({
               variant="subtle"
               bg="bg.muted"
               _hover={{
-                opacity: 0.8,
+                bg: 'gray.550',
               }}
               _disabled={{
                 cursor: 'not-allowed',
