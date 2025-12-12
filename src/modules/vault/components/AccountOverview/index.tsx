@@ -224,9 +224,9 @@ export const AccountOverview = memo(
                 </Heading>
               )}
               {!visibleBalance && (
-                <Text color="gray.50" fontSize="3xl">
+                <Heading color="gray.50" fontSize="3xl">
                   -----
-                </Text>
+                </Heading>
               )}
             </Card.Body>
 
