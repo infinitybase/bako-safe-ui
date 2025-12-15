@@ -44,17 +44,24 @@ const AddressBookPage = () => {
 
   return (
     <>
-      {contactDialog.isOpen && (
-        <CreateContactDialog
-          form={form}
-          dialog={contactDialog}
-          isLoading={
-            createContactRequest.isPending || updateContactRequest.isPending
-          }
-          address={contactToEdit?.address}
-          isEdit={!!contactToEdit?.id}
-        />
-      )}
+      {contactDialog.isOpen &&
+        (contactToEdit?.id ? (
+          <CreateContactDialog
+            key={`edit-contact-${contactToEdit?.id}`}
+            form={form}
+            dialog={contactDialog}
+            isLoading={updateContactRequest.isPending}
+            address={contactToEdit?.address}
+            isEdit
+          />
+        ) : (
+          <CreateContactDialog
+            key="create-contact"
+            form={form}
+            dialog={contactDialog}
+            isLoading={createContactRequest.isPending}
+          />
+        ))}
 
       {hasContacts && contactToDelete.nickname && (
         <DeleteContactDialog

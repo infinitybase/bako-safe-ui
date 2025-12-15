@@ -22,7 +22,6 @@ const CreateContactDialog = ({
 }: CreateContactDialogProps) => {
   return (
     <Dialog.Modal
-      key={isEdit ? `edit-${address}` : 'create'}
       size={{ base: 'full', sm: 'md' }}
       open={dialog.isOpen}
       closeOnInteractOutside={false}
