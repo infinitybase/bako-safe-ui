@@ -27,6 +27,7 @@ export type IUseAddressBookMutationsProps = {
   >;
   deleteContactDialog: UseDisclosureReturn;
   contactDialog: UseDisclosureReturn;
+  editContactDialog: UseDisclosureReturn;
   listContactsRequest: UseQueryResult<ListContactsResponse, Error>;
   contactToEdit: {
     id: string;
@@ -37,6 +38,7 @@ const useAddressBookMutations = ({
   form,
   deleteContactDialog,
   contactDialog,
+  editContactDialog,
   listContactsRequest,
   contactToEdit,
 }: IUseAddressBookMutationsProps) => {
@@ -57,7 +59,7 @@ const useAddressBookMutations = ({
   const updateContactRequest = useUpdateContactRequest({
     onSuccess: async () => {
       await listContactsRequest.refetch();
-      contactDialog.onClose?.();
+      editContactDialog.onClose?.();
       createAndUpdateSuccessToast();
     },
     onError: (error) => {

@@ -29,6 +29,7 @@ const useAddressBook = (
   });
 
   const contactDialog = useDisclosure();
+  const editContactDialog = useDisclosure();
   const deleteContactDialog = useDisclosure();
   const { workspaceId } = useParams();
   const inView = useInView({ delay: 300 });
@@ -42,6 +43,7 @@ const useAddressBook = (
   const { contactByAddress, debouncedSearchHandler, handleOpenDialog, form } =
     useAddressBookFormHandlers({
       contactDialog,
+      editContactDialog,
       listContactsRequest,
       setContactToEdit,
       setSearch,
@@ -60,6 +62,7 @@ const useAddressBook = (
     contactDialog,
     contactToEdit,
     deleteContactDialog,
+    editContactDialog,
     form,
     listContactsRequest,
   });
@@ -90,6 +93,7 @@ const useAddressBook = (
           form.setValue('nickname', '');
         },
       },
+      editContactDialog,
       deleteContactDialog,
     },
     requests: {
