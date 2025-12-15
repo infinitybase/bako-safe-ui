@@ -42,6 +42,8 @@ const AddressBookPage = () => {
 
   const { resolveAddressContactHandle } = useAddressNicknameResolver();
 
+  console.log('CONTACT TO EDIT:', contactToEdit);
+
   return (
     <>
       {contactDialog.isOpen && (
