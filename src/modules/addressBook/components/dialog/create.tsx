@@ -30,6 +30,7 @@ const CreateContactDialog = ({
       modalContentProps={{ px: 6, py: 6 }}
       modalBodyProps={{ gap: 6 }}
       unmountOnExit
+      lazyMount
     >
       <Dialog.Header
         position="relative"
