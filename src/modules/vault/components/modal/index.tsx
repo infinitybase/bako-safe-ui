@@ -12,7 +12,6 @@ import {
 
 import { CustomSkeleton, Dialog } from '@/components';
 import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
-import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { CreateVaultDialog } from '../dialog';
 import { useVaultDrawer } from './hook';
@@ -29,9 +28,6 @@ const VaultListModal = ({
   onCloseAll,
   ...props
 }: VaultListModalProps) => {
-  const {
-    screenSizes: { isMobile, isSmall },
-  } = useWorkspaceContext();
   const {
     drawer,
     search,
@@ -62,34 +58,32 @@ const VaultListModal = ({
         open={props.open}
         size={{ base: 'full', sm: 'md' }}
         modalContentProps={{
-          px: 10,
-          py: 10,
-          maxHeight: '100vh',
-        }}
-        modalBodyProps={{
-          overflow: 'visible',
+          maxH: '100vh',
+          h: '780px',
         }}
       >
-        <Dialog.Body display={isCreateVaultModalOpen ? 'none' : 'block'}>
+        <Dialog.Body display="flex" flexDirection="column" flex={1} minH={0}>
           <Dialog.Header
             mt={0}
             mb={0}
             onClose={drawer.onClose}
             w="full"
             title="Select account"
-            description="Select the account or create new one"
-            descriptionFontSize="12px"
+            description="Select the account or create new one."
             titleSxProps={{
-              fontSize: '16px',
-              fontWeight: 700,
-              lineHeight: '19.36px',
+              fontSize: 'sm',
+              color: 'textPrimary',
+              lineHeight: 'shorter',
             }}
+            descriptionFontSize="xs"
+            descriptionColor="textSecondary"
           />
 
           <Box
             w="100%"
-            mt={6}
+            mt={{ base: 2, sm: 6 }}
             pb={6}
+            px="1px"
             borderBottomWidth={1}
             borderColor="gray.550"
           >
@@ -116,8 +110,8 @@ const VaultListModal = ({
 
           <VStack
             w="full"
-            minH={300}
-            maxH={{ base: `calc(100vh - 350px)`, sm: 555, md: 500 }}
+            flex={1}
+            minH={0}
             overflowY="scroll"
             css={{
               '&::-webkit-scrollbar': { display: 'none' },
@@ -125,7 +119,7 @@ const VaultListModal = ({
             }}
           >
             {isSuccess && !vaults.length && (
-              <Text>
+              <Text my={4} fontSize="xs">
                 We {"couldn't"} find any results for <b>“{search.value}”</b> in
                 the vault.
               </Text>
@@ -154,19 +148,10 @@ const VaultListModal = ({
           </VStack>
 
           <Dialog.Actions
-            position={isMobile ? 'absolute' : 'relative'}
-            bottom={0}
-            pb={isMobile && !isSmall ? 10 : 'unset'}
-            borderRadius={isMobile && !isSmall ? '20px' : 'unset'}
-            left={0}
-            right={0}
-            px={isMobile ? 10 : 'unset'}
-            bg={isMobile ? 'dark.950' : 'unset'}
-            css={{
-              '&>hr': {
-                marginTop: '0',
-              },
-            }}
+            pt={6}
+            borderTopWidth={1}
+            borderColor="gray.550"
+            flexShrink={0}
           >
             <Button
               fontWeight="normal"
