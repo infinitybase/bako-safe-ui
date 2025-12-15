@@ -46,6 +46,7 @@ const AddressBookPage = () => {
     <>
       {contactDialog.isOpen && (
         <CreateContactDialog
+          key={contactToEdit?.id ?? 'create'}
           form={form}
           dialog={contactDialog}
           isLoading={

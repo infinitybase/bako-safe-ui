@@ -11,7 +11,7 @@ import {
 } from 'bako-ui';
 import { RiFileCopyFill } from 'react-icons/ri';
 
-import { EditIcon2, IconTooltipButton, RemoveIcon } from '@/components';
+import { EditIcon, IconTooltipButton, RemoveIcon } from '@/components';
 import { CopyTopMenuIcon } from '@/components/icons/copy-top-menu';
 import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
@@ -104,7 +104,7 @@ const ContactCard = ({
                     onClick={handleEdit}
                     placement="top"
                   >
-                    <Icon as={EditIcon2} color="gray.200" w="12px" />
+                    <Icon as={EditIcon} color="gray.200" w="12px" />
                   </IconTooltipButton>
 
                   <IconTooltipButton
