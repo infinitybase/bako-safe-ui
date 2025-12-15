@@ -26,13 +26,10 @@ const CreateContactDialog = ({
       open={dialog.isOpen}
       closeOnInteractOutside={false}
       trapFocus={false}
-      onOpenChange={({ open }) => {
-        if (!open) {
-          dialog.onClose();
-        }
-      }}
+      onOpenChange={dialog.onOpenChange}
       modalContentProps={{ px: 6, py: 6 }}
       modalBodyProps={{ gap: 6 }}
+      unmountOnExit
     >
       <Dialog.Header
         position="relative"
