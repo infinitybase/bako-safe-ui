@@ -88,6 +88,7 @@ const useAddressBook = (
           contactDialog.onClose();
           form.setValue('address', '');
           form.setValue('nickname', '');
+          setContactToEdit({ id: '', address: '' });
         },
       },
       deleteContactDialog,

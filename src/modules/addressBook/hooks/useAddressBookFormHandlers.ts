@@ -47,13 +47,12 @@ const useAddressBookFormHandlers = ({
     contactToEdit,
     handle,
   }: DialogProps) => {
-    setContactToEdit({ id: contactToEdit ?? '', address: address ?? '' });
-
     form.clearErrors('address');
     form.clearErrors('nickname');
     form.setValue('address', '');
     form.setValue('nickname', '');
 
+    setContactToEdit({ id: contactToEdit ?? '', address: address ?? '' });
     if (address) form.setValue('address', address);
     if (nickname) form.setValue('nickname', nickname);
     if (handle) {
@@ -61,7 +60,7 @@ const useAddressBookFormHandlers = ({
       form.setValue('resolver', address);
     }
 
-    contactDialog.onOpen?.();
+    setTimeout(() => contactDialog.onOpen?.(), 0);
   };
 
   const contactByAddress = (address: string) => {
