@@ -60,7 +60,7 @@ const useAddressBookFormHandlers = ({
       form.setValue('resolver', address);
     }
 
-    setTimeout(() => contactDialog.onOpen?.(), 250);
+    setTimeout(() => contactDialog.onOpen?.(), contactToEdit ? 2000 : 0);
   };
 
   const contactByAddress = (address: string) => {
