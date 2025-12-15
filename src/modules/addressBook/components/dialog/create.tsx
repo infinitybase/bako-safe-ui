@@ -29,10 +29,9 @@ const CreateContactDialog = ({
       onOpenChange={dialog.onOpenChange}
       modalContentProps={{ px: 6, py: 6 }}
       modalBodyProps={{ gap: 6 }}
-      unmountOnExit
-      lazyMount
     >
       <Dialog.Header
+        key={isEdit ? 'edit-header' : 'create-header'}
         position="relative"
         onClose={dialog.onClose}
         title={isEdit ? 'Edit address' : 'Add to address book'}
@@ -58,7 +57,11 @@ const CreateContactDialog = ({
         </FormProvider>
       </Dialog.Body>
 
-      <Dialog.Actions mt={6} w="full">
+      <Dialog.Actions
+        key={isEdit ? 'edit-footer' : 'create-footer'}
+        mt={6}
+        w="full"
+      >
         <Dialog.SecondaryAction
           aria-label="Cancel address book"
           onClick={dialog.onClose}

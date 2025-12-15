@@ -52,7 +52,7 @@ const AddressBookPage = () => {
             createContactRequest.isPending || updateContactRequest.isPending
           }
           address={contactToEdit?.address}
-          isEdit={!!contactToEdit?.id}
+          isEdit
         />
       )}
 
