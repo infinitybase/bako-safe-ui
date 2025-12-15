@@ -42,8 +42,6 @@ const AddressBookPage = () => {
 
   const { resolveAddressContactHandle } = useAddressNicknameResolver();
 
-  console.log('CONTACT TO EDIT:', contactToEdit);
-
   return (
     <>
       {contactDialog.isOpen && (
@@ -55,7 +53,7 @@ const AddressBookPage = () => {
             createContactRequest.isPending || updateContactRequest.isPending
           }
           address={contactToEdit?.address}
-          isEdit={!!contactToEdit?.id}
+          isEdit={true}
         />
       )}
 
