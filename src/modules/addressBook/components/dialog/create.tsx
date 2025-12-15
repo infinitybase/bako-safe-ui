@@ -9,7 +9,7 @@ interface CreateContactDialogProps {
   form: UseAddressBookReturn['form'];
   dialog: UseAddressBookReturn['dialog']['contactDialog'];
   isLoading: boolean;
-  isEdit: boolean;
+  isEdit?: boolean;
   address?: string;
 }
 
@@ -26,7 +26,7 @@ const CreateContactDialog = ({
       open={dialog.isOpen}
       closeOnInteractOutside={false}
       trapFocus={false}
-      onOpenChange={dialog.onClose}
+      onOpenChange={dialog.onOpenChange}
       modalContentProps={{ px: 6, py: 6 }}
       modalBodyProps={{ gap: 6 }}
     >

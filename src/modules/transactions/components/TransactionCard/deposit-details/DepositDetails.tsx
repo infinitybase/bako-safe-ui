@@ -58,7 +58,6 @@ const DepositDetails = ({ transaction }: DepositDetailsProps) => {
       w="full"
       minW={{ base: 200, sm: '476px' }}
       flexWrap="wrap"
-      minH={{ base: 560, md: 400, sm: 'unset' }}
     >
       <VStack w="full" mt={isMobile ? 'unset' : 5}>
         {isFuelFriday && (

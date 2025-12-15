@@ -14,7 +14,7 @@ import {
 import { memo, useEffect, useMemo, useState } from 'react';
 import { RiFileCopyFill } from 'react-icons/ri';
 
-import { IconTooltipButton, TeamIcon } from '@/components';
+import { IconTooltipButton } from '@/components';
 import { CopyTopMenuIcon } from '@/components/icons/copy-top-menu';
 import { EyeCloseIcon } from '@/components/icons/eye-close';
 import { EyeOpenIcon } from '@/components/icons/eye-open';
@@ -31,8 +31,6 @@ interface VaultCardProps extends CardRootProps {
   isHidden?: boolean;
   showHideButton?: boolean;
   address: string;
-  signersCount: number;
-  requiredSigners: number;
   id: string;
   workspaceId: string;
 }
@@ -42,8 +40,6 @@ export const VaultCard = memo(function VaultCard({
   isHidden,
   showHideButton = false,
   address,
-  requiredSigners,
-  signersCount,
   id,
   workspaceId,
   ...rest
@@ -72,6 +68,11 @@ export const VaultCard = memo(function VaultCard({
     },
   });
   const [localHidden, setLocalHidden] = useState(isHidden);
+
+  const handleCopy = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    copy();
+  };
 
   const handleToggle = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -130,7 +131,7 @@ export const VaultCard = memo(function VaultCard({
 
           <HStack gap={2}>
             <IconTooltipButton
-              onClick={copy}
+              onClick={handleCopy}
               tooltipContent={copied ? 'Copied' : 'Copy Address'}
               placement="top"
             >
@@ -161,24 +162,6 @@ export const VaultCard = memo(function VaultCard({
                 />
               </IconTooltipButton>
             )}
-
-            <IconTooltipButton
-              placement="top"
-              tooltipContent={
-                <Stack gap={1} alignItems="center">
-                  <Text
-                    color="textPrimary"
-                    fontSize="xs"
-                  >{`${signersCount} members`}</Text>
-                  <Text
-                    color="textPrimary"
-                    fontSize="xs"
-                  >{`${requiredSigners} required signers`}</Text>
-                </Stack>
-              }
-            >
-              <Icon as={TeamIcon} color="gray.200" w="12px" />
-            </IconTooltipButton>
           </HStack>
         </HStack>
       </Card.Header>

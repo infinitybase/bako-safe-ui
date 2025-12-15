@@ -91,7 +91,6 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
         <Dialog.Header
           onClose={() => onOpenChange?.({ open: false })}
           w="full"
-          maxW={{ base: 480, sm: 'unset' }}
           pt={6}
           title="Transaction Details"
         />

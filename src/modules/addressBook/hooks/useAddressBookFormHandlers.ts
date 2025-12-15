@@ -25,6 +25,7 @@ export type IUseAddressBookFormHandlersProps = {
     }>
   >;
   contactDialog: UseDisclosureReturn;
+  editContactDialog: UseDisclosureReturn;
   listContactsRequest: UseQueryResult<ListContactsResponse, Error>;
   setSearch: React.Dispatch<React.SetStateAction<string>>;
   providerInstance: Promise<BakoProvider>;
@@ -34,6 +35,7 @@ export type IUseAddressBookFormHandlersProps = {
 const useAddressBookFormHandlers = ({
   setContactToEdit,
   contactDialog,
+  editContactDialog,
   listContactsRequest,
   setSearch,
   providerInstance,
@@ -60,7 +62,7 @@ const useAddressBookFormHandlers = ({
       form.setValue('resolver', address);
     }
 
-    contactDialog.onOpen?.();
+    contactToEdit ? editContactDialog.onOpen?.() : contactDialog.onOpen?.();
   };
 
   const contactByAddress = (address: string) => {

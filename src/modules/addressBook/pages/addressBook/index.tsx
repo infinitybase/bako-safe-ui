@@ -29,7 +29,7 @@ const AddressBookPage = () => {
         listContactsRequest,
       },
       contacts: { contactToDelete, contactToEdit },
-      dialog: { contactDialog, deleteContactDialog },
+      dialog: { contactDialog, editContactDialog, deleteContactDialog },
       handlers: { handleDeleteContact, handleOpenDialog, setContactToDelete },
     },
     screenSizes: { isExtraSmall, isSmall },
@@ -48,11 +48,17 @@ const AddressBookPage = () => {
         <CreateContactDialog
           form={form}
           dialog={contactDialog}
-          isLoading={
-            createContactRequest.isPending || updateContactRequest.isPending
-          }
+          isLoading={createContactRequest.isPending}
+        />
+      )}
+
+      {editContactDialog.isOpen && (
+        <CreateContactDialog
+          form={form}
+          dialog={editContactDialog}
+          isLoading={updateContactRequest.isPending}
           address={contactToEdit?.address}
-          isEdit={!!contactToEdit?.id}
+          isEdit
         />
       )}
 

@@ -13,7 +13,7 @@ export const Toaster = () => {
     <Portal>
       <Toast.Toaster toaster={toaster} insetInline={{ mdDown: '4' }}>
         {(toast) => (
-          <Toast.Root width={{ md: 'sm' }}>
+          <Toast.Root width={{ md: 'sm' }} backdropFilter="blur(30px)">
             {toast.type === 'loading' ? (
               <Loader size="sm" color="blue.solid" />
             ) : (
