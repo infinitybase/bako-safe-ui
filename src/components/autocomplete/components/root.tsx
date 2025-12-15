@@ -68,12 +68,19 @@ const AutocompleteRoot = memo(
                   bg="gray.550"
                   h="40px"
                   rounded="sm"
+                  pr={isLoading || rightElement ? '40px' : 'unset'}
                 >
                   <InputValueImage
                     image={value.image}
                     label={value.label || ''}
                   />
-                  <Text fontSize="sm" color="textPrimary" lineHeight="shorter">
+                  <Text
+                    fontSize="sm"
+                    color="textPrimary"
+                    lineHeight="shorter"
+                    overflow="hidden"
+                    whiteSpace="nowrap"
+                  >
                     {value.label}{' '}
                     <Text as="span" color="textSecondary" lineHeight="shorter">
                       ({AddressUtils.format(value.value)})

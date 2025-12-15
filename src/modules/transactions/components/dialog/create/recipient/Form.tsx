@@ -1,5 +1,5 @@
 import { VStack } from 'bako-ui';
-import { memo, useCallback, useMemo } from 'react';
+import { memo, RefObject, useCallback, useMemo } from 'react';
 import { Controller, useFormContext, useWatch } from 'react-hook-form';
 
 import {
@@ -22,11 +22,13 @@ interface RecipientFormFieldProps {
   index: number;
   assets: UseVaultDetailsReturn['assets'];
   isFeeCalcLoading: boolean;
+  listRef?: RefObject<HTMLDivElement | null>;
   getBalanceAvailable: UseCreateTransaction['getBalanceAvailable'];
 }
 
 const RecipientFormField = (props: RecipientFormFieldProps) => {
-  const { assets, index, isFeeCalcLoading, getBalanceAvailable } = props;
+  const { assets, index, isFeeCalcLoading, listRef, getBalanceAvailable } =
+    props;
   const { setValue, formState, control } = useFormContext<ITransactionForm>();
 
   const {
@@ -120,6 +122,7 @@ const RecipientFormField = (props: RecipientFormFieldProps) => {
               index={index}
               isLoading={optionsRequests[index].isPending}
               error={fieldState.error}
+              listRef={listRef}
               {...field}
             />
           )}

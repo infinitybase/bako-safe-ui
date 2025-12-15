@@ -1,7 +1,7 @@
 import { Field, HStack } from 'bako-ui';
 import { AddressUtils as BakoSafeUtils } from 'bakosafe';
 import { Address, isB256 } from 'fuels';
-import { memo, useCallback, useMemo, useState } from 'react';
+import { memo, RefObject, useCallback, useMemo, useState } from 'react';
 import { FieldError, useFormContext } from 'react-hook-form';
 
 import { BakoIdIcon, CloseCircle } from '@/components';
@@ -29,6 +29,7 @@ interface RecipientFormAddressProps {
   isLoading: boolean;
   addressBookOptions: Array<EnumOption & { name: string }>;
   optionsRef?: (node: HTMLDivElement) => void;
+  listRef?: RefObject<HTMLDivElement | null>;
   error?: FieldError;
 }
 
@@ -40,6 +41,7 @@ const RecipientFormAddress = ({
   onChange,
   value,
   optionsRef,
+  listRef,
   error,
 }: RecipientFormAddressProps) => {
   const [inputValue, setInputValue] = useState(value || '');
@@ -172,12 +174,11 @@ const RecipientFormAddress = ({
           options={autocompleteOptions}
           onSelect={handleSelectOption}
           optionsRef={optionsRef}
+          boundaryRef={listRef}
           emptyOptionsText={emptyOptionsText}
         />
 
-        {error?.message && (
-          <Field.HelperText>{error?.message}</Field.HelperText>
-        )}
+        {error?.message && <Field.ErrorText>{error?.message}</Field.ErrorText>}
         <AddToAddressBook
           visible={showAddToAddressBook}
           onAdd={() => handleOpenDialog?.(value!)}

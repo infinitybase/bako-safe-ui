@@ -1,5 +1,5 @@
 import { Accordion, Button, Center, Text } from 'bako-ui';
-import { memo, useCallback } from 'react';
+import { memo, RefObject, useCallback } from 'react';
 
 import { Plus2Icon } from '@/components/icons/plus2';
 import { Tooltip } from '@/components/ui/tooltip';
@@ -8,6 +8,7 @@ import { UseCreateTransaction } from '@/modules/transactions/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 interface RecipientListProps {
+  ref?: RefObject<HTMLDivElement | null>;
   accordion: UseCreateTransaction['accordion'];
   transactions: UseCreateTransaction['transactionsFields'];
   children: React.ReactNode;
@@ -17,6 +18,7 @@ interface RecipientListProps {
 }
 
 export const RecipientList = ({
+  ref,
   transactions,
   accordion,
   children,
@@ -39,6 +41,7 @@ export const RecipientList = ({
 
   return (
     <Accordion.Root
+      ref={ref}
       value={[accordion.index.toString()]}
       overflowY="auto"
       pb={isMobile ? 10 : 0}
@@ -83,7 +86,7 @@ export const RecipientList = ({
               variant="subtle"
               bg="bg.muted"
               _hover={{
-                opacity: 0.8,
+                bg: 'gray.550',
               }}
               _disabled={{
                 cursor: 'not-allowed',

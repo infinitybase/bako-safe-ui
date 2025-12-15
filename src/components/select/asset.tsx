@@ -116,7 +116,11 @@ const AssetSelect = ({
       w="full"
       value={[value || '']}
       onValueChange={(e) => onChange(e.value[0])}
-      positioning={{ sameWidth: true }}
+      positioning={{
+        sameWidth: true,
+        strategy: 'fixed',
+        hideWhenDetached: true,
+      }}
     >
       <Select.HiddenSelect />
       {label && (

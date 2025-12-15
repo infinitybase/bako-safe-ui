@@ -90,7 +90,7 @@ const RecipientFormAmount = memo(
             />
           </InputGroup>
 
-          <Field.HelperText>
+          <Field.ErrorText>
             {error?.message ? (
               <Text fontSize="xs" lineHeight="short">
                 {error.message}
@@ -105,7 +105,7 @@ const RecipientFormAmount = memo(
                 ~ {usdEstimate}
               </Text>
             ) : null}
-          </Field.HelperText>
+          </Field.ErrorText>
         </Field.Root>
       </HStack>
     );

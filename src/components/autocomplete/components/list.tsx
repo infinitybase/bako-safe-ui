@@ -1,5 +1,13 @@
-import { Box, Flex, VStack } from 'bako-ui';
-import React, {
+import {
+  autoUpdate,
+  flip,
+  hide,
+  offset,
+  size,
+  useFloating,
+} from '@floating-ui/react';
+import { Box, VStack } from 'bako-ui';
+import {
   LegacyRef,
   memo,
   RefObject,
@@ -12,84 +20,128 @@ interface AutocompleteOptionListProps {
   children: React.ReactNode;
   rootRef?: LegacyRef<HTMLDivElement>;
   anchorRef: RefObject<HTMLDivElement | null>;
-}
-
-interface Position {
-  top: number;
-  left: number;
-  width: number;
+  boundaryRef?: RefObject<HTMLDivElement | null>;
 }
 
 const ANCHOR_OFFSET = 8;
+const MAX_HEIGHT = 182;
 
 const AutocompleteOptionList = memo(
-  ({ children, rootRef, anchorRef }: AutocompleteOptionListProps) => {
-    const [position, setPosition] = useState<Position>({
-      top: 0,
-      left: 0,
-      width: 0,
+  ({
+    children,
+    anchorRef,
+    boundaryRef,
+    rootRef,
+  }: AutocompleteOptionListProps) => {
+    const [isReferenceVisible, setIsReferenceVisible] = useState(true);
+
+    const boundaryEl = boundaryRef?.current ?? undefined;
+
+    const { refs, floatingStyles, update } = useFloating({
+      placement: 'bottom-start',
+      strategy: 'fixed',
+      middleware: [
+        offset(ANCHOR_OFFSET),
+        flip({ boundary: boundaryEl }),
+        hide({
+          strategy: 'referenceHidden',
+          boundary: boundaryEl,
+        }),
+        size({
+          apply({ rects, elements }) {
+            Object.assign(elements.floating.style, {
+              width: `${rects.reference.width}px`,
+              maxHeight: `${MAX_HEIGHT}px`,
+            });
+          },
+        }),
+      ],
     });
 
-    const updatePosition = useCallback(() => {
-      if (!anchorRef?.current) return;
+    // rootRef (LegacyRef) + floatingRef
+    const setFloating = useCallback(
+      (node: HTMLDivElement | null) => {
+        refs.setFloating(node);
 
-      const rect = anchorRef.current.getBoundingClientRect();
-      setPosition({
-        top: rect.bottom + window.scrollY + ANCHOR_OFFSET,
-        left: rect.left + window.scrollX,
-        width: rect.width,
-      });
-    }, [anchorRef]);
+        if (typeof rootRef === 'function') {
+          rootRef(node);
+        } else if (rootRef && 'current' in rootRef) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (rootRef as any).current = node;
+        }
+      },
+      [refs, rootRef],
+    );
 
     useEffect(() => {
-      const el = anchorRef.current;
-      if (!el) return;
+      if (anchorRef.current) refs.setReference(anchorRef.current);
+    }, [anchorRef, refs]);
 
-      updatePosition();
+    useEffect(() => {
+      const reference = anchorRef.current;
+      const floating = refs.floating.current;
+      if (!reference || !floating) return;
 
-      const resizeObserver = new ResizeObserver(updatePosition);
-      resizeObserver.observe(el);
+      return autoUpdate(reference, floating, update, {
+        ancestorScroll: true,
+        ancestorResize: true,
+      });
+    }, [anchorRef, refs, update]);
 
-      window.addEventListener('scroll', updatePosition, true);
-      window.addEventListener('resize', updatePosition);
+    useEffect(() => {
+      const reference = anchorRef.current;
+      if (!reference) return;
+
+      const root = boundaryRef?.current ?? null; // null -> viewport
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          const e = entries[0];
+          const visible = !!e && e.isIntersecting;
+          setIsReferenceVisible(visible);
+        },
+        {
+          root,
+          threshold: 0,
+        },
+      );
+
+      observer.observe(reference);
 
       return () => {
-        window.removeEventListener('scroll', updatePosition, true);
-        window.removeEventListener('resize', updatePosition);
-        resizeObserver.disconnect();
+        observer.disconnect();
       };
-    }, [anchorRef, updatePosition]);
+    }, [anchorRef, boundaryRef]);
+
+    if (!isReferenceVisible) {
+      return null;
+    }
 
     return (
       <Box
-        bg="bg.panel"
-        ref={rootRef}
-        color="textPrimary"
-        fontSize="md"
-        borderRadius="l1"
-        padding={1 / 2}
-        position="fixed"
-        zIndex={400}
+        ref={setFloating}
         style={{
-          top: `${position.top}px`,
-          left: `${position.left}px`,
-          width: `${position.width}px`,
+          ...floatingStyles,
         }}
+        bg="bg.panel"
+        color="textPrimary"
+        borderRadius="sm"
+        padding={1 / 2}
+        zIndex={400}
+        overflow="hidden"
       >
-        <Flex display="flex" justifyContent="center" alignItems="center">
-          <VStack
-            w="full"
-            maxH={194}
-            gap={0}
-            overflowY="scroll"
-            css={{
-              '&::-webkit-scrollbar': { width: '0' },
-              scrollbarWidth: 'none',
-            }}
-          >
-            {children}
-          </VStack>
-        </Flex>
+        <VStack
+          w="full"
+          gap={0}
+          maxH={MAX_HEIGHT}
+          overflowY="auto"
+          css={{
+            '&::-webkit-scrollbar': { width: '0' },
+            scrollbarWidth: 'none',
+          }}
+        >
+          {children}
+        </VStack>
       </Box>
     );
   },
