@@ -26,7 +26,11 @@ const CreateContactDialog = ({
       open={dialog.isOpen}
       closeOnInteractOutside={false}
       trapFocus={false}
-      onOpenChange={dialog.onOpenChange}
+      onOpenChange={({ open }) => {
+        if (!open) {
+          dialog.onClose();
+        }
+      }}
       modalContentProps={{ px: 6, py: 6 }}
       modalBodyProps={{ gap: 6 }}
     >
