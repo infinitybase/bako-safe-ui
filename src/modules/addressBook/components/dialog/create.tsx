@@ -9,7 +9,7 @@ interface CreateContactDialogProps {
   form: UseAddressBookReturn['form'];
   dialog: UseAddressBookReturn['dialog']['contactDialog'];
   isLoading: boolean;
-  isEdit: boolean;
+  isEdit?: boolean;
   address?: string;
 }
 
@@ -31,7 +31,6 @@ const CreateContactDialog = ({
       modalBodyProps={{ gap: 6 }}
     >
       <Dialog.Header
-        key={isEdit ? 'edit-header' : 'create-header'}
         position="relative"
         onClose={dialog.onClose}
         title={isEdit ? 'Edit address' : 'Add to address book'}
@@ -57,11 +56,7 @@ const CreateContactDialog = ({
         </FormProvider>
       </Dialog.Body>
 
-      <Dialog.Actions
-        key={isEdit ? 'edit-footer' : 'create-footer'}
-        mt={6}
-        w="full"
-      >
+      <Dialog.Actions mt={6} w="full">
         <Dialog.SecondaryAction
           aria-label="Cancel address book"
           onClick={dialog.onClose}
