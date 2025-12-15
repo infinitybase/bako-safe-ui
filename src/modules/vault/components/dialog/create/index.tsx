@@ -7,6 +7,8 @@ import { TabState, useCreateVaultDialog } from '@/modules/vault/hooks';
 import CreateVaultWarning from '../../CreateVaultWarning';
 import { CreateVaultForm } from './form';
 
+const FOOTER_Z_INDEX = 1410;
+
 interface CreateVaultDialogProps extends Omit<DialogModalProps, 'children'> {
   onCreate?: () => void;
 }
@@ -40,20 +42,15 @@ const CreateVaultDialog = memo((props: CreateVaultDialogProps) => {
       closeOnInteractOutside={false}
       modalContentProps={{
         maxH: '100vh',
-        borderRadius: '2xl',
-        py: 0,
-        pt: 6,
-        shadow: 'none',
-      }}
-      modalBodyProps={{
-        maxH: '100vh',
-        minH: { sm: '780px' },
+        h: '780px',
+        p: 0,
       }}
     >
       <Dialog.Header
         onClose={handleCancel}
-        px={6}
-        mb={0}
+        p={6}
+        pb={0}
+        my={0}
         hidden={steps.step?.hide}
         title={steps.step?.title ?? ''}
         titleSxProps={{
@@ -64,10 +61,25 @@ const CreateVaultDialog = memo((props: CreateVaultDialogProps) => {
         description={steps.step?.description ?? ''}
         descriptionFontSize="xs"
         descriptionColor="textSecondary"
-        mt={0}
       />
 
-      <Dialog.Body px={6} flex={1} display="flex">
+      <Dialog.Body
+        px={6}
+        flex={1}
+        display="flex"
+        overflowY="auto"
+        css={{
+          '&::-webkit-scrollbar': {
+            width: '5px',
+            maxHeight: '330px',
+          },
+          '&::-webkit-scrollbar-thumb': {
+            backgroundColor: 'gray.550',
+            borderRadius: '30px',
+            height: '10px',
+          },
+        }}
+      >
         <CreateVaultForm
           tabs={tabs}
           form={form}
@@ -85,25 +97,17 @@ const CreateVaultDialog = memo((props: CreateVaultDialogProps) => {
           validateAddress={validateAddress}
         />
       </Dialog.Body>
-      {/* 
-      <Box
-        w="full"
-        mt="auto"
-        height="56px"
-        background="linear-gradient(180deg, rgba(21, 20, 19, 0) 0%, rgba(21, 20, 19, 0.75) 30%, #151413 100%);"
-      /> */}
 
       <Dialog.Actions
         w="full"
         p={6}
         bgColor={tabs.tab !== TabState.SUCCESS ? 'bg.muted' : 'bg.panel'}
-        borderRadius="2xl"
-        css={{
-          boxShadow:
-            tabs.tab !== TabState.SUCCESS
-              ? '0px -12px 8px 0px #0D0D0C99'
-              : 'none',
-        }}
+        roundedTop="2xl"
+        roundedBottom={{ base: 'none', sm: '2xl' }}
+        boxShadow={
+          tabs.tab !== TabState.SUCCESS ? '0px -12px 8px 0px #0D0D0C99' : 'none'
+        }
+        zIndex={FOOTER_Z_INDEX}
       >
         <VStack w="full" alignItems="center" gap={6} zIndex={999}>
           <HStack
@@ -125,7 +129,7 @@ const CreateVaultDialog = memo((props: CreateVaultDialogProps) => {
               />
             </Text>
             <Text color="textPrimary" fontSize="xs">
-              Vault creation is free on Fuel Network
+              Account creation is free on Fuel Network
             </Text>
           </HStack>
           {tabs.tab === 1 && (
@@ -137,10 +141,10 @@ const CreateVaultDialog = memo((props: CreateVaultDialogProps) => {
               message="Before initiating high-value deposits, first conduct smaller deposits and transactions to confirm that all signers have access to their wallets and that the vault’s funds can be transferred securely."
             />
           )}
-          <HStack w="full" justifyContent="space-between">
+          <HStack w="full" justifyContent="space-between" gap={4}>
             <Dialog.SecondaryAction
               variant={tabs.tab !== TabState.SUCCESS ? 'ghost' : 'subtle'}
-              w={tabs.tab !== TabState.SUCCESS ? '25%' : '100%'}
+              flex={tabs.tab !== TabState.SUCCESS ? 'unset' : 1}
               onClick={() => {
                 tabs.tab === TabState.SUCCESS
                   ? steps.step.onContinue()
@@ -150,7 +154,7 @@ const CreateVaultDialog = memo((props: CreateVaultDialogProps) => {
               {steps.step.closeText}
             </Dialog.SecondaryAction>
             <Dialog.PrimaryAction
-              w="65%"
+              flex={1}
               aria-label="Create Vault Primary Action"
               hidden={steps.step?.hide}
               onClick={steps.step?.onContinue}

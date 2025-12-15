@@ -53,6 +53,7 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
       workspaceId,
       inView,
     },
+    screenSizes: { isExtraSmall, isLitteSmall },
     providerInstance,
   } = useWorkspaceContext();
 
@@ -345,7 +346,7 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
               }}
             >
               <Icon as={Plus2Icon} color="textSecondary" w={5} h={5} />
-              Add more addresses
+              Add more signers
             </Button>
           </VStack>
 
@@ -378,7 +379,9 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
                   <Select.HiddenSelect />
 
                   <Select.Control>
-                    <Select.Trigger px={6}>
+                    <Select.Trigger
+                      px={isExtraSmall ? 2 : isLitteSmall ? 3 : 6}
+                    >
                       <Select.ValueText color="gray.50" />
                     </Select.Trigger>
                     <Select.IndicatorGroup>
