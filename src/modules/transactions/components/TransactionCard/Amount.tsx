@@ -49,13 +49,12 @@ const Amount = ({
     [transaction.type],
   );
 
-  const totalAmoutSent = useMemo(
+  const totalAmountSent = useMemo(
     () =>
       transaction.assets
         // remove fiat currencies from the total amount
         .filter((asset) => !FIAT_CURRENCIES.has(asset.assetId))
-        .reduce((total, asset) => total.add(asset.amount), bn(0))
-        .format(),
+        .reduce((total, asset) => total.add(asset.amount), bn(0)),
     [transaction.assets],
   );
 
@@ -130,21 +129,34 @@ const Amount = ({
   );
 
   const formattedAmount = useMemo(() => {
+    const firstAsset = transaction.assets[0];
+    const firstAssetOnMap = assetsMap[firstAsset?.assetId] || assetsMap.UNKNOWN;
+
     if (transaction?.assets.length === 1) {
       if (formattedAssets[0]?.isNFT) {
         return '1';
       }
-      const amount = bn(transaction.assets[0].amount).format({
-        units: assetsMap[transaction.assets[0].assetId]?.units ?? 9,
+
+      const amount = bn(firstAsset.amount).format({
+        units: firstAssetOnMap.units,
       });
-      const slug =
-        assetsMap[transaction.assets[0].assetId]?.slug ||
-        assetsMap.UNKNOWN.slug;
+      const slug = firstAssetOnMap.slug;
 
       return `${amount} ${slug}`;
     }
-    return totalAmoutSent;
-  }, [transaction.assets, totalAmoutSent, formattedAssets, assetsMap]);
+
+    if (!firstAsset) return null;
+
+    const allSameAsset = transaction.assets.every(
+      (a) => a.assetId === firstAsset?.assetId,
+    );
+
+    if (allSameAsset) {
+      return totalAmountSent.format({ units: firstAssetOnMap.units });
+    }
+
+    return null;
+  }, [transaction.assets, formattedAssets, assetsMap, totalAmountSent]);
 
   const isNFT =
     formattedAssets.length === 1 && formattedAssets[0]?.isNFT === true;
@@ -177,13 +189,15 @@ const Amount = ({
                 Send multi tokens
               </Text>
             ) : (
-              <Text color="textPrimary" fontSize="sm" lineHeight="21.5px">
-                {formattedAmount}
-              </Text>
+              formattedAmount && (
+                <Text color="textPrimary" fontSize="sm" lineHeight="21.5px">
+                  {formattedAmount}
+                </Text>
+              )
             )}
             <Text
               as="div"
-              fontSize={isMultiToken ? 'sm' : 'xs'}
+              fontSize={isMultiToken || !formattedAmount ? 'sm' : 'xs'}
               color="textSecondary"
               lineHeight="21.5px"
             >
