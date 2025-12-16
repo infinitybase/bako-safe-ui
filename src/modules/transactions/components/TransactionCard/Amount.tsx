@@ -129,7 +129,9 @@ const Amount = ({
   );
 
   const formattedAmount = useMemo(() => {
-    const firstAsset = transaction.assets[0];
+    const firstAsset = transaction?.assets?.[0];
+    if (!firstAsset) return null;
+
     const firstAssetOnMap = assetsMap[firstAsset?.assetId] || assetsMap.UNKNOWN;
 
     if (transaction?.assets.length === 1) {
@@ -144,8 +146,6 @@ const Amount = ({
 
       return `${amount} ${slug}`;
     }
-
-    if (!firstAsset) return null;
 
     const allSameAsset = transaction.assets.every(
       (a) => a.assetId === firstAsset?.assetId,
