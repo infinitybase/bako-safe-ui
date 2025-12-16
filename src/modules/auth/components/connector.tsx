@@ -12,21 +12,17 @@ import {
 import React, { useCallback, useMemo } from 'react';
 
 import { Card } from '@/components';
-import { useScreenSize } from '@/modules';
 type ConnectorType = {
   name: string;
   label: string;
   icon?: React.ElementType;
   imageUrl?: string;
   isEnabled?: boolean;
-  supportMobile: boolean;
 };
 
 interface CardConnectorProps {
   connector: ConnectorType;
   onClick: (connector: string) => void;
-  isAnyWalletConnectorOpen: boolean;
-  supportMobile: boolean;
   isEnabled?: boolean;
 }
 
@@ -39,12 +35,9 @@ interface ConnectorsListProps {
 
 const CardConnector = ({
   connector,
-  isAnyWalletConnectorOpen,
   onClick,
-  supportMobile,
   isEnabled,
 }: CardConnectorProps) => {
-  const { isSmall } = useScreenSize();
   const ConnectorIcon = useMemo(() => {
     if (connector.imageUrl) {
       return (
@@ -68,9 +61,8 @@ const CardConnector = ({
 
   const selectConnector = useCallback(() => {
     if (!isEnabled) return;
-    if (isSmall && !supportMobile) return;
     onClick(connector.name);
-  }, [isEnabled, connector.name, onClick, isSmall, supportMobile]);
+  }, [isEnabled, connector.name, onClick]);
 
   return (
     <Card
@@ -84,13 +76,13 @@ const CardConnector = ({
       flexDirection="column"
       alignItems="center"
       aria-label={`Connect ${connector.label}`}
-      cursor={isEnabled ? 'pointer' : 'initial'}
+      cursor={isEnabled ? 'pointer' : 'not-allowed'}
       border="none"
       borderRadius={8}
       onClick={selectConnector}
       position="relative"
       transition="0.5s"
-      pointerEvents={isAnyWalletConnectorOpen ? 'none' : 'auto'}
+      pointerEvents="auto"
       _hover={{
         bg: 'gray.600',
       }}
@@ -100,10 +92,7 @@ const CardConnector = ({
         h="full"
         top={0}
         left={0}
-        display={{
-          base: supportMobile && isEnabled ? 'none' : 'block',
-          sm: isEnabled ? 'none' : 'block',
-        }}
+        display={isEnabled ? 'none' : 'block'}
         position="absolute"
         borderRadius={10}
         backgroundColor="#121212d7"
@@ -143,11 +132,9 @@ const ConnectorsList = ({
         {connectors.map((connector) => (
           <GridItem key={connector.name}>
             <CardConnector
-              isAnyWalletConnectorOpen={isAnyWalletConnectorOpen}
               connector={connector}
               onClick={onConnectorSelect}
-              isEnabled={connector.isEnabled}
-              supportMobile={connector.supportMobile}
+              isEnabled={connector.isEnabled && !isAnyWalletConnectorOpen}
             />
           </GridItem>
         ))}

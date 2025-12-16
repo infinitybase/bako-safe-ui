@@ -3,6 +3,7 @@ import { TypeUser } from 'bakosafe';
 import { useCallback } from 'react';
 
 import { EvmIcon, FueletIcon, FuelIcon } from '@/components/icons/connectors';
+import { isMobile } from '@/utils';
 
 export enum EConnectors {
   FUEL = 'Fuel Wallet',
@@ -66,7 +67,10 @@ const useListConnectors = () => {
   const defaultConnectors = DEFAULT_CONNECTORS.map((connector) => {
     const fuelConnector = getFuelConnector(connector.name);
     const evmConnector = getEvmConnector(connector.name);
-    const isEnabled = !!fuelConnector?.installed || !!evmConnector?.installed;
+    const desktopEnabled =
+      !!fuelConnector?.installed || !!evmConnector?.installed;
+    const mobileEnabled = connector.supportMobile;
+    const isEnabled = isMobile() ? mobileEnabled : desktopEnabled;
 
     return {
       ...connector,
