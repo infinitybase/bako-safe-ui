@@ -20,23 +20,15 @@ import { CreateVaultDialog } from '@/modules/vault';
 import { VaultItemBox } from '@/modules/vault/components/modal/box';
 import { useVaultDrawer } from '@/modules/vault/components/modal/hook';
 import { getSignaturesCount } from '@/modules/vault/utils';
-import { decodeConnectorType } from '@/utils';
 
 import { DappCommon } from '../components';
 import { useAuthSocket } from '../hooks';
-import {
-  UserConnectorCompatibilityState,
-  useUserConnectorCompatibility,
-} from '../hooks/useUserConnectorCompatibility';
 
 const VaultConnector = () => {
-  const { name, origin, sessionId, request_id, connectorType } =
-    useQueryParams();
+  const { name, origin, sessionId, request_id } = useQueryParams();
 
   const { userInfos, handlers } = useAuth();
   const { ready } = usePrivy();
-  const { compatibilityState, setCompatibilityState, checkCompatibility } =
-    useUserConnectorCompatibility();
 
   const {
     request: { vaults, isSuccess, isLoading, isFetching },
@@ -48,13 +40,8 @@ const VaultConnector = () => {
 
   const { isOpen, onOpenChange, onOpen } = useDisclosure();
 
-  const connector = decodeConnectorType(connectorType || '');
   const noVaultsAvailable = isSuccess && !vaults.length;
-  const isLoadingVaults =
-    isLoading ||
-    userInfos.isLoading ||
-    !ready ||
-    compatibilityState !== UserConnectorCompatibilityState.COMPATIBLE;
+  const isLoadingVaults = isLoading || userInfos.isLoading || !ready;
 
   useEffect(() => {
     if (
@@ -65,8 +52,7 @@ const VaultConnector = () => {
       origin &&
       sessionId &&
       request_id &&
-      userInfos.address &&
-      compatibilityState === UserConnectorCompatibilityState.COMPATIBLE
+      userInfos.address
     ) {
       send.mutate({
         name: name,
@@ -77,44 +63,7 @@ const VaultConnector = () => {
         userAddress: userInfos.address,
       });
     }
-  }, [
-    name,
-    origin,
-    request_id,
-    send,
-    sessionId,
-    userInfos.address,
-    vaults,
-    compatibilityState,
-  ]);
-
-  useEffect(() => {
-    if (
-      connector &&
-      userInfos?.address &&
-      userInfos?.type.type &&
-      !userInfos?.isFetching &&
-      !userInfos?.isLoading
-    ) {
-      const isCompatible = checkCompatibility(connector, userInfos.type.type);
-      setCompatibilityState(
-        isCompatible
-          ? UserConnectorCompatibilityState.COMPATIBLE
-          : UserConnectorCompatibilityState.INCOMPATIBLE,
-      );
-    }
-  }, [
-    connector,
-    userInfos?.address,
-    userInfos?.type.type,
-    userInfos?.isFetching,
-    userInfos?.isLoading,
-  ]);
-
-  useEffect(() => {
-    if (compatibilityState === UserConnectorCompatibilityState.INCOMPATIBLE)
-      handlers.logout?.();
-  }, [compatibilityState]);
+  }, [name, origin, request_id, send, sessionId, userInfos.address, vaults]);
 
   return (
     <Dapp.Container>
@@ -240,8 +189,7 @@ const VaultConnector = () => {
                 !selectedVaultId ||
                 !vaults.length ||
                 isLoadingVaults ||
-                send.isPending ||
-                send.isSuccess
+                send.isPending
               }
               onClick={() => {
                 send.mutate({
@@ -253,7 +201,7 @@ const VaultConnector = () => {
                   userAddress: userInfos.address,
                 });
               }}
-              loading={send.isPending || send.isSuccess}
+              loading={send.isPending}
             >
               Connect
             </Button>

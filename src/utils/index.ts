@@ -10,6 +10,7 @@ export * from './get-asset-img-url';
 export * from './gtm-custom-event';
 export * from './handle';
 export * from './handle-action-using-keys';
+export * from './is-mobile';
 export * from './is-numeric-string';
 export * from './limit-characters';
 export * from './limit-name';
