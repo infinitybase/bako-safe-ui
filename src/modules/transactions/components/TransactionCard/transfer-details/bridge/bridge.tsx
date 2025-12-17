@@ -30,7 +30,7 @@ const BridgeCardDetail = ({ transaction }: BridgeCardDetailProps) => {
   const sourceTokenAmount = useMemo(() => {
     if (sourceTokenDecimals === undefined) return null;
 
-    const amount = bridgeInfo?.sourceToken?.amount?.toString() ?? '';
+    const amount = bridgeInfo?.sourceToken?.amount?.toString() ?? '0';
     const formattedAmount = formatMaxDecimals(amount, sourceTokenDecimals);
 
     return bn.parseUnits(formattedAmount, sourceTokenDecimals).toHex();
@@ -39,7 +39,7 @@ const BridgeCardDetail = ({ transaction }: BridgeCardDetailProps) => {
   const destinationTokenAmount = useMemo(() => {
     if (destinationTokenDecimals === undefined) return null;
 
-    const amount = bridgeInfo?.destinationToken?.amount?.toString() ?? '';
+    const amount = bridgeInfo?.destinationToken?.amount?.toString() ?? '0';
     const formattedAmount = formatMaxDecimals(amount, destinationTokenDecimals);
 
     return bn.parseUnits(formattedAmount, destinationTokenDecimals).toHex();
