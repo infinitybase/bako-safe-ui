@@ -1,10 +1,10 @@
 import { Box } from 'bako-ui';
-import { parseUnits } from 'ethers';
 import { bn } from 'fuels';
 import { useMemo } from 'react';
 
 import { useVerifyTransactionInformations } from '@/modules/transactions/hooks';
 import { TransactionWithVault } from '@/modules/transactions/services';
+import { formatMaxDecimals } from '@/utils';
 
 import { AssetBoxInfo } from '../../AssetBoxInfo';
 
@@ -27,24 +27,25 @@ const BridgeCardDetail = ({ transaction }: BridgeCardDetailProps) => {
     [bridgeInfo?.destinationToken?.decimals],
   );
 
-  const sourceTokenAmount = useMemo(
-    () => bridgeInfo?.sourceToken?.amount?.toString(),
-    [bridgeInfo?.sourceToken?.amount],
-  );
+  const sourceTokenAmount = useMemo(() => {
+    if (sourceTokenDecimals === undefined) return null;
 
-  const destinationTokenAmount = useMemo(
-    () => bridgeInfo?.destinationToken?.amount?.toString(),
-    [bridgeInfo?.destinationToken?.amount],
-  );
+    const amount = bridgeInfo?.sourceToken?.amount?.toString() ?? '0';
+    const formattedAmount = formatMaxDecimals(amount, sourceTokenDecimals);
 
-  if (
-    !bridgeInfo ||
-    !sourceTokenDecimals ||
-    !destinationTokenDecimals ||
-    !sourceTokenAmount ||
-    !destinationTokenAmount
-  )
-    return null;
+    return bn.parseUnits(formattedAmount, sourceTokenDecimals).toHex();
+  }, [bridgeInfo?.sourceToken?.amount, sourceTokenDecimals]);
+
+  const destinationTokenAmount = useMemo(() => {
+    if (destinationTokenDecimals === undefined) return null;
+
+    const amount = bridgeInfo?.destinationToken?.amount?.toString() ?? '0';
+    const formattedAmount = formatMaxDecimals(amount, destinationTokenDecimals);
+
+    return bn.parseUnits(formattedAmount, destinationTokenDecimals).toHex();
+  }, [bridgeInfo?.destinationToken?.amount, destinationTokenDecimals]);
+
+  if (!bridgeInfo || !sourceTokenAmount || !destinationTokenAmount) return null;
 
   return (
     <Box
@@ -58,7 +59,7 @@ const BridgeCardDetail = ({ transaction }: BridgeCardDetailProps) => {
         isDeposit={isDeposit}
         asset={{
           assetId: bridgeInfo?.sourceToken?.assetId ?? '',
-          amount: `${bn(parseUnits(sourceTokenAmount ?? '', sourceTokenDecimals)?.toString())}`,
+          amount: sourceTokenAmount,
           to: bridgeInfo?.sourceToken?.to ?? '',
           transactionID: transaction.id,
         }}
@@ -71,7 +72,7 @@ const BridgeCardDetail = ({ transaction }: BridgeCardDetailProps) => {
         isDeposit={isDeposit}
         asset={{
           assetId: bridgeInfo?.destinationToken?.assetId ?? '',
-          amount: `${bn(parseUnits(destinationTokenAmount ?? '', destinationTokenDecimals)?.toString())}`,
+          amount: destinationTokenAmount,
           to: bridgeInfo?.destinationToken?.to ?? '',
           transactionID: transaction.id,
         }}
