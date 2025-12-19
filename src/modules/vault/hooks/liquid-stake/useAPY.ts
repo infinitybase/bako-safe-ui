@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
 
 const START_DATE = '2025-06-20T00:00:00.000Z';
-const DECIMALS = 1e9;
-const DAYS_PER_YEAR = 365;
+const DECIMALS = 1e9; // Fuel network decimal precision
+const DAYS_PER_YEAR = 365; // Standard year length for APY calculation
 const START_RATE = 1.0;
 
 export function useAPY(rate?: string) {
