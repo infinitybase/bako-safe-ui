@@ -51,8 +51,9 @@ export const useAPY = () => {
     const bondedRatio = bondedTokens / TOTAL_FUEL_SUPPLY;
 
     const calculatedApy = (inflation / bondedRatio) * 100;
+    const validCalculatedApy = isNaN(calculatedApy) ? 0 : calculatedApy;
 
-    return calculatedApy.toFixed(2);
+    return validCalculatedApy.toFixed(2);
   }, [data?.inflation, data?.pool]);
 
   return { apyValue, isLoadingApy, ...rest };
