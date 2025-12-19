@@ -18,7 +18,7 @@ export function useAPY(rate?: string) {
       // We need to invert it to get FUEL per stFUEL (redemption rate, should be > 1.0 and increasing)
       const invertedRate = rateNumber / DECIMALS;
 
-      // Protect against division by zero
+      // Check for edge case where rate could be zero from contract
       if (invertedRate <= 0) {
         return 0;
       }
@@ -32,7 +32,7 @@ export function useAPY(rate?: string) {
         (currentDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24);
 
       // If not started or invalid data
-      if (daysSinceStart <= 0) {
+      if (daysSinceStart <= 0 || currentRate <= START_RATE) {
         return 0;
       }
 
