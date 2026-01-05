@@ -1,11 +1,18 @@
 import { Button, Card, HStack, Image, Text, VStack } from 'bako-ui';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 
 import { Dialog, FuelIcon } from '@/components';
 import { tokensIDS } from '@/modules/core/utils/assets/address';
+import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 
 import { useOperationLiquidStakeModal } from '../../hooks';
 import { InputField } from './InputField';
+
+enum StakeButtonTitle {
+  PENDING_TRANSACTION = 'Pending Transaction',
+  INSUFFICIENT_ETH_BALANCE = 'Add more ETH to pay for Gas',
+  STAKE = 'Stake',
+}
 
 interface ModalLiquidStakeProps {
   isOpen?: boolean;
@@ -38,6 +45,7 @@ export function ModalLiquidStake({
     createTxLiquidStake,
     calculateFee,
   } = useOperationLiquidStakeModal({ balance: balanceTreated, onClose });
+  const { isPendingSigner } = useTransactionsContext();
 
   useEffect(() => {
     if (maxFee === 0 && balanceTreated > 0) {
@@ -51,6 +59,18 @@ export function ModalLiquidStake({
     image: 'https://verified-assets.fuel.network/images/stFUEL.png',
     assetId: tokensIDS.stFUEL,
   };
+
+  const stakeButtonTitle = useMemo(() => {
+    if (isPendingSigner) {
+      return StakeButtonTitle.PENDING_TRANSACTION;
+    }
+
+    if (notEnoughBalanceETH) {
+      return StakeButtonTitle.INSUFFICIENT_ETH_BALANCE;
+    }
+
+    return StakeButtonTitle.STAKE;
+  }, [isPendingSigner, notEnoughBalanceETH]);
 
   return (
     <Dialog.Modal
@@ -219,7 +239,7 @@ export function ModalLiquidStake({
               notEnoughBalanceETH
             }
           >
-            Stake
+            {stakeButtonTitle}
           </Button>
         </Dialog.Actions>
       </Dialog.Body>
