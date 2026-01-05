@@ -124,7 +124,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
   const transactionRequest = useBakoSafeCreateTransaction({
     vault: vault!,
     assetsMap,
-    onSuccess: async (transaction) => {
+    onSuccess: (transaction) => {
       successToast({
         title: 'Transaction created!',
         description: 'Your transaction was successfully created...',
@@ -133,7 +133,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
       refetchTransactionsList();
       refetchHomeTransactionsList();
       refetchVaultTransactionsList();
-      await queryClient.invalidateQueries({
+      queryClient.invalidateQueries({
         queryKey: [PENDING_TRANSACTIONS_QUERY_KEY],
       });
 
