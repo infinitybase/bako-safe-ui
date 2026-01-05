@@ -9,6 +9,7 @@ import {
   Select,
   Stack,
   Text,
+  Tooltip,
 } from 'bako-ui';
 import { motion } from 'framer-motion';
 import { BN, bn } from 'fuels';
@@ -18,9 +19,11 @@ import { CurrencyField } from '@/components';
 import { ETH_SLUG, MinEthValue } from '@/config/swap';
 import { Asset } from '@/modules';
 import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
+import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 
 import { calculateTextWidth } from '../../utils';
 import { ExpandableCardSection } from '../bridge/ExpandableCardSection';
+import { TooltipPendingTx } from '../TooltipPendingTx';
 import { AssetsModal } from './AssetsModal';
 import { SelectedAsset } from './SelectedAsset';
 
@@ -56,6 +59,8 @@ export const CoinBox = memo(
   }: CoinBoxProps) => {
     const assetsModal = useDisclosure();
     const coinInputRef = useRef<HTMLInputElement>(null);
+
+    const { isPendingSigner } = useTransactionsContext();
 
     const balance = useMemo(() => {
       const asset = assets.find((a) => a.assetId === coin.assetId);
@@ -95,6 +100,14 @@ export const CoinBox = memo(
         }),
       [assets],
     );
+
+    const ToolTipComponent = useMemo(() => {
+      if (isPendingSigner) {
+        return <TooltipPendingTx />;
+      }
+
+      return null;
+    }, [isPendingSigner]);
 
     return (
       <Root
@@ -244,16 +257,27 @@ export const CoinBox = memo(
                 {error}
               </Text>
             ) : (
-              <Button
-                size="xs"
-                rounded="lg"
-                disabled={isLoadingAssets}
-                loading={isLoadingAmount}
-                ml="auto"
-                onClick={onContinue}
+              <Tooltip
+                content={ToolTipComponent}
+                disabled={!ToolTipComponent}
+                contentProps={{
+                  bg: 'bg.muted',
+                  borderColor: 'bg.panel',
+                }}
+                showArrow
+                positioning={{ placement: 'top' }}
               >
-                Continue
-              </Button>
+                <Button
+                  size="xs"
+                  rounded="lg"
+                  disabled={isLoadingAssets || isPendingSigner}
+                  loading={isLoadingAmount}
+                  ml="auto"
+                  onClick={onContinue}
+                >
+                  Continue
+                </Button>
+              </Tooltip>
             )}
           </Flex>
         </ExpandableCardSection>
