@@ -43,11 +43,7 @@ export function InputAddressBridge() {
     : currentDestinationAddress;
 
   const ToolTipComponent = useMemo(() => {
-    if (isPendingSigner) {
-      return <TooltipPendingTx />;
-    }
-
-    return null;
+    return isPendingSigner ? <TooltipPendingTx /> : null;
   }, [isPendingSigner]);
 
   return (

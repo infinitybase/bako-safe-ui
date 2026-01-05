@@ -55,11 +55,7 @@ export function AmountBrigde({
   const amountGreaterThanZero = Number(amount) > 0;
 
   const ToolTipComponent = useMemo(() => {
-    if (isPendingSigner) {
-      return <TooltipPendingTx />;
-    }
-
-    return null;
+    return isPendingSigner ? <TooltipPendingTx /> : null;
   }, [isPendingSigner]);
 
   return (
