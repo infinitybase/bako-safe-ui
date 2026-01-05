@@ -1,10 +1,22 @@
-import { Button, Card, Field, Heading, Input, InputGroup, Text } from 'bako-ui';
+import {
+  Button,
+  Card,
+  Field,
+  Heading,
+  Input,
+  InputGroup,
+  Text,
+  Tooltip,
+} from 'bako-ui';
+import { useMemo } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
 import { LineCloseIcon } from '@/components';
 import { AddressUtils } from '@/modules/core';
+import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 
 import { BRIDGE_STEPS_HEIGHTS } from '../../utils';
+import { TooltipPendingTx } from '../TooltipPendingTx';
 import { ExpandableCardSection } from './ExpandableCardSection';
 import {
   ITransferBridgePayload,
@@ -15,6 +27,7 @@ import { BridgeStepsForm } from './utils';
 export function InputAddressBridge() {
   const { control, watch } = useFormContext<ITransferBridgePayload>();
   const { stepForm, setStepForm } = useFormBridgeContext();
+  const { isPendingSigner } = useTransactionsContext();
 
   const isCurrentStep = stepForm === BridgeStepsForm.DESTINATION;
   const isAfterDestinationStep = stepForm > BridgeStepsForm.DESTINATION;
@@ -28,6 +41,14 @@ export function InputAddressBridge() {
   const formatted = AddressUtils.isValid(currentDestinationAddress)
     ? AddressUtils.format(currentDestinationAddress)
     : currentDestinationAddress;
+
+  const ToolTipComponent = useMemo(() => {
+    if (isPendingSigner) {
+      return <TooltipPendingTx />;
+    }
+
+    return null;
+  }, [isPendingSigner]);
 
   return (
     <Card.Root
@@ -99,14 +120,25 @@ export function InputAddressBridge() {
         maxHeight="100px"
       >
         {isCurrentStep && (
-          <Button
-            alignSelf="self-end"
-            w="120px"
-            onClick={handleContinue}
-            disabled={!currentDestinationAddress}
+          <Tooltip
+            content={ToolTipComponent}
+            disabled={!ToolTipComponent}
+            contentProps={{
+              bg: 'bg.muted',
+              borderColor: 'bg.panel',
+            }}
+            showArrow
+            positioning={{ placement: 'top' }}
           >
-            Continue
-          </Button>
+            <Button
+              alignSelf="self-end"
+              w="120px"
+              onClick={handleContinue}
+              disabled={!currentDestinationAddress || isPendingSigner}
+            >
+              Continue
+            </Button>
+          </Tooltip>
         )}
       </ExpandableCardSection>
     </Card.Root>
