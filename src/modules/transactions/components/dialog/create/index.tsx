@@ -50,6 +50,7 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
     resolveTransactionCosts,
     transactionFee,
     isLoadingVault,
+    isPendingSigner,
     getBalanceAvailable,
     handleClose,
   } = useCreateTransaction(createTransactionParams);
@@ -75,12 +76,14 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
 
   const isDisabled = useMemo(
     () =>
+      isPendingSigner ||
       !form.formState.isValid ||
       form.formState.isSubmitting ||
       isCurrentAmountZero ||
       isTransactionFeeLoading ||
       !!resolveTransactionCosts.error,
     [
+      isPendingSigner,
       form.formState.isValid,
       form.formState.isSubmitting,
       isCurrentAmountZero,

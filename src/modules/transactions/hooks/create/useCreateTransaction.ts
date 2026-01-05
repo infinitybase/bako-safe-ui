@@ -51,6 +51,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
       request: { refetch: refetchVaultTransactionsList },
     },
     signTransaction: { confirmTransaction },
+    isPendingSigner,
   } = useTransactionsContext();
 
   const {
@@ -444,6 +445,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     transactionFee: validTransactionFee,
     getBalanceAvailable,
     isLoadingVault,
+    isPendingSigner,
   };
 };
 
