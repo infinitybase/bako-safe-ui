@@ -48,9 +48,9 @@ export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
 
   const { currentNetwork } = useNetworks();
   const { price, isPendingSigner } = useDepositLiquidStake();
-  const { apyValue, isLoadingApy } = useAPY();
-  const { totalFuelTokens, isLoadingFuelTokens } =
+  const { totalFuelTokens, isLoadingFuelTokens, data } =
     useTotalFuelTokens(rigContract);
+  const { apyValue } = useAPY(data?.rate);
 
   const [isOpenMobileItem, setIsOpenMobileItem] = useState<boolean>(false);
   const [modal, setModal] = useState<'STAKE' | 'REDEEM' | ''>('');
@@ -194,7 +194,7 @@ export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
       <ItemLiquidStake
         label="APY"
         value={`${apyValue}%`}
-        isLoading={isLoadingApy}
+        isLoading={isLoadingFuelTokens}
       />
     </>
   );
