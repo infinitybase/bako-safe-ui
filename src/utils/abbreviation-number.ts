@@ -1,6 +1,10 @@
 export const abbreviationNumber = (value: number | string): string => {
   const num = typeof value === 'string' ? parseFloat(value) : value;
 
+  if (isNaN(num)) {
+    return '0';
+  }
+
   const TRILLION = 1_000_000_000_000;
   const BILLION = 1_000_000_000;
   const MILLION = 1_000_000;
