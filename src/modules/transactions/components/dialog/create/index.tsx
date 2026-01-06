@@ -1,5 +1,5 @@
 import { CloseButton, Flex, Heading, Stack, Text, VStack } from 'bako-ui';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useWatch } from 'react-hook-form';
 
 import { Dialog, DialogModalProps } from '@/components';
@@ -50,6 +50,7 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
     resolveTransactionCosts,
     transactionFee,
     isLoadingVault,
+    isPendingSigner,
     getBalanceAvailable,
     handleClose,
   } = useCreateTransaction(createTransactionParams);
@@ -75,12 +76,14 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
 
   const isDisabled = useMemo(
     () =>
+      isPendingSigner ||
       !form.formState.isValid ||
       form.formState.isSubmitting ||
       isCurrentAmountZero ||
       isTransactionFeeLoading ||
       !!resolveTransactionCosts.error,
     [
+      isPendingSigner,
       form.formState.isValid,
       form.formState.isSubmitting,
       isCurrentAmountZero,
@@ -93,6 +96,12 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
     () => transactionRequest.isPending || form.formState.isSubmitting,
     [transactionRequest.isPending, form.formState.isSubmitting],
   );
+
+  useEffect(() => {
+    if (isPendingSigner) {
+      setCreateTxMethod(ECreateTransactionMethods.PENDING_TRANSACTION);
+    }
+  }, [isPendingSigner]);
 
   return (
     <Dialog.Modal

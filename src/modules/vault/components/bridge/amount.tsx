@@ -1,11 +1,14 @@
-import { Button, Card, Heading, HStack, Text } from 'bako-ui';
+import { Button, Card, Heading, HStack, Text, Tooltip } from 'bako-ui';
+import { useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 import { Asset } from '@/modules/core';
+import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 import { useWorkspaceContext } from '@/modules/workspace';
 
 import { useAmountBridge } from '../../hooks/bridge';
 import { BRIDGE_STEPS_HEIGHTS } from '../../utils';
+import { TooltipPendingTx } from '../TooltipPendingTx';
 import { ExpandableCardSection } from './ExpandableCardSection';
 import { InputAmount } from './inputAmount';
 import { useFormBridgeContext } from './providers/FormBridgeProvider';
@@ -29,6 +32,7 @@ export function AmountBrigde({
   const {
     screenSizes: { isExtraSmall },
   } = useWorkspaceContext();
+  const { isPendingSigner } = useTransactionsContext();
 
   const { stepForm, setStepForm, isLoadingQuote } = useFormBridgeContext();
   const { watch } = useFormContext();
@@ -49,6 +53,10 @@ export function AmountBrigde({
   };
 
   const amountGreaterThanZero = Number(amount) > 0;
+
+  const ToolTipComponent = useMemo(() => {
+    return isPendingSigner ? <TooltipPendingTx /> : null;
+  }, [isPendingSigner]);
 
   return (
     <Card.Root
@@ -132,15 +140,26 @@ export function AmountBrigde({
           </HStack>
           <HStack flex={1} justifyContent="flex-end">
             {isCurrentStep && amountGreaterThanZero && (
-              <Button
-                w={isExtraSmall ? 'auto' : '120px'}
-                alignSelf="flex-end"
-                onClick={handleContinue}
-                disabled={!!errorAmount}
-                loading={isLoadingQuote}
+              <Tooltip
+                content={ToolTipComponent}
+                disabled={!ToolTipComponent}
+                contentProps={{
+                  bg: 'bg.muted',
+                  borderColor: 'bg.panel',
+                }}
+                showArrow
+                positioning={{ placement: 'top' }}
               >
-                Continue
-              </Button>
+                <Button
+                  w={isExtraSmall ? 'auto' : '120px'}
+                  alignSelf="flex-end"
+                  onClick={handleContinue}
+                  disabled={!!errorAmount || isPendingSigner}
+                  loading={isLoadingQuote}
+                >
+                  Continue
+                </Button>
+              </Tooltip>
             )}
           </HStack>
         </HStack>

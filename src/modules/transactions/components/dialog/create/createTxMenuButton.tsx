@@ -7,6 +7,7 @@ import { ChevronDownIcon } from '@/components/icons/chevron-down';
 export enum ECreateTransactionMethods {
   CREATE = 'Create',
   CREATE_AND_SIGN = 'Create and sign',
+  PENDING_TRANSACTION = 'Pending Transaction',
 }
 
 export interface CreateTxMenuButtonProps {

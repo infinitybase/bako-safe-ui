@@ -7,6 +7,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useWatch } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
+import { queryClient } from '@/config';
 import { useContactToast } from '@/modules/addressBook';
 import {
   Asset,
@@ -21,6 +22,7 @@ import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { useTransactionsContext } from '../../providers/TransactionsProvider';
 import { generateTransactionName } from '../../utils';
+import { PENDING_TRANSACTIONS_QUERY_KEY } from '../list/useTotalSignaturesPendingRequest';
 import { useCreateTransactionForm } from './useCreateTransactionForm';
 import { useTransactionAccordion } from './useTransactionAccordion';
 
@@ -49,6 +51,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
       request: { refetch: refetchVaultTransactionsList },
     },
     signTransaction: { confirmTransaction },
+    isPendingSigner,
   } = useTransactionsContext();
 
   const {
@@ -130,6 +133,10 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
       refetchTransactionsList();
       refetchHomeTransactionsList();
       refetchVaultTransactionsList();
+      queryClient.invalidateQueries({
+        queryKey: [PENDING_TRANSACTIONS_QUERY_KEY],
+      });
+
       if (props?.createTransactionAndSign) {
         confirmTransaction(transaction.id, undefined, transaction);
       }
@@ -438,6 +445,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     transactionFee: validTransactionFee,
     getBalanceAvailable,
     isLoadingVault,
+    isPendingSigner,
   };
 };
 

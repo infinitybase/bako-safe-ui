@@ -228,6 +228,9 @@ export const AccountOverview = memo(
                     variant="subtle"
                     size="xs"
                     onClick={handleNavigateToSendPage}
+                    disabled={
+                      isPendingSigner || isEthBalanceLowerThanReservedAmount
+                    }
                   >
                     <UpRightArrow w={4} />
                     Send
