@@ -40,11 +40,10 @@ const WebAuthnForm = (props: WebAuthnFormProps) => {
 
   const name = watch('username') || '';
   const hasName = name.length > 0;
+  const isBadgeError = inputBadge?.status === AutocompleteBadgeStatus.ERROR;
   const hasError = useMemo(
-    () =>
-      hasName &&
-      (errors.username || inputBadge?.status === AutocompleteBadgeStatus.ERROR),
-    [errors.username, hasName, inputBadge?.status],
+    () => hasName && (errors.username || isBadgeError),
+    [errors.username, hasName, isBadgeError],
   );
 
   // Do not show combobox error message
