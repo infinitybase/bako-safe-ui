@@ -40,8 +40,13 @@ const useWebAuthnSignIn = (
   });
 
   const { form } = useWebAuthnForm();
-  const { checkNicknameRequest, accountsRequest, badge, ...rest } =
-    useWebAuthnInput(!form.formState.errors.username, undefined, mode);
+  const {
+    checkNicknameRequest,
+    accountsRequest,
+    badge,
+    isBadgeStatusValid,
+    ...rest
+  } = useWebAuthnInput(!form.formState.errors.username, undefined, mode);
 
   const handleSignInCallback = useCallback(
     (username: string, vaultId?: string, workspaceId?: string) => {
@@ -79,13 +84,13 @@ const useWebAuthnSignIn = (
     isSigningIn ||
     !form.formState.isValid ||
     !!form.formState.errors.username ||
-    checkNicknameRequest.isLoading ||
+    !isBadgeStatusValid ||
     !window.navigator.credentials;
   const isRegisterModeBtnDisabled =
     isRegistering ||
     !form.formState.isValid ||
     !!form.formState.errors.username ||
-    checkNicknameRequest.isLoading ||
+    !isBadgeStatusValid ||
     !window.navigator.credentials;
 
   const formState = {
@@ -141,13 +146,7 @@ const useWebAuthnSignIn = (
   };
 
   useEffect(() => {
-    if (
-      badge &&
-      [
-        AutocompleteBadgeStatus.ERROR,
-        AutocompleteBadgeStatus.CONFLICT,
-      ].includes(badge?.status)
-    ) {
+    if (badge?.status === AutocompleteBadgeStatus.ERROR) {
       form.setError('username', {
         message: badge.label,
       });

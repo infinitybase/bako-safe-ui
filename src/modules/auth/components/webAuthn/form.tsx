@@ -1,4 +1,5 @@
 import { Field, RhfCombobox, Text, VStack } from 'bako-ui';
+import { useMemo } from 'react';
 
 import { AutocompleteBadgeStatus, CloseCircle } from '@/components';
 
@@ -38,12 +39,28 @@ const WebAuthnForm = (props: WebAuthnFormProps) => {
     errors.username || inputBadge?.label ? 'visible' : 'hidden';
 
   const name = watch('username') || '';
+  const hasName = name.length > 0;
+  const hasError = useMemo(
+    () =>
+      hasName &&
+      (errors.username || inputBadge?.status === AutocompleteBadgeStatus.ERROR),
+    [errors.username, hasName, inputBadge?.status],
+  );
 
-  const isError =
-    errors.username ||
-    (inputBadge ? inputBadge.status === AutocompleteBadgeStatus.ERROR : false);
+  // Do not show combobox error message
+  const usernameErrorWithoutMessage = useMemo(
+    () =>
+      errors.username ? { ...errors.username, message: undefined } : undefined,
+    [errors.username],
+  );
 
-  const showErrorColor = isError && name.length > 0;
+  const fieldError = useMemo(
+    () =>
+      hasError
+        ? (usernameErrorWithoutMessage ?? { type: 'validate' }) // If username error is not present, set the generic error
+        : undefined,
+    [hasError, usernameErrorWithoutMessage],
+  );
 
   return (
     <VStack w="full" alignItems="flex-start" gap={12}>
@@ -56,7 +73,10 @@ const WebAuthnForm = (props: WebAuthnFormProps) => {
         {isRegisterMode ? 'Create new user' : 'Login'}
       </Text>
       <Field.Root w="full">
-        <Field.HelperText visibility={visibility}>
+        <Field.HelperText
+          visibility={visibility}
+          color={hasError ? 'red.400' : 'gray.200'}
+        >
           {errors.username
             ? errors.username.message
             : inputBadge?.label || '\u00A0'}
@@ -74,10 +94,10 @@ const WebAuthnForm = (props: WebAuthnFormProps) => {
           slotProps={{
             input: {
               pr: '40px', // clear trigger overflow
-              color: showErrorColor ? 'red' : 'textPrimary',
             },
           }}
           clearTriggerIcon={<CloseCircle />}
+          error={fieldError}
         />
       </Field.Root>
     </VStack>
