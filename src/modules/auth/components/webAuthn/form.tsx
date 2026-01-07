@@ -98,6 +98,7 @@ const WebAuthnForm = (props: WebAuthnFormProps) => {
           }}
           clearTriggerIcon={<CloseCircle />}
           error={fieldError}
+          onlyLowercase
         />
       </Field.Root>
     </VStack>
