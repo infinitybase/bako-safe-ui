@@ -153,7 +153,7 @@ const useWebAuthnSignIn = (
     } else {
       form.trigger('username');
     }
-  }, [badge, mode]);
+  }, [badge?.status, badge?.label, mode]);
 
   return {
     formData: {
