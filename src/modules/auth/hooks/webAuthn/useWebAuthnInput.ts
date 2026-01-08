@@ -32,6 +32,10 @@ const WebauthnInputBadge: Record<string, IWebauthnInputBadge> = {
     status: AutocompleteBadgeStatus.ERROR,
     label: 'Username not found',
   },
+  CONFLICT: {
+    status: AutocompleteBadgeStatus.ERROR,
+    label: 'Username already exists',
+  },
 };
 
 const useWebAuthnInput = (
@@ -85,7 +89,7 @@ const useWebAuthnInput = (
       return undefined;
     }
 
-    if (checkNicknameRequest.isLoading) {
+    if (checkNicknameRequest.isLoading || inputValue !== debouncedInputValue) {
       return WebauthnInputBadge.SEARCHING;
     }
 
@@ -93,7 +97,7 @@ const useWebAuthnInput = (
       if (checkNicknameRequest.data?.type === TypeUser.WEB_AUTHN) {
         return WebauthnInputBadge.INFO;
       }
-      return WebauthnInputBadge.ERROR;
+      return WebauthnInputBadge.NOT_FOUND;
     }
 
     if (mode === WebAuthnModeState.REGISTER) {
@@ -106,8 +110,25 @@ const useWebAuthnInput = (
     checkNicknameRequest.isLoading,
     checkNicknameRequest.data,
     mode,
+    inputValue,
     debouncedInputValue,
   ]);
+
+  const isBadgeStatusValid = useMemo(() => {
+    if (!badge || !debouncedInputValue) {
+      return false;
+    }
+
+    if (mode === WebAuthnModeState.LOGIN) {
+      return badge.status === AutocompleteBadgeStatus.INFO;
+    }
+
+    if (mode === WebAuthnModeState.REGISTER) {
+      return badge.status === AutocompleteBadgeStatus.SUCCESS;
+    }
+
+    return false;
+  }, [badge, debouncedInputValue, mode]);
 
   return {
     inputValue,
@@ -115,6 +136,7 @@ const useWebAuthnInput = (
     accountsRequest,
     checkNicknameRequest,
     badge,
+    isBadgeStatusValid,
     setInputValue,
     handleInputChange,
   };

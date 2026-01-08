@@ -93,8 +93,9 @@ const useWalletSignIn = (
         title: 'Login error',
         description: (e as { message: string }).message,
       });
-
-      // authDetails.handlers.setInvalidAccount?.(true);
+    } finally {
+      setIsAnyWalletConnectorOpen(false);
+      setCurrentOpenConnector(null);
     }
   };
 
