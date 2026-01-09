@@ -11,7 +11,7 @@ export const NFTsEmptyState = () => {
       p={{ base: 10, xs: 10 }}
       bg="gradients.transaction-card"
       borderWidth={1}
-      borderColor="gradients.transaction-border"
+      borderColor="gray.700"
       backdropFilter="blur(16px)"
       dropShadow="0px 8px 6px 0px #00000026"
       display="flex"
@@ -34,10 +34,10 @@ export const NFTsEmptyState = () => {
         />
 
         <Stack gap={2}>
-          <Text textAlign="center" color="grey.50" fontSize="md">
+          <Text textAlign="center" color="gray.200" fontSize="md" fontWeight="semibold">
             No items found
           </Text>
-          <Text textAlign="center" color="grey.250" fontSize="xs">
+          <Text textAlign="center" color="gray.400" fontSize="xs">
             Discover new collection on Marketplace
           </Text>
         </Stack>
