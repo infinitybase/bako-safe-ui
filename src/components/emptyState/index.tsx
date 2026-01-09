@@ -3,6 +3,7 @@ import {
   EmptyState as BakoEmptyState,
   EmptyStateRootProps,
 } from 'bako-ui';
+import { EmptyIcon } from '@/components';
 
 interface EmptyStateProps extends EmptyStateRootProps {
   isDisabled?: boolean;
@@ -32,16 +33,19 @@ const EmptyState = ({
       display="flex"
       {...rest}
     >
-      <BakoEmptyState.Content gap={6} alignItems="center" w="full">
+      <BakoEmptyState.Content gap={1} alignItems="center" w="full">
+        <BakoEmptyState.Indicator>
+          <EmptyIcon width="40px" height="40px" />
+        </BakoEmptyState.Indicator>
         <BakoEmptyState.Title
           fontSize="xs"
-          color="textPrimary"
+          color="gray.200"
           textAlign="center"
         >
           {title}
         </BakoEmptyState.Title>
         <BakoEmptyState.Description
-          color="textSecondary"
+          color="gray.400"
           textAlign="center"
           fontSize="xs"
         >

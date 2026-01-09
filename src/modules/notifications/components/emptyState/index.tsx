@@ -1,6 +1,5 @@
 import { Box, Card, Heading, Text } from 'bako-ui';
-
-import { EmptyBoxOutline } from '@/components';
+import { EmptyIcon } from '@/components';
 
 const NotificationsEmptyState = () => {
   return (
@@ -16,7 +15,7 @@ const NotificationsEmptyState = () => {
         alignItems="center"
       >
         <Box mb={4}>
-          <EmptyBoxOutline w={100} h={100} />
+          <EmptyIcon width="60px" height="60px" />
         </Box>
 
         <Box mb={4}>
