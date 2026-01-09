@@ -280,6 +280,8 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
   );
 
   const handleClose = () => {
+    form.reset();
+    accordion.reset();
     props?.onClose?.({ open: false });
   };
 

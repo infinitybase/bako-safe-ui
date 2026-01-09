@@ -89,23 +89,24 @@ const RecipientFormAmount = memo(
               bg="gray.550"
             />
           </InputGroup>
-
           <Field.ErrorText>
             {error?.message ? (
               <Text fontSize="xs" lineHeight="short">
                 {error.message}
               </Text>
-            ) : !isNFT ? (
-              <Text
-                fontSize="xs"
-                lineHeight="short"
-                color="gray.400"
-                opacity={usdNumber > 0 ? 1 : 0}
-              >
-                ~ {usdEstimate}
-              </Text>
             ) : null}
           </Field.ErrorText>
+          {!isNFT && (
+            <Text
+              fontSize="xs"
+              lineHeight="short"
+              color="gray.400"
+              opacity={usdNumber > 0 ? 1 : 0}
+              mb={2}
+            >
+              ~ {usdEstimate}
+            </Text>
+          )}
         </Field.Root>
       </HStack>
     );

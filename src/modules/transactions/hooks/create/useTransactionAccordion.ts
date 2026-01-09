@@ -7,9 +7,12 @@ const useTransactionAccordion = () => {
 
   const open = useCallback((index: number) => setAccordionIndex(index), []);
 
+  const reset = useCallback(() => setAccordionIndex(0), []);
+
   return {
     open,
     close,
+    reset,
     index: accordionIndex,
   };
 };
