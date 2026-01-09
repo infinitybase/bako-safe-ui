@@ -39,7 +39,6 @@ import OverviewSkeleton from './skeleton';
 
 interface AccountOverviewProps {
   vault: UseVaultDetailsReturn['vault'];
-  workspaceId: string;
   onAddAssets: () => void;
   isPendingSigner: boolean;
 }
