@@ -8,6 +8,7 @@ type NFTTextProps = {
   icon?: React.ReactNode;
   isCopy?: boolean;
 } & FlexProps;
+
 export const NFTText = ({
   value,
   title,
