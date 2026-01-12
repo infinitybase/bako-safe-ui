@@ -1,16 +1,19 @@
-import { Drawer, HStack, Icon, Text, VStack } from 'bako-ui';
+import { Drawer, HStack, Icon, Image, Text, VStack } from 'bako-ui';
 
 import { FuelIcon, RigIcon } from '@/components';
+import poweredByRig from "@/assets/svg/powered-by-rig.svg";
 
 interface MobileItemLiquidStakeProps {
   isOpen: boolean;
   onClose: () => void;
+  isPendingSigner: boolean;
   children?: React.ReactNode;
 }
 
 export function MobileDropdownLiquidStake({
   isOpen,
   onClose,
+  isPendingSigner,
   children,
 }: MobileItemLiquidStakeProps) {
   return (
@@ -26,18 +29,36 @@ export function MobileDropdownLiquidStake({
         <Drawer.Positioner>
           <Drawer.Content padding={4} bg="bg.panel">
             <Drawer.Header>
-              <HStack marginBottom={4} fontWeight="normal">
-                <Icon as={FuelIcon} fontSize={24} />
-                <Text fontSize={12}>Liquid Stake FUEL</Text>
-                <HStack
-                  flex={1}
-                  justifyContent="flex-end"
-                  alignItems="center"
-                  display={{ base: 'flex', md: 'none' }}
+              <VStack alignItems="flex-start" gap={0} maxW={["130px", "320px"]}>
+                <Text
+                  fontWeight={600}
+                  fontSize={14}
+                  color="textPrimary"
                 >
-                  <Text fontSize={10}>powered by</Text>
-                  <RigIcon fontSize={32} />
-                </HStack>
+                  Liquid Stake FUEL
+                </Text>
+                {isPendingSigner && (
+                  <Text
+                    textAlign="justify"
+                    fontSize="xs"
+                    color="primary.main"
+                  >
+                    This vault has pending transactions.
+                  </Text>
+                )}
+              </VStack>
+              <HStack
+                flex={1}
+                alignItems="flex-start"
+                justifyContent="flex-end"
+                display={'flex'}
+              >
+                <Image
+                  src={poweredByRig}
+                  alt="Powered by Rig"
+                  w="auto"
+                  maxH={8}
+                />
               </HStack>
             </Drawer.Header>
             <Drawer.Body>

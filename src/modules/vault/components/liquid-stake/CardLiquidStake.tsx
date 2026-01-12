@@ -158,7 +158,7 @@ export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
       </ItemLiquidStake>
 
       <ItemLiquidStake
-        label="stFUEL Balance"
+        label="FUEL in staking"
         value={stFuelTokens}
         isLoading={!assets.assets}
       >
@@ -172,16 +172,16 @@ export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
           onClick={() => window.open(WITHDRAW_URL, '_blank')}
           disabled={!isMainnet || !assets.assets || Number(stFuelTokens) === 0}
         >
-          Withdraw
+          Reedem
         </Button>
       </ItemLiquidStake>
       <ItemLiquidStake
-        label="Total FUEL"
+        label="Total FUEL earned"
         value={totalFuelTokens.toUpperCase()}
         isLoading={isLoadingFuelTokens}
       />
       <ItemLiquidStake
-        label="APY"
+        label="Total value staked"
         value={`${apyValue}%`}
         isLoading={isLoadingFuelTokens}
       />
@@ -214,17 +214,27 @@ export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
             marginBottom={{ base: 0, md: 4 }}
             onClick={handleOpenMobileItem}
           >
-            <Text
-              fontWeight={500}
-              fontSize={isMobile ? 12 : 14}
-              color="textPrimary"
-            >
-              Liquid Stake FUEL
-            </Text>
-
+            <VStack alignItems="flex-start" gap={0}>
+              <Text
+                fontWeight={600}
+                fontSize={isMobile ? 12 : 14}
+                color="textPrimary"
+              >
+                Liquid Stake FUEL
+              </Text>
+              {!isMobile &&  isPendingSigner && (
+                <Text
+                  textAlign="justify"
+                  fontSize="xs"
+                  color="primary.main"
+                >
+                  This vault has pending transactions.
+                </Text>
+              )}
+            </VStack>
             <HStack
               flex={1}
-              alignItems="center"
+              alignItems="flex-start"
               justifyContent="flex-end"
               display={{ base: 'none', md: 'flex' }}
             >
@@ -291,6 +301,7 @@ export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
           setIsOpenMobileItem(false);
         }}
         isOpen={isOpenMobileItem}
+        isPendingSigner={isPendingSigner}
       >
         {createItems()}
       </MobileDropdownLiquidStake>
