@@ -158,7 +158,7 @@ export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
       </ItemLiquidStake>
 
       <ItemLiquidStake
-        label="FUEL in staking"
+        label="stFUEL Balance"
         value={stFuelTokens}
         isLoading={!assets.assets}
       >
@@ -172,16 +172,16 @@ export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
           onClick={() => window.open(WITHDRAW_URL, '_blank')}
           disabled={!isMainnet || !assets.assets || Number(stFuelTokens) === 0}
         >
-          Reedem
+          Withdraw
         </Button>
       </ItemLiquidStake>
       <ItemLiquidStake
-        label="Total FUEL earned"
+        label="Total FUEL"
         value={totalFuelTokens.toUpperCase()}
         isLoading={isLoadingFuelTokens}
       />
       <ItemLiquidStake
-        label="Total value staked"
+        label="APY"
         value={`${apyValue}%`}
         isLoading={isLoadingFuelTokens}
       />
