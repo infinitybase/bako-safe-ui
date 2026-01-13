@@ -43,7 +43,7 @@ export function MobileDropdownLiquidStake({
                     fontSize="xs"
                     color="primary.main"
                   >
-                    This vault has pending transactions.
+                    This account has pending transactions.
                   </Text>
                 )}
               </VStack>
