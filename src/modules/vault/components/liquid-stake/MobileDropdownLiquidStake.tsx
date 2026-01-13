@@ -39,7 +39,6 @@ export function MobileDropdownLiquidStake({
                 </Text>
                 {isPendingSigner && (
                   <Text
-                    textAlign="justify"
                     fontSize="xs"
                     color="primary.main"
                   >
