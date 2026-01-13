@@ -1,5 +1,6 @@
 import { Box, Flex, FlexProps, Icon, Text } from '@chakra-ui/react';
-import { AddressWithCopyBtn } from '@/components';
+
+import { AssetIdWithCopy } from '@/components/address/assetIdWithCopy';
 
 type NFTTextProps = {
   value: string;
@@ -33,7 +34,7 @@ export const NFTText = ({
       </Text>
       <Flex gap={2}>
         {isCopy ? (
-          <AddressWithCopyBtn value={value} isDetailDialog />
+          <AssetIdWithCopy assetId={value} />
         ) : (
           <Text fontSize="sm" color="white" wordBreak="break-word">
             {value}
