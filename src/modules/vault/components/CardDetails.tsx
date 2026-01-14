@@ -410,7 +410,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                         fontSize="xs"
                         color="error.500"
                       >
-                        This vault has pending transactions.
+                        This account has pending transactions.
                       </Text>
                     ) : !makeTransactionsPerm ? (
                       <Text
