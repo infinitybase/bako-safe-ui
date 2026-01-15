@@ -17,7 +17,9 @@ import {
   useBakoSafeVault,
   useGetTokenInfosArray,
 } from '@/modules/core';
+import { USER_ALLOCATION_QUERY_KEY } from '@/modules/home/hooks';
 import { TransactionService } from '@/modules/transactions/services';
+import { vaultAllocationQueryKey } from '@/modules/vault/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { useTransactionsContext } from '../../providers/TransactionsProvider';
@@ -135,6 +137,12 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
       refetchVaultTransactionsList();
       queryClient.invalidateQueries({
         queryKey: [PENDING_TRANSACTIONS_QUERY_KEY],
+      });
+      queryClient.invalidateQueries({
+        queryKey: vaultAllocationQueryKey.VAULT_ALLOCATION_QUERY_KEY(id),
+      });
+      queryClient.invalidateQueries({
+        queryKey: [USER_ALLOCATION_QUERY_KEY],
       });
 
       if (props?.createTransactionAndSign) {

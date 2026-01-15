@@ -50,6 +50,7 @@ const useTransactionDetails = () => {
   );
 
   const signTransaction = useSignTransaction({
+    vaultId: vaultId ?? '',
     transactionList: transactionsPageList,
     pendingTransactions: pendingTransactions,
     pendingSignerTransactionsRefetch: pendingSignerTransactions.refetch,
