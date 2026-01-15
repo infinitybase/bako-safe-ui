@@ -39,6 +39,8 @@ const CreateAPITokenForm = (props: CreateAPITokenFormProps) => {
                     as={CloseCircle}
                     display={field.value ? 'block' : 'none'}
                     onClick={() => field.onChange('')}
+                    cursor="pointer"
+                    aria-label="Clear input"
                   />
                 }
               >
@@ -71,6 +73,8 @@ const CreateAPITokenForm = (props: CreateAPITokenFormProps) => {
                     as={CloseCircle}
                     display={field.value ? 'block' : 'none'}
                     onClick={() => field.onChange('')}
+                    cursor="pointer"
+                    aria-label="Clear input"
                   />
                 }
               >
