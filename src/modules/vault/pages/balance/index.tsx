@@ -20,8 +20,6 @@ const VaultBalancePage = () => {
 
   if (!vault) return null;
 
-  if (!vault) return null;
-
   return (
     <Flex w="full" direction="column" flex={1} mb={{ base: 0, sm: 4 }}>
       <Flex w="full" direction="column" flex={1}>
