@@ -1,4 +1,4 @@
-import { HStack, Tabs } from 'bako-ui';
+import { CloseButton, Flex, Heading, Stack, Tabs, Text, VStack } from 'bako-ui';
 
 import { Dialog } from '@/components';
 import { UseAPITokenReturn } from '@/modules/cli/hooks';
@@ -24,63 +24,42 @@ const CreateAPITokenDialog = (props: CreateAPITokenDialogProps) => {
       onOpenChange={control.onOpenChange}
       closeOnInteractOutside={false}
       trapFocus={false}
+      modalContentProps={{ sm: { minH: '700px' }, maxW: '480px', p: '0 !important' }}
       size={{
         base: 'full',
         md: 'md',
       }}
     >
-      <Dialog.Header
-        title={steps.step.title}
-        onClose={control.onClose}
-        description={steps.step.description}
-        hidden={steps.step.hideHeader}
-        mb={0}
-        mt={{ base: 4, sm: 0 }}
-        maxW={440}
-      />
-
-      <Dialog.Body w="full" maxW={440} flex={1} display="flex">
-        <Tabs.Root value={String(tabs.tab)} flex={1}>
+      <Stack w="100%" maxW="480px" pt={6} px={6}>
+        <Flex w="100%" align="center" justify="space-between">
+          <Heading fontSize="sm" color="textPrimary" lineHeight="short">
+            {steps.step.title}
+          </Heading>
+          <CloseButton size="2xs" onClick={control.onClose} />
+        </Flex>
+        <Text fontSize="xs" color="textSecondary">
+          {steps.step.description}
+        </Text>
+      </Stack>
+      <Dialog.Body w="full" h="full" maxW="480px" flex={1} display="flex">
+        <Tabs.Root value={String(tabs.tab)} flex={1} display="flex">
           <Tabs.Content value="0">
             <APITokensList tabs={tabs} request={list.request} />
           </Tabs.Content>
           <Tabs.Content value="1">
-            <CreateAPITokenForm form={create.form} />
+            <CreateAPITokenForm form={create.form} steps={steps} />
           </Tabs.Content>
           <Tabs.Content value="2">
             <CreateAPITokenSuccess
               step={steps.step}
+              steps={steps}
               createdAPIKey={create.createdAPIKey.value}
+              name={create.createdAPIKeyName?.value}
+              transactionTitle={create.createdAPIKeyTransactionTitle?.value}
             />
           </Tabs.Content>
         </Tabs.Root>
       </Dialog.Body>
-
-      <Dialog.Actions w="full" maxW={440} position="relative" mt={4}>
-        <HStack w="full" justifyContent="space-between" gap={6}>
-          <Dialog.SecondaryAction
-            flex={1}
-            variant="subtle"
-            onClick={steps.step.secondaryAction.handler}
-            aria-label={'Secundary action create api token'}
-          >
-            {steps.step.secondaryAction.label}
-          </Dialog.SecondaryAction>
-          <Dialog.PrimaryAction
-            flex={3}
-            hidden={steps.step.primaryAction.hide}
-            onClick={steps.step.primaryAction.handler}
-            disabled={steps.step.primaryAction.disabled}
-            _hover={{
-              opacity: !steps.step.primaryAction.disabled ? 0.8 : 1,
-            }}
-            loading={steps.step.primaryAction.isLoading}
-            aria-label={'Primary action create api token'}
-          >
-            {steps.step.primaryAction.label}
-          </Dialog.PrimaryAction>
-        </HStack>
-      </Dialog.Actions>
     </Dialog.Modal>
   );
 };

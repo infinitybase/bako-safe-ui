@@ -19,6 +19,8 @@ const useCreateAPIToken = (
   setTab: Dispatch<React.SetStateAction<TabState>>,
 ) => {
   const [createdAPIKey, setCreatedAPIKey] = useState<string>('');
+  const [createdAPIKeyName, setCreatedAPIKeyName] = useState<string>('');
+  const [createdAPIKeyTransactionTitle, setCreatedAPIKeyTransactionTitle] = useState<string | undefined>(undefined);
   const {
     vaultPageParams: { vaultId },
   } = useGetParams();
@@ -46,6 +48,8 @@ const useCreateAPIToken = (
         });
         setTab(TabState.SUCCESS);
         setCreatedAPIKey(data.token);
+        setCreatedAPIKeyName(data.name);
+        setCreatedAPIKeyTransactionTitle(data.config?.transactionTitle);
       },
       onError: () => {
         errorToast({
@@ -69,6 +73,14 @@ const useCreateAPIToken = (
     createdAPIKey: {
       value: createdAPIKey,
       set: setCreatedAPIKey,
+    },
+    createdAPIKeyName: {
+      value: createdAPIKeyName,
+      set: setCreatedAPIKeyName,
+    },
+    createdAPIKeyTransactionTitle: {
+      value: createdAPIKeyTransactionTitle,
+      set: setCreatedAPIKeyTransactionTitle,
     },
   };
 };

@@ -1,6 +1,6 @@
 import {
   Box,
-  HStack,
+  Stack,
   Icon,
   IconButton,
   Text,
@@ -9,60 +9,62 @@ import {
   VStack,
 } from 'bako-ui';
 import { RiFileCopyFill } from 'react-icons/ri';
+import { formatCreatedDate } from "@/utils/format-date-full";
 
 import { CopyTopMenuIcon } from '@/components/icons/copy-top-menu';
 import { DoneIcon } from '@/components/icons/done-icon';
 import { UseAPITokenReturn } from '@/modules/cli/hooks';
-import { AddressUtils } from '@/modules/core/utils';
+import { Dialog } from "@/components";
 
 interface CreateAPITokenSuccessProps {
   step: UseAPITokenReturn['steps']['step'];
   createdAPIKey: UseAPITokenReturn['create']['createdAPIKey']['value'];
+  steps: any;
+  name?: string;
+  transactionTitle?: string;
 }
 
 const CreateAPITokenSuccess = (props: CreateAPITokenSuccessProps) => {
-  const { step, createdAPIKey } = props;
+  const { createdAPIKey, name, transactionTitle, steps } = props;
 
   const { copy, copied } = useClipboard({ value: createdAPIKey });
 
   return (
-    <Box p={0} h="full">
+    <Box p={6} h="full">
       <VStack h="full" minH={400}>
         <VStack gap={5} flex={1} alignItems="center" justifyContent="center">
-          <Icon boxSize="100px" as={DoneIcon} />
+          <Icon boxSize="48px" as={DoneIcon} />
 
-          <VStack maxW={276} gap={4}>
-            <Text fontWeight={700} fontSize={20} color="grey.75">
-              {step.title}
+          <VStack maxW={400} gap={4}>
+            <Text fontWeight={700} fontSize={16} color="gray.50">
+              API Token created!
             </Text>
             <Text
               fontWeight="normal"
-              color="grey.400"
-              fontSize="xs"
-              // variant="description"
+              color="gray.400"
+              fontSize={14}
+              textAlign="center"
             >
-              {step.description}
+              This is your API key, you can use this to manage your deploys through a transaction inside Bako.
             </Text>
           </VStack>
         </VStack>
-
-        <HStack
+        <VStack
           w="full"
-          alignItems="center"
-          justifyContent="space-between"
-          p={2}
-          bg="grey.825"
-          borderColor="grey.950"
+          h="auto"
+          maxH={200}
+          bg="gray.600"
+          p={3}
+          borderColor="gray.600"
+          alignItems="start"
           borderWidth={1}
           borderRadius={8}
+          display="flex"
+          flexDirection="column"
         >
-          <Text fontSize="xs" color="grey.425">
-            API Key
-          </Text>
-
-          <HStack gap={2} maxW="60%">
-            <Text fontSize="xs" color="grey.75" truncate>
-              {AddressUtils.format(createdAPIKey, 25)}
+          <Box w="full" display="flex" justifyContent="space-between">
+            <Text fontSize="xs" color="gray.100">
+              {name}
             </Text>
             <Tooltip
               content={copied ? 'Copied' : 'Copy'}
@@ -85,13 +87,45 @@ const CreateAPITokenSuccess = (props: CreateAPITokenSuccessProps) => {
               >
                 <Icon
                   as={copied ? RiFileCopyFill : CopyTopMenuIcon}
-                  w="16px"
-                  color="textPrimary"
+                  w="12px"
+                  color="gray.200"
                 />
               </IconButton>
             </Tooltip>
-          </HStack>
-        </HStack>
+          </Box>
+          <Text fontSize="xs" color="gray.300" wordBreak="break-all">
+            {createdAPIKey}
+          </Text>
+          <Stack spacing={0} gap={0}>
+            {transactionTitle && (
+              <Text fontSize="xs" color="gray.300" wordBreak="break-all">
+                {`Transaction name: ${transactionTitle}`}
+              </Text>
+            )}
+            <Text fontSize="xs" color="gray.300" wordBreak="break-all">
+              {`Created: ${formatCreatedDate({ date: new Date() })}`}
+            </Text>
+          </Stack>
+        </VStack>
+        <VStack
+          w="full"
+          mt={3}
+          roundedBottom={{ base: 'none', sm: '2xl' }}
+        >
+          <Dialog.Actions>
+            <Dialog.PrimaryAction
+              flex={3}
+              onClick={steps.step.primaryAction.handler}
+              loading={steps.step.primaryAction.isLoading}
+              aria-label={'Primary action create api token'}
+              bg="gray.600"
+              color="gray.300"
+              _hover={{ bg: 'gray.500' }}
+            >
+              {steps.step.primaryAction.label}
+            </Dialog.PrimaryAction>
+          </Dialog.Actions>
+        </VStack>
       </VStack>
     </Box>
   );
