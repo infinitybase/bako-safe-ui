@@ -1,6 +1,7 @@
 import { Box, Field, Icon, Input, InputGroup, VStack } from 'bako-ui';
 import { Controller } from 'react-hook-form';
 import { Dialog } from '@/components';
+import { sanitizeInput } from "@/utils/sanitize-input";
 
 import { UseCreateAPITokenReturn } from '@/modules/cli/hooks';
 import { CloseCircle } from "@/components";
@@ -48,7 +49,7 @@ const CreateAPITokenForm = (props: CreateAPITokenFormProps) => {
                     color: 'textSecondary',
                   }}
                   {...field}
-                  onChange={({ target }) => field.onChange(target.value)}
+                  onChange={({ target }) => field.onChange(sanitizeInput(target.value))}
                 />
               </InputGroup>
               <Field.Label fontSize="12px" fontWeight="400" color="gray.200" pl="4px">That is the name of your API Token.</Field.Label>
@@ -80,7 +81,7 @@ const CreateAPITokenForm = (props: CreateAPITokenFormProps) => {
                     color: 'textSecondary',
                   }}
                   {...field}
-                  onChange={({ target }) => field.onChange(target.value)}
+                  onChange={({ target }) => field.onChange(sanitizeInput(target.value))}
                 />
               </InputGroup>
               <Field.Label fontSize="12px" fontWeight="400" color="gray.200" pl="4px">That is the name what will appear in your transactions’ info.</Field.Label>
