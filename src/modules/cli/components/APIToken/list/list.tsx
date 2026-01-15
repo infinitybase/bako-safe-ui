@@ -253,9 +253,13 @@ const APITokensList = (props: APITokensListProps) => {
           token={tokenToRemove}
           loading={removeRequest.isLoading}
           onClose={() => setTokenToRemove(null)}
-          onConfirm={(id) => {
-            handler(id);
-            setTokenToRemove(null);
+          onConfirm={async (id) => {
+            try {
+              await handler(id);
+              setTokenToRemove(null);
+            } catch (error) {
+              console.error('Failed to delete token:', error);
+            }
           }}
         />
       </VStack>
