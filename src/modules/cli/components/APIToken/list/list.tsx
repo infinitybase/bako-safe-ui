@@ -43,6 +43,7 @@ const APITokenCard = (props: APITokenCardProps) => {
             color="gray.200"
             cursor="pointer"
             onClick={onRemove}
+            aria-label={`Remove API token ${apiToken.name}`}
           />
         </Box>
       </Box>
