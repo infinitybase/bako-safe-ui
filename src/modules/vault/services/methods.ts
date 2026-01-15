@@ -307,4 +307,11 @@ export class VaultService {
     );
     return data;
   }
+
+  static async checkPredicateBalances(predicateId: string) {
+    const { data } = await api.get<null>(
+      `/predicate/check-balances/${predicateId}`,
+    );
+    return data;
+  }
 }

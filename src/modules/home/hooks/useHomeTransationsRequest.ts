@@ -38,7 +38,7 @@ const useHomeTransactionsRequest = ({
       return { offsetDb: lastPage.offsetDb, offsetFuel: lastPage.offsetFuel };
     },
     refetchOnWindowFocus: false,
-    enabled: !!workspaceId && location.pathname != '/',
+    enabled: !!workspaceId && location.pathname === '/home',
     refetchOnMount: false,
     // Socket events handle real-time updates, no need for aggressive refetch
     staleTime: 1000 * 60 * 2, // 2 minutes

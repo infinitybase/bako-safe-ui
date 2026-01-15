@@ -28,7 +28,6 @@ export const useHasReservedCoins = (
     );
 
   const staleTime = 20 * 1000; // 20s
-  const refetchInterval = 5 * 60 * 1000; // 5m
 
   const { refetch, ...rest } = useQuery({
     queryKey: reservedQueryKey,
@@ -79,8 +78,7 @@ export const useHasReservedCoins = (
         nfts: enrichedNfts,
       };
     },
-    refetchInterval,
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: false,
     placeholderData: (previousData) => previousData,
     enabled: !!predicateId,
     staleTime,

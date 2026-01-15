@@ -26,16 +26,21 @@ import { AddressUtils } from '@/modules/core';
 import { NetworkService } from '@/modules/network/services';
 import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
+import {
+  useCheckPredicateBalances,
+  usePredicateBalanceOutdatedSocketListener,
+} from '../../hooks';
 import { VaultInfoBoxSkeleton } from './vaultInfoBoxSkeleton';
 
 interface VaultBoxPropx {
+  id: string;
   name: string;
   address: string;
   onChangeVault: () => void;
 }
 
 const VaultBox = (props: VaultBoxPropx) => {
-  const { name, address, onChangeVault } = props;
+  const { id, name, address, onChangeVault } = props;
   const addressWithChecksum = address ? new Address(address).toString() : '';
   const { copy, copied } = useClipboard({ value: addressWithChecksum });
 
@@ -56,6 +61,9 @@ const VaultBox = (props: VaultBoxPropx) => {
       vaultRequest: { isLoading: isLoadingVault },
     },
   } = useWorkspaceContext();
+
+  useCheckPredicateBalances(id);
+  usePredicateBalanceOutdatedSocketListener();
 
   const handleToggleBalanceVisibility = useCallback(() => {
     setVisibleBalance(!visibleBalance);

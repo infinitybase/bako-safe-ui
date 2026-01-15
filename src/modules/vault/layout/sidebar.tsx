@@ -100,6 +100,7 @@ const Sidebar = memo(({ onDrawer, ...rest }: SidebarProps) => {
 
         {/*/!* VAULT INFOS *!/*/}
         <VaultBox
+          id={vault?.data.id ?? ''}
           name={vault?.data.name}
           address={vault?.data?.predicateAddress ?? ''}
           onChangeVault={handleOpenDrawer}

@@ -17,7 +17,8 @@ import { useTransactionsContext } from '@/modules/transactions/providers/Transac
 import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { AccountAllocation, AccountOverview } from '../../components';
-import { useVaultInfosContext } from '../../hooks';
+import { useCheckPredicateBalances, useVaultInfosContext } from '../../hooks';
+import { usePredicateBalanceOutdatedSocketListener } from '../../hooks/events';
 import { vaultInfinityQueryKey } from '../../hooks/list/useVaultTransactionsRequest';
 
 const VaultDetailsPage = () => {
@@ -83,6 +84,8 @@ const VaultDetailsPage = () => {
   const workspaceId = userInfos?.workspace?.id || '';
 
   useTransactionSocketListener(vaultQueryKey ?? []);
+  useCheckPredicateBalances(vault.data?.id ?? '');
+  usePredicateBalanceOutdatedSocketListener();
 
   if (!vault) return null;
 
@@ -123,7 +126,6 @@ const VaultDetailsPage = () => {
         >
           <AccountOverview
             vault={vault}
-            workspaceId={workspaceId}
             onAddAssets={setIsAddAssetDialogOpen}
             isPendingSigner={isPendingSigner}
           />
