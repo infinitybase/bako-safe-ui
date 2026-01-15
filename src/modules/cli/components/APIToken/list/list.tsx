@@ -5,8 +5,9 @@ import { TabState, UseAPITokenReturn } from '@/modules/cli/hooks';
 import { useRemoveAPIToken } from '@/modules/cli/hooks/APIToken/remove';
 import { APIToken } from '@/modules/cli/services';
 import { formatCreatedDate } from "@/utils/format-date-full";
-import { useState, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { AlertIcon } from "@/components";
+import { useFilteredTokens } from "@/modules/cli/hooks/APIToken/remove/useFilteredTokens";
 
 interface APITokenCardProps {
   apiToken: APIToken;
@@ -154,12 +155,16 @@ const APITokensList = (props: APITokensListProps) => {
   const { handler, request: removeRequest } = useRemoveAPIToken();
   const [searchValue, setSearchValue] = useState('');
 
-  const filteredTokens = useMemo(() => {
-    if (!listRequest.data) return [];
-    return listRequest.data.filter((token) =>
-      token.name.toLowerCase().includes(searchValue.toLowerCase())
-    );
-  }, [listRequest.data, searchValue]);
+  useEffect(() => {
+    if (!tokenToRemove) {
+      setSearchValue('');
+    }
+  }, [tabs.tab, tokenToRemove]);
+
+  const filteredTokens = useFilteredTokens({
+    tokens: listRequest.data,
+    searchValue
+  });
 
   const handleAddMoreAPITokens = () => {
     tabs.set(TabState.CREATE);
