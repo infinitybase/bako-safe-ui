@@ -2,6 +2,7 @@ import { Box, Grid, GridItem, VStack } from 'bako-ui';
 import { useMemo } from 'react';
 
 import { HomeQueryKey } from '@/modules/core';
+import { useBalanceOutdatedSocketListener } from '@/modules/home/hooks/events';
 import { useTransactionSocketListener } from '@/modules/transactions/hooks/events/useTransactionsSocketListener';
 import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
@@ -9,6 +10,7 @@ import BalanceAllocationCard from '../components/BalanceAllocationCard';
 import HomeTransactions from '../components/HomeTransactions';
 import RecentVaultsHeader from '../components/RecentVaultsHeader';
 import RecentVaultsList from '../components/RecentVaultsList';
+import { useCheckUserBalances } from '../hooks';
 
 const HomePage = () => {
   const {
@@ -36,6 +38,9 @@ const HomePage = () => {
   const homeQueryKey = HomeQueryKey.HOME_WORKSPACE(workspaceId ?? '');
 
   useTransactionSocketListener(homeQueryKey ?? []);
+  useBalanceOutdatedSocketListener();
+
+  useCheckUserBalances();
 
   return (
     <VStack id="top" w="full" gap={10}>

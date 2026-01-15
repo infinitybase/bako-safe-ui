@@ -14,7 +14,8 @@ import {
   SettingsSigners,
   SettingsSignersSkeleton,
 } from '../../components/settings';
-import { useVaultInfosContext } from '../../hooks';
+import { useCheckPredicateBalances, useVaultInfosContext } from '../../hooks';
+import { usePredicateBalanceOutdatedSocketListener } from '../../hooks/events';
 
 const VaultSettingsPage = () => {
   const depositDialog = useDisclosure();
@@ -28,6 +29,9 @@ const VaultSettingsPage = () => {
       commingSoonFeatures: { commingSoonDialog, selectedFeature },
     },
   } = useVaultInfosContext();
+
+  useCheckPredicateBalances(vault?.data?.id ?? '');
+  usePredicateBalanceOutdatedSocketListener();
 
   const isLoading = vault?.isLoading || assets.isLoading;
 

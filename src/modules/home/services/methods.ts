@@ -61,4 +61,10 @@ export class HomeService {
 
     return data;
   }
+
+  static async checkUserBalances() {
+    const { data } = await api.get<null>(`/user/check-balances`);
+
+    return data;
+  }
 }

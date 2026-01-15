@@ -15,6 +15,8 @@ import { CustomSkeleton } from '@/components';
 import { EmptyState } from '@/components/emptyState';
 import { Pages, PermissionRoles } from '@/modules/core';
 import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
+import { useCheckUserBalances } from '@/modules/home/hooks';
+import { useBalanceOutdatedSocketListener } from '@/modules/home/hooks/events';
 import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { CreateVaultDialog, VaultCard } from '../../components';
@@ -42,6 +44,9 @@ const UserVaultsPage = () => {
   const showHiddenMessage = noVaults && !isLoading && !value;
   const showEmptyState = noVaults && !isLoading && value;
   const showVaultGrid = !!vaults?.length;
+
+  useCheckUserBalances();
+  useBalanceOutdatedSocketListener();
 
   return (
     <VStack

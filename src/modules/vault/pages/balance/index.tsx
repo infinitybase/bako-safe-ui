@@ -6,13 +6,17 @@ import { AssetsBalanceList, NFT, NftsBalanceList } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { NFTsEmptyState } from '../../components/NFTsEmptyState';
-import { useVaultInfosContext } from '../../hooks';
+import { useCheckPredicateBalances, useVaultInfosContext } from '../../hooks';
+import { usePredicateBalanceOutdatedSocketListener } from '../../hooks/events';
 
 const VaultBalancePage = () => {
   const { vault, assets } = useVaultInfosContext();
   const {
     authDetails: { userInfos },
   } = useWorkspaceContext();
+
+  useCheckPredicateBalances(vault?.data?.id ?? '');
+  usePredicateBalanceOutdatedSocketListener();
 
   if (!vault) return null;
 
