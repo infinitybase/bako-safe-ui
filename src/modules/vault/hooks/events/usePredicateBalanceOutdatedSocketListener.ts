@@ -6,6 +6,7 @@ import { useSocketEvent } from '@/modules/core/hooks/socket/useSocketEvent';
 
 import { vaultAssetsQueryKey } from '../assets/useVaultAssets';
 import { vaultInfinityQueryKey } from '../list/useVaultTransactionsRequest';
+import { vaultAllocationQueryKey } from '../useVaultBalanceAllocationRequest';
 
 export interface PredicateBalanceOutdatedEvent {
   sessionId: string;
@@ -39,7 +40,8 @@ export const usePredicateBalanceOutdatedSocketListener = () => {
 
       // Affects: Vault balance allocation card
       queryClient.invalidateQueries({
-        queryKey: ['predicate-allocation', predicateId],
+        queryKey:
+          vaultAllocationQueryKey.VAULT_ALLOCATION_QUERY_KEY(predicateId),
       });
 
       // Affects: Vault balance page, reserved coins status
