@@ -1,4 +1,4 @@
-import { HStack, Tabs } from 'bako-ui';
+import { CloseButton, Flex, Heading, Stack, Tabs, Text, VStack, Box } from 'bako-ui';
 
 import { Dialog } from '@/components';
 import { UseAPITokenReturn } from '@/modules/cli/hooks';
@@ -24,63 +24,83 @@ const CreateAPITokenDialog = (props: CreateAPITokenDialogProps) => {
       onOpenChange={control.onOpenChange}
       closeOnInteractOutside={false}
       trapFocus={false}
+      modalContentProps={{
+        w: { base: '100vw', md: '480px' },
+        maxW: { base: '100vw', md: '480px' },
+        h: { base: '100dvh', md: 'auto' },
+        p: 0,
+      }}
       size={{
         base: 'full',
         md: 'md',
       }}
     >
-      <Dialog.Header
-        title={steps.step.title}
-        onClose={control.onClose}
-        description={steps.step.description}
-        hidden={steps.step.hideHeader}
-        mb={0}
-        mt={{ base: 4, sm: 0 }}
-        maxW={440}
-      />
-
-      <Dialog.Body w="full" maxW={440} flex={1} display="flex">
-        <Tabs.Root value={String(tabs.tab)} flex={1}>
-          <Tabs.Content value="0">
+      <Stack
+        w="100%"
+        px={6}
+        pt={6}
+        pb={4}
+      >
+        <Flex w="100%" align="center" justify="space-between">
+          <Heading fontSize="sm" color="textPrimary" lineHeight="short">
+            {steps.step.title}
+          </Heading>
+          <CloseButton size="2xs" onClick={control.onClose} />
+        </Flex>
+        <Text fontSize="xs" color="textSecondary">
+          {steps.step.description}
+        </Text>
+        {!steps.step.title && !steps.step.description && (
+          <Box h="32px" />
+        )}
+      </Stack>
+      <Dialog.Body
+        w="100%"
+        h={{ base: 'calc(100dvh - 96px)', md: '540px' }}
+        overflow="hidden"
+        p={0}
+      >
+        <Tabs.Root
+          value={String(tabs.tab)}
+          w="100%"
+          h="100%"
+          display="flex"
+          flexDirection="column"
+        >
+          <Tabs.Content
+            value="0"
+            w="100%"
+            h="100%"
+            display="flex"
+            flexDirection="column"
+          >
             <APITokensList tabs={tabs} request={list.request} />
           </Tabs.Content>
-          <Tabs.Content value="1">
-            <CreateAPITokenForm form={create.form} />
+          <Tabs.Content
+            value="1"
+            w="100%"
+            h="100%"
+            display="flex"
+            flexDirection="column">
+            <CreateAPITokenForm form={create.form} steps={steps} />
           </Tabs.Content>
-          <Tabs.Content value="2">
+          <Tabs.Content
+            value="2"
+            w="100%"
+            h="100%"
+            display="flex"
+            flexDirection="column"
+          >
             <CreateAPITokenSuccess
               step={steps.step}
+              steps={steps}
               createdAPIKey={create.createdAPIKey.value}
+              name={create.createdAPIKeyName?.value}
+              transactionTitle={create.createdAPIKeyTransactionTitle?.value}
             />
           </Tabs.Content>
         </Tabs.Root>
       </Dialog.Body>
-
-      <Dialog.Actions w="full" maxW={440} position="relative" mt={4}>
-        <HStack w="full" justifyContent="space-between" gap={6}>
-          <Dialog.SecondaryAction
-            flex={1}
-            variant="subtle"
-            onClick={steps.step.secondaryAction.handler}
-            aria-label={'Secundary action create api token'}
-          >
-            {steps.step.secondaryAction.label}
-          </Dialog.SecondaryAction>
-          <Dialog.PrimaryAction
-            flex={3}
-            hidden={steps.step.primaryAction.hide}
-            onClick={steps.step.primaryAction.handler}
-            disabled={steps.step.primaryAction.disabled}
-            _hover={{
-              opacity: !steps.step.primaryAction.disabled ? 0.8 : 1,
-            }}
-            loading={steps.step.primaryAction.isLoading}
-            aria-label={'Primary action create api token'}
-          >
-            {steps.step.primaryAction.label}
-          </Dialog.PrimaryAction>
-        </HStack>
-      </Dialog.Actions>
     </Dialog.Modal>
   );
 };

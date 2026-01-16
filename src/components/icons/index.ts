@@ -1,4 +1,5 @@
 export * from './alert';
+export * from './add-icon';
 export * from './arrow-down';
 export * from './assets/bitcoin';
 export * from './assets/ethereum';

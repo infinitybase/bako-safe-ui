@@ -27,6 +27,8 @@ const useAPIToken = (hasPermission: boolean) => {
     form,
     request: createRequest,
     createdAPIKey,
+    createdAPIKeyName,
+    createdAPIKeyTransactionTitle,
   } = useCreateAPIToken(setTab);
   const { request: listRequest } = useListAPITokens(vaultId!, hasPermission);
   const { confirm, request: removeRequest, handler } = useRemoveAPIToken();
@@ -42,11 +44,17 @@ const useAPIToken = (hasPermission: boolean) => {
     form.reset();
   };
 
+  const handleTabListDialog = () => {
+    setTab(TabState.LIST);
+    createdAPIKey.set('');
+    form.reset();
+  }
+
   const stepsActions = {
     [TabState.LIST]: {
       title: 'API Tokens',
       description:
-        'Send single or batch payments with multi assets. You can send multiple types of assets to different addresses.',
+        'Manage your API tokens for secure access and control in the multisig system.',
       primaryAction: {
         handler: () => {},
         label: '',
@@ -61,28 +69,28 @@ const useAPIToken = (hasPermission: boolean) => {
       hideHeader: false,
     },
     [TabState.CREATE]: {
-      title: 'Create new API Tokens',
+      title: 'API Tokens',
       description:
-        'Define the name and description of this vault. These details will be visible to all members.',
+        'Manage your API tokens for secure access and control in the multisig system.',
       primaryAction: {
         handler: () => form.submit(),
-        label: 'Next',
+        label: 'Create API Token',
         disabled: false,
         hide: false,
         isLoading: createRequest.isLoading,
       },
       secondaryAction: {
-        handler: handleCloseDialog,
+        handler: handleTabListDialog,
         label: 'Cancel',
       },
       hideHeader: false,
     },
     [TabState.SUCCESS]: {
-      title: 'API Token created!',
+      title: '',
       description:
-        'You will not have another chance to copy this keys. Make sure you are saving in a safe place',
+        '',
       primaryAction: {
-        handler: () => {},
+        handler: handleTabListDialog,
         label: 'Done',
         disabled: false,
         hide: true,
@@ -117,6 +125,8 @@ const useAPIToken = (hasPermission: boolean) => {
       dialog,
       form,
       createdAPIKey,
+      createdAPIKeyName,
+      createdAPIKeyTransactionTitle,
     },
     remove: {
       confirm,
