@@ -87,11 +87,10 @@ const DoubleCheckout = ({ token, onClose, onConfirm, loading }: DoubleCheckoutPr
       onOpenChange={onClose}
       closeOnInteractOutside={false}
       trapFocus={false}
-      modalContentProps={{ maxW: { base: '100%', sm: '480px' }, p: { base: 4, sm: 0 } }}
-      size={{
-        base: 'full',
-        md: 'md',
-      }}
+      modalContentProps={{
+        maxW: { base: '100%', sm: '480px' },
+        p: { base: 4, sm: 0 }
+    }}
     >
       <Stack w="100%" maxW={{ base: '100%', sm: '480px' }} pt={{ base: 4, sm: 6 }} px={{ base: 4, sm: 6 }}>
         <Flex w="100%" justify="end">
