@@ -12,6 +12,7 @@ import { GET_API_TOKENS_QUERY_KEY } from '../list';
 import { TabState } from '../useAPIToken';
 import { useCreateAPITokenForm } from './useCreateAPITokenForm';
 import { useCreateAPITokenRequest } from './useCreateAPITokenRequest';
+import { sanitizeInput } from "@/utils/sanitize-input";
 
 export type UseCreateAPITokenReturn = ReturnType<typeof useCreateAPIToken>;
 
@@ -31,10 +32,10 @@ const useCreateAPIToken = (
 
   const handleSubmit = form.handleSubmit(async (data) => {
     const formattdeData: CreateAPITokenPayload = {
-      name: data.name,
+      name: sanitizeInput(data.name),
       ...(data.transactionName && {
         config: {
-          transactionTitle: data.transactionName,
+          transactionTitle: sanitizeInput(data.transactionName),
         },
       }),
     };

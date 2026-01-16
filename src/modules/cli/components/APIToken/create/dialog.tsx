@@ -25,20 +25,22 @@ const CreateAPITokenDialog = (props: CreateAPITokenDialogProps) => {
       closeOnInteractOutside={false}
       trapFocus={false}
       modalContentProps={{
-        sm: {
-          minH: '560px',
-          maxH: '90vh',
-          overflowY: 'auto',
-        },
-        maxW: '480px',
-        p: '0 !important',
+        w: { base: '100vw', md: '480px' },
+        maxW: { base: '100vw', md: '480px' },
+        h: { base: '100dvh', md: 'auto' },
+        p: 0,
       }}
       size={{
         base: 'full',
         md: 'md',
       }}
     >
-      <Stack w="100%" maxW="480px" pt={6} px={6}>
+      <Stack
+        w="100%"
+        px={6}
+        pt={6}
+        pb={4}
+      >
         <Flex w="100%" align="center" justify="space-between">
           <Heading fontSize="sm" color="textPrimary" lineHeight="short">
             {steps.step.title}
@@ -49,15 +51,43 @@ const CreateAPITokenDialog = (props: CreateAPITokenDialogProps) => {
           {steps.step.description}
         </Text>
       </Stack>
-      <Dialog.Body w="full" h="full" maxW="480px" flex={1} display="flex">
-        <Tabs.Root value={String(tabs.tab)} flex={1} display="flex">
-          <Tabs.Content value="0">
+      <Dialog.Body
+        w="100%"
+        h={{ base: 'calc(100dvh - 96px)', md: '540px' }}
+        overflow="hidden"
+        p={0}
+      >
+        <Tabs.Root
+          value={String(tabs.tab)}
+          w="100%"
+          h="100%"
+          display="flex"
+          flexDirection="column"
+        >
+          <Tabs.Content
+            value="0"
+            w="100%"
+            h="100%"
+            display="flex"
+            flexDirection="column"
+          >
             <APITokensList tabs={tabs} request={list.request} />
           </Tabs.Content>
-          <Tabs.Content value="1">
+          <Tabs.Content
+            value="1"
+            w="100%"
+            h="100%"
+            display="flex"
+            flexDirection="column">
             <CreateAPITokenForm form={create.form} steps={steps} />
           </Tabs.Content>
-          <Tabs.Content value="2">
+          <Tabs.Content
+            value="2"
+            w="100%"
+            h="100%"
+            display="flex"
+            flexDirection="column"
+          >
             <CreateAPITokenSuccess
               step={steps.step}
               steps={steps}

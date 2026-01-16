@@ -1,5 +1,8 @@
 const sanitizeInput = (value: string) => {
-  return value.trim().replace(/[<>"']/g, '');
+  return value
+    .replace(/<\/?[^>]+(>|$)/g, '')
+    .replace(/["']/g, '')
+    .trim();
 };
 
 export { sanitizeInput };

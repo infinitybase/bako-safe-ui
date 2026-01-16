@@ -98,7 +98,14 @@ const DoubleCheckout = ({ token, onClose, onConfirm, loading }: DoubleCheckoutPr
         </Flex>
       </Stack>
 
-      <Dialog.Body w="full" h="full" maxW={{ base: '100%', sm: '480px' }}>
+      <Dialog.Body
+        w="full"
+        h={{ base: '100vh', sm: 'full' }}
+        maxW={{ base: '100%', sm: '480px' }}
+        display={{ base: 'flex', sm: 'block' }}
+        alignItems={{ base: 'center', sm: 'stretch' }}
+        justifyContent={{ base: 'center', sm: 'flex-start' }}
+      >
         <Box>
           <VStack p={4} pt="52px" pb={0} h="full" gap={{ base: 4, sm: 3 }}>
             <VStack gap={1}>
@@ -168,14 +175,12 @@ const APITokensList = (props: APITokensListProps) => {
   const [searchValue, setSearchValue] = useState('');
 
   useEffect(() => {
-    if (!tokenToRemove) {
-      setSearchValue('');
-    }
-  }, [tabs.tab, tokenToRemove]);
+    if (!tokenToRemove) setSearchValue('');
+  }, [tokenToRemove]);
 
   const filteredTokens = useFilteredTokens({
     tokens: listRequest.data,
-    searchValue
+    searchValue,
   });
 
   const handleAddMoreAPITokens = () => {
@@ -183,7 +188,13 @@ const APITokensList = (props: APITokensListProps) => {
   };
 
   return (
-    <Box px={6} display="flex" flexDirection="column" flex={1} minH="full">
+    <Box
+      px={6}
+      pb={2}
+      display="flex"
+      flexDirection="column"
+      h="100%"
+    >
       <VStack pb={6} w="full" display="flex" flexDirection="row">
         <Button
           bg="gray.600"
@@ -223,35 +234,29 @@ const APITokensList = (props: APITokensListProps) => {
           />
         </InputGroup>
       </VStack>
-      <VStack gap={{ base: 3, sm: 3 }} pt={{ base: 2, sm: 0 }} flex={1}>
+      <Flex
+        flex="1"
+        minH={0}
+        overflowY="auto"
+        css={{
+        '&::-webkit-scrollbar': {
+          display: 'none',
+          width: '5px',
+          backgroundColor: '#2B2927',
+        },
+        '&::-webkit-scrollbar-thumb': {
+          display: 'none',
+          backgroundColor: 'grey.250',
+          borderRadius: '30px',
+          height: '10px' /* Adjust the height of the scrollbar thumb */,
+        },
+      }}>
         <CustomSkeleton loading={listRequest.isLoading} flex={1} display="flex">
           {filteredTokens.length > 0 ? (
             <VStack
               gap={{ base: 3, sm: 3 }}
               w="full"
-              maxH={{
-                base: 'calc(100vh - 210px)',
-                sm: 'calc(100vh - 320px)',
-                md: '510px',
-              }}
-
-              minH={300}
-              flex={1}
               alignSelf="stretch"
-              overflowY="scroll"
-              css={{
-                '&::-webkit-scrollbar': {
-                  display: 'none',
-                  width: '5px',
-                  backgroundColor: '#2B2927',
-                },
-                '&::-webkit-scrollbar-thumb': {
-                  display: 'none',
-                  backgroundColor: 'grey.250',
-                  borderRadius: '30px',
-                  height: '10px' /* Adjust the height of the scrollbar thumb */,
-                },
-              }}
             >
               {filteredTokens.map((apiToken) => (
                 <APITokenCard key={apiToken.id} apiToken={apiToken} onRemove={() => setTokenToRemove(apiToken)} />
@@ -279,7 +284,7 @@ const APITokensList = (props: APITokensListProps) => {
             }
           }}
         />
-      </VStack>
+      </Flex>
     </Box>
   );
 };

@@ -8,17 +8,14 @@ interface UseFilteredTokensProps {
   debounceMs?: number;
 }
 
-export const useFilteredTokens = ({ tokens, searchValue, debounceMs = 300 }: UseFilteredTokensProps) => {
-  const [debouncedSearch] = useDebounce(searchValue, debounceMs);
-
+export const useFilteredTokens = ({ tokens, searchValue }: UseFilteredTokensProps) => {
   return useMemo(() => {
     if (!tokens) return [];
-
-    const search = (debouncedSearch || '').trim().toLowerCase();
+    const search = (searchValue || '').toLowerCase();
     if (!search) return tokens;
-
     return tokens.filter((token) =>
       String(token?.name || '').toLowerCase().includes(search)
     );
-  }, [tokens, debouncedSearch]);
+  }, [tokens, searchValue]);
 };
+
