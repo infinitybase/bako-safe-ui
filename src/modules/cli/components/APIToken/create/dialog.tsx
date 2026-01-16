@@ -24,7 +24,15 @@ const CreateAPITokenDialog = (props: CreateAPITokenDialogProps) => {
       onOpenChange={control.onOpenChange}
       closeOnInteractOutside={false}
       trapFocus={false}
-      modalContentProps={{ sm: { minH: '700px' }, maxW: '480px', p: '0 !important' }}
+      modalContentProps={{
+        sm: {
+          minH: '590px',
+          maxH: '90vh',
+          overflowY: 'auto',
+        },
+        maxW: '480px',
+        p: '0 !important',
+      }}
       size={{
         base: 'full',
         md: 'md',
