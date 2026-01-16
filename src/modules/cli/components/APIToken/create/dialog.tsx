@@ -26,7 +26,7 @@ const CreateAPITokenDialog = (props: CreateAPITokenDialogProps) => {
       trapFocus={false}
       modalContentProps={{
         sm: {
-          minH: '590px',
+          minH: '560px',
           maxH: '90vh',
           overflowY: 'auto',
         },
