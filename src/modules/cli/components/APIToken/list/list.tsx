@@ -22,7 +22,7 @@ const APITokenCard = (props: APITokenCardProps) => {
       w="full"
       h="auto"
       maxH={200}
-      minH="94px"
+      minH="auto"
       maxW="432px"
       bg="gray.600"
       p={3}
