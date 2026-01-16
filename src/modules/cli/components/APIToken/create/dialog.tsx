@@ -1,4 +1,4 @@
-import { CloseButton, Flex, Heading, Stack, Tabs, Text, VStack } from 'bako-ui';
+import { CloseButton, Flex, Heading, Stack, Tabs, Text, VStack, Box } from 'bako-ui';
 
 import { Dialog } from '@/components';
 import { UseAPITokenReturn } from '@/modules/cli/hooks';
@@ -50,6 +50,9 @@ const CreateAPITokenDialog = (props: CreateAPITokenDialogProps) => {
         <Text fontSize="xs" color="textSecondary">
           {steps.step.description}
         </Text>
+        {!steps.step.title && !steps.step.description && (
+          <Box h="32px" />
+        )}
       </Stack>
       <Dialog.Body
         w="100%"
