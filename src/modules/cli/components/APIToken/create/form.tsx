@@ -47,6 +47,7 @@ const CreateAPITokenForm = (props: CreateAPITokenFormProps) => {
                 <Input
                   variant="subtle"
                   placeholder="Key name"
+                  maxLength={27}
                   _placeholder={{
                     color: 'textSecondary',
                   }}
@@ -81,6 +82,7 @@ const CreateAPITokenForm = (props: CreateAPITokenFormProps) => {
                 <Input
                   variant="subtle"
                   placeholder="Transaction name"
+                  maxLength={200}
                   _placeholder={{
                     color: 'textSecondary',
                   }}

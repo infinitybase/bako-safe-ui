@@ -23,6 +23,7 @@ const APITokenCard = (props: APITokenCardProps) => {
       h="auto"
       maxH={200}
       minH="94px"
+      maxW="432px"
       bg="gray.600"
       p={3}
       borderColor="gray.600"
@@ -33,7 +34,7 @@ const APITokenCard = (props: APITokenCardProps) => {
       flexDirection="column"
     >
       <Box w="full" display="flex" justifyContent="space-between">
-        <Text fontSize="xs" color="gray.100">
+        <Text fontSize="xs" color="gray.100" isTruncated maxW="calc(100% - 24px)">
           {apiToken.name}
         </Text>
         <Box display="flex" gap={3}>
@@ -48,9 +49,20 @@ const APITokenCard = (props: APITokenCardProps) => {
         </Box>
       </Box>
       <Stack spacing={0} gap={0}>
-          <Text fontSize="xs" color="gray.300" wordBreak="break-all">
+        <HStack align="start" maxW="100%">
+          <Text
+            fontSize="xs"
+            color="gray.300"
+            wordBreak="break-word"
+            overflowWrap="anywhere"
+            minW={0}
+            flex="1"
+            pb="2px"
+          >
             {`Transaction name: ${apiToken.config?.transactionTitle}`}
           </Text>
+        </HStack>
+
         <Text fontSize="xs" color="gray.300" wordBreak="break-all">
           {`Created: ${formatCreatedDate({ date: new Date(apiToken.createdAt) })}`}
         </Text>
@@ -96,7 +108,7 @@ const DoubleCheckout = ({ token, onClose, onConfirm, loading }: DoubleCheckoutPr
                 Double check it!
               </Text>
             </VStack>
-            <HStack wrap="wrap" justify="center" gap={{ base: 1, sm: 2 }}>
+            <HStack wrap="wrap" maxW="368px" justify="center" gap={{ base: 1, sm: 2 }}>
               <Text fontWeight="normal" color="gray.400" fontSize={{ base: 12, sm: 14 }} textAlign="center">
                 Delete
               </Text>

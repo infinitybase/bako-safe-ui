@@ -6,7 +6,7 @@ import {
   Text,
   Tooltip,
   useClipboard,
-  VStack,
+  VStack, HStack,
 } from 'bako-ui';
 import { RiFileCopyFill } from 'react-icons/ri';
 import { formatCreatedDate } from "@/utils/format-date-full";
@@ -31,7 +31,7 @@ const CreateAPITokenSuccess = (props: CreateAPITokenSuccessProps) => {
 
   return (
     <Box p={6} h="full">
-      <VStack h="full" minH={400}>
+      <VStack h="full" minH={400} maxW="432px">
         <VStack gap={5} flex={1} alignItems="center" justifyContent="center">
           <Icon boxSize="48px" as={DoneIcon} />
 
@@ -52,7 +52,7 @@ const CreateAPITokenSuccess = (props: CreateAPITokenSuccessProps) => {
         <VStack
           w="full"
           h="auto"
-          maxH={200}
+          maxW="432px"
           bg="gray.600"
           p={3}
           borderColor="gray.600"
@@ -63,7 +63,7 @@ const CreateAPITokenSuccess = (props: CreateAPITokenSuccessProps) => {
           flexDirection="column"
         >
           <Box w="full" display="flex" justifyContent="space-between">
-            <Text fontSize="xs" color="gray.100">
+            <Text fontSize="xs" color="gray.100" isTruncated maxW="calc(100% - 24px)">
               {name}
             </Text>
             <Tooltip
@@ -98,9 +98,18 @@ const CreateAPITokenSuccess = (props: CreateAPITokenSuccessProps) => {
           </Text>
           <Stack spacing={0} gap={0}>
             {transactionTitle && (
-              <Text fontSize="xs" color="gray.300" wordBreak="break-all">
-                {`Transaction name: ${transactionTitle}`}
-              </Text>
+              <HStack align="start" maxW="100%">
+                <Text
+                  fontSize="xs"
+                  color="gray.300"
+                  wordBreak="break-word"
+                  overflowWrap="anywhere"
+                  minW={0}
+                  flex="1"
+                >
+                  {`Transaction name: ${transactionTitle}`}
+                </Text>
+              </HStack>
             )}
             <Text fontSize="xs" color="gray.300" wordBreak="break-all">
               {`Created: ${formatCreatedDate({ date: new Date() })}`}
