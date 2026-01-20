@@ -158,7 +158,7 @@ const CreateVaultDialog = memo((props: CreateVaultDialogProps) => {
               aria-label="Create Vault Primary Action"
               hidden={steps.step?.hide}
               onClick={steps.step?.onContinue}
-              disabled={steps.step?.disable}
+              disabled={steps.step?.disable || vaultNameAlreadyExists}
               loading={bakoSafeVault.isPending || form.formState.isSubmitting}
               _hover={{
                 opacity: !steps.step?.disable ? 0.8 : 1,
