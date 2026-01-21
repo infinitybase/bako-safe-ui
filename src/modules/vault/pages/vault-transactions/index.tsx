@@ -62,7 +62,7 @@ const TransactionsVaultPage = () => {
   return (
     <Box w="full" flex={1}>
       {/* FILTER */}
-      <HStack gap={3}>
+      <HStack gap={3} alignItems="start">
         <TransactionFilters
           status={filter.value}
           currentFilter={filter.txFilterType}
@@ -75,7 +75,9 @@ const TransactionsVaultPage = () => {
         />
         {selectedTransaction.id && (
           <HStack gap={2}>
-            <Text color="primary.main">{selectedTransaction.name}</Text>
+            <Text color="primary.main" fontSize="12px" truncate>
+              {selectedTransaction.name}
+            </Text>
             <Box
               onClick={() => {
                 setSelectedTransaction({});
@@ -83,7 +85,12 @@ const TransactionsVaultPage = () => {
               }}
               cursor="pointer"
             >
-              <Icon as={LineCloseIcon} fontSize="18px" color="primary.main" />
+              <Icon
+                as={LineCloseIcon}
+                fontSize="16px"
+                h="30px"
+                color="primary.main"
+              />
             </Box>
           </HStack>
         )}
