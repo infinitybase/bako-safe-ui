@@ -106,7 +106,7 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
       console.debug('Clearing pending transaction state');
       setCreateTxMethod(ECreateTransactionMethods.CREATE_AND_SIGN);
     }
-  }, [isPendingSigner, createTxMethod]);
+  }, [isPendingSigner]);
 
   return (
     <Dialog.Modal
