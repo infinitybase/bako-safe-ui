@@ -37,14 +37,12 @@ export const useUpdateVaultRequest = (workspaceId: string) => {
     },
     onError: (error) => {
       const apiError = (error as AxiosError)?.response?.data as IApiError;
-
       const errorTitle = apiError?.detail?.error?.title;
-      const errorDetail = apiError?.detail?.error?.detail;
 
       if (errorTitle?.includes('name already exists')) {
         errorToast({
           title: 'Failed to update account',
-          description: errorDetail,
+          description: 'An account with that name already exists.',
         });
       } else {
         errorToast({

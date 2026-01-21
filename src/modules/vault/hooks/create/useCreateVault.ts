@@ -62,14 +62,12 @@ const useCreateVault = () => {
     },
     onError: (error) => {
       const apiError = (error as AxiosError)?.response?.data as IApiError;
-
       const errorTitle = apiError?.detail?.error?.title;
-      const errorDetail = apiError?.detail?.error?.detail;
 
       if (errorTitle?.includes('name already exists')) {
         errorToast({
           title: 'Error on account creation!',
-          description: errorDetail,
+          description: 'An account with that name already exists.',
         });
       } else {
         errorToast({
