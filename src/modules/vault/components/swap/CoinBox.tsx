@@ -22,9 +22,9 @@ import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 
 import { calculateTextWidth } from '../../utils';
+import { AssetsModal } from '../AssetsModal';
 import { ExpandableCardSection } from '../bridge/ExpandableCardSection';
 import { TooltipPendingTx } from '../TooltipPendingTx';
-import { AssetsModal } from './AssetsModal';
 import { SelectedAsset } from './SelectedAsset';
 
 const Root = motion(Card.Root);
