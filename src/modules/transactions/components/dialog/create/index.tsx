@@ -100,6 +100,8 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
   useEffect(() => {
     if (isPendingSigner) {
       setCreateTxMethod(ECreateTransactionMethods.PENDING_TRANSACTION);
+    } else {
+      setCreateTxMethod(ECreateTransactionMethods.CREATE_AND_SIGN);
     }
   }, [isPendingSigner]);
 
