@@ -100,8 +100,13 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
   useEffect(() => {
     if (isPendingSigner) {
       setCreateTxMethod(ECreateTransactionMethods.PENDING_TRANSACTION);
+    } else if (
+      createTxMethod === ECreateTransactionMethods.PENDING_TRANSACTION
+    ) {
+      console.debug('Clearing pending transaction state');
+      setCreateTxMethod(ECreateTransactionMethods.CREATE_AND_SIGN);
     }
-  }, [isPendingSigner]);
+  }, [isPendingSigner, createTxMethod]);
 
   return (
     <Dialog.Modal
