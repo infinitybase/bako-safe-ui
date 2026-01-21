@@ -1,5 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
 
+import { IApiError } from '@/config';
 import { useContactToast } from '@/modules/addressBook';
 import { HomeQueryKey, PredicateUpdatePayload } from '@/modules/core';
 
@@ -31,10 +33,24 @@ export const useUpdateVaultRequest = (workspaceId: string) => {
       queryClient.invalidateQueries({
         queryKey: HomeQueryKey.HOME_WORKSPACE(workspaceId),
       });
-      successToast({ title: 'Vault updated successfully' });
+      successToast({ title: 'Account updated successfully' });
     },
-    onError: () => {
-      errorToast({ title: 'Failed to update vault' });
+    onError: (error) => {
+      const apiError = (error as AxiosError)?.response?.data as IApiError;
+
+      const errorTitle = apiError?.detail?.error?.title;
+      const errorDetail = apiError?.detail?.error?.detail;
+
+      if (errorTitle?.includes('name already exists')) {
+        errorToast({
+          title: 'Failed to update account',
+          description: errorDetail,
+        });
+      } else {
+        errorToast({
+          title: 'Failed to update account',
+        });
+      }
     },
   });
 
