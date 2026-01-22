@@ -67,9 +67,18 @@ export const AccountOverview = memo(
       onOpen: handleOpenSend,
       onOpenChange: handleSendOpenChange,
     } = useDisclosure();
-    const addressWithChecksum = vault?.data.predicateAddress
-      ? new Address(vault?.data.predicateAddress).toString()
-      : '';
+
+    const addressWithChecksum = useMemo(() => {
+      if (!vault?.data.predicateAddress) return '';
+
+      try {
+        return new Address(vault.data.predicateAddress).toString();
+      } catch (error) {
+        console.warn('Invalid address format:', vault.data.predicateAddress);
+        return vault.data.predicateAddress;
+      }
+    }, [vault?.data.predicateAddress]);
+
     const { copy, copied } = useClipboard({
       value: addressWithChecksum,
     });
