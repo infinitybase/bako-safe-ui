@@ -12,6 +12,7 @@ import {
   VStack,
 } from 'bako-ui';
 import { motion } from 'framer-motion';
+import { Address } from 'fuels';
 import { memo, useMemo } from 'react';
 import { RiFileCopyFill } from 'react-icons/ri';
 
@@ -66,8 +67,11 @@ export const AccountOverview = memo(
       onOpen: handleOpenSend,
       onOpenChange: handleSendOpenChange,
     } = useDisclosure();
+    const addressWithChecksum = vault?.data.predicateAddress
+      ? new Address(vault?.data.predicateAddress).toString()
+      : '';
     const { copy, copied } = useClipboard({
-      value: vault?.data.predicateAddress,
+      value: addressWithChecksum,
     });
 
     const isLoading = useMemo(
