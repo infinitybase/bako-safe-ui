@@ -11,6 +11,7 @@ import {
   useClipboard,
   VStack,
 } from 'bako-ui';
+import { Address } from 'fuels';
 import { memo, useEffect, useMemo, useState } from 'react';
 import { RiFileCopyFill } from 'react-icons/ri';
 
@@ -55,7 +56,9 @@ export const VaultCard = memo(function VaultCard({
     id,
     workspaceId,
   );
-  const { copy, copied } = useClipboard({ value: address });
+
+  const addressWithChecksum = address ? new Address(address).toString() : '';
+  const { copy, copied } = useClipboard({ value: addressWithChecksum });
 
   const { mutate: toogleVisibility, isPending } = useMutation({
     mutationFn: VaultService.toggleVisibility,
@@ -125,7 +128,7 @@ export const VaultCard = memo(function VaultCard({
             </Heading>
 
             <Text fontSize="xs" color="gray.400" lineHeight="shorter">
-              {AddressUtils.format(address, 5)}
+              {AddressUtils.format(addressWithChecksum, 5)}
             </Text>
           </VStack>
 

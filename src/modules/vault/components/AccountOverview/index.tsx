@@ -194,7 +194,7 @@ export const AccountOverview = memo(
                   </Flex>
                 </HStack>
                 <Text fontSize="xs" color="gray.400">
-                  {AddressUtils.format(vault?.data.predicateAddress || '', 6)}
+                  {AddressUtils.format(addressWithChecksum || '', 6)}
                 </Text>
               </Card.Header>
 
