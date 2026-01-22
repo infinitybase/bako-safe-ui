@@ -41,9 +41,10 @@ const CreateVaultDialog = memo((props: CreateVaultDialogProps) => {
       {...props}
       closeOnInteractOutside={false}
       modalContentProps={{
-        maxH: '100vh',
-        h: '780px',
+        h: { base: '100dvh', sm: '780px' },
+        maxH: { base: '100dvh', sm: '780px' },
         p: 0,
+        overflow: 'hidden',
       }}
     >
       <Dialog.Header
@@ -66,6 +67,7 @@ const CreateVaultDialog = memo((props: CreateVaultDialogProps) => {
       <Dialog.Body
         px={6}
         flex={1}
+        minH={0}
         display="flex"
         overflowY="auto"
         css={{
