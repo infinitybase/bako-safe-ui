@@ -12,6 +12,7 @@ import {
   VStack,
 } from 'bako-ui';
 import { motion } from 'framer-motion';
+import { Address } from 'fuels';
 import { memo, useMemo } from 'react';
 import { RiFileCopyFill } from 'react-icons/ri';
 
@@ -66,8 +67,20 @@ export const AccountOverview = memo(
       onOpen: handleOpenSend,
       onOpenChange: handleSendOpenChange,
     } = useDisclosure();
+
+    const addressWithChecksum = useMemo(() => {
+      if (!vault?.data.predicateAddress) return '';
+
+      try {
+        return new Address(vault.data.predicateAddress).toString();
+      } catch (error) {
+        console.warn('Invalid address format:', vault.data.predicateAddress);
+        return vault.data.predicateAddress;
+      }
+    }, [vault?.data.predicateAddress]);
+
     const { copy, copied } = useClipboard({
-      value: vault?.data.predicateAddress,
+      value: addressWithChecksum,
     });
 
     const isLoading = useMemo(
@@ -181,7 +194,7 @@ export const AccountOverview = memo(
                   </Flex>
                 </HStack>
                 <Text fontSize="xs" color="gray.400">
-                  {AddressUtils.format(vault?.data.predicateAddress || '', 6)}
+                  {AddressUtils.format(addressWithChecksum || '', 6)}
                 </Text>
               </Card.Header>
 
