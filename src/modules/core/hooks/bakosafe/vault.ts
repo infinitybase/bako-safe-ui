@@ -12,7 +12,7 @@ const VAULT_QUERY_KEYS = {
 
 interface UseCreateBakoSafeVaultParams {
   onSuccess: (data: PredicateResponseWithWorkspace) => void;
-  onError: () => void;
+  onError: (error: unknown) => void;
 }
 
 interface UseCreateBakoSafeVaultPayload {

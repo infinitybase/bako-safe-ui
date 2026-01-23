@@ -1,9 +1,11 @@
+import { AxiosError } from 'axios';
 import { Bech32 } from 'bakosafe';
 import { Address } from 'fuels';
 import debounce from 'lodash.debounce';
 import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
+import { IApiError } from '@/config';
 import { useContactToast } from '@/modules/addressBook/hooks';
 import { useCreateBakoSafeVault } from '@/modules/core/hooks';
 import { Pages } from '@/modules/core/routes';
@@ -58,11 +60,21 @@ const useCreateVault = () => {
       form.reset();
       setSearch('');
     },
-    onError: () => {
-      errorToast({
-        title: 'Error on vault creation!',
-        description: 'An error occurred while creating the vault',
-      });
+    onError: (error) => {
+      const apiError = (error as AxiosError)?.response?.data as IApiError;
+      const errorTitle = apiError?.detail?.error?.title;
+
+      if (errorTitle?.includes('name already exists')) {
+        errorToast({
+          title: 'Error on account creation!',
+          description: 'An account with that name already exists.',
+        });
+      } else {
+        errorToast({
+          title: 'Error on account creation!',
+          description: 'An error occurred while creating the account',
+        });
+      }
     },
   });
 
