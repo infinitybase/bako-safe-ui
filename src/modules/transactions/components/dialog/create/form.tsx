@@ -74,7 +74,7 @@ const CreateTransactionForm = (props: CreateTransactionFormProps) => {
   }, [transactionsFields, form, assets.assets, baseAssetId]);
 
   return (
-    <FormProvider px={6} {...form}>
+    <FormProvider {...form}>
       <Box w="full" h="100%" display="flex" flexDirection="column" {...props}>
         <Controller
           control={form.control}
