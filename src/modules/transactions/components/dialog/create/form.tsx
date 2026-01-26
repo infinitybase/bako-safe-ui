@@ -74,13 +74,13 @@ const CreateTransactionForm = (props: CreateTransactionFormProps) => {
   }, [transactionsFields, form, assets.assets, baseAssetId]);
 
   return (
-    <FormProvider {...form}>
-      <Box w="full" {...props}>
+    <FormProvider px={6} {...form}>
+      <Box w="full" h="100%" display="flex" flexDirection="column" {...props}>
         <Controller
           control={form.control}
           name="name"
           render={({ field, fieldState }) => (
-            <Field.Root invalid={!!fieldState.error}>
+            <Field.Root invalid={!!fieldState.error} pb="10px">
               <InputGroup
                 bg="gray.600"
                 rounded="8px"

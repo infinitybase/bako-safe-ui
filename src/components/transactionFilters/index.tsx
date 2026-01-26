@@ -38,7 +38,7 @@ const TransactionFilters = ({
   const isAll = !currentFilter && !isPending;
 
   return (
-    <HStack w="full" {...rest}>
+    <HStack w="full" gap={3} {...rest}>
       {isPendingSignerTransaction && (
         <Button
           bg={isPending ? 'primary.main/20' : 'primary.main/5'}

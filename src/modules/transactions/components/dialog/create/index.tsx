@@ -107,9 +107,19 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
     <Dialog.Modal
       {...props}
       closeOnInteractOutside={false}
-      size={{ base: 'full', sm: 'md' }}
-      modalContentProps={{ sm: { minH: '700px' }, p: '0 !important' }}
-      xsBreakPointPy={0}
+      modalContentProps={{
+        display: 'flex',
+        flexDirection: 'column',
+        w: { base: '100vw', md: '480px' },
+        h: { base: '100dvh', md: '100vh' },
+        maxW: { base: '100vw', md: '480px' },
+        maxH: { base: '100dvh', md: '600px', xl: '700px' },
+        p: 0,
+      }}
+      size={{
+        base: 'full',
+        md: 'md',
+      }}
     >
       <Stack p={6} gap={3}>
         <Flex alignItems="center" justifyContent="space-between">
@@ -124,7 +134,7 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
         </Text>
       </Stack>
 
-      <Dialog.Body px={6} maxH={'full'} mt={{ sm: 4 }} flex={1}>
+      <Dialog.Body px={6} mt={{ sm: 4 }} flex="1" overflowY="hidden">
         <CreateTransactionForm
           form={form}
           nicks={nicks}
@@ -139,9 +149,7 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
       <VStack
         w="full"
         bg="bg.muted"
-        p={6}
-        justifySelf="center"
-        mt={6}
+        p="24px"
         roundedTop="2xl"
         roundedBottom={{ base: 'none', sm: '2xl' }}
         css={{
