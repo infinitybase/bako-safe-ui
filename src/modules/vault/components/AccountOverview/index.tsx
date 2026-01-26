@@ -137,11 +137,14 @@ export const AccountOverview = memo(
                     fontSize="sm"
                     truncate
                     lineClamp={1}
+                    display="flex"
+                    alignItems="center"
+                    h="20px"
                   >
                     {accountName}
                   </Heading>
 
-                  <Flex gap={1} alignItems="center">
+                  <Flex gap={2} alignItems="center">
                     <IconTooltipButton
                       onClick={copy}
                       tooltipContent={copied ? 'Copied' : 'Copy Address'}

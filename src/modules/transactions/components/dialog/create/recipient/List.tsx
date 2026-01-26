@@ -43,9 +43,10 @@ export const RecipientList = ({
     <Accordion.Root
       ref={ref}
       value={[accordion.index.toString()]}
+      flex="1"
       overflowY="auto"
-      pb={isMobile ? 10 : 0}
-      maxH={450}
+      pb={isMobile ? 3 : 3}
+      maxH={{ base: 'calc(100dvh - 220px)', md: 450 }}
       pr={{ base: 1, sm: 0 }}
       css={{
         '&::-webkit-scrollbar': {

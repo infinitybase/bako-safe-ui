@@ -213,6 +213,7 @@ export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
           <HStack
             marginBottom={{ base: 0, md: 4 }}
             onClick={handleOpenMobileItem}
+            h="20px"
           >
             <VStack alignItems="flex-start" gap={0}>
               <Text
@@ -222,12 +223,8 @@ export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
               >
                 Liquid Stake FUEL
               </Text>
-              {!isMobile &&  isPendingSigner && (
-                <Text
-                  textAlign="justify"
-                  fontSize="xs"
-                  color="primary.main"
-                >
+              {!isMobile && isPendingSigner && (
+                <Text textAlign="justify" fontSize="xs" color="primary.main">
                   This account has pending transactions.
                 </Text>
               )}
