@@ -18,6 +18,7 @@ export const useSwap = () => {
       request: { refetch: refetchVaultTransactionsList },
     },
     signTransaction: { confirmTransaction },
+    pendingSignerTransactions,
   } = useTransactionsContext();
   const { mutateAsync: sendTx, ...rest } = useMutation({
     mutationKey: ['swap'],
@@ -46,6 +47,7 @@ export const useSwap = () => {
       await refetchTransactionsList();
       await refetchHomeTransactionsList();
       await refetchVaultTransactionsList();
+      await pendingSignerTransactions.refetch();
 
       await confirmTransaction(transaction.id, undefined, transaction).finally(
         () => {

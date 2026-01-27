@@ -63,6 +63,7 @@ const useFormBridge = () => {
       request: { refetch: refetchVaultTransactionsList },
     },
     signTransaction: { confirmTransaction },
+    pendingSignerTransactions,
   } = useTransactionsContext();
 
   const { vault } = useBakoSafeVault({
@@ -363,6 +364,7 @@ const useFormBridge = () => {
           await refetchVaultTransactionsList();
           await refetchTransactionsList();
           await refetchHomeTransactionsList();
+          await pendingSignerTransactions.refetch();
         });
         form.reset();
         setStepForm(BridgeStepsForm.FROM);
@@ -381,6 +383,7 @@ const useFormBridge = () => {
       refetchTransactionsList,
       refetchVaultTransactionsList,
       createTransactionBridgeAsync,
+      pendingSignerTransactions,
       form,
       setStepForm,
     ],
