@@ -74,20 +74,16 @@ const useCommingSoon = (predicateAddress: string) => {
     if (!predicateAddress) return;
 
     try {
-      const data = await ExportWallet.getByAddress({
+      const { version, config, name } = await ExportWallet.getByAddress({
         address: predicateAddress,
       });
 
       const json = {
-        config: {
-          SIGNATURES_COUNT: data.configurable.SIGNATURES_COUNT,
-          SIGNERS: data.members.map((member) => member.address),
-          HASH_PREDICATE: data.configurable.HASH_PREDICATE,
-        },
-        version: data.version,
+        config,
+        version,
       };
 
-      downloadJson(`${data.name}`, json);
+      downloadJson(`${name}`, json);
     } catch (error) {
       console.error('Export wallet error:', error);
       errorToast({

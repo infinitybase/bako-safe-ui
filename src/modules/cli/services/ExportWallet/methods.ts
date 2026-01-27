@@ -8,11 +8,12 @@ export class ExportWallet {
       `/predicate/by-address/${params.address}`,
     );
 
-    const configurable = data.configurable ? JSON.parse(data.configurable) : {};
+    const config = data.configurable ? JSON.parse(data.configurable) : {};
 
     return {
       ...data,
-      configurable,
+      config,
+      version: data.version,
     };
   }
 }
