@@ -58,6 +58,7 @@ export * from './swap-stake';
 export * from './triangle-warning';
 export * from './up-right-arrow';
 export * from './up-right-arrow-yellow';
+export * from './upload-file';
 export * from './usdc';
 export * from './user-add';
 export * from './users';
