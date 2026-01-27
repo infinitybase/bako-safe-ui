@@ -236,7 +236,8 @@ export function ModalLiquidStake({
               isDepositing ||
               !!errorAmount ||
               Number(valueSource) <= 0 ||
-              notEnoughBalanceETH
+              notEnoughBalanceETH ||
+              isPendingSigner
             }
           >
             {stakeButtonTitle}
