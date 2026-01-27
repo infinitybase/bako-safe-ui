@@ -93,6 +93,7 @@ const CreateTransactionForm = (props: CreateTransactionFormProps) => {
                 }
               >
                 <Input
+                  maxLength={27}
                   variant="subtle"
                   placeholder="Transaction name"
                   _placeholder={{
