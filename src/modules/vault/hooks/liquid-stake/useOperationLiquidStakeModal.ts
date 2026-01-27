@@ -98,10 +98,8 @@ const useOperationLiquidStakeModal = ({
       handleClose();
     } catch (error) {
       console.error('error createTxLiquidStake', error);
-      if (error instanceof Error && error.message === 'Rejected request!') {
-        handleClose();
+      if (error instanceof Error && error.message === 'Rejected request!')
         return;
-      }
 
       toast.generalError(
         randomBytes.toString(),
