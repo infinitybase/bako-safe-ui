@@ -1,9 +1,10 @@
-import { Button, Card, HStack, Image, Text, VStack } from 'bako-ui';
+import { Button, Card, HStack, Image, Text, Tooltip, VStack } from 'bako-ui';
 import { useEffect, useMemo } from 'react';
 
 import { Dialog, FuelIcon } from '@/components';
 import { tokensIDS } from '@/modules/core/utils/assets/address';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
+import { TooltipPendingTx } from '@/modules/vault/components/TooltipPendingTx';
 
 import { useOperationLiquidStakeModal } from '../../hooks';
 import { InputField } from './InputField';
@@ -71,6 +72,10 @@ export function ModalLiquidStake({
 
     return StakeButtonTitle.STAKE;
   }, [isPendingSigner, notEnoughBalanceETH]);
+
+  const ToolTipComponent = useMemo(() => {
+    return isPendingSigner ? <TooltipPendingTx /> : null;
+  }, [isPendingSigner]);
 
   return (
     <Dialog.Modal
@@ -229,19 +234,30 @@ export function ModalLiquidStake({
           </Card.Root>
         </VStack>
         <Dialog.Actions onClick={createTxLiquidStake}>
-          <Button
-            width="full"
-            loading={isDepositing}
-            disabled={
-              isDepositing ||
-              !!errorAmount ||
-              Number(valueSource) <= 0 ||
-              notEnoughBalanceETH ||
-              isPendingSigner
-            }
+          <Tooltip
+            content={ToolTipComponent}
+            disabled={!ToolTipComponent}
+            contentProps={{
+              bg: 'bg.muted',
+              borderColor: 'bg.panel',
+            }}
+            showArrow
+            positioning={{ placement: 'top' }}
           >
-            {stakeButtonTitle}
-          </Button>
+            <Button
+              width="full"
+              loading={isDepositing}
+              disabled={
+                isDepositing ||
+                !!errorAmount ||
+                Number(valueSource) <= 0 ||
+                notEnoughBalanceETH ||
+                isPendingSigner
+              }
+            >
+              {stakeButtonTitle}
+            </Button>
+          </Tooltip>
         </Dialog.Actions>
       </Dialog.Body>
     </Dialog.Modal>
