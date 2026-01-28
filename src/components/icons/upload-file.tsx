@@ -1,7 +1,7 @@
 import { createIcon } from 'bako-ui';
 
 const UploadFile = createIcon({
-  displayName: 'CoinsLine',
+  displayName: 'UploadFile',
   viewBox: '0 0 20 20',
   path: (
     <path
