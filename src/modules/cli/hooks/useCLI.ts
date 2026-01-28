@@ -1,6 +1,12 @@
 import { useMemo, useState } from 'react';
 
-import { BitCoinIcon, KeyIcon, MoreLessIcon, RecoveryIcon } from '@/components';
+import {
+  BitCoinIcon,
+  KeyIcon,
+  MoreLessIcon,
+  RecoveryIcon,
+  UploadFile,
+} from '@/components';
 import { PredicateAndWorkspace, Workspace } from '@/modules';
 import { PermissionRoles } from '@/modules/core/models';
 
@@ -16,9 +22,10 @@ export const requiredCLIRoles = [
 
 export enum CLIFeaturesLabels {
   API_TOKEN = 'API Token',
-  ADD_OTHER_TOKENS = 'Add Custom token',
-  RECOVERY = 'Account Recovery',
+  ADD_OTHER_TOKENS = 'Add other tokens',
+  RECOVERY = 'Recovery',
   SPEND_LIMIT = 'Spending limit',
+  EXPORT_WALLET = 'Export Wallet',
 }
 
 export interface IUseCLIProps {
@@ -50,7 +57,9 @@ const useCLI = ({ currentWorkspace, userId, vault }: IUseCLIProps) => {
   const { dialog, steps, tabs, create, remove, list, hasToken } =
     useAPIToken(hasPermission);
 
-  const { commingSoonDialog, features, handleAction } = useCommingSoon();
+  const { commingSoonDialog, features, handleAction } = useCommingSoon(
+    vault?.predicateAddress ?? '',
+  );
 
   const handleOpen = (feature: FeatureConfig) => {
     setSelectedFeature(feature);
@@ -92,6 +101,14 @@ const useCLI = ({ currentWorkspace, userId, vault }: IUseCLIProps) => {
       onClick: () => {
         handleOpen(features[CLIFeaturesLabels.SPEND_LIMIT]);
         handleAction(CLIFeaturesLabels.SPEND_LIMIT);
+      },
+    },
+    {
+      label: CLIFeaturesLabels.EXPORT_WALLET,
+      icon: UploadFile,
+      disabled: !hasPermission,
+      onClick: () => {
+        handleAction(CLIFeaturesLabels.EXPORT_WALLET);
       },
     },
   ];

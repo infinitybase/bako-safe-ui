@@ -1,12 +1,15 @@
 import { Icon } from 'bako-ui';
 import { IoIosCheckmarkCircle } from 'react-icons/io';
 
+import { useContactToast } from '@/modules';
+import { ExportWallet } from '@/modules/cli/services';
 import {
   useDisclosure,
   UseDisclosureReturn,
 } from '@/modules/core/hooks/useDisclosure';
 import { useNotification } from '@/modules/notification/hooks/useNotification';
 import { createGTMCustomEvent } from '@/utils';
+import { downloadJson } from '@/utils/download-json';
 
 import { CLIFeaturesLabels } from '../useCLI';
 
@@ -22,11 +25,12 @@ export interface UseCommingSoonProps {
   };
 }
 
-const useCommingSoon = () => {
+const useCommingSoon = (predicateAddress: string) => {
   const commingSoonDialog = useDisclosure();
   const toast = useNotification();
+  const { errorToast } = useContactToast();
 
-  const handleAction = (field: CLIFeaturesLabels) => {
+  const handleAction = async (field: CLIFeaturesLabels) => {
     switch (field) {
       case CLIFeaturesLabels.ADD_OTHER_TOKENS:
         createGTMCustomEvent({
@@ -49,6 +53,9 @@ const useCommingSoon = () => {
           description: 'Vault - Settings - Spend Limit',
         });
         break;
+      case CLIFeaturesLabels.EXPORT_WALLET:
+        await exportWallet();
+        break;
     }
   };
 
@@ -65,6 +72,29 @@ const useCommingSoon = () => {
     });
 
     commingSoonDialog.onClose();
+  };
+
+  const exportWallet = async () => {
+    if (!predicateAddress) return;
+
+    try {
+      const { config, name } = await ExportWallet.getByAddress({
+        address: predicateAddress,
+      });
+
+      const json = {
+        config,
+      };
+
+      downloadJson(`${name}`, json);
+    } catch (error) {
+      console.error('Export wallet error:', error);
+      errorToast({
+        title: 'Error on export wallet',
+        description:
+          'An error occurred while exporting the wallet. Please try again.',
+      });
+    }
   };
 
   const features = {
@@ -85,6 +115,10 @@ const useCommingSoon = () => {
     [CLIFeaturesLabels.SPEND_LIMIT]: {
       dialogDescription: 'This Spend limit method is not available for now',
       notifyHandler: handleNotify,
+    },
+    [CLIFeaturesLabels.EXPORT_WALLET]: {
+      dialogDescription: 'This Export Wallet method is not available for now',
+      notifyHandler: () => {},
     },
   };
 
