@@ -67,7 +67,9 @@ const useSignTransaction = ({
         queryKey: [VAULT_TRANSACTIONS_LIST_PAGINATION],
       });
       queryClient.invalidateQueries({
-        queryKey: vaultAllocationQueryKey.VAULT_ALLOCATION_QUERY_KEY(vaultId),
+        queryKey: vaultAllocationQueryKey.VAULT_ALLOCATION_QUERY_KEY(
+          vaultId ?? '',
+        ),
       });
       queryClient.invalidateQueries({
         queryKey: [USER_ALLOCATION_QUERY_KEY],
@@ -168,6 +170,14 @@ const useSignTransaction = ({
           vaultBalanceRefetch();
           queryClient.invalidateQueries({
             queryKey: [VAULT_TRANSACTIONS_LIST_PAGINATION],
+          });
+          queryClient.invalidateQueries({
+            queryKey: vaultAllocationQueryKey.VAULT_ALLOCATION_QUERY_KEY(
+              vaultId ?? '',
+            ),
+          });
+          queryClient.invalidateQueries({
+            queryKey: [USER_ALLOCATION_QUERY_KEY],
           });
         },
       },
