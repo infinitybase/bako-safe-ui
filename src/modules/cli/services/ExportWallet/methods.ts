@@ -1,15 +1,9 @@
 import { api } from '@/config/api';
 
-import {
-  ExportedWalletConfig,
-  GetPredicateByAddress,
-  GetPredicateByAddressResponse,
-} from './types';
+import { GetPredicateByAddress, GetPredicateByAddressResponse } from './types';
 
 export class ExportWallet {
-  static async getByAddress(
-    params: GetPredicateByAddress,
-  ): Promise<ExportedWalletConfig> {
+  static async getByAddress(params: GetPredicateByAddress) {
     const { data } = await api.get<GetPredicateByAddressResponse>(
       `/predicate/by-address/${params.address}`,
     );
