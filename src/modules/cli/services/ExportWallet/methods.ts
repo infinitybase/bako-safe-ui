@@ -18,7 +18,6 @@ export class ExportWallet {
 
     return {
       config,
-      version: data.version,
       name: data.name,
     };
   }
