@@ -1,14 +1,20 @@
-export interface getPredicateByAddress {
+export interface GetPredicateByAddress {
   address: string;
 }
 
-export interface getPredicateByAddressResponse {
+export interface GetPredicateByAddressResponse {
   name: string;
-  version: number;
+  version: string;
   members: Array<{
     id: string;
     address: string;
     avatar: string | null;
   }>;
   configurable: string;
+}
+
+export interface ExportedWalletConfig {
+  config: Record<string, unknown>;
+  version: string;
+  name: string;
 }
