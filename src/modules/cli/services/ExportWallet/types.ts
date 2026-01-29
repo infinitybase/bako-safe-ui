@@ -4,5 +4,6 @@ export interface GetPredicateByAddress {
 
 export interface GetPredicateByAddressResponse {
   name: string;
+  version: string;
   configurable: string;
 }

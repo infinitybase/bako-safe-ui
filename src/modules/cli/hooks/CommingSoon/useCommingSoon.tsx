@@ -74,11 +74,11 @@ const useCommingSoon = (predicateAddress: string) => {
     if (!predicateAddress) return;
 
     try {
-      const { config, name } = await ExportWallet.getByAddress({
+      const { config, version, name } = await ExportWallet.getByAddress({
         address: predicateAddress,
       });
 
-      const version = config.version;
+      const _version = config.version ?? version;
 
       if (config.version) {
         delete config.version;
@@ -86,7 +86,7 @@ const useCommingSoon = (predicateAddress: string) => {
 
       const json = {
         config,
-        version,
+        version: _version,
       };
 
       downloadJson(`${name}`, json);
