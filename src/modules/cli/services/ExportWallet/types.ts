@@ -1,8 +1,9 @@
-export interface getPredicateByAddress {
+export interface GetPredicateByAddress {
   address: string;
 }
 
-export interface getPredicateByAddressResponse {
+export interface GetPredicateByAddressResponse {
   name: string;
+  version: string;
   configurable: string;
 }
