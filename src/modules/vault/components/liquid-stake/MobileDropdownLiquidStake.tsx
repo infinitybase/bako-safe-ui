@@ -1,7 +1,6 @@
-import { Drawer, HStack, Icon, Image, Text, VStack } from 'bako-ui';
+import { Drawer, HStack, Image, Text, VStack } from 'bako-ui';
 
-import { FuelIcon, RigIcon } from '@/components';
-import poweredByRig from "@/assets/svg/powered-by-rig.svg";
+import poweredByRig from '@/assets/svg/powered-by-rig.svg';
 
 interface MobileItemLiquidStakeProps {
   isOpen: boolean;
@@ -29,19 +28,12 @@ export function MobileDropdownLiquidStake({
         <Drawer.Positioner>
           <Drawer.Content padding={4} bg="bg.panel">
             <Drawer.Header>
-              <VStack alignItems="flex-start" gap={0} maxW={["130px", "320px"]}>
-                <Text
-                  fontWeight={600}
-                  fontSize={14}
-                  color="textPrimary"
-                >
+              <VStack alignItems="flex-start" gap={0} maxW={['130px', '320px']}>
+                <Text fontWeight={600} fontSize={14} color="textPrimary">
                   Liquid Stake FUEL
                 </Text>
                 {isPendingSigner && (
-                  <Text
-                    fontSize="xs"
-                    color="primary.main"
-                  >
+                  <Text fontSize="xs" color="primary.main">
                     This account has pending transactions.
                   </Text>
                 )}
