@@ -25,9 +25,11 @@ const AssetsBalanceList = ({ assets, predicateId }: AssetsBalanceProps) => {
     tokensUSD,
     assetsMap,
     screenSizes: { isSmall },
+    workspaceInfos: {
+      infos: { visibleBalance },
+    },
   } = useWorkspaceContext();
   const { allocation, isLoading } = useVaultAllocationRequest(predicateId);
-
   const stableAssets = useMemo(() => assets, [assets]);
   const stableTokensUSD = useMemo(() => tokensUSD, [tokensUSD]);
   const stableAssetsMap = useMemo(() => assetsMap, [assetsMap]);
@@ -71,8 +73,9 @@ const AssetsBalanceList = ({ assets, predicateId }: AssetsBalanceProps) => {
             </Heading>
           </Card.Header>
           <Card.Body justifyContent="center" alignItems="center">
-            {!isEmpty && <AdvancedDonut data={data} />}
-
+            {!isEmpty && (
+              <AdvancedDonut data={data} visibleBalance={!visibleBalance} />
+            )}
             {isEmpty && !isLoading && (
               <Text color="textSecondary" textAlign="center">
                 Nothing to show here yet

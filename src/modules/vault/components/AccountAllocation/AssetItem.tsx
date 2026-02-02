@@ -1,6 +1,7 @@
 import { Flex, Image, Stack, Text } from 'bako-ui';
 import { memo, useMemo } from 'react';
 
+import { BlurredContent } from '@/components/blurredContent';
 import { Asset, useGetTokenInfos } from '@/modules/core';
 import { useGetUSDValue } from '@/modules/vault/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/hooks';
@@ -11,7 +12,12 @@ interface AssetItemProps {
 }
 
 const AssetItem = memo(({ asset }: AssetItemProps) => {
-  const { assetsMap } = useWorkspaceContext();
+  const {
+    assetsMap,
+    workspaceInfos: {
+      infos: { visibleBalance },
+    },
+  } = useWorkspaceContext();
   const { assetAmount, assetsInfo: assetInfo } = useGetTokenInfos({
     ...asset,
     assetsMap,
@@ -50,12 +56,16 @@ const AssetItem = memo(({ asset }: AssetItemProps) => {
         </Text>
       </Flex>
       <Stack gap={3} align="end">
-        <Text color="textPrimary" fontSize="xs" lineHeight="1">
-          {assetAmount}
-        </Text>
-        <Text fontSize="xs" color="textSecondary" lineHeight="1">
-          {balanceInCurrency}
-        </Text>
+        <BlurredContent isBlurred={!visibleBalance} inline>
+          <Text color="textPrimary" fontSize="xs" lineHeight="1">
+            {assetAmount}
+          </Text>
+        </BlurredContent>
+        <BlurredContent isBlurred={!visibleBalance} inline>
+          <Text fontSize="xs" color="textSecondary" lineHeight="1">
+            {balanceInCurrency}
+          </Text>
+        </BlurredContent>
       </Stack>
     </Flex>
   );

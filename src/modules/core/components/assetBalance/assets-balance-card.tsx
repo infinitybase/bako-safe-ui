@@ -1,6 +1,7 @@
 import { Image, Text, VStack } from 'bako-ui';
 
 import { Card } from '@/components';
+import { BlurredContent } from '@/components/blurredContent';
 import { Asset } from '@/modules/core/utils';
 import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
@@ -13,7 +14,12 @@ const AssetsBalanceCard = ({
   asset: Asset;
   usdAmount: number;
 }) => {
-  const { assetsMap } = useWorkspaceContext();
+  const {
+    assetsMap,
+    workspaceInfos: {
+      infos: { visibleBalance },
+    },
+  } = useWorkspaceContext();
   const { assetAmount, assetsInfo } = useGetTokenInfos({ ...asset, assetsMap });
 
   const transactionAmount =
@@ -61,18 +67,21 @@ const AssetsBalanceCard = ({
             <Text fontSize="xs" color="textSecondary" maxW="full" truncate>
               {assetsInfo?.name}
             </Text>
-
-            <Text fontSize="xs" color="textSecondary">
-              {transactionAmount > 0 ? formattedAmount : ''}
-            </Text>
+            <BlurredContent isBlurred={!visibleBalance} inline>
+              <Text fontSize="xs" color="textSecondary">
+                {transactionAmount > 0 ? formattedAmount : ''}
+              </Text>
+            </BlurredContent>
           </VStack>
 
-          <Text fontSize="sm" color="gray.50" maxW="full" truncate>
-            {assetAmount}{' '}
-            <Text as="span" color="gray.50" fontSize="sm">
-              {assetsInfo?.slug?.toUpperCase() ?? ''}
+          <BlurredContent isBlurred={!visibleBalance} inline>
+            <Text fontSize="sm" color="gray.50" maxW="full" truncate>
+              {assetAmount}{' '}
+              <Text as="span" color="gray.50" fontSize="sm">
+                {assetsInfo?.slug?.toUpperCase() ?? ''}
+              </Text>
             </Text>
-          </Text>
+          </BlurredContent>
         </VStack>
       </VStack>
     </Card>

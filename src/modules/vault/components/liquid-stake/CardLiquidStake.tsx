@@ -38,7 +38,12 @@ const WITHDRAW_URL = 'https://rig.st/';
 export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
   const { isMobile } = useScreenSize();
   const rigContract = useRig(vault);
-  const { assetsMap } = useWorkspaceContext();
+  const {
+    assetsMap,
+    workspaceInfos: {
+      infos: { visibleBalance },
+    },
+  } = useWorkspaceContext();
 
   const { currentNetwork } = useNetworks();
   const { price, isPendingSigner } = useDepositLiquidStake();
@@ -130,6 +135,7 @@ export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
         label="FUEL Balance"
         value={fuelTokens}
         isLoading={!assets.assets}
+        visibleBalance={!visibleBalance}
       >
         <VStack alignItems={'flex-end'} gap={0}>
           {emptyEthOrFuel || isPendingSigner ? (
@@ -161,6 +167,7 @@ export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
         label="stFUEL Balance"
         value={stFuelTokens}
         isLoading={!assets.assets}
+        visibleBalance={!visibleBalance}
       >
         <Button
           variant="subtle"

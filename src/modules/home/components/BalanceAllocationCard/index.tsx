@@ -3,7 +3,11 @@ import { memo, useMemo } from 'react';
 
 import AdvancedDonut from '@/components/chart/advanced-donut';
 import { DonutColors } from '@/components/chart/color';
-import { getChainId, useUserAllocationRequest } from '@/modules';
+import {
+  getChainId,
+  useUserAllocationRequest,
+  useWorkspaceContext,
+} from '@/modules';
 import { useAssetMap } from '@/modules/assets-tokens/hooks/useAssetMap';
 
 const BalanceAllocationCard = memo(() => {
@@ -20,6 +24,12 @@ const BalanceAllocationCard = memo(() => {
       })) ?? [],
     [allocation, assetsMap],
   );
+
+  const {
+    workspaceInfos: {
+      infos: { visibleBalance },
+    },
+  } = useWorkspaceContext();
 
   const isEmpty = useMemo(() => !chartData.length, [chartData]);
 
@@ -42,7 +52,9 @@ const BalanceAllocationCard = memo(() => {
         </Heading>
       </Card.Header>
       <Card.Body alignItems="center" justifyContent="center">
-        {!isEmpty && <AdvancedDonut data={chartData} />}
+        {!isEmpty && (
+          <AdvancedDonut data={chartData} visibleBalance={!visibleBalance} />
+        )}
 
         {!isLoading && isEmpty && (
           <Text color="textSecondary" textAlign="center">

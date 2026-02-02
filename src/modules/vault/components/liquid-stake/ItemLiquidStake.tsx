@@ -1,6 +1,7 @@
 import { Card, GridItem, HStack, Text, VStack } from 'bako-ui';
 
 import { CustomSkeleton } from '@/components';
+import { BlurredContent } from '@/components/blurredContent';
 import { useWorkspaceContext } from '@/modules/workspace/hooks';
 import { limitCharacters } from '@/utils';
 
@@ -9,6 +10,7 @@ export interface ItemLiquidStakeProps {
   value: string;
   children?: React.ReactNode;
   isLoading?: boolean;
+  visibleBalance?: boolean;
 }
 
 export function ItemLiquidStake({
@@ -16,6 +18,7 @@ export function ItemLiquidStake({
   value,
   children,
   isLoading = false,
+  visibleBalance = false,
 }: ItemLiquidStakeProps) {
   const {
     screenSizes: { isMobile, isLargerThan1600 },
@@ -40,9 +43,11 @@ export function ItemLiquidStake({
               {label}
             </Text>
             <CustomSkeleton loading={isLoading}>
-              <Text fontSize="xs" fontWeight={500} color="textPrimary">
-                {limitCharacters(value, charLimit)}
-              </Text>
+              <BlurredContent isBlurred={visibleBalance} inline>
+                <Text fontSize="xs" fontWeight={500} color="textPrimary">
+                  {limitCharacters(value, charLimit)}
+                </Text>
+              </BlurredContent>
             </CustomSkeleton>
           </VStack>
           {children}
