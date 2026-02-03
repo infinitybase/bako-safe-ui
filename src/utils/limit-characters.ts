@@ -1,9 +1,13 @@
 /***
  TODO: Remove this and use AddressUtils.format.
  ***/
-const limitCharacters = (text: string, limit: number) => {
+const limitCharacters = (
+  text: string,
+  limit: number,
+  addEllipsis: boolean = true,
+) => {
   if (text.length > limit) {
-    return text.slice(0, limit) + '...';
+    return addEllipsis ? text.slice(0, limit) + '...' : text.slice(0, limit);
   }
 
   return text;

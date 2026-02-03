@@ -128,8 +128,9 @@ export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
     <>
       <ItemLiquidStake
         label="FUEL Balance"
-        value={fuelTokens}
+        value={'123.392060195'}
         isLoading={!assets.assets}
+        tooltipValue={true}
       >
         <VStack alignItems={'flex-end'} gap={0}>
           {emptyEthOrFuel || isPendingSigner ? (
@@ -159,8 +160,9 @@ export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
 
       <ItemLiquidStake
         label="stFUEL Balance"
-        value={stFuelTokens}
+        value={'44.409712391'}
         isLoading={!assets.assets}
+        tooltipValue={true}
       >
         <Button
           variant="subtle"
@@ -284,7 +286,10 @@ export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
             )}
           </HStack>
           <Grid
-            templateColumns={{ base: 'repeat(1, 1fr)', lg: 'repeat(2, 1fr)' }}
+            templateColumns={{
+              base: 'repeat(1, 1fr)',
+              md: 'repeat(2, minmax(0, 1fr))',
+            }}
             gap={3}
             flex={1}
             display={{ base: 'none', md: 'grid' }}
