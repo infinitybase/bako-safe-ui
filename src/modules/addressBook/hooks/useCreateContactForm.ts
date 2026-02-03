@@ -36,6 +36,11 @@ const useCreateContactForm = (
       .string()
       .required('Address is required.')
       .test(
+        'not-only-spaces',
+        'Address cannot contain only spaces.',
+        (value) => !value || value.trim().length > 0,
+      )
+      .test(
         'is-valid-address',
         'This address can not receive assets from Bako.',
         async (address) => {

@@ -142,6 +142,7 @@ const AddressInput = (props: AddressInputProps) => {
               boxSize={4}
               color="gray.200"
               cursor="pointer"
+              aria-label="Clear address"
               onClick={handleClearAddress}
             />
           )
