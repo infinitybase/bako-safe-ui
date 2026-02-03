@@ -128,7 +128,7 @@ export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
     <>
       <ItemLiquidStake
         label="FUEL Balance"
-        value={'123.392060195'}
+        value={fuelTokens}
         isLoading={!assets.assets}
         tooltipValue={true}
       >
@@ -160,7 +160,7 @@ export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
 
       <ItemLiquidStake
         label="stFUEL Balance"
-        value={'44.409712391'}
+        value={stFuelTokens}
         isLoading={!assets.assets}
         tooltipValue={true}
       >

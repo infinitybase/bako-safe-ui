@@ -48,7 +48,6 @@ export function ItemLiquidStake({
                   fontWeight={500}
                   color="textPrimary"
                   overflow="hidden"
-                  textOverflow="ellipsis"
                 >
                   {limitCharacters(value, charLimit, false)}
                 </Text>

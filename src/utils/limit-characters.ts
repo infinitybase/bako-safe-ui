@@ -4,10 +4,10 @@
 const limitCharacters = (
   text: string,
   limit: number,
-  addEllipsis: boolean = true,
+  showEllipsis: boolean = true,
 ) => {
   if (text.length > limit) {
-    return addEllipsis ? text.slice(0, limit) + '...' : text.slice(0, limit);
+    return showEllipsis ? text.slice(0, limit) + '...' : text.slice(0, limit);
   }
 
   return text;
