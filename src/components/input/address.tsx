@@ -14,10 +14,11 @@ interface AddressInputProps
   extends Omit<InputProps, 'value' | 'onChange' | 'placeholder'> {
   value: string;
   onChange: (value: string) => void;
+  error?: string;
 }
 
 const AddressInput = (props: AddressInputProps) => {
-  const { onChange, value, ...rest } = props;
+  const { onChange, value, error, ...rest } = props;
   const adbForm = useFormContext<ICreateContactFormData>();
 
   const [inputValue, setInputValue] = useState<string>(value);
@@ -133,13 +134,14 @@ const AddressInput = (props: AddressInputProps) => {
   };
 
   return (
-    <Field.Root>
+    <Field.Root invalid={!!error}>
       <InputGroup
         endElement={
           inputValue && (
             <CloseCircle
               boxSize={4}
               color="gray.200"
+              cursor="pointer"
               onClick={handleClearAddress}
             />
           )
@@ -154,6 +156,11 @@ const AddressInput = (props: AddressInputProps) => {
           p={3}
         />
       </InputGroup>
+      {error && (
+        <Field.HelperText color="red.400" fontWeight={500}>
+          {error}
+        </Field.HelperText>
+      )}
     </Field.Root>
   );
 };
