@@ -130,6 +130,10 @@ const AdvancedDonut = ({
           {...legendProps}
           wrapperStyle={{
             bottom: 0,
+            left: '12px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
             ...legendProps?.wrapperStyle,
           }}
           content={(props) => (
