@@ -1,6 +1,6 @@
 import { Card, Heading, Skeleton, Text } from 'bako-ui';
 import { motion } from 'framer-motion';
-import { memo, useEffect, useMemo, useRef, useState } from 'react';
+import { memo, useEffect, useMemo, useState } from 'react';
 
 import AdvancedDonut from '@/components/chart/advanced-donut';
 import { DonutColors } from '@/components/chart/color';
@@ -35,44 +35,29 @@ const BalanceAllocationCard = memo(() => {
   } = useWorkspaceContext();
 
   const isEmpty = useMemo(() => !chartData.length, [chartData]);
-
-  const cardRef = useRef<HTMLDivElement | null>(null);
-
   const [expanded, setExpanded] = useState(false);
-  const [parentHeight, setParentHeight] = useState(211);
 
   useEffect(() => {
-    if (!cardRef.current?.parentElement) return;
-
-    const parent = cardRef.current.parentElement;
-
-    const resizeObserver = new ResizeObserver(() => {
-      const h = parent.clientHeight;
-      if (h > 0) setParentHeight(h);
-    });
-
-    resizeObserver.observe(parent);
-
-    return () => resizeObserver.disconnect();
-  }, []);
-
-  useEffect(() => {
-    if (!isLoading) setExpanded(true);
-  }, [isLoading]);
+    if (isLoading) {
+      setExpanded(false);
+    } else if (!isEmpty) {
+      setExpanded(true);
+    }
+  }, [isLoading, isEmpty]);
 
   return (
     <MotionCardRoot
-      ref={cardRef}
       variant="subtle"
       bg="bg.panel"
       rounded="2xl"
       h="full"
-      minH="211px"
       display="flex"
       flexDirection="column"
       style={{ overflow: 'hidden', position: 'relative' }}
       initial={{ height: 211 }}
-      animate={{ height: expanded ? parentHeight : 211 }}
+      animate={{
+        height: expanded && !isEmpty ? 390 : 211,
+      }}
       transition={{ duration: 0.7, ease: 'easeOut' }}
     >
       {isLoading && <Skeleton height="211px" w="100%" />}
