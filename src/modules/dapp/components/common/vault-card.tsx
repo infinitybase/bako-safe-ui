@@ -57,6 +57,7 @@ const DappVaultCard = ({
               lineHeight="12px"
               truncate
               w="full"
+              title={name}
             >
               {name}
             </Text>

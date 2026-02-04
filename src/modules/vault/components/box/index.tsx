@@ -170,6 +170,7 @@ const VaultBox = (props: VaultBoxPropx) => {
                 textOverflow="ellipsis"
                 w="full"
                 color="textPrimary"
+                title={name}
               >
                 {name}
               </Heading>

@@ -79,7 +79,12 @@ const SettingsOverview = ({
         flexDirection="row"
         minW={0}
       >
-        <Heading fontSize="sm" lineHeight="shorter" truncate>
+        <Heading
+          fontSize="sm"
+          lineHeight="shorter"
+          truncate
+          title={vault.data?.name}
+        >
           {vault.data?.name}
         </Heading>
         <Flex alignItems="center" gap={2}>

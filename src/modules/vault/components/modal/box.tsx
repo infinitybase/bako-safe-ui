@@ -164,6 +164,7 @@ const VaultItemBoxComponent = ({
             isActive={isActive}
             truncate
             w="full"
+            title={name}
           >
             {name}
           </VaultItemBoxText>

@@ -148,6 +148,7 @@ export const AccountOverview = memo(
                     lineHeight="shorter"
                     truncate
                     minW={0}
+                    title={accountName}
                   >
                     {accountName}
                   </Heading>
