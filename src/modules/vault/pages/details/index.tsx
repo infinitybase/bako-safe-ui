@@ -123,6 +123,7 @@ const VaultDetailsPage = () => {
             md: 2,
             lg: 3,
           }}
+          minW={{ base: 0, sm: 'unset' }}
         >
           <AccountOverview
             vault={vault}

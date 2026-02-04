@@ -127,6 +127,7 @@ export const AccountOverview = memo(
           rounded="2xl"
           flex={1}
           h="full"
+          minW={0}
         >
           {/* Overview Skeleton */}
           {isLoading && <OverviewSkeleton />}
@@ -134,25 +135,24 @@ export const AccountOverview = memo(
           {!isLoading && (
             <>
               {/* Overview Header */}
-              <Card.Header>
+              <Card.Header minW={0}>
                 <HStack
                   justifyContent="space-between"
                   alignItems="center"
                   w="full"
+                  minW={0}
                 >
                   <Heading
                     color="textPrimary"
                     fontSize="sm"
+                    lineHeight="shorter"
                     truncate
-                    lineClamp={1}
-                    display="flex"
-                    alignItems="center"
-                    h="20px"
+                    minW={0}
                   >
                     {accountName}
                   </Heading>
 
-                  <Flex gap={2} alignItems="center">
+                  <Flex gap={2} alignItems="center" flexShrink={0}>
                     <IconTooltipButton
                       onClick={copy}
                       tooltipContent={copied ? 'Copied' : 'Copy Address'}
