@@ -23,10 +23,12 @@ import {
   TooltipNotEnoughBalance,
   UpRightArrow,
 } from '@/components';
+import { BlurredContent } from '@/components/blurredContent';
 import { CopyTopMenuIcon } from '@/components/icons/copy-top-menu';
 import { EyeCloseIcon } from '@/components/icons/eye-close';
 import { EyeOpenIcon } from '@/components/icons/eye-open';
 import { RefreshIcon } from '@/components/icons/refresh-icon';
+import { useWorkspaceContext } from '@/modules';
 import { AddressUtils, useScreenSize } from '@/modules/core';
 import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
 import { NetworkService } from '@/modules/network/services';
@@ -51,8 +53,6 @@ export const AccountOverview = memo(
     const {
       assets: {
         balanceUSD,
-        visibleBalance,
-        setVisibleBalance,
         isUpdating,
         handleManualRefetch,
         isLoading: isLoadingAssets,
@@ -60,6 +60,14 @@ export const AccountOverview = memo(
         hasBalance,
       },
     } = useVaultInfosContext();
+
+    const {
+      workspaceInfos: {
+        handlers: { setVisibleBalance },
+        infos: { visibleBalance },
+      },
+    } = useWorkspaceContext();
+
     const { isMobile } = useScreenSize();
     const { isOpen, onOpenChange, onOpen } = useDisclosure();
     const {
@@ -203,19 +211,14 @@ export const AccountOverview = memo(
 
               {/* Overview Body */}
               <Card.Body justifyContent="center">
-                {visibleBalance && (
-                  <Heading color="gray.50" fontSize="3xl">
+                <Heading color="gray.50" fontSize="3xl">
+                  <BlurredContent isBlurred={!visibleBalance} inline>
                     <Text as="span" color="textSecondary">
                       $
                     </Text>{' '}
                     {balanceUSD}
-                  </Heading>
-                )}
-                {!visibleBalance && (
-                  <Heading color="gray.50" fontSize="3xl">
-                    -----
-                  </Heading>
-                )}
+                  </BlurredContent>
+                </Heading>
               </Card.Body>
 
               {/* Overview Footer */}

@@ -5,6 +5,7 @@ interface IconTooltipButtonProps {
   children: ReactNode;
   onClick?: IconButtonProps['onClick'];
   tooltipContent: ReactNode;
+  buttonProps?: IconButtonProps;
   disabled?: boolean;
   placement?:
     | 'top'
@@ -24,6 +25,7 @@ interface IconTooltipButtonProps {
 const IconTooltipButton = ({
   children,
   tooltipContent,
+  buttonProps,
   disabled,
   placement = 'right',
   onClick,
@@ -51,6 +53,7 @@ const IconTooltipButton = ({
         rounded="sm"
         onClick={onClick}
         disabled={disabled}
+        {...buttonProps}
       >
         {children}
       </IconButton>
