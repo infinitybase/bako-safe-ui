@@ -1,4 +1,5 @@
 import { Box, Card, Heading, Skeleton, Text } from 'bako-ui';
+import { motion } from 'framer-motion';
 import { memo, useMemo } from 'react';
 
 import AdvancedDonut from '@/components/chart/advanced-donut';
@@ -9,6 +10,8 @@ import {
   useWorkspaceContext,
 } from '@/modules';
 import { useAssetMap } from '@/modules/assets-tokens/hooks/useAssetMap';
+
+const MotionBox = motion(Box);
 
 const BalanceAllocationCard = memo(() => {
   const { allocation, isLoading } = useUserAllocationRequest();
@@ -34,13 +37,7 @@ const BalanceAllocationCard = memo(() => {
   const isEmpty = useMemo(() => !chartData.length, [chartData]);
 
   return (
-    <Card.Root
-      variant="subtle"
-      bg="bg.panel"
-      h="full"
-      rounded="2xl"
-      maxH="388px"
-    >
+    <Card.Root variant="subtle" bg="bg.panel" rounded="2xl">
       <Card.Header>
         <Heading
           color="textPrimary"
@@ -51,7 +48,24 @@ const BalanceAllocationCard = memo(() => {
           Balance allocation
         </Heading>
       </Card.Header>
-      <Card.Body alignItems="center" justifyContent="center">
+
+      <MotionBox
+        animate={{
+          height: isLoading ? 338 : !isEmpty ? 338 : 158,
+        }}
+        initial={false}
+        transition={{
+          duration: 1,
+          ease: [0.4, 0, 0.2, 1],
+        }}
+        style={{
+          overflow: 'hidden',
+          position: 'relative',
+        }}
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+      >
         {!isEmpty && (
           <AdvancedDonut data={chartData} visibleBalance={!visibleBalance} />
         )}
@@ -64,15 +78,16 @@ const BalanceAllocationCard = memo(() => {
 
         {isLoading && (
           <Box
+            position="absolute"
+            inset={0}
             display="flex"
-            justifyContent="center"
             alignItems="center"
-            w="full"
+            justifyContent="center"
           >
-            <Skeleton height="200px" w="200px" rounded="full" />
+            <Skeleton h="200px" w="200px" rounded="full" />
           </Box>
         )}
-      </Card.Body>
+      </MotionBox>
     </Card.Root>
   );
 });

@@ -31,7 +31,7 @@ const VaultBalancePage = () => {
 
           <Tabs.Content value="tokens">
             <CustomSkeleton
-              loading={userInfos.isLoading && assets.isLoading}
+              loading={userInfos.isLoading || assets.isLoading}
               flex={1}
             >
               {assets.hasAssets ? (
