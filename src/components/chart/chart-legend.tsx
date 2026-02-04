@@ -39,6 +39,7 @@ export const ChartLegend = memo((props: ChartLegendProps) => {
       className="recharts-default-legend"
       display="flex"
       alignItems="center"
+      justifyContent="center"
     >
       {payload?.map((entry, index) => (
         <List.Item key={`${entry.color}-${index}`} alignItems="center" mr={2.5}>
