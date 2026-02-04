@@ -72,7 +72,7 @@ const useAddressBookMutations = ({
           title: 'Duplicated name',
           description: 'You already have this name in your address book',
         });
-        form.setError('nickname', { message: 'Duplicated label' });
+        form.setError('nickname', { message: 'Duplicated name' });
       }
 
       if (errorDescription?.includes('address')) {
@@ -101,7 +101,7 @@ const useAddressBookMutations = ({
           title: 'Duplicated name',
           description: 'You already have this name in your address book',
         });
-        form.setError('nickname', { message: 'Duplicated label' });
+        form.setError('nickname', { message: 'Duplicated name' });
       }
 
       if (errorDescription?.includes('address')) {
