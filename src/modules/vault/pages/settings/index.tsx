@@ -64,6 +64,7 @@ const VaultSettingsPage = () => {
           flex={{
             '2xlDown': 1,
           }}
+          minW={{ base: 0, md: 'unset' }}
         >
           <HStack
             gap={10}
@@ -71,6 +72,7 @@ const VaultSettingsPage = () => {
               base: 'column',
               sm: 'row',
             }}
+            minW={0}
           >
             {isLoading && <SettingsOverviewSkeleton />}
 
