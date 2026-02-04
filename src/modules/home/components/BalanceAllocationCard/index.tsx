@@ -1,6 +1,6 @@
-import { Box, Card, Heading, Skeleton, Text } from 'bako-ui';
+import { Card, Heading, Skeleton, Text } from 'bako-ui';
 import { motion } from 'framer-motion';
-import { memo, useMemo } from 'react';
+import { memo, useEffect, useMemo, useRef, useState } from 'react';
 
 import AdvancedDonut from '@/components/chart/advanced-donut';
 import { DonutColors } from '@/components/chart/color';
@@ -11,7 +11,7 @@ import {
 } from '@/modules';
 import { useAssetMap } from '@/modules/assets-tokens/hooks/useAssetMap';
 
-const MotionBox = motion(Box);
+const MotionCardRoot = motion(Card.Root);
 
 const BalanceAllocationCard = memo(() => {
   const { allocation, isLoading } = useUserAllocationRequest();
@@ -36,59 +36,98 @@ const BalanceAllocationCard = memo(() => {
 
   const isEmpty = useMemo(() => !chartData.length, [chartData]);
 
+  const cardRef = useRef<HTMLDivElement | null>(null);
+
+  const [expanded, setExpanded] = useState(false);
+  const [parentHeight, setParentHeight] = useState(211);
+
+  useEffect(() => {
+    if (!cardRef.current?.parentElement) return;
+
+    const parent = cardRef.current.parentElement;
+
+    const resizeObserver = new ResizeObserver(() => {
+      const h = parent.clientHeight;
+      if (h > 0) setParentHeight(h);
+    });
+
+    resizeObserver.observe(parent);
+
+    return () => resizeObserver.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!isLoading) setExpanded(true);
+  }, [isLoading]);
+
   return (
-    <Card.Root variant="subtle" bg="bg.panel" rounded="2xl">
+    <MotionCardRoot
+      ref={cardRef}
+      variant="subtle"
+      bg="bg.panel"
+      rounded="2xl"
+      h="full"
+      minH="211px"
+      display="flex"
+      flexDirection="column"
+      style={{ overflow: 'hidden', position: 'relative' }}
+      initial={{ height: 211 }}
+      animate={{ height: expanded ? parentHeight : 211 }}
+      transition={{ duration: 0.7, ease: 'easeOut' }}
+    >
+      {isLoading && <Skeleton height="211px" w="100%" />}
+
       <Card.Header>
-        <Heading
-          color="textPrimary"
-          fontSize="sm"
-          fontWeight="semibold"
-          letterSpacing="wider"
-        >
-          Balance allocation
-        </Heading>
+        {!isLoading && (
+          <Heading
+            color="textPrimary"
+            fontSize="sm"
+            fontWeight="semibold"
+            letterSpacing="wider"
+          >
+            Balance allocation
+          </Heading>
+        )}
       </Card.Header>
 
-      <MotionBox
-        animate={{
-          height: isLoading ? 338 : !isEmpty ? 338 : 158,
-        }}
-        initial={false}
-        transition={{
-          duration: 1,
-          ease: [0.4, 0, 0.2, 1],
-        }}
-        style={{
-          overflow: 'hidden',
-          position: 'relative',
-        }}
+      <Card.Body
+        flex={1}
         display="flex"
         alignItems="center"
         justifyContent="center"
+        position="relative"
+        w="full"
       >
-        {!isEmpty && (
-          <AdvancedDonut data={chartData} visibleBalance={!visibleBalance} />
-        )}
+        {!isEmpty ? (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, ease: 'easeOut' }}
+            style={{
+              width: '100%',
+              height: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <AdvancedDonut data={chartData} visibleBalance={!visibleBalance} />
+          </motion.div>
+        ) : null}
 
         {!isLoading && isEmpty && (
-          <Text color="textSecondary" textAlign="center">
-            Nothing to show here yet
-          </Text>
-        )}
-
-        {isLoading && (
-          <Box
-            position="absolute"
-            inset={0}
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.4 }}
           >
-            <Skeleton h="200px" w="200px" rounded="full" />
-          </Box>
+            <Text color="textSecondary" textAlign="center">
+              Nothing to show here yet
+            </Text>
+          </motion.div>
         )}
-      </MotionBox>
-    </Card.Root>
+      </Card.Body>
+    </MotionCardRoot>
   );
 });
 
