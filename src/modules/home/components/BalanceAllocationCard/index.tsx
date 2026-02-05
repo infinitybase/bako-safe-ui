@@ -54,13 +54,13 @@ const BalanceAllocationCard = memo(() => {
       display="flex"
       flexDirection="column"
       style={{ overflow: 'hidden', position: 'relative' }}
-      initial={{ height: 211 }}
+      initial={{ height: '100%' }}
       animate={{
-        height: expanded && !isEmpty ? 390 : 211,
+        height: expanded && !isEmpty ? 390 : '100%',
       }}
       transition={{ duration: 0.7, ease: 'easeOut' }}
     >
-      {isLoading && <Skeleton height="211px" w="100%" />}
+      {isLoading && <Skeleton height="100%" w="100%" />}
 
       <Card.Header>
         {!isLoading && (
