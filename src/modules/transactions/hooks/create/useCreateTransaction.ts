@@ -130,7 +130,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
 
   const totalUsdEstimate = useMemo(() => {
     const total = (transactions || []).reduce((sum, tx) => {
-      return sum + (tx?.usdEstimate || 0);
+      return sum + (tx?.usdEstimate ?? 0);
     }, 0);
 
     return {
