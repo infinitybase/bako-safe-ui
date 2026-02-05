@@ -25,6 +25,7 @@ import {
   SquarePlusIcon,
   TooltipNotEnoughBalance,
 } from '@/components';
+import { BlurredContent } from '@/components/blurredContent';
 import { EyeCloseIcon } from '@/components/icons/eye-close';
 import { EyeOpenIcon } from '@/components/icons/eye-open';
 import { RefreshIcon } from '@/components/icons/refresh-icon';
@@ -92,8 +93,6 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
   const { vault, assets, setAddAssetsDialogState } = props;
   const {
     balanceUSD,
-    visibleBalance,
-    setVisibleBalance,
     isLoading,
     isUpdating,
     hasBalance,
@@ -107,7 +106,8 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
   const {
     authDetails: { userInfos },
     workspaceInfos: {
-      handlers: { hasPermission },
+      handlers: { hasPermission, setVisibleBalance },
+      infos: { visibleBalance },
     },
     screenSizes: { isMobile },
     tokensUSD,
@@ -287,9 +287,9 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                         customStartColor="grey.75"
                         customEndColor="dark.100"
                       >
-                        <Heading>
-                          {visibleBalance ? `${balanceUSD} USD` : '-----'}
-                        </Heading>
+                        <BlurredContent isBlurred={!visibleBalance} inline>
+                          <Heading>{`${balanceUSD} USD`}</Heading>
+                        </BlurredContent>
                       </CustomSkeleton>
                       <Box
                         w="auto"

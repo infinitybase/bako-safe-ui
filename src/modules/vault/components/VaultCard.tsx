@@ -16,6 +16,7 @@ import { memo, useEffect, useMemo, useState } from 'react';
 import { RiFileCopyFill } from 'react-icons/ri';
 
 import { IconTooltipButton } from '@/components';
+import { BlurredContent } from '@/components/blurredContent';
 import { CopyTopMenuIcon } from '@/components/icons/copy-top-menu';
 import { EyeCloseIcon } from '@/components/icons/eye-close';
 import { EyeOpenIcon } from '@/components/icons/eye-open';
@@ -50,6 +51,7 @@ export const VaultCard = memo(function VaultCard({
     userVaults,
     workspaceInfos: {
       requests: { latestPredicates },
+      infos: { visibleBalance },
     },
   } = useWorkspaceContext();
   const { data, isLoading: isLoadingBalance } = useHasReservedCoins(
@@ -177,10 +179,12 @@ export const VaultCard = memo(function VaultCard({
             fontWeight="bold"
             letterSpacing="wider"
           >
-            <Text as="span" color="gray.400">
-              ${' '}
-            </Text>
-            {balanceUSD}
+            <BlurredContent isBlurred={!visibleBalance} inline>
+              <Text as="span" color="gray.400">
+                ${' '}
+              </Text>
+              {balanceUSD}
+            </BlurredContent>
           </Heading>
         )}
       </Card.Footer>

@@ -1,6 +1,7 @@
 import { Card, GridItem, HStack, Text, Tooltip, VStack } from 'bako-ui';
 
 import { CustomSkeleton } from '@/components';
+import { BlurredContent } from '@/components/blurredContent';
 import { useWorkspaceContext } from '@/modules/workspace/hooks';
 import { limitCharacters } from '@/utils';
 
@@ -10,6 +11,7 @@ export interface ItemLiquidStakeProps {
   children?: React.ReactNode;
   isLoading?: boolean;
   tooltipValue?: boolean;
+  visibleBalance?: boolean;
 }
 
 export function ItemLiquidStake({
@@ -18,6 +20,7 @@ export function ItemLiquidStake({
   children,
   isLoading = false,
   tooltipValue = false,
+  visibleBalance = false,
 }: ItemLiquidStakeProps) {
   const {
     screenSizes: { isMobile, isLargerThan1600 },
@@ -42,16 +45,18 @@ export function ItemLiquidStake({
               {label}
             </Text>
             <CustomSkeleton loading={isLoading}>
-              <Tooltip content={value} disabled={!tooltipValue}>
-                <Text
-                  fontSize="xs"
-                  fontWeight={500}
-                  color="textPrimary"
-                  overflow="hidden"
-                >
-                  {limitCharacters(value, charLimit, false)}
-                </Text>
-              </Tooltip>
+              <BlurredContent isBlurred={visibleBalance} inline>
+                <Tooltip content={value} disabled={!tooltipValue}>
+                  <Text
+                    fontSize="xs"
+                    fontWeight={500}
+                    color="textPrimary"
+                    overflow="hidden"
+                  >
+                    {limitCharacters(value, charLimit, false)}
+                  </Text>
+                </Tooltip>
+              </BlurredContent>
             </CustomSkeleton>
           </VStack>
           {children}

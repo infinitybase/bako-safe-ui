@@ -37,6 +37,7 @@ const CreateContactForm = memo(({ address }: CreateContactFormProps) => {
               <CloseCircle
                 boxSize={4}
                 color="gray.200"
+                cursor="pointer"
                 onClick={handleClearName}
               />
             ),
@@ -51,10 +52,11 @@ const CreateContactForm = memo(({ address }: CreateContactFormProps) => {
         defaultValue={address || ''}
         render={({ field, fieldState }) => (
           <Field.Root invalid={fieldState.invalid}>
-            <AddressInput value={field.value} onChange={field.onChange} />
-            <Field.HelperText color="error.500">
-              {fieldState.error?.message}
-            </Field.HelperText>
+            <AddressInput
+              value={field.value}
+              onChange={field.onChange}
+              error={fieldState.error?.message}
+            />
           </Field.Root>
         )}
       />

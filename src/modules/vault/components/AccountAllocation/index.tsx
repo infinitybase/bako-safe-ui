@@ -8,6 +8,7 @@ import {
   PieChartIcon,
 } from '@/components';
 import { ChevronRightIcon } from '@/components/icons/chevron-right';
+import { useWorkspaceContext } from '@/modules';
 import { Pages } from '@/modules/core';
 
 import { useVaultAllocationRequest, UseVaultDetailsReturn } from '../../hooks';
@@ -41,6 +42,12 @@ export const AccountAllocation = memo(
         }),
       );
     };
+
+    const {
+      workspaceInfos: {
+        infos: { visibleBalance },
+      },
+    } = useWorkspaceContext();
 
     const handleToggleMode = useCallback(() => {
       setMode((prevMode) =>
@@ -89,7 +96,11 @@ export const AccountAllocation = memo(
               </Flex>
             </Card.Header>
             {mode === 'allocation' ? (
-              <Donut allocation={allocation} isLoading={isLoadingAllocation} />
+              <Donut
+                allocation={allocation}
+                isLoading={isLoadingAllocation}
+                visibleBalance={visibleBalance}
+              />
             ) : (
               <AssetsList assets={assets.assets || []} />
             )}

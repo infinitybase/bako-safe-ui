@@ -10,6 +10,7 @@ interface ChartLabelProps {
   fontSize?: number;
   padding?: number;
   legendHeight?: number;
+  visibleBalance?: boolean;
 }
 
 const isPolarViewBox = (viewBox: ViewBox): viewBox is PolarViewBoxRequired =>
@@ -24,6 +25,7 @@ export const ChartLabel = memo((props: ChartLabelProps) => {
     fontSize = 14,
     padding = 12,
     legendHeight,
+    visibleBalance = false,
   } = props;
 
   if (!viewBox || !isPolarViewBox(viewBox)) return null;
@@ -94,18 +96,31 @@ export const ChartLabel = memo((props: ChartLabelProps) => {
             >
               {label}
             </motion.text>
-            {/* Value */}
+            {/* Value */}]
             <motion.text
               textAnchor="middle"
               dominantBaseline="middle"
               fill="#E6E6E6"
               style={{
-                fontSize: fontSize,
+                fontSize,
                 fontWeight: 'bold',
               }}
-              initial={{ opacity: 0, x: viewBox.cx, y: viewBoxCy }}
-              animate={{ x: viewBox.cx, y: viewBoxCy, opacity: 1 }}
-              exit={{ opacity: 0, x: viewBox.cx, y: viewBoxCy }}
+              initial={{
+                opacity: 0,
+                x: viewBox.cx,
+                y: viewBoxCy,
+                filter: 'blur(6px)',
+              }}
+              animate={{
+                x: viewBox.cx,
+                y: viewBoxCy,
+                opacity: 1,
+                filter: visibleBalance ? 'blur(0px)' : 'blur(6px)',
+              }}
+              exit={{
+                opacity: 0,
+                filter: 'blur(6px)',
+              }}
               transition={{ duration: 0.3, ease: 'easeInOut' }}
             >
               {title}
@@ -139,12 +154,25 @@ export const ChartLabel = memo((props: ChartLabelProps) => {
             dominantBaseline="middle"
             fill="#E6E6E6"
             style={{
-              fontSize: fontSize,
+              fontSize,
               fontWeight: 'bold',
             }}
-            initial={{ opacity: 0, x: viewBox.cx, y: viewBoxCy }}
-            animate={{ x: viewBox.cx, y: viewBoxCy, opacity: 1 }}
-            exit={{ opacity: 0, x: viewBox.cx, y: viewBoxCy }}
+            initial={{
+              opacity: 0,
+              x: viewBox.cx,
+              y: viewBoxCy,
+              filter: 'blur(6px)',
+            }}
+            animate={{
+              x: viewBox.cx,
+              y: viewBoxCy,
+              opacity: 1,
+              filter: visibleBalance ? 'blur(0px)' : 'blur(6px)',
+            }}
+            exit={{
+              opacity: 0,
+              filter: 'blur(6px)',
+            }}
             transition={{ duration: 0.3, ease: 'easeInOut' }}
           >
             {title}

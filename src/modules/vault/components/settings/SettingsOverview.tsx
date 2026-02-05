@@ -14,6 +14,7 @@ import { JSX } from 'react';
 import { RiFileCopyFill } from 'react-icons/ri';
 
 import { EditIcon2, IconTooltipButton, UpRightArrow } from '@/components';
+import { BlurredContent } from '@/components/blurredContent';
 import { CopyTopMenuIcon } from '@/components/icons/copy-top-menu';
 import { useWorkspaceContext } from '@/modules';
 import { AddressUtils } from '@/modules/core';
@@ -35,9 +36,12 @@ const SettingsOverview = ({
   const updateDialog = useDisclosure();
   const {
     authDetails: { userInfos },
+    workspaceInfos: {
+      infos: { visibleBalance },
+    },
   } = useWorkspaceContext();
 
-  const { balanceUSD, visibleBalance } = assets;
+  const { balanceUSD } = assets;
   const workspaceId = userInfos?.workspace.id || '';
 
   const predicateAddress = vault.data?.predicateAddress
@@ -94,19 +98,14 @@ const SettingsOverview = ({
         </Flex>
       </Card.Header>
       <Card.Body justifyContent="center">
-        {visibleBalance && (
-          <Heading color="gray.50" fontSize="3xl">
+        <Heading color="gray.50" fontSize="3xl">
+          <BlurredContent isBlurred={!visibleBalance} inline>
             <Text as="span" color="textSecondary">
               $
             </Text>{' '}
             {balanceUSD}
-          </Heading>
-        )}
-        {!visibleBalance && (
-          <Text color="gray.50" fontSize="3xl">
-            -----
-          </Text>
-        )}
+          </BlurredContent>
+        </Heading>
       </Card.Body>
       <Card.Footer gap={{ base: 2, md: 6 }} flexWrap={{ mdDown: 'wrap' }}>
         <HStack
