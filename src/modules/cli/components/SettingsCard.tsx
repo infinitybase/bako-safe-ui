@@ -44,6 +44,7 @@ const CLISettingsCard = ({
           textTransform="uppercase"
           letterSpacing="widest"
           color="gray.50"
+          textAlign="center"
         >
           {label}
         </Text>

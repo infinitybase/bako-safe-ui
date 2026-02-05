@@ -1,7 +1,11 @@
-import { HStack, Text, VStack } from 'bako-ui';
+import { HStack, Text, Tooltip, VStack } from 'bako-ui';
 import { memo } from 'react';
 
-import { Dialog, DialogModalProps, Tooltip } from '@/components';
+import {
+  Dialog,
+  DialogModalProps,
+  Tooltip as TooltipComponents,
+} from '@/components';
 import { TabState, useCreateVaultDialog } from '@/modules/vault/hooks';
 
 import CreateVaultWarning from '../../CreateVaultWarning';
@@ -41,9 +45,10 @@ const CreateVaultDialog = memo((props: CreateVaultDialogProps) => {
       {...props}
       closeOnInteractOutside={false}
       modalContentProps={{
-        maxH: '100vh',
-        h: '780px',
+        h: { base: '100dvh', sm: '780px' },
+        maxH: { base: '100dvh', sm: '780px' },
         p: 0,
+        overflow: 'hidden',
       }}
     >
       <Dialog.Header
@@ -66,6 +71,7 @@ const CreateVaultDialog = memo((props: CreateVaultDialogProps) => {
       <Dialog.Body
         px={6}
         flex={1}
+        minH={0}
         display="flex"
         overflowY="auto"
         css={{
@@ -123,7 +129,7 @@ const CreateVaultDialog = memo((props: CreateVaultDialogProps) => {
               color="gray.400"
             >
               Estimated Fee
-              <Tooltip
+              <TooltipComponents
                 placment="top-start"
                 text="Account creation is free on Bako Safe leverages Fuel predicates to manage account permissions off-chain. Therefore, the creation of accounts is entirely free of charge and not sponsored by the network."
               />
@@ -153,19 +159,26 @@ const CreateVaultDialog = memo((props: CreateVaultDialogProps) => {
             >
               {steps.step.closeText}
             </Dialog.SecondaryAction>
-            <Dialog.PrimaryAction
-              flex={1}
-              aria-label="Create Vault Primary Action"
-              hidden={steps.step?.hide}
-              onClick={steps.step?.onContinue}
-              disabled={steps.step?.disable}
-              loading={bakoSafeVault.isPending || form.formState.isSubmitting}
-              _hover={{
-                opacity: !steps.step?.disable ? 0.8 : 1,
-              }}
+            <Tooltip
+              content="Account name already exists."
+              disabled={!vaultNameAlreadyExists}
+              showArrow
+              positioning={{ placement: 'top' }}
             >
-              {steps.step?.nextStepText}
-            </Dialog.PrimaryAction>
+              <Dialog.PrimaryAction
+                flex={1}
+                aria-label="Create Vault Primary Action"
+                hidden={steps.step?.hide}
+                onClick={steps.step?.onContinue}
+                disabled={steps.step?.disable || vaultNameAlreadyExists}
+                loading={bakoSafeVault.isPending || form.formState.isSubmitting}
+                _hover={{
+                  opacity: !steps.step?.disable ? 0.8 : 1,
+                }}
+              >
+                {steps.step?.nextStepText}
+              </Dialog.PrimaryAction>
+            </Tooltip>
           </HStack>
         </VStack>
       </Dialog.Actions>

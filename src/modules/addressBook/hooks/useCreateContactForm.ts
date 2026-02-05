@@ -22,12 +22,24 @@ const useCreateContactForm = (
   });
 
   const schema = yup.object({
-    nickname: yup.string().required('Name is required.'),
+    nickname: yup
+      .string()
+      .test(
+        'not-only-spaces',
+        'Name cannot contain only spaces.',
+        (value) => !!value && value.trim().length > 0,
+      )
+      .required('Name is required.'),
     handle: yup.string().optional(),
     resolver: yup.string().optional(),
     address: yup
       .string()
       .required('Address is required.')
+      .test(
+        'not-only-spaces',
+        'Address cannot contain only spaces.',
+        (value) => !value || value.trim().length > 0,
+      )
       .test(
         'is-valid-address',
         'This address can not receive assets from Bako.',

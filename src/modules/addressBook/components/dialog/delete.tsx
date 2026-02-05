@@ -43,10 +43,15 @@ const DeleteContactDialog = ({
 
       <Dialog.Body justifyContent="center">
         <VStack gap={6} w="full" alignItems="center">
-          <Icon position="relative" as={AlertIcon} color="red" boxSize="48px" />
+          <Icon
+            position="relative"
+            as={AlertIcon}
+            color="red.100"
+            boxSize="48px"
+          />
 
           <Heading
-            color="red"
+            color="red.100"
             lineHeight="shorter"
             fontSize="md"
             fontWeight="bold"
@@ -77,6 +82,7 @@ const DeleteContactDialog = ({
           colorPalette="red"
           loading={isLoading}
           color="primary.contrast"
+          _hover={{ bg: 'red.50' }}
           onClick={() => handleDelete(contactToDelete.id)}
         >
           Yes, delete it!

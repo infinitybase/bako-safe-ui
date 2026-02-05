@@ -19,6 +19,7 @@ import {
   LeftAndRightArrow,
   UpRightArrow,
 } from '@/components';
+import { BlurredContent } from '@/components/blurredContent';
 import { CopyTopMenuIcon } from '@/components/icons/copy-top-menu';
 import { EyeCloseIcon } from '@/components/icons/eye-close';
 import { EyeOpenIcon } from '@/components/icons/eye-open';
@@ -49,15 +50,11 @@ const VaultBox = (props: VaultBoxPropx) => {
       userInfos: { network },
     },
     workspaceInfos: {
-      handlers: { goHome },
+      handlers: { goHome, setVisibleBalance },
+      infos: { visibleBalance },
     },
     vaultDetails: {
-      assets: {
-        balanceUSD,
-        visibleBalance,
-        setVisibleBalance,
-        isLoading: isLoadingAssets,
-      },
+      assets: { balanceUSD, isLoading: isLoadingAssets },
       vaultRequest: { isLoading: isLoadingVault },
     },
   } = useWorkspaceContext();
@@ -201,19 +198,14 @@ const VaultBox = (props: VaultBoxPropx) => {
             </Flex>
 
             <Flex justifyContent="space-between" alignItems="center">
-              {visibleBalance && (
+              <BlurredContent isBlurred={!visibleBalance} inline>
                 <Text color="gray.50" fontSize="sm">
                   <Text as="span" color="textSecondary">
                     $
                   </Text>{' '}
                   {balance}
                 </Text>
-              )}
-              {!visibleBalance && (
-                <Text color="gray.50" fontSize="sm">
-                  -----
-                </Text>
-              )}
+              </BlurredContent>
               <IconTooltipButton
                 tooltipContent={
                   visibleBalance ? 'Hide Balance' : 'Show Balance'

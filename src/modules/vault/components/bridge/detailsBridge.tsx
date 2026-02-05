@@ -1,7 +1,17 @@
-import { Button, Card, Heading, HStack, Loader, Text, VStack } from 'bako-ui';
+import {
+  Button,
+  Card,
+  Heading,
+  HStack,
+  Loader,
+  Text,
+  Tooltip,
+  VStack,
+} from 'bako-ui';
 import { bn } from 'fuels';
 import { useMemo } from 'react';
 
+import { TooltipPendingTx } from '@/modules/vault/components/TooltipPendingTx';
 import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { UseVaultDetailsReturn } from '../../hooks';
@@ -78,6 +88,10 @@ export function DetailsBridge({ assets }: DetailsBridgeProps) {
       notEnoughBalanceETH,
     [isEnoughETH, stepForm, notEnoughBalanceETH],
   );
+
+  const ToolTipComponent = useMemo(() => {
+    return isPendingSigner ? <TooltipPendingTx /> : null;
+  }, [isPendingSigner]);
 
   return (
     <Card.Root
@@ -214,25 +228,36 @@ export function DetailsBridge({ assets }: DetailsBridgeProps) {
         type="footer"
         maxHeight="120px"
       >
-        <Button
-          disabled={
-            !isFormComplete ||
-            !!errorForm ||
-            isPendingSigner ||
-            notEnoughBalanceETH ||
-            !isEnoughETH
-          }
-          loading={isSendingTx || isLoading}
-          type="submit"
-          mt={4}
-          minW="120px"
+        <Tooltip
+          content={ToolTipComponent}
+          disabled={!ToolTipComponent}
+          contentProps={{
+            bg: 'bg.muted',
+            borderColor: 'bg.panel',
+          }}
+          showArrow
+          positioning={{ placement: 'top' }}
         >
-          {isPendingSigner
-            ? TitleButtonsForm.PENDING_TX
-            : showEnoughETHWarning
-              ? TitleButtonsForm.INSUFFICIENT_ETH
-              : TitleButtonsForm.BRIDGE}
-        </Button>
+          <Button
+            disabled={
+              !isFormComplete ||
+              !!errorForm ||
+              isPendingSigner ||
+              notEnoughBalanceETH ||
+              !isEnoughETH
+            }
+            loading={isSendingTx || isLoading}
+            type="submit"
+            mt={4}
+            minW="120px"
+          >
+            {isPendingSigner
+              ? TitleButtonsForm.PENDING_TX
+              : showEnoughETHWarning
+                ? TitleButtonsForm.INSUFFICIENT_ETH
+                : TitleButtonsForm.BRIDGE}
+          </Button>
+        </Tooltip>
       </ExpandableCardSection>
     </Card.Root>
   );
