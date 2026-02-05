@@ -135,6 +135,7 @@ export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
         label="FUEL Balance"
         value={fuelTokens}
         isLoading={!assets.assets}
+        tooltipValue={true}
         visibleBalance={!visibleBalance}
       >
         <VStack alignItems={'flex-end'} gap={0}>
@@ -167,6 +168,7 @@ export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
         label="stFUEL Balance"
         value={stFuelTokens}
         isLoading={!assets.assets}
+        tooltipValue={true}
         visibleBalance={!visibleBalance}
       >
         <Button
@@ -291,7 +293,10 @@ export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
             )}
           </HStack>
           <Grid
-            templateColumns={{ base: 'repeat(1, 1fr)', lg: 'repeat(2, 1fr)' }}
+            templateColumns={{
+              base: 'repeat(1, 1fr)',
+              md: 'repeat(2, minmax(0, 1fr))',
+            }}
             gap={3}
             flex={1}
             display={{ base: 'none', md: 'grid' }}
