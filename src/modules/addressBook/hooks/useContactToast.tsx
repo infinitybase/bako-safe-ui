@@ -12,7 +12,6 @@ const useContactToast = () => {
     toast({
       status: 'success',
       duration: 4000,
-      isClosable: false,
       title: title ?? 'Success!',
       description: description ?? '',
     });
@@ -21,7 +20,6 @@ const useContactToast = () => {
     toast({
       status: 'warning',
       duration: 4000,
-      isClosable: false,
       title: title ?? 'Warning!',
       description: description ?? '',
     });
@@ -31,7 +29,6 @@ const useContactToast = () => {
     toast({
       status: 'error',
       duration: 4000,
-      isClosable: false,
       title: title ?? 'Error!',
       description:
         description ?? 'Check the provided data and try again, please...',
