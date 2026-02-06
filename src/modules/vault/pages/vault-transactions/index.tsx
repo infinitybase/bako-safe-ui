@@ -74,8 +74,14 @@ const TransactionsVaultPage = () => {
           inverse
         />
         {selectedTransaction.id && (
-          <HStack gap={2}>
-            <Text color="primary.main" fontSize="12px" truncate>
+          <HStack gap={2} display="flex" alignItems="self-start">
+            <Text
+              color="primary.main"
+              fontSize="12px"
+              minWidth={0}
+              overflowWrap="anywhere"
+              wordBreak="normal"
+            >
               {selectedTransaction.name}
             </Text>
             <Box
