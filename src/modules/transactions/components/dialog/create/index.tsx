@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useWatch } from 'react-hook-form';
 
 import { Dialog, DialogModalProps } from '@/components';
+import { TotalAmount } from '@/modules/transactions/components/dialog/create/totalAmount';
 import { useCreateTransaction } from '@/modules/transactions/hooks';
 import { useVaultInfosContext } from '@/modules/vault/hooks';
 
@@ -53,6 +54,7 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
     isPendingSigner,
     getBalanceAvailable,
     handleClose,
+    totalUsdEstimate,
   } = useCreateTransaction(createTransactionParams);
 
   const currentAmount = useWatch({
@@ -161,6 +163,7 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
           boxShadow: '0px -12px 8px 0px #0D0D0C99',
         }}
       >
+        <TotalAmount totalAmount={totalUsdEstimate.formatted} />
         <FeeSummary transactionFee={transactionFee} />
 
         <Dialog.Actions>

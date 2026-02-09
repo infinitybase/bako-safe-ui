@@ -1,5 +1,5 @@
 import { Button, Field, HStack, InputGroup, Text } from 'bako-ui';
-import { memo, useMemo } from 'react';
+import { memo, useEffect, useMemo } from 'react';
 import { FieldError, useFormContext } from 'react-hook-form';
 
 import { AmountInput } from '@/components';
@@ -26,7 +26,7 @@ const RecipientFormAmount = memo(
     isLoadingFee,
     getBalanceAvailable,
   }: RecipientFormAmountProps) => {
-    const { watch } = useFormContext();
+    const { watch, setValue } = useFormContext();
     const asset = watch(`transactions.${index}.asset`);
     const assetPrice = useMemo(
       () => getAssetPrice(asset),
@@ -49,6 +49,12 @@ const RecipientFormAmount = memo(
       () => parseFloat(usdEstimate.replace(/[^\d.-]/g, '')),
       [usdEstimate],
     );
+
+    useEffect(() => {
+      setValue(`transactions.${index}.usdEstimate`, usdNumber, {
+        shouldValidate: false,
+      });
+    }, [usdNumber, index, setValue]);
 
     return (
       <HStack align="start" gap={2} position="relative" width="100%">

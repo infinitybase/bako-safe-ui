@@ -123,6 +123,27 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     id,
   });
 
+  const transactions = useWatch({
+    control: form.control,
+    name: 'transactions',
+  });
+
+  const totalUsdEstimate = useMemo(() => {
+    const total = (transactions || []).reduce((sum, tx) => {
+      return sum + (tx?.usdEstimate ?? 0);
+    }, 0);
+
+    return {
+      value: total,
+      formatted: total.toLocaleString('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }),
+    };
+  }, [transactions]);
+
   const transactionRequest = useBakoSafeCreateTransaction({
     vault: vault!,
     assetsMap,
@@ -456,6 +477,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     getBalanceAvailable,
     isLoadingVault,
     isPendingSigner,
+    totalUsdEstimate,
   };
 };
 
