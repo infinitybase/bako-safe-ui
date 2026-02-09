@@ -71,13 +71,20 @@ const SettingsOverview = ({
       bg="bg.panel"
       flex={1}
       alignSelf="stretch"
+      minW={0}
     >
       <Card.Header
         justifyContent="space-between"
         alignItems="center"
         flexDirection="row"
+        minW={0}
       >
-        <Heading fontSize="sm" lineHeight="shorter">
+        <Heading
+          fontSize="sm"
+          lineHeight="shorter"
+          truncate
+          title={vault.data?.name}
+        >
           {vault.data?.name}
         </Heading>
         <Flex alignItems="center" gap={2}>

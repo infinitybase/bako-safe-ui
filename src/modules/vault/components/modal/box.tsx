@@ -1,4 +1,12 @@
-import { Avatar, Badge, HStack, Skeleton, Text, VStack } from 'bako-ui';
+import {
+  Avatar,
+  Badge,
+  HStack,
+  Skeleton,
+  Text,
+  TextProps,
+  VStack,
+} from 'bako-ui';
 import { memo, useMemo } from 'react';
 
 import { Card, CardProps } from '@/components';
@@ -14,15 +22,15 @@ import { moneyFormat } from '@/utils';
 import { useHasReservedCoins } from '../../hooks';
 import { PredicateWorkspace } from '../../services';
 
-interface VaultItemBoxText {
+interface VaultItemBoxText
+  extends Omit<TextProps, 'color' | 'fontWeight' | 'fontSize' | 'lineHeight'> {
   type: 'primary' | 'secondary';
-  children?: React.ReactNode;
   isActive?: boolean;
   isLoading?: boolean;
 }
 
 const VaultItemBoxText = (props: VaultItemBoxText) => {
-  const { type, isActive, children, isLoading } = props;
+  const { type, isActive, children, isLoading, ...rest } = props;
 
   if (isLoading) return <Skeleton height="12px" width="40px" />;
   if (!children) return;
@@ -32,7 +40,13 @@ const VaultItemBoxText = (props: VaultItemBoxText) => {
   const fontWeight = isPrimary ? 500 : 400;
 
   return (
-    <Text color={color} fontWeight={fontWeight} fontSize="xs" lineHeight="12px">
+    <Text
+      color={color}
+      fontWeight={fontWeight}
+      fontSize="xs"
+      lineHeight="12px"
+      {...rest}
+    >
       {children}
     </Text>
   );
@@ -128,12 +142,12 @@ const VaultItemBoxComponent = ({
       alignItems="center"
       justifyContent="space-between"
     >
-      <HStack gap={3} align="center">
+      <HStack gap={3} align="center" minW={0}>
         <Avatar
           shape="rounded"
           color="gray.100"
           bgColor="gray.500"
-          size={'sm'}
+          size="sm"
           css={{
             '> div': {
               display: 'flex',
@@ -144,8 +158,14 @@ const VaultItemBoxComponent = ({
           }}
           name={name}
         />
-        <VStack gap={2} align="flex-start">
-          <VaultItemBoxText type="primary" isActive={isActive}>
+        <VStack gap={2} align="flex-start" minW={0}>
+          <VaultItemBoxText
+            type="primary"
+            isActive={isActive}
+            truncate
+            w="full"
+            title={name}
+          >
             {name}
           </VaultItemBoxText>
 
@@ -155,7 +175,7 @@ const VaultItemBoxComponent = ({
         </VStack>
       </HStack>
 
-      <VStack gap={2} align="flex-end">
+      <VStack gap={2} align="flex-end" flexShrink={0}>
         <BlurredContent isBlurred={!visibleBalance} inline>
           <VaultItemBoxText
             type="primary"

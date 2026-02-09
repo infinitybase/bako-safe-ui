@@ -39,7 +39,7 @@ const DappVaultCard = ({
 
   return (
     <Flex w="full" alignItems="center" bg="gray.700" borderRadius={8} p={4}>
-      <HStack gap={3} align="center">
+      <HStack gap={3} align="center" minW={0}>
         <Avatar
           shape="rounded"
           color="gray.100"
@@ -48,13 +48,16 @@ const DappVaultCard = ({
           size="xs"
           name={name ?? '?'}
         />
-        <VStack gap={2} align="flex-start">
+        <VStack gap={2} align="flex-start" minW={0}>
           {name && (
             <Text
               fontWeight={500}
               color="gray.100"
               fontSize="xs"
               lineHeight="12px"
+              truncate
+              w="full"
+              title={name}
             >
               {name}
             </Text>
