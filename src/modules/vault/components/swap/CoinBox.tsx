@@ -226,6 +226,9 @@ export const CoinBox = memo(
                 decimalScale={coin.units}
                 onChange={onChangeAmount}
                 fontWeight="bold"
+                style={{
+                  paddingInlineEnd: 'calc(var(--input-height) + 12px)',
+                }}
               />
             </InputGroup>
           </Box>
