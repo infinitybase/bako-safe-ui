@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   Card,
   createListCollection,
@@ -176,7 +177,7 @@ export const CoinBox = memo(
           </Flex>
         </Card.Header>
         <ExpandableCardSection isExpanded={isCurrentStep} type="body">
-          <Stack>
+          <Box display="flex" alignItems="center" position="relative">
             <InputGroup
               alignItems="center"
               justifyContent="start"
@@ -227,7 +228,7 @@ export const CoinBox = memo(
                 fontWeight="bold"
               />
             </InputGroup>
-          </Stack>
+          </Box>
         </ExpandableCardSection>
         <ExpandableCardSection isExpanded={isCurrentStep} type="footer">
           <Flex alignItems="center" justifyContent="space-between" w="full">
