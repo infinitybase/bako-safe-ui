@@ -45,6 +45,7 @@ const useDepositLiquidStake = () => {
       request: { refetch: refetchVaultTransactionsList },
     },
     signTransaction: { confirmTransaction },
+    pendingSignerTransactions,
   } = useTransactionsContext();
 
   const { vault: vaultSafe } = useBakoSafeVault({
@@ -118,6 +119,7 @@ const useDepositLiquidStake = () => {
         await refetchVaultTransactionsList();
         await refetchTransactionsList();
         await refetchHomeTransactionsList();
+        await pendingSignerTransactions.refetch();
       },
     );
 

@@ -11,6 +11,7 @@ import { moneyFormat } from '@/utils';
 interface DonutProps {
   allocation?: IPredicateAllocation;
   isLoading: boolean;
+  visibleBalance?: boolean;
 }
 
 const MotionBody = motion(Card.Body);
@@ -21,8 +22,10 @@ const isPolarViewBox = (viewBox: ViewBox): viewBox is PolarViewBoxRequired =>
 const DonutLabel = ({
   viewBox,
   title,
+  visibleBalance,
 }: {
   viewBox: ViewBox | undefined;
+  visibleBalance?: boolean;
   title: string;
 }) => {
   if (!viewBox || !isPolarViewBox(viewBox)) return null;
@@ -53,24 +56,39 @@ const DonutLabel = ({
         fill="#2B2927"
       />
       {/* Text */}
-      <text
-        x={viewBox.cx}
-        y={viewBox.cy}
+      <motion.text
         textAnchor="middle"
         dominantBaseline="middle"
         fill="#E6E6E6"
         style={{
-          fontSize: fontSize,
+          fontSize,
           fontWeight: 'bold',
         }}
+        initial={{
+          opacity: 0,
+          x: viewBox.cx,
+          y: viewBox.cy,
+          filter: 'blur(6px)',
+        }}
+        animate={{
+          x: viewBox.cx,
+          y: viewBox.cy,
+          opacity: 1,
+          filter: visibleBalance ? 'blur(0px)' : 'blur(6px)',
+        }}
+        exit={{
+          opacity: 0,
+          filter: 'blur(6px)',
+        }}
+        transition={{ duration: 0.3, ease: 'easeInOut' }}
       >
         {title}
-      </text>
+      </motion.text>
     </g>
   );
 };
 
-const Donut = memo(({ allocation, isLoading }: DonutProps) => {
+const Donut = memo(({ allocation, isLoading, visibleBalance }: DonutProps) => {
   const isEmpty = useMemo(
     () => !allocation || !allocation.totalAmountInUSD,
     [allocation],
@@ -108,6 +126,7 @@ const Donut = memo(({ allocation, isLoading }: DonutProps) => {
             <DonutLabel
               viewBox={viewBox}
               title={moneyFormat(allocation?.totalAmountInUSD || 0)}
+              visibleBalance={visibleBalance}
             />
           )}
         />

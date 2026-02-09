@@ -2,6 +2,8 @@ import { Avatar, Badge, HStack, Skeleton, Text, VStack } from 'bako-ui';
 import { memo, useMemo } from 'react';
 
 import { Card, CardProps } from '@/components';
+import { BlurredContent } from '@/components/blurredContent';
+import { useWorkspaceContext } from '@/modules';
 import { AddressUtils } from '@/modules/core';
 import {
   useTransactionsSignaturePending,
@@ -63,6 +65,11 @@ const VaultItemBoxComponent = ({
     id,
     workspace.id,
   );
+  const {
+    workspaceInfos: {
+      infos: { visibleBalance },
+    },
+  } = useWorkspaceContext();
   const isPending = useTransactionsSignaturePending([id!]);
   const showPending = isPending.data?.transactionsBlocked;
   const needSignature = isPending.data?.pendingSignature;
@@ -149,13 +156,15 @@ const VaultItemBoxComponent = ({
       </HStack>
 
       <VStack gap={2} align="flex-end">
-        <VaultItemBoxText
-          type="primary"
-          isActive={isActive}
-          isLoading={isLoadingBalance}
-        >
-          {data && moneyFormat(data.currentBalanceUSD)}
-        </VaultItemBoxText>
+        <BlurredContent isBlurred={!visibleBalance} inline>
+          <VaultItemBoxText
+            type="primary"
+            isActive={isActive}
+            isLoading={isLoadingBalance}
+          >
+            {data && moneyFormat(data.currentBalanceUSD)}
+          </VaultItemBoxText>
+        </BlurredContent>
 
         <HStack gap={3}>
           {StatusBadge}

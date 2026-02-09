@@ -19,7 +19,7 @@ export const DetailItemAddress = memo(
         alignItems="center"
         justifyContent="center"
         gap={{ base: 1, sm: 2 }}
-        minW={{ lg: 220 }}
+        minW={{ lg: 190 }}
         {...props}
       >
         <VStack alignItems="center" gap={1}>

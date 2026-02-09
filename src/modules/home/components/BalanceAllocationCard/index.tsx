@@ -1,10 +1,17 @@
-import { Box, Card, Heading, Skeleton, Text } from 'bako-ui';
-import { memo, useMemo } from 'react';
+import { Card, Heading, Skeleton, Text } from 'bako-ui';
+import { motion } from 'framer-motion';
+import { memo, useEffect, useMemo, useState } from 'react';
 
 import AdvancedDonut from '@/components/chart/advanced-donut';
 import { DonutColors } from '@/components/chart/color';
-import { getChainId, useUserAllocationRequest } from '@/modules';
+import {
+  getChainId,
+  useUserAllocationRequest,
+  useWorkspaceContext,
+} from '@/modules';
 import { useAssetMap } from '@/modules/assets-tokens/hooks/useAssetMap';
+
+const MotionCardRoot = motion(Card.Root);
 
 const BalanceAllocationCard = memo(() => {
   const { allocation, isLoading } = useUserAllocationRequest();
@@ -21,47 +28,91 @@ const BalanceAllocationCard = memo(() => {
     [allocation, assetsMap],
   );
 
+  const {
+    workspaceInfos: {
+      infos: { visibleBalance },
+    },
+  } = useWorkspaceContext();
+
   const isEmpty = useMemo(() => !chartData.length, [chartData]);
+  const [expanded, setExpanded] = useState(false);
+
+  useEffect(() => {
+    if (isLoading) {
+      setExpanded(false);
+    } else if (!isEmpty) {
+      setExpanded(true);
+    }
+  }, [isLoading, isEmpty]);
 
   return (
-    <Card.Root
+    <MotionCardRoot
       variant="subtle"
       bg="bg.panel"
-      h="full"
       rounded="2xl"
-      maxH="388px"
+      h="full"
+      display="flex"
+      flexDirection="column"
+      style={{ overflow: 'hidden', position: 'relative' }}
+      initial={{ height: '100%' }}
+      animate={{
+        height: expanded && !isEmpty ? 390 : '100%',
+      }}
+      transition={{ duration: 0.7, ease: 'easeOut' }}
     >
+      {isLoading && <Skeleton height="100%" w="100%" />}
+
       <Card.Header>
-        <Heading
-          color="textPrimary"
-          fontSize="sm"
-          fontWeight="semibold"
-          letterSpacing="wider"
-        >
-          Balance allocation
-        </Heading>
+        {!isLoading && (
+          <Heading
+            color="textPrimary"
+            fontSize="sm"
+            fontWeight="semibold"
+            letterSpacing="wider"
+          >
+            Balance allocation
+          </Heading>
+        )}
       </Card.Header>
-      <Card.Body alignItems="center" justifyContent="center">
-        {!isEmpty && <AdvancedDonut data={chartData} />}
+
+      <Card.Body
+        flex={1}
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+        position="relative"
+        w="full"
+      >
+        {!isEmpty ? (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, ease: 'easeOut' }}
+            style={{
+              width: '100%',
+              height: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <AdvancedDonut data={chartData} visibleBalance={!visibleBalance} />
+          </motion.div>
+        ) : null}
 
         {!isLoading && isEmpty && (
-          <Text color="textSecondary" textAlign="center">
-            Nothing to show here yet
-          </Text>
-        )}
-
-        {isLoading && (
-          <Box
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            w="full"
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.4 }}
           >
-            <Skeleton height="200px" w="200px" rounded="full" />
-          </Box>
+            <Text color="textSecondary" textAlign="center">
+              Nothing to show here yet
+            </Text>
+          </motion.div>
         )}
       </Card.Body>
-    </Card.Root>
+    </MotionCardRoot>
   );
 });
 

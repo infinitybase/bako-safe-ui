@@ -87,7 +87,13 @@ const UserVaultsPage = () => {
         </HStack>
       </HStack>
 
-      <HStack w="full" justifyContent="space-between" pb={2}>
+      <HStack
+        w="full"
+        justifyContent="space-between"
+        pb={2}
+        flexDirection={{ base: 'column', md: 'row' }}
+        align={{ base: 'flex-start', md: 'center' }}
+      >
         <Text color="white" fontWeight="semibold" fontSize="md">
           Accounts
         </Text>
@@ -155,6 +161,7 @@ const UserVaultsPage = () => {
           maxH="79vh"
           mt={-2}
           pb={{ base: 8, sm: 0 }}
+          pt={{ base: '25px', sm: 0 }}
           overflowY="scroll"
           overflowX="hidden"
           scrollBehavior="smooth"

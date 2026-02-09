@@ -38,7 +38,12 @@ const WITHDRAW_URL = 'https://rig.st/';
 export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
   const { isMobile } = useScreenSize();
   const rigContract = useRig(vault);
-  const { assetsMap } = useWorkspaceContext();
+  const {
+    assetsMap,
+    workspaceInfos: {
+      infos: { visibleBalance },
+    },
+  } = useWorkspaceContext();
 
   const { currentNetwork } = useNetworks();
   const { price, isPendingSigner } = useDepositLiquidStake();
@@ -130,6 +135,8 @@ export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
         label="FUEL Balance"
         value={fuelTokens}
         isLoading={!assets.assets}
+        tooltipValue={true}
+        visibleBalance={!visibleBalance}
       >
         <VStack alignItems={'flex-end'} gap={0}>
           {emptyEthOrFuel || isPendingSigner ? (
@@ -161,6 +168,8 @@ export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
         label="stFUEL Balance"
         value={stFuelTokens}
         isLoading={!assets.assets}
+        tooltipValue={true}
+        visibleBalance={!visibleBalance}
       >
         <Button
           variant="subtle"
@@ -213,6 +222,7 @@ export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
           <HStack
             marginBottom={{ base: 0, md: 4 }}
             onClick={handleOpenMobileItem}
+            h="20px"
           >
             <VStack alignItems="flex-start" gap={0}>
               <Text
@@ -222,12 +232,8 @@ export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
               >
                 Liquid Stake FUEL
               </Text>
-              {!isMobile &&  isPendingSigner && (
-                <Text
-                  textAlign="justify"
-                  fontSize="xs"
-                  color="primary.main"
-                >
+              {!isMobile && isPendingSigner && (
+                <Text textAlign="justify" fontSize="xs" color="primary.main">
                   This account has pending transactions.
                 </Text>
               )}
@@ -287,7 +293,10 @@ export function CardLiquidStake({ assets, vault }: CardLiquidStakeProps) {
             )}
           </HStack>
           <Grid
-            templateColumns={{ base: 'repeat(1, 1fr)', lg: 'repeat(2, 1fr)' }}
+            templateColumns={{
+              base: 'repeat(1, 1fr)',
+              md: 'repeat(2, minmax(0, 1fr))',
+            }}
             gap={3}
             flex={1}
             display={{ base: 'none', md: 'grid' }}

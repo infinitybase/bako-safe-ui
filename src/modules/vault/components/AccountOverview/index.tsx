@@ -12,6 +12,7 @@ import {
   VStack,
 } from 'bako-ui';
 import { motion } from 'framer-motion';
+import { Address } from 'fuels';
 import { memo, useMemo } from 'react';
 import { RiFileCopyFill } from 'react-icons/ri';
 
@@ -22,10 +23,12 @@ import {
   TooltipNotEnoughBalance,
   UpRightArrow,
 } from '@/components';
+import { BlurredContent } from '@/components/blurredContent';
 import { CopyTopMenuIcon } from '@/components/icons/copy-top-menu';
 import { EyeCloseIcon } from '@/components/icons/eye-close';
 import { EyeOpenIcon } from '@/components/icons/eye-open';
 import { RefreshIcon } from '@/components/icons/refresh-icon';
+import { useWorkspaceContext } from '@/modules';
 import { AddressUtils, useScreenSize } from '@/modules/core';
 import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
 import { NetworkService } from '@/modules/network/services';
@@ -50,8 +53,6 @@ export const AccountOverview = memo(
     const {
       assets: {
         balanceUSD,
-        visibleBalance,
-        setVisibleBalance,
         isUpdating,
         handleManualRefetch,
         isLoading: isLoadingAssets,
@@ -59,6 +60,14 @@ export const AccountOverview = memo(
         hasBalance,
       },
     } = useVaultInfosContext();
+
+    const {
+      workspaceInfos: {
+        handlers: { setVisibleBalance },
+        infos: { visibleBalance },
+      },
+    } = useWorkspaceContext();
+
     const { isMobile } = useScreenSize();
     const { isOpen, onOpenChange, onOpen } = useDisclosure();
     const {
@@ -66,8 +75,20 @@ export const AccountOverview = memo(
       onOpen: handleOpenSend,
       onOpenChange: handleSendOpenChange,
     } = useDisclosure();
+
+    const addressWithChecksum = useMemo(() => {
+      if (!vault?.data.predicateAddress) return '';
+
+      try {
+        return new Address(vault.data.predicateAddress).toString();
+      } catch (error) {
+        console.warn('Invalid address format:', vault.data.predicateAddress);
+        return vault.data.predicateAddress;
+      }
+    }, [vault?.data.predicateAddress]);
+
     const { copy, copied } = useClipboard({
-      value: vault?.data.predicateAddress,
+      value: addressWithChecksum,
     });
 
     const isLoading = useMemo(
@@ -124,11 +145,14 @@ export const AccountOverview = memo(
                     fontSize="sm"
                     truncate
                     lineClamp={1}
+                    display="flex"
+                    alignItems="center"
+                    h="20px"
                   >
                     {accountName}
                   </Heading>
 
-                  <Flex gap={1} alignItems="center">
+                  <Flex gap={2} alignItems="center">
                     <IconTooltipButton
                       onClick={copy}
                       tooltipContent={copied ? 'Copied' : 'Copy Address'}
@@ -181,25 +205,20 @@ export const AccountOverview = memo(
                   </Flex>
                 </HStack>
                 <Text fontSize="xs" color="gray.400">
-                  {AddressUtils.format(vault?.data.predicateAddress || '', 6)}
+                  {AddressUtils.format(addressWithChecksum || '', 6)}
                 </Text>
               </Card.Header>
 
               {/* Overview Body */}
               <Card.Body justifyContent="center">
-                {visibleBalance && (
-                  <Heading color="gray.50" fontSize="3xl">
+                <Heading color="gray.50" fontSize="3xl">
+                  <BlurredContent isBlurred={!visibleBalance} inline>
                     <Text as="span" color="textSecondary">
                       $
                     </Text>{' '}
                     {balanceUSD}
-                  </Heading>
-                )}
-                {!visibleBalance && (
-                  <Heading color="gray.50" fontSize="3xl">
-                    -----
-                  </Heading>
-                )}
+                  </BlurredContent>
+                </Heading>
               </Card.Body>
 
               {/* Overview Footer */}

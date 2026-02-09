@@ -11,6 +11,7 @@ import {
 } from 'bako-ui';
 
 import { UpRightArrow } from '@/components';
+import { BlurredContent } from '@/components/blurredContent';
 import { BakoIcon } from '@/components/icons/assets/bakoIcon';
 import { NetworkService } from '@/modules/network/services';
 import { useVaultInfosContext } from '@/modules/vault/hooks';
@@ -102,9 +103,8 @@ const AssetDetails = ({
           </IconButton>
         )}
       </HStack>
-
-      {visibleBalance ? (
-        <VStack gap={0} align="start" mt={0} minH={45}>
+      <VStack gap={0} align="start" mt={0} minH={45}>
+        <BlurredContent isBlurred={!visibleBalance} inline>
           <Text color="white" fontWeight="bold" fontSize="sm" lineClamp={1}>
             {isNFT ? (
               '1'
@@ -128,28 +128,14 @@ const AssetDetails = ({
               {transactionAmount > 0 ? formattedAmount : ''}
             </Text>
           }
-        </VStack>
-      ) : (
-        <VStack
-          gap={0}
-          display={'flex'}
-          align={'start'}
-          justify={'center'}
-          mt={0}
-          minH={45}
-        >
-          <Text color="white" fontSize="md">
-            ------
-          </Text>
-        </VStack>
-      )}
+        </BlurredContent>
+      </VStack>
     </Box>
   );
 };
 
 const AssetCard = ({
   asset,
-  visibleBalance,
   isNFT = false,
   usdAmount,
   ...rest
@@ -159,6 +145,9 @@ const AssetCard = ({
     assetsMap,
     authDetails: {
       userInfos: { network },
+    },
+    workspaceInfos: {
+      infos: { visibleBalance },
     },
   } = useWorkspaceContext();
 

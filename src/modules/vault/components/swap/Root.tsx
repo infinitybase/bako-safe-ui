@@ -1,4 +1,4 @@
-import { Box, Button, VStack } from 'bako-ui';
+import { Box, Button, Tooltip, VStack } from 'bako-ui';
 import { Vault } from 'bakosafe';
 import { motion } from 'framer-motion';
 import { BN, bn } from 'fuels';
@@ -14,6 +14,7 @@ import {
   useContactToast,
 } from '@/modules';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
+import { TooltipPendingTx } from '@/modules/vault/components/TooltipPendingTx';
 import { formatMaxDecimals } from '@/utils';
 
 import {
@@ -531,6 +532,10 @@ export const RootSwap = memo(
       [handleChangeSwapStep],
     );
 
+    const ToolTipComponent = useMemo(() => {
+      return isPendingSigner ? <TooltipPendingTx /> : null;
+    }, [isPendingSigner]);
+
     return (
       <VStack
         w="full"
@@ -633,21 +638,32 @@ export const RootSwap = memo(
               isCurrentStep={swapState.step === SwapSteps.RESUME}
               error={trade.error}
             >
-              <Button
-                disabled={
-                  isEmptyAmounts ||
-                  isEmptyAssets ||
-                  isInsufficientBalance ||
-                  isPendingTransaction ||
-                  isInsufficientETHBalance ||
-                  isNoRoute ||
-                  !!trade.error
-                }
-                loading={isLoadingPreview || isSendingTx || isLoading}
-                onClick={handleSubmitSwap}
+              <Tooltip
+                content={ToolTipComponent}
+                disabled={!ToolTipComponent}
+                contentProps={{
+                  bg: 'bg.muted',
+                  borderColor: 'bg.panel',
+                }}
+                showArrow
+                positioning={{ placement: 'top' }}
               >
-                {swapButtonTitle}
-              </Button>
+                <Button
+                  disabled={
+                    isEmptyAmounts ||
+                    isEmptyAssets ||
+                    isInsufficientBalance ||
+                    isPendingTransaction ||
+                    isInsufficientETHBalance ||
+                    isNoRoute ||
+                    !!trade.error
+                  }
+                  loading={isLoadingPreview || isSendingTx || isLoading}
+                  onClick={handleSubmitSwap}
+                >
+                  {swapButtonTitle}
+                </Button>
+              </Tooltip>
             </SwapReview>
           </MotionBox>
         </VStack>

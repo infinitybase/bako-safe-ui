@@ -37,6 +37,7 @@ const Drawer = ({ onOpenChange, ...props }: DrawerProps) => {
                 aria-label="Close"
                 cursor="pointer"
                 zIndex={1600}
+                opacity={{ base: 0, md: 1 }}
               >
                 <LineCloseIcon w="24px" />
               </IconButton>

@@ -9,6 +9,7 @@ import {
   useClipboard,
   VStack,
 } from 'bako-ui';
+import { Address } from 'fuels';
 import { RiFileCopyFill } from 'react-icons/ri';
 
 import { EditIcon2, IconTooltipButton, RemoveIcon } from '@/components';
@@ -37,7 +38,8 @@ const ContactCard = ({
     screenSizes: { isExtraSmall, isLitteSmall },
   } = useWorkspaceContext();
 
-  const { copy, copied } = useClipboard({ value: address });
+  const addressWithChecksum = address ? new Address(address).toString() : '';
+  const { copy, copied } = useClipboard({ value: addressWithChecksum });
 
   return (
     <Card.Root
@@ -122,7 +124,7 @@ const ContactCard = ({
 
           <Card.Footer p={0} w="full">
             <Text fontSize="xs" color="gray.300" wordBreak="break-word">
-              {address}
+              {addressWithChecksum}
             </Text>
           </Card.Footer>
         </VStack>

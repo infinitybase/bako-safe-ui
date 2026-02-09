@@ -2,9 +2,9 @@ import { Chart, useChart } from 'bako-ui';
 import React, { memo, useCallback, useMemo, useState } from 'react';
 import { Cell, Label, Legend, Pie, PieChart, Sector } from 'recharts';
 
+import { ChartLabel } from '@/components/chart/chart-label';
 import { moneyFormat } from '@/utils';
 
-import { ChartLabel } from './chart-label';
 import { ChartLegend } from './chart-legend';
 
 export interface ChartData {
@@ -22,6 +22,7 @@ interface AdvancedDonutProps
   pieProps?: React.ComponentProps<typeof Pie>;
   pieChartProps?: React.ComponentProps<typeof PieChart>;
   legendProps?: React.ComponentProps<typeof Legend>;
+  visibleBalance?: boolean;
 }
 
 const AdvancedDonut = ({
@@ -29,12 +30,12 @@ const AdvancedDonut = ({
   pieProps,
   pieChartProps,
   legendProps,
+  visibleBalance = false,
   ...props
 }: AdvancedDonutProps) => {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const chart = useChart({ data });
   const [legendHeight, setLegendHeight] = useState<number | null>(null);
-
   const legendFlexDirection =
     legendProps?.layout === 'vertical' ? 'column' : 'row';
 
@@ -110,6 +111,7 @@ const AdvancedDonut = ({
                   label={labelData.label}
                   percentage={labelData.percentage}
                   legendHeight={legendHeight}
+                  visibleBalance={!visibleBalance}
                 />
               )}
             />
@@ -130,6 +132,10 @@ const AdvancedDonut = ({
           {...legendProps}
           wrapperStyle={{
             bottom: 0,
+            left: '12px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
             ...legendProps?.wrapperStyle,
           }}
           content={(props) => (

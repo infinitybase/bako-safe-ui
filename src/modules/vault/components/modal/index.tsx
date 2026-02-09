@@ -58,8 +58,9 @@ const VaultListModal = ({
         open={props.open}
         size={{ base: 'full', sm: 'md' }}
         modalContentProps={{
-          maxH: '100vh',
-          h: '780px',
+          h: { base: '100dvh', sm: '780px' },
+          maxH: { base: '100dvh', sm: '780px' },
+          overflow: 'hidden',
         }}
       >
         <Dialog.Body display="flex" flexDirection="column" flex={1} minH={0}>
@@ -112,7 +113,7 @@ const VaultListModal = ({
             w="full"
             flex={1}
             minH={0}
-            overflowY="scroll"
+            overflowY="auto"
             css={{
               '&::-webkit-scrollbar': { display: 'none' },
               '&::-webkit-scrollbar-thumb': { display: 'none' },
