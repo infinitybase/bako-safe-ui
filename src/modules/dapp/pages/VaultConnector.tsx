@@ -72,7 +72,7 @@ const VaultConnector = () => {
       <Dapp.ScrollableContent isLoading={isLoadingVaults}>
         <CreateVaultDialog open={isOpen} onOpenChange={onOpenChange} />
 
-        <Dapp.Header title="Accounts" />
+        <Dapp.Header title="Accounts" hidleBalance={true} />
 
         <VStack w="full" gap={2}>
           {vaults?.map((vault) => {
