@@ -11,14 +11,14 @@ interface HeaderProps {
   title: string;
   description?: string;
   onClose?: () => void;
-  hidleBalance?: boolean;
+  hiddenBalance?: boolean;
 }
 
 const Header = ({
   title,
   description,
   onClose = window.close,
-  hidleBalance = false,
+  hiddenBalance = false,
 }: HeaderProps) => {
   const { renderCloseIcon } = useHeader();
   const {
@@ -54,7 +54,7 @@ const Header = ({
           )}
         </VStack>
 
-        {hidleBalance && (
+        {hiddenBalance && (
           <IconTooltipButton
             tooltipContent={visibleBalance ? 'Hide Balance' : 'Show Balance'}
             buttonProps={{
