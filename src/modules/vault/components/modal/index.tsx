@@ -4,13 +4,17 @@ import {
   DrawerRootProps,
   Field,
   floatingStyles,
+  Icon,
   Input,
   Loader,
   Text,
   VStack,
 } from 'bako-ui';
 
-import { CustomSkeleton, Dialog } from '@/components';
+import { CustomSkeleton, Dialog, IconTooltipButton } from '@/components';
+import { EyeCloseIcon } from '@/components/icons/eye-close';
+import { EyeOpenIcon } from '@/components/icons/eye-open';
+import { useWorkspaceContext } from '@/modules';
 import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
 
 import { CreateVaultDialog } from '../dialog';
@@ -38,6 +42,19 @@ const VaultListModal = ({
     isOpen: props.open,
     onCloseAll,
   });
+
+  const {
+    workspaceInfos: {
+      infos: { visibleBalance },
+      handlers: { setVisibleBalance },
+    },
+  } = useWorkspaceContext();
+
+  const EyeIcon = visibleBalance ? EyeOpenIcon : EyeCloseIcon;
+
+  const handleToggleBalanceVisibility = () => {
+    setVisibleBalance(!visibleBalance);
+  };
 
   const {
     isOpen: isCreateVaultModalOpen,
@@ -88,7 +105,7 @@ const VaultListModal = ({
             borderBottomWidth={1}
             borderColor="gray.550"
           >
-            <Field.Root>
+            <Field.Root display="flex" alignItems="center" flexDirection="row">
               <Box position="relative" w="full">
                 <Input
                   placeholder=" "
@@ -106,6 +123,24 @@ const VaultListModal = ({
                   Search
                 </Field.Label>
               </Box>
+              <IconTooltipButton
+                tooltipContent={
+                  visibleBalance ? 'Hide Balance' : 'Show Balance'
+                }
+                buttonProps={{
+                  boxSize: '38px',
+                  minW: '38px',
+                  borderRadius: '6px',
+                  bg: 'gray.600',
+                }}
+                onClick={handleToggleBalanceVisibility}
+              >
+                <Icon
+                  as={EyeIcon}
+                  color="gray.200"
+                  w={visibleBalance ? '16px' : '12px'}
+                />
+              </IconTooltipButton>
             </Field.Root>
           </Box>
 
