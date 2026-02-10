@@ -95,10 +95,11 @@ export const CoinBox = memo(
       });
     }, [value, assetPrice]);
 
-    const usdNumber = useMemo(
-      () => parseFloat(usdEstimate.replace(/[^\d.-]/g, '')),
-      [usdEstimate],
-    );
+    const usdNumber = useMemo(() => {
+      const cleanValue = usdEstimate.replace(/[^\d.-]/g, '');
+      const parsed = parseFloat(cleanValue);
+      return isNaN(parsed) ? 0 : parsed;
+    }, [usdEstimate]);
 
     const handleChangeMaxBalance = useCallback(() => {
       const balanceInBN = bn.parseUnits(balance, coin.units);
