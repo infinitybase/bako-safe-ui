@@ -21,6 +21,7 @@ import { ETH_SLUG, MinEthValue } from '@/config/swap';
 import { Asset } from '@/modules';
 import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { calculateTextWidth } from '../../utils';
 import { AssetsModal } from '../AssetsModal';
@@ -62,6 +63,7 @@ export const CoinBox = memo(
     const coinInputRef = useRef<HTMLInputElement>(null);
 
     const { isPendingSigner } = useTransactionsContext();
+    const { tokensUSD } = useWorkspaceContext();
 
     const balance = useMemo(() => {
       const asset = assets.find((a) => a.assetId === coin.assetId);
@@ -75,6 +77,28 @@ export const CoinBox = memo(
     const width = useMemo(() => {
       return calculateTextWidth(value);
     }, [value]);
+
+    const assetPrice = useMemo(() => {
+      const tokenData = tokensUSD.data?.[coin.assetId.toLowerCase()];
+      return tokenData?.usdAmount ?? 0;
+    }, [coin.assetId, tokensUSD.data]);
+
+    const usdEstimate = useMemo(() => {
+      if (!value || assetPrice === 0) return '$0.00';
+      const estimated = parseFloat(value.replace(/,/g, '')) * assetPrice;
+
+      return estimated.toLocaleString('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      });
+    }, [value, assetPrice]);
+
+    const usdNumber = useMemo(
+      () => parseFloat(usdEstimate.replace(/[^\d.-]/g, '')),
+      [usdEstimate],
+    );
 
     const handleChangeMaxBalance = useCallback(() => {
       const balanceInBN = bn.parseUnits(balance, coin.units);
@@ -176,7 +200,12 @@ export const CoinBox = memo(
             />
           </Flex>
         </Card.Header>
-        <ExpandableCardSection isExpanded={isCurrentStep} type="body">
+        <ExpandableCardSection
+          isExpanded={isCurrentStep}
+          type="body"
+          paddingTop="0.75rem"
+          paddingBottom={0}
+        >
           <Box display="flex" alignItems="center" position="relative">
             <InputGroup
               alignItems="center"
@@ -231,6 +260,19 @@ export const CoinBox = memo(
                 }}
               />
             </InputGroup>
+          </Box>
+          <Box
+            w="fit-content"
+            minW={0}
+            maxW="full"
+            borderRadius={6}
+            bgColor="primary.contrast"
+            opacity={usdNumber > 0 ? 1 : 0}
+            p={1}
+          >
+            <Text fontSize="xs" lineHeight="100%" color="gray.50" truncate>
+              ~ {usdEstimate}
+            </Text>
           </Box>
         </ExpandableCardSection>
         <ExpandableCardSection isExpanded={isCurrentStep} type="footer">
