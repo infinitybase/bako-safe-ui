@@ -222,7 +222,7 @@ export const CoinBox = memo(
               gap={2}
               endElementProps={{
                 px: 0,
-                maxW: '50px',
+                maxW: '40px',
               }}
               endElement={
                 isLoadingAmount ? (
@@ -255,9 +255,6 @@ export const CoinBox = memo(
                 decimalScale={coin.units}
                 onChange={onChangeAmount}
                 fontWeight="bold"
-                style={{
-                  paddingInlineEnd: 'calc(var(--input-height) + 12px)',
-                }}
               />
             </InputGroup>
           </Box>
