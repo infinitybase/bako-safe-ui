@@ -141,7 +141,7 @@ export const CoinBox = memo(
       >
         <Card.Header pb={isCurrentStep ? 0 : 6}>
           <Flex alignItems="center" justifyContent="space-between" gap={1}>
-            <Stack gap={1}>
+            <Stack gap={1} minW={0}>
               <Heading
                 color={isCurrentStep ? 'textPrimary' : 'gray.400'}
                 fontSize="sm"
@@ -157,7 +157,8 @@ export const CoinBox = memo(
                   color="gray.50"
                   letterSpacing="wider"
                   fontWeight="bold"
-                  maxW={{ base: '130px', sm: 'unset' }}
+                  minW={0}
+                  title={`${value} ${coin.slug}`}
                 >
                   {value}
                   <Text as="span" ml={1} color="gray.400" fontWeight="normal">
@@ -176,6 +177,7 @@ export const CoinBox = memo(
               bg="bg.muted"
               cursor="pointer"
               value={[coin.assetId]}
+              flexShrink={0}
             >
               <Select.HiddenSelect />
               <Select.Control>
