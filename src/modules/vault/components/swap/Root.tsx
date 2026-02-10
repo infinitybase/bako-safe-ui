@@ -565,6 +565,7 @@ export const RootSwap = memo(
             style={{
               zIndex: swapState.step === SwapSteps.SELECT_SELL ? 5 : 1,
             }}
+            cursor="pointer"
           >
             <CoinBox
               mode="sell"
@@ -594,6 +595,7 @@ export const RootSwap = memo(
             style={{
               zIndex: swapState.step === SwapSteps.SELECT_BUY ? 5 : 1,
             }}
+            cursor="pointer"
           >
             <CoinBox
               mode="buy"
@@ -628,6 +630,7 @@ export const RootSwap = memo(
             style={{
               zIndex: swapState.step === SwapSteps.RESUME ? 5 : 1,
             }}
+            cursor={swapData ? 'pointer' : 'not-allowed'}
           >
             <SwapReview
               isLoadingCost={isLoadingPreview || isLoading}
