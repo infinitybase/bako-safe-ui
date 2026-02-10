@@ -31,7 +31,12 @@ const CreateContactForm = memo(({ address }: CreateContactFormProps) => {
         control={control}
         defaultValue=""
         slotProps={{
-          input: { placeholder: 'Name', padding: 3, variant: 'subtle' },
+          input: {
+            placeholder: 'Name',
+            padding: 3,
+            variant: 'subtle',
+            maxLength: 27,
+          },
           inputGroup: {
             endElement: name && (
               <CloseCircle
