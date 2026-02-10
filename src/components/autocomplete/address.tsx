@@ -126,7 +126,9 @@ const AddressAutocomplete = memo(
                       fontSize="sm"
                       lineHeight="shorter"
                     >
-                      {option.label}
+                      {option.label?.length > 45
+                        ? option.label.slice(0, 45) + '...'
+                        : option.label}
                     </Text>
                     <Text
                       color="textSecondary"
