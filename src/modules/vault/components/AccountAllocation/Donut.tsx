@@ -26,7 +26,9 @@ const Donut = memo(({ allocation, isLoading, visibleBalance }: DonutProps) => {
   const data = useMemo(
     () =>
       allocation?.data.map((asset, i) => ({
-        label: asset.assetId ? assetsMap[asset.assetId]?.name : 'Other',
+        label: asset.assetId
+          ? (assetsMap[asset.assetId]?.name ?? asset.assetId)
+          : 'Other',
         value: asset.amountInUSD,
         percentage: asset.percentage,
         color: DonutColors[i % DonutColors.length], // Cycle through colors if more assets than colors
