@@ -1,12 +1,11 @@
 import { Box, Card, Skeleton, Text } from 'bako-ui';
 import { motion } from 'framer-motion';
 import { memo, useMemo } from 'react';
-import { PolarViewBoxRequired, ViewBox } from 'recharts/types/util/types';
 
-import AssetsDonut from '@/components/chart/assets-donut';
+import AdvancedDonut from '@/components/chart/advanced-donut';
 import { DonutColors } from '@/components/chart/color';
-import { IPredicateAllocation } from '@/modules/core';
-import { moneyFormat } from '@/utils';
+import { useAssetMap } from '@/modules/assets-tokens/hooks/useAssetMap';
+import { getChainId, IPredicateAllocation } from '@/modules/core';
 
 interface DonutProps {
   allocation?: IPredicateAllocation;
@@ -16,92 +15,23 @@ interface DonutProps {
 
 const MotionBody = motion(Card.Body);
 
-const isPolarViewBox = (viewBox: ViewBox): viewBox is PolarViewBoxRequired =>
-  'cx' in viewBox && 'cy' in viewBox;
-
-const DonutLabel = ({
-  viewBox,
-  title,
-  visibleBalance,
-}: {
-  viewBox: ViewBox | undefined;
-  visibleBalance?: boolean;
-  title: string;
-}) => {
-  if (!viewBox || !isPolarViewBox(viewBox)) return null;
-
-  const fontSize = 14;
-  const padding = 8;
-
-  // Estimate text width (approximately 0.6 * fontSize per character)
-  const textWidth = title.length * fontSize * 0.6;
-  const textHeight = fontSize;
-
-  // Calculate rectangle dimensions and position
-  const rectWidth = textWidth + padding * 2;
-  const rectHeight = textHeight + padding * 2;
-  const rectX = viewBox.cx - rectWidth / 2;
-  const rectY = viewBox.cy - rectHeight / 2;
-
-  return (
-    <g>
-      {/* Background rectangle with rounded corners */}
-      <rect
-        x={rectX}
-        y={rectY}
-        width={rectWidth}
-        height={rectHeight}
-        rx={5}
-        ry={5}
-        fill="#2B2927"
-      />
-      {/* Text */}
-      <motion.text
-        textAnchor="middle"
-        dominantBaseline="middle"
-        fill="#E6E6E6"
-        style={{
-          fontSize,
-          fontWeight: 'bold',
-        }}
-        initial={{
-          opacity: 0,
-          x: viewBox.cx,
-          y: viewBox.cy,
-          filter: 'blur(6px)',
-        }}
-        animate={{
-          x: viewBox.cx,
-          y: viewBox.cy,
-          opacity: 1,
-          filter: visibleBalance ? 'blur(0px)' : 'blur(6px)',
-        }}
-        exit={{
-          opacity: 0,
-          filter: 'blur(6px)',
-        }}
-        transition={{ duration: 0.3, ease: 'easeInOut' }}
-      >
-        {title}
-      </motion.text>
-    </g>
-  );
-};
-
 const Donut = memo(({ allocation, isLoading, visibleBalance }: DonutProps) => {
   const isEmpty = useMemo(
     () => !allocation || !allocation.totalAmountInUSD,
     [allocation],
   );
 
+  const chainId = getChainId();
+  const assetsMap = useAssetMap(chainId).assetsMap;
   const data = useMemo(
     () =>
       allocation?.data.map((asset, i) => ({
-        label: asset.assetId || 'Other',
+        label: asset.assetId ? assetsMap[asset.assetId]?.name : 'Other',
         value: asset.amountInUSD,
+        percentage: asset.percentage,
         color: DonutColors[i % DonutColors.length], // Cycle through colors if more assets than colors
       })) ?? [],
-    [allocation],
+    [allocation, assetsMap],
   );
 
   return (
@@ -111,6 +41,7 @@ const Donut = memo(({ allocation, isLoading, visibleBalance }: DonutProps) => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
+      p={0}
     >
       {isEmpty && !isLoading && (
         <Text color="textSecondary" textAlign="center">
@@ -118,17 +49,10 @@ const Donut = memo(({ allocation, isLoading, visibleBalance }: DonutProps) => {
         </Text>
       )}
       {!isEmpty && !isLoading && (
-        <AssetsDonut
-          width="185px"
+        <AdvancedDonut
           data={data}
-          tooltipProps={{ active: false }}
-          label={({ viewBox }) => (
-            <DonutLabel
-              viewBox={viewBox}
-              title={moneyFormat(allocation?.totalAmountInUSD || 0)}
-              visibleBalance={visibleBalance}
-            />
-          )}
+          visibleBalance={!visibleBalance}
+          showLegend={false}
         />
       )}
 
