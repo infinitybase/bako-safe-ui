@@ -139,7 +139,7 @@ const useWebAuthnSignIn = (
       handleAction: handleLogin,
       handleActionUsingEnterKey: undefined,
       isLoading: isSigningIn,
-      isDisabled: isLoginModeBtnDisabled,
+      isDisabled: isSigningIn,
       disableInput: false,
       isLoadingOptions: false,
     },
