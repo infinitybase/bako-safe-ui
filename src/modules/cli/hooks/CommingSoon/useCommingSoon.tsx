@@ -63,7 +63,6 @@ const useCommingSoon = (predicateAddress: string) => {
     toast({
       status: 'success',
       duration: 5000,
-      isClosable: false,
       title: 'Email notification activated!',
       description: 'We will notify you when this feature becomes available.',
       icon: (

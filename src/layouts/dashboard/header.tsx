@@ -307,7 +307,6 @@ const UserBox = () => {
                       ) {
                         toast({
                           duration: 3000,
-                          isClosable: false,
                           title: 'Copied!',
                           status: 'warning',
                           description:

@@ -15,7 +15,6 @@ const useSettingsToast = () => {
     toast({
       status: 'success',
       duration: 4000,
-      isClosable: false,
       title: title ?? 'Success!',
       description: description ?? 'Your settings was updated!',
       icon: (

@@ -37,7 +37,6 @@ function AddressCopy({
         toast({
           position: 'top-right',
           duration: 3000,
-          isClosable: false,
           title: 'Copied to clipboard',
           icon: <Icon fontSize="2xl" color="brand.500" as={CheckIcon} />,
         });
