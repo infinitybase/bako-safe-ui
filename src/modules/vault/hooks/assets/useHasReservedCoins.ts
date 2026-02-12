@@ -81,7 +81,6 @@ export const useHasReservedCoins = (
     },
     refetchInterval,
     refetchOnWindowFocus: true,
-    placeholderData: (previousData) => previousData,
     enabled: !!predicateId,
     staleTime,
   });
