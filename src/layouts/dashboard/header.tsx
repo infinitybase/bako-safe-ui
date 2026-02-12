@@ -26,6 +26,7 @@ import { AddressBook2Icon } from '@/components/icons/address-book-2';
 import { DisconnectIcon } from '@/components/icons/disconnect';
 import { FeedbackIcon } from '@/components/icons/feedback';
 import { SettingsTopMenuIcon } from '@/components/icons/settings-top-menu';
+import { queryClient } from '@/config';
 import {
   IDefaultMessage,
   Pages,
@@ -108,6 +109,10 @@ const UserBox = () => {
 
   const logout = useCallback(async () => {
     setIsLoggingOut(true);
+    //TODO: Cancel any outgoing requests to avoid race conditions
+    await queryClient.cancelQueries();
+    // TODO: Clear all cached data (assets, user info, etc.)
+    queryClient.clear();
     try {
       authDetails.userInfos?.type.type === TypeUser.FUEL &&
         authDetails.userInfos?.type.name !== EConnectors.FULLET &&
