@@ -1,5 +1,5 @@
 import { Chart, useChart } from 'bako-ui';
-import React, { memo, useCallback, useMemo, useState } from 'react';
+import React, { memo, useMemo, useState } from 'react';
 import { Cell, Label, Legend, Pie, PieChart, Sector } from 'recharts';
 
 import { ChartLabel } from '@/components/chart/chart-label';
@@ -22,6 +22,7 @@ interface AdvancedDonutProps
   pieProps?: React.ComponentProps<typeof Pie>;
   pieChartProps?: React.ComponentProps<typeof PieChart>;
   legendProps?: React.ComponentProps<typeof Legend>;
+  showLegend?: boolean;
   visibleBalance?: boolean;
 }
 
@@ -30,6 +31,7 @@ const AdvancedDonut = ({
   pieProps,
   pieChartProps,
   legendProps,
+  showLegend = true,
   visibleBalance = false,
   ...props
 }: AdvancedDonutProps) => {
@@ -38,14 +40,6 @@ const AdvancedDonut = ({
   const [legendHeight, setLegendHeight] = useState<number | null>(null);
   const legendFlexDirection =
     legendProps?.layout === 'vertical' ? 'column' : 'row';
-
-  const onLegendFocusEnter = useCallback((index: number) => {
-    setActiveIndex(index);
-  }, []);
-
-  const onLegendFocusLeave = useCallback(() => {
-    setActiveIndex(null);
-  }, []);
 
   const total = useMemo(
     () => data.reduce((sum, item) => sum + item.value, 0),
@@ -97,51 +91,48 @@ const AdvancedDonut = ({
           dataKey={chart.key('value')}
           nameKey="label"
           paddingAngle={4}
-          activeShape={<Sector outerRadius={110} />}
+          activeShape={<Sector outerRadius={110} cursor="pointer" />}
           stroke="none"
+          onMouseEnter={(_, index) => setActiveIndex(index)}
+          onMouseLeave={() => setActiveIndex(null)}
           {...pieProps}
         >
-          {legendHeight !== null && (
-            <Label
-              position="middle"
-              content={({ viewBox }) => (
-                <ChartLabel
-                  viewBox={viewBox}
-                  title={labelData.title}
-                  label={labelData.label}
-                  percentage={labelData.percentage}
-                  legendHeight={legendHeight}
-                  visibleBalance={!visibleBalance}
-                />
-              )}
-            />
-          )}
+          <Label
+            position="middle"
+            content={({ viewBox }) => (
+              <ChartLabel
+                viewBox={viewBox}
+                title={labelData.title}
+                label={labelData.label}
+                percentage={labelData.percentage}
+                legendHeight={showLegend ? (legendHeight ?? 0) : 0}
+                visibleBalance={!visibleBalance}
+              />
+            )}
+          />
 
-          {chart.data.map((item, index) => (
-            <Cell
-              key={item.label}
-              fill={chart.color(item.color)}
-              onMouseEnter={() => onLegendFocusEnter(index)}
-              onMouseLeave={onLegendFocusLeave}
-            />
+          {chart.data.map((item) => (
+            <Cell key={item.label} fill={chart.color(item.color)} />
           ))}
         </Pie>
 
-        <Legend
-          iconSize={12}
-          {...legendProps}
-          wrapperStyle={{
-            bottom: 0,
-            left: '12px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            ...legendProps?.wrapperStyle,
-          }}
-          content={(props) => (
-            <ChartLegend {...props} setLegendHeight={setLegendHeight} />
-          )}
-        />
+        {showLegend && (
+          <Legend
+            iconSize={12}
+            {...legendProps}
+            wrapperStyle={{
+              bottom: 0,
+              left: '12px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              ...legendProps?.wrapperStyle,
+            }}
+            content={(props) => (
+              <ChartLegend {...props} setLegendHeight={setLegendHeight} />
+            )}
+          />
+        )}
       </PieChart>
     </Chart.Root>
   );
