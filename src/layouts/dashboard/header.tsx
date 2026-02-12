@@ -109,11 +109,11 @@ const UserBox = () => {
 
   const logout = useCallback(async () => {
     setIsLoggingOut(true);
-    //TODO: Cancel any outgoing requests to avoid race conditions
-    await queryClient.cancelQueries();
-    // TODO: Clear all cached data (assets, user info, etc.)
-    queryClient.clear();
     try {
+      //TODO: Cancel any outgoing requests to avoid race conditions
+      await queryClient.cancelQueries();
+      // TODO: Clear all cached data (assets, user info, etc.)
+      queryClient.clear();
       authDetails.userInfos?.type.type === TypeUser.FUEL &&
         authDetails.userInfos?.type.name !== EConnectors.FULLET &&
         (await fuel.disconnect());
