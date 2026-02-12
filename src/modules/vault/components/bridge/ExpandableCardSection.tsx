@@ -13,6 +13,8 @@ interface ExpandableCardSectionProps {
   justifyContent?: CardBodyProps['justifyContent'];
   flexDirection?: CardBodyProps['flexDirection'];
   gap?: CardBodyProps['gap'];
+  paddingTop?: string | number;
+  paddingBottom?: string | number;
 }
 
 export function ExpandableCardSection({
@@ -23,6 +25,8 @@ export function ExpandableCardSection({
   justifyContent,
   flexDirection,
   gap,
+  paddingTop = '1rem',
+  paddingBottom = '1rem',
 }: ExpandableCardSectionProps) {
   const Component = type === 'body' ? MotionCardBody : MotionCardFooter;
 
@@ -31,8 +35,8 @@ export function ExpandableCardSection({
     animate: {
       maxHeight: isExpanded ? maxHeight : 0,
       opacity: isExpanded ? 1 : 0,
-      paddingTop: isExpanded ? '1rem' : 0,
-      paddingBottom: isExpanded ? '1rem' : 0,
+      paddingTop: isExpanded ? paddingTop : 0,
+      paddingBottom: isExpanded ? paddingBottom : 0,
     },
     transition: {
       duration: 0.3,

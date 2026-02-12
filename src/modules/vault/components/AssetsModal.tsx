@@ -2,12 +2,10 @@ import {
   DialogOpenChangeDetails,
   Field,
   Icon,
-  Image,
   Input,
   InputGroup,
   Separator,
   Stack,
-  Text,
 } from 'bako-ui';
 import { BN } from 'fuels';
 import debounce from 'lodash.debounce';
@@ -15,7 +13,8 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FiSearch as SearchIcon } from 'react-icons/fi';
 
 import { Dialog } from '@/components';
-import { Asset, CurrencyList } from '@/modules/core';
+import { Asset } from '@/modules/core';
+import { AssetList } from '@/modules/vault/components/asset-list';
 
 interface AssetsModalProps {
   isOpen: boolean;
@@ -79,71 +78,76 @@ export const AssetsModal = ({
 
   return (
     <Dialog.Modal
-      modalContentProps={{ padding: 0 }}
       open={isOpen}
       onOpenChange={handleCloseModal}
       size={{ base: 'full', sm: 'sm' }}
+      modalContentProps={{
+        maxH: '100vh',
+        h: '690px',
+        p: 0,
+      }}
     >
       <Dialog.Header
-        mt={3}
-        mb={3}
+        mb={{ base: 2, sm: 6 }}
         px={6}
-        title="Select Asset"
+        title="Asset"
+        titleSxProps={{
+          fontSize: 'md',
+          color: 'gray.50',
+          lineHeight: '100%',
+          fontWeight: 'bold',
+        }}
+        description="Select the asset of your choice."
+        descriptionFontSize="xs"
+        descriptionColor="textSecondary"
         onClose={() => handleCloseModal({ open: false })}
       />
-      <Dialog.Body>
-        <Stack gap={4}>
-          <Field.Root px={6}>
+      <Dialog.Body
+        px={6}
+        display="flex"
+        flexDirection="column"
+        flex={1}
+        minH={0}
+      >
+        <Stack gap={6}>
+          <Field.Root>
             <InputGroup
               position="relative"
-              endElement={<Icon as={SearchIcon} color="textPrimary" />}
+              endElement={
+                <Icon as={SearchIcon} color="textPrimary" size="sm" />
+              }
             >
               <Input
-                variant="subtle"
+                bg="transparent"
                 onChange={(e) => debouncedSearch(e)}
                 placeholder="Search asset"
+                className="peer"
               />
             </InputGroup>
           </Field.Root>
 
           <Separator borderColor="grey.500" />
-
-          <CurrencyList.Root px={6}>
-            {filteredAssets.map((asset) => (
-              <CurrencyList.Item
-                key={asset.assetId}
-                value={asset.assetId}
-                isSelected={false}
-                onSelect={handleSelect}
-                display="flex"
-                alignItems="center"
-                gap={2}
-              >
-                <Image boxSize="24px" src={asset.icon} alt={asset.name} />
-                <Stack gap={0}>
-                  <Text fontSize="md" color="gray.50">
-                    {asset.slug}
-                  </Text>
-                  <Text fontSize="xs" color="gray.50">
-                    {asset.name}
-                  </Text>
-                </Stack>
-
-                {asset.balance && (
-                  <Text ml="auto" fontSize="xs" color="gray.50">
-                    {asset.balance.formatUnits(asset.units)}
-                  </Text>
-                )}
-              </CurrencyList.Item>
-            ))}
-
-            {!filteredAssets.length && !isLoading && (
-              <CurrencyList.Empty emptyMessage="No assets available" />
-            )}
-
-            {isLoading && <CurrencyList.Loading />}
-          </CurrencyList.Root>
         </Stack>
+
+        <AssetList.Root py={6}>
+          {filteredAssets.map((asset) => (
+            <AssetList.Item
+              key={asset.assetId}
+              asset={{
+                value: asset.assetId,
+                image: asset.icon,
+                name: asset.name,
+                symbol: asset.slug,
+                balance: asset.balance?.formatUnits(asset.units),
+              }}
+              onSelect={(selectedAsset) => handleSelect(selectedAsset.value)}
+            />
+          ))}
+
+          {!filteredAssets.length && !isLoading && <AssetList.Empty />}
+
+          {isLoading && <AssetList.Loading />}
+        </AssetList.Root>
       </Dialog.Body>
     </Dialog.Modal>
   );
