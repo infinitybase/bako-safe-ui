@@ -9,7 +9,6 @@ import {
   BakoGarageBanner,
   BakoIcon,
   Banner,
-  BridgeIcon,
   Carousel,
   CoinsIcon,
   ExchangeIcon,
@@ -141,24 +140,23 @@ const Sidebar = memo(({ onDrawer, ...rest }: SidebarProps) => {
               Assets
             </SidebarMenu.Title>
           </SidebarMenu.Container>
-
-          <SidebarMenu.Container
-            isActive={menuItems.bridge}
-            onClick={() =>
-              handleNavigate(
-                Pages.bridge({
-                  workspaceId: route.params.workspaceId!,
-                  vaultId: route.params.vaultId!,
-                }),
-              )
-            }
-          >
-            <SidebarMenu.Icon as={BridgeIcon} isActive={false} />
-            <SidebarMenu.Title isActive={menuItems.bridge}>
-              Bridge
-            </SidebarMenu.Title>
-          </SidebarMenu.Container>
-
+          {/* Hidden until release */}
+          {/*<SidebarMenu.Container*/}
+          {/*  isActive={menuItems.bridge}*/}
+          {/*  onClick={() =>*/}
+          {/*    handleNavigate(*/}
+          {/*      Pages.bridge({*/}
+          {/*        workspaceId: route.params.workspaceId!,*/}
+          {/*        vaultId: route.params.vaultId!,*/}
+          {/*      }),*/}
+          {/*    )*/}
+          {/*  }*/}
+          {/*>*/}
+          {/*  <SidebarMenu.Icon as={BridgeIcon} isActive={false} />*/}
+          {/*  <SidebarMenu.Title isActive={menuItems.bridge}>*/}
+          {/*    Bridge*/}
+          {/*  </SidebarMenu.Title>*/}
+          {/*</SidebarMenu.Container>*/}
           {/* Hidden until release */}
           {/* <SidebarMenu.Container
             isActive={menuItems.buySell}
