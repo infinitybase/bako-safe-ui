@@ -79,7 +79,6 @@ export const useHasReservedCoins = (
       };
     },
     refetchOnWindowFocus: false,
-    placeholderData: (previousData) => previousData,
     enabled: !!predicateId,
     staleTime,
   });
