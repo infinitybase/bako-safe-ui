@@ -97,7 +97,9 @@ const AddAssetsDialog = ({
             description="Transfer between different networks."
             iconSize="18px"
             icon={BridgeIcon}
-            onClick={() => handleRedirectToMainNet()}
+            commingSoon
+            /* Hidden until release */
+            // onClick={() => handleRedirectToMainNet()}
           />
           <WelcomeCard
             title="PURCHASE"

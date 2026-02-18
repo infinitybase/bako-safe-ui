@@ -87,8 +87,9 @@ const WelcomeDialog = ({
             description="Crypto from Ethereum network to Fuel mainnet."
             icon={BridgeIcon}
             iconSize="18px"
-            commingSoon={isTestnet}
-            onClick={isTestnet ? undefined : () => handleRedirectToMainNet()}
+            commingSoon
+            /* Hidden until release */
+            // onClick={isTestnet ? undefined : () => handleRedirectToMainNet()}
             isMobile={isMobile}
           />
           <WelcomeCard
