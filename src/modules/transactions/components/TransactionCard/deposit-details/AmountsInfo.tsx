@@ -2,7 +2,6 @@ import { Text, VStack } from 'bako-ui';
 import { bn } from 'fuels';
 import { memo, useMemo } from 'react';
 
-import { BlurredContent } from '@/components/blurredContent';
 import type { AssetModel } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/hooks';
 import { isHex } from '@/utils';
@@ -19,9 +18,6 @@ const AmountsInfo = memo(({ asset, txUSDAmount, isNFT }: AmountsInfoProps) => {
   const {
     screenSizes: { isMobile },
     assetsMap,
-    workspaceInfos: {
-      infos: { visibleBalance },
-    },
   } = useWorkspaceContext();
 
   const assetMetadata = useMemo(
@@ -48,27 +44,23 @@ const AmountsInfo = memo(({ asset, txUSDAmount, isNFT }: AmountsInfoProps) => {
 
   return (
     <VStack w={{ base: '105px', sm: 'fit-content' }} gap={1}>
-      <BlurredContent isBlurred={visibleBalance} inline>
+      <Text
+        textAlign={isMobile ? 'end' : 'center'}
+        color="textPrimary"
+        fontSize="xs"
+        lineHeight="100%"
+      >
+        {assetAmount} {assetMetadata.slug}
+      </Text>
+      {showAmountUSD && (
         <Text
           textAlign={isMobile ? 'end' : 'center'}
-          color="textPrimary"
           fontSize="xs"
+          color="gray.400"
           lineHeight="100%"
         >
-          {assetAmount} {assetMetadata.slug}
+          <AmountUSD amount={txUSDAmount} isNFT={isNFT} />
         </Text>
-      </BlurredContent>
-      {showAmountUSD && (
-        <BlurredContent isBlurred={visibleBalance} inline>
-          <Text
-            textAlign={isMobile ? 'end' : 'center'}
-            fontSize="xs"
-            color="gray.400"
-            lineHeight="100%"
-          >
-            <AmountUSD amount={txUSDAmount} isNFT={isNFT} />
-          </Text>
-        </BlurredContent>
       )}
     </VStack>
   );
