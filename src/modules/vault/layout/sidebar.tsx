@@ -67,7 +67,7 @@ const Sidebar = memo(({ onDrawer, ...rest }: SidebarProps) => {
       bgColor={onDrawer ? 'transparent' : 'bg.panel'}
       position="sticky"
       top={0}
-      h="dvh"
+      h="100vh"
       {...rest}
     >
       <VStack
@@ -75,7 +75,7 @@ const Sidebar = memo(({ onDrawer, ...rest }: SidebarProps) => {
         h="full"
         minH={0}
         gap={4}
-        overflowY="scroll"
+        overflowY="auto"
         css={{
           '&::-webkit-scrollbar': {
             display: 'none',
