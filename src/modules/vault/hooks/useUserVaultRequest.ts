@@ -5,7 +5,7 @@ import { DEFAULT_INITIAL_PAGE_PARAM } from '@/utils/constants';
 
 import { GetAllPredicatesPayload, VaultService } from '../services';
 
-const USER_VAULTS_QUERY_KEY = 'predicate/by-user-address';
+export const USER_VAULTS_QUERY_KEY = 'predicate/by-user-address';
 
 const useUserVaultRequest = (
   userAddress: string,
