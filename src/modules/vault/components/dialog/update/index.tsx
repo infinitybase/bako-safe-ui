@@ -75,7 +75,7 @@ export const UpdateVaultDialog = ({
         />
       </Dialog.Body>
       <Dialog.Actions position="relative" mt={6}>
-        <Button variant="outline" disabled={isPending} onClick={onClose} px={6}>
+        <Button variant="subtle" disabled={isPending} onClick={onClose} px={6}>
           Cancel
         </Button>
         <Button
