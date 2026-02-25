@@ -2,8 +2,35 @@ import { BN, CoinQuantity } from 'fuels';
 
 import { api } from '@/config';
 import { Asset, NFT } from '@/modules/core';
-import { IPredicate } from '@/modules/core/hooks/bakosafe/utils/types';
-import { Predicate, Workspace } from '@/modules/core/models';
+import {
+  IPredicate,
+  ITransaction,
+} from '@/modules/core/hooks/bakosafe/utils/types';
+import {
+  ICreateBridgeTransactionPayload,
+  ICreateSwapBridgePayload,
+  ICreateSwapBridgeResponse,
+  IGetDestinationPayload,
+  IGetDestinationsResponse,
+  IGetLimitsResponse,
+  IGetQuotesResponse,
+  IPredicateAllocation,
+  Predicate,
+  PredicateUpdatePayload,
+  Workspace,
+} from '@/modules/core/models';
+import {
+  ICreateWidgetPayload,
+  ICreateWidgetResponse,
+  ICryptoCurrency,
+  IFiatCurrency,
+  IPaymentMethod,
+  IPurchaseLimitsParams,
+  IPurchaseLimitsResponse,
+  IQuotePayload,
+  IQuoteResponse,
+  IServiceProviderResponse,
+} from '@/modules/core/models/meld';
 import { IPagination, PaginationParams } from '@/modules/core/utils/pagination';
 import { SortOption } from '@/modules/transactions/services';
 
@@ -83,8 +110,13 @@ export class VaultService {
     return data;
   }
 
-  static async getByName(name: string) {
-    const { data } = await api.get<boolean>(`/predicate/by-name/${name}`);
+  static async getByName(name: string, ignoreId?: string) {
+    const params = new URLSearchParams();
+    if (ignoreId !== undefined) {
+      params.append('ignoreId', ignoreId);
+    }
+    const url = `/predicate/by-name/${name}${params.toString() ? '?' + params.toString() : ''}`;
+    const { data } = await api.get<boolean>(url);
     return data;
   }
 
@@ -117,5 +149,169 @@ export class VaultService {
         amount: new BN(reservedCoin.amount),
       })),
     };
+  }
+
+  static async getFiatCurrencies(): Promise<IFiatCurrency[]> {
+    const { data } = await api.get<IFiatCurrency[]>(
+      `/ramp-transactions/meld/fiat-currencies`,
+    );
+    return data;
+  }
+
+  static async getCryptoCurrencies(): Promise<ICryptoCurrency[]> {
+    const { data } = await api.get<ICryptoCurrency[]>(
+      `/ramp-transactions/meld/crypto-currencies`,
+    );
+    return data;
+  }
+
+  static async getPaymentMethods(): Promise<IPaymentMethod[]> {
+    const { data } = await api.get<IPaymentMethod[]>(
+      `/ramp-transactions/meld/payment-methods`,
+    );
+    return data;
+  }
+
+  static async getServiceProviders(): Promise<IServiceProviderResponse[]> {
+    const { data } = await api.get<IServiceProviderResponse[]>(
+      `/ramp-transactions/meld/providers`,
+    );
+    return data;
+  }
+
+  static async getOnRampPurchaseLimits(
+    params?: IPurchaseLimitsParams,
+  ): Promise<IPurchaseLimitsResponse[]> {
+    const { data } = await api.get<IPurchaseLimitsResponse[]>(
+      `/ramp-transactions/meld/buy-purchase-limits`,
+      { params },
+    );
+    return data;
+  }
+
+  static async getOffRampPurchaseLimits(
+    params?: IPurchaseLimitsParams,
+  ): Promise<IPurchaseLimitsResponse[]> {
+    const { data } = await api.get<IPurchaseLimitsResponse[]>(
+      `/ramp-transactions/meld/sell-purchase-limits`,
+      { params },
+    );
+    return data;
+  }
+
+  static async getCryptoQuote(payload: IQuotePayload): Promise<IQuoteResponse> {
+    const { data } = await api.post<IQuoteResponse>(
+      `/ramp-transactions/meld/quotes`,
+      payload,
+    );
+    return data;
+  }
+
+  static async createWidget(data: ICreateWidgetPayload) {
+    const { data: response } = await api.post<ICreateWidgetResponse>(
+      '/ramp-transactions/meld/widget',
+      data,
+    );
+
+    return response;
+  }
+
+  static async getWidgetUrl(id: string): Promise<{ widgetUrl: string }> {
+    const { data } = await api.get<{ widgetUrl: string }>(
+      `/ramp-transactions/${id}`,
+    );
+    return data;
+  }
+
+  static async getDestinationsBridge(
+    payload: IGetDestinationPayload,
+  ): Promise<IGetDestinationsResponse[]> {
+    const { fromNetwork, fromToken } = payload;
+
+    const { data } = await api.get<IGetDestinationsResponse[]>(
+      `/bridge/destinations?fromNetwork=${fromNetwork}&fromToken=${fromToken}`,
+    );
+
+    return data;
+  }
+
+  static async getLimitsBridge({
+    sourceNetwork,
+    sourceToken,
+    destinationNetwork,
+    destinationToken,
+  }: ICreateSwapBridgePayload): Promise<IGetLimitsResponse> {
+    const params = new URLSearchParams({
+      sourceNetwork,
+      sourceToken,
+      destinationNetwork,
+      destinationToken,
+    });
+
+    const { data } = await api.get<IGetLimitsResponse>(
+      `/bridge/limits?${params}`,
+    );
+
+    return data;
+  }
+
+  static async getQuoteBridge({
+    sourceNetwork,
+    sourceToken,
+    destinationNetwork,
+    destinationToken,
+    amount,
+  }: ICreateSwapBridgePayload): Promise<IGetQuotesResponse> {
+    const params = new URLSearchParams({
+      sourceNetwork,
+      sourceToken,
+      destinationNetwork,
+      destinationToken,
+      amount: String(amount),
+    });
+
+    const { data } = await api.get<IGetQuotesResponse>(
+      `/bridge/quote?${params}`,
+    );
+
+    return data;
+  }
+
+  static async createSwapBridge(
+    payload: ICreateSwapBridgePayload,
+  ): Promise<ICreateSwapBridgeResponse> {
+    const { data } = await api.post<ICreateSwapBridgeResponse>(
+      `/bridge/swap`,
+      payload,
+    );
+
+    return data;
+  }
+
+  static async createBridgeTransaction(
+    payload: ICreateBridgeTransactionPayload,
+  ): Promise<ITransaction> {
+    const { data } = await api.post<ITransaction>(`/bridge`, payload);
+
+    return data;
+  }
+
+  static async updatePredicate(id: string, payload: PredicateUpdatePayload) {
+    const { data } = await api.put<Predicate>(`/predicate/${id}`, payload);
+    return data;
+  }
+
+  static async getBalanceAllocation(predicateId: string) {
+    const { data } = await api.get<IPredicateAllocation>(
+      `/predicate/${predicateId}/allocation`,
+    );
+    return data;
+  }
+
+  static async checkPredicateBalances(predicateId: string) {
+    const { data } = await api.get<null>(
+      `/predicate/check-balances/${predicateId}`,
+    );
+    return data;
   }
 }

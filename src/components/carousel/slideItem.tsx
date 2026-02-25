@@ -1,4 +1,4 @@
-import { Box, BoxProps } from '@chakra-ui/react';
+import { Box, BoxProps } from 'bako-ui';
 
 interface CarouselSlideItemProps extends BoxProps {
   children: React.ReactNode;
@@ -6,7 +6,7 @@ interface CarouselSlideItemProps extends BoxProps {
 
 const CarouselSlideItem = ({ children, ...props }: CarouselSlideItemProps) => {
   return (
-    <Box flex="0 0 100%" pl={2} {...props}>
+    <Box flex="0 0 100%" ml={2} {...props}>
       {children}
     </Box>
   );

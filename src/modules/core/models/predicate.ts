@@ -1,3 +1,5 @@
+import { BN } from 'fuels';
+
 import { UseVaultDetailsReturn } from '@/modules/vault';
 
 import { IPredicate } from '../hooks/bakosafe/utils/types';
@@ -14,6 +16,7 @@ export interface IVaultConfigurable {
   SIGNATURES_COUNT: number;
   SIGNERS: string[];
   HASH_PREDICATE: string;
+  version: string;
 }
 
 export interface Predicate extends Omit<IPredicate, 'configurable'> {
@@ -23,4 +26,17 @@ export interface Predicate extends Omit<IPredicate, 'configurable'> {
 
 export interface SignersDetailsProps {
   vault: UseVaultDetailsReturn['vault'];
+}
+
+export interface PredicateUpdatePayload
+  extends Pick<Predicate, 'name' | 'description'> {}
+
+export interface IPredicateAllocation {
+  data: {
+    assetId: string | null;
+    amountInUSD: number;
+    amount: BN;
+    percentage: number;
+  }[];
+  totalAmountInUSD: number;
 }

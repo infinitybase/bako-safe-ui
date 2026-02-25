@@ -1,22 +1,22 @@
+import { keyframes } from '@emotion/react';
 import {
   Badge,
   BadgeProps,
   Box,
+  Field,
   Flex,
-  FormLabel,
   HStack,
   Input,
   InputGroup,
   InputProps,
-  InputRightElement,
-  keyframes,
-  Spinner,
+  Loader,
   Text,
   VStack,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 import { useState } from 'react';
 
 import { AutocompleteOption, LineCloseIcon } from '@/components';
+import { AutocompleteBadgeStatus } from '@/modules/core';
 
 const slideToPosition = keyframes`
   from {
@@ -28,13 +28,6 @@ const slideToPosition = keyframes`
     opacity: 1; 
   }
 `;
-
-enum AutocompleteBadgeStatus {
-  SEARCHING = 0,
-  SUCCESS = 1,
-  ERROR = 2,
-  INFO = 3,
-}
 
 interface AutocompleteBadgeProps
   extends Omit<InputProps, 'value' | 'onChange'> {
@@ -92,47 +85,27 @@ const AutocompleteBadge = ({
     switch (badgeStatus) {
       case AutocompleteBadgeStatus.SEARCHING:
         return (
-          <InputBadge variant="grey">
-            {badgeLabel} <Spinner w={3} h={3} />
+          <InputBadge colorPalette="grey">
+            {badgeLabel} <Loader w={3} h={3} />
           </InputBadge>
         );
       case AutocompleteBadgeStatus.INFO:
-        return <InputBadge variant="grey">{badgeLabel}</InputBadge>;
+        return <InputBadge colorPalette="grey">{badgeLabel}</InputBadge>;
       case AutocompleteBadgeStatus.SUCCESS:
-        return <InputBadge variant="success">{badgeLabel}</InputBadge>;
+        return <InputBadge colorPalette="success">{badgeLabel}</InputBadge>;
       case AutocompleteBadgeStatus.ERROR:
-        return <InputBadge variant="error">{badgeLabel}</InputBadge>;
+        return <InputBadge colorPalette="error">{badgeLabel}</InputBadge>;
       default:
         return null;
     }
   })();
 
   return (
-    <>
-      <InputGroup mt="1px">
-        <Input
-          variant="dark"
-          value={value}
-          placeholder=" "
-          autoComplete="off"
-          onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)}
-          onChange={(e) => onChange(e.target.value)}
-          {...rest}
-        />
-
-        <FormLabel color="grey.500">{label}</FormLabel>
-
-        <InputRightElement
-          top="3px"
-          right={4}
-          borderRadius={10}
-          bg="grey.825"
-          h="calc(100% - 6px)"
-          w="fit-content"
-          pl={2}
-        >
-          <HStack spacing={4}>
+    <Field.Root>
+      <InputGroup
+        mt="1px"
+        endElement={
+          <HStack gap={4}>
             {CurrentBadge}
 
             {showClearIcon && (
@@ -144,8 +117,20 @@ const AutocompleteBadge = ({
               />
             )}
           </HStack>
-        </InputRightElement>
+        }
+      >
+        <Input
+          value={value}
+          placeholder=" "
+          variant="subtle"
+          autoComplete="off"
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+          onChange={(e) => onChange(e.target.value)}
+          {...rest}
+        />
       </InputGroup>
+      <Field.Label color="grey.500">{label}</Field.Label>
 
       {isOpen && (
         <Box
@@ -160,7 +145,7 @@ const AutocompleteBadge = ({
           zIndex={300}
           w="full"
           mt={2}
-          sx={{
+          css={{
             animation: `${slideToPosition} 0.3s ease-out`,
           }}
         >
@@ -199,7 +184,7 @@ const AutocompleteBadge = ({
           </Flex>
         </Box>
       )}
-    </>
+    </Field.Root>
   );
 };
 

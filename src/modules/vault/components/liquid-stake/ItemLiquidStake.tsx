@@ -1,12 +1,17 @@
-import { Card, HStack, Text, VStack } from '@chakra-ui/react';
+import { Card, GridItem, HStack, Text, Tooltip, VStack } from 'bako-ui';
 
 import { CustomSkeleton } from '@/components';
+import { BlurredContent } from '@/components/blurredContent';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
+import { limitCharacters } from '@/utils';
 
 export interface ItemLiquidStakeProps {
   label: string;
   value: string;
   children?: React.ReactNode;
   isLoading?: boolean;
+  tooltipValue?: boolean;
+  visibleBalance?: boolean;
 }
 
 export function ItemLiquidStake({
@@ -14,35 +19,49 @@ export function ItemLiquidStake({
   value,
   children,
   isLoading = false,
+  tooltipValue = false,
+  visibleBalance = false,
 }: ItemLiquidStakeProps) {
+  const {
+    screenSizes: { isMobile, isLargerThan1600 },
+  } = useWorkspaceContext();
+
+  const charLimit = isLargerThan1600 || isMobile ? 6 : 6;
+
   return (
-    <Card
-      flexDirection="row"
-      borderRadius={9}
+    <Card.Root
+      as={GridItem}
+      borderRadius="lg"
       flex={1}
-      alignItems="center"
-      background={'var(--chakra-colors-dark-950)'}
+      borderWidth={1}
+      borderColor="gray.600"
       width="full"
-      minW={value.length > 9 ? '235px' : '140px'}
+      minW="0"
     >
-      <HStack
-        flex={1}
-        padding={3}
-        borderRadius={9}
-        background={'var(--chakra-colors-gradients-transaction-card)'}
-      >
-        <VStack flex={1} alignItems="flex-start" gap={0}>
-          <Text fontSize={12} color={'gray'}>
-            {label}
-          </Text>
-          <CustomSkeleton isLoaded={!isLoading}>
-            <Text fontSize={16} fontWeight={700} color="white">
-              {value}
+      <Card.Body padding={3}>
+        <HStack flex={1} borderRadius={9}>
+          <VStack flex={1} minW="0" alignItems="flex-start" gap={0}>
+            <Text fontSize="xs" color="textSecondary">
+              {label}
             </Text>
-          </CustomSkeleton>
-        </VStack>
-        {children}
-      </HStack>
-    </Card>
+            <CustomSkeleton loading={isLoading}>
+              <BlurredContent isBlurred={visibleBalance} inline>
+                <Tooltip content={value} disabled={!tooltipValue}>
+                  <Text
+                    fontSize="xs"
+                    fontWeight={500}
+                    color="textPrimary"
+                    overflow="hidden"
+                  >
+                    {limitCharacters(value, charLimit, false)}
+                  </Text>
+                </Tooltip>
+              </BlurredContent>
+            </CustomSkeleton>
+          </VStack>
+          {children}
+        </HStack>
+      </Card.Body>
+    </Card.Root>
   );
 }

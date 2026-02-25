@@ -1,4 +1,4 @@
-import { createIcon } from '@chakra-ui/icons';
+import { createIcon } from 'bako-ui';
 
 const UserWorkspaceIcon = createIcon({
   displayName: 'UserWorkspaceIcon',

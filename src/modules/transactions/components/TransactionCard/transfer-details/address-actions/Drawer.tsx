@@ -1,10 +1,6 @@
-import {
-  Divider,
-  Drawer,
-  DrawerContent,
-  DrawerOverlay,
-  useDisclosure,
-} from '@chakra-ui/react';
+import { Drawer, Separator } from 'bako-ui';
+
+import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
 
 import { AddressActionsProps } from './AddressActions';
 import { AddressActionsButton } from './Button';
@@ -13,39 +9,42 @@ import { AddToAddressBook, CopyAddress, GoToBakoId } from './options';
 const AddressActionsDrawer = (props: AddressActionsProps) => {
   const { address, handle, hasContact } = props;
 
-  const { isOpen, onClose, onOpen } = useDisclosure();
+  const { isOpen, onClose, onOpen, onOpenChange } = useDisclosure();
 
   return (
     <>
       <AddressActionsButton onClick={onOpen} />
 
-      <Drawer
-        isOpen={isOpen}
-        onClose={onClose}
+      <Drawer.Root
+        open={isOpen}
+        onOpenChange={onOpenChange}
         size="sm"
-        variant="solid-dark"
         placement="bottom"
       >
-        <DrawerOverlay zIndex={1400} />
-        <DrawerContent bg={'dark.950'} p={0} borderTopRadius={8}>
-          {!hasContact && (
-            <>
-              <AddToAddressBook address={address} />
-              <Divider borderColor="grey.825" />
-            </>
-          )}
-          <CopyAddress
-            address={address}
-            onClose={hasContact && !handle ? onClose : undefined}
-          />
-          {handle && (
-            <>
-              <Divider borderColor="grey.825" />
-              <GoToBakoId handle={handle} />
-            </>
-          )}
-        </DrawerContent>
-      </Drawer>
+        <Drawer.Portal>
+          <Drawer.Backdrop zIndex={1400} />
+          <Drawer.Positioner>
+            <Drawer.Content bg="gray.550" p={0} borderTopRadius={8}>
+              {!hasContact && (
+                <>
+                  <AddToAddressBook address={address} />
+                  <Separator borderColor="bg.muted" />
+                </>
+              )}
+              <CopyAddress
+                address={address}
+                onClose={hasContact && !handle ? onClose : undefined}
+              />
+              {handle && (
+                <>
+                  <Separator borderColor="bg.muted" />
+                  <GoToBakoId handle={handle} />
+                </>
+              )}
+            </Drawer.Content>
+          </Drawer.Positioner>
+        </Drawer.Portal>
+      </Drawer.Root>
     </>
   );
 };

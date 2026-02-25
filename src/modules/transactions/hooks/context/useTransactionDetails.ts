@@ -7,7 +7,10 @@ import { useAuth } from '@/modules/auth';
 import { HomeQueryKey, useGetParams } from '@/modules/core';
 import { useHomeTransactions } from '@/modules/home/hooks/useHomeTransactions';
 import { TransactionService } from '@/modules/transactions/services';
-import { useHasReservedCoins } from '@/modules/vault/hooks';
+import {
+  useHasReservedCoins,
+  vaultAllocationQueryKey,
+} from '@/modules/vault/hooks';
 import {
   StatusFilter,
   useVaultTransactionsList,
@@ -50,6 +53,7 @@ const useTransactionDetails = () => {
   );
 
   const signTransaction = useSignTransaction({
+    vaultId: vaultId ?? '',
     transactionList: transactionsPageList,
     pendingTransactions: pendingTransactions,
     pendingSignerTransactionsRefetch: pendingSignerTransactions.refetch,
@@ -75,6 +79,11 @@ const useTransactionDetails = () => {
         }),
         queryClient.invalidateQueries({
           queryKey: [HomeQueryKey.DEFAULT],
+        }),
+        queryClient.invalidateQueries({
+          queryKey: vaultAllocationQueryKey.VAULT_ALLOCATION_QUERY_KEY(
+            vaultId ?? '',
+          ),
         }),
       ]);
       cancelTransaction.reset();

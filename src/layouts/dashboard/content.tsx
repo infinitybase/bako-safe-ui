@@ -1,17 +1,16 @@
-import { Flex, FlexProps } from '@chakra-ui/react';
+import { Flex, FlexProps } from 'bako-ui';
 
 export interface ContentProps extends FlexProps {}
 
 const Content = (props: ContentProps) => {
   return (
     <Flex
-      overflowY="scroll"
-      css={{ '&::-webkit-scrollbar': { width: '0' }, scrollbarWidth: 'none' }}
-      minH="calc(100vh - 72px)"
+      // overflowY="scroll"
+      // css={{ '&::-webkit-scrollbar': { width: '0' }, scrollbarWidth: 'none' }}
       flex={1}
       py={{
         base: 3,
-        sm: 6,
+        sm: 0,
       }}
       px={{
         base: 3,
@@ -19,6 +18,7 @@ const Content = (props: ContentProps) => {
       }}
       maxW="1500px"
       mx="auto"
+      {...props}
     >
       {props.children}
     </Flex>

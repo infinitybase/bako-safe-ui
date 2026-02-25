@@ -1,4 +1,4 @@
-import { Box, TabPanels, Tabs } from '@chakra-ui/react';
+import { Box, Tabs } from 'bako-ui';
 
 import { StepProgress } from '@/components';
 import { useFindTemplate } from '@/modules/template/hooks';
@@ -17,7 +17,7 @@ export interface CreateVaultFormProps {
   steps: UseCreateVaultDialogReturn['steps'];
   isLoading?: boolean;
   onCancel: () => void;
-  vaultNameIsAvailable: UseCreateVaultDialogReturn['vaultNameIsAvailable'];
+  vaultNameAlreadyExists: UseCreateVaultDialogReturn['vaultNameAlreadyExists'];
   search: UseCreateVaultDialogReturn['search'];
   setSearch: UseCreateVaultDialogReturn['setSearch'];
   handleInputChange: UseCreateVaultDialogReturn['handleInputChange'];
@@ -35,7 +35,7 @@ const CreateVaultForm = (props: CreateVaultFormProps) => {
     search,
     setSearch,
     handleInputChange,
-    vaultNameIsAvailable,
+    vaultNameAlreadyExists,
     validateAddress,
   } = props;
 
@@ -44,21 +44,23 @@ const CreateVaultForm = (props: CreateVaultFormProps) => {
   const stepLength = Object.keys(steps.actions).length;
 
   return (
-    <Box w="full">
-      <Box hidden={stepAction.hide} mb={6} mt={{ sm: 8 }}>
-        <StepProgress length={stepLength} value={tabs.tab} />
+    <Box w="full" display="flex" flexDirection="column" flex={1}>
+      <Box hidden={stepAction.hide} mb={6} mt={3}>
+        <StepProgress length={stepLength - 1} value={tabs.tab} />
       </Box>
-      <Tabs index={tabs.tab} colorScheme="green">
-        <TabPanels>
+      <Tabs.Root value={String(tabs.tab)} flex={1}>
+        <Tabs.Content value="0" pt={0} h="full">
           <VaultInfosStep
             form={form}
             vaultName={{
               search,
               setSearch,
-              vaultNameIsAvailable,
+              vaultNameAlreadyExists,
               searchHandler: handleInputChange,
             }}
           />
+        </Tabs.Content>
+        <Tabs.Content value="1" pt={0} h="full">
           <VaultAddressesStep
             form={form}
             addresses={addresses}
@@ -67,9 +69,11 @@ const CreateVaultForm = (props: CreateVaultFormProps) => {
             setTemplate={setTemplate}
             validateAddress={validateAddress}
           />
+        </Tabs.Content>
+        <Tabs.Content value="2" pt={0} h="full">
           <VaultSuccessStep />
-        </TabPanels>
-      </Tabs>
+        </Tabs.Content>
+      </Tabs.Root>
     </Box>
   );
 };

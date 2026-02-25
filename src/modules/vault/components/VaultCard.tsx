@@ -1,68 +1,83 @@
+import { useMutation } from '@tanstack/react-query';
 import {
-  Avatar,
-  AvatarGroup,
-  Badge,
-  Box,
-  CardProps,
-  Divider,
+  Card,
+  CardRootProps,
   Heading,
   HStack,
-  Spacer,
-  Spinner,
+  Icon,
+  Skeleton,
+  Stack,
   Text,
+  useClipboard,
   VStack,
-} from '@chakra-ui/react';
-import { useMutation } from '@tanstack/react-query';
-import { useEffect, useState } from 'react';
-import { FaEye, FaEyeSlash } from 'react-icons/fa';
+} from 'bako-ui';
+import { Address } from 'fuels';
+import { memo, useEffect, useMemo, useState } from 'react';
+import { RiFileCopyFill } from 'react-icons/ri';
 
-import { Card } from '@/components';
-import { usePermissions } from '@/modules/core/hooks/usePermissions';
-import { PredicateMember } from '@/modules/core/models/predicate';
-import {
-  PermissionDetails,
-  WorkspacePermissionUtils,
-} from '@/modules/workspace/utils';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { IconTooltipButton } from '@/components';
+import { BlurredContent } from '@/components/blurredContent';
+import { CopyTopMenuIcon } from '@/components/icons/copy-top-menu';
+import { EyeCloseIcon } from '@/components/icons/eye-close';
+import { EyeOpenIcon } from '@/components/icons/eye-open';
+import { queryClient } from '@/config';
+import { useHasReservedCoins, USER_ALLOCATION_QUERY_KEY } from '@/modules';
+import { AddressUtils } from '@/modules/core';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
-import { PredicateWorkspace, VaultService } from '../services';
+import { VaultService } from '../services';
 
-interface VaultCardProps extends CardProps {
-  ownerId: string;
+interface VaultCardProps extends CardRootProps {
   name: string;
-  members: PredicateMember[];
-  workspace: PredicateWorkspace;
   inHome?: boolean;
   isHidden?: boolean;
+  showHideButton?: boolean;
   address: string;
+  id: string;
+  workspaceId: string;
 }
-export const VaultCard = ({
-  ownerId,
+export const VaultCard = memo(function VaultCard({
   name,
-  workspace,
-  members,
   inHome,
   isHidden,
+  showHideButton = false,
   address,
+  id,
+  workspaceId,
   ...rest
-}: VaultCardProps) => {
-  const { role } = usePermissions(ownerId);
+}: VaultCardProps) {
   const {
     screenSizes: { isExtraSmall },
     userVaults,
     workspaceInfos: {
       requests: { latestPredicates },
+      infos: { visibleBalance },
     },
   } = useWorkspaceContext();
+  const { data, isLoading: isLoadingBalance } = useHasReservedCoins(
+    id,
+    workspaceId,
+  );
+
+  const addressWithChecksum = address ? new Address(address).toString() : '';
+  const { copy, copied } = useClipboard({ value: addressWithChecksum });
 
   const { mutate: toogleVisibility, isPending } = useMutation({
     mutationFn: VaultService.toggleVisibility,
     onSuccess: () => {
       userVaults.request.refetch();
       latestPredicates.refetch();
+      queryClient.invalidateQueries({
+        queryKey: [USER_ALLOCATION_QUERY_KEY],
+      });
     },
   });
   const [localHidden, setLocalHidden] = useState(isHidden);
+
+  const handleCopy = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    copy();
+  };
 
   const handleToggle = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -74,155 +89,105 @@ export const VaultCard = ({
     setLocalHidden(isHidden);
   }, [isHidden]);
 
+  const balanceUSD = useMemo(
+    () =>
+      Intl.NumberFormat('en-US', {
+        style: 'decimal',
+        currency: 'USD',
+        maximumFractionDigits: 2,
+        minimumFractionDigits: 2,
+      }).format(Number(data?.currentBalanceUSD || 0)),
+    [data?.currentBalanceUSD],
+  );
+
   if (inHome && isHidden) return null;
 
   return (
-    <Card
-      borderColor="gradients.transaction-border"
-      bg="gradients.transaction-card"
-      borderWidth={1}
-      backdropFilter="blur(16px)"
-      dropShadow="0px 8px 6px 0px #00000026"
+    <Card.Root
+      bg="gray.700"
       w="100%"
+      variant="subtle"
       maxW={isExtraSmall ? 272 : 'full'}
-      my={{ base: 6, sm: 0 }}
       cursor="pointer"
+      rounded="2xl"
       zIndex={20}
       {...rest}
       position="relative"
       opacity={!localHidden ? 1 : 0.5}
       transition="opacity 0.3s ease-in-out, background 0.3s ease"
     >
-      {inHome ?? (
-        <Box
-          position="absolute"
-          top={3}
-          right={3}
-          cursor={isPending ? 'not-allowed' : 'pointer'}
-          zIndex={10}
-          bg="#F5F5F50D"
-          borderRadius="6px"
-          boxSize={8}
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          onClick={isPending ? undefined : handleToggle}
-        >
-          {isPending ? (
-            <Spinner size="xs" color="grey.400" thickness="2px" speed="0.5s" />
-          ) : localHidden ? (
-            <FaEyeSlash size={16} color="#fff" />
-          ) : (
-            <FaEye size={16} color="#fff" />
-          )}
-        </Box>
-      )}
-      <VStack alignItems="flex-start">
-        <HStack maxW="80%" justifyContent="space-between" mb={1}>
-          <HStack maxW="full">
-            <Avatar
-              variant="roundedSquare"
-              name={name}
-              color="white"
-              bg="grey.600"
-            />
-            <VStack ml={2} maxW="full" alignItems="flex-start" spacing={1}>
-              {/* Commented out code to temporarily disable workspaces. */}
+      <Card.Header>
+        <HStack justifyContent="space-between" alignItems="start">
+          <VStack gap={2} alignItems="start">
+            <Heading
+              truncate
+              lineClamp={1}
+              fontSize="xs"
+              color="textPrimary"
+              fontWeight="semibold"
+            >
+              {name}
+            </Heading>
 
-              {/* {!workspace.single && (
-                <HStack>
-                  <Icon
-                    w={4}
-                    h={4}
-                    as={HandbagIcon}
-                    fontSize={14}
-                    color="grey.200"
-                  />
-                  <Text
-                    color="grey.400"
-                    fontSize="sm"
-                    isTruncated
-                    maxW={{
-                      base: 150,
-                      sm: 130,
-                      lg: 200,
-                    }}
-                  >
-                    {workspace?.name}
-                  </Text>
-                </HStack>
-              )} */}
-              <Heading
-                maxW={{
-                  base: 150,
-                  lg: !workspace.single ? 140 : 200,
-                }}
-                variant="title-md"
-                color="grey.200"
-                isTruncated
+            <Text fontSize="xs" color="gray.400" lineHeight="shorter">
+              {AddressUtils.format(addressWithChecksum, 5)}
+            </Text>
+          </VStack>
+
+          <HStack gap={2}>
+            <IconTooltipButton
+              onClick={handleCopy}
+              tooltipContent={copied ? 'Copied' : 'Copy Address'}
+              placement="top"
+            >
+              <Icon
+                as={copied ? RiFileCopyFill : CopyTopMenuIcon}
+                color="gray.200"
+                w="12px"
+              />
+            </IconTooltipButton>
+
+            {showHideButton && (
+              <IconTooltipButton
+                placement="top"
+                onClick={handleToggle}
+                disabled={isPending}
+                tooltipContent={
+                  <Stack gap={1} alignItems="center">
+                    <Text color="textPrimary" fontSize="xs">
+                      {localHidden ? 'Activate account' : 'Deactivate account'}
+                    </Text>
+                  </Stack>
+                }
               >
-                {name}
-              </Heading>
-            </VStack>
+                <Icon
+                  as={localHidden ? EyeCloseIcon : EyeOpenIcon}
+                  color="gray.200"
+                  w={localHidden ? '12px' : '16px'}
+                />
+              </IconTooltipButton>
+            )}
           </HStack>
         </HStack>
-
-        <Divider borderColor="grey.600" my={1} />
-
-        <HStack w="full">
-          <Box>
-            <Text variant="description">Signers</Text>
-            <AvatarGroup
-              variant="roundedSquare"
-              max={5}
-              mt={1}
-              size="sm"
-              spacing={-2}
-              sx={{
-                '&>span': {
-                  height: '38px',
-                  width: '38px',
-                },
-              }}
-            >
-              {members.map(({ avatar, address }) => (
-                <Avatar
-                  variant="roundedSquare"
-                  borderRadius={8}
-                  src={avatar}
-                  key={address}
-                  border="none"
-                  sx={{
-                    '&>img': {
-                      border: '1px solid #CFCCC9',
-                      boxShadow: '4px 0px 4px 0px #2B2827E5',
-                    },
-                  }}
-                />
-              ))}
-            </AvatarGroup>
-          </Box>
-
-          <Spacer />
-
-          <VStack spacing={1} alignItems="flex-end">
-            <Text variant="description">Role</Text>
-            <Badge
-              h={6}
-              rounded="full"
-              variant={
-                WorkspacePermissionUtils.permissions[
-                  role as keyof PermissionDetails
-                ].variant ?? 'warning'
-              }
-            >
-              {WorkspacePermissionUtils.permissions[
-                role as keyof PermissionDetails
-              ]?.title ?? ''}
-            </Badge>
-          </VStack>
-        </HStack>
-      </VStack>
-    </Card>
+      </Card.Header>
+      <Card.Footer pt={6}>
+        {isLoadingBalance && <Skeleton height="30px" width="170px" />}
+        {!isLoadingBalance && (
+          <Heading
+            fontSize="md"
+            color="gray.50"
+            fontWeight="bold"
+            letterSpacing="wider"
+          >
+            <BlurredContent isBlurred={!visibleBalance} inline>
+              <Text as="span" color="gray.400">
+                ${' '}
+              </Text>
+              {balanceUSD}
+            </BlurredContent>
+          </Heading>
+        )}
+      </Card.Footer>
+    </Card.Root>
   );
-};
+});

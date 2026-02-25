@@ -13,6 +13,12 @@ import {
 } from 'bakosafe';
 import { Network, TransactionRequest } from 'fuels';
 
+import { IRampTransaction } from '@/modules/core/models';
+import {
+  TransactionTypeBridge,
+  TransactionTypeWithRamp,
+} from '@/modules/transactions/services';
+
 export interface BakoSafeAuthParams {
   auth: IBakoSafeAuth;
 }
@@ -60,10 +66,11 @@ export interface ITransaction extends ICreateTransactionPayload {
   createdAt: string;
   updatedAt: string;
   predicateId: string;
-  type: TransactionType;
-  resume: ITransactionResume; // RESULT
+  type: TransactionType | TransactionTypeWithRamp | TransactionTypeBridge;
+  resume: ITransactionResume & { bridge?: any }; // TODO: update bridge type
   assets: ITransferAsset[];
   summary?: ITransactionSummary;
+  rampTransaction?: IRampTransaction;
 }
 
 export enum SortOptionTx {

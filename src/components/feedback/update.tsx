@@ -1,15 +1,15 @@
 import {
   Box,
   Button,
-  Center,
-  Divider,
+  Flex,
   Heading,
   HStack,
   Icon,
   Link,
+  Separator,
   Text,
   VStack,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 
 import { UserWorkspaceIcon } from '../icons/user-workspace-icon';
 
@@ -36,7 +36,7 @@ const FeedbackUpdate = ({
   onSecondaryAction,
 }: UpdateStepProps) => {
   return (
-    <Center
+    <Flex
       flexDirection="column"
       mb={5}
       pt={{ xs: 40, sm: 'unset' }}
@@ -50,7 +50,7 @@ const FeedbackUpdate = ({
         <Heading color="white">{title}</Heading>
       </Box>
       <Box maxW={420} mb={5}>
-        <Text variant="description" color="grey.400" textAlign="center">
+        <Text color="grey.400" textAlign="center">
           You are changing user permissions from{' '}
           <Text textDecor="none" color="white" as={Link}>
             {oldPermission}
@@ -68,23 +68,18 @@ const FeedbackUpdate = ({
         position={{ base: 'absolute', sm: 'unset' }}
         bottom={4}
       >
-        <Divider
+        <Separator
           maxW={440}
           hidden={!showAction}
           mb={8}
           borderColor="dark.100"
         />
-        <HStack
-          w="full"
-          hidden={!showAction}
-          spacing={4}
-          justifyContent="center"
-        >
+        <HStack w="full" hidden={!showAction} gap={4} justifyContent="center">
           <Button
             w="45%"
             border="1px solid white"
             bgColor="transparent"
-            variant="secondary"
+            variant="outline"
             onClick={onSecondaryAction}
             _hover={{
               borderColor: 'brand.500',
@@ -97,7 +92,6 @@ const FeedbackUpdate = ({
             w="45%"
             border="none"
             bgColor="brand.500"
-            variant="primary"
             onClick={onPrimaryAction}
             _hover={{
               opacity: 0.8,
@@ -107,7 +101,7 @@ const FeedbackUpdate = ({
           </Button>
         </HStack>
       </VStack>
-    </Center>
+    </Flex>
   );
 };
 

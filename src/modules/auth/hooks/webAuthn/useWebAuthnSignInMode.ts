@@ -1,11 +1,12 @@
+import { TypeUser } from 'bakosafe';
 import { useState } from 'react';
 
 import { LocalStorageConfig } from '@/config';
 import { useContactToast } from '@/modules/addressBook/hooks';
 import { useNetworks } from '@/modules/network/hooks';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
-import { localStorageKeys, TypeUser, UserService } from '../../services';
+import { localStorageKeys, UserService } from '../../services';
 import { WebAuthnModeState } from '../signIn/useWebAuthnSignIn';
 import { UseWebAuthnForm } from './useWebAuthnForm';
 import { useWebAuthnLastLogin } from './useWebAuthnLastLogin';
@@ -14,7 +15,7 @@ import { useSignMessageWebAuthn } from './useWebauthnRequests';
 interface UseWebAuthnSignInParams {
   form: UseWebAuthnForm['form'];
   setMode: (mode: WebAuthnModeState) => void;
-  callback: (vaultId?: string, workspaceId?: string) => void;
+  callback: (username: string, vaultId?: string, workspaceId?: string) => void;
 }
 
 const getByName = async (name: string) => {
@@ -29,13 +30,8 @@ const useWebAuthnSignInMode = (params: UseWebAuthnSignInParams) => {
   const { form, setMode, callback } = params;
 
   const [isSigningIn, setIsSigningIn] = useState(false);
-  const [signInProgress, setSignInProgress] = useState(0);
 
-  const {
-    authDetails,
-    screenSizes: { isSmall },
-    invalidateGifAnimationRequest,
-  } = useWorkspaceContext();
+  const { authDetails } = useWorkspaceContext();
 
   const { warningToast } = useContactToast();
   const signMesageWebAuthn = useSignMessageWebAuthn();
@@ -48,13 +44,10 @@ const useWebAuthnSignInMode = (params: UseWebAuthnSignInParams) => {
     const acc = await getByName(username);
 
     if (!acc.webAuthnId) {
-      setSignInProgress(0);
       setIsSigningIn(false);
       setMode(WebAuthnModeState.REGISTER);
       return;
     }
-
-    setSignInProgress(33);
 
     const { code } = await generateSignInCode(
       username,
@@ -62,8 +55,6 @@ const useWebAuthnSignInMode = (params: UseWebAuthnSignInParams) => {
         ? localStorage.getItem(localStorageKeys.SELECTED_NETWORK)!
         : import.meta.env.VITE_MAINNET_NETWORK,
     );
-
-    setSignInProgress(66);
 
     await signMesageWebAuthn.mutateAsync(
       {
@@ -81,9 +72,8 @@ const useWebAuthnSignInMode = (params: UseWebAuthnSignInParams) => {
           rootWallet,
           webAuthn,
         }) => {
-          setSignInProgress(100);
           setTimeout(() => {
-            invalidateGifAnimationRequest && invalidateGifAnimationRequest();
+            // invalidateGifAnimationRequest && invalidateGifAnimationRequest();
             setIsSigningIn(false);
             setLastLoginUsername(username);
 
@@ -98,7 +88,7 @@ const useWebAuthnSignInMode = (params: UseWebAuthnSignInParams) => {
               webAuthn,
               provider_url: import.meta.env.VITE_PROVIDER_URL,
             });
-            callback(rootWallet, workspace.id);
+            callback(username, rootWallet, workspace.id);
           }, 800);
 
           if (fromConnector) {
@@ -106,13 +96,11 @@ const useWebAuthnSignInMode = (params: UseWebAuthnSignInParams) => {
           }
         },
         onError: () => {
-          setSignInProgress(0);
           setIsSigningIn(false);
           warningToast({
             title: 'Problem to sign',
             description:
               'We can not validate your signature. Please, try again.',
-            position: isSmall ? 'bottom' : 'top-right',
           });
         },
       },
@@ -131,7 +119,7 @@ const useWebAuthnSignInMode = (params: UseWebAuthnSignInParams) => {
     }
   });
 
-  return { isSigningIn, signInProgress, handleLogin };
+  return { isSigningIn, handleLogin };
 };
 
 export { useWebAuthnSignInMode };

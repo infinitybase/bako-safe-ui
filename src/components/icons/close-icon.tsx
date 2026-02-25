@@ -1,4 +1,4 @@
-import { createIcon } from '@chakra-ui/icons';
+import { createIcon } from 'bako-ui';
 
 const CloseIcon = createIcon({
   viewBox: '0 0 20 20',

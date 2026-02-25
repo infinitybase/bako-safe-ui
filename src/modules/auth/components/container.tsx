@@ -1,8 +1,7 @@
-import { Box, VStack } from '@chakra-ui/react';
+import { Box, Container, Image, VStack } from 'bako-ui';
 import React from 'react';
 
-import bakoSymbol from '@/assets/bakoSymbol.svg';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import bakoSymbol from '@/assets/bako-safe.svg';
 
 interface SigninContainerProps {
   children: React.ReactNode;
@@ -12,42 +11,21 @@ const SigninContainerMobile = (props: SigninContainerProps) => {
   return (
     <VStack
       position="relative"
-      backgroundColor="dark.50"
-      backdropFilter="blur(6px)"
       w="100%"
-      minH="$100vh"
-      spacing={0}
+      minH="100vh"
       overflow="hidden"
-      __css={{
-        '&::-webkit-scrollbar': {
-          display: 'none',
-        },
-        '&::-webkit-scrollbar-thumb': {
-          display: 'none',
-        },
-      }}
+      px={4}
+      py={6}
+      gap={12}
+      justifyContent="center"
+      maxW="440px"
+      mx="auto"
     >
-      <Box
-        w="full"
-        minH={202}
-        backgroundColor="brand.500"
-        bgGradient="linear(to-br, brand.500 , brand.800)"
-      >
-        <img
-          src={bakoSymbol}
-          alt=""
-          style={{
-            position: 'absolute',
-            top: '131px',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            height: '100%',
-            maxHeight: '13.9rem',
-          }}
-        />
+      <Box w="full" display="flex" justifyContent="center">
+        <Image src={bakoSymbol} alt="" height="100%" />
       </Box>
 
-      <VStack flex={1} w="full">
+      <VStack flex={{ base: 0, md: 1 }} w="full" gap={0}>
         {props.children}
       </VStack>
     </VStack>
@@ -55,65 +33,27 @@ const SigninContainerMobile = (props: SigninContainerProps) => {
 };
 
 const SigninContainer = (props: SigninContainerProps) => {
-  const {
-    screenSizes: { isSmallHeight, isMdHeight },
-  } = useWorkspaceContext();
-
   return (
-    <Box
-      display="flex"
-      minH="$100vh"
-      w="100%"
-      overflow="hidden"
-      __css={{
-        '&::-webkit-scrollbar': {
-          display: 'none',
-        },
-        '&::-webkit-scrollbar-thumb': {
-          display: 'none',
-        },
-      }}
-    >
-      <Box
-        flex={1}
-        display="flex"
-        backgroundColor="dark.50"
-        backdropFilter="blur(6px)"
-      >
+    <Container display="flex" minH="100vh" w="100%">
+      <Box flex={1} display="flex">
         <Box
-          backgroundColor="brand.500"
-          bgGradient="linear(to-br, brand.500 , brand.800)"
           display="flex"
           position="relative"
           flex={1}
-          maxW="35rem"
+          w="1/2"
+          justifyContent="center"
+          alignItems="center"
         >
-          <img
-            src={bakoSymbol}
-            alt=""
-            style={{
-              position: 'absolute',
-              top: '50%',
-              left: '97.75%',
-              transform: 'translate(-50%, -50%)',
-              height: '200%',
-              maxHeight: '45rem',
-            }}
-          />
+          <Image src={bakoSymbol} alt="" height="80px" width="218px" />
         </Box>
 
-        <Box
-          pl={{ base: '10%', lg: '8%', xl: '5%' }}
-          display="flex"
-          flex={isSmallHeight ? 4 : isMdHeight ? 3 : 2}
-          justifyContent="center"
-        >
+        <Box w="1/2" display="flex" justifyContent="center" flex={1}>
           <VStack flex={1} p={4}>
             {props.children}
           </VStack>
         </Box>
       </Box>
-    </Box>
+    </Container>
   );
 };
 

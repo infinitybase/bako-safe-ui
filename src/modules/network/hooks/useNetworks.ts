@@ -1,11 +1,15 @@
+import { useQueryClient } from '@tanstack/react-query';
 import { Provider } from 'fuels';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useLocation } from 'react-router-dom';
 
-import { queryClient } from '@/config';
 import { useAuth } from '@/modules';
+import { LATEST_INFO_QUERY_KEY } from '@/modules/auth/hooks/useUserInfoRequest';
 import { localStorageKeys } from '@/modules/auth/services';
+import { invalidateQueriesOnNetworkSwitch } from '@/modules/core/utils/react-query';
+
+import NetworkSwitchContext from '../providers/NetworkSwitchProvider';
 
 import {
   availableNetWorks,
@@ -46,6 +50,8 @@ const useNetworks = (onClose?: () => void) => {
   const { search } = useLocation();
   const fromConnector = !!new URLSearchParams(search).get('sessionId');
 
+  const networkSwitchContext = useContext(NetworkSwitchContext);
+  const queryClient = useQueryClient();
   const checkNetworkRequest = useCheckNetworkRequest();
   const { data: networks, refetch: refetchNetworks } = useListNetworksRequest();
   const selectNetworkRequest = useSelectNetworkRequest();
@@ -67,9 +73,10 @@ const useNetworks = (onClose?: () => void) => {
         url: url!,
         chainId,
       });
+      // Only refetch if we actually created a new network
+      refetchNetworks();
     }
-
-    refetchNetworks();
+    // Skip refetch if network already exists - no changes to list
   };
 
   const handleAddNetwork = networkForm.handleSubmit((data) => {
@@ -116,14 +123,44 @@ const useNetworks = (onClose?: () => void) => {
       return;
     }
 
+    // Close drawer immediately for better UX
+    handleClose();
+
+    // Start network switch loading state
+    networkSwitchContext?.startNetworkSwitch();
+
+    // Save network in background (only creates Provider if network doesn't exist)
     saveNetwork(url!);
 
     selectNetworkRequest.mutate(
       { url },
       {
-        onSuccess: () => {
-          queryClient.clear();
-          handleClose();
+        onSuccess: (response) => {
+          // Update userInfos.network with the response from API
+          // This is more reliable than optimistic update since API returns the actual network
+          if (response?.network) {
+            queryClient.setQueryData(LATEST_INFO_QUERY_KEY, (oldData: unknown) => {
+              if (!oldData || typeof oldData !== 'object') return oldData;
+              return {
+                ...oldData,
+                network: response.network,
+              };
+            });
+          }
+
+          // Smart invalidation: preserves immutable data (assets, Bako ID, etc.)
+          // while invalidating network-dependent queries
+          invalidateQueriesOnNetworkSwitch().then(() => {
+            // Finish network switch loading state after queries are invalidated
+            // Small delay to allow React Query to start fetching
+            setTimeout(() => {
+              networkSwitchContext?.finishNetworkSwitch();
+            }, 500);
+          });
+        },
+        onError: () => {
+          // Finish network switch loading state on error
+          networkSwitchContext?.finishNetworkSwitch();
         },
       },
     );
@@ -178,13 +215,12 @@ const useNetworks = (onClose?: () => void) => {
   };
 
   useEffect(() => {
-    saveNetwork(currentNetwork.url);
-
+    // Only update localStorage, saveNetwork is called when needed
     localStorage.setItem(
       localStorageKeys.SELECTED_CHAIN_ID,
       JSON.stringify(currentNetwork.chainId),
     );
-  }, [currentNetwork]);
+  }, [currentNetwork.chainId]);
 
   return {
     currentNetwork,

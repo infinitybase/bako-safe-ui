@@ -4,7 +4,9 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useContactToast } from '@/modules/addressBook/hooks';
 import { useQueryParams } from '@/modules/auth/hooks';
 import {
+  EFuelConnectorsTypes,
   IEventTX_CREATE,
+  IEventTX_SIGN,
   SocketEvents,
   SocketUsernames,
   useSocket,
@@ -12,6 +14,7 @@ import {
   useWalletSignMessage,
 } from '@/modules/core/hooks';
 import { EnumUtils } from '@/modules/core/utils';
+import { decodeConnectorType } from '@/utils';
 
 import { useTransactionSummary } from './useTransactionSummary';
 
@@ -63,10 +66,11 @@ export const useTransactionSocket = () => {
   const [hash, setHash] = useState<string>('');
   const [isSending, setIsSending] = useState<boolean>(false);
   const [isSigning, setIsSigning] = useState<boolean>(false);
+  const [isSigned, setIsSigned] = useState<boolean>(false);
 
   // const navigate = useNavigate(); // do not remove, makes socket connection work
   const { socket, isConnected } = useSocket();
-  const { sessionId, request_id } = useQueryParams();
+  const { sessionId, request_id, connectorType } = useQueryParams();
   const { warningToast, errorToast } = useContactToast();
   const connectionAttemptedRef = useRef(false);
 
@@ -76,6 +80,11 @@ export const useTransactionSocket = () => {
     tabs: EnumUtils.toNumberArray(TabState),
     defaultTab: TabState.CREATE,
   });
+
+  const _connectorType = decodeConnectorType(connectorType || '');
+  const isEvmOrSocialConnector =
+    _connectorType === EFuelConnectorsTypes.EVM ||
+    _connectorType === EFuelConnectorsTypes.SOCIAL;
 
   const showSignErrorToast = useCallback(
     () =>
@@ -87,8 +96,13 @@ export const useTransactionSocket = () => {
   );
 
   const signMessageRequest = useWalletSignMessage({
-    onSuccess: (signedMessage, hash) => {
-      emitSignTransactionEvent(hash, signedMessage);
+    onSuccess: (signedMessage, { message }) => {
+      setIsSigned(true);
+      emitSignTransactionEvent({
+        hash: message,
+        signedMessage,
+        connectorType: _connectorType,
+      });
     },
     onError: () => {
       showSignErrorToast();
@@ -97,9 +111,12 @@ export const useTransactionSocket = () => {
   });
 
   const signTransaction = useCallback(
-    (_hash?: string) => {
+    (_hash?: string, predicateVersion?: string) => {
       setIsSigning(true);
-      signMessageRequest.mutateAsync(_hash || hash);
+      signMessageRequest.mutateAsync({
+        message: _hash || hash,
+        predicateVersion,
+      });
     },
     [hash, signMessageRequest],
   );
@@ -128,7 +145,7 @@ export const useTransactionSocket = () => {
       setIsSending(false);
 
       const { data: content } = data;
-      const { hash: _hash, sign, status } = content;
+      const { hash: _hash, sign, status, predicateVersion } = content;
 
       if (status === IEventTX_STATUS.ERROR) {
         errorToast({
@@ -142,13 +159,13 @@ export const useTransactionSocket = () => {
 
       if (_hash && sign) {
         tabs.set(TabState.SIGN);
-        signTransaction(_hash);
+        signTransaction(_hash, predicateVersion);
         return;
       }
 
       tabs.set(TabState.PENDING_SIGN);
     },
-    [tabs],
+    [tabs, errorToast, signTransaction],
   );
 
   const checkIfMultisig = useCallback((configurable?: string) => {
@@ -211,6 +228,7 @@ export const useTransactionSocket = () => {
     emitCreateTransactionEvent(SocketEvents.TX_CREATE, {
       operations: summary.transactionSummary,
       tx,
+      connectorType: _connectorType,
     });
   };
 
@@ -219,6 +237,7 @@ export const useTransactionSocket = () => {
       operations: summary.transactionSummary,
       tx,
       sign: true,
+      connectorType: _connectorType,
     });
   };
 
@@ -235,29 +254,27 @@ export const useTransactionSocket = () => {
     });
   };
 
-  const emitSignTransactionEvent = (hash: string, signedMessage: string) => {
+  const emitSignTransactionEvent = (data: IEventTX_SIGN) => {
     console.log('[EMITTING SIGN TRANSACTION]');
-    socket.emit(SocketEvents.TX_SIGN, {
-      hash,
-      signedMessage,
-    });
+    socket.emit(SocketEvents.TX_SIGN, data);
   };
 
-  const cancelSignTransaction = () => {
+  const emitDeleteTransactionEvent = useCallback(
+    (hash: string) => {
+      console.log('[EMITTING DELETE TRANSACTION]');
+      socket.emit(SocketEvents.TX_DELETE, {
+        hash,
+      });
+    },
+    [socket],
+  );
+
+  const cancelEvmOrSocialSignTransaction = () => {
+    window.close();
+  };
+
+  const cancelBakoSafeSignTransaction = () => {
     tabs.set(TabState.PENDING_SIGN);
-  };
-
-  const emitSignedMessage = (message: string) => {
-    socket.emit(SocketEvents.DEFAULT, {
-      username: SocketUsernames.UI,
-      sessionId,
-      to: SocketUsernames.CONNECTOR,
-      type: SocketEvents.SIGN_CONFIRMED,
-      request_id,
-      data: {
-        signedMessage: message,
-      },
-    });
   };
 
   useEffect(() => {
@@ -279,12 +296,25 @@ export const useTransactionSocket = () => {
     };
   }, [socket, isConnected]);
 
+  useEffect(() => {
+    const onUnload = () => {
+      if (isEvmOrSocialConnector && hash && !isSigned) {
+        emitDeleteTransactionEvent(hash);
+      }
+    };
+
+    window.addEventListener('beforeunload', onUnload);
+    return () => window.removeEventListener('beforeunload', onUnload);
+  }, [isEvmOrSocialConnector, hash, isSigned, emitDeleteTransactionEvent]);
+
   return {
     vault: vaultRef.current,
     summary,
+    tx,
     startTime,
     validAt,
     pendingSignerTransactions: vaultRef.current?.pending_tx ?? true,
+    isEvmOrSocialConnector,
     socket,
     tabs,
     send: {
@@ -296,10 +326,9 @@ export const useTransactionSocket = () => {
     sign: {
       isSigning,
       signTransaction,
-      cancelSignTransaction,
-    },
-    signMessage: {
-      emitSignedMessage,
+      cancelSignTransaction: isEvmOrSocialConnector
+        ? cancelEvmOrSocialSignTransaction
+        : cancelBakoSafeSignTransaction,
     },
   };
 };

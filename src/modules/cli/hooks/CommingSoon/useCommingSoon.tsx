@@ -1,8 +1,12 @@
-import { Icon, useDisclosure, UseDisclosureReturn } from '@chakra-ui/react';
+import { Icon } from 'bako-ui';
 import { IoIosCheckmarkCircle } from 'react-icons/io';
 
 import { useContactToast } from '@/modules';
 import { ExportWallet } from '@/modules/cli/services';
+import {
+  useDisclosure,
+  UseDisclosureReturn,
+} from '@/modules/core/hooks/useDisclosure';
 import { useNotification } from '@/modules/notification/hooks/useNotification';
 import { createGTMCustomEvent } from '@/utils';
 import { downloadJson } from '@/utils/download-json';
@@ -59,7 +63,6 @@ const useCommingSoon = (predicateAddress: string) => {
     toast({
       status: 'success',
       duration: 5000,
-      isClosable: false,
       title: 'Email notification activated!',
       description: 'We will notify you when this feature becomes available.',
       icon: (

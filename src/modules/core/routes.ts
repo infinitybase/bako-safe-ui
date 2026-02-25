@@ -18,6 +18,14 @@ const Pages = {
   vaultSettings: pageRoute<{ workspaceId: string; vaultId: string }>(
     '/workspace/:workspaceId/vault/:vaultId/settings',
   ),
+  vaultBuySell: pageRoute<{ workspaceId: string; vaultId: string }>(
+    '/workspace/:workspaceId/vault/:vaultId/buy-sell',
+  ),
+  vaultBuySellSession: pageRoute<{
+    workspaceId: string;
+    vaultId: string;
+    sessionId: string;
+  }>('/workspace/:workspaceId/vault/:vaultId/buy-sell/session/:sessionId'),
   userVaults: pageRoute<{ workspaceId: string }>(
     '/workspace/:workspaceId/list/vault/me',
   ),
@@ -72,6 +80,10 @@ const Pages = {
 
   balanceWorkspace: pageRoute<{ workspaceId: string }>(
     '/workspace/:workspaceId/balance',
+  ),
+
+  bridge: pageRoute<{ vaultId: string; workspaceId: string }>(
+    '/workspace/:workspaceId/vault/:vaultId/bridge',
   ),
 
   workspace: pageRoute<{ workspaceId: string }>('/workspace/:workspaceId'),

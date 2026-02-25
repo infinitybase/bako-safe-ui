@@ -1,5 +1,4 @@
-import { Box, Button, Icon, Spacer, Text } from '@chakra-ui/react';
-import { css } from '@emotion/react';
+import { Box, Button, Icon, Spacer, Text } from 'bako-ui';
 import { useEffect, useState } from 'react';
 import { MdKeyboardArrowRight } from 'react-icons/md';
 
@@ -9,7 +8,7 @@ import { Pages, shakeAnimationX } from '@/modules/core';
 import { TransactionCard, WaitingSignatureBadge } from '@/modules/transactions';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 
-import { useWorkspaceContext } from '../../WorkspaceProvider';
+import { useWorkspaceContext } from '../../hooks';
 
 const WkHomeTransactions = () => {
   const [hasTransactions, setHasTransactions] = useState(false);
@@ -67,16 +66,8 @@ const WkHomeTransactions = () => {
         {hasTransactions && (
           <Button
             color="grey.75"
-            variant="txFilterType"
+            colorPalette="txFilterType"
             alignSelf={{ base: 'stretch', sm: 'flex-end' }}
-            rightIcon={
-              <Icon
-                as={MdKeyboardArrowRight}
-                fontSize="lg"
-                ml={isSmall ? -1 : 0}
-                className="btn-icon"
-              />
-            }
             onClick={() =>
               navigate(
                 Pages.userTransactions({
@@ -84,13 +75,19 @@ const WkHomeTransactions = () => {
                 }),
               )
             }
-            css={css`
+            css={`
               &:hover .btn-icon {
                 animation: ${shakeAnimationX} 0.5s ease-in-out;
               }
             `}
             px={isExtraSmall ? 3 : 4}
           >
+            <Icon
+              as={MdKeyboardArrowRight}
+              fontSize="lg"
+              ml={isSmall ? -1 : 0}
+              className="btn-icon"
+            />
             View all
           </Button>
         )}
@@ -101,8 +98,8 @@ const WkHomeTransactions = () => {
       {transactions?.map((grouped) => (
         <Box key={grouped.monthYear}>
           <TransactionCard.GroupMonth monthYear={grouped.monthYear} />
-          <TransactionCard.List spacing={4} mt={isExtraSmall ? 0 : 7} mb={12}>
-            <CustomSkeleton isLoaded={!latestPredicates.isLoading}>
+          <TransactionCard.List gap={4} mt={isExtraSmall ? 0 : 7} mb={12}>
+            <CustomSkeleton loading={latestPredicates.isLoading}>
               {grouped?.transactions.map((transaction) => (
                 <TransactionCard.Item
                   key={transaction.id}

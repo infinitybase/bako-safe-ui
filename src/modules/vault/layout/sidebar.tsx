@@ -1,11 +1,13 @@
-import { Box, BoxProps, Divider, Icon, VStack } from '@chakra-ui/react';
+import { Box, BoxProps, Flex, Icon, Image, Text, VStack } from 'bako-ui';
 import AutoPlay from 'embla-carousel-autoplay';
 import useEmblaCarousel from 'embla-carousel-react';
-import { useCallback } from 'react';
+import { memo, useCallback, useMemo } from 'react';
+import { NavigateOptions, To } from 'react-router-dom';
 
+import logo from '@/assets/svg/bako-symbol-white.svg';
 import {
   BakoGarageBanner,
-  BakoIdIcon,
+  BakoIcon,
   Banner,
   Carousel,
   CoinsIcon,
@@ -16,11 +18,11 @@ import {
   SwapIcon,
 } from '@/components';
 import { SidebarMenu } from '@/layouts/dashboard/menu';
-import { Pages, PermissionRoles } from '@/modules/core';
+import { Pages } from '@/modules/core';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 import { VaultBox, VaultListModal } from '@/modules/vault/components';
-import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useVaultInfosContext } from '@/modules/vault/hooks';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 import { getBakoIDURL, getGarageURL } from '@/utils/enviroment';
 
 interface SidebarProps extends BoxProps {
@@ -28,11 +30,8 @@ interface SidebarProps extends BoxProps {
   onClose?: () => void;
 }
 
-const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
+const Sidebar = memo(({ onDrawer, ...rest }: SidebarProps) => {
   const {
-    workspaceInfos: {
-      handlers: { hasPermission },
-    },
     screenSizes: { isLargerThan1210 },
   } = useWorkspaceContext();
   const [emblaRef] = useEmblaCarousel({ loop: true }, [
@@ -40,7 +39,6 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
   ]);
 
   const {
-    assets: { isLoading, hasBalance, isEthBalanceLowerThanReservedAmount },
     vault,
     sideBarDetails: { route, drawer, menuItems },
   } = useVaultInfosContext();
@@ -53,44 +51,45 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
     pendingSignerTransactionsLength,
   } = useTransactionsContext();
 
-  const handleClick = (navigate: void) => {
+  const handleNavigate = (to: To, options?: NavigateOptions) => {
     setSelectedTransaction({});
-    navigate;
+    route.navigate(to, options);
   };
 
   const handleOpenDrawer = useCallback(() => drawer.onOpen(), [drawer]);
 
+  const bakoUrl = useMemo(() => getBakoIDURL(), []);
+
   return (
     <Box
-      w="100%"
-      maxW={isLargerThan1210 ? '300px' : 'full'}
-      bgColor={onDrawer ? 'transparent' : 'dark.950'}
-      boxShadow={onDrawer ? 'none' : '8px 0px 6px 0px rgba(0, 0, 0, 0.15)'}
-      p="24px 16px 16px 16px"
+      w="full"
+      maxW={isLargerThan1210 ? '220px' : 'full'}
+      bgColor={onDrawer ? 'transparent' : 'bg.panel'}
+      position="sticky"
+      top={0}
+      h="dvh"
       {...rest}
     >
       <VStack
-        position="fixed"
-        width={isLargerThan1210 ? '269px' : 'full'}
-        pr={isLargerThan1210 ? 'unset' : 8}
-        pb={4}
-        pt={isLargerThan1210 ? 6 : 0}
-        top={isLargerThan1210 ? '72px' : 14}
-        bottom={0}
+        p={4}
+        h="full"
+        minH={0}
+        gap={4}
         overflowY="scroll"
-        __css={{
+        css={{
           '&::-webkit-scrollbar': {
-            display: 'none',
-          },
-          '&::-webkit-scrollbar-thumb': {
             display: 'none',
           },
         }}
       >
+        <Flex>
+          <Image src={logo} alt="Bako" w="75px" h="75px" />
+        </Flex>
+
         {/* VAULT Modal LIST */}
         <VaultListModal
-          isOpen={drawer.isOpen}
-          onClose={drawer.onClose}
+          open={drawer.isOpen}
+          onOpenChange={drawer.onOpenChange}
           onCloseAll={() => {
             drawer.onClose();
             rest.onClose?.();
@@ -100,46 +99,22 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
 
         {/*/!* VAULT INFOS *!/*/}
         <VaultBox
-          isFirstAssetsLoading={isLoading}
+          id={vault?.data.id ?? ''}
           name={vault?.data.name}
           address={vault?.data?.predicateAddress ?? ''}
-          isEthBalanceLowerThanReservedAmount={
-            isEthBalanceLowerThanReservedAmount
-          }
-          isLoading={vault.isLoading}
-          isFetching={vault.isFetching}
           onChangeVault={handleOpenDrawer}
-          hasBalance={hasBalance}
-          isPending={isPendingSigner}
-          hasPermission={hasPermission([
-            PermissionRoles?.OWNER,
-            PermissionRoles?.ADMIN,
-            PermissionRoles?.MANAGER,
-          ])}
-          onCreateTransaction={() => {
-            route.navigate(
-              Pages.createTransaction({
-                workspaceId: route.params.workspaceId!,
-                vaultId: route.params.vaultId!,
-              }),
-            );
-          }}
         />
 
-        <Divider borderColor="dark.100" mt={8} mb={4} />
-
         {/* MENU */}
-        <SidebarMenu.List w="100%" mb={4}>
+        <SidebarMenu.List w="100%" gap={4}>
           <SidebarMenu.Container
             isActive={menuItems.overview}
             onClick={() =>
-              handleClick(
-                route.navigate(
-                  Pages.detailsVault({
-                    workspaceId: route.params.workspaceId!,
-                    vaultId: route.params.vaultId!,
-                  }),
-                ),
+              handleNavigate(
+                Pages.detailsVault({
+                  workspaceId: route.params.workspaceId!,
+                  vaultId: route.params.vaultId!,
+                }),
               )
             }
           >
@@ -152,19 +127,70 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
           <SidebarMenu.Container
             isActive={menuItems.balance}
             onClick={() =>
-              handleClick(
-                route.navigate(
-                  Pages.vaultBalance({
-                    workspaceId: route.params.workspaceId!,
-                    vaultId: route.params.vaultId!,
-                  }),
-                ),
+              handleNavigate(
+                Pages.vaultBalance({
+                  workspaceId: route.params.workspaceId!,
+                  vaultId: route.params.vaultId!,
+                }),
               )
             }
           >
             <SidebarMenu.Icon as={CoinsIcon} isActive={menuItems.balance} />
             <SidebarMenu.Title isActive={menuItems.balance}>
-              Balance
+              Assets
+            </SidebarMenu.Title>
+          </SidebarMenu.Container>
+          {/* Hidden until release */}
+          {/*<SidebarMenu.Container*/}
+          {/*  isActive={menuItems.bridge}*/}
+          {/*  onClick={() =>*/}
+          {/*    handleNavigate(*/}
+          {/*      Pages.bridge({*/}
+          {/*        workspaceId: route.params.workspaceId!,*/}
+          {/*        vaultId: route.params.vaultId!,*/}
+          {/*      }),*/}
+          {/*    )*/}
+          {/*  }*/}
+          {/*>*/}
+          {/*  <SidebarMenu.Icon as={BridgeIcon} isActive={false} />*/}
+          {/*  <SidebarMenu.Title isActive={menuItems.bridge}>*/}
+          {/*    Bridge*/}
+          {/*  </SidebarMenu.Title>*/}
+          {/*</SidebarMenu.Container>*/}
+          {/* Hidden until release */}
+          {/* <SidebarMenu.Container
+            isActive={menuItems.buySell}
+            id={'buy-sell_tab_sidebar'}
+            onClick={() =>
+              handleNavigate(
+                Pages.vaultBuySell({
+                  workspaceId: route.params.workspaceId!,
+                  vaultId: route.params.vaultId!,
+                }),
+              )
+            }
+          >
+            <SidebarMenu.Icon as={Exchange2Icon} isActive={menuItems.buySell} />
+            <SidebarMenu.Title isActive={menuItems.buySell}>
+              Buy / Sell Crypto
+            </SidebarMenu.Title>
+          </SidebarMenu.Container> */}
+
+          <SidebarMenu.Container
+            isActive={menuItems.swap}
+            id={'swap_tab_sidebar'}
+            onClick={() =>
+              handleNavigate(
+                Pages.vaultSwap({
+                  workspaceId: route.params.workspaceId!,
+                  vaultId: route.params.vaultId!,
+                }),
+              )
+            }
+          >
+            <SidebarMenu.Icon as={SwapIcon} isActive={menuItems.swap} />
+            <SidebarMenu.Title isActive={menuItems.swap}>
+              Swap
             </SidebarMenu.Title>
           </SidebarMenu.Container>
 
@@ -173,13 +199,11 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
             id={'transactions_tab_sidebar'}
             cursor={'pointer'}
             onClick={() =>
-              handleClick(
-                route.navigate(
-                  Pages.transactions({
-                    workspaceId: route.params.workspaceId!,
-                    vaultId: route.params.vaultId!,
-                  }),
-                ),
+              handleNavigate(
+                Pages.transactions({
+                  workspaceId: route.params.workspaceId!,
+                  vaultId: route.params.vaultId!,
+                }),
               )
             }
           >
@@ -191,42 +215,20 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
               Transactions
             </SidebarMenu.Title>
             <SidebarMenu.Badge hidden={!isPendingSigner}>
-              <Icon as={PendingIcon} />{' '}
+              <Icon as={PendingIcon} w={3} />{' '}
               {isPendingSigner && pendingSignerTransactionsLength}
             </SidebarMenu.Badge>
-          </SidebarMenu.Container>
-
-          <SidebarMenu.Container
-            isActive={menuItems.swap}
-            id={'swap_tab_sidebar'}
-            onClick={() =>
-              handleClick(
-                route.navigate(
-                  Pages.vaultSwap({
-                    workspaceId: route.params.workspaceId!,
-                    vaultId: route.params.vaultId!,
-                  }),
-                ),
-              )
-            }
-          >
-            <SidebarMenu.Icon as={SwapIcon} isActive={menuItems.swap} />
-            <SidebarMenu.Title isActive={menuItems.swap}>
-              Swap
-            </SidebarMenu.Title>
           </SidebarMenu.Container>
 
           <SidebarMenu.Container
             isActive={menuItems.settings}
             id={'settings_tab_sidebar'}
             onClick={() =>
-              handleClick(
-                route.navigate(
-                  Pages.vaultSettings({
-                    workspaceId: route.params.workspaceId!,
-                    vaultId: route.params.vaultId!,
-                  }),
-                ),
+              handleNavigate(
+                Pages.vaultSettings({
+                  workspaceId: route.params.workspaceId!,
+                  vaultId: route.params.vaultId!,
+                }),
               )
             }
           >
@@ -241,9 +243,18 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
           <Carousel.Slide>
             <Carousel.SlideItem>
               <Banner
-                icon={<Icon as={BakoIdIcon} h={10} w={102.5} />}
-                title="Register your Handles"
-                onClick={() => window.open(getBakoIDURL(), '_blank')}
+                icon={<Icon as={BakoIcon} boxSize="20px" />}
+                title="Get your Handle"
+                description={
+                  <>
+                    Use{' '}
+                    <Text color="primary.main" as="span">
+                      @myusername
+                    </Text>{' '}
+                    as your address.
+                  </>
+                }
+                href={bakoUrl}
               />
             </Carousel.SlideItem>
             <Carousel.SlideItem>
@@ -257,6 +268,8 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
       </VStack>
     </Box>
   );
-};
+});
+
+Sidebar.displayName = 'Sidebar';
 
 export { Sidebar };

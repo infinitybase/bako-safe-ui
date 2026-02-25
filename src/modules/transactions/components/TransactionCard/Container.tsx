@@ -1,23 +1,16 @@
-import {
-  AccordionItem,
-  AccordionPanel,
-  Box,
-  CardProps,
-  VStack,
-} from '@chakra-ui/react';
+import { Accordion, CardRootProps, VStack } from 'bako-ui';
 import { memo, ReactNode, useMemo } from 'react';
 
-import { Card } from '@/components';
 import { TransactionState } from '@/modules/core';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
-import { TransactionCard } from '../..';
+import { getTransactionIconComponent, TransactionCard } from '../..';
 import { useDetailsDialog } from '../../hooks/details';
 import { useVerifyTransactionInformations } from '../../hooks/details/useVerifyTransactionInformations';
 import { TransactionWithVault } from '../../services/types';
 import { DetailsDialog } from './DetailsDialog';
 
-interface TransactionCardContainerProps extends CardProps {
+interface TransactionCardContainerProps extends CardRootProps {
   status: TransactionState;
   details: ReactNode;
   transaction: TransactionWithVault;
@@ -54,41 +47,64 @@ const Container = memo(
       isContract,
       isFuelFriday,
       isMint,
+      isDeploy,
+      isBridge,
+      isLiquidStake,
+      isSwap,
+      isFromConnector,
+      isFromCLI,
       showAmountInformations,
     } = useVerifyTransactionInformations(transaction);
 
-    const { isOpen, onClose, onOpen } = useDetailsDialog();
+    const { isOpen, onOpen, onOpenChange } = useDetailsDialog();
+
+    const IconComponent = useMemo(
+      () =>
+        getTransactionIconComponent({
+          isDeploy,
+          isFromConnector,
+          isDeposit,
+          isLiquidStake,
+          isBridge,
+          isFromCLI,
+          isSwap,
+        }),
+      [
+        isDeploy,
+        isFromConnector,
+        isDeposit,
+        isFromCLI,
+        isLiquidStake,
+        isBridge,
+        isSwap,
+      ],
+    );
 
     return (
       <>
         {transaction && isOpen && (
           <DetailsDialog
-            isOpen={isOpen}
-            onClose={onClose}
+            open={isOpen}
+            onOpenChange={onOpenChange}
             transaction={transaction}
             status={status}
             isSigner={isSigner}
             isInTheVaultPage={isInTheVaultPage}
             callBack={callBack}
             isContract={isContract}
+            TransactionIcon={IconComponent}
           />
         )}
 
-        <Card
+        <Accordion.Item
           pl={0}
           pr={{ base: 2, sm: 4, md: isInTheVaultPage ? 4 : 0, lg: 4 }}
           py={0}
           w="full"
-          as={AccordionItem}
-          backdropFilter="blur(16px)"
-          borderColor={
-            missingSignature ? 'warning.500' : 'gradients.transaction-border'
-          }
-          bg="gradients.transaction-card"
-          boxShadow="0px 8px 6px 0px #00000026"
+          borderColor={missingSignature ? 'warning.500' : ''}
           maxW="full"
+          value={transaction.id}
           {...rest}
-          type={isFuelFriday ? 'green-gradient' : 'default'}
           display="flex"
         >
           <TransactionCard.Icon transaction={transaction} />
@@ -96,7 +112,7 @@ const Container = memo(
             justifyContent="center"
             gap={0}
             w="full"
-            maxW={{ base: 890, lg: 'unset' }}
+            maxW={{ base: 890, md: 'unset' }}
           >
             <TransactionCard.Header
               isMobile={isMobile}
@@ -110,13 +126,11 @@ const Container = memo(
               showAmountInformations={showAmountInformations}
             />
 
-            <Box w="full">
-              <AccordionPanel px={{ base: 2, sm: 4 }} w="full">
-                {details}
-              </AccordionPanel>
-            </Box>
+            <Accordion.ItemContent px={{ base: 2, sm: 4 }} w="full">
+              <Accordion.ItemBody>{details}</Accordion.ItemBody>
+            </Accordion.ItemContent>
           </VStack>
-        </Card>
+        </Accordion.Item>
       </>
     );
   },

@@ -1,19 +1,13 @@
-import {
-  TabPanel,
-  TabPanels,
-  Tabs,
-  Text,
-  useDisclosure,
-  VStack,
-} from '@chakra-ui/react';
-import { useEffect } from 'react';
+import { Box, Tabs, Text, VStack } from 'bako-ui';
+import { useEffect, useMemo } from 'react';
 
-import { useQueryParams } from '@/modules';
+import { useQueryParams, UseSocialSignIn } from '@/modules';
 import { useContactToast } from '@/modules/addressBook/hooks';
 import { useListConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
+import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
 import { useVerifyBrowserType } from '@/modules/dapp/hooks';
 import { NetworkSignInDrawer } from '@/modules/network/components/signInDrawer';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import {
   UseDappSignIn,
@@ -25,11 +19,17 @@ import {
 import { ConnectorsList } from './connector';
 import { SigninContainer, SigninContainerMobile } from './container';
 import { SignInFooter } from './footer';
-import { SignInHeader } from './header';
-import { WebAuthnAccountCreated, WebAuthnSignIn } from './webAuthn';
+import { SocialSignIn } from './social';
+import {
+  WebAuthnAccountCreated,
+  WebAuthnSignIn,
+  WebAuthnWelcome,
+} from './webAuthn';
+import { LoadingCard } from './webAuthn/loading';
 
 interface SignInWrapperProps {
   mode: WebAuthnModeState;
+  setMode: (mode: WebAuthnModeState) => void;
   isAnyWalletConnectorOpen: UseWalletSignIn['isAnyWalletConnectorOpen'];
   tabs: UseWebAuthnSignIn['tabs'];
   formData: UseWebAuthnSignIn['formData'];
@@ -40,9 +40,10 @@ interface SignInWrapperProps {
   handleInputChange: UseWebAuthnSignIn['handleInputChange'];
   handleSelectWallet: UseWalletSignIn['handleSelectWallet'];
   handleRegister: UseWebAuthnSignIn['handleRegister'];
+  currentOpenConnector: UseWalletSignIn['currentOpenConnector'];
+  handleSocialConnect: UseSocialSignIn['connect'];
+  unableToConnectWithSocial: UseSocialSignIn['unableToConnect'];
 }
-
-const title = 'Welcome to Bako Safe';
 
 const SignInWrapper = (props: SignInWrapperProps) => {
   const {
@@ -53,10 +54,14 @@ const SignInWrapper = (props: SignInWrapperProps) => {
     accountsOptions,
     inputBadge,
     createdAcccountUsername,
+    mode,
+    currentOpenConnector,
+    unableToConnectWithSocial,
     handleInputChange,
     handleSelectWallet,
     handleRegister,
-    mode,
+    handleSocialConnect,
+    setMode,
   } = props;
 
   const { byConnector } = useQueryParams();
@@ -79,6 +84,12 @@ const SignInWrapper = (props: SignInWrapperProps) => {
     auth.handlers.setInvalidAccount?.(false);
   }, [auth.invalidAccount]);
 
+  const isLoading = useMemo(
+    () => formState.isLoading || isAnyWalletConnectorOpen,
+    [formState.isLoading, isAnyWalletConnectorOpen],
+  );
+  const Root = isMobile ? SigninContainerMobile : SigninContainer;
+
   if (isSafariBrowser && byConnector) {
     return (
       <SigninContainerMobile>
@@ -89,11 +100,9 @@ const SignInWrapper = (props: SignInWrapperProps) => {
           pt={20}
           pb={6}
           px={6}
-          spacing={14}
+          gap={14}
         >
-          <SignInHeader title={title} showDescription={false} />
-
-          <VStack w="full" maxW={390} spacing={6}>
+          <VStack w="full" maxW={390} gap={6}>
             <Text textAlign="center">
               Safari is not yet supported on external connectors.
             </Text>
@@ -105,32 +114,63 @@ const SignInWrapper = (props: SignInWrapperProps) => {
     );
   }
 
-  if (isMobile) {
-    return (
-      <SigninContainerMobile>
-        <NetworkSignInDrawer
-          isOpen={loginDrawer.isOpen}
-          onClose={loginDrawer.onClose}
-        />
+  return (
+    <Root>
+      <NetworkSignInDrawer
+        isOpen={loginDrawer.isOpen}
+        onClose={loginDrawer.onClose}
+      />
 
-        <Tabs index={tabs.tab} flex={1} w="full" display="flex">
-          <TabPanels flex={1}>
-            <TabPanel h="full" p={0}>
-              <VStack
-                justifyContent="center"
-                h="full"
-                w="full"
-                pt={20}
-                pb={6}
-                px={6}
-                spacing={14}
-              >
-                <SignInHeader
-                  title={title}
-                  showDescription={mode !== WebAuthnModeState.ACCOUNT_CREATED}
-                />
+      <Tabs.Root
+        value={tabs.tab.toString()}
+        flex={1}
+        w="full"
+        display="flex"
+        px={{ md: 4 }}
+      >
+        <Tabs.Content value="0" flex={1}>
+          <Box h="full" p={0}>
+            <VStack
+              h="full"
+              gap={20}
+              alignItems="center"
+              justifyContent="center"
+            >
+              {isLoading && (
+                <Box maxW={{ md: 440, base: 'unset' }} w="full" spaceY={8}>
+                  <LoadingCard
+                    title={
+                      isAnyWalletConnectorOpen
+                        ? 'Connecting wallet...'
+                        : mode === WebAuthnModeState.LOGIN
+                          ? 'Logging in...'
+                          : 'Creating new user...'
+                    }
+                    subtitle={
+                      (isAnyWalletConnectorOpen && currentOpenConnector) ||
+                      formData.form.getValues('username') ||
+                      ''
+                    }
+                  />
 
-                <VStack w="full" maxW={390} spacing={6}>
+                  {/* Show with hidden for prevent flick in the box */}
+                  <SocialSignIn
+                    hidden
+                    onConnect={handleSocialConnect}
+                    unableToConnect={unableToConnectWithSocial}
+                  />
+
+                  {/* Show with hidden for prevent flick in the box */}
+                  <ConnectorsList
+                    connectors={connectors}
+                    hidden
+                    onConnectorSelect={handleSelectWallet}
+                    isAnyWalletConnectorOpen={isAnyWalletConnectorOpen}
+                  />
+                </Box>
+              )}
+              {!isLoading && (
+                <VStack w="full" gap={8} maxW={{ md: 440, base: 'unset' }}>
                   <WebAuthnSignIn
                     formData={formData}
                     formState={formState}
@@ -138,86 +178,61 @@ const SignInWrapper = (props: SignInWrapperProps) => {
                     inputBadge={inputBadge}
                     handleInputChange={handleInputChange}
                     handleRegister={handleRegister}
+                    onModeChange={setMode}
+                  />
+
+                  <SocialSignIn
+                    onConnect={handleSocialConnect}
+                    unableToConnect={unableToConnectWithSocial}
                   />
 
                   <ConnectorsList
                     connectors={connectors}
-                    hidden={isSafariBrowser}
                     onConnectorSelect={handleSelectWallet}
                     isAnyWalletConnectorOpen={isAnyWalletConnectorOpen}
                   />
                 </VStack>
-
-                <SignInFooter />
-              </VStack>
-            </TabPanel>
-
-            <TabPanel h="full">
-              <WebAuthnAccountCreated
-                showDescription={mode !== WebAuthnModeState.ACCOUNT_CREATED}
-                title={createdAcccountUsername}
-                formState={formState}
-              />
-            </TabPanel>
-          </TabPanels>
-        </Tabs>
-      </SigninContainerMobile>
-    );
-  }
-
-  return (
-    <SigninContainer>
-      <NetworkSignInDrawer
-        isOpen={loginDrawer.isOpen}
-        onClose={loginDrawer.onClose}
-      />
-
-      <Tabs index={tabs.tab} flex={1} w="full">
-        <TabPanels h="full">
-          <TabPanel h="full" p={0}>
-            <VStack
-              h="full"
-              spacing={20}
-              alignItems="center"
-              justifyContent="center"
-            >
-              <SignInHeader
-                title={title}
-                showDescription={mode !== WebAuthnModeState.ACCOUNT_CREATED}
-              />
-
-              <VStack w="full" spacing={8} maxW={390}>
-                <WebAuthnSignIn
-                  formData={formData}
-                  formState={formState}
-                  accountsOptions={accountsOptions}
-                  inputBadge={inputBadge}
-                  handleInputChange={handleInputChange}
-                  handleRegister={handleRegister}
-                />
-
-                <ConnectorsList
-                  connectors={connectors}
-                  hidden={isSafariBrowser}
-                  onConnectorSelect={handleSelectWallet}
-                  isAnyWalletConnectorOpen={isAnyWalletConnectorOpen}
-                />
-              </VStack>
+              )}
 
               <SignInFooter />
             </VStack>
-          </TabPanel>
+          </Box>
+        </Tabs.Content>
 
-          <TabPanel h="full">
+        <Tabs.Content value="1" flex={1} display="flex" justifyContent="center">
+          <Box
+            h="full"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            w="full"
+            maxW={{ md: 440 }}
+          >
             <WebAuthnAccountCreated
-              title={createdAcccountUsername}
+              username={createdAcccountUsername}
               formState={formState}
-              showDescription={mode !== WebAuthnModeState.ACCOUNT_CREATED}
             />
-          </TabPanel>
-        </TabPanels>
-      </Tabs>
-    </SigninContainer>
+
+            <SignInFooter />
+          </Box>
+        </Tabs.Content>
+
+        <Tabs.Content value="2" flex={1} display="flex" justifyContent="center">
+          <Box
+            h="full"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            w="full"
+            maxW={{ md: 440 }}
+          >
+            <WebAuthnWelcome username={createdAcccountUsername} />
+
+            <SignInFooter />
+          </Box>
+        </Tabs.Content>
+      </Tabs.Root>
+    </Root>
   );
 };
 

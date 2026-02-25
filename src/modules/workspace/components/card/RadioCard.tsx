@@ -1,17 +1,9 @@
-import { Box, RadioProps, useRadio } from '@chakra-ui/react';
+import { Box, BoxProps } from 'bako-ui';
 
-const RadioCard = ({ children, ...props }: RadioProps) => {
-  const { getInputProps, getRadioProps } = useRadio(props);
-
-  const input = getInputProps();
-  const checkbox = getRadioProps();
-
+const RadioCard = ({ children, ...props }: BoxProps) => {
   return (
-    <Box as="label" {...props}>
-      <input {...input} />
-      <Box {...checkbox} borderRadius="lg">
-        {children}
-      </Box>
+    <Box borderRadius="lg" {...props}>
+      {children}
     </Box>
   );
 };

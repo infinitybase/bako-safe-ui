@@ -1,17 +1,14 @@
 import {
   Box,
   Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
   Button,
   HStack,
   Icon,
-  Spinner,
+  Loader,
   Stack,
   Text,
-  useDisclosure,
   VStack,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 import { useEffect } from 'react';
 import { FaRegPlusSquare } from 'react-icons/fa';
 import { IoChevronBack } from 'react-icons/io5';
@@ -21,9 +18,10 @@ import { EmptyState } from '@/components/emptyState';
 import { AddressBookIcon } from '@/components/icons/address-book';
 import { TransactionsIcon } from '@/components/icons/transactions';
 import { Pages, PermissionRoles, WorkspacesQueryKey } from '@/modules/core';
+import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
 import { ActionCard } from '@/modules/home/components/ActionCard';
 import { CreateVaultDialog } from '@/modules/vault';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import {
   TransactionCard,
@@ -56,7 +54,7 @@ const UserTransactionsPage = () => {
   } = useWorkspaceContext();
 
   const { OWNER, MANAGER, ADMIN } = PermissionRoles;
-  const { isOpen, onClose, onOpen } = useDisclosure();
+  const { isOpen, onOpenChange, onOpen } = useDisclosure();
 
   const emptyTransactions = !isLoading && !transactions.length && !isFetching;
 
@@ -75,23 +73,18 @@ const UserTransactionsPage = () => {
   return (
     <VStack
       w="full"
-      spacing={6}
+      gap={6}
       p={{ base: 1, sm: 1 }}
       px={{ base: 'auto', sm: 8 }}
     >
-      <CreateVaultDialog isOpen={isOpen} onClose={onClose} />
+      <CreateVaultDialog open={isOpen} onOpenChange={onOpenChange} />
 
       <HStack w="full" h="10" justifyContent="space-between">
         <HStack>
           <Button
-            variant="primary"
+            colorPalette="primary"
             fontWeight="semibold"
             fontSize={15}
-            leftIcon={
-              <Box mr={-1}>
-                <IoChevronBack size={22} />
-              </Box>
-            }
             px={3}
             bg="dark.100"
             color="grey.200"
@@ -104,27 +97,30 @@ const UserTransactionsPage = () => {
                   )
             }
           >
+            <IoChevronBack size={22} />
             Back home
           </Button>
 
           {!isMobile && (
             <>
-              <Breadcrumb ml={8}>
-                <BreadcrumbItem>
-                  <BreadcrumbLink
-                    fontSize="sm"
-                    color="grey.200"
-                    fontWeight="semibold"
-                    onClick={() => goHome()}
-                  >
-                    <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
-                    Home
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
+              <Breadcrumb.Root ml={8}>
+                <Breadcrumb.List>
+                  <Breadcrumb.Item>
+                    <Breadcrumb.Link
+                      fontSize="sm"
+                      color="grey.200"
+                      fontWeight="semibold"
+                      onClick={() => goHome()}
+                    >
+                      <Icon mr={2} as={HomeIcon} w={3} color="grey.200" />
+                      Home
+                    </Breadcrumb.Link>
+                  </Breadcrumb.Item>
+                  <Breadcrumb.Separator />
 
-                {/* Commented out code to temporarily disable workspaces. */}
+                  {/* Commented out code to temporarily disable workspaces. */}
 
-                {/* {!userInfos.onSingleWorkspace && (
+                  {/* {!userInfos.onSingleWorkspace && (
                   <BreadcrumbItem>
                     <BreadcrumbLink
                       fontSize="sm"
@@ -145,35 +141,36 @@ const UserTransactionsPage = () => {
                     </BreadcrumbLink>
                   </BreadcrumbItem>
                 )} */}
-                <BreadcrumbItem>
-                  <BreadcrumbLink
-                    fontSize="sm"
-                    color="grey.200"
-                    fontWeight="semibold"
-                    href="#"
-                  >
-                    My Transactions
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
-              </Breadcrumb>
+                  <Breadcrumb.Item>
+                    <Breadcrumb.Link
+                      fontSize="sm"
+                      color="grey.200"
+                      fontWeight="semibold"
+                      href="#"
+                    >
+                      My Transactions
+                    </Breadcrumb.Link>
+                  </Breadcrumb.Item>
+                </Breadcrumb.List>
+              </Breadcrumb.Root>
             </>
           )}
         </HStack>
         <Box>
           <Button
-            isDisabled={!hasPermission([OWNER, MANAGER, ADMIN])}
-            variant="primary"
+            disabled={!hasPermission([OWNER, MANAGER, ADMIN])}
+            colorPalette="primary"
             fontWeight="bold"
-            leftIcon={<FaRegPlusSquare />}
             onClick={onOpen}
           >
+            <FaRegPlusSquare />
             Create vault
           </Button>
         </Box>
       </HStack>
 
       {/* ACTION BUTTONS */}
-      <Stack w="full" direction={{ base: 'column', md: 'row' }} spacing={6}>
+      <Stack w="full" direction={{ base: 'column', md: 'row' }} gap={6}>
         <ActionCard.Container
           onClick={() =>
             navigate(
@@ -183,7 +180,9 @@ const UserTransactionsPage = () => {
             )
           }
         >
-          <ActionCard.Icon icon={VaultIcon} />
+          <ActionCard.Icon>
+            <VaultIcon w={6} />
+          </ActionCard.Icon>
           <Box>
             <ActionCard.Title>Vaults</ActionCard.Title>
             <ActionCard.Description>
@@ -193,7 +192,9 @@ const UserTransactionsPage = () => {
         </ActionCard.Container>
 
         <ActionCard.Container cursor="auto">
-          <ActionCard.Icon icon={TransactionsIcon} />
+          <ActionCard.Icon>
+            <TransactionsIcon w={6} />
+          </ActionCard.Icon>
           <Box>
             <ActionCard.Title>Transactions</ActionCard.Title>
             <ActionCard.Description>
@@ -211,7 +212,9 @@ const UserTransactionsPage = () => {
             )
           }
         >
-          <ActionCard.Icon icon={AddressBookIcon} />
+          <ActionCard.Icon>
+            <AddressBookIcon w={6} />
+          </ActionCard.Icon>
           <Box>
             <ActionCard.Title>Address book</ActionCard.Title>
             <ActionCard.Description>
@@ -237,7 +240,7 @@ const UserTransactionsPage = () => {
             flexDir={isExtraSmall ? 'column' : 'row'}
             gap={isExtraSmall ? 2 : 4}
           >
-            <Text variant="subtitle" fontWeight="semibold" color="grey.75">
+            <Text fontWeight="semibold" color="grey.75">
               Transactions
             </Text>
             <WaitingSignatureBadge
@@ -276,7 +279,7 @@ const UserTransactionsPage = () => {
         }
       </VStack>
 
-      <CustomSkeleton h="full" isLoaded={!isLoading}>
+      <CustomSkeleton h="full" loading={isLoading}>
         {emptyTransactions && (
           <EmptyState
             h="full"
@@ -289,10 +292,10 @@ const UserTransactionsPage = () => {
         {!emptyTransactions && (
           <VStack h="35vh" mt={-3} w="full">
             {transactions?.map((grouped) => (
-              <Box key={grouped.monthYear} w="full">
-                <TransactionCard.GroupMonth monthYear={grouped.monthYear} />
+              <Box key={grouped.day} w="full">
+                <TransactionCard.GroupDay day={grouped.day} mb={2} />
 
-                <TransactionCard.List mt={1} w="full" spacing={0}>
+                <TransactionCard.List mt={1} w="full" gap={0}>
                   {grouped?.transactions.map((transaction) => (
                     <TransactionCard.Item
                       key={transaction.id}
@@ -308,7 +311,7 @@ const UserTransactionsPage = () => {
             ))}
             {hasNextPage && (
               <Box w="full" display={'flex'} justifyContent={'center'} pb={5}>
-                <Spinner alignSelf="center" mt={2} color="brand.500" />
+                <Loader alignSelf="center" mt={2} color="brand.500" />
               </Box>
             )}
           </VStack>

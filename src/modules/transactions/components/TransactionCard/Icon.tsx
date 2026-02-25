@@ -1,4 +1,4 @@
-import { Flex, Icon as ChackraIcon } from '@chakra-ui/react';
+import { Flex, Icon as ChackraIcon } from 'bako-ui';
 import { memo, useMemo } from 'react';
 
 import { useVerifyTransactionInformations } from '../../hooks';
@@ -14,6 +14,7 @@ export const Icon = memo(
       isDeposit,
       isSwap,
       isLiquidStake,
+      isBridge,
     } = useVerifyTransactionInformations(transaction);
 
     const IconComponent = useMemo(
@@ -25,14 +26,23 @@ export const Icon = memo(
           isDeposit,
           isSwap,
           isLiquidStake,
+          isBridge,
         }),
-      [isDeploy, isFromConnector, isFromCLI, isDeposit, isSwap, isLiquidStake],
+      [
+        isDeploy,
+        isFromConnector,
+        isFromCLI,
+        isDeposit,
+        isSwap,
+        isLiquidStake,
+        isBridge,
+      ],
     );
 
     const size = useMemo(
       () =>
         isDeploy || isFromConnector || isSwap || isLiquidStake
-          ? 'inherit'
+          ? '16px'
           : '12px',
       [isDeploy, isFromConnector, isSwap, isLiquidStake],
     );
@@ -41,13 +51,13 @@ export const Icon = memo(
       <Flex
         alignItems="flex-start"
         justifyContent="center"
-        bgColor="grey.925"
+        bgColor="gray.600"
         minW="32px"
         p={0}
         borderRadius="10px 0 0 10px"
         h="auto"
       >
-        <ChackraIcon as={IconComponent} mt={8} fontSize={size} />
+        <ChackraIcon as={IconComponent} mt="1.575rem" boxSize={size} />
       </Flex>
     );
   },

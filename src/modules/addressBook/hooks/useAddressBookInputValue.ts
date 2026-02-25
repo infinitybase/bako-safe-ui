@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { AutocompleteOption } from '@/components/autocomplete';
 import { useBakoIDClient } from '@/modules/core/hooks/bako-id';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 import { AddressBookUtils } from '@/utils/address-book';
 
 const useAddressBookInputValue = () => {

@@ -8,6 +8,8 @@ const useGetCurrentVaultRequest = (sessionId: string) => {
     queryKey: ['transaction/details'],
     queryFn: () => DAppService.findCurrentBySessionId(sessionId),
     enabled: isValid,
+    refetchOnWindowFocus: false,
+    staleTime: 1000 * 60 * 5, // 5 minutes
   });
 };
 

@@ -1,8 +1,10 @@
-import { Text, VStack } from '@chakra-ui/react';
+import { Text, VStack } from 'bako-ui';
 import { bn } from 'fuels';
+import { memo, useMemo } from 'react';
 
+import { BlurredContent } from '@/components/blurredContent';
 import type { AssetModel } from '@/modules/core';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 import { isHex } from '@/utils';
 
 import { AmountUSD } from '../transfer-details';
@@ -13,39 +15,65 @@ interface AmountsInfoProps {
   isNFT: boolean;
 }
 
-const AmountsInfo = ({ asset, txUSDAmount, isNFT }: AmountsInfoProps) => {
+const AmountsInfo = memo(({ asset, txUSDAmount, isNFT }: AmountsInfoProps) => {
   const {
     screenSizes: { isMobile },
     assetsMap,
+    workspaceInfos: {
+      infos: { visibleBalance },
+    },
   } = useWorkspaceContext();
 
+  const assetMetadata = useMemo(
+    () =>
+      asset?.assetId && assetsMap?.[asset?.assetId]
+        ? assetsMap[asset?.assetId]
+        : assetsMap?.['UNKNOWN'],
+    [asset?.assetId, assetsMap],
+  );
+
+  const assetAmount = useMemo(() => {
+    if (isNFT) return '1';
+
+    return isHex(asset.amount)
+      ? bn(asset?.amount)?.format({
+          units: assetMetadata.units,
+        })
+      : asset.amount;
+  }, [asset, assetMetadata, isNFT]);
+
+  const showAmountUSD = useMemo(() => {
+    return !!txUSDAmount && txUSDAmount !== '0.00' && !isNFT;
+  }, [isNFT, txUSDAmount]);
+
   return (
-    <VStack mt={0.5} w={{ base: '105px' }}>
-      <Text
-        textAlign={isMobile ? 'end' : 'center'}
-        variant={isMobile ? 'title-sm' : 'title-md'}
-        color="grey.75"
-        fontSize="sm"
-      >
-        {isNFT
-          ? '1'
-          : isHex(asset.amount)
-            ? bn(asset?.amount)?.format({
-                units:
-                  assetsMap[asset?.assetId ?? '']?.units ??
-                  assetsMap.UNKNOWN.units,
-              })
-            : asset.amount}
-      </Text>
-      <Text
-        textAlign={isMobile ? 'end' : 'center'}
-        variant="description"
-        fontSize="xs"
-        color="grey.500"
-      >
-        <AmountUSD amount={txUSDAmount} isNFT={isNFT} />
-      </Text>
+    <VStack w={{ base: '105px', sm: 'fit-content' }} gap={1}>
+      <BlurredContent isBlurred={visibleBalance} inline>
+        <Text
+          textAlign={isMobile ? 'end' : 'center'}
+          color="textPrimary"
+          fontSize="xs"
+          lineHeight="100%"
+        >
+          {assetAmount} {assetMetadata.slug}
+        </Text>
+      </BlurredContent>
+      {showAmountUSD && (
+        <BlurredContent isBlurred={visibleBalance} inline>
+          <Text
+            textAlign={isMobile ? 'end' : 'center'}
+            fontSize="xs"
+            color="gray.400"
+            lineHeight="100%"
+          >
+            <AmountUSD amount={txUSDAmount} isNFT={isNFT} />
+          </Text>
+        </BlurredContent>
+      )}
     </VStack>
   );
-};
+});
+
+AmountsInfo.displayName = 'AmountsInfo';
+
 export default AmountsInfo;

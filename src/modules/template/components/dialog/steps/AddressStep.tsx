@@ -1,15 +1,13 @@
 import {
   Box,
   Button,
-  Divider,
-  FormControl,
-  FormHelperText,
+  Field,
   Heading,
   HStack,
   Icon,
-  TabPanel,
+  Separator,
   VStack,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 import { Address, isB256 } from 'fuels';
 import { useEffect, useRef, useState } from 'react';
 import {
@@ -33,7 +31,7 @@ import {
   useAddressBookInputValue,
 } from '@/modules/addressBook/hooks';
 import { AddressUtils, ITemplatePayload } from '@/modules/core';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 import { keepOptionsNearToInput } from '@/utils/keep-options-near-to-container';
 import { scrollToBottom } from '@/utils/scroll-to-bottom';
 
@@ -115,8 +113,8 @@ const AddressStep = ({ form, addresses }: AddressStepProps) => {
         isEdit={false}
       />
 
-      <TabPanel p={0}>
-        <Divider borderColor="dark.100" my={9} />
+      <Box p={0}>
+        <Separator borderColor="dark.100" my={9} />
 
         <Dialog.Section
           title={
@@ -129,7 +127,7 @@ const AddressStep = ({ form, addresses }: AddressStepProps) => {
         />
 
         <VStack
-          spacing={6}
+          gap={6}
           onClick={handleFirstIsFirstLoad}
           ref={containerRef}
           maxH={{ base: 230 }}
@@ -177,7 +175,7 @@ const AddressStep = ({ form, addresses }: AddressStepProps) => {
                     );
 
                 return (
-                  <FormControl isInvalid={fieldState.invalid}>
+                  <Field.Root invalid={fieldState.invalid}>
                     <Autocomplete
                       optionsContainerRef={optionsContainerRef}
                       optionsRef={optionRef}
@@ -204,9 +202,9 @@ const AddressStep = ({ form, addresses }: AddressStepProps) => {
                       }
                     />
 
-                    <FormHelperText color="error.500">
+                    <Field.HelperText color="error.500">
                       {fieldState.error?.message}
-                    </FormHelperText>
+                    </Field.HelperText>
 
                     <AddToAddressBook
                       visible={showAddToAddressBook}
@@ -216,7 +214,7 @@ const AddressStep = ({ form, addresses }: AddressStepProps) => {
                         });
                       }}
                     />
-                  </FormControl>
+                  </Field.Root>
                 );
               }}
               control={form.control}
@@ -240,7 +238,7 @@ const AddressStep = ({ form, addresses }: AddressStepProps) => {
           </Button>
         </VStack>
 
-        <Divider borderColor="dark.100" my={9} />
+        <Separator borderColor="dark.100" my={9} />
 
         <HStack>
           <Dialog.Section
@@ -256,7 +254,7 @@ const AddressStep = ({ form, addresses }: AddressStepProps) => {
               name="minSigners"
               control={form.control}
               render={({ field, fieldState }) => (
-                <FormControl>
+                <Field.Root>
                   <Select
                     pt={2}
                     pb={2}
@@ -271,7 +269,7 @@ const AddressStep = ({ form, addresses }: AddressStepProps) => {
                       }))}
                   />
 
-                  <FormHelperText
+                  <Field.HelperText
                     color="error.500"
                     style={{
                       display: 'flex',
@@ -282,13 +280,13 @@ const AddressStep = ({ form, addresses }: AddressStepProps) => {
                     }}
                   >
                     {fieldState.error?.message}
-                  </FormHelperText>
-                </FormControl>
+                  </Field.HelperText>
+                </Field.Root>
               )}
             />
           </Box>
         </HStack>
-      </TabPanel>
+      </Box>
     </>
   );
 };

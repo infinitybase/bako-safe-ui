@@ -1,72 +1,78 @@
-import { Box, Text, VStack } from '@chakra-ui/react';
-import { useState } from 'react';
+import { Box, Card, Text } from 'bako-ui';
+import { memo, useCallback, useMemo, useState } from 'react';
 
-import { Card } from '@/components';
 import { AddressUtils, NFT } from '@/modules/core/utils';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
+import { BAKO_ID_NFT_CONTRACTS } from '@/utils/constants';
 
 import { useGetNftsInfos } from '../../hooks';
 import { NftDialog } from './nft-dialog';
 import { NftImage } from './nft-image';
 
-const NftBalanceCard = ({ nft }: { nft: NFT }) => {
-  const {
-    nftList,
-    screenSizes: { isLitteSmall },
-  } = useWorkspaceContext();
+const NftBalanceCard = memo(function NftBalanceCard({ nft }: { nft: NFT }) {
+  const { nftList } = useWorkspaceContext();
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   const { nftsInfo, nftImageUrl } = useGetNftsInfos({
     assetId: nft.assetId,
     nftList,
   });
 
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const isBakoIDHandle = useMemo(
+    () => BAKO_ID_NFT_CONTRACTS.includes(nftsInfo?.contractId || ''),
+    [nftsInfo?.contractId],
+  );
+
+  const handleOpenModal = useCallback(() => setDialogOpen(true), []);
 
   if (!nftsInfo) return null;
 
   return (
     <>
-      <Card
-        p={isLitteSmall ? 1 : 2}
-        borderRadius={isLitteSmall ? 5 : 8}
-        borderWidth="1px"
-        borderColor="gradients.transaction-border"
-        backgroundColor="dark.50"
-        backgroundImage="gradients.transaction-card"
-        backdropFilter="blur(6px)"
-        boxShadow="lg"
-        onClick={() => {
-          setDialogOpen(true);
+      <Card.Root
+        variant="subtle"
+        bg="bg.panel"
+        transition="background-color 0.3s ease"
+        _hover={{
+          bg: 'bg.muted',
+          '& .nftImage': { transform: 'scale(1.1)' },
         }}
+        rounded="16px"
+        onClick={handleOpenModal}
         cursor="pointer"
+        overflow="hidden"
       >
-        <VStack alignItems="flex-start" gap={isLitteSmall ? 1 : 2}>
-          <Box
-            w="full"
-            aspectRatio={1}
-            minW={{
-              base: '100px',
-              sm: '120px',
-              md: '150px',
-            }}
-            borderRadius={5}
-            position="relative"
-            overflow="hidden"
-          >
-            <NftImage src={nftImageUrl ?? undefined} />
-          </Box>
+        <Box
+          w="full"
+          aspectRatio={1}
+          minW={{
+            base: '100px',
+            sm: '120px',
+            md: '150px',
+          }}
+          position="relative"
+          overflow="hidden"
+        >
+          <NftImage
+            src={nftImageUrl ?? undefined}
+            scale={isBakoIDHandle ? 0.97 : 1}
+            borderTopRadius={isBakoIDHandle ? '0' : '16px'}
+          />
+        </Box>
+        <Card.Body>
           <Text
-            fontSize={isLitteSmall ? 'xs' : 'sm'}
-            color="grey.50"
-            maxW="full"
-            isTruncated
+            fontSize="sm"
+            color="gray.200"
+            truncate
+            textAlign="center"
+            letterSpacing="wider"
           >
             {nftsInfo.symbol || nftsInfo.name || nftsInfo.metadata.name
               ? `${nftsInfo.symbol || ''} ${nftsInfo.name || nftsInfo.metadata.name || ''}`.trim()
               : AddressUtils.format(nftsInfo.assetId, 10)}
           </Text>
-        </VStack>
-      </Card>
+        </Card.Body>
+      </Card.Root>
 
       <NftDialog
         isOpen={dialogOpen}
@@ -76,6 +82,6 @@ const NftBalanceCard = ({ nft }: { nft: NFT }) => {
       />
     </>
   );
-};
+});
 
 export { NftBalanceCard };

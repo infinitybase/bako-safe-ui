@@ -1,7 +1,7 @@
 import { ITransferAsset } from 'bakosafe';
 import { Operation, TransactionRequest } from 'fuels';
 
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 import { formatAssetAmount, isHex } from '@/utils';
 
 import { OperationWithAssets } from '../../services/types';

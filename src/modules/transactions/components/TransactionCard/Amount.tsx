@@ -1,24 +1,25 @@
-import {
-  type BoxProps,
-  Flex,
-  HStack,
-  Text,
-  useMediaQuery,
-} from '@chakra-ui/react';
+import { Flex, HStack, type StackProps, Text } from 'bako-ui';
 import type { ITransferAsset } from 'bakosafe';
 import { bn } from 'fuels';
 import { useMemo } from 'react';
 
 import { CustomSkeleton } from '@/components';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { TransactionBridgeResume } from '@/modules/core';
+import { FIAT_CURRENCIES } from '@/modules/core/utils/fiat-currencies';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { useGetAssetsByOperations } from '../../hooks';
-import type { TransactionWithVault } from '../../services';
+import {
+  ON_OFF_RAMP_TRANSACTION_TYPES,
+  TransactionTypeBridge,
+  type TransactionWithVault,
+} from '../../services';
 import { AssetsIcon } from './AssetsIcon';
+import { AssetsIconWithNetwork } from './AssetsIconWithNetwork';
 import { AmountUSD } from './transfer-details';
 
-interface TransactionCardAmountProps extends BoxProps {
+interface TransactionCardAmountProps extends StackProps {
   transaction: TransactionWithVault;
   showAmount: boolean;
 }
@@ -32,37 +33,80 @@ const Amount = ({
     transaction,
     transaction.predicate?.predicateAddress,
   );
-  const [showOnlyOneAsset] = useMediaQuery('(max-width: 400px)');
   const {
     tokensUSD,
     screenSizes: { isMobile, isExtraSmall },
     assetsMap,
     nftList,
   } = useWorkspaceContext();
+  const isOnOffRamp = useMemo(
+    () => ON_OFF_RAMP_TRANSACTION_TYPES.includes(transaction.type),
+    [transaction.type],
+  );
 
-  const totalAmoutSent = useMemo(
+  const isBridge = useMemo(
+    () => transaction.type === TransactionTypeBridge.BRIDGE,
+    [transaction.type],
+  );
+
+  const totalAmountSent = useMemo(
     () =>
       transaction.assets
-        .reduce((total, asset) => total.add(asset.amount), bn(0))
-        .format(),
+        // remove fiat currencies from the total amount
+        .filter((asset) => !FIAT_CURRENCIES.has(asset.assetId))
+        .reduce((total, asset) => total.add(asset.amount), bn(0)),
     [transaction.assets],
   );
 
-  const oneAssetOfEach = useMemo(
-    () =>
-      transaction.assets.reduce((uniqueAssets, current) => {
-        if (!uniqueAssets.find((asset) => asset.assetId === current.assetId)) {
-          uniqueAssets.push(current);
-        }
+  const bridgeAssets = useMemo(() => {
+    if (isBridge) {
+      const bridge = transaction.resume?.bridge as TransactionBridgeResume;
+      const fromAsset = {
+        assetId: bridge.sourceToken.assetId,
+        assetIcon: assetsMap[bridge.sourceToken.assetId]?.icon || '',
+        networkIcon: bridge.sourceNetwork.logo,
+      };
+      const toAsset = {
+        assetId: bridge.destinationToken.assetId,
+        assetIcon: assetsMap[bridge.destinationToken.assetId]?.icon || '',
+        networkIcon: bridge.destinationNetwork.logo,
+      };
+      return { from: fromAsset, to: toAsset };
+    }
+    return null;
+  }, [assetsMap, isBridge, transaction.resume?.bridge]);
 
-        return uniqueAssets;
-      }, [] as ITransferAsset[]),
-    [transaction.assets],
-  );
+  const oneAssetOfEach = useMemo(() => {
+    if (isBridge) {
+      const assetsBridge = [] as ITransferAsset[];
+      const bridge = transaction.resume?.bridge;
+
+      if (bridge?.sourceToken)
+        assetsBridge.push({
+          ...bridge.sourceToken,
+          amount: bridge.sourceToken.amount?.toString(),
+        });
+
+      if (bridge?.destinationToken)
+        assetsBridge.push({
+          ...bridge.destinationToken,
+          amount: bridge.destinationToken.amount?.toString(),
+        });
+
+      return assetsBridge;
+    }
+    return transaction.assets.reduce((uniqueAssets, current) => {
+      if (!uniqueAssets.find((asset) => asset.assetId === current.assetId)) {
+        uniqueAssets.push(current);
+      }
+
+      return uniqueAssets;
+    }, [] as ITransferAsset[]);
+  }, [transaction.assets, transaction.resume?.bridge, isBridge]);
 
   const isMultiToken = useMemo(
-    () => oneAssetOfEach.length >= 2,
-    [oneAssetOfEach.length],
+    () => oneAssetOfEach.length >= 2 && !isOnOffRamp && !isBridge,
+    [oneAssetOfEach.length, isOnOffRamp, isBridge],
   );
 
   const formattedAssets = useMemo(() => {
@@ -84,15 +128,35 @@ const Amount = ({
     tokensUSD?.isUnknownToken,
   );
 
-  const formattedAmount = useMemo(
-    () =>
-      transaction?.assets.length === 1
-        ? bn(transaction.assets[0].amount).format({
-            units: assetsMap[transaction.assets[0].assetId]?.units ?? 9,
-          })
-        : totalAmoutSent,
-    [transaction?.assets, assetsMap, totalAmoutSent],
-  );
+  const formattedAmount = useMemo(() => {
+    const firstAsset = transaction?.assets?.[0];
+    if (!firstAsset) return null;
+
+    const firstAssetOnMap = assetsMap[firstAsset?.assetId] || assetsMap.UNKNOWN;
+
+    if (transaction?.assets.length === 1) {
+      if (formattedAssets[0]?.isNFT) {
+        return '1';
+      }
+
+      const amount = bn(firstAsset.amount).format({
+        units: firstAssetOnMap.units,
+      });
+      const slug = firstAssetOnMap.slug;
+
+      return `${amount} ${slug}`;
+    }
+
+    const allSameAsset = transaction.assets.every(
+      (a) => a.assetId === firstAsset?.assetId,
+    );
+
+    if (allSameAsset) {
+      return totalAmountSent.format({ units: firstAssetOnMap.units });
+    }
+
+    return null;
+  }, [transaction.assets, formattedAssets, assetsMap, totalAmountSent]);
 
   const isNFT =
     formattedAssets.length === 1 && formattedAssets[0]?.isNFT === true;
@@ -106,13 +170,14 @@ const Amount = ({
     >
       {!showAmount || hasNoDefaultAssets ? null : (
         <>
-          <AssetsIcon
-            assets={oneAssetOfEach}
-            isMobile={isMobile}
-            showOnlyOneAsset={showOnlyOneAsset}
-            assetsMap={assetsMap}
-            isNFT={isNFT}
-          />
+          {isBridge && bridgeAssets ? (
+            <AssetsIconWithNetwork
+              from={bridgeAssets?.from}
+              to={bridgeAssets?.to}
+            />
+          ) : (
+            <AssetsIcon assets={oneAssetOfEach} assetsMap={assetsMap} />
+          )}
           <Flex
             flexDir={isMultiToken ? 'column-reverse' : 'column'}
             w={isMobile ? 'unset' : 'full'}
@@ -120,20 +185,23 @@ const Amount = ({
             textAlign="start"
           >
             {isMultiToken ? (
-              <Text color="grey.425" fontSize="xs">
-                Multi-token
+              <Text color="gray.400" fontSize="xs" lineHeight="21.5px">
+                Send multi tokens
               </Text>
             ) : (
-              <Text color="grey.75" fontSize="sm">
-                {isNFT ? '1' : formattedAmount}
-              </Text>
+              formattedAmount && (
+                <Text color="textPrimary" fontSize="sm" lineHeight="21.5px">
+                  {formattedAmount}
+                </Text>
+              )
             )}
             <Text
-              variant="description"
-              fontSize={isMultiToken ? 'sm' : 'xs'}
-              color={isMultiToken ? ' grey.75' : 'grey.425'}
+              as="div"
+              fontSize={isMultiToken || !formattedAmount ? 'sm' : 'xs'}
+              color="textSecondary"
+              lineHeight="21.5px"
             >
-              <CustomSkeleton isLoaded={!tokensUSD?.isLoading}>
+              <CustomSkeleton loading={tokensUSD?.isLoading}>
                 <AmountUSD amount={txUSDAmount} isNFT={isNFT} />
               </CustomSkeleton>
             </Text>

@@ -5,7 +5,7 @@ import { Container } from './Container';
 import { CreationDate } from './CreationDate';
 import { DepositDetails } from './deposit-details/DepositDetails';
 import { Details } from './Details';
-import { GroupMonth } from './GroupMonth';
+import { GroupDay } from './GroupDay';
 import { Header } from './Header';
 import { Icon } from './Icon';
 import { Item } from './Item';
@@ -31,7 +31,7 @@ const TransactionCard = {
   TransactionStepper,
   DepositDetails,
   Item,
-  GroupMonth,
+  GroupDay,
   Icon,
   Header,
   TransactionRequestFrom,

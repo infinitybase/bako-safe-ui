@@ -5,8 +5,10 @@ import { useState } from 'react';
 import { queryClient } from '@/config';
 import { CookieName, CookiesConfig } from '@/config/cookies';
 import { useContactToast } from '@/modules/addressBook/hooks/useContactToast';
-import { useWalletSignMessage } from '@/modules/core';
+import { instantiateVault, useWalletSignMessage } from '@/modules/core';
 import { ITransaction } from '@/modules/core/hooks/bakosafe/utils/types';
+import { USER_ALLOCATION_QUERY_KEY } from '@/modules/home/hooks';
+import { vaultAllocationQueryKey } from '@/modules/vault/hooks';
 import { VAULT_TRANSACTIONS_LIST_PAGINATION } from '@/modules/vault/hooks/list/useVaultTransactionsRequest';
 
 import { useTransactionToast } from '../../providers/toast';
@@ -30,6 +32,7 @@ export interface UseSignTransactionOptions {
 }
 
 interface IUseSignTransactionProps {
+  vaultId: string;
   transactionList: IUseTransactionList;
   pendingTransactions: IPendingTransactionsRecord;
   pendingSignerTransactionsRefetch: () => void;
@@ -38,6 +41,7 @@ interface IUseSignTransactionProps {
 }
 
 const useSignTransaction = ({
+  vaultId,
   transactionList,
   pendingSignerTransactionsRefetch,
   homeTransactionsRefetch,
@@ -61,6 +65,14 @@ const useSignTransaction = ({
       vaultBalanceRefetch();
       queryClient.invalidateQueries({
         queryKey: [VAULT_TRANSACTIONS_LIST_PAGINATION],
+      });
+      queryClient.invalidateQueries({
+        queryKey: vaultAllocationQueryKey.VAULT_ALLOCATION_QUERY_KEY(
+          vaultId ?? '',
+        ),
+      });
+      queryClient.invalidateQueries({
+        queryKey: [USER_ALLOCATION_QUERY_KEY],
       });
       setIsSignConfirmed(false);
     },
@@ -108,9 +120,23 @@ const useSignTransaction = ({
 
     setSelectedTransaction(transaction);
 
-    const signedMessage = await signMessageRequest.mutateAsync(
-      transaction?.hash,
-    );
+    let predicateVersion = undefined;
+
+    if (
+      transactionInformations?.predicate?.predicateAddress &&
+      transactionInformations?.network.url
+    ) {
+      const vault = await instantiateVault({
+        predicateAddress: transactionInformations.predicate.predicateAddress,
+        providerUrl: transactionInformations.network.url,
+      });
+      predicateVersion = vault.predicateVersion;
+    }
+
+    const signedMessage = await signMessageRequest.mutateAsync({
+      message: transaction?.hash,
+      predicateVersion,
+    });
 
     await request.mutateAsync(
       {
@@ -144,6 +170,14 @@ const useSignTransaction = ({
           vaultBalanceRefetch();
           queryClient.invalidateQueries({
             queryKey: [VAULT_TRANSACTIONS_LIST_PAGINATION],
+          });
+          queryClient.invalidateQueries({
+            queryKey: vaultAllocationQueryKey.VAULT_ALLOCATION_QUERY_KEY(
+              vaultId ?? '',
+            ),
+          });
+          queryClient.invalidateQueries({
+            queryKey: [USER_ALLOCATION_QUERY_KEY],
           });
         },
       },

@@ -4,7 +4,7 @@ import {
   SortOption,
   TransactionOrderBy,
 } from '@/modules/transactions/services';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 import { DEFAULT_INITIAL_PAGE_PARAM } from '@/utils/constants';
 
 import { VaultService } from '../services';
@@ -23,6 +23,8 @@ const useHomeVaultsRequest = (vaultsPerPage: number) => {
         orderBy: TransactionOrderBy.CREATED_AT,
         sort: SortOption.DESC,
       }),
+    refetchOnWindowFocus: false,
+    staleTime: 1000 * 60 * 5, // 5 minutes - socket events handle real-time updates
   });
 };
 

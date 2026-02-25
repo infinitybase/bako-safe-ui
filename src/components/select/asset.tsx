@@ -1,29 +1,91 @@
-import { Icon } from '@chakra-ui/icons';
-import { Box, Flex, Image, Stack, Text, VStack } from '@chakra-ui/react';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-
-import { ArrowDownIcon } from '../icons';
-import { UNKNOWN_ASSET } from '@/modules';
+import {
+  Avatar,
+  createListCollection,
+  Flex,
+  floatingStyles,
+  HStack,
+  Loader,
+  Select,
+  Stack,
+  Text,
+  useSelectContext,
+} from 'bako-ui';
 
 interface AssetSelectOption {
   value: string;
   image: string | null;
+  description?: string;
   name: string;
   symbol: string | null;
 }
 
 interface AssetSelectProps {
   value?: string;
-  options?: AssetSelectOption[];
+  options: AssetSelectOption[];
   label?: string;
   isLoading?: boolean;
   isDisabled?: boolean;
   isInvalid?: boolean;
   name?: string;
+  readonly?: boolean;
   onChange: (value: string) => void;
-  needShowOptionsAbove?: boolean;
-  maxOptionsHeight?: number;
+  placeholder?: string;
 }
+
+const AssetSelectValue = ({
+  label,
+  placeholder = ' ',
+}: {
+  label: string | undefined;
+  placeholder?: string;
+}) => {
+  const select = useSelectContext();
+  const items = select.selectedItems as AssetSelectOption[];
+  const image = items?.[0]?.image;
+  const name = items?.[0]?.name;
+  const description = items?.[0]?.description;
+
+  if (!name && !label && !image) {
+    return <Select.ValueText color="textSecondary" placeholder={placeholder} />;
+  }
+
+  return (
+    <Select.ValueText placeholder={placeholder} pt={label && name ? 2.5 : 0}>
+      <HStack>
+        <Avatar
+          shape="rounded"
+          bg="transparent"
+          hidden={!name}
+          boxSize={5}
+          src={image!}
+          name={name}
+        />
+        <Stack gap={0.5}>
+          <Text
+            fontSize="xs"
+            color="textPrimary"
+            lineHeight="shorter"
+            truncate
+            lineClamp={1}
+          >
+            {name}
+          </Text>
+          {description && (
+            <Text
+              fontSize="xs"
+              color="textSecondary"
+              lineHeight="shorter"
+              truncate
+              lineClamp={1}
+            >
+              {description}
+            </Text>
+          )}
+        </Stack>
+      </HStack>
+    </Select.ValueText>
+  );
+};
 
 const AssetSelect = ({
   value,
@@ -33,353 +95,85 @@ const AssetSelect = ({
   isDisabled,
   onChange,
   isInvalid,
-  needShowOptionsAbove,
-  maxOptionsHeight,
+  readonly,
   name,
+  placeholder,
 }: AssetSelectProps) => {
-  const selectRef = useRef<HTMLDivElement>(null);
-  const hiddenInputRef = useRef<HTMLInputElement>(null);
-  const [showOptions, setShowOptions] = useState<boolean>(false);
-  const [focusedOptionIndex, setFocusedOptionIndex] = useState<number>(-1);
-  const [optionsCoords, setOptionsCoords] = useState<{
-    top: number;
-    left: number;
-    width: number;
-  } | null>(null);
-
-  const selectedOption = useMemo(
-    () => options?.find((option) => option.value === value),
-    [options, value],
-  );
-  const isReadyToShowOptions =
-    showOptions && options && options.length > 0 && !isLoading;
-
-  const handleSelectOption = (selectedValue: string) => {
-    onChange(selectedValue);
-    setShowOptions(false);
-    setFocusedOptionIndex(-1);
-    selectRef.current?.focus();
-  };
-
-  const handleKeyDown = (event: React.KeyboardEvent) => {
-    if (isDisabled || isLoading) return;
-
-    const availableOptions = options || [];
-
-    switch (event.key) {
-      case 'Enter':
-      case ' ':
-        event.preventDefault();
-        if (!showOptions) {
-          setShowOptions(true);
-          calculateOptionsCoords();
-        } else if (
-          focusedOptionIndex >= 0 &&
-          availableOptions[focusedOptionIndex]
-        ) {
-          handleSelectOption(availableOptions[focusedOptionIndex].value);
-        }
-        break;
-
-      case 'Escape':
-        event.preventDefault();
-        if (showOptions) {
-          setShowOptions(false);
-          setFocusedOptionIndex(-1);
-        }
-        break;
-
-      case 'ArrowDown':
-        event.preventDefault();
-        if (!showOptions) {
-          setShowOptions(true);
-          calculateOptionsCoords();
-          setFocusedOptionIndex(0);
-        } else {
-          setFocusedOptionIndex((prev) =>
-            prev < availableOptions.length - 1 ? prev + 1 : 0,
-          );
-        }
-        break;
-
-      case 'ArrowUp':
-        event.preventDefault();
-        if (!showOptions) {
-          setShowOptions(true);
-          calculateOptionsCoords();
-          setFocusedOptionIndex(availableOptions.length - 1);
-        } else {
-          setFocusedOptionIndex((prev) =>
-            prev > 0 ? prev - 1 : availableOptions.length - 1,
-          );
-        }
-        break;
-
-      case 'Tab':
-        if (showOptions) {
-          setShowOptions(false);
-          setFocusedOptionIndex(-1);
-        }
-        break;
-
-      default:
-        break;
-    }
-  };
-
-  const calculateOptionsCoords = useCallback(() => {
-    if (!selectRef.current) return;
-
-    const rect = selectRef.current.getBoundingClientRect();
-    const windowHeight = window.innerHeight;
-    const optionsHeight = maxOptionsHeight ?? 207;
-
-    const shouldShowAbove =
-      needShowOptionsAbove ??
-      (rect.bottom + optionsHeight > windowHeight && rect.top > optionsHeight);
-
-    const top = shouldShowAbove
-      ? rect.top - optionsHeight - 8
-      : rect.bottom + 8;
-
-    setOptionsCoords({
-      top,
-      left: rect.left,
-      width: rect.width,
-    });
-  }, [needShowOptionsAbove, maxOptionsHeight]);
-
-  const handleToggleOptions = () => {
-    if (isDisabled || isLoading) return;
-    if (!showOptions) {
-      setShowOptions(true);
-      setFocusedOptionIndex(-1);
-      calculateOptionsCoords();
-    } else {
-      setShowOptions(false);
-      setFocusedOptionIndex(-1);
-    }
-  };
-
-  const handleClickOutside = (event: MouseEvent) => {
-    if (!selectRef.current?.contains(event.target as Node)) {
-      setShowOptions(false);
-      setFocusedOptionIndex(-1);
-    }
-  };
-
-  useEffect(() => {
-    setFocusedOptionIndex(-1);
-  }, [options]);
-
-  useEffect(() => {
-    if (showOptions) {
-      document.addEventListener('mousedown', handleClickOutside);
-    } else {
-      document.removeEventListener('mousedown', handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [showOptions]);
+  const collection = createListCollection({
+    items: options || [],
+    itemToValue: (item) => item.value,
+    itemToString: (item) => item.name,
+  });
 
   return (
-    <Box w="full">
-      <input
-        ref={hiddenInputRef}
-        type="hidden"
-        name={name}
-        value={value || ''}
-        tabIndex={-1}
-        aria-hidden="true"
-      />
-
-      <Box
-        ref={selectRef}
-        position="relative"
-        w="full"
-        h="50px"
-        px={5}
-        py={3}
-        bg="grey.825"
-        border="1px solid"
-        borderColor={isInvalid ? 'error.600' : 'grey.800'}
-        borderRadius={10}
-        cursor={isDisabled ? 'not-allowed' : 'pointer'}
-        onClick={handleToggleOptions}
-        onKeyDown={handleKeyDown}
-        opacity={isDisabled ? 0.4 : 1}
-        _hover={!isDisabled ? { borderColor: 'grey.400' } : {}}
-        _focus={{
-          outline: 'none',
-          borderColor: 'grey.200',
-          boxShadow:
-            '0 0 0 1px color-mix(in srgb, var(--chakra-colors-brand-500) 100%, transparent)',
-        }}
-        tabIndex={isDisabled ? -1 : 0}
-        role="combobox"
-        aria-expanded={showOptions}
-        aria-haspopup="listbox"
-        aria-label={label || 'Select an asset'}
-        aria-invalid={isInvalid}
-        aria-describedby={isInvalid ? `${name}-error` : undefined}
-      >
-        {label && (
-          <Text
-            fontSize="md"
-            position="absolute"
-            top={selectedOption ? 1 : '50%'}
-            transform={
-              selectedOption
-                ? 'translateY(-2px) scale(0.7)'
-                : 'translateY(-50%)'
-            }
-            transition="all 0.2s"
-            left={selectedOption ? 3.5 : 5}
-            color="grey.400"
-            mb={1}
-            fontWeight="medium"
-            lineHeight="1"
-          >
-            {label}
-          </Text>
-        )}
-
-        {selectedOption && (
-          <Flex align="center" justify="space-between">
-            <Flex align="center" gap={2} flex={1} pt={label ? 2 : 0}>
-              <Image
-                src={selectedOption.image ?? ''}
-                boxSize={6}
-                rounded="md"
-                flexShrink={0}
-              />
-              <Text
-                fontSize="sm"
-                color="grey.200"
-                flex={1}
-                whiteSpace="nowrap"
-                overflow="hidden"
-                textOverflow="ellipsis"
-              >
-                {selectedOption.name}
-              </Text>
-            </Flex>
-          </Flex>
-        )}
-
-        {!selectedOption && !isLoading && (
-          <Icon
-            as={ArrowDownIcon}
-            fontSize={10}
-            color="grey.200"
-            transition="transform 0.2s"
-            position="absolute"
-            top="50%"
-            right={4}
-            transform={
-              showOptions
-                ? 'translateY(-50%) rotate(180deg)'
-                : 'translateY(-50%)'
-            }
-          />
-        )}
-      </Box>
-
-      {isReadyToShowOptions && optionsCoords && (
-        <Box
-          position="fixed"
-          aria-expanded={showOptions}
-          role="listbox"
-          top={optionsCoords.top}
-          left={optionsCoords.left}
-          w={optionsCoords.width}
-          bg="dark.200"
-          color="grey.200"
-          fontSize="md"
-          borderColor="dark.100"
-          borderWidth={1}
-          borderRadius={10}
-          zIndex={999}
-          boxShadow="lg"
+    <Select.Root
+      collection={collection}
+      invalid={isInvalid}
+      variant="subtle"
+      disabled={isDisabled || isLoading}
+      readOnly={readonly}
+      name={name}
+      w="full"
+      value={[value || '']}
+      onValueChange={(e) => onChange(e.value[0])}
+      positioning={{
+        sameWidth: true,
+        strategy: 'fixed',
+        hideWhenDetached: true,
+      }}
+    >
+      <Select.HiddenSelect />
+      {label && (
+        <Select.Label
+          css={{ ...floatingStyles({ hasValue: !!value }), zIndex: 2 }}
         >
-          <VStack
-            onMouseDown={(e) => {
-              e.stopPropagation();
-            }}
-            w="full"
-            maxH={maxOptionsHeight ?? 207}
-            gap={0}
-            overflowY="auto"
-            css={{
-              '&::-webkit-scrollbar': { width: '4px' },
-              '&::-webkit-scrollbar-track': { background: 'transparent' },
-              '&::-webkit-scrollbar-thumb': {
-                background: 'rgba(255, 255, 255, 0.2)',
-                borderRadius: '2px',
-              },
-              scrollbarWidth: 'thin',
-            }}
-            p={1}
-          >
-            {options.map(
-              ({ value: optionValue, image, name, symbol }, index) => (
-                <Box
-                  key={optionValue}
-                  w="full"
-                  px={3}
-                  py={2}
-                  borderRadius={8}
-                  cursor="pointer"
-                  bg={focusedOptionIndex === index ? 'dark.150' : 'transparent'}
-                  _hover={{ background: 'dark.150' }}
-                  onMouseDown={() => handleSelectOption(optionValue)}
-                  onMouseEnter={() => setFocusedOptionIndex(index)}
-                  display="flex"
-                  alignItems="center"
-                  gap={3}
-                  transition="background 0.15s"
-                  role="option"
-                  aria-selected={value === optionValue}
-                  id={`option-${index}`}
-                >
-                  <Image
-                    src={image ?? ''}
-                    fallbackSrc={UNKNOWN_ASSET.icon}
-                    fallbackStrategy="onError"
-                    boxSize={8}
-                    rounded={'lg'}
-                    flexShrink={0}
-                  />
-                  <Stack gap={0} flex={1} minW={0}>
-                    <Text
-                      whiteSpace="nowrap"
-                      overflow="hidden"
-                      textOverflow="ellipsis"
-                      fontSize="md"
-                    >
-                      {name}
-                    </Text>
-                    {symbol && (
-                      <Text
-                        fontSize="sm"
-                        color="grey.400"
-                        whiteSpace="nowrap"
-                        overflow="hidden"
-                        textOverflow="ellipsis"
-                      >
-                        {symbol}
-                      </Text>
-                    )}
-                  </Stack>
-                </Box>
-              ),
-            )}
-          </VStack>
-        </Box>
+          {label}
+        </Select.Label>
       )}
-    </Box>
+      <Select.Control>
+        <Select.Trigger bg="gray.550">
+          <AssetSelectValue label={label} placeholder={placeholder} />
+        </Select.Trigger>
+        <Select.IndicatorGroup>
+          {isLoading ? (
+            <Loader size="sm" color="primary.main" />
+          ) : (
+            <Select.Indicator color="textPrimary" />
+          )}
+        </Select.IndicatorGroup>
+      </Select.Control>
+      <Select.Portal>
+        {/* Open inside Dialog */}
+        <Select.Positioner zIndex="2000 !important">
+          <Select.Content>
+            {collection.items.map((item) => (
+              <Select.Item
+                key={item.value}
+                item={item}
+                onClick={() => {
+                  if (item.value === value) {
+                    // force onChange when same value is selected
+                    onChange(item.value);
+                  }
+                }}
+              >
+                <Flex gap={2} alignItems="center">
+                  <Avatar
+                    shape="rounded"
+                    src={item.image!}
+                    name={item.name}
+                    bg="transparent"
+                    size="2xs"
+                  />
+                  {item.name}
+                </Flex>
+                <Select.ItemIndicator />
+              </Select.Item>
+            ))}
+          </Select.Content>
+        </Select.Positioner>
+      </Select.Portal>
+    </Select.Root>
   );
 };
 

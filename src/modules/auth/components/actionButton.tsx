@@ -1,5 +1,5 @@
-import { AttachmentIcon } from '@chakra-ui/icons';
-import { Button } from '@chakra-ui/react';
+import { FiPaperclip as AttachmentIcon } from 'react-icons/fi';
+import { Button } from 'bako-ui';
 
 type ActionButtonProps = {
   isLoading: boolean;

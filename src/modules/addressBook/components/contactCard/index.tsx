@@ -1,28 +1,25 @@
-import { CheckIcon } from '@chakra-ui/icons';
 import {
   Avatar,
-  Box,
-  CardProps,
-  Divider,
+  Card,
+  CardRootProps,
   Heading,
   HStack,
   Icon,
-  IconButton,
   Text,
   useClipboard,
   VStack,
-} from '@chakra-ui/react';
+} from 'bako-ui';
+import { Address } from 'fuels';
+import { RiFileCopyFill } from 'react-icons/ri';
 
-import { Card, CopyIcon, EditIcon, RemoveIcon } from '@/components';
-import { useNotification } from '@/modules/notification';
+import { EditIcon2, IconTooltipButton, RemoveIcon } from '@/components';
+import { CopyTopMenuIcon } from '@/components/icons/copy-top-menu';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
-import { UseAddressBookReturn } from '../../hooks';
-
-interface ContactCardProps extends CardProps {
+interface ContactCardProps extends CardRootProps {
   nickname: string;
   address: string;
   avatar: string;
-  dialog: UseAddressBookReturn['dialog']['deleteContactDialog'];
   showActionButtons: boolean;
   handleDelete: () => void;
   handleEdit: () => void;
@@ -37,81 +34,102 @@ const ContactCard = ({
   handleEdit,
   ...rest
 }: ContactCardProps) => {
-  const clipboard = useClipboard(address);
-  const toast = useNotification();
+  const {
+    screenSizes: { isExtraSmall, isLitteSmall },
+  } = useWorkspaceContext();
+
+  const addressWithChecksum = address ? new Address(address).toString() : '';
+  const { copy, copied } = useClipboard({ value: addressWithChecksum });
 
   return (
-    <Card
+    <Card.Root
       display="flex"
       w="100%"
-      borderColor="gradients.transaction-border"
-      bg="gradients.transaction-card"
-      borderWidth={1}
-      backdropFilter="blur(16px)"
-      dropShadow="0px 8px 6px 0px #00000026"
+      bg="gray.700"
+      cursor="pointer"
+      rounded="2xl"
       {...rest}
     >
-      <VStack flex={1} alignItems="flex-start">
-        <HStack flex={1} justifyContent="space-between" mb={1}>
-          <HStack>
-            <Avatar variant="roundedSquare" src={avatar} key={address} />
-            <Box ml={2}>
-              <Heading
-                variant="title-md"
-                color="grey.200"
-                maxW="300px"
-                isTruncated
-              >
-                {nickname}
-              </Heading>
-              <Text
-                variant="description"
-                color="grey.500"
-                wordBreak="break-word"
-              >
-                {address}
-              </Text>
-            </Box>
-          </HStack>
-        </HStack>
+      <Card.Body flexDirection="row" alignItems="center" gap={3}>
+        <Avatar
+          shape="rounded"
+          boxSize="4.5rem"
+          key={address}
+          src={avatar}
+          name={nickname || address}
+        />
 
-        <Divider borderColor="grey.600" my={1} />
+        <VStack gap={4} flex={1}>
+          <Card.Header
+            p={0}
+            w="full"
+            flexDirection="row"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <Heading
+              as="h3"
+              color="gray.100"
+              fontSize="xs"
+              fontWeight="bold"
+              maxW={{
+                base: isExtraSmall ? '55px' : isLitteSmall ? '80px' : '150px',
+                sm: '95px',
+                md: '210px',
+                lg: '155px',
+                xl: '200px',
+              }}
+              lineHeight="normal"
+              truncate
+            >
+              {nickname}
+            </Heading>
 
-        <HStack w="full" justifyContent={{ base: 'end', sm: 'start' }}>
-          <IconButton
-            aria-label="Copy"
-            variant="icon"
-            icon={<Icon as={CopyIcon} color="grey.200" fontSize={18} />}
-            onClick={() => {
-              clipboard.onCopy();
-              toast({
-                position: 'top-right',
-                duration: 2000,
-                isClosable: false,
-                title: 'Copied to clipboard',
-                icon: <Icon fontSize="2xl" color="brand.500" as={CheckIcon} />,
-              });
-            }}
-          />
-          {showActionButtons && (
-            <>
-              <IconButton
-                aria-label="Edit"
-                variant="icon"
-                icon={<Icon as={EditIcon} color="grey.200" fontSize={18} />}
-                onClick={handleEdit}
-              />
-              <IconButton
-                aria-label="Delete"
-                variant="icon"
-                icon={<Icon as={RemoveIcon} color="grey.200" fontSize={18} />}
-                onClick={handleDelete}
-              />
-            </>
-          )}
-        </HStack>
-      </VStack>
-    </Card>
+            <HStack>
+              <IconTooltipButton
+                onClick={copy}
+                tooltipContent={copied ? 'Copied' : 'Copy Address'}
+                placement="top"
+              >
+                <Icon
+                  as={copied ? RiFileCopyFill : CopyTopMenuIcon}
+                  color="gray.200"
+                  w="12px"
+                />
+              </IconTooltipButton>
+
+              {showActionButtons && (
+                <>
+                  <IconTooltipButton
+                    aria-label="Edit"
+                    tooltipContent="Edit"
+                    onClick={handleEdit}
+                    placement="top"
+                  >
+                    <Icon as={EditIcon2} color="gray.200" w="12px" />
+                  </IconTooltipButton>
+
+                  <IconTooltipButton
+                    aria-label="Delete"
+                    tooltipContent="Delete"
+                    onClick={handleDelete}
+                    placement="top"
+                  >
+                    <Icon as={RemoveIcon} color="gray.200" w="12px" />
+                  </IconTooltipButton>
+                </>
+              )}
+            </HStack>
+          </Card.Header>
+
+          <Card.Footer p={0} w="full">
+            <Text fontSize="xs" color="gray.300" wordBreak="break-word">
+              {addressWithChecksum}
+            </Text>
+          </Card.Footer>
+        </VStack>
+      </Card.Body>
+    </Card.Root>
   );
 };
 

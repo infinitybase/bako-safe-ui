@@ -8,7 +8,7 @@ import {
   useSortTokenInfosArray,
 } from '@/modules/core';
 import { parseURI } from '@/modules/core/utils/formatter';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { ITransactionField } from '../create/useCreateTransactionForm';
 

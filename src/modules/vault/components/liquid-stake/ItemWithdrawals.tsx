@@ -1,4 +1,4 @@
-import { Box, Text } from '@chakra-ui/react';
+import { Box, Text } from 'bako-ui';
 import { memo, ReactElement } from 'react';
 
 interface WithdrawlItemProps {
@@ -36,7 +36,7 @@ export const ItemWithdrawals = memo(
           <Text
             fontWeight={{ base: 'normal', md: 600 }}
             fontSize={12}
-            color={'#868079'}
+            color={'grey.425'}
             align={{ base: 'left', md: 'center' }}
           >
             {description}

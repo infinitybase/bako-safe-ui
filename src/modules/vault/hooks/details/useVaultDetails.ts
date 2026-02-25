@@ -1,6 +1,6 @@
 import { useCLI } from '@/modules/cli/hooks';
 import { useGetParams } from '@/modules/core';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { useSidebar } from '../details';
 

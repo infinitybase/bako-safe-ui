@@ -1,5 +1,5 @@
 import {
-  AccordionButton,
+  Accordion,
   Button,
   ButtonProps,
   HStack,
@@ -7,22 +7,23 @@ import {
   IconButton,
   IconButtonProps,
   StackProps,
-  useAccordionItemState,
-} from '@chakra-ui/react';
+  useAccordionItemContext,
+} from 'bako-ui';
+import { memo } from 'react';
 
 import { CheckIcon, RemoveIcon } from '@/components';
 import { EditIcon } from '@/components/icons/edit-icon';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 type AccordionActionProp = Pick<
   ButtonProps,
-  'onClick' | 'isDisabled' | 'isLoading'
+  'onClick' | 'disabled' | 'loading'
 >;
 
-const AccordionEditAction = (props: AccordionActionProp) => {
-  const { isOpen } = useAccordionItemState();
+const AccordionEditAction = memo((props: AccordionActionProp) => {
+  const { expanded } = useAccordionItemContext();
 
-  if (isOpen) return null;
+  if (expanded) return null;
 
   return (
     <IconButton
@@ -32,60 +33,77 @@ const AccordionEditAction = (props: AccordionActionProp) => {
       _hover={{}}
       _active={{}}
       bgColor="transparent"
+      height={4}
+      minWidth={4}
       aria-label="Edit transaction"
-      icon={<Icon fontSize="xl" color="grey.200" as={EditIcon} />}
       onClick={props.onClick}
-    />
+    >
+      <Icon w={4} color="gray.200" as={EditIcon} />
+    </IconButton>
   );
-};
+});
 
-const AccordionConfirmAction = (props: AccordionActionProp) => {
-  const { isOpen } = useAccordionItemState();
+AccordionEditAction.displayName = 'AccordionEditAction';
+
+const AccordionConfirmAction = memo((props: AccordionActionProp) => {
+  const { expanded } = useAccordionItemContext();
 
   return (
     <Button
       maxW="fit-content"
-      bgColor="brand.500"
+      bgColor="primary.main"
       border="none"
       p={2}
       borderRadius={6}
-      size="sm"
-      isDisabled={props.isDisabled}
+      minW={0}
+      boxSize={5}
       onClick={props.onClick}
       _hover={{
-        opacity: !props.isDisabled && 0.8,
+        opacity: !props.disabled ? 0.8 : 1,
       }}
-      hidden={!isOpen}
-      isLoading={props.isLoading}
+      hidden={!expanded}
       {...props}
     >
-      <Icon fontSize="sm" color="dark.950" as={CheckIcon} />
-      <AccordionButton hidden />
+      <Accordion.ItemTrigger asChild>
+        <Icon
+          fontSize="sm"
+          color="primary.contrast"
+          boxSize="24px"
+          as={CheckIcon}
+        />
+      </Accordion.ItemTrigger>
     </Button>
   );
-};
+});
 
-const AccordionDeleteAction = (props: Omit<IconButtonProps, 'aria-label'>) => (
-  <IconButton
-    p={0}
-    h="auto"
-    minW="auto"
-    _hover={{}}
-    _active={{}}
-    bgColor="transparent"
-    aria-label="Remove transaction"
-    icon={<Icon fontSize="xl" color="grey.200" as={RemoveIcon} />}
-    {...props}
-  />
+AccordionConfirmAction.displayName = 'AccordionConfirmAction';
+
+const AccordionDeleteAction = memo(
+  (props: Omit<IconButtonProps, 'aria-label'>) => (
+    <IconButton
+      p={0}
+      h="auto"
+      minW="auto"
+      _hover={{}}
+      _active={{}}
+      bgColor="transparent"
+      aria-label="Remove transaction"
+      {...props}
+    >
+      <Icon w={4} color="gray.200" as={RemoveIcon} />
+    </IconButton>
+  ),
 );
 
-const AccordionActions = ({ children, ...rest }: StackProps) => {
+AccordionDeleteAction.displayName = 'AccordionDeleteAction';
+
+const AccordionActions = memo(({ children, ...rest }: StackProps) => {
   const {
     screenSizes: { isExtraSmall },
   } = useWorkspaceContext();
   return (
     <HStack
-      spacing={4}
+      gap={4}
       w={isExtraSmall ? 'full' : 'unset'}
       justifyContent={isExtraSmall ? 'space-between' : 'unset'}
       {...rest}
@@ -93,7 +111,9 @@ const AccordionActions = ({ children, ...rest }: StackProps) => {
       {children}
     </HStack>
   );
-};
+});
+
+AccordionActions.displayName = 'AccordionActions';
 
 export {
   AccordionActions,

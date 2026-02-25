@@ -1,9 +1,9 @@
-import { Flex } from '@chakra-ui/react';
+import { Flex } from 'bako-ui';
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 
 import { CreateContactDialog } from '@/modules';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { Sidebar } from '../../modules/vault/layout/sidebar';
 import { Container } from './container';

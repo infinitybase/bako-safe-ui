@@ -1,5 +1,5 @@
 import { PredicateResponseWithWorkspace } from '@/modules/vault';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { createVault } from './createVault';
 import { instantiateVault } from './instantiateVault';
@@ -12,7 +12,7 @@ const VAULT_QUERY_KEYS = {
 
 interface UseCreateBakoSafeVaultParams {
   onSuccess: (data: PredicateResponseWithWorkspace) => void;
-  onError: () => void;
+  onError: (error: unknown) => void;
 }
 
 interface UseCreateBakoSafeVaultPayload {

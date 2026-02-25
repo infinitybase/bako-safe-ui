@@ -10,7 +10,7 @@ import {
   AssetMap,
   NativeAssetId,
 } from '@/modules/core/utils';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 export interface ITransactionField {
   asset: string;
@@ -18,13 +18,14 @@ export interface ITransactionField {
   amount: string;
   fee?: string;
   resolvedLabel?: string;
+  usdEstimate?: number;
 }
 
 export interface ITransactionForm {
-  name?: string;
-  handle?: string;
-  resolver?: string;
-  transactions?: ITransactionField[];
+  name: string | undefined;
+  handle: string | undefined;
+  resolver: string | undefined;
+  transactions: ITransactionField[] | undefined;
 }
 
 export type UseCreateTransactionFormParams = {
@@ -198,7 +199,10 @@ const useCreateTransactionForm = (params: UseCreateTransactionFormParams) => {
               const isValid =
                 AddressUtils.isValid(address) && !isAssetIdOrAssetAddress;
               if (!isValid) return false;
-              if (AddressUtils.isPasskey(address)) {
+              if (
+                AddressUtils.isPasskey(address) ||
+                AddressUtils.isSocial(address)
+              ) {
                 return false;
               }
               return addressValidator.isValid(address);
@@ -208,6 +212,7 @@ const useCreateTransactionForm = (params: UseCreateTransactionFormParams) => {
           },
         ),
       resolvedLabel: yup.string().optional(),
+      usdEstimate: yup.number().optional(),
     });
 
     const schema = yup.object({
@@ -233,6 +238,7 @@ const useCreateTransactionForm = (params: UseCreateTransactionFormParams) => {
           amount: '',
           fee: '',
           resolvedLabel: '',
+          usdEstimate: 0,
         },
       ],
     },

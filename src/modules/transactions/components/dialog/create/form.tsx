@@ -1,21 +1,13 @@
-import {
-  Box,
-  BoxProps,
-  Divider,
-  FormControl,
-  FormHelperText,
-  FormLabel,
-  Heading,
-  Input,
-} from '@chakra-ui/react';
+import { useQuery } from '@tanstack/react-query';
+import { Box, BoxProps, Field, Icon, Input, InputGroup } from 'bako-ui';
 import { bn } from 'fuels';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useRef } from 'react';
 import { Controller, FormProvider } from 'react-hook-form';
 
-import { Dialog } from '@/components';
+import { CloseCircle } from '@/components';
 import { UseCreateTransaction } from '@/modules/transactions/hooks';
 import { UseVaultDetailsReturn } from '@/modules/vault';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { Recipient } from './recipient';
 
@@ -39,29 +31,25 @@ const CreateTransactionForm = (props: CreateTransactionFormProps) => {
     isFeeCalcLoading,
     getBalanceAvailable,
   } = props;
+  const recipientsListRef = useRef<HTMLDivElement>(null);
 
   const { providerInstance } = useWorkspaceContext();
-
-  const [ethAssetId, setEthAssetId] = useState<string | undefined>();
-
-  useEffect(() => {
-    const fetchEthAssetId = async () => {
+  const { data: baseAssetId } = useQuery({
+    queryKey: ['baseAssetId'],
+    queryFn: async () => {
       const provider = await providerInstance;
-      const baseAssetId = await provider.getBaseAssetId();
-      setEthAssetId(baseAssetId);
-    };
-
-    fetchEthAssetId();
-  }, [providerInstance]);
+      return provider.getBaseAssetId();
+    },
+  });
 
   const { hasEthForFee } = useMemo(() => {
-    if (!ethAssetId) return { hasEthForFee: false };
+    if (!baseAssetId) return { hasEthForFee: false };
 
     let feeAlreadyAdded = false;
 
     const used = transactionsFields.fields.reduce((acc, _, index) => {
       const transaction = form.watch(`transactions.${index}`);
-      if (transaction.asset !== ethAssetId) return acc;
+      if (transaction?.asset !== baseAssetId) return acc;
 
       const amount = Number(transaction.amount || 0);
       let fee = 0;
@@ -74,7 +62,7 @@ const CreateTransactionForm = (props: CreateTransactionFormProps) => {
       return acc + amount + fee;
     }, 0);
 
-    const asset = assets.assets?.find((a) => a.assetId === ethAssetId);
+    const asset = assets.assets?.find((a) => a.assetId === baseAssetId);
     const totalEth = asset?.amount ? bn(asset.amount).formatUnits() : 0;
 
     const hasEnough = Number(totalEth) >= Number(used.toFixed(9));
@@ -83,51 +71,50 @@ const CreateTransactionForm = (props: CreateTransactionFormProps) => {
       totalEthUsed: used,
       hasEthForFee: hasEnough,
     };
-  }, [transactionsFields, form, assets.assets, ethAssetId]);
+  }, [transactionsFields, form, assets.assets, baseAssetId]);
 
   return (
     <FormProvider {...form}>
-      <Box w="full" {...props}>
-        <Divider mt={2} mb={7} borderColor={'grey.425'} />
-
+      <Box w="full" h="100%" display="flex" flexDirection="column" {...props}>
         <Controller
           control={form.control}
           name="name"
           render={({ field, fieldState }) => (
-            <FormControl isInvalid={fieldState.invalid}>
-              <Input
-                maxLength={27}
-                value={field.value?.trimStart()}
-                onChange={field.onChange}
-                placeholder=" "
-                variant="dark"
-              />
-              <FormLabel id="transaction_name">Transaction name</FormLabel>
-              <FormHelperText color="error.500">
-                {fieldState.error?.message}
-              </FormHelperText>
-            </FormControl>
+            <Field.Root invalid={!!fieldState.error} pb="10px">
+              <InputGroup
+                bg="gray.600"
+                rounded="8px"
+                endElement={
+                  <Icon
+                    as={CloseCircle}
+                    display={field.value ? 'block' : 'none'}
+                    onClick={() => field.onChange('')}
+                  />
+                }
+              >
+                <Input
+                  maxLength={27}
+                  variant="subtle"
+                  placeholder="Transaction name"
+                  _placeholder={{
+                    color: 'textSecondary',
+                  }}
+                  {...field}
+                  onChange={({ target }) => field.onChange(target.value)}
+                />
+              </InputGroup>
+              <Field.ErrorText>{fieldState.error?.message}</Field.ErrorText>
+            </Field.Root>
           )}
         />
 
-        <Dialog.Section
-          mb={8}
-          mt={7}
-          title={
-            <Heading fontSize="lg" fontWeight="bold" color="white">
-              Who for?
-            </Heading>
-          }
-          description="Set the recipient(s) for this transfer. You can set up to 10 recipients."
-          descriptionFontSize="sm"
-        />
-
         <Recipient.List
+          ref={recipientsListRef}
           accordion={accordion}
           transactions={transactionsFields}
           allAssetsUsed={form.allAssetsUsed}
           hasEthForFee={hasEthForFee}
-          ethAssetId={ethAssetId}
+          ethAssetId={baseAssetId}
         >
           {transactionsFields.fields.map((transaction, index) => (
             <Recipient.Item
@@ -140,8 +127,7 @@ const CreateTransactionForm = (props: CreateTransactionFormProps) => {
               onDelete={transactionsFields.remove}
               nicks={nicks}
               index={index}
-              hasEthForFee={hasEthForFee}
-              ethAssetId={ethAssetId}
+              listRef={recipientsListRef}
             />
           ))}
         </Recipient.List>

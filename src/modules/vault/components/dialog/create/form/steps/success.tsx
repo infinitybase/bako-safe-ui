@@ -1,21 +1,18 @@
-import { Icon, TabPanel, Text, VStack } from '@chakra-ui/react';
+import { Icon, Stack, Text } from 'bako-ui';
 
 import { DoneIcon } from '@/components/icons/done-icon';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const VaultSuccessStep = () => {
-  const {
-    screenSizes: { isMdHeight },
-  } = useWorkspaceContext();
   return (
-    <TabPanel p={0} minH={450} h="full" placeContent="center">
-      <VStack mt={{ base: isMdHeight ? 50 : 60, xs: 30 }}>
-        <Icon fontSize={100} as={DoneIcon} />
-        <Text fontWeight={700} fontSize={16} color="grey.50">
-          The vault has been created!
-        </Text>
-      </VStack>
-    </TabPanel>
+    <Stack p={0} h="full" alignItems="center" justifyContent="center" gap={6}>
+      <Icon boxSize="48px" as={DoneIcon} />
+      <Text fontWeight={700} fontSize="md" color="gray.50">
+        The account has been created!
+      </Text>
+      <Text fontSize="sm" color="textSecondary">
+        You can now create transactions.
+      </Text>
+    </Stack>
   );
 };
 

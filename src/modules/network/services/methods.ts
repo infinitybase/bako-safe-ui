@@ -39,7 +39,9 @@ export type CheckNetworkPayload = {
 
 export type CreateNetworkResponse = void;
 export type DeleteNetworkResponse = void;
-export type SelectNetworkResponse = boolean;
+export type SelectNetworkResponse = {
+  network: CustomNetwork;
+};
 export type CheckNetworkResponse = string | undefined;
 
 const appVersion = import.meta.env.VITE_APP_VERSION;

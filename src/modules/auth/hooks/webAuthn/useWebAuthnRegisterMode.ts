@@ -22,7 +22,6 @@ const useWebAuthnRegisterMode = (params: UseWebAuthnRegisterModeParams) => {
   const { form, setCreatedAcccountUsername, setMode, setTab } = params;
 
   const [isRegistering, setIsRegistering] = useState(false);
-  const [registerProgress, setRegisterProgress] = useState(0);
 
   const { isSmall } = useScreenSize();
   const { warningToast } = useContactToast();
@@ -31,13 +30,11 @@ const useWebAuthnRegisterMode = (params: UseWebAuthnRegisterModeParams) => {
 
   const handleRegister = form.handleSubmit(async ({ username }) => {
     setIsRegistering(true);
-    setRegisterProgress(50);
 
     setModalIsOpen(false);
 
     await createWebAuthnAccount.mutateAsync(username, {
       onSuccess: async () => {
-        setRegisterProgress(100);
         setTimeout(() => {
           setIsRegistering(false);
           setCreatedAcccountUsername(username);
@@ -46,7 +43,6 @@ const useWebAuthnRegisterMode = (params: UseWebAuthnRegisterModeParams) => {
         }, 800);
       },
       onError: () => {
-        setRegisterProgress(0);
         setIsRegistering(false);
         warningToast({
           title: 'Account creation failed',
@@ -58,7 +54,7 @@ const useWebAuthnRegisterMode = (params: UseWebAuthnRegisterModeParams) => {
     });
   });
 
-  return { isRegistering, registerProgress, handleRegister };
+  return { isRegistering, handleRegister };
 };
 
 export { useWebAuthnRegisterMode };

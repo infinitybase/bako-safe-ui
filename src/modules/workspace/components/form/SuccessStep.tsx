@@ -1,12 +1,4 @@
-import {
-  Box,
-  Button,
-  Center,
-  Divider,
-  Heading,
-  HStack,
-  Icon,
-} from '@chakra-ui/react';
+import { Box, Button, Center, Separator, Heading, HStack, Icon } from 'bako-ui';
 
 import { SquarePlusIcon } from '@/components';
 import { TransactionsBoxIcon } from '@/components/icons/transactions-box-icon';
@@ -30,8 +22,8 @@ const SuccesStep = (props: SuccessStepProps) => (
         your workflow!
       </Heading>
     </Box>
-    <Divider m={4} borderColor="dark.100" />
-    <HStack spacing={4} justifyContent="center">
+    <Separator m={4} borderColor="dark.100" />
+    <HStack gap={4} justifyContent="center">
       <Button
         border="none"
         bgColor="dark.100"

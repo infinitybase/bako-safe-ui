@@ -1,16 +1,15 @@
-import { Icon } from '@chakra-ui/icons';
 import {
-  As,
   Box,
   Button,
-  Center,
-  Divider,
+  Flex,
   Heading,
   HStack,
+  Icon,
   Image,
+  Separator,
   Text,
   VStack,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 
 import TransactionsBoxIcon from '@/assets/transactions-icon.png';
 
@@ -22,7 +21,7 @@ interface SuccessStepProps {
   showAction?: boolean;
   title: string;
   description: string;
-  membersFormIcon?: As;
+  membersFormIcon?: React.ElementType;
   hasCloseButton?: boolean;
 }
 
@@ -38,7 +37,7 @@ const FeedbackSuccess = ({
   hasCloseButton,
 }: SuccessStepProps) => {
   return (
-    <Center
+    <Flex
       mt={hasCloseButton ? -8 : 'unset'}
       flexDirection="column"
       pt={{ xs: 40, sm: 'unset' }}
@@ -72,7 +71,7 @@ const FeedbackSuccess = ({
         position={{ base: 'absolute', sm: 'unset' }}
         bottom={4}
       >
-        <Divider
+        <Separator
           maxW={440}
           hidden={!showAction}
           mb={8}
@@ -81,14 +80,14 @@ const FeedbackSuccess = ({
         <HStack
           w="full"
           hidden={!showAction}
-          spacing={{ base: 2, xs: 4 }}
+          gap={{ base: 2, xs: 4 }}
           justifyContent="center"
         >
           <Button
             w={{ base: '50%', xs: '45%' }}
             border="1px solid white"
             bgColor="transparent"
-            variant="secondary"
+            variant="outline"
             fontSize={{ base: 'xs', xs: 'unset' }}
             onClick={onSecondaryAction}
             _hover={{
@@ -102,7 +101,6 @@ const FeedbackSuccess = ({
             w={{ base: '50%', xs: '45%' }}
             border="none"
             bgColor="brand.500"
-            variant="primary"
             fontSize={{ base: 'xs', xs: 'unset' }}
             onClick={onPrimaryAction}
             _hover={{
@@ -113,7 +111,7 @@ const FeedbackSuccess = ({
           </Button>
         </HStack>
       </VStack>
-    </Center>
+    </Flex>
   );
 };
 

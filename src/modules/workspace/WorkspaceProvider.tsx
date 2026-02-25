@@ -15,17 +15,7 @@ const WorkspaceProvider = ({ children }: { children: React.ReactNode }) => {
     </WorkspaceContext.Provider>
   );
 };
-export default WorkspaceProvider;
 
-const useWorkspaceContext = () => {
-  const context = useContext(WorkspaceContext);
-  if (!context) {
-    throw new Error(
-      'useWorkspaceContext must be used within WorkspaceProvider',
-    );
-  }
+export { WorkspaceProvider };
 
-  return context;
-};
-
-export { WorkspaceProvider, useWorkspaceContext };
+export default WorkspaceContext;

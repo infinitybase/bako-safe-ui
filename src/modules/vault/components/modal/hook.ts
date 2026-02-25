@@ -5,7 +5,7 @@ import { useInView } from 'react-intersection-observer';
 import { Pages } from '@/modules/core/routes';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 import { useVaultListRequest } from '@/modules/vault/hooks';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { PredicateAndWorkspace } from '../../services/methods';
 

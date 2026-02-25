@@ -1,4 +1,5 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
+import { useMemo } from 'react';
 
 import { DEFAULT_INITIAL_PAGE_PARAM } from '@/utils/constants';
 
@@ -26,11 +27,25 @@ const useUserVaultRequest = (
     refetchOnWindowFocus: false,
     enabled: window.location.pathname != '/',
     refetchOnMount: false,
-    staleTime: 500,
+    staleTime: 1000 * 60 * 5, // 5 minutes - socket events handle real-time updates
   });
 
+  const vaults = useMemo(
+    () =>
+      data?.pages.flatMap((page) =>
+        page.data.map((vault) => ({
+          ...vault,
+          configurable:
+            typeof vault.configurable === 'string'
+              ? JSON.parse(vault.configurable)
+              : vault.configurable,
+        })),
+      ) ?? [],
+    [data],
+  );
+
   return {
-    vaults: data?.pages.map((page) => page.data).flat() ?? [],
+    vaults,
     ...query,
   };
 };

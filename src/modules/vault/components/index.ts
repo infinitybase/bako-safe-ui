@@ -1,3 +1,5 @@
+export * from './AccountAllocation';
+export * from './AccountOverview';
 export * from './AssetsDetails';
 export * from './box';
 export * from './dialog';

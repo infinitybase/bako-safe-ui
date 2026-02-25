@@ -12,6 +12,7 @@ import { GET_API_TOKENS_QUERY_KEY } from '../list';
 import { TabState } from '../useAPIToken';
 import { useCreateAPITokenForm } from './useCreateAPITokenForm';
 import { useCreateAPITokenRequest } from './useCreateAPITokenRequest';
+import { sanitizeInput } from "@/utils/sanitize-input";
 
 export type UseCreateAPITokenReturn = ReturnType<typeof useCreateAPIToken>;
 
@@ -19,6 +20,8 @@ const useCreateAPIToken = (
   setTab: Dispatch<React.SetStateAction<TabState>>,
 ) => {
   const [createdAPIKey, setCreatedAPIKey] = useState<string>('');
+  const [createdAPIKeyName, setCreatedAPIKeyName] = useState<string>('');
+  const [createdAPIKeyTransactionTitle, setCreatedAPIKeyTransactionTitle] = useState<string | undefined>(undefined);
   const {
     vaultPageParams: { vaultId },
   } = useGetParams();
@@ -29,10 +32,10 @@ const useCreateAPIToken = (
 
   const handleSubmit = form.handleSubmit(async (data) => {
     const formattdeData: CreateAPITokenPayload = {
-      name: data.name,
+      name: sanitizeInput(data.name),
       ...(data.transactionName && {
         config: {
-          transactionTitle: data.transactionName,
+          transactionTitle: sanitizeInput(data.transactionName),
         },
       }),
     };
@@ -46,6 +49,8 @@ const useCreateAPIToken = (
         });
         setTab(TabState.SUCCESS);
         setCreatedAPIKey(data.token);
+        setCreatedAPIKeyName(data.name);
+        setCreatedAPIKeyTransactionTitle(data.config?.transactionTitle);
       },
       onError: () => {
         errorToast({
@@ -69,6 +74,14 @@ const useCreateAPIToken = (
     createdAPIKey: {
       value: createdAPIKey,
       set: setCreatedAPIKey,
+    },
+    createdAPIKeyName: {
+      value: createdAPIKeyName,
+      set: setCreatedAPIKeyName,
+    },
+    createdAPIKeyTransactionTitle: {
+      value: createdAPIKeyTransactionTitle,
+      set: setCreatedAPIKeyTransactionTitle,
     },
   };
 };

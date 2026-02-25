@@ -1,6 +1,5 @@
-import { SignInWrapper } from '@/modules/auth/components';
-
-import { useWebSignIn } from '../hooks/signIn/useWebSignIn';
+import { SignInWrapper } from '../components';
+import { useWebSignIn } from '../hooks';
 
 const WebSignInPage = () => {
   const {
@@ -11,10 +10,14 @@ const WebSignInPage = () => {
     accountsOptions,
     createdAcccountUsername,
     inputBadge,
+    mode,
+    currentOpenConnector,
+    unableToConnect,
     handleRegister,
     handleSelectWallet,
     handleInputChange,
-    mode,
+    setMode,
+    connect,
   } = useWebSignIn();
 
   return (
@@ -27,9 +30,13 @@ const WebSignInPage = () => {
       inputBadge={inputBadge}
       createdAcccountUsername={createdAcccountUsername}
       isAnyWalletConnectorOpen={isAnyWalletConnectorOpen}
+      currentOpenConnector={currentOpenConnector}
+      unableToConnectWithSocial={unableToConnect}
       handleInputChange={handleInputChange}
       handleSelectWallet={handleSelectWallet}
       handleRegister={handleRegister}
+      handleSocialConnect={connect}
+      setMode={setMode}
     />
   );
 };

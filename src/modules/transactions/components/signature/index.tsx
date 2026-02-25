@@ -1,4 +1,4 @@
-import { Badge, CircularProgress, Icon } from '@chakra-ui/react';
+import { Badge, Loader } from 'bako-ui';
 
 import { PendingIcon } from '@/components';
 
@@ -15,11 +15,11 @@ const WaitingSignatureBadge = (props: WaitingSignatureBadgeProps) => {
 
   if (isLoading) {
     return (
-      <CircularProgress
-        size="20px"
-        trackColor="dark.100"
-        color="brand.500"
-        isIndeterminate
+      <Loader
+        size="lg"
+        css={{ '--spinner-track-color': 'colors.gray.700' }}
+        colorPalette="yellow"
+        display={{ base: 'none', sm: 'inline-flex' }}
       />
     );
   }
@@ -29,8 +29,14 @@ const WaitingSignatureBadge = (props: WaitingSignatureBadgeProps) => {
   }
 
   return (
-    <Badge h={5} variant="yellow" fontSize="xs">
-      <Icon as={PendingIcon} fontSize={12} mr={1} />
+    <Badge
+      h={5}
+      colorPalette="yellow"
+      variant="outline"
+      fontSize="xs"
+      display={{ base: 'none', sm: 'inline-flex' }}
+    >
+      <PendingIcon w="12px" mr={1} />
       {`${quantity} ${label}`}
     </Badge>
   );

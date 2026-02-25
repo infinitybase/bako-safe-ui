@@ -1,12 +1,11 @@
-import { BoxProps, Text, VStack } from '@chakra-ui/react';
+import { BoxProps, StackProps, Text, VStack } from 'bako-ui';
 
 import { PredicateAndWorkspace } from '@/modules/vault/services/methods';
 import { limitCharacters } from '@/utils';
 
-interface TransactionBasicInfosProps extends BoxProps {
+interface TransactionBasicInfosProps extends StackProps {
   vault: PredicateAndWorkspace;
   transactionName: string;
-  spacingBetweenNameAndDesc?: boolean;
   nameSxProps?: BoxProps;
   descSxProps?: BoxProps;
 }
@@ -14,30 +13,30 @@ interface TransactionBasicInfosProps extends BoxProps {
 const BasicInfos = ({
   vault,
   transactionName,
-  spacingBetweenNameAndDesc = true,
   nameSxProps,
   descSxProps,
   ...rest
 }: TransactionBasicInfosProps) => {
   return (
-    <VStack alignItems="flex-start" spacing={0} {...rest} w="full">
+    <VStack alignItems="flex-start" gap={0} {...rest} w="full">
       <Text
-        color="grey.75"
+        color="textSecondary"
         mt={0}
-        fontSize="sm"
+        fontSize="xs"
         wordBreak="break-all"
-        noOfLines={1}
+        lineClamp={1}
+        lineHeight="22.5px"
         {...nameSxProps}
-        mb={spacingBetweenNameAndDesc ? 2 : 0}
       >
         {limitCharacters(transactionName, 28)}
       </Text>
       <Text
-        color="grey.425"
+        color="gray.400"
         mt={0}
         wordBreak="break-all"
-        noOfLines={1}
+        lineClamp={1}
         fontSize="xs"
+        lineHeight="22.5px"
         {...descSxProps}
       >
         {vault.name}
@@ -46,7 +45,7 @@ const BasicInfos = ({
       {/* Commented out code to temporarily disable workspaces. */}
 
       {/* {!vault.workspace.single && (
-        <HStack spacing={1}>
+        <HStack gap={1}>
           <Icon
             as={HandbagIcon}
             fontSize={{ base: 'xs', sm: 14 }}
