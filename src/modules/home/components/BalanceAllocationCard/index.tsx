@@ -14,9 +14,10 @@ import { useAssetMap } from '@/modules/assets-tokens/hooks/useAssetMap';
 const MotionCardRoot = motion(Card.Root);
 
 const BalanceAllocationCard = memo(() => {
-  const { allocation, isLoading } = useUserAllocationRequest();
+  const { allocation, isLoading, isFetching } = useUserAllocationRequest();
   const chainId = getChainId();
   const assetsMap = useAssetMap(chainId).assetsMap;
+  const isPending = isLoading || isFetching;
   const chartData = useMemo(
     () =>
       allocation?.data.map((asset, i) => ({
@@ -38,12 +39,12 @@ const BalanceAllocationCard = memo(() => {
   const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
-    if (isLoading) {
+    if (isPending) {
       setExpanded(false);
     } else if (!isEmpty) {
       setExpanded(true);
     }
-  }, [isLoading, isEmpty]);
+  }, [isPending, isEmpty]);
 
   return (
     <MotionCardRoot
@@ -56,14 +57,14 @@ const BalanceAllocationCard = memo(() => {
       style={{ overflow: 'hidden', position: 'relative' }}
       initial={{ height: '100%' }}
       animate={{
-        height: expanded && !isEmpty ? 390 : '100%',
+        height: expanded && !isEmpty && !isPending ? 390 : '100%',
       }}
       transition={{ duration: 0.7, ease: 'easeOut' }}
     >
-      {isLoading && <Skeleton height="100%" w="100%" />}
+      {isPending && <Skeleton height="100%" w="100%" />}
 
       <Card.Header>
-        {!isLoading && (
+        {!isPending && (
           <Heading
             color="textPrimary"
             fontSize="sm"
@@ -83,7 +84,7 @@ const BalanceAllocationCard = memo(() => {
         position="relative"
         w="full"
       >
-        {!isEmpty ? (
+        {!isPending && !isEmpty ? (
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -100,7 +101,7 @@ const BalanceAllocationCard = memo(() => {
           </motion.div>
         ) : null}
 
-        {!isLoading && isEmpty && (
+        {!isPending && isEmpty && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}

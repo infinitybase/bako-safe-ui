@@ -82,3 +82,21 @@ export const invalidateQueriesOnNetworkSwitch = () => {
     },
   });
 };
+
+export const resetQueriesOnNetworkSwitch = async () => {
+  await queryClient.cancelQueries();
+
+  queryClient.removeQueries({
+    predicate: (query) => {
+      const { queryKey } = query;
+
+      if (!Array.isArray(queryKey)) return true;
+
+      const firstKey = queryKey[0];
+
+      if (typeof firstKey !== 'string') return true;
+
+      return !IMMUTABLE_QUERY_KEYS.includes(firstKey);
+    },
+  });
+};

@@ -23,7 +23,7 @@ interface AdvancedDonutProps
   pieChartProps?: React.ComponentProps<typeof PieChart>;
   legendProps?: React.ComponentProps<typeof Legend>;
   showLegend?: boolean;
-  visibleBalance?: boolean;
+  visibleBalance: boolean;
 }
 
 const AdvancedDonut = ({
@@ -32,7 +32,7 @@ const AdvancedDonut = ({
   pieChartProps,
   legendProps,
   showLegend = true,
-  visibleBalance = false,
+  visibleBalance,
   ...props
 }: AdvancedDonutProps) => {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
