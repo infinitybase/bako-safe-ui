@@ -58,8 +58,9 @@ const useAuth = (): IUseAuthReturn => {
       callback?.();
     }
 
-    setTimeout(() => {
+    setTimeout(async () => {
       clearAuthCookies();
+      await queryClient.cancelQueries();
       queryClient.clear();
 
       const queryParams = generateRedirectQueryParams({
@@ -77,6 +78,7 @@ const useAuth = (): IUseAuthReturn => {
     localStorage.setItem(BAKO_SUPPORT_SEARCH, 'false');
     window.dispatchEvent(new Event('bako-storage-change'));
     clearAuthCookies();
+    await queryClient.cancelQueries();
     queryClient.clear();
     navigate('/?expired=true');
   };
@@ -100,7 +102,7 @@ const useAuth = (): IUseAuthReturn => {
       return { type: TypeUser.WEB_AUTHN, name: EConnectors.WEB_AUTHN };
     }
 
-    const isEvm = infos?.type as unknown as TypeUser == TypeUser.EVM;
+    const isEvm = (infos?.type as unknown as TypeUser) == TypeUser.EVM;
     if (isEvm) {
       return { type: TypeUser.EVM, name: EConnectors.EVM };
     }
