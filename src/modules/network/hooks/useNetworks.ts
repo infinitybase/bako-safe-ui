@@ -4,13 +4,11 @@ import { useContext, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useLocation } from 'react-router-dom';
 
-import { useAuth } from '@/modules';
+import { resetQueriesOnNetworkSwitch, useAuth } from '@/modules';
 import { LATEST_INFO_QUERY_KEY } from '@/modules/auth/hooks/useUserInfoRequest';
 import { localStorageKeys } from '@/modules/auth/services';
-import { invalidateQueriesOnNetworkSwitch } from '@/modules/core/utils/react-query';
 
 import NetworkSwitchContext from '../providers/NetworkSwitchProvider';
-
 import {
   availableNetWorks,
   CustomNetwork,
@@ -135,28 +133,32 @@ const useNetworks = (onClose?: () => void) => {
     selectNetworkRequest.mutate(
       { url },
       {
-        onSuccess: (response) => {
+        onSuccess: async (response) => {
           // Update userInfos.network with the response from API
           // This is more reliable than optimistic update since API returns the actual network
           if (response?.network) {
-            queryClient.setQueryData(LATEST_INFO_QUERY_KEY, (oldData: unknown) => {
-              if (!oldData || typeof oldData !== 'object') return oldData;
-              return {
-                ...oldData,
-                network: response.network,
-              };
-            });
+            queryClient.setQueryData(
+              LATEST_INFO_QUERY_KEY,
+              (oldData: unknown) => {
+                if (!oldData || typeof oldData !== 'object') return oldData;
+                return {
+                  ...oldData,
+                  network: response.network,
+                };
+              },
+            );
           }
 
-          // Smart invalidation: preserves immutable data (assets, Bako ID, etc.)
-          // while invalidating network-dependent queries
-          invalidateQueriesOnNetworkSwitch().then(() => {
+          // Controlled reset on network switch:
+          // cancels ongoing requests and removes network-dependent caches,
+          // preserving only immutable/global queries.
+          await resetQueriesOnNetworkSwitch();
+
+          setTimeout(() => {
             // Finish network switch loading state after queries are invalidated
             // Small delay to allow React Query to start fetching
-            setTimeout(() => {
-              networkSwitchContext?.finishNetworkSwitch();
-            }, 500);
-          });
+            networkSwitchContext?.finishNetworkSwitch();
+          }, 500);
         },
         onError: () => {
           // Finish network switch loading state on error
