@@ -57,8 +57,9 @@ const useAuth = (): IUseAuthReturn => {
       callback?.();
     }
 
-    setTimeout(() => {
+    setTimeout(async () => {
       clearAuthCookies();
+      await queryClient.cancelQueries();
       queryClient.clear();
 
       const queryParams = generateRedirectQueryParams({
@@ -77,6 +78,7 @@ const useAuth = (): IUseAuthReturn => {
     localStorage.setItem(BAKO_SUPPORT_SEARCH, 'false');
     window.dispatchEvent(new Event('bako-storage-change'));
     clearAuthCookies();
+    await queryClient.cancelQueries();
     queryClient.clear();
     navigate('/?expired=true');
   };
