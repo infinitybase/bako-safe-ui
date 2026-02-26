@@ -1,17 +1,8 @@
-import {
-  Box,
-  Button,
-  Grid,
-  GridItem,
-  HStack,
-  Icon,
-  Text,
-  VStack,
-} from 'bako-ui';
+import { Box, Button, Grid, GridItem, HStack, Icon, VStack } from 'bako-ui';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
-import { IoChevronBack } from 'react-icons/io5';
+import { RiLockLine } from 'react-icons/ri';
 
-import { CustomSkeleton } from '@/components';
+import { CustomSkeleton, HomeIcon } from '@/components';
 import { EmptyState } from '@/components/emptyState';
 import { Pages, PermissionRoles } from '@/modules/core';
 import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
@@ -51,20 +42,27 @@ const UserVaultsPage = () => {
   return (
     <VStack w="full" gap={6} p={{ base: 1, sm: 1 }} px={{ base: 0, sm: 8 }}>
       <CreateVaultDialog open={isOpen} onOpenChange={onOpenChange} />
+
       <HStack
-        h="10"
         w="full"
-        justifyContent={{ base: 'flex-end', sm: 'space-between' }}
-        maxW="full"
+        justifyContent="space-between"
+        pb={2}
+        flexDirection={{ base: 'column', md: 'row' }}
+        align={{ base: 'flex-start', md: 'center' }}
       >
-        <HStack visibility={{ base: 'hidden', sm: 'visible' }}>
+        <HStack w={isExtraSmall ? 'full' : 'unset'} gap={2}>
           <Button
-            colorPalette="primary"
             fontWeight="semibold"
-            fontSize={15}
-            px={3}
-            bg="dark.100"
-            color="grey.200"
+            fontSize="2xs"
+            size="xs"
+            bgColor="gray.600"
+            color="gray.200"
+            _hover={{
+              bg: 'gray.550',
+              color: 'textPrimary',
+            }}
+            gap={2}
+            p={2}
             onClick={() =>
               userInfos.onSingleWorkspace
                 ? goHome()
@@ -76,22 +74,26 @@ const UserVaultsPage = () => {
                   )
             }
           >
-            <IoChevronBack size={22} />
-            Back home
+            <HomeIcon w={5} color="gray.200" />
+            {isSmall ? '' : 'HOME'}
+          </Button>
+
+          <Button
+            flex={isExtraSmall ? 1 : 'unset'}
+            fontWeight="semibold"
+            fontSize="2xs"
+            size="xs"
+            bgColor="gray.550"
+            color="gray.200"
+            cursor="default"
+            gap={2}
+            p={2}
+          >
+            <Icon w={4} h={4} color="gray.200" as={RiLockLine} />
+            ACCOUNTS
           </Button>
         </HStack>
-      </HStack>
 
-      <HStack
-        w="full"
-        justifyContent="space-between"
-        pb={2}
-        flexDirection={{ base: 'column', md: 'row' }}
-        align={{ base: 'flex-start', md: 'center' }}
-      >
-        <Text color="white" fontWeight="semibold" fontSize="md">
-          Accounts
-        </Text>
         <HStack gap={2}>
           {value ? (
             <Button

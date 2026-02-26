@@ -83,7 +83,7 @@ const AddressBookPage = () => {
           rowGap={4}
           mb={isExtraSmall ? 4 : 'unset'}
         >
-          <HStack w={isExtraSmall ? 'full' : 'unset'} gap={3}>
+          <HStack w={isExtraSmall ? 'full' : 'unset'} gap={2}>
             <Button
               fontWeight="semibold"
               fontSize="2xs"
