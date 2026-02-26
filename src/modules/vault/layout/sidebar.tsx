@@ -64,12 +64,10 @@ const Sidebar = memo(({ onDrawer, ...rest }: SidebarProps) => {
     <Box
       w="full"
       maxW={isLargerThan1210 ? '220px' : 'full'}
-      bgColor="bg.panel"
-      position={onDrawer ? 'relative' : isLargerThan1210 ? 'fixed' : 'relative'}
-      top={onDrawer ? 'auto' : isLargerThan1210 ? 0 : 'auto'}
-      left={onDrawer ? 'auto' : isLargerThan1210 ? 0 : 'auto'}
-      zIndex={onDrawer ? 'auto' : 100}
-      h={onDrawer ? 'full' : isLargerThan1210 ? '100vh' : 'auto'}
+      bgColor={onDrawer ? 'transparent' : 'bg.panel'}
+      position="sticky"
+      top={0}
+      h="dvh"
       {...rest}
     >
       <VStack
@@ -77,7 +75,7 @@ const Sidebar = memo(({ onDrawer, ...rest }: SidebarProps) => {
         h="full"
         minH={0}
         gap={4}
-        overflowY="auto"
+        overflowY="scroll"
         css={{
           '&::-webkit-scrollbar': {
             display: 'none',

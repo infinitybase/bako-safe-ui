@@ -33,12 +33,7 @@ const VaultDashboardLayout = (props: VaultDashboardLayoutProps) => {
       />
       <Flex w="100%" flex={1}>
         {!vaultRequiredSizeToColumnLayout && <Sidebar />}
-        <Stack
-          flex={1}
-          w="100%"
-          ml={!vaultRequiredSizeToColumnLayout ? '220px' : 0}
-          minH="100vh"
-        >
+        <Stack flex={1} w="100%">
           <VaultLayoutHeader />
           <Content w="full">{props.children}</Content>
         </Stack>
