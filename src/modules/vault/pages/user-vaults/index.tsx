@@ -49,12 +49,7 @@ const UserVaultsPage = () => {
   useBalanceOutdatedSocketListener();
 
   return (
-    <VStack
-      w="full"
-      gap={6}
-      p={{ base: 1, sm: 1 }}
-      px={{ base: 'auto', sm: 8 }}
-    >
+    <VStack w="full" gap={6} p={{ base: 1, sm: 1 }} px={{ base: 0, sm: 8 }}>
       <CreateVaultDialog open={isOpen} onOpenChange={onOpenChange} />
       <HStack
         h="10"
