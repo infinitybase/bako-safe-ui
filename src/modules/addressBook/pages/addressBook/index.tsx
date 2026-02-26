@@ -1,7 +1,8 @@
 import { Box, Button, Grid, GridItem, HStack, VStack } from 'bako-ui';
 
-import { BookmarkFavoriteIcon, CustomSkeleton, HomeIcon } from '@/components';
+import { CustomSkeleton, HomeIcon } from '@/components';
 import { EmptyState } from '@/components/emptyState';
+import { AddressBook2Icon } from '@/components/icons/address-book-2';
 import { Pages, PermissionRoles } from '@/modules/core';
 import { useAddressNicknameResolver } from '@/modules/core/hooks/useAddressNicknameResolver';
 import { useWorkspaceContext } from '@/modules/workspace/hooks';
@@ -121,7 +122,7 @@ const AddressBookPage = () => {
               gap={2}
               p={2}
             >
-              <BookmarkFavoriteIcon w={4} color="gray.200" />
+              <AddressBook2Icon w={4} color="gray.200" />
               ADDRESS BOOK
             </Button>
           </HStack>
