@@ -97,10 +97,16 @@ const UserVaultsPage = () => {
         <HStack gap={2}>
           {value ? (
             <Button
+              size="xs"
+              bg="gray.700"
+              _hover={{
+                bg: 'bg.muted',
+              }}
+              color="secondary.contrast"
               variant="subtle"
+              px={{ base: 2, sm: 3 }}
               alignSelf={{ base: 'stretch', sm: 'flex-end' }}
               onClick={() => change(false)}
-              px={isExtraSmall ? 3 : 4}
             >
               <Icon
                 as={() => <FaEyeSlash color="grey.75" />}
@@ -112,10 +118,16 @@ const UserVaultsPage = () => {
             </Button>
           ) : (
             <Button
+              size="xs"
+              bg="gray.700"
+              _hover={{
+                bg: 'bg.muted',
+              }}
+              color="secondary.contrast"
               variant="subtle"
+              px={{ base: 2, sm: 3 }}
               alignSelf={{ base: 'stretch', sm: 'flex-end' }}
               onClick={() => change(true)}
-              px={isExtraSmall ? 3 : 4}
             >
               <Icon
                 as={() => <FaEye color="grey.75" />}
@@ -128,7 +140,14 @@ const UserVaultsPage = () => {
           )}
 
           <Button
+            size="xs"
+            bg="gray.700"
+            _hover={{
+              bg: 'bg.muted',
+            }}
+            color="secondary.contrast"
             variant="subtle"
+            px={{ base: 2, sm: 3 }}
             onClick={onOpen}
             disabled={!hasPermission([OWNER, MANAGER, ADMIN])}
           >

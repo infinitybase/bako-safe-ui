@@ -129,11 +129,8 @@ const AddAssetsDialog = ({
           <Button
             fontSize={isLitteSmall ? '12px' : '14px'}
             lineHeight="15.85px"
-            fontWeight="normal"
             letterSpacing={isLowerThanFourHundredAndThirty ? 0 : '.5px'}
-            variant="outline"
-            color="grey.75"
-            borderColor="grey.75"
+            variant="subtle"
             w="full"
             _hover={{ bg: '#f5f5f513' }}
             onClick={() => handleClose()}
