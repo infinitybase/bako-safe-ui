@@ -162,8 +162,8 @@ const AddressBookPage = () => {
         >
           {!hasContacts && listContactsRequest.isLoading && (
             <>
-              <CustomSkeleton flex={1} h="200px" borderRadius={2} />
-              <CustomSkeleton flex={1} h="200px" borderRadius={2} />
+              <CustomSkeleton flex={1} h="120px" borderRadius="2xl" />
+              <CustomSkeleton flex={1} h="120px" borderRadius="2xl" />
             </>
           )}
           {contacts?.map(({ id, nickname, user }) => {
