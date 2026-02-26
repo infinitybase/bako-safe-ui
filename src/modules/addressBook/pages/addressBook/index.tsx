@@ -157,7 +157,7 @@ const AddressBookPage = () => {
             sm: 'repeat(2, 1fr)',
             lg: 'repeat(3, 1fr)',
           }}
-          gap={6}
+          gap={{ base: 4, sm: 6 }}
           pb={0}
         >
           {!hasContacts && listContactsRequest.isLoading && (
