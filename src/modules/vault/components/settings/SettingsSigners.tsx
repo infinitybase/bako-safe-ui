@@ -22,15 +22,10 @@ const SettingsSigners = ({ vault }: SignersDetailsProps) => {
         justifyContent="space-between"
         alignItems="center"
       >
-        <Heading
-          fontSize="sm"
-          fontWeight="semibold"
-          color="textPrimary"
-          lineHeight="shorter"
-        >
+        <Heading fontSize="sm" fontWeight="semibold" color="textPrimary">
           Signers
         </Heading>
-        <Text fontSize="xs" color="gray.400" lineHeight="shorter">
+        <Text fontSize="xs" color="gray.400">
           Required{' '}
           {`${vault.data?.configurable?.SIGNATURES_COUNT ?? 0}/ ${vault.data?.members?.length ?? 0}`}
         </Text>
