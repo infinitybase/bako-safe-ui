@@ -1,9 +1,19 @@
-import { Box, Button, Grid, GridItem, HStack, Icon, VStack } from 'bako-ui';
-import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import {
+  Box,
+  Button,
+  Grid,
+  GridItem,
+  HStack,
+  Icon,
+  Text,
+  VStack,
+} from 'bako-ui';
 import { RiLockLine } from 'react-icons/ri';
 
-import { CustomSkeleton, HomeIcon } from '@/components';
+import { CustomSkeleton, HomeIcon, Plus2Icon } from '@/components';
 import { EmptyState } from '@/components/emptyState';
+import { EyeCloseIcon } from '@/components/icons/eye-close';
+import { EyeOpenIcon } from '@/components/icons/eye-open';
 import { Pages, PermissionRoles } from '@/modules/core';
 import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
 import { useCheckUserBalances } from '@/modules/home/hooks';
@@ -27,7 +37,7 @@ const UserVaultsPage = () => {
       inView,
       filter: { value, change },
     },
-    screenSizes: { isSmall, isExtraSmall },
+    screenSizes: { isSmall },
   } = useWorkspaceContext();
 
   const workspaceId = userInfos?.workspace?.id ?? '';
@@ -43,14 +53,8 @@ const UserVaultsPage = () => {
     <VStack w="full" gap={6} p={{ base: 1, sm: 1 }} px={{ base: 0, sm: 8 }}>
       <CreateVaultDialog open={isOpen} onOpenChange={onOpenChange} />
 
-      <HStack
-        w="full"
-        justifyContent="space-between"
-        pb={2}
-        flexDirection={{ base: 'column', md: 'row' }}
-        align={{ base: 'flex-start', md: 'center' }}
-      >
-        <HStack w={isExtraSmall ? 'full' : 'unset'} gap={2}>
+      <HStack w="full" justifyContent="space-between" pb={2} align="center">
+        <HStack gap={2}>
           <Button
             fontWeight="semibold"
             fontSize="2xs"
@@ -79,7 +83,6 @@ const UserVaultsPage = () => {
           </Button>
 
           <Button
-            flex={isExtraSmall ? 1 : 'unset'}
             fontWeight="semibold"
             fontSize="2xs"
             size="xs"
@@ -108,13 +111,10 @@ const UserVaultsPage = () => {
               alignSelf={{ base: 'stretch', sm: 'flex-end' }}
               onClick={() => change(false)}
             >
-              <Icon
-                as={() => <FaEyeSlash color="grey.75" />}
-                fontSize="lg"
-                ml={isSmall ? -1 : 0}
-                className="btn-icon"
-              />
-              Hide Inactives
+              <EyeCloseIcon w="14px" color="grey.75" className="btn-icon" />
+              <Text display={{ base: 'none', sm: 'inline' }}>
+                Hide inactives
+              </Text>
             </Button>
           ) : (
             <Button
@@ -125,17 +125,16 @@ const UserVaultsPage = () => {
               }}
               color="secondary.contrast"
               variant="subtle"
-              px={{ base: 2, sm: 3 }}
+              gap={0.5}
+              pr={{ base: 1, sm: 3 }}
+              pl={{ base: 1, sm: 2 }}
               alignSelf={{ base: 'stretch', sm: 'flex-end' }}
               onClick={() => change(true)}
             >
-              <Icon
-                as={() => <FaEye color="grey.75" />}
-                fontSize="lg"
-                ml={isSmall ? -1 : 0}
-                className="btn-icon"
-              />
-              Show Inactives
+              <EyeOpenIcon w="20px" color="grey.75" className="btn-icon" />
+              <Text display={{ base: 'none', sm: 'inline' }}>
+                Show inactives
+              </Text>
             </Button>
           )}
 
@@ -151,7 +150,12 @@ const UserVaultsPage = () => {
             onClick={onOpen}
             disabled={!hasPermission([OWNER, MANAGER, ADMIN])}
           >
-            Create new Account
+            <Icon
+              boxSize={4}
+              as={Plus2Icon}
+              display={{ base: 'inline', sm: 'none' }}
+            />
+            <Text display={{ base: 'none', sm: 'inline' }}>Create new</Text>
           </Button>
         </HStack>
       </HStack>

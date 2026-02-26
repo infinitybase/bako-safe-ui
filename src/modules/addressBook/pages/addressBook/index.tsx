@@ -1,6 +1,15 @@
-import { Box, Button, Grid, GridItem, HStack, VStack } from 'bako-ui';
+import {
+  Box,
+  Button,
+  Grid,
+  GridItem,
+  HStack,
+  Icon,
+  Text,
+  VStack,
+} from 'bako-ui';
 
-import { CustomSkeleton, HomeIcon } from '@/components';
+import { CustomSkeleton, HomeIcon, Plus2Icon } from '@/components';
 import { EmptyState } from '@/components/emptyState';
 import { AddressBook2Icon } from '@/components/icons/address-book-2';
 import { Pages, PermissionRoles } from '@/modules/core';
@@ -33,7 +42,7 @@ const AddressBookPage = () => {
       dialog: { contactDialog, editContactDialog, deleteContactDialog },
       handlers: { handleDeleteContact, handleOpenDialog, setContactToDelete },
     },
-    screenSizes: { isExtraSmall, isSmall },
+    screenSizes: { isSmall },
   } = useWorkspaceContext();
 
   const { data: contacts } = listContactsRequest;
@@ -75,15 +84,13 @@ const AddressBookPage = () => {
       <VStack w="full" gap={6} p={{ base: 1, sm: 1 }} px={{ base: 0, sm: 8 }}>
         <Box
           w="full"
-          h={isExtraSmall ? 20 : 10}
+          h={10}
           display="flex"
           justifyContent="space-between"
           alignItems="center"
-          flexDir={isExtraSmall ? 'column' : 'row'}
           rowGap={4}
-          mb={isExtraSmall ? 4 : 'unset'}
         >
-          <HStack w={isExtraSmall ? 'full' : 'unset'} gap={2}>
+          <HStack gap={2}>
             <Button
               fontWeight="semibold"
               fontSize="2xs"
@@ -112,7 +119,6 @@ const AddressBookPage = () => {
             </Button>
 
             <Button
-              flex={isExtraSmall ? 1 : 'unset'}
               fontWeight="semibold"
               fontSize="2xs"
               size="xs"
@@ -132,7 +138,7 @@ const AddressBookPage = () => {
             PermissionRoles?.ADMIN,
             PermissionRoles?.MANAGER,
           ]) && (
-            <Box w={isExtraSmall ? 'full' : 'unset'}>
+            <Box>
               <Button
                 w="full"
                 _hover={{
@@ -141,11 +147,16 @@ const AddressBookPage = () => {
                 }}
                 bgColor="gray.700"
                 size="xs"
-                px={3}
+                px={{ base: 0, sm: 3 }}
                 color="gray.300"
                 onClick={() => handleOpenDialog({})}
               >
-                Add new
+                <Icon
+                  boxSize={4}
+                  as={Plus2Icon}
+                  display={{ base: 'inline', sm: 'none' }}
+                />
+                <Text display={{ base: 'none', sm: 'inline' }}>Create new</Text>
               </Button>
             </Box>
           )}
