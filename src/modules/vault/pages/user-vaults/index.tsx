@@ -36,7 +36,7 @@ const UserVaultsPage = () => {
       inView,
       filter: { value, change },
     },
-    screenSizes: { isSmall, isExtraSmall },
+    screenSizes: { isSmall },
   } = useWorkspaceContext();
 
   const workspaceId = userInfos?.workspace?.id ?? '';
@@ -100,7 +100,6 @@ const UserVaultsPage = () => {
         <HStack gap={2}>
           {value ? (
             <Button
-              w="137px"
               size="xs"
               bg="gray.700"
               _hover={{
@@ -108,7 +107,7 @@ const UserVaultsPage = () => {
               }}
               color="secondary.contrast"
               variant="subtle"
-              px={{ base: 0, sm: 3 }}
+              px={{ base: 2, sm: 3 }}
               alignSelf={{ base: 'stretch', sm: 'flex-end' }}
               onClick={() => change(false)}
             >
@@ -122,7 +121,6 @@ const UserVaultsPage = () => {
             </Button>
           ) : (
             <Button
-              w="137px"
               size="xs"
               bg="gray.700"
               _hover={{
@@ -130,7 +128,7 @@ const UserVaultsPage = () => {
               }}
               color="secondary.contrast"
               variant="subtle"
-              px={{ base: 0, sm: 3 }}
+              px={{ base: 2, sm: 3 }}
               alignSelf={{ base: 'stretch', sm: 'flex-end' }}
               onClick={() => change(true)}
             >
@@ -152,7 +150,7 @@ const UserVaultsPage = () => {
             }}
             color="secondary.contrast"
             variant="subtle"
-            px={{ base: 0, sm: 3 }}
+            px={{ base: 2, sm: 3 }}
             onClick={onOpen}
             disabled={!hasPermission([OWNER, MANAGER, ADMIN])}
           >
