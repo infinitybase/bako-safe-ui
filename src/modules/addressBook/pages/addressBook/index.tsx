@@ -71,12 +71,7 @@ const AddressBookPage = () => {
         />
       )}
 
-      <VStack
-        w="full"
-        gap={6}
-        p={{ base: 1, sm: 1 }}
-        px={{ base: 'auto', sm: 8 }}
-      >
+      <VStack w="full" gap={6} p={{ base: 1, sm: 1 }} px={{ base: 0, sm: 8 }}>
         <Box
           w="full"
           h={isExtraSmall ? 20 : 10}
