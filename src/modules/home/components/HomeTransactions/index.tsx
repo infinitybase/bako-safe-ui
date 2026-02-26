@@ -49,7 +49,7 @@ const HomeTransactions = () => {
   }, [inView, hasNextPage, isFetching, fetchNextPage]);
 
   return (
-    <Box w="full" mt={{ base: 16, sm: 8 }}>
+    <Box w="full">
       <Box
         w="full"
         display="flex"
