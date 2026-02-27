@@ -1,7 +1,17 @@
-import { Box, Button, Grid, GridItem, HStack, VStack } from 'bako-ui';
+import {
+  Box,
+  Button,
+  Grid,
+  GridItem,
+  HStack,
+  Icon,
+  Text,
+  VStack,
+} from 'bako-ui';
 
-import { BookmarkFavoriteIcon, CustomSkeleton, HomeIcon } from '@/components';
+import { CustomSkeleton, HomeIcon, Plus2Icon } from '@/components';
 import { EmptyState } from '@/components/emptyState';
+import { AddressBook2Icon } from '@/components/icons/address-book-2';
 import { Pages, PermissionRoles } from '@/modules/core';
 import { useAddressNicknameResolver } from '@/modules/core/hooks/useAddressNicknameResolver';
 import { useWorkspaceContext } from '@/modules/workspace/hooks';
@@ -32,7 +42,7 @@ const AddressBookPage = () => {
       dialog: { contactDialog, editContactDialog, deleteContactDialog },
       handlers: { handleDeleteContact, handleOpenDialog, setContactToDelete },
     },
-    screenSizes: { isExtraSmall, isSmall },
+    screenSizes: { isSmall },
   } = useWorkspaceContext();
 
   const { data: contacts } = listContactsRequest;
@@ -71,23 +81,16 @@ const AddressBookPage = () => {
         />
       )}
 
-      <VStack
-        w="full"
-        gap={6}
-        p={{ base: 1, sm: 1 }}
-        px={{ base: 'auto', sm: 8 }}
-      >
+      <VStack w="full" gap={6} p={{ base: 1, sm: 1 }} px={{ base: 0, sm: 8 }}>
         <Box
           w="full"
-          h={isExtraSmall ? 20 : 10}
+          h={10}
           display="flex"
           justifyContent="space-between"
           alignItems="center"
-          flexDir={isExtraSmall ? 'column' : 'row'}
           rowGap={4}
-          mb={isExtraSmall ? 4 : 'unset'}
         >
-          <HStack w={isExtraSmall ? 'full' : 'unset'} gap={3}>
+          <HStack gap={2}>
             <Button
               fontWeight="semibold"
               fontSize="2xs"
@@ -116,7 +119,6 @@ const AddressBookPage = () => {
             </Button>
 
             <Button
-              flex={isExtraSmall ? 1 : 'unset'}
               fontWeight="semibold"
               fontSize="2xs"
               size="xs"
@@ -126,7 +128,7 @@ const AddressBookPage = () => {
               gap={2}
               p={2}
             >
-              <BookmarkFavoriteIcon w={4} color="gray.200" />
+              <AddressBook2Icon w={4} color="gray.200" />
               ADDRESS BOOK
             </Button>
           </HStack>
@@ -136,7 +138,7 @@ const AddressBookPage = () => {
             PermissionRoles?.ADMIN,
             PermissionRoles?.MANAGER,
           ]) && (
-            <Box w={isExtraSmall ? 'full' : 'unset'}>
+            <Box>
               <Button
                 w="full"
                 _hover={{
@@ -145,11 +147,16 @@ const AddressBookPage = () => {
                 }}
                 bgColor="gray.700"
                 size="xs"
-                px={3}
+                px={{ base: 0, sm: 3 }}
                 color="gray.300"
                 onClick={() => handleOpenDialog({})}
               >
-                Add new
+                <Icon
+                  boxSize={4}
+                  as={Plus2Icon}
+                  display={{ base: 'inline', sm: 'none' }}
+                />
+                <Text display={{ base: 'none', sm: 'inline' }}>Create new</Text>
               </Button>
             </Box>
           )}
@@ -162,13 +169,13 @@ const AddressBookPage = () => {
             sm: 'repeat(2, 1fr)',
             lg: 'repeat(3, 1fr)',
           }}
-          gap={6}
+          gap={{ base: 4, sm: 6 }}
           pb={0}
         >
           {!hasContacts && listContactsRequest.isLoading && (
             <>
-              <CustomSkeleton flex={1} h="200px" borderRadius={2} />
-              <CustomSkeleton flex={1} h="200px" borderRadius={2} />
+              <CustomSkeleton flex={1} h="120px" borderRadius="2xl" />
+              <CustomSkeleton flex={1} h="120px" borderRadius="2xl" />
             </>
           )}
           {contacts?.map(({ id, nickname, user }) => {

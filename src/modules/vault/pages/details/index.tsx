@@ -187,7 +187,11 @@ const VaultDetailsPage = () => {
             const isLastGroup = index === transactions.length - 1;
             return (
               <Box key={grouped.day} w="full">
-                <TransactionCard.GroupDay day={grouped.day} mb={2} />
+                <TransactionCard.GroupDay
+                  day={grouped.day}
+                  mt={{ base: 3, md: 0 }}
+                  mb={2}
+                />
                 <TransactionCard.List
                   w="full"
                   maxH={{ base: undefined, sm: 'calc(100% - 72px)' }}

@@ -49,7 +49,7 @@ const HomeTransactions = () => {
   }, [inView, hasNextPage, isFetching, fetchNextPage]);
 
   return (
-    <Box w="full" mt={{ base: 16, sm: 8 }}>
+    <Box w="full">
       <Box
         w="full"
         display="flex"
@@ -98,11 +98,14 @@ const HomeTransactions = () => {
       {!!transactions?.length &&
         transactions?.map((grouped) => (
           <Box key={grouped.day}>
-            <TransactionCard.GroupDay day={grouped.day} />
+            <TransactionCard.GroupDay
+              day={grouped.day}
+              mt={{ base: 3, md: 0 }}
+            />
 
             <TransactionCard.List
               gap={4}
-              mt={isExtraSmall ? 0 : 3}
+              mt={isExtraSmall ? 0 : 2}
               mb={transactions.length >= 1 ? 0 : 12}
             >
               <CustomSkeleton loading={latestPredicates.isLoading}>

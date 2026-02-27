@@ -124,10 +124,15 @@ const TransactionsVaultPage = () => {
             }}
             pb={10}
             mt={3}
+            gap={0}
           >
             {transactions?.map((grouped) => (
               <Box key={grouped.day} w="full">
-                <TransactionCard.GroupDay day={grouped.day} mb={2} />
+                <TransactionCard.GroupDay
+                  day={grouped.day}
+                  mt={{ base: 3, md: 0 }}
+                  mb={2}
+                />
                 <TransactionCard.List w="full" gap={0} openIndex={defaultIndex}>
                   {grouped?.transactions?.map((transaction) => {
                     return (

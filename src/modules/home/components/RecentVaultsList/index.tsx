@@ -28,7 +28,7 @@ const RecentVaultsList = memo(
     return (
       <Grid
         w="full"
-        gap={6}
+        gap={{ base: 4, sm: 6 }}
         templateColumns={{
           base: 'repeat(1, 1fr)',
           sm: 'repeat(2, 1fr)',
