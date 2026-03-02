@@ -36,7 +36,7 @@ export const DetailItemAddress = memo(
             <Text
               truncate
               textOverflow="ellipsis"
-              maxW={{ base: 100, sm: 180 }}
+              maxW={{ base: '100px', sm: '180px' }}
               fontSize="xs"
               color="textPrimary"
             >
