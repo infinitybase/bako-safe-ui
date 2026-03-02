@@ -197,6 +197,11 @@ const UserBox = () => {
     handleCloseMenu();
   }, [navigate, authDetails?.userInfos?.workspace?.id, handleCloseMenu]);
 
+  const handleAddNewNetworkClick = useCallback(() => {
+    networkDialogState.onOpen();
+    handleCloseMenu();
+  }, [handleCloseMenu, networkDialogState]);
+
   useEffect(() => {
     const overflow = openMenu ? 'hidden' : 'auto';
     document.body.style.overflow = overflow;
@@ -375,7 +380,7 @@ const UserBox = () => {
                   h="70px"
                 >
                   <NetworkSelect
-                    onCreateNetwork={networkDialogState.onOpen}
+                    onCreateNetwork={handleAddNewNetworkClick}
                     onSelectNetwork={handleCloseMenu}
                   />
                 </VStack>
