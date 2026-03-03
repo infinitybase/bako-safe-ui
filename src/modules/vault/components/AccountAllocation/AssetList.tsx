@@ -29,7 +29,7 @@ export const AssetsList = ({ assets }: { assets: Asset[] }) => {
 
   return (
     <MotionBody
-      pt={4}
+      pt={isEmpty ? 6 : 4}
       justifyContent={isEmpty ? 'center' : 'flex-start'}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
