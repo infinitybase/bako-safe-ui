@@ -21,8 +21,11 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import logo from '@/assets/bakoLogoWhite.svg';
-import { AddressWithCopyBtn, NotificationIcon } from '@/components';
-import { AddressBook2Icon } from '@/components/icons/address-book-2';
+import {
+  AddressWithCopyBtn,
+  BookmarkIcon,
+  NotificationIcon,
+} from '@/components';
 import { DisconnectIcon } from '@/components/icons/disconnect';
 import { FeedbackIcon } from '@/components/icons/feedback';
 import { SettingsTopMenuIcon } from '@/components/icons/settings-top-menu';
@@ -396,12 +399,7 @@ const UserBox = () => {
                   h="70px"
                 >
                   <HStack gap={4}>
-                    <Icon
-                      w={4}
-                      h={4}
-                      color="textPrimary"
-                      as={AddressBook2Icon}
-                    />
+                    <Icon w={4} h={4} color="textPrimary" as={BookmarkIcon} />
                     <Text color="textPrimary" fontSize="xs">
                       Address Book
                     </Text>
