@@ -27,7 +27,7 @@ const AddressActionsDrawer = (props: AddressActionsProps) => {
             <Drawer.Content bg="gray.550" p={0} borderTopRadius={8}>
               {!hasContact && (
                 <>
-                  <AddToAddressBook address={address} />
+                  <AddToAddressBook address={address} onClick={onClose} />
                   <Separator borderColor="bg.muted" />
                 </>
               )}
