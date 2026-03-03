@@ -77,7 +77,7 @@ const AssetsBalanceList = ({ assets, predicateId }: AssetsBalanceProps) => {
               <AdvancedDonut data={data} visibleBalance={!visibleBalance} />
             )}
             {isEmpty && !isLoading && (
-              <Text color="textSecondary" textAlign="center">
+              <Text color="gray.400" textAlign="center" fontSize="xs">
                 Nothing to show here yet
               </Text>
             )}

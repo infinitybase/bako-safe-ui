@@ -36,7 +36,7 @@ export const AssetsList = ({ assets }: { assets: Asset[] }) => {
       transition={{ duration: 0.3 }}
     >
       {isEmpty && (
-        <Text color="textSecondary" textAlign="center">
+        <Text color="gray.400" textAlign="center" fontSize="xs">
           Nothing to show here yet
         </Text>
       )}

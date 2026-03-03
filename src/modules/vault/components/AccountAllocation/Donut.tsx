@@ -46,7 +46,7 @@ const Donut = memo(({ allocation, isLoading, visibleBalance }: DonutProps) => {
       p={0}
     >
       {isEmpty && !isLoading && (
-        <Text color="textSecondary" textAlign="center">
+        <Text color="gray.400" textAlign="center" fontSize="xs">
           Nothing to show here yet
         </Text>
       )}
