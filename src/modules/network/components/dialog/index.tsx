@@ -1,5 +1,5 @@
 import { Button, RhfInput, VStack } from 'bako-ui';
-import { memo, useEffect } from 'react';
+import { memo } from 'react';
 
 import { CloseCircle, Dialog, DialogModalProps } from '@/components';
 
@@ -16,18 +16,9 @@ const NetworkDialog = memo(({ ...props }: NetworkDialogProps) => {
     connectionStatus,
     handleClose,
     checkNetworkRequest: { isPending: loadingCheck },
-    setValidNetwork,
-    setConnectionStatus,
+    urlFormValue,
     handleClearUrl,
   } = useNetworks(() => props.onOpenChange?.({ open: false }));
-
-  const url = networkForm.watch('url');
-
-  useEffect(() => {
-    setValidNetwork(false);
-    setConnectionStatus(ConnectionStatus.IDLE);
-    networkForm.clearErrors('url');
-  }, [url, setValidNetwork, setConnectionStatus, networkForm]);
 
   return (
     <Dialog.Modal
@@ -85,7 +76,7 @@ const NetworkDialog = memo(({ ...props }: NetworkDialogProps) => {
                 variant: 'subtle',
               },
               inputGroup: {
-                endElement: url && (
+                endElement: urlFormValue && (
                   <CloseCircle
                     boxSize={4}
                     color="gray.200"
@@ -117,7 +108,7 @@ const NetworkDialog = memo(({ ...props }: NetworkDialogProps) => {
                   : 'inherit',
             }}
             css={{ _active: { bg: 'inherit' } }}
-            disabled={loadingCheck || !url}
+            disabled={loadingCheck || !urlFormValue}
           >
             {loadingCheck
               ? 'Testing connection...'

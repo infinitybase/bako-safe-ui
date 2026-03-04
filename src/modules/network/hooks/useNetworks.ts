@@ -53,6 +53,7 @@ const useNetworks = (onClose?: () => void) => {
   const networkForm = useForm<NetworkFormFields>({
     defaultValues: formDefaultValues,
   });
+  const urlFormValue = networkForm.watch('url');
 
   const { search } = useLocation();
   const fromConnector = !!new URLSearchParams(search).get('sessionId');
@@ -248,6 +249,12 @@ const useNetworks = (onClose?: () => void) => {
     );
   }, [currentNetwork.chainId]);
 
+  useEffect(() => {
+    setValidNetwork(false);
+    setConnectionStatus(ConnectionStatus.IDLE);
+    networkForm.clearErrors('url');
+  }, [urlFormValue]);
+
   return {
     currentNetwork,
     checkNetworkRequest,
@@ -258,6 +265,7 @@ const useNetworks = (onClose?: () => void) => {
     networks,
     selectNetworkRequest,
     fromConnector,
+    urlFormValue,
     setValidNetwork,
     setConnectionStatus,
     checkNetwork,
