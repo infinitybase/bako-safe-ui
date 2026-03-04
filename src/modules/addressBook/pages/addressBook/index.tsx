@@ -160,7 +160,7 @@ const AddressBookPage = () => {
                   as={Plus2Icon}
                   display={{ base: 'inline', sm: 'none' }}
                 />
-                <Text display={{ base: 'none', sm: 'inline' }}>Create new</Text>
+                <Text display={{ base: 'none', sm: 'inline' }}>Add new</Text>
               </Button>
             </Box>
           )}
