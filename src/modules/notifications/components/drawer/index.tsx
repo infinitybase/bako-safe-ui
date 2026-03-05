@@ -55,7 +55,7 @@ const NotificationsDrawer = ({ ...props }: NotificationsDrawerProps) => {
                 >
                   <HStack gap={2} alignItems="center">
                     <Heading
-                      fontSize="lg"
+                      fontSize="md"
                       fontWeight="bold"
                       color="textPrimary"
                     >
@@ -89,7 +89,7 @@ const NotificationsDrawer = ({ ...props }: NotificationsDrawerProps) => {
                     />
                   </Drawer.CloseTrigger>
                 </HStack>
-                <Text fontSize="sm" color="textSecondary">
+                <Text fontSize="xs" color="textSecondary">
                   Stay informed about all the activities happening in the vaults
                   that you are part of.
                 </Text>

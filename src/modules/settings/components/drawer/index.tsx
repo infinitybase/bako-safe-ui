@@ -87,7 +87,7 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
                   justifyContent="space-between"
                   w="full"
                 >
-                  <Heading fontSize="lg" fontWeight="bold" color="textPrimary">
+                  <Heading fontSize="md" fontWeight="bold" color="textPrimary">
                     Settings
                   </Heading>
 
@@ -100,7 +100,7 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
                     />
                   </Drawer.CloseTrigger>
                 </HStack>
-                <Text fontSize="sm" maxWidth={320} color="textSecondary">
+                <Text fontSize="xs" maxWidth={320} color="textSecondary">
                   Personalize Your Preferences: Set Your Name, Email, and Email
                   Notification Preferences.
                 </Text>
