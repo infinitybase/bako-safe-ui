@@ -34,7 +34,7 @@ const RecentVaultsHeader = memo(() => {
         My accounts
       </Heading>
 
-      <HStack flex={1} justifyContent="flex-end">
+      <HStack flex={1} gap={3} justifyContent="flex-end">
         <IconTooltipButton
           tooltipContent={visibleBalance ? 'Hide Balance' : 'Show Balance'}
           buttonProps={{

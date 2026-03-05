@@ -94,7 +94,7 @@ const AddressBookPage = () => {
           alignItems="center"
           rowGap={4}
         >
-          <HStack gap={2}>
+          <HStack gap={3}>
             <Button
               fontWeight="semibold"
               fontSize="2xs"
