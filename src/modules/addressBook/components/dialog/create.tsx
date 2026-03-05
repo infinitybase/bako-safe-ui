@@ -56,7 +56,7 @@ const CreateContactDialog = ({
         </FormProvider>
       </Dialog.Body>
 
-      <Dialog.Actions mt={6} w="full">
+      <Dialog.Actions mt="auto" w="full">
         <Dialog.SecondaryAction
           aria-label="Cancel address book"
           onClick={dialog.onClose}
