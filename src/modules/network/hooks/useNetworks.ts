@@ -1,6 +1,6 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { Provider } from 'fuels';
-import { useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useLocation } from 'react-router-dom';
 
@@ -28,6 +28,12 @@ export enum NetworkDrawerMode {
   CONFIRM = 'confirm',
 }
 
+export enum ConnectionStatus {
+  IDLE = 'idle',
+  SUCCESS = 'success',
+  FAILED = 'failed',
+}
+
 export type NetworkFormFields = {
   name: string;
   url: string;
@@ -41,9 +47,13 @@ const formDefaultValues = {
 const useNetworks = (onClose?: () => void) => {
   const [mode, setMode] = useState<NetworkDrawerMode>(NetworkDrawerMode.SELECT);
   const [validNetwork, setValidNetwork] = useState(false);
+  const [connectionStatus, setConnectionStatus] = useState<ConnectionStatus>(
+    ConnectionStatus.IDLE,
+  );
   const networkForm = useForm<NetworkFormFields>({
     defaultValues: formDefaultValues,
   });
+  const urlFormValue = networkForm.watch('url');
 
   const { search } = useLocation();
   const fromConnector = !!new URLSearchParams(search).get('sessionId');
@@ -59,6 +69,12 @@ const useNetworks = (onClose?: () => void) => {
   const {
     userInfos: { network: userNetwork },
   } = useAuth();
+
+  const handleClearUrl = useCallback(() => {
+    networkForm.setValue('url', '');
+    setValidNetwork(false);
+    setConnectionStatus(ConnectionStatus.IDLE);
+  }, [networkForm, setValidNetwork]);
 
   const saveNetwork = async (url: string) => {
     const exists = NetworkService.hasNetwork(url);
@@ -81,7 +97,7 @@ const useNetworks = (onClose?: () => void) => {
     if (!data.url) {
       networkForm.setError('url', {
         type: 'required',
-        message: 'Url is required.',
+        message: 'URL is required.',
       });
 
       return;
@@ -94,6 +110,7 @@ const useNetworks = (onClose?: () => void) => {
           setMode(NetworkDrawerMode.SELECT);
           await handleSelectNetwork(data.url);
           setValidNetwork(false);
+          setConnectionStatus(ConnectionStatus.IDLE);
           refetchNetworks();
         },
       },
@@ -169,14 +186,17 @@ const useNetworks = (onClose?: () => void) => {
   };
 
   const handleCheckNetwork = async () => {
+    setConnectionStatus(ConnectionStatus.IDLE);
+
     const url = networkForm.watch('url');
     const existingNetwork = NetworkService.hasNetwork(url);
 
     if (!url) {
       networkForm.setError('url', {
         type: 'required',
-        message: 'Url is required',
+        message: 'URL is required',
       });
+      return;
     }
 
     if (existingNetwork) {
@@ -184,7 +204,6 @@ const useNetworks = (onClose?: () => void) => {
         type: 'required',
         message: 'Network already saved.',
       });
-
       return;
     }
 
@@ -194,6 +213,11 @@ const useNetworks = (onClose?: () => void) => {
         onSuccess: (name) => {
           networkForm.setValue('name', name!);
           setValidNetwork(true);
+          setConnectionStatus(ConnectionStatus.SUCCESS);
+        },
+        onError: () => {
+          setValidNetwork(false);
+          setConnectionStatus(ConnectionStatus.FAILED);
         },
       },
     );
@@ -207,6 +231,7 @@ const useNetworks = (onClose?: () => void) => {
   const handleClose = () => {
     setMode(NetworkDrawerMode.SELECT);
     setValidNetwork(false);
+    setConnectionStatus(ConnectionStatus.IDLE);
     networkForm.reset();
     onClose?.();
   };
@@ -224,17 +249,27 @@ const useNetworks = (onClose?: () => void) => {
     );
   }, [currentNetwork.chainId]);
 
+  useEffect(() => {
+    setValidNetwork(false);
+    setConnectionStatus(ConnectionStatus.IDLE);
+    networkForm.clearErrors('url');
+  }, [urlFormValue]);
+
   return {
     currentNetwork,
     checkNetworkRequest,
     validNetwork,
+    connectionStatus,
     networkForm,
     mode,
     networks,
     selectNetworkRequest,
     fromConnector,
+    urlFormValue,
     setValidNetwork,
+    setConnectionStatus,
     checkNetwork,
+    handleClearUrl,
     handleSelectNetwork,
     handleAddNetwork,
     handleDeleteCustomNetwork,

@@ -29,14 +29,14 @@ export const AssetsList = ({ assets }: { assets: Asset[] }) => {
 
   return (
     <MotionBody
-      pt={4}
+      pt={isEmpty ? 6 : 4}
       justifyContent={isEmpty ? 'center' : 'flex-start'}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
     >
       {isEmpty && (
-        <Text color="textSecondary" textAlign="center">
+        <Text color="gray.400" textAlign="center" fontSize="xs">
           Nothing to show here yet
         </Text>
       )}
