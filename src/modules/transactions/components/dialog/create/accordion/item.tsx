@@ -29,7 +29,7 @@ const AccordionItem = ({
   return (
     <>
       <Box p={0} alignItems="center" justifyContent="space-between">
-        <VStack w="full" p={4} alignItems="flex-start" gap={0}>
+        <VStack w="full" p={4} pb={3.5} alignItems="flex-start" gap={0}>
           <Box
             w="full"
             display="flex"
