@@ -128,7 +128,7 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
         md: 'md',
       }}
     >
-      <Stack p={6} gap={3}>
+      <Stack p={6} gap={3} w="full">
         <Flex alignItems="center" justifyContent="space-between">
           <Heading fontSize="sm" color="textPrimary" lineHeight="short">
             Create Transaction
@@ -141,7 +141,7 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
         </Text>
       </Stack>
 
-      <Dialog.Body px={6} mt={{ sm: 4 }} flex="1" overflowY="hidden">
+      <Dialog.Body px={6} pt={{ base: 0.5, sm: 4 }} flex="1" overflowY="hidden">
         <CreateTransactionForm
           form={form}
           nicks={nicks}
