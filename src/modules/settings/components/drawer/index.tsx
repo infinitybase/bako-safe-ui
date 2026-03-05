@@ -1,10 +1,8 @@
 import {
-  Box,
   Button,
   Drawer,
   DrawerRootProps,
   Field,
-  floatingStyles,
   Heading,
   HStack,
   Input,
@@ -130,35 +128,23 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
                       <Field.Root
                         invalid={fieldState.invalid || !!isNicknameInUse}
                       >
-                        <Box position="relative" w="full">
-                          <Input
-                            maxLength={19}
-                            placeholder=" "
-                            pt={2}
-                            value={inputValue}
-                            className="peer"
-                            onChange={(e) => {
-                              handleInputChange(e.target.value.toLowerCase());
-                              field.onChange(e.target.value.toLowerCase());
-                            }}
-                            onKeyDown={(e) =>
-                              handleActionUsingKeys({
-                                pressedKey: e.key,
-                                allowedKeys: [ActionKeys.Enter],
-                                action: handleSubmitSettings,
-                                enabled: !disableUpdateButton,
-                              })
-                            }
-                          />
-                          <Field.Label
-                            css={floatingStyles({
-                              hasValue: inputValue.length > 0,
-                            })}
-                          >
-                            Username
-                          </Field.Label>
-                        </Box>
-
+                        <Input
+                          maxLength={19}
+                          placeholder="Username"
+                          value={inputValue}
+                          onChange={(e) => {
+                            handleInputChange(e.target.value.toLowerCase());
+                            field.onChange(e.target.value.toLowerCase());
+                          }}
+                          onKeyDown={(e) =>
+                            handleActionUsingKeys({
+                              pressedKey: e.key,
+                              allowedKeys: [ActionKeys.Enter],
+                              action: handleSubmitSettings,
+                              enabled: !disableUpdateButton,
+                            })
+                          }
+                        />
                         <Field.HelperText
                           color={
                             checkNicknameRequest.data?.type ||
@@ -187,20 +173,11 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
                     name="email"
                     render={({ field, fieldState }) => (
                       <Field.Root invalid={fieldState.invalid}>
-                        <Box position="relative" w="full">
-                          <Input
-                            value={field.value}
-                            pt={2}
-                            onChange={field.onChange}
-                            placeholder=" "
-                            className="peer"
-                          />
-                          <Field.Label
-                            css={floatingStyles({ hasValue: !!field.value })}
-                          >
-                            Email Address
-                          </Field.Label>
-                        </Box>
+                        <Input
+                          value={field.value}
+                          onChange={field.onChange}
+                          placeholder="Email Address"
+                        />
                         <Field.HelperText color="error.500">
                           {fieldState.error?.message}
                         </Field.HelperText>
