@@ -1,10 +1,8 @@
 import {
-  Box,
   Button,
   Drawer,
   DrawerRootProps,
   Field,
-  floatingStyles,
   Heading,
   HStack,
   Input,
@@ -80,16 +78,16 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
       <Portal>
         <Drawer.Backdrop />
         <Drawer.Positioner>
-          <Drawer.Content maxW={456} p={6}>
-            <Drawer.Header p={0}>
-              <VStack alignItems="flex-start" gap={6} w="full">
+          <Drawer.Content maxW={456} py={6}>
+            <Drawer.Header px={6} pb={8} pt={0}>
+              <VStack alignItems="flex-start" gap={4} w="full">
                 <HStack
                   gap={2}
                   alignItems="center"
                   justifyContent="space-between"
                   w="full"
                 >
-                  <Heading fontSize="xl" fontWeight="bold" color="textPrimary">
+                  <Heading fontSize="md" fontWeight="bold" color="textPrimary">
                     Settings
                   </Heading>
 
@@ -102,14 +100,12 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
                     />
                   </Drawer.CloseTrigger>
                 </HStack>
-                <Text fontSize="sm" maxWidth={320} color="textSecondary">
+                <Text fontSize="xs" color="textSecondary">
                   Personalize Your Preferences: Set Your Name, Email, and Email
                   Notification Preferences.
                 </Text>
               </VStack>
             </Drawer.Header>
-
-            <Separator borderColor="gray.400" my={10} />
 
             <Drawer.Body
               css={{
@@ -118,11 +114,14 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
               }}
               flex={1}
               display="flex"
-              p={0}
+              px={6}
+              py={0}
               mb={6}
             >
               <VStack alignItems="flex-start" flex={1}>
-                <VStack gap={3} w="full" mb={2}>
+                <Separator borderColor="gray.400" w="full" />
+
+                <VStack gap={3} w="full" mt={6} mb={0.5}>
                   <Controller
                     control={form.control}
                     name="name"
@@ -130,35 +129,23 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
                       <Field.Root
                         invalid={fieldState.invalid || !!isNicknameInUse}
                       >
-                        <Box position="relative" w="full">
-                          <Input
-                            maxLength={19}
-                            placeholder=" "
-                            pt={2}
-                            value={inputValue}
-                            className="peer"
-                            onChange={(e) => {
-                              handleInputChange(e.target.value.toLowerCase());
-                              field.onChange(e.target.value.toLowerCase());
-                            }}
-                            onKeyDown={(e) =>
-                              handleActionUsingKeys({
-                                pressedKey: e.key,
-                                allowedKeys: [ActionKeys.Enter],
-                                action: handleSubmitSettings,
-                                enabled: !disableUpdateButton,
-                              })
-                            }
-                          />
-                          <Field.Label
-                            css={floatingStyles({
-                              hasValue: inputValue.length > 0,
-                            })}
-                          >
-                            Username
-                          </Field.Label>
-                        </Box>
-
+                        <Input
+                          maxLength={19}
+                          placeholder="Username"
+                          value={inputValue}
+                          onChange={(e) => {
+                            handleInputChange(e.target.value.toLowerCase());
+                            field.onChange(e.target.value.toLowerCase());
+                          }}
+                          onKeyDown={(e) =>
+                            handleActionUsingKeys({
+                              pressedKey: e.key,
+                              allowedKeys: [ActionKeys.Enter],
+                              action: handleSubmitSettings,
+                              enabled: !disableUpdateButton,
+                            })
+                          }
+                        />
                         <Field.HelperText
                           color={
                             checkNicknameRequest.data?.type ||
@@ -187,20 +174,11 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
                     name="email"
                     render={({ field, fieldState }) => (
                       <Field.Root invalid={fieldState.invalid}>
-                        <Box position="relative" w="full">
-                          <Input
-                            value={field.value}
-                            pt={2}
-                            onChange={field.onChange}
-                            placeholder=" "
-                            className="peer"
-                          />
-                          <Field.Label
-                            css={floatingStyles({ hasValue: !!field.value })}
-                          >
-                            Email Address
-                          </Field.Label>
-                        </Box>
+                        <Input
+                          value={field.value}
+                          onChange={field.onChange}
+                          placeholder="Email Address"
+                        />
                         <Field.HelperText color="error.500">
                           {fieldState.error?.message}
                         </Field.HelperText>
@@ -209,13 +187,13 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
                   />
                 </VStack>
 
-                <Separator borderColor="gray.400" mb={5} mt={4} w="full" />
+                <Separator borderColor="gray.400" mb={6} mt={4} w="full" />
 
-                <Text fontWeight="bold" color="textPrimary" fontSize="md">
+                <Text fontWeight="bold" color="textPrimary" fontSize="sm">
                   Notifications Preferences
                 </Text>
                 <Text
-                  fontSize="sm"
+                  fontSize="xs"
                   maxWidth={320}
                   color="textSecondary"
                   paddingBottom={1.5}
@@ -223,7 +201,7 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
                   Get wallet and vault alerts by email for enhanced security.
                 </Text>
 
-                <Text fontWeight="bold" color="textPrimary" fontSize="md">
+                <Text fontWeight="bold" color="textPrimary" fontSize="sm">
                   Do you wanna receive email notifications?
                 </Text>
 
@@ -237,7 +215,7 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
                       value={value}
                       onValueChange={(e) => onChange(e.value)}
                       {...rest}
-                      size="md"
+                      size="sm"
                     >
                       <VStack alignItems="flex-start">
                         <Radio value="true">Yes</Radio>
@@ -255,7 +233,8 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
               gap={2}
               justifyContent="center"
               mt="auto"
-              p={0}
+              px={6}
+              py={0}
             >
               <Button variant="subtle" flex={1} onClick={onCloseDrawer}>
                 Cancel

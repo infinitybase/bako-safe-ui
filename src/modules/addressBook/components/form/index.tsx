@@ -25,7 +25,7 @@ const CreateContactForm = memo(({ address }: CreateContactFormProps) => {
   const name = form.watch('nickname');
 
   return (
-    <VStack gap={6}>
+    <VStack gap={4}>
       <RhfInput
         name="nickname"
         control={control}

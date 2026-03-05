@@ -27,8 +27,8 @@ const CreateContactDialog = ({
       closeOnInteractOutside={false}
       trapFocus={false}
       onOpenChange={dialog.onOpenChange}
-      modalContentProps={{ px: 6, py: 6 }}
-      modalBodyProps={{ gap: 6 }}
+      modalContentProps={{ p: 0 }}
+      modalBodyProps={{ gap: 6, p: 6 }}
     >
       <Dialog.Header
         position="relative"
@@ -56,7 +56,7 @@ const CreateContactDialog = ({
         </FormProvider>
       </Dialog.Body>
 
-      <Dialog.Actions mt={6} w="full">
+      <Dialog.Actions mt="auto" w="full">
         <Dialog.SecondaryAction
           aria-label="Cancel address book"
           onClick={dialog.onClose}

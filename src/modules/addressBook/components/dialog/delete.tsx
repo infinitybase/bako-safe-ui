@@ -41,7 +41,12 @@ const DeleteContactDialog = ({
         onClose={dialog.onClose}
       />
 
-      <Dialog.Body justifyContent="center">
+      <Dialog.Body
+        flex={1}
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+      >
         <VStack gap={6} w="full" alignItems="center">
           <Icon
             position="relative"

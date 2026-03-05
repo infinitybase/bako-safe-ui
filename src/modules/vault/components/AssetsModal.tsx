@@ -121,7 +121,6 @@ export const AssetsModal = ({
                 bg="transparent"
                 onChange={(e) => debouncedSearch(e)}
                 placeholder="Search asset"
-                className="peer"
               />
             </InputGroup>
           </Field.Root>

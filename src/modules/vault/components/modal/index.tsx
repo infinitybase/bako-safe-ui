@@ -3,7 +3,6 @@ import {
   Button,
   DrawerRootProps,
   Field,
-  floatingStyles,
   Icon,
   Input,
   Loader,
@@ -106,23 +105,12 @@ const VaultListModal = ({
             borderColor="gray.550"
           >
             <Field.Root display="flex" alignItems="center" flexDirection="row">
-              <Box position="relative" w="full">
-                <Input
-                  placeholder=" "
-                  bg="transparent"
-                  onChange={search.handler}
-                  pt={2}
-                  px={3}
-                  className="peer"
-                />
-                <Field.Label
-                  css={floatingStyles({
-                    hasValue: !!search.value,
-                  })}
-                >
-                  Search
-                </Field.Label>
-              </Box>
+              <Input
+                placeholder="Search"
+                bg="transparent"
+                onChange={search.handler}
+                px={3}
+              />
               <IconTooltipButton
                 tooltipContent={
                   visibleBalance ? 'Hide Balance' : 'Show Balance'

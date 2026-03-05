@@ -54,7 +54,7 @@ const UserVaultsPage = () => {
       <CreateVaultDialog open={isOpen} onOpenChange={onOpenChange} />
 
       <HStack w="full" justifyContent="space-between" pb={2} align="center">
-        <HStack gap={2}>
+        <HStack gap={3}>
           <Button
             fontWeight="semibold"
             fontSize="2xs"
@@ -97,7 +97,7 @@ const UserVaultsPage = () => {
           </Button>
         </HStack>
 
-        <HStack gap={2}>
+        <HStack gap={3}>
           {value ? (
             <Button
               size="xs"

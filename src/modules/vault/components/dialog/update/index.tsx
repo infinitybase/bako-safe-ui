@@ -53,19 +53,22 @@ export const UpdateVaultDialog = ({
     <Dialog.Modal
       open={isOpen}
       onOpenChange={onOpenChange}
-      size={{ sm: 'sm', base: 'full' }}
-      modalBodyProps={{ px: 4 }}
+      size={{ base: 'full', sm: 'md' }}
+      modalContentProps={{ p: 0 }}
+      modalBodyProps={{ gap: 6, p: 6 }}
     >
       <Dialog.Header
         title="Edit Account"
+        description="Edit the name and description of this account."
         onClose={onClose}
-        mt={{ base: 4, sm: 0 }}
-        mb={3}
         titleSxProps={{
           fontSize: 'sm',
-          fontWeight: 'semibold',
           color: 'textPrimary',
+          lineHeight: 'shorter',
         }}
+        descriptionColor="textSecondary"
+        descriptionFontSize="12px"
+        my={0}
       />
       <Dialog.Body flex={1}>
         <UpdateVaultForm
@@ -74,7 +77,7 @@ export const UpdateVaultDialog = ({
           onSubmit={handleVaultUpdate}
         />
       </Dialog.Body>
-      <Dialog.Actions position="relative" mt={6}>
+      <Dialog.Actions position="relative">
         <Button variant="subtle" disabled={isPending} onClick={onClose} px={6}>
           Cancel
         </Button>
