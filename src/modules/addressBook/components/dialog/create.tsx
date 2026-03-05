@@ -27,8 +27,8 @@ const CreateContactDialog = ({
       closeOnInteractOutside={false}
       trapFocus={false}
       onOpenChange={dialog.onOpenChange}
-      modalContentProps={{ px: 6, py: 6 }}
-      modalBodyProps={{ gap: 6 }}
+      modalContentProps={{ p: 0 }}
+      modalBodyProps={{ gap: 6, p: 6 }}
     >
       <Dialog.Header
         position="relative"
