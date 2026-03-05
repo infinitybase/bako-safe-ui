@@ -45,7 +45,7 @@ const NotificationsDrawer = ({ ...props }: NotificationsDrawerProps) => {
         <Drawer.Backdrop />
         <Drawer.Positioner>
           <Drawer.Content p={6}>
-            <Drawer.Header mb={6}>
+            <Drawer.Header p={0} mb={8}>
               <VStack alignItems="flex-start" gap={4}>
                 <HStack
                   gap={2}
@@ -55,8 +55,8 @@ const NotificationsDrawer = ({ ...props }: NotificationsDrawerProps) => {
                 >
                   <HStack gap={2} alignItems="center">
                     <Heading
-                      fontSize="xl"
-                      fontWeight="semibold"
+                      fontSize="lg"
+                      fontWeight="bold"
                       color="textPrimary"
                     >
                       Notifications
@@ -89,9 +89,9 @@ const NotificationsDrawer = ({ ...props }: NotificationsDrawerProps) => {
                     />
                   </Drawer.CloseTrigger>
                 </HStack>
-                <Text fontSize="md" color="textSecondary" lineHeight={1.21}>
+                <Text fontSize="sm" color="textSecondary">
                   Stay informed about all the activities happening in the vaults
-                  that you are part of
+                  that you are part of.
                 </Text>
               </VStack>
             </Drawer.Header>
@@ -99,7 +99,8 @@ const NotificationsDrawer = ({ ...props }: NotificationsDrawerProps) => {
               <Drawer.Body
                 borderTop="1px solid"
                 borderTopColor="gray.400"
-                py={isSuccess && !hasNotifications ? 0 : 8}
+                pt={isSuccess && !hasNotifications ? 0 : 8}
+                px={0}
                 css={{
                   '::-webkit-scrollbar': { width: 0 },
                   scrollbarWidth: 'none',
