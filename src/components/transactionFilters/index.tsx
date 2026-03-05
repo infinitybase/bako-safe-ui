@@ -41,6 +41,7 @@ const TransactionFilters = ({
     <HStack w="full" gap={3} {...rest}>
       {isPendingSignerTransaction && (
         <Button
+          size="xs"
           bg={isPending ? 'primary.main/20' : 'primary.main/5'}
           color="primary.main"
           _hover={{
@@ -50,7 +51,7 @@ const TransactionFilters = ({
           onClick={onPendingFilter}
           alignSelf={{ base: 'stretch', sm: 'flex-end' }}
           variant="subtle"
-          px={3}
+          px={{ base: 0, sm: 3 }}
         >
           <Text display={{ sm: 'inline', base: 'none' }}>Pending</Text>
           <Icon
@@ -62,6 +63,7 @@ const TransactionFilters = ({
         </Button>
       )}
       <Button
+        size="xs"
         bg={isDeposit ? 'bg.muted' : 'bg.panel'}
         _hover={{
           bg: 'bg.muted',
@@ -71,7 +73,7 @@ const TransactionFilters = ({
         onClick={onIncomingFilter}
         alignSelf={{ base: 'stretch', sm: 'flex-end' }}
         variant="subtle"
-        px={3}
+        px={{ base: 0, sm: 3 }}
         order={1}
       >
         <Icon
@@ -82,6 +84,7 @@ const TransactionFilters = ({
         <Text display={{ base: 'none', sm: 'inline' }}>Incoming</Text>
       </Button>
       <Button
+        size="xs"
         bg={isTransfer ? 'bg.muted' : 'bg.panel'}
         _hover={{
           bg: 'bg.muted',
@@ -91,7 +94,7 @@ const TransactionFilters = ({
         onClick={onOutgoingFilter}
         alignSelf={{ base: 'stretch', sm: 'flex-end' }}
         order={1}
-        px={3}
+        px={{ base: 0, sm: 3 }}
         variant="subtle"
       >
         <Icon
@@ -102,6 +105,7 @@ const TransactionFilters = ({
         <Text display={{ base: 'none', sm: 'inline' }}>Outgoing</Text>
       </Button>
       <Button
+        size="xs"
         bg={isAll ? 'bg.muted' : 'bg.panel'}
         _hover={{
           bg: 'bg.muted',
@@ -111,7 +115,7 @@ const TransactionFilters = ({
         onClick={onAllFilter}
         alignSelf={{ base: 'stretch', sm: 'flex-end' }}
         variant="subtle"
-        px={3}
+        px={{ base: 0, sm: 3 }}
         order={inverse ? 0 : 2}
       >
         <Icon
