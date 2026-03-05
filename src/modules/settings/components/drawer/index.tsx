@@ -80,14 +80,14 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
         <Drawer.Positioner>
           <Drawer.Content maxW={456} p={6}>
             <Drawer.Header p={0}>
-              <VStack alignItems="flex-start" gap={6} w="full">
+              <VStack alignItems="flex-start" gap={4} w="full">
                 <HStack
                   gap={2}
                   alignItems="center"
                   justifyContent="space-between"
                   w="full"
                 >
-                  <Heading fontSize="xl" fontWeight="bold" color="textPrimary">
+                  <Heading fontSize="lg" fontWeight="bold" color="textPrimary">
                     Settings
                   </Heading>
 
@@ -107,7 +107,7 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
               </VStack>
             </Drawer.Header>
 
-            <Separator borderColor="gray.400" my={10} />
+            <Separator borderColor="gray.400" my={8} />
 
             <Drawer.Body
               css={{
@@ -186,7 +186,7 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
                   />
                 </VStack>
 
-                <Separator borderColor="gray.400" mb={5} mt={4} w="full" />
+                <Separator borderColor="gray.400" mb={6} mt={4} w="full" />
 
                 <Text fontWeight="bold" color="textPrimary" fontSize="md">
                   Notifications Preferences
