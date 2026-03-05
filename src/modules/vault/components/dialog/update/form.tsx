@@ -19,7 +19,7 @@ export const UpdateVaultForm = (props: UpdateVaultFormProps) => {
 
   return (
     <form id="update-vault-form" onSubmit={handleSubmit(onSubmit)}>
-      <VStack gap={6}>
+      <VStack gap={4}>
         <Controller
           control={control}
           name="name"
