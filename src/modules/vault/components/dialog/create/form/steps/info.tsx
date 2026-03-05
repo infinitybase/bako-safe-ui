@@ -1,4 +1,4 @@
-import { Box, Field, floatingStyles, Input, TextArea, VStack } from 'bako-ui';
+import { Box, Field, Input, TextArea, VStack } from 'bako-ui';
 import { ChangeEvent, useEffect } from 'react';
 import { Controller } from 'react-hook-form';
 
@@ -35,25 +35,18 @@ const VaultInfosStep = ({ form, vaultName }: VaultInfoStepProps) => {
                 (vaultNameAlreadyExists && search.length > 0)
               }
             >
-              <Box position="relative" w="full">
-                <Input
-                  id="vault_name"
-                  value={search}
-                  variant="subtle"
-                  defaultValue={search || form.watch('name')}
-                  maxLength={27}
-                  pt={2}
-                  onChange={(e) => {
-                    searchHandler(e);
-                    field.onChange(e.target.value);
-                  }}
-                  placeholder=" "
-                  className="peer"
-                />
-                <Field.Label css={floatingStyles({ hasValue: !!field.value })}>
-                  Account name
-                </Field.Label>
-              </Box>
+              <Input
+                id="vault_name"
+                value={search}
+                variant="subtle"
+                defaultValue={search || form.watch('name')}
+                maxLength={27}
+                onChange={(e) => {
+                  searchHandler(e);
+                  field.onChange(e.target.value);
+                }}
+                placeholder="Account name"
+              />
               <Field.HelperText
                 color={
                   vaultNameAlreadyExists || form.formState.errors.name?.message
