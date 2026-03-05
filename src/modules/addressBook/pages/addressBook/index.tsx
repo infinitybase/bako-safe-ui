@@ -9,9 +9,13 @@ import {
   VStack,
 } from 'bako-ui';
 
-import { CustomSkeleton, HomeIcon, Plus2Icon } from '@/components';
+import {
+  BookmarkIcon,
+  CustomSkeleton,
+  HomeIcon,
+  Plus2Icon,
+} from '@/components';
 import { EmptyState } from '@/components/emptyState';
-import { AddressBook2Icon } from '@/components/icons/address-book-2';
 import { Pages, PermissionRoles } from '@/modules/core';
 import { useAddressNicknameResolver } from '@/modules/core/hooks/useAddressNicknameResolver';
 import { useWorkspaceContext } from '@/modules/workspace/hooks';
@@ -128,7 +132,7 @@ const AddressBookPage = () => {
               gap={2}
               p={2}
             >
-              <AddressBook2Icon w={4} color="gray.200" />
+              <BookmarkIcon w={4} color="gray.200" />
               ADDRESS BOOK
             </Button>
           </HStack>
@@ -156,7 +160,7 @@ const AddressBookPage = () => {
                   as={Plus2Icon}
                   display={{ base: 'inline', sm: 'none' }}
                 />
-                <Text display={{ base: 'none', sm: 'inline' }}>Create new</Text>
+                <Text display={{ base: 'none', sm: 'inline' }}>Add new</Text>
               </Button>
             </Box>
           )}

@@ -107,7 +107,7 @@ const BalanceAllocationCard = memo(() => {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.4 }}
           >
-            <Text color="textSecondary" textAlign="center">
+            <Text color="gray.400" textAlign="center" fontSize="xs">
               Nothing to show here yet
             </Text>
           </motion.div>
