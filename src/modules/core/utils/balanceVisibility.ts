@@ -10,6 +10,9 @@ const BALANCE_VISIBILITY_KEY = '@bakosafe/balance-is-visible';
  * @returns {boolean} Whether the balance should be visible
  */
 export const getBalanceVisibility = (): boolean => {
+  if (typeof window === 'undefined' || !window.localStorage) {
+    return false;
+  }
   return localStorage.getItem(BALANCE_VISIBILITY_KEY) === 'true';
 };
 
@@ -18,5 +21,8 @@ export const getBalanceVisibility = (): boolean => {
  * @param {boolean} isVisible - Whether the balance should be visible
  */
 export const setBalanceVisibility = (isVisible: boolean): void => {
+  if (typeof window === 'undefined' || !window.localStorage) {
+    return;
+  }
   localStorage.setItem(BALANCE_VISIBILITY_KEY, isVisible ? 'true' : 'false');
 };
