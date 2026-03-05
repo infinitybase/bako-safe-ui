@@ -100,7 +100,7 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
                     />
                   </Drawer.CloseTrigger>
                 </HStack>
-                <Text fontSize="xs" maxWidth={320} color="textSecondary">
+                <Text fontSize="xs" color="textSecondary">
                   Personalize Your Preferences: Set Your Name, Email, and Email
                   Notification Preferences.
                 </Text>
