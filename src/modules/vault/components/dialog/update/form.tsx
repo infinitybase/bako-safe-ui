@@ -1,4 +1,4 @@
-import { Box, Field, floatingStyles, Input, TextArea, VStack } from 'bako-ui';
+import { Box, Field, Input, TextArea, VStack } from 'bako-ui';
 import { Controller } from 'react-hook-form';
 
 import { PredicateUpdatePayload } from '@/modules/core';
@@ -28,16 +28,11 @@ export const UpdateVaultForm = (props: UpdateVaultFormProps) => {
               <Box position="relative" w="full">
                 <Input
                   variant="subtle"
-                  placeholder=" "
+                  placeholder="Account name"
                   maxLength={27}
                   {...field}
-                  pt={2}
                   type="text"
-                  className="peer"
                 />
-                <Field.Label css={floatingStyles({ hasValue: !!field.value })}>
-                  Account name
-                </Field.Label>
               </Box>
               {(error || nameAlreadyExists) && (
                 <Field.ErrorText color="error.500">
@@ -56,14 +51,10 @@ export const UpdateVaultForm = (props: UpdateVaultFormProps) => {
               <TextArea
                 variant="subtle"
                 rows={3}
-                placeholder=" "
-                pt={3}
+                placeholder="Description"
                 resize="none"
                 {...field}
               />
-              <Field.Label css={floatingStyles({ hasValue: !!field.value })}>
-                Description
-              </Field.Label>
               {error && (
                 <Field.ErrorText color="error.500">
                   {error.message}
