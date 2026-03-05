@@ -84,7 +84,7 @@ export function ModalLiquidStake({
       closeOnInteractOutside={false}
       size="md"
     >
-      <Dialog.Body px={4}>
+      <Dialog.Body>
         <Dialog.Header
           position={{ base: 'static', sm: 'relative' }}
           title="Stake to validator"
