@@ -4,6 +4,10 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { queryClient } from '@/config';
 import { IUserInfos } from '@/modules/auth/services';
 import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
+import {
+  getBalanceVisibility,
+  setBalanceVisibility,
+} from '@/modules/core/utils/balanceVisibility';
 import { useHomeDataRequest } from '@/modules/home/hooks/useHomeDataRequest';
 
 // import { useNotification } from '@/modules/notification';
@@ -40,7 +44,9 @@ const useWorkspace = (
   const { workspaceId, vaultId } = useParams();
   const { socket } = useSocket();
 
-  const [visibleBalance, setVisibleBalance] = useState(false);
+  const [visibleBalance, setVisibleBalanceState] = useState(
+    getBalanceVisibility(),
+  );
 
   // const toast = useNotification();
   const workspaceDialog = useDisclosure();
@@ -55,6 +61,11 @@ const useWorkspace = (
   // const { selectWorkspace, isSelecting } = useSelectWorkspace(userInfos.id);
 
   const vaultsCounter = latestPredicates?.data?.predicates?.total ?? 0;
+
+  const handleSetVisibleBalance = useCallback((visible: boolean) => {
+    setVisibleBalanceState(visible);
+    setBalanceVisibility(visible);
+  }, []);
 
   const handleWorkspaceSelection = useCallback(
     async (
@@ -154,7 +165,7 @@ const useWorkspace = (
     handlers: {
       handleWorkspaceSelection,
       navigate,
-      setVisibleBalance,
+      setVisibleBalance: handleSetVisibleBalance,
       hasPermission,
       goHome,
     },
