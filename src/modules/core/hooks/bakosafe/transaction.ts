@@ -22,11 +22,13 @@ import { IListTransactions, ITransaction } from './utils/types';
 export const TRANSACTION_QUERY_KEYS = {
   DEFAULT: ['bakosafe', 'transaction'],
   SEND: () => [...TRANSACTION_QUERY_KEYS.DEFAULT, 'send'],
-  VAULT: (id: string, filter?: IListTransactions) => [
+  VAULT: (id: string, filter?: IListTransactions, dateFrom?: Date, dateTo?: Date) => [
     ...TRANSACTION_QUERY_KEYS.DEFAULT,
     'vault',
     id,
     filter,
+    dateFrom,
+    dateTo,
   ],
 };
 export interface IPayloadTransfer {

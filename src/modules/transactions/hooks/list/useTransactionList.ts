@@ -2,6 +2,7 @@ import { TransactionStatus, TransactionType } from 'bakosafe';
 import { useCallback, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 import { useGetParams } from '@/modules/core';
 import { ITransaction } from '@/modules/core/hooks/bakosafe/utils/types';
@@ -15,6 +16,11 @@ export enum StatusFilter {
   PENDING = TransactionStatus.AWAIT_REQUIREMENTS,
   COMPLETED = TransactionStatus.SUCCESS,
   DECLINED = TransactionStatus.DECLINED,
+}
+
+export interface DateRangeFilter {
+  dateFrom?: Date;
+  dateTo?: Date;
 }
 
 interface IUseTransactionListProps {
@@ -39,10 +45,18 @@ export interface IPendingTransactionsRecord {
   [transactionId: string]: IPendingTransactionDetails;
 }
 
+const isValidDate = (date: Date): boolean => {
+  return date instanceof Date && !isNaN(date.getTime());
+};
+
 const useTransactionList = ({
   workspaceId = '',
 }: IUseTransactionListProps = {}) => {
   const [filter, setFilter] = useState<StatusFilter>(StatusFilter.ALL);
+  const [dateFilter, setDateFilter] = useState<DateRangeFilter>({
+    dateFrom: undefined,
+    dateTo: undefined,
+  });
   const { selectedTransaction, setSelectedTransaction } = useTransactionState();
 
   const {
@@ -52,6 +66,37 @@ const useTransactionList = ({
   const handleResetStatusFilter = useCallback(() => {
     if (filter !== StatusFilter.ALL) setFilter(StatusFilter.ALL);
   }, [filter]);
+
+  const handleClearDateFilters = useCallback(() => {
+    setDateFilter({
+      dateFrom: undefined,
+      dateTo: undefined,
+    });
+  }, []);
+
+  const handleDateFromChange = useCallback((date?: Date) => {
+    if (date && !isValidDate(date)) {
+      toast.error('Formato de data inválido');
+      return;
+    }
+    
+    setDateFilter(prev => ({
+      ...prev,
+      dateFrom: date,
+    }));
+  }, []);
+
+  const handleDateToChange = useCallback((date?: Date) => {
+    if (date && !isValidDate(date)) {
+      toast.error('Formato de data inválido');
+      return;
+    }
+    
+    setDateFilter(prev => ({
+      ...prev,
+      dateTo: date,
+    }));
+  }, []);
 
   const {
     txFilterType,
@@ -76,6 +121,8 @@ const useTransactionList = ({
     id: selectedTransaction.id,
     status: filter ? [filter] : undefined,
     type: txFilterType,
+    dateFrom: dateFilter.dateFrom,
+    dateTo: dateFilter.dateTo,
   });
 
   const observer = useRef<IntersectionObserver>(null);
@@ -111,11 +158,15 @@ const useTransactionList = ({
       handleIncomingAction,
       handleOutgoingAction,
       listTransactionTypeFilter: setTxFilterType,
+      handleDateFromChange,
+      handleDateToChange,
+      handleClearDateFilters,
     },
     filter: {
       set: setFilter,
       value: filter,
       txFilterType,
+      dateFilter,
     },
     inView,
     defaultIndex: selectedTransaction?.id ? [0] : [],
