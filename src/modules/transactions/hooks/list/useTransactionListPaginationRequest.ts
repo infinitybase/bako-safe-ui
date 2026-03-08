@@ -1,60 +1,56 @@
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
+import { IListTransactions, ITransaction } from '@/modules/core/hooks/bakosafe/utils/types';
+import { api } from '@/modules/core/services/api';
+import { FILTER_MESSAGES } from '@/modules/core/constants/errorMessages';
 
-import { WorkspacesQueryKey } from '@/modules/core';
-import { SortOptionTx } from '@/modules/core/hooks/bakosafe/utils/types';
-import { useGroupTransactionsByDay } from '@/modules/core/hooks/useGroupTransactionsByDay';
-import { DEFAULT_INITIAL_PAGE_PARAM } from '@/utils/constants';
+export interface TransactionListResponse {
+  transactions: ITransaction[];
+  totalCount: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+}
 
-import {
-  GetTransactionParams,
-  TransactionOrderBy,
-  TransactionService,
-} from '../../services';
-import { StatusFilter } from './useTransactionList';
+const fetchTransactions = async (filters: IListTransactions): Promise<TransactionListResponse> => {
+  const params = new URLSearchParams();
+  
+  if (filters.predicateAddress) {
+    params.append('predicateAddress', filters.predicateAddress.toString());
+  }
+  
+  if (filters.to) {
+    params.append('to', filters.to.toString());
+  }
+  
+  if (filters.status) {
+    params.append('status', filters.status);
+  }
+  
+  if (filters.dateStart) {
+    params.append('dateStart', filters.dateStart);
+  }
+  
+  if (filters.dateEnd) {
+    params.append('dateEnd', filters.dateEnd);
+  }
 
-type UseTransactionListPaginationParams = Omit<
-  GetTransactionParams,
-  'perPage' | 'page'
-> & {
-  workspaceId: string;
+  const response = await api.get(`/transactions?${params.toString()}`);
+  
+  // Handle empty results with proper message
+  if (response.data.transactions.length === 0 && (filters.dateStart || filters.dateEnd)) {
+    return {
+      ...response.data,
+      message: 'Nenhuma transação encontrada no período selecionado'
+    };
+  }
+  
+  return response.data;
 };
 
-const useTransactionListPaginationRequest = (
-  params: UseTransactionListPaginationParams,
-) => {
-  const { data, ...query } = useInfiniteQuery({
-    queryKey: WorkspacesQueryKey.TRANSACTION_LIST_PAGINATION_QUERY_KEY(
-      params.workspaceId,
-      params.status as StatusFilter,
-      params.predicateId?.[0],
-      params.id,
-      params.type,
-    ),
-    queryFn: ({ pageParam }) =>
-      TransactionService.getTransactionsPagination({
-        ...params,
-        perPage: 5,
-        page: pageParam || DEFAULT_INITIAL_PAGE_PARAM,
-        orderBy: TransactionOrderBy.CREATED_AT,
-        sort: SortOptionTx.DESC,
-      }),
-    enabled: window.location.pathname != '/',
-    initialPageParam: DEFAULT_INITIAL_PAGE_PARAM,
-    refetchOnWindowFocus: false,
-    // Socket events handle real-time updates
-    staleTime: 1000 * 60 * 2, // 2 minutes
-    getNextPageParam: (lastPage) =>
-      lastPage.currentPage !== lastPage.totalPages
-        ? lastPage.nextPage
-        : undefined,
+export const useTransactionListPaginationRequest = (filters: IListTransactions) => {
+  return useQuery({
+    queryKey: ['transactions', 'list', filters],
+    queryFn: () => fetchTransactions(filters),
+    staleTime: 30000,
+    refetchOnWindowFocus: false
   });
-
-  const transactionsList = data?.pages.map((page) => page.data).flat() ?? [];
-
-  return {
-    ...query,
-    transactions: useGroupTransactionsByDay(transactionsList),
-  };
 };
-
-export { useTransactionListPaginationRequest };

@@ -1,129 +1,87 @@
-import { TransactionStatus, TransactionType } from 'bakosafe';
-import { useCallback, useRef, useState } from 'react';
-import { useInView } from 'react-intersection-observer';
-import { useNavigate } from 'react-router-dom';
-
-import { useGetParams } from '@/modules/core';
-import { ITransaction } from '@/modules/core/hooks/bakosafe/utils/types';
-
-import { useTransactionState } from '../../states';
-import { useFilterTxType } from '../filter';
+import { useQuery } from '@tanstack/react-query';
+import { Address } from 'fuels';
+import { TransactionStatus } from '@/modules/core/models';
+import { IListTransactions } from '@/modules/core/hooks/bakosafe/utils/types';
+import { useDateFilter, DateFilterState } from '../filter/useDateFilter';
 import { useTransactionListPaginationRequest } from './useTransactionListPaginationRequest';
+import { toast } from 'react-toastify';
 
-export enum StatusFilter {
-  ALL = '',
-  PENDING = TransactionStatus.AWAIT_REQUIREMENTS,
-  COMPLETED = TransactionStatus.SUCCESS,
-  DECLINED = TransactionStatus.DECLINED,
+export interface UseTransactionListParams {
+  predicateAddress?: Address;
+  to?: Address;
+  status?: TransactionStatus;
+  initialDateFilters?: DateFilterState;
 }
 
-interface IUseTransactionListProps {
-  workspaceId?: string;
-  type?: TransactionType;
-}
-
-export type IUseTransactionList = ReturnType<typeof useTransactionList>;
-
-export type IPendingTransactionDetails = Pick<
-  ITransaction,
-  | 'status'
-  | 'hash'
-  | 'id'
-  | 'predicateId'
-  | 'resume'
-  | 'name'
-  | 'predicateAddress'
->;
-
-export interface IPendingTransactionsRecord {
-  [transactionId: string]: IPendingTransactionDetails;
-}
-
-const useTransactionList = ({
-  workspaceId = '',
-}: IUseTransactionListProps = {}) => {
-  const [filter, setFilter] = useState<StatusFilter>(StatusFilter.ALL);
-  const { selectedTransaction, setSelectedTransaction } = useTransactionState();
-
+export const useTransactionList = (params?: UseTransactionListParams) => {
   const {
-    vaultPageParams: { vaultId },
-  } = useGetParams();
+    dateStart,
+    dateEnd,
+    setDateStart,
+    setDateEnd,
+    validateDateRange,
+    clearDates,
+    hasDateFilters
+  } = useDateFilter(params?.initialDateFilters);
 
-  const handleResetStatusFilter = useCallback(() => {
-    if (filter !== StatusFilter.ALL) setFilter(StatusFilter.ALL);
-  }, [filter]);
+  const filters: IListTransactions = {
+    predicateAddress: params?.predicateAddress,
+    to: params?.to,
+    status: params?.status,
+    dateStart,
+    dateEnd
+  };
 
-  const {
-    txFilterType,
-    handleIncomingAction,
-    handleOutgoingAction,
-    setTxFilterType,
-  } = useFilterTxType(handleResetStatusFilter);
+  const { data, isLoading, error, refetch } = useTransactionListPaginationRequest(filters);
 
-  const navigate = useNavigate();
-  const inView = useInView();
+  const applyFilters = () => {
+    const validationError = validateDateRange();
+    if (validationError) {
+      toast.error(validationError);
+      return false;
+    }
+    refetch();
+    return true;
+  };
 
-  const {
-    transactions,
-    isLoading,
-    isFetching,
-    hasNextPage,
-    fetchNextPage,
-    refetch,
-  } = useTransactionListPaginationRequest({
-    workspaceId: workspaceId,
-    predicateId: vaultId ? [vaultId] : undefined,
-    id: selectedTransaction.id,
-    status: filter ? [filter] : undefined,
-    type: txFilterType,
-  });
+  const clearAllFilters = () => {
+    clearDates();
+    refetch();
+  };
 
-  const observer = useRef<IntersectionObserver>(null);
-  const lastElementRef = useCallback(
-    (node: HTMLDivElement) => {
-      if (isLoading) return;
-
-      if (observer.current) observer.current.disconnect();
-
-      observer.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && hasNextPage && !isFetching) {
-          fetchNextPage();
-        }
-      });
-
-      if (node) observer.current.observe(node);
-    },
-    [fetchNextPage, hasNextPage, isFetching, isLoading],
+  const hasActiveFilters = Boolean(
+    params?.predicateAddress ||
+    params?.to ||
+    params?.status ||
+    hasDateFilters
   );
 
+  // Check if we have empty results with date filters for AC4
+  const hasEmptyDateResults = Boolean(
+    !isLoading &&
+    (data?.transactions?.length === 0) &&
+    hasDateFilters
+  );
+
+  const emptyMessage = hasEmptyDateResults 
+    ? 'Nenhuma transação encontrada no período selecionado'
+    : 'Nenhuma transação encontrada para os filtros aplicados';
+
   return {
-    request: {
-      isLoading,
-      isFetching,
-      hasNextPage,
-      fetchNextPage,
-      refetch,
-    },
-    handlers: {
-      selectedTransaction,
-      setSelectedTransaction,
-      navigate,
-      handleIncomingAction,
-      handleOutgoingAction,
-      listTransactionTypeFilter: setTxFilterType,
-    },
-    filter: {
-      set: setFilter,
-      value: filter,
-      txFilterType,
-    },
-    inView,
-    defaultIndex: selectedTransaction?.id ? [0] : [],
-    transactionsRef: lastElementRef,
-    lists: {
-      transactions,
-    },
+    transactions: data?.transactions || [],
+    totalCount: data?.totalCount || 0,
+    isLoading,
+    error,
+    dateStart,
+    dateEnd,
+    setDateStart,
+    setDateEnd,
+    applyFilters,
+    clearAllFilters,
+    hasActiveFilters,
+    hasDateFilters,
+    hasEmptyDateResults,
+    emptyMessage,
+    refetch
   };
 };
-
-export { useTransactionList };
