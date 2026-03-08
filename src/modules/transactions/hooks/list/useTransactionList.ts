@@ -17,6 +17,11 @@ export enum StatusFilter {
   DECLINED = TransactionStatus.DECLINED,
 }
 
+export interface DateRangeFilter {
+  dateFrom?: Date;
+  dateTo?: Date;
+}
+
 interface IUseTransactionListProps {
   workspaceId?: string;
   type?: TransactionType;
@@ -43,6 +48,10 @@ const useTransactionList = ({
   workspaceId = '',
 }: IUseTransactionListProps = {}) => {
   const [filter, setFilter] = useState<StatusFilter>(StatusFilter.ALL);
+  const [dateFilter, setDateFilter] = useState<DateRangeFilter>({
+    dateFrom: undefined,
+    dateTo: undefined,
+  });
   const { selectedTransaction, setSelectedTransaction } = useTransactionState();
 
   const {
@@ -52,6 +61,27 @@ const useTransactionList = ({
   const handleResetStatusFilter = useCallback(() => {
     if (filter !== StatusFilter.ALL) setFilter(StatusFilter.ALL);
   }, [filter]);
+
+  const handleClearDateFilters = useCallback(() => {
+    setDateFilter({
+      dateFrom: undefined,
+      dateTo: undefined,
+    });
+  }, []);
+
+  const handleDateFromChange = useCallback((date?: Date) => {
+    setDateFilter(prev => ({
+      ...prev,
+      dateFrom: date,
+    }));
+  }, []);
+
+  const handleDateToChange = useCallback((date?: Date) => {
+    setDateFilter(prev => ({
+      ...prev,
+      dateTo: date,
+    }));
+  }, []);
 
   const {
     txFilterType,
@@ -76,6 +106,8 @@ const useTransactionList = ({
     id: selectedTransaction.id,
     status: filter ? [filter] : undefined,
     type: txFilterType,
+    dateFrom: dateFilter.dateFrom,
+    dateTo: dateFilter.dateTo,
   });
 
   const observer = useRef<IntersectionObserver>(null);
@@ -111,11 +143,15 @@ const useTransactionList = ({
       handleIncomingAction,
       handleOutgoingAction,
       listTransactionTypeFilter: setTxFilterType,
+      handleDateFromChange,
+      handleDateToChange,
+      handleClearDateFilters,
     },
     filter: {
       set: setFilter,
       value: filter,
       txFilterType,
+      dateFilter,
     },
     inView,
     defaultIndex: selectedTransaction?.id ? [0] : [],
