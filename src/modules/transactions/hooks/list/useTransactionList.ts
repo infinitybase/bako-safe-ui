@@ -1,5 +1,5 @@
 import { TransactionStatus, TransactionType } from 'bakosafe';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useRef, useState, useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useNavigate } from 'react-router-dom';
 
@@ -20,6 +20,8 @@ export enum StatusFilter {
 interface IUseTransactionListProps {
   workspaceId?: string;
   type?: TransactionType;
+  dateFrom?: string;
+  dateTo?: string;
 }
 
 export type IUseTransactionList = ReturnType<typeof useTransactionList>;
@@ -39,8 +41,12 @@ export interface IPendingTransactionsRecord {
   [transactionId: string]: IPendingTransactionDetails;
 }
 
+const STORAGE_KEY = 'transaction-date-filter';
+
 const useTransactionList = ({
   workspaceId = '',
+  dateFrom,
+  dateTo,
 }: IUseTransactionListProps = {}) => {
   const [filter, setFilter] = useState<StatusFilter>(StatusFilter.ALL);
   const { selectedTransaction, setSelectedTransaction } = useTransactionState();
@@ -48,6 +54,51 @@ const useTransactionList = ({
   const {
     vaultPageParams: { vaultId },
   } = useGetParams();
+
+  // Load persisted date filters from sessionStorage
+  const [persistedDateFrom, setPersistedDateFrom] = useState<string | undefined>(() => {
+    if (dateFrom) return dateFrom;
+    try {
+      const stored = sessionStorage.getItem(STORAGE_KEY);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        return parsed.dateFrom;
+      }
+    } catch (error) {
+      console.warn('Failed to load date filter from sessionStorage:', error);
+    }
+    return undefined;
+  });
+
+  const [persistedDateTo, setPersistedDateTo] = useState<string | undefined>(() => {
+    if (dateTo) return dateTo;
+    try {
+      const stored = sessionStorage.getItem(STORAGE_KEY);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        return parsed.dateTo;
+      }
+    } catch (error) {
+      console.warn('Failed to load date filter from sessionStorage:', error);
+    }
+    return undefined;
+  });
+
+  // Persist date filters to sessionStorage
+  useEffect(() => {
+    try {
+      if (persistedDateFrom || persistedDateTo) {
+        sessionStorage.setItem(STORAGE_KEY, JSON.stringify({
+          dateFrom: persistedDateFrom,
+          dateTo: persistedDateTo
+        }));
+      } else {
+        sessionStorage.removeItem(STORAGE_KEY);
+      }
+    } catch (error) {
+      console.warn('Failed to persist date filter to sessionStorage:', error);
+    }
+  }, [persistedDateFrom, persistedDateTo]);
 
   const handleResetStatusFilter = useCallback(() => {
     if (filter !== StatusFilter.ALL) setFilter(StatusFilter.ALL);
@@ -76,6 +127,8 @@ const useTransactionList = ({
     id: selectedTransaction.id,
     status: filter ? [filter] : undefined,
     type: txFilterType,
+    dateFrom: dateFrom || persistedDateFrom,
+    dateTo: dateTo || persistedDateTo,
   });
 
   const observer = useRef<IntersectionObserver>(null);
@@ -96,6 +149,11 @@ const useTransactionList = ({
     [fetchNextPage, hasNextPage, isFetching, isLoading],
   );
 
+  const updateDateFilter = useCallback((newDateFrom?: string, newDateTo?: string) => {
+    setPersistedDateFrom(newDateFrom);
+    setPersistedDateTo(newDateTo);
+  }, []);
+
   return {
     request: {
       isLoading,
@@ -111,11 +169,14 @@ const useTransactionList = ({
       handleIncomingAction,
       handleOutgoingAction,
       listTransactionTypeFilter: setTxFilterType,
+      updateDateFilter,
     },
     filter: {
       set: setFilter,
       value: filter,
       txFilterType,
+      dateFrom: dateFrom || persistedDateFrom,
+      dateTo: dateTo || persistedDateTo,
     },
     inView,
     defaultIndex: selectedTransaction?.id ? [0] : [],

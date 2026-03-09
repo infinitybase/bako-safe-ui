@@ -1,2 +1,2 @@
-export * from './methods';
+export * from './TransactionService';
 export * from './types';
