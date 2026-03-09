@@ -22,7 +22,7 @@ import { IListTransactions, ITransaction } from './utils/types';
 export const TRANSACTION_QUERY_KEYS = {
   DEFAULT: ['bakosafe', 'transaction'],
   SEND: () => [...TRANSACTION_QUERY_KEYS.DEFAULT, 'send'],
-  VAULT: (id: string, filter?: IListTransactions) => [
+  VAULT: (id: string, filter?: IListTransactions & { dateFrom?: string; dateTo?: string }) => [
     ...TRANSACTION_QUERY_KEYS.DEFAULT,
     'vault',
     id,
@@ -89,6 +89,8 @@ interface UseBakoSafeListTransactionParams {
   filter?: IListTransactions & {
     limit: number;
     type?: TransactionType;
+    dateFrom?: string;
+    dateTo?: string;
   };
 }
 
