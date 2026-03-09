@@ -20,6 +20,8 @@ export enum StatusFilter {
 interface IUseTransactionListProps {
   workspaceId?: string;
   type?: TransactionType;
+  dateFrom?: string;
+  dateTo?: string;
 }
 
 export type IUseTransactionList = ReturnType<typeof useTransactionList>;
@@ -41,6 +43,8 @@ export interface IPendingTransactionsRecord {
 
 const useTransactionList = ({
   workspaceId = '',
+  dateFrom,
+  dateTo,
 }: IUseTransactionListProps = {}) => {
   const [filter, setFilter] = useState<StatusFilter>(StatusFilter.ALL);
   const { selectedTransaction, setSelectedTransaction } = useTransactionState();
@@ -76,6 +80,8 @@ const useTransactionList = ({
     id: selectedTransaction.id,
     status: filter ? [filter] : undefined,
     type: txFilterType,
+    dateFrom,
+    dateTo,
   });
 
   const observer = useRef<IntersectionObserver>(null);
