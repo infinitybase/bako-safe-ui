@@ -25,6 +25,7 @@ import {
   AddressWithCopyBtn,
   BookmarkIcon,
   NotificationIcon,
+  TestNetBanner,
 } from '@/components';
 import { DisconnectIcon } from '@/components/icons/disconnect';
 import { FeedbackIcon } from '@/components/icons/feedback';
@@ -506,50 +507,56 @@ const Header = () => {
   }, []);
 
   return (
-    <Flex
-      h="107px"
-      zIndex={100}
-      w="100%"
-      background="linear-gradient(0deg, rgba(13, 13, 12, 0) 0%, rgba(13, 13, 12, 0.6) 35%, #0D0D0C 90%)"
-      px={{
-        base: 3,
-        sm: 6,
-      }}
-      style={{ WebkitBackdropFilter: 'blur(8px)', backdropFilter: 'blur(8px)' }}
-      alignItems="center"
-      position="sticky"
-      top="0"
-      justifyContent="space-between"
-    >
-      <NotificationsDrawer
-        open={notificationDrawerState.isOpen}
-        onOpenChange={notificationDrawerState.onOpenChange}
-      />
-      <SelectWorkspaceDialog
-        dialog={workspaceDialog}
-        userWorkspaces={userWorkspaces ?? []}
-        onSelect={handleWorkspaceSelection}
-        onCreate={handleGoToCreateWorkspace}
-        isCreatingWorkspace={createWorkspaceDialog.isOpen}
-      />
-      <Box
-        cursor="pointer"
-        onClick={() => {
-          goHome();
+    <>
+      <TestNetBanner />
+      <Flex
+        h="107px"
+        zIndex={100}
+        w="100%"
+        background="linear-gradient(0deg, rgba(13, 13, 12, 0) 0%, rgba(13, 13, 12, 0.6) 35%, #0D0D0C 90%)"
+        px={{
+          base: 3,
+          sm: 6,
         }}
-      >
-        <Image width={{ base: 90, sm: 140 }} src={logo} alt="" p={0} />
-      </Box>
-      <Box
-        css={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
+        style={{
+          WebkitBackdropFilter: 'blur(8px)',
+          backdropFilter: 'blur(8px)',
         }}
+        alignItems="center"
+        position="sticky"
+        top="0"
+        justifyContent="space-between"
       >
-        <UserBox />
-      </Box>
-    </Flex>
+        <NotificationsDrawer
+          open={notificationDrawerState.isOpen}
+          onOpenChange={notificationDrawerState.onOpenChange}
+        />
+        <SelectWorkspaceDialog
+          dialog={workspaceDialog}
+          userWorkspaces={userWorkspaces ?? []}
+          onSelect={handleWorkspaceSelection}
+          onCreate={handleGoToCreateWorkspace}
+          isCreatingWorkspace={createWorkspaceDialog.isOpen}
+        />
+        <Box
+          cursor="pointer"
+          onClick={() => {
+            goHome();
+          }}
+        >
+          <Image width={{ base: 90, sm: 140 }} src={logo} alt="" p={0} />
+        </Box>
+        <Box
+          css={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <UserBox />
+        </Box>
+      </Flex>
+    </>
   );
 };
 

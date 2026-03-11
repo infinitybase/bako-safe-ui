@@ -22,6 +22,7 @@ export * from './progressButton';
 export * from './select';
 export * from './select/asset';
 export * from './skeleton';
+export * from './testNetBanner';
 export * from './tooltip';
 export * from './tooltipNotEnoughBalance';
 export * from './transactionExpire';
