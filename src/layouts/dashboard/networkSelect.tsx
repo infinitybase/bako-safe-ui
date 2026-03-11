@@ -25,6 +25,11 @@ interface INetworkSelectOption {
   icon: 'fuel' | 'unknown';
 }
 
+enum NetworkIcon {
+  FUEL = 'fuel',
+  UNKNOWN = 'unknown',
+}
+
 const NetworkSelectValue = ({
   placeholder = ' ',
 }: {
@@ -72,27 +77,31 @@ const NetworkSelect = memo(
       [],
     );
 
+    const getNetworkIcon = useCallback(
+      (url: string): NetworkIcon =>
+        isMainnet(url) ? NetworkIcon.FUEL : NetworkIcon.UNKNOWN,
+      [isMainnet],
+    );
+
     const getNetworkOptions = useCallback((): INetworkSelectOption[] => {
       if (!networks?.length) return [];
 
       return networks.map((network) => ({
         value: network.url,
         name: network.name,
-        icon: isMainnet(network.url) ? ('fuel' as const) : ('unknown' as const),
+        icon: getNetworkIcon(network.url),
       }));
-    }, [networks, isMainnet]);
+    }, [networks, getNetworkIcon]);
 
     const currentNetworkValue = useCallback(() => {
-      const icon = isMainnet(currentNetwork?.url)
-        ? ('fuel' as const)
-        : ('unknown' as const);
+      const icon = getNetworkIcon(currentNetwork?.url ?? '');
 
       return {
         value: currentNetwork?.url ?? '',
         name: NetworkService.getName(currentNetwork?.url ?? ''),
         icon,
       };
-    }, [currentNetwork?.url, isMainnet]);
+    }, [currentNetwork?.url, getNetworkIcon]);
 
     const handleNetworkChange = useCallback(
       (url: string) => {
@@ -155,7 +164,11 @@ const NetworkSelect = memo(
                     >
                       <HStack gap={3} w="full" flex={1} alignItems="center">
                         <Icon
-                          as={option.icon === 'fuel' ? FuelIcon : UnknownIcon}
+                          as={
+                            option.icon === NetworkIcon.FUEL
+                              ? FuelIcon
+                              : UnknownIcon
+                          }
                           rounded="full"
                           w={4}
                           h={4}
