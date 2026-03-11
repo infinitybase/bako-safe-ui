@@ -19,7 +19,7 @@ interface NetworkSelectProps {
   onCreateNetwork: () => void;
 }
 
-interface NetworkSelectOption {
+interface INetworkSelectOption {
   value: string;
   name: string;
   icon: 'fuel' | 'unknown';
@@ -31,7 +31,7 @@ const NetworkSelectValue = ({
   placeholder?: string;
 }) => {
   const select = useSelectContext();
-  const items = select.selectedItems as NetworkSelectOption[];
+  const items = select.selectedItems as INetworkSelectOption[];
   const name = items?.[0]?.name;
   const icon = items?.[0]?.icon;
 
@@ -72,7 +72,7 @@ const NetworkSelect = memo(
       [],
     );
 
-    const getNetworkOptions = useCallback((): NetworkSelectOption[] => {
+    const getNetworkOptions = useCallback((): INetworkSelectOption[] => {
       if (!networks?.length) return [];
 
       return networks.map((network) => ({
