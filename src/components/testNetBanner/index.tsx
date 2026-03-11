@@ -1,11 +1,12 @@
 import { Box, Text } from 'bako-ui';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { useNetworks } from '@/modules/network/hooks';
 import { TESTNET_URL } from '@/modules/network/services';
 
 const TestNetBanner = () => {
   const [fade, setFade] = useState(false);
+  const animationFrameIdRef = useRef<number | null>(null);
 
   const { currentNetwork } = useNetworks();
 
@@ -13,12 +14,27 @@ const TestNetBanner = () => {
 
   useEffect(() => {
     const onMove = (e: MouseEvent) => {
-      const nearCorner = e.clientX > window.innerWidth - 165 && e.clientY < 140;
-      setFade(nearCorner);
+      // Cancel previous frame
+      if (animationFrameIdRef.current !== null) {
+        cancelAnimationFrame(animationFrameIdRef.current);
+      }
+
+      // Schedule update on next frame
+      animationFrameIdRef.current = requestAnimationFrame(() => {
+        const nearCorner =
+          e.clientX > window.innerWidth - 165 && e.clientY < 140;
+        setFade(nearCorner);
+        animationFrameIdRef.current = null;
+      });
     };
 
     window.addEventListener('mousemove', onMove);
-    return () => window.removeEventListener('mousemove', onMove);
+    return () => {
+      window.removeEventListener('mousemove', onMove);
+      if (animationFrameIdRef.current !== null) {
+        cancelAnimationFrame(animationFrameIdRef.current);
+      }
+    };
   }, []);
 
   if (!currentNetwork || !isTestnet) {
