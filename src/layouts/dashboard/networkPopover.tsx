@@ -6,13 +6,13 @@ import { NetworkIcon } from '@/components/icons/network';
 import { useNetworks } from '@/modules/network/hooks';
 import { NetworkService, NetworkType } from '@/modules/network/services';
 
-interface NetworkSelectProps {
+interface NetworkPopoverProps {
   onSelectNetwork: (url: string) => void;
   onCreateNetwork: () => void;
 }
 
-const NetworkSelect = memo(
-  ({ onSelectNetwork, onCreateNetwork }: NetworkSelectProps) => {
+const NetworkPopover = memo(
+  ({ onSelectNetwork, onCreateNetwork }: NetworkPopoverProps) => {
     const { networks, currentNetwork, handleSelectNetwork } = useNetworks();
 
     const handleNetworkChange = useCallback(
@@ -29,7 +29,7 @@ const NetworkSelect = memo(
     );
 
     return (
-      <HStack w="full" justifyContent="space-between">
+      <HStack w="full" justifyContent="space-between" gap={6}>
         <HStack gap={4}>
           <Icon color="textPrimary" w={4} h={4} as={NetworkIcon} />
           <Text color="textPrimary" fontSize="xs">
@@ -110,6 +110,6 @@ const NetworkSelect = memo(
   },
 );
 
-NetworkSelect.displayName = 'NetworkSelect';
+NetworkPopover.displayName = 'NetworkPopover';
 
-export default NetworkSelect;
+export default NetworkPopover;
