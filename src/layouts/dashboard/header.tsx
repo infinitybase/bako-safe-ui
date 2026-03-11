@@ -504,7 +504,8 @@ const Header = () => {
 
   const { unreadCounter, setUnreadCounter } = useAppNotifications();
 
-  const handleGoToCreateWorkspace = () => networkDialogState.onOpen();
+  const handleGoToCreateWorkspace = () => createWorkspaceDialog.onOpen();
+  const handleOpenNetworkDialog = () => networkDialogState.onOpen();
 
   // Bug fix to unread counter that keeps previous state after redirect
   useEffect(() => {
@@ -552,7 +553,7 @@ const Header = () => {
         <Image width={{ base: 90, sm: 140 }} src={logo} alt="" p={0} />
       </Box>
       <Flex alignItems="center" justifyContent="center" gap={3}>
-        <NetworkSelect onCreateNetwork={handleGoToCreateWorkspace} />
+        <NetworkSelect onCreateNetwork={handleOpenNetworkDialog} />
         <UserBox />
       </Flex>
     </Flex>
