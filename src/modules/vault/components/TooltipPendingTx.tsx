@@ -1,10 +1,10 @@
-import { Box, Heading } from '@chakra-ui/react';
+import { Box, Heading } from 'bako-ui';
 
 export const TooltipPendingTx = () => {
   return (
-    <Box bg="grey.825" p={2} borderColor="dark.100" borderRadius={4}>
-      <Heading fontSize="xs" color="grey.75">
-        This vault has pending transactions.
+    <Box bg="bg.muted" p={2} borderRadius="lg">
+      <Heading fontSize="xs" color="gray.50">
+        This account has pending transactions.
       </Heading>
     </Box>
   );

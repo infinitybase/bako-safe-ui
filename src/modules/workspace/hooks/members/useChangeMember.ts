@@ -12,6 +12,7 @@ import {
 } from '@/modules/core';
 import { useSettingsToast } from '@/modules/settings/hooks/useSettingsToast';
 
+import { useWorkspaceContext } from '../../hooks';
 import { WorkspacePermissionUtils } from '../../utils';
 import { useChangeMemberForm } from './useChangeMemberForm';
 import {
@@ -19,7 +20,6 @@ import {
   useDeleteMemberRequest,
   useIncludeMemberRequest,
 } from './useChangeMemberRequest';
-import { useWorkspaceContext } from '../../WorkspaceProvider';
 
 export enum MemberTabState {
   FORM = 0,
@@ -175,11 +175,11 @@ const useChangeMember = () => {
       {
         onSuccess: () => {
           refetchCurrentWorkspace();
-          handleClose(),
+          (handleClose(),
             successToast({
               title: 'Success!',
               description: 'Your member was deleted from this workspace.',
-            });
+            }));
         },
       },
     );

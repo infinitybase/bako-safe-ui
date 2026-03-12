@@ -1,32 +1,27 @@
 import {
+  Accordion,
   Badge,
-  BoxProps,
   Button,
   HStack,
   Icon,
   Spacer,
-  useAccordionItemState,
-} from '@chakra-ui/react';
+  StackProps,
+} from 'bako-ui';
 import { TransactionType } from 'bakosafe';
 import { memo, useCallback, useMemo } from 'react';
-import {
-  IoIosArrowDown,
-  IoIosArrowForward,
-  IoIosArrowUp,
-} from 'react-icons/io';
 
 import { ErrorIcon, SuccessIcon } from '@/components';
 import { TransactionState } from '@/modules/core';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { useTransactionsContext } from '../../providers/TransactionsProvider';
 import { ITransactionWithType } from '../../services';
 
 interface ActionsMobileProps {
-  awaitingAnswer?: boolean | ITransactionWithType;
+  isPossibleToSign: boolean;
 }
 
-interface TransactionActionsProps extends BoxProps {
+interface TransactionActionsProps extends StackProps {
   status: TransactionState;
   transaction?: ITransactionWithType;
   isInTheVaultPage?: boolean;
@@ -34,31 +29,21 @@ interface TransactionActionsProps extends BoxProps {
   callBack?: () => void;
 }
 
-const ActionsMobile = ({ awaitingAnswer }: ActionsMobileProps) => {
-  const {
-    screenSizes: { isSmall, isExtraSmall },
-  } = useWorkspaceContext();
+const ActionsMobile = memo(({ isPossibleToSign }: ActionsMobileProps) => {
   return (
-    <HStack justifyContent="end" spacing={1}>
-      <Button
-        color={awaitingAnswer ? 'black' : 'grey.75'}
-        bgColor={awaitingAnswer ? 'brand.500' : '#F5F5F50D'}
-        fontWeight={awaitingAnswer ? 'bold' : 'normal'}
-        border="none"
-        fontSize="xs"
-        letterSpacing=".5px"
-        alignSelf={{ base: 'stretch', sm: 'flex-end' }}
-        variant="secondary"
-        rightIcon={
-          <Icon as={IoIosArrowForward} fontSize="md" ml={isSmall ? -1 : 0} />
-        }
-        px={isExtraSmall ? 3 : 4}
-      >
-        {awaitingAnswer ? 'Sign' : isSmall ? 'Details' : 'View Details'}
-      </Button>
-    </HStack>
+    <Button
+      alignSelf={{ base: 'stretch', sm: 'flex-end' }}
+      fontWeight="semibold"
+      variant={isPossibleToSign ? 'solid' : 'subtle'}
+      size="xs"
+      px={3}
+    >
+      {isPossibleToSign ? 'Sign' : 'Details'}
+    </Button>
   );
-};
+});
+
+ActionsMobile.displayName = 'Transaction Card Actions Mobile';
 
 const Actions = memo(
   ({
@@ -71,7 +56,6 @@ const Actions = memo(
     const {
       screenSizes: { isMobile },
     } = useWorkspaceContext();
-    const { isOpen } = useAccordionItemState();
     const {
       signTransaction: {
         confirmTransaction,
@@ -82,8 +66,15 @@ const Actions = memo(
       },
     } = useTransactionsContext();
 
-    const { isSigned, isDeclined, isCompleted, isReproved, isCanceled } =
-      status;
+    const {
+      isSigned,
+      isDeclined,
+      isCompleted,
+      isReproved,
+      isCanceled,
+      isPendingProvider,
+      isError,
+    } = status;
 
     const awaitingAnswer = useMemo(
       () =>
@@ -91,8 +82,16 @@ const Actions = memo(
         !isDeclined &&
         !isCompleted &&
         !isReproved &&
+        !isPendingProvider &&
         !!transaction,
-      [isSigned, isDeclined, isCompleted, isReproved, transaction],
+      [
+        isSigned,
+        isDeclined,
+        isCompleted,
+        isReproved,
+        transaction,
+        isPendingProvider,
+      ],
     );
 
     const notAnswered = useMemo(
@@ -104,6 +103,11 @@ const Actions = memo(
     const isTxActionsInLoading = useMemo(
       () => isLoading && selectedTransaction?.id === transaction?.id,
       [isLoading, selectedTransaction?.id, transaction?.id],
+    );
+
+    const showActionsButtons = useMemo(
+      () => !isError && !isCanceled && awaitingAnswer && isSigner,
+      [isError, isCanceled, awaitingAnswer, isSigner],
     );
 
     const disableActionButtons =
@@ -119,7 +123,8 @@ const Actions = memo(
       (e: React.MouseEvent) => {
         e.stopPropagation();
         e.preventDefault();
-        transaction && confirmTransaction(transaction.id, callBack);
+        transaction &&
+          confirmTransaction(transaction.id, callBack, transaction);
       },
       [confirmTransaction, transaction, callBack],
     );
@@ -133,48 +138,70 @@ const Actions = memo(
       [declineTransaction, transaction],
     );
 
-    if (isMobile) {
-      return <ActionsMobile awaitingAnswer={awaitingAnswer} />;
-    }
-
     return (
-      <HStack minW={140} justifySelf="end" {...rest}>
+      <HStack minW={{ md: 140 }} justifySelf="end" {...rest}>
         {isSigned && (
           <Badge
             h={6}
-            rounded="full"
+            rounded="sm"
             px={2}
-            variant={isCanceled ? 'grey' : 'success'}
+            variant="subtle"
+            colorPalette={isCanceled ? 'gray' : 'green'}
+            css={
+              isCanceled
+                ? {
+                    bg: 'bg.muted/50',
+                    color: 'textSecondary',
+                  }
+                : {}
+            }
           >
             You {isCanceled ? 'canceled' : 'signed'}
-            {!isCanceled && <Icon as={SuccessIcon} color="success.700" />}
+            {!isCanceled && <Icon as={SuccessIcon} w={4} color="green" />}
           </Badge>
         )}
 
         {isDeclined && (
-          <Badge h={6} rounded="full" px={2} variant="error">
+          <Badge
+            h={6}
+            variant="subtle"
+            rounded="sm"
+            px={2}
+            colorPalette="red"
+            bg="red.300/5"
+          >
             You declined
-            <Icon as={ErrorIcon} fontSize={17} />
+            <Icon as={ErrorIcon} w={4} />
           </Badge>
         )}
 
         {!isDeposit && notAnswered && (
-          <Badge h={6} rounded="full" px={2} variant="info">
+          <Badge
+            h={6}
+            variant="subtle"
+            rounded="sm"
+            px={2}
+            bg="bg.muted/60"
+            color="textPrimary"
+          >
             {`You didn't sign`}
           </Badge>
         )}
 
-        {!isCanceled && awaitingAnswer && isSigner ? (
-          <HStack minW={{ base: 140, sm: 100, xl: 140 }}>
+        {isMobile && <ActionsMobile isPossibleToSign={showActionsButtons} />}
+
+        {!isMobile && showActionsButtons ? (
+          <HStack
+            minW={{ base: 140, sm: 100, xl: 140 }}
+            flexDirection="row-reverse"
+          >
             <Button
               h={9}
               px={3}
               aria-label={'Sign btn tx card'}
-              variant="primary"
               size={{ base: 'sm', sm: 'xs', lg: 'sm' }}
-              fontSize={{ base: 'unset', sm: 14, lg: 'unset' }}
-              isLoading={isTxActionsInLoading}
-              isDisabled={disableActionButtons}
+              loading={isTxActionsInLoading}
+              disabled={disableActionButtons}
               onClick={handleConfirm}
             >
               Sign
@@ -184,11 +211,10 @@ const Actions = memo(
               px={3}
               aria-label={'Decline btn tx card'}
               size={{ base: 'sm', sm: 'xs', lg: 'sm' }}
-              fontSize={{ base: 'unset', sm: 14, lg: 'unset' }}
-              variant="secondary"
+              variant="subtle"
               onClick={handleDecline}
-              isLoading={isTxActionsInLoading}
-              isDisabled={disableActionButtons}
+              loading={isTxActionsInLoading}
+              disabled={disableActionButtons}
             >
               Decline
             </Button>
@@ -197,11 +223,11 @@ const Actions = memo(
           <Spacer />
         )}
 
-        <Icon
-          as={isOpen ? IoIosArrowUp : IoIosArrowDown}
-          fontSize="md"
-          color="grey.200"
-          cursor="pointer"
+        <Accordion.ItemIndicator
+          display={{
+            base: 'none',
+            sm: 'block',
+          }}
         />
       </HStack>
     );

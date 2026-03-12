@@ -1,6 +1,5 @@
 import {
   Avatar,
-  AvatarGroup,
   Badge,
   Box,
   Button,
@@ -11,17 +10,10 @@ import {
   Spacer,
   Text,
   VStack,
-  Wrap,
-  WrapItem,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 import { FaRegClone } from 'react-icons/fa';
 import { SiBitcoinsv } from 'react-icons/si';
 
-import avatar from '@/assets/avatars/user-1.png';
-import avatar2 from '@/assets/avatars/user-2.png';
-import avatar3 from '@/assets/avatars/user-3.png';
-import avatar4 from '@/assets/avatars/user-4.png';
-import avatar5 from '@/assets/avatars/user-5.png';
 import vault1 from '@/assets/avatars/vault-1.png';
 import vault2 from '@/assets/avatars/vault-2.png';
 import { Card, ErrorIcon, PendingIcon, SuccessIcon } from '@/components';
@@ -29,32 +21,32 @@ import { Card, ErrorIcon, PendingIcon, SuccessIcon } from '@/components';
 /* TODO: Move to vault module */
 const VaultCard = ({ avatarSrc }: { avatarSrc: string }) => (
   <Card p={7}>
-    <HStack mb={6} spacing={6}>
-      <Avatar name="Vault 1" src={avatarSrc} size="80px" />
+    <HStack mb={6} gap={6}>
+      <Avatar name="Vault 1" src={avatarSrc} />
       <Box maxW={280}>
         <Box mb={3}>
-          <Heading variant="title-xl">Infinitybase</Heading>
+          <Heading>Infinitybase</Heading>
         </Box>
         <Box>
-          <Text variant="description">
+          <Text>
             Setting Sail on a Journey to Unlock the Potential of User-Centered
             Design.
           </Text>
         </Box>
       </Box>
     </HStack>
-    <HStack spacing={5}>
-      <HStack bgColor="dark.100" spacing={5} borderRadius={10} py={3} px={3}>
-        <Text variant="description">0xf3f2x0870e...c3</Text>
+    <HStack gap={5}>
+      <HStack bgColor="dark.100" gap={5} borderRadius={10} py={3} px={3}>
+        <Text>0xf3f2x0870e...c3</Text>
         <Icon as={FaRegClone} color="grey.500" />
       </HStack>
-      <AvatarGroup max={5}>
+      {/* <AvatarGroup max={5}>
         <Avatar name="Fábio Nascimento" src={avatar} />
         <Avatar name="Fábio Nascimento" src={avatar2} />
         <Avatar name="Fábio Nascimento" src={avatar3} />
         <Avatar name="Fábio Nascimento" src={avatar4} />
         <Avatar name="Fábio Nascimento" src={avatar5} />
-      </AvatarGroup>
+      </AvatarGroup> */}
     </HStack>
   </Card>
 );
@@ -73,27 +65,25 @@ const TransactionCard = ({
     bgColor={isPending ? 'warning.800' : 'dark.300'}
     borderColor={isPending ? 'warning.500' : 'dark.100'}
   >
-    <HStack alignItems="center" spacing={10}>
-      <HStack alignItems="center" spacing={2}>
+    <HStack alignItems="center" gap={10}>
+      <HStack alignItems="center" gap={2}>
         <Icon as={SiBitcoinsv} fontSize="lg" />
         <Text color="grey.500">BTC</Text>
       </HStack>
-      <Text variant="subtitle">Mon, 18 Sep</Text>
+      <Text>Mon, 18 Sep</Text>
       <Box>
-        <Text variant="subtitle">- 0.0989</Text>
-        <Text variant="description">Amount sent</Text>
+        <Text>- 0.0989</Text>
+        <Text>Amount sent</Text>
       </Box>
       <Box>
-        <Text variant="subtitle">Fuel annual perk</Text>
-        <Text variant="description">
-          When I hear the buzz of the little world...
-        </Text>
+        <Text>Fuel annual perk</Text>
+        <Text>When I hear the buzz of the little world...</Text>
       </Box>
-      <AvatarGroup max={5}>
+      {/* <AvatarGroup max={5}>
         <Avatar name="Fábio Nascimento" src={avatar} />
         <Avatar name="Fábio Nascimento" src={avatar2} />
         <Avatar name="Fábio Nascimento" src={avatar3} />
-      </AvatarGroup>
+      </AvatarGroup> */}
       <Spacer />
       {isSigned && (
         <Badge variant="success">
@@ -102,15 +92,15 @@ const TransactionCard = ({
         </Badge>
       )}
       {isDeclined && (
-        <Badge variant="error">
+        <Badge>
           You declined
           <Icon as={ErrorIcon} />
         </Badge>
       )}
       {isPending && (
         <HStack>
-          <Button variant="primary">Sign</Button>
-          <Button variant="secondary">Decline</Button>
+          <Button>Sign</Button>
+          <Button>Decline</Button>
         </HStack>
       )}
     </HStack>
@@ -123,45 +113,41 @@ const ExampleHomePage = () => {
       {/* VAULT LIST */}
       <Box mb={12}>
         <Box mb={5}>
-          <Text variant="subtitle" fontSize="xl">
-            Vaults
-          </Text>
+          <Text fontSize="xl">Vaults</Text>
         </Box>
-        <Wrap spacing={7}>
+        <VaultCard avatarSrc={vault1} />
+        <VaultCard avatarSrc={vault2} />
+        {/* <Wrap gap={7}>
+          <WrapItem>
+          </WrapItem>
+          <WrapItem>
+          </WrapItem>
+          <WrapItem>
+            <VaultCard avatarSrc={vault2} />
+          </WrapItem>
+          <WrapItem>
+            <VaultCard avatarSrc={vault1} />
+          </WrapItem>
           <WrapItem>
             <VaultCard avatarSrc={vault1} />
           </WrapItem>
           <WrapItem>
             <VaultCard avatarSrc={vault2} />
           </WrapItem>
-          <WrapItem>
-            <VaultCard avatarSrc={vault2} />
-          </WrapItem>
-          <WrapItem>
-            <VaultCard avatarSrc={vault1} />
-          </WrapItem>
-          <WrapItem>
-            <VaultCard avatarSrc={vault1} />
-          </WrapItem>
-          <WrapItem>
-            <VaultCard avatarSrc={vault2} />
-          </WrapItem>
-        </Wrap>
+        </Wrap> */}
       </Box>
 
       {/* TRANSACTION LIST */}
       <Box mb={10}>
-        <HStack spacing={4} mb={5}>
-          <Text variant="subtitle" fontSize="xl">
-            Transactions
-          </Text>
-          <Badge variant="warning">
+        <HStack gap={4} mb={5}>
+          <Text fontSize="xl">Transactions</Text>
+          <Badge>
             <Icon as={PendingIcon} />1 pending transaction
           </Badge>
           <Spacer />
           <Link color="brand.500">View all</Link>
         </HStack>
-        <VStack spacing={4}>
+        <VStack gap={4}>
           <TransactionCard isSigned />
           <TransactionCard isPending />
           <TransactionCard isDeclined />

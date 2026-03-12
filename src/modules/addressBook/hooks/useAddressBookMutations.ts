@@ -1,10 +1,10 @@
-import { UseDisclosureProps } from '@chakra-ui/react';
 import { UseQueryResult } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { Address } from 'fuels';
 import { UseFormReturn } from 'react-hook-form';
 
 import { IApiError } from '@/config';
+import { UseDisclosureReturn } from '@/modules/core/hooks/useDisclosure';
 
 import { ListContactsResponse } from '../services';
 import { useContactToast } from './useContactToast';
@@ -12,15 +12,22 @@ import { useCreateContactRequest } from './useCreateContactRequest';
 import { useDeleteContactRequest } from './useDeleteContactRequest';
 import { useUpdateContactRequest } from './useUpdateContactRequest';
 
+type IContactFormData = {
+  nickname: string;
+  address: string;
+  handle: string | undefined;
+  resolver: string | undefined;
+};
+
 export type IUseAddressBookMutationsProps = {
-  form: UseFormReturn<{
-    nickname: string;
-    address: string;
-    handle?: string;
-    resolver?: string;
-  }>;
-  deleteContactDialog: UseDisclosureProps;
-  contactDialog: UseDisclosureProps;
+  form: UseFormReturn<
+    IContactFormData,
+    unknown,
+    IContactFormData & { handle?: string; resolver?: string }
+  >;
+  deleteContactDialog: UseDisclosureReturn;
+  contactDialog: UseDisclosureReturn;
+  editContactDialog: UseDisclosureReturn;
   listContactsRequest: UseQueryResult<ListContactsResponse, Error>;
   contactToEdit: {
     id: string;
@@ -31,6 +38,7 @@ const useAddressBookMutations = ({
   form,
   deleteContactDialog,
   contactDialog,
+  editContactDialog,
   listContactsRequest,
   contactToEdit,
 }: IUseAddressBookMutationsProps) => {
@@ -51,7 +59,7 @@ const useAddressBookMutations = ({
   const updateContactRequest = useUpdateContactRequest({
     onSuccess: async () => {
       await listContactsRequest.refetch();
-      contactDialog.onClose?.();
+      editContactDialog.onClose?.();
       createAndUpdateSuccessToast();
     },
     onError: (error) => {
@@ -64,7 +72,7 @@ const useAddressBookMutations = ({
           title: 'Duplicated name',
           description: 'You already have this name in your address book',
         });
-        form.setError('nickname', { message: 'Duplicated label' });
+        form.setError('nickname', { message: 'Duplicated name' });
       }
 
       if (errorDescription?.includes('address')) {
@@ -93,7 +101,7 @@ const useAddressBookMutations = ({
           title: 'Duplicated name',
           description: 'You already have this name in your address book',
         });
-        form.setError('nickname', { message: 'Duplicated label' });
+        form.setError('nickname', { message: 'Duplicated name' });
       }
 
       if (errorDescription?.includes('address')) {

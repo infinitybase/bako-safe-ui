@@ -1,4 +1,4 @@
-import { Box, Button, ButtonProps } from '@chakra-ui/react';
+import { Box, Button, ButtonProps } from 'bako-ui';
 import { ReactNode } from 'react';
 
 interface ProgressButtonProps

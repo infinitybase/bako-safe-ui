@@ -1,20 +1,29 @@
 import {
-  ComponentWithAs,
-  HStack,
+  Badge,
+  Card,
+  Heading,
   Icon,
   IconProps,
+  Stack,
   Text,
   VStack,
-} from '@chakra-ui/react';
+} from 'bako-ui';
+import { motion } from 'framer-motion';
+import { useState } from 'react';
 
 interface IWelcomeCardProps {
   title: string;
   description: string;
-  icon: ComponentWithAs<'svg', IconProps>;
+  icon: React.ComponentType<IconProps>;
   onClick?: () => void;
   iconSize?: string;
   commingSoon?: boolean;
+  isMobile?: boolean;
 }
+
+const MotionVStack = motion(VStack);
+const MotionText = motion(Text);
+const MotionBadge = motion(Badge);
 
 const WelcomeCard = ({
   description,
@@ -23,45 +32,118 @@ const WelcomeCard = ({
   onClick,
   iconSize,
   commingSoon,
+  isMobile,
 }: IWelcomeCardProps) => {
+  const [isHovered, setIsHovered] = useState(false);
+
   return (
-    <HStack
+    <Card.Root
       w="full"
-      spacing={4}
-      p={4}
-      borderRadius="md"
-      border="1px solid #35302F"
-      boxShadow="0px 8px 6px 0px #00000026"
-      background="linear-gradient(0deg, rgba(245, 245, 245, 0.03), rgba(245, 245, 245, 0.03)),linear-gradient(180deg, rgba(21, 20, 19, 0.0375) 0%, rgba(21, 20, 19, 0.0625) 28.5%, rgba(21, 20, 19, 0.125) 72%, rgba(21, 20, 19, 0.25) 100%)"
+      h="full"
+      minH={isMobile ? 'unset' : 104}
+      variant="subtle"
+      bg={isMobile ? 'unset' : 'bg.muted'}
+      borderRadius="lg"
       onClick={onClick}
-      opacity={commingSoon ? 0.5 : 'initial'}
-      pointerEvents={commingSoon ? 'none' : 'auto'}
+      opacity={0.6}
+      _hover={{
+        opacity: 1,
+        bg: 'gray.550',
+      }}
       cursor={commingSoon ? 'auto' : 'pointer'}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
-      <Icon as={icon} color="grey.250" fontSize={iconSize} />
-      <VStack alignItems="start" w="full" spacing={1}>
-        <Text fontSize="sm" color="grey.250" lineHeight="15.85px">
-          {title}
-        </Text>
-        <Text fontSize="xs" color="grey.250" lineHeight="13.58px">
-          {description}
-        </Text>
-      </VStack>
-      {commingSoon && (
-        <Text
-          fontSize="xs"
-          color="grey.250"
-          isTruncated
-          minW="fit-content"
-          p="4px 6px 4px 6px"
-          borderRadius="xl"
-          border="1px solid rgba(245, 245, 245, 0.25)"
-          lineHeight="12.1px"
+      <Card.Body
+        w="full"
+        display="flex"
+        flexDirection={isMobile ? 'row' : 'column'}
+        gap={isMobile ? 6 : 2}
+        p={4}
+        py={isMobile ? 4 : 2}
+        alignItems="center"
+        justifyContent={isMobile ? 'flex-start' : 'center'}
+        position="relative"
+        overflow="hidden"
+      >
+        <MotionVStack
+          layout
+          alignItems="center"
+          w={isMobile ? 'unset' : 'full'}
+          minW={isMobile ? '60px' : 'unset'}
+          gap={2}
+          transition={{
+            type: 'spring',
+            stiffness: 200,
+            damping: 25,
+          }}
         >
-          Comming soon
-        </Text>
-      )}
-    </HStack>
+          <Icon as={icon} color="textPrimary" w={iconSize} />
+          <Heading
+            fontSize="2xs"
+            color="textPrimary"
+            textAlign="center"
+            lineHeight="short"
+            letterSpacing="8%"
+          >
+            {title}
+          </Heading>
+        </MotionVStack>
+
+        <Stack gap={0}>
+          <MotionText
+            fontSize="xs"
+            color="textSecondary"
+            textAlign={isMobile ? 'unset' : 'center'}
+            lineHeight="short"
+            initial={!isMobile ? { opacity: 0 } : undefined}
+            display={isMobile ? 'block' : !isHovered ? 'none' : 'block'}
+            animate={
+              !isMobile
+                ? {
+                    opacity: isHovered ? 1 : 0,
+                  }
+                : undefined
+            }
+            transition={{
+              opacity: { duration: 0.2, ease: 'easeInOut' },
+              y: {
+                type: 'spring',
+                stiffness: 200,
+                damping: 25,
+              },
+            }}
+          >
+            {description}
+          </MotionText>
+
+          {commingSoon && (
+            <MotionBadge
+              variant="solid"
+              colorPalette="yellow"
+              position={isMobile ? 'relative' : 'absolute'}
+              top={2}
+              right={2}
+              size="xs"
+              alignSelf="flex-start"
+              initial={!isMobile ? { opacity: 0 } : undefined}
+              animate={
+                !isMobile
+                  ? {
+                      opacity: isHovered ? 1 : 0,
+                    }
+                  : undefined
+              }
+              transition={{
+                opacity: { duration: 0.2, ease: 'easeInOut', delay: 0.05 },
+              }}
+            >
+              Coming soon
+            </MotionBadge>
+          )}
+        </Stack>
+      </Card.Body>
+    </Card.Root>
   );
 };
 

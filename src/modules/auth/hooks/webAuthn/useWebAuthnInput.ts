@@ -1,10 +1,12 @@
-import debounce from 'lodash.debounce';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { TypeUser } from 'bakosafe';
+import { useCallback, useMemo, useState } from 'react';
 
-import { AutocompleteBadgeStatus } from '@/components/autocomplete';
 import { LocalStorageConfig } from '@/config';
+import { useDebounce } from '@/modules/core';
+import { AutocompleteBadgeStatus } from '@/modules/core/utils/enum';
 
-import { localStorageKeys, TypeUser } from '../../services/methods';
+import { localStorageKeys } from '../../services/methods';
+import { WebAuthnModeState } from '../signIn';
 import {
   useCheckNickname,
   useGetAccountsByHardwareId,
@@ -20,24 +22,35 @@ const WebauthnInputBadge: Record<string, IWebauthnInputBadge> = {
     status: AutocompleteBadgeStatus.SEARCHING,
     label: 'Searching...',
   },
-  INFO: { status: AutocompleteBadgeStatus.INFO, label: 'Account found' },
-  SUCCESS: { status: AutocompleteBadgeStatus.SUCCESS, label: 'Available' },
+  INFO: { status: AutocompleteBadgeStatus.INFO, label: 'Username found' },
+  SUCCESS: {
+    status: AutocompleteBadgeStatus.SUCCESS,
+    label: 'Username available',
+  },
   ERROR: { status: AutocompleteBadgeStatus.ERROR, label: 'Invalid username' },
+  NOT_FOUND: {
+    status: AutocompleteBadgeStatus.ERROR,
+    label: 'Username not found',
+  },
+  CONFLICT: {
+    status: AutocompleteBadgeStatus.ERROR,
+    label: 'Username already exists',
+  },
 };
 
-const useWebAuthnInput = (validUsername?: boolean, userId?: string) => {
+const useWebAuthnInput = (
+  validUsername?: boolean,
+  userId?: string,
+  mode?: WebAuthnModeState,
+) => {
   const [inputValue, setInputValue] = useState<string>('');
-  const [accountSearch, setAccountSearch] = useState<string>('');
-  const [accountFilter, setAccountFilter] = useState<string>('');
-  const [badge, setBadge] = useState<IWebauthnInputBadge | undefined>(
-    undefined,
-  );
+  const debouncedInputValue = useDebounce(inputValue, 400);
 
   const accountsRequest = useGetAccountsByHardwareId();
 
-  const checkNicknameRequestEnabled = !!validUsername && !!accountSearch;
+  const checkNicknameRequestEnabled = !!validUsername && !!debouncedInputValue;
   const checkNicknameRequest = useCheckNickname(
-    accountSearch,
+    debouncedInputValue,
     checkNicknameRequestEnabled,
     userId,
   );
@@ -56,7 +69,7 @@ const useWebAuthnInput = (validUsername?: boolean, userId?: string) => {
 
   const accountsOptions = useMemo(() => {
     const filteredAccounts = mergedAccounts?.filter((account) =>
-      account.toLowerCase().includes(accountFilter.toLowerCase()),
+      account.toLowerCase().includes(debouncedInputValue.toLowerCase()),
     );
 
     const mappedOptions = filteredAccounts?.map((account) => ({
@@ -65,52 +78,65 @@ const useWebAuthnInput = (validUsername?: boolean, userId?: string) => {
     }));
 
     return mappedOptions;
-  }, [mergedAccounts, accountFilter]);
-
-  const debouncedAccountFilter = useCallback(
-    debounce((value: string) => {
-      setAccountFilter(value);
-    }, 300),
-    [],
-  );
-
-  const debouncedAccountSearch = useCallback(
-    debounce((value: string) => {
-      setAccountSearch(value);
-    }, 300),
-    [],
-  );
+  }, [mergedAccounts, debouncedInputValue]);
 
   const handleInputChange = useCallback((newValue: string) => {
     setInputValue(newValue);
-    debouncedAccountSearch(newValue);
-    debouncedAccountFilter(newValue);
   }, []);
 
-  useEffect(() => {
-    if (checkNicknameRequest.isLoading) {
-      setBadge(WebauthnInputBadge.SEARCHING);
-    } else if (!validUsername) {
-      setBadge(WebauthnInputBadge.ERROR);
-    } else if (checkNicknameRequest.data?.type === TypeUser.WEB_AUTHN) {
-      setBadge(WebauthnInputBadge.INFO);
-    } else if (checkNicknameRequest.isSuccess) {
-      setBadge(WebauthnInputBadge.SUCCESS);
+  const badge: IWebauthnInputBadge | undefined = useMemo(() => {
+    if (!debouncedInputValue) {
+      return undefined;
+    }
+
+    if (checkNicknameRequest.isLoading || inputValue !== debouncedInputValue) {
+      return WebauthnInputBadge.SEARCHING;
+    }
+
+    if ([WebAuthnModeState.LOGIN, WebAuthnModeState.SEARCH].includes(mode!)) {
+      if (checkNicknameRequest.data?.type === TypeUser.WEB_AUTHN) {
+        return WebauthnInputBadge.INFO;
+      }
+      return WebauthnInputBadge.NOT_FOUND;
+    }
+
+    if (mode === WebAuthnModeState.REGISTER) {
+      if (checkNicknameRequest.data?.type === TypeUser.WEB_AUTHN) {
+        return WebauthnInputBadge.CONFLICT;
+      }
+      return WebauthnInputBadge.SUCCESS;
     }
   }, [
-    checkNicknameRequest.data?.type,
     checkNicknameRequest.isLoading,
-    checkNicknameRequest.isSuccess,
-    validUsername,
+    checkNicknameRequest.data,
+    mode,
+    inputValue,
+    debouncedInputValue,
   ]);
+
+  const isBadgeStatusValid = useMemo(() => {
+    if (!badge || !debouncedInputValue) {
+      return false;
+    }
+
+    if (mode === WebAuthnModeState.LOGIN) {
+      return badge.status === AutocompleteBadgeStatus.INFO;
+    }
+
+    if (mode === WebAuthnModeState.REGISTER) {
+      return badge.status === AutocompleteBadgeStatus.SUCCESS;
+    }
+
+    return false;
+  }, [badge, debouncedInputValue, mode]);
 
   return {
     inputValue,
     accountsOptions,
-    debouncedAccountFilter,
     accountsRequest,
     checkNicknameRequest,
     badge,
+    isBadgeStatusValid,
     setInputValue,
     handleInputChange,
   };

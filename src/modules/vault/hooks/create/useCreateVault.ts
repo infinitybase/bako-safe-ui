@@ -1,15 +1,18 @@
+import { AxiosError } from 'axios';
+import { Bech32 } from 'bakosafe';
 import { Address } from 'fuels';
 import debounce from 'lodash.debounce';
 import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
+import { IApiError } from '@/config';
 import { useContactToast } from '@/modules/addressBook/hooks';
 import { useCreateBakoSafeVault } from '@/modules/core/hooks';
 import { Pages } from '@/modules/core/routes';
 import { AddressUtils } from '@/modules/core/utils/address';
 import { TemplateService } from '@/modules/template/services/methods';
 import { useTemplateStore } from '@/modules/template/store';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { useCheckVaultName } from '../useGetByNameVaultRequest';
 import { useCreateVaultForm, useValidateAddress } from '.';
@@ -57,11 +60,21 @@ const useCreateVault = () => {
       form.reset();
       setSearch('');
     },
-    onError: () => {
-      errorToast({
-        title: 'Error on vault creation!',
-        description: 'An error occurred while creating the vault',
-      });
+    onError: (error) => {
+      const apiError = (error as AxiosError)?.response?.data as IApiError;
+      const errorTitle = apiError?.detail?.error?.title;
+
+      if (errorTitle?.includes('name already exists')) {
+        errorToast({
+          title: 'Error on account creation!',
+          description: 'An account with that name already exists.',
+        });
+      } else {
+        errorToast({
+          title: 'Error on account creation!',
+          description: 'An error occurred while creating the account',
+        });
+      }
     },
   });
 
@@ -73,10 +86,7 @@ const useCreateVault = () => {
     setCurrentValidateAddressIndex,
   } = useValidateAddress();
 
-  let vaultNameIsAvailable = false;
-
-  const checkVaultNameResult = useCheckVaultName(searchRequest);
-  vaultNameIsAvailable = checkVaultNameResult.data ?? false;
+  const { data: vaultNameAlreadyExists } = useCheckVaultName(searchRequest);
 
   const debouncedSearchHandler = useCallback(
     debounce((value: string) => {
@@ -96,9 +106,11 @@ const useCreateVault = () => {
 
     const addresses =
       data.addresses?.map((address: { value: string }) => {
-        const _a = AddressUtils.isPasskey(address.value)
-          ? AddressUtils.fromBech32(address.value as `passkey.${string}`)
-          : address.value;
+        const _a =
+          AddressUtils.isPasskey(address.value) ||
+          AddressUtils.isSocial(address.value)
+            ? AddressUtils.fromBech32(address.value as Bech32)
+            : address.value;
 
         return new Address(_a).toString();
       }) ?? [];
@@ -194,7 +206,7 @@ const useCreateVault = () => {
       handleCreateVault,
     },
     handleInputChange,
-    vaultNameIsAvailable,
+    vaultNameAlreadyExists: !!vaultNameAlreadyExists,
     vaultId,
     search,
     setSearch,

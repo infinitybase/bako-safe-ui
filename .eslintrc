@@ -22,8 +22,8 @@
     "import",
     "simple-import-sort",
     "prettier",
-    "unused-imports",
-    "eslint-plugin-react-compiler"
+    "unused-imports"
+    // "eslint-plugin-react-compiler"
   ],
   "parser": "@typescript-eslint/parser",
   "rules": {
@@ -51,8 +51,8 @@
         "args": "after-used",
         "argsIgnorePattern": "^_"
       }
-    ],
-    "react-compiler/react-compiler": "error"
+    ]
+    // "react-compiler/react-compiler": "error"
   },
   "ignorePatterns": ["dist", ".eslintrc.cjs", "*.svg"]
 }

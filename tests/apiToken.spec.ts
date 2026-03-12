@@ -12,6 +12,8 @@ import { AuthTestService } from './utils/services/auth-service';
 import { VaultTestService } from './utils/services/vault-service';
 import { E2ETestUtils } from './utils/setup';
 
+await E2ETestUtils.downloadFuelExtension({ test });
+
 test.describe('API Token', () => {
   let fuelWalletTestHelper: FuelWalletTestHelper;
   let genesisWallet: WalletUnlocked;
@@ -67,7 +69,7 @@ test.describe('API Token', () => {
       page.getByRole('tabpanel').getByText('API Token created!'),
     ).toBeVisible();
 
-    await page.locator('#copy_form_api_token').click();
+    await page.locator('[aria-label="Copy API Token"]').click();
     const handleKey = await page.evaluateHandle(() =>
       navigator.clipboard.readText(),
     );

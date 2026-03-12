@@ -1,22 +1,23 @@
-import { HStack, Text, VStack } from '@chakra-ui/react';
+import { HStack, Text, Tooltip, VStack } from 'bako-ui';
+import { memo } from 'react';
 
 import {
   Dialog,
   DialogModalProps,
-  SquarePlusIcon,
-  Tooltip,
+  Tooltip as TooltipComponents,
 } from '@/components';
-import { useVerifyBrowserType } from '@/modules/dapp/hooks';
 import { TabState, useCreateVaultDialog } from '@/modules/vault/hooks';
 
 import CreateVaultWarning from '../../CreateVaultWarning';
 import { CreateVaultForm } from './form';
 
+const FOOTER_Z_INDEX = 1410;
+
 interface CreateVaultDialogProps extends Omit<DialogModalProps, 'children'> {
   onCreate?: () => void;
 }
 
-const CreateVaultDialog = (props: CreateVaultDialogProps) => {
+const CreateVaultDialog = memo((props: CreateVaultDialogProps) => {
   const {
     tabs,
     form,
@@ -29,52 +30,61 @@ const CreateVaultDialog = (props: CreateVaultDialogProps) => {
     setFormWithTemplate,
     onSaveTemplate,
     handleInputChange,
-    vaultNameIsAvailable,
+    vaultNameAlreadyExists,
     search,
     setSearch,
     validateAddress,
   } = useCreateVaultDialog({
-    onClose: props.onClose,
+    onOpenChange: (payload) => props.onOpenChange?.(payload),
     onCreate: props.onCreate,
   });
 
-  const { isSafariBrowser, isMobile } = useVerifyBrowserType();
-
-  const isFirstTab = tabs.tab === 0;
-  const isSecondTab = tabs.tab === 1;
-
-  const isSecondTabAndMobile = isSecondTab && isMobile;
-
   return (
     <Dialog.Modal
-      size={{ base: 'full', md: 'xl' }}
+      size={{ base: 'full', sm: 'md' }}
       {...props}
-      onClose={handleCancel}
-      closeOnOverlayClick={false}
+      closeOnInteractOutside={false}
       modalContentProps={{
-        maxH: '$100vh',
-      }}
-      modalBodyProps={{
-        maxH: '$100vh',
+        h: { base: '100dvh', sm: '780px' },
+        maxH: { base: '100dvh', sm: '780px' },
+        p: 0,
+        overflow: 'hidden',
       }}
     >
       <Dialog.Header
-        hideCloseButton={isSafariBrowser && isMobile}
         onClose={handleCancel}
-        maxW={450}
-        mb={0}
-        pt={isSafariBrowser && isMobile ? 6 : 'unset'}
+        p={6}
+        pb={0}
+        my={0}
         hidden={steps.step?.hide}
-        title="Create Vault"
+        title={steps.step?.title ?? ''}
+        titleSxProps={{
+          fontSize: 'sm',
+          color: 'textPrimary',
+          lineHeight: 'shorter',
+        }}
         description={steps.step?.description ?? ''}
-        descriptionFontSize="sm"
+        descriptionFontSize="xs"
+        descriptionColor="textSecondary"
       />
 
       <Dialog.Body
-        maxW={450}
-        mb={isFirstTab ? 8 : 0}
-        maxH={isFirstTab ? '60vh' : 700}
-        minH={!isFirstTab ? 'fit-content' : 'unset'}
+        px={6}
+        flex={1}
+        minH={0}
+        display="flex"
+        overflowY="auto"
+        css={{
+          '&::-webkit-scrollbar': {
+            width: '5px',
+            maxHeight: '330px',
+          },
+          '&::-webkit-scrollbar-thumb': {
+            backgroundColor: 'gray.550',
+            borderRadius: '30px',
+            height: '10px',
+          },
+        }}
       >
         <CreateVaultForm
           tabs={tabs}
@@ -86,7 +96,7 @@ const CreateVaultDialog = (props: CreateVaultDialogProps) => {
           selectedTemplate={selectedTemplate}
           setTemplate={setFormWithTemplate}
           onSaveTemplate={onSaveTemplate}
-          vaultNameIsAvailable={vaultNameIsAvailable}
+          vaultNameAlreadyExists={vaultNameAlreadyExists}
           search={search}
           setSearch={setSearch}
           handleInputChange={handleInputChange}
@@ -96,41 +106,40 @@ const CreateVaultDialog = (props: CreateVaultDialogProps) => {
 
       <Dialog.Actions
         w="full"
-        maxW={450}
-        mt={isSecondTab ? 'unset' : 'auto'}
-        sx={{
-          '&>hr': {
-            mt: 0,
-            mb: isSecondTab ? 0 : 8,
-            display: tabs.tab === 2 ? 'none' : 'block',
-          },
-        }}
-        bgColor="dark.950"
-        position={isSecondTabAndMobile ? 'absolute' : 'unset'}
-        bottom={0}
-        px={isSecondTabAndMobile ? 6 : 'unset'}
+        p={6}
+        bgColor={tabs.tab !== TabState.SUCCESS ? 'bg.muted' : 'bg.panel'}
+        roundedTop="2xl"
+        roundedBottom={{ base: 'none', sm: '2xl' }}
+        boxShadow={
+          tabs.tab !== TabState.SUCCESS ? '0px -12px 8px 0px #0D0D0C99' : 'none'
+        }
+        zIndex={FOOTER_Z_INDEX}
       >
-        <VStack w="full" alignItems="center" bg="dark.950" zIndex={999}>
-          {isSecondTab && (
-            <HStack my={6} w="full" justifyContent="space-between">
-              <Text variant="description" fontSize="xs">
-                Estimated Fee
-              </Text>
-              <Text
-                color="white"
-                variant="description"
-                display="flex"
-                gap={2}
-                fontSize="xs"
-              >
-                Vault creation is free on Fuel Network
-                <Tooltip
-                  placment="top-start"
-                  text="Vault creation is free on Bako Safe
-Bako Safe leverages Fuel predicates to manage vault permissions off-chain. Therefore, the creation of vaults is entirely free of charge and not sponsored by the network."
-                />
-              </Text>
-            </HStack>
+        <VStack w="full" alignItems="center" gap={6} zIndex={999}>
+          <HStack
+            w="full"
+            justifyContent="space-between"
+            display={tabs.tab === TabState.SUCCESS ? 'none' : 'flex'}
+          >
+            <Text
+              as="div"
+              fontSize="xs"
+              display="flex"
+              gap={2}
+              color="gray.400"
+            >
+              Estimated Fee
+              <TooltipComponents
+                placment="top-start"
+                text="Account creation is free on Bako Safe leverages Fuel predicates to manage account permissions off-chain. Therefore, the creation of accounts is entirely free of charge and not sponsored by the network."
+              />
+            </Text>
+            <Text color="textPrimary" fontSize="xs">
+              Account creation is free on Fuel Network
+            </Text>
+          </HStack>
+          {tabs.tab === 1 && (
+            <CreateVaultWarning message="Please ensure that all signer addresses are valid and accessible wallet addresses on the Fuel Network. Addresses from other Bako Safe Vaults and wallets from other networks cannot be used as signers." />
           )}
           {tabs.tab === 2 && (
             <CreateVaultWarning
@@ -138,43 +147,45 @@ Bako Safe leverages Fuel predicates to manage vault permissions off-chain. There
               message="Before initiating high-value deposits, first conduct smaller deposits and transactions to confirm that all signers have access to their wallets and that the vault’s funds can be transferred securely."
             />
           )}
-          <HStack w="full" justifyContent="space-between">
+          <HStack w="full" justifyContent="space-between" gap={4}>
             <Dialog.SecondaryAction
-              bgColor="transparent"
-              aria-label="Create Vault Secundary Action"
-              border="1px solid white"
-              w={tabs.tab !== TabState.SUCCESS ? '25%' : '100%'}
-              onClick={
-                tabs.tab === 2 ? steps.step.onContinue : steps.step.onCancel
-              }
-              _hover={{
-                borderColor: 'brand.500',
-                color: 'brand.500',
+              variant={tabs.tab !== TabState.SUCCESS ? 'ghost' : 'subtle'}
+              flex={tabs.tab !== TabState.SUCCESS ? 'unset' : 1}
+              onClick={() => {
+                tabs.tab === TabState.SUCCESS
+                  ? steps.step.onContinue()
+                  : steps.step.onCancel();
               }}
             >
               {steps.step.closeText}
             </Dialog.SecondaryAction>
-            <Dialog.PrimaryAction
-              w="65%"
-              aria-label="Create Vault Primary Action"
-              hidden={steps.step?.hide}
-              onClick={steps.step?.onContinue}
-              leftIcon={
-                tabs.tab === TabState.ADDRESSES ? <SquarePlusIcon /> : undefined
-              }
-              isDisabled={steps.step?.disable}
-              isLoading={bakoSafeVault.isPending || form.formState.isSubmitting}
-              _hover={{
-                opacity: !steps.step?.disable && 0.8,
-              }}
+            <Tooltip
+              content="Account name already exists."
+              disabled={!vaultNameAlreadyExists}
+              showArrow
+              positioning={{ placement: 'top' }}
             >
-              {steps.step?.nextStepText}
-            </Dialog.PrimaryAction>
+              <Dialog.PrimaryAction
+                flex={1}
+                aria-label="Create Vault Primary Action"
+                hidden={steps.step?.hide}
+                onClick={steps.step?.onContinue}
+                disabled={steps.step?.disable || vaultNameAlreadyExists}
+                loading={bakoSafeVault.isPending || form.formState.isSubmitting}
+                _hover={{
+                  opacity: !steps.step?.disable ? 0.8 : 1,
+                }}
+              >
+                {steps.step?.nextStepText}
+              </Dialog.PrimaryAction>
+            </Tooltip>
           </HStack>
         </VStack>
       </Dialog.Actions>
     </Dialog.Modal>
   );
-};
+});
+
+CreateVaultDialog.displayName = 'CreateVaultDialog';
 
 export { CreateVaultDialog };

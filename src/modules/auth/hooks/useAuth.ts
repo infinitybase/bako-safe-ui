@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
 import { useFuel } from '@fuels/react';
+import { TypeUser } from 'bakosafe';
 import { Provider } from 'fuels';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -17,12 +18,7 @@ import {
   useQueryParams,
   useSignOut,
 } from '..';
-import {
-  AuthenticateParams,
-  IUseAuthReturn,
-  TypeUser,
-  UserType,
-} from '../services';
+import { AuthenticateParams, IUseAuthReturn, UserType } from '../services';
 import { useUserInfoRequest } from './useUserInfoRequest';
 
 export type SingleAuthentication = {
@@ -34,14 +30,16 @@ export type WorkspaceAuthentication = {
 };
 
 const useAuth = (): IUseAuthReturn => {
-  const { infos, isLoading, isFetching, refetch } = useUserInfoRequest();
   const [invalidAccount, setInvalidAccount] = useState(false);
+
+  const { infos, isLoading, isFetching, refetch } = useUserInfoRequest();
   const { fuel } = useFuel();
   const { setAuthCookies, clearAuthCookies, userAuthCookiesInfo } =
     useAuthCookies();
   const signOutRequest = useSignOut();
   const { account, singleWorkspace, accessToken } = userAuthCookiesInfo();
-  const { sessionId, origin, name, request_id, byConnector } = useQueryParams();
+  const { sessionId, origin, name, request_id, byConnector, connectorType } =
+    useQueryParams();
   const navigate = useNavigate();
 
   const authenticate = (params: AuthenticateParams) => {
@@ -53,6 +51,7 @@ const useAuth = (): IUseAuthReturn => {
   const logout = async (removeTokenFromDb = true, callback?: () => void) => {
     localStorage.setItem(BAKO_SUPPORT_SEARCH, 'false');
     window.dispatchEvent(new Event('bako-storage-change'));
+
     if (accessToken && removeTokenFromDb) {
       await signOutRequest.mutateAsync();
       callback?.();
@@ -69,6 +68,7 @@ const useAuth = (): IUseAuthReturn => {
         name,
         request_id,
         byConnector: byConnector ? String(byConnector) : undefined,
+        connectorType: connectorType ? connectorType : undefined,
       });
       navigate(`/${queryParams}`);
     }, 200);
@@ -84,9 +84,7 @@ const useAuth = (): IUseAuthReturn => {
   };
 
   const userProvider = async () => {
-    const _userProvider =
-      infos?.type?.type === TypeUser.FUEL ||
-      infos?.type?.type === TypeUser.FULLET;
+    const _userProvider = infos?.type?.type === TypeUser.FUEL;
 
     return {
       provider: new Provider(
@@ -105,6 +103,11 @@ const useAuth = (): IUseAuthReturn => {
     const isEvm = (infos?.type as unknown as TypeUser) == TypeUser.EVM;
     if (isEvm) {
       return { type: TypeUser.EVM, name: EConnectors.EVM };
+    }
+
+    const isSocial = (infos?.type as unknown as TypeUser) == TypeUser.SOCIAL;
+    if (isSocial) {
+      return { type: TypeUser.SOCIAL, name: EConnectors.EVM };
     }
 
     const currentConnector = fuel.currentConnector()?.name as EConnectors;

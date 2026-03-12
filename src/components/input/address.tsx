@@ -1,28 +1,25 @@
-import {
-  CircularProgress,
-  FormLabel,
-  Input,
-  InputGroup,
-  InputProps,
-  InputRightElement,
-} from '@chakra-ui/react';
+import { Field, Input, InputGroup, InputProps } from 'bako-ui';
 import { isB256 } from 'fuels';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useFormContext } from 'react-hook-form';
 
-import { UseAddressBookReturn } from '@/modules/addressBook/hooks';
+import { ICreateContactFormData } from '@/modules/addressBook/hooks';
 import { useBakoIDClient } from '@/modules/core/hooks/bako-id';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 import { AddressBookUtils } from '@/utils';
+
+import { CloseCircle } from '../icons';
 
 interface AddressInputProps
   extends Omit<InputProps, 'value' | 'onChange' | 'placeholder'> {
   value: string;
   onChange: (value: string) => void;
-  adbForm: UseAddressBookReturn['form'];
+  error?: string;
 }
 
 const AddressInput = (props: AddressInputProps) => {
-  const { onChange, value, adbForm, ...rest } = props;
+  const { onChange, value, error, ...rest } = props;
+  const adbForm = useFormContext<ICreateContactFormData>();
 
   const [inputValue, setInputValue] = useState<string>(value);
   const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
@@ -56,7 +53,7 @@ const AddressInput = (props: AddressInputProps) => {
 
       return result;
     },
-    [adbForm],
+    [fetchResolveAddress, fetchResolverName],
   );
 
   const handleInputChange = useCallback(
@@ -86,7 +83,7 @@ const AddressInput = (props: AddressInputProps) => {
         }
       }, 1500); // 1.5s debounce delay
     },
-    [setInputValue],
+    [adbForm, onChange, setAddressBookInputValue],
   );
 
   useEffect(() => {
@@ -128,32 +125,44 @@ const AddressInput = (props: AddressInputProps) => {
     }
   }, [fetchResolveAddress.isLoading, fetchResolverName.isLoading, value]);
 
+  const handleClearAddress = () => {
+    setInputValue('');
+    onChange('');
+    adbForm.setValue('handle', '');
+    adbForm.setValue('resolver', '');
+    adbForm.setValue('address', '');
+  };
+
   return (
-    <InputGroup>
-      <InputRightElement
-        pr={1}
-        hidden={!fetchResolveAddress.isLoading && !fetchResolverName.isLoading}
-        top="1px"
-        right="2"
-        borderRadius={10}
-        bgColor={'grey.825'}
-        h="calc(100% - 3px)"
+    <Field.Root invalid={!!error}>
+      <InputGroup
+        endElement={
+          inputValue && (
+            <CloseCircle
+              boxSize={4}
+              color="gray.200"
+              cursor="pointer"
+              aria-label="Clear address"
+              onClick={handleClearAddress}
+            />
+          )
+        }
       >
-        <CircularProgress
-          trackColor="dark.100"
-          size={18}
-          isIndeterminate
-          color="brand.500"
+        <Input
+          {...rest}
+          value={inputValue}
+          onChange={handleInputChange}
+          placeholder="Address"
+          variant="subtle"
+          p={3}
         />
-      </InputRightElement>
-      <Input
-        {...rest}
-        value={inputValue}
-        onChange={handleInputChange}
-        placeholder=" "
-      />
-      <FormLabel>Address</FormLabel>
-    </InputGroup>
+      </InputGroup>
+      {error && (
+        <Field.HelperText color="red.400" fontWeight={500}>
+          {error}
+        </Field.HelperText>
+      )}
+    </Field.Root>
   );
 };
 

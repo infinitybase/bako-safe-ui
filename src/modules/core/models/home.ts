@@ -1,12 +1,13 @@
 import { PENDING_TRANSACTIONS_QUERY_KEY } from '@/modules/transactions/hooks/list/useTotalSignaturesPendingRequest';
+import { ITransactionStatusFilter } from '@/modules/transactions/services';
 
 export const HomeQueryKey = {
   DEFAULT: 'home',
-  HOME_WORKSPACE: (workspaceId: string) => [
-    HomeQueryKey.DEFAULT,
-    'me',
-    workspaceId,
-  ],
+  HOME_WORKSPACE: (
+    workspaceId: string,
+    status?: ITransactionStatusFilter,
+    type?: string,
+  ) => [HomeQueryKey.DEFAULT, 'me', workspaceId, status, type],
   HOME_DATA: (workspaceId: string) => [
     HomeQueryKey.DEFAULT,
     'data',

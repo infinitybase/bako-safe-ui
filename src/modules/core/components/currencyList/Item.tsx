@@ -1,4 +1,4 @@
-import { ListItem, ListItemProps } from '@chakra-ui/react';
+import { List, ListItemProps } from 'bako-ui';
 
 export interface ItemProps extends Omit<ListItemProps, 'onSelect' | 'onClick'> {
   isSelected?: boolean;
@@ -17,13 +17,13 @@ export const Item = ({
   ...props
 }: ItemProps) => {
   return (
-    <ListItem
+    <List.Item
       border="1px solid"
       p={3}
       borderRadius="lg"
-      borderColor={isSelected ? 'grey.200' : 'grey.950'}
+      borderColor={isSelected ? 'bg.muted/300' : 'bg.muted'}
       _hover={{
-        borderColor: 'grey.200',
+        borderColor: 'bg.muted/300',
       }}
       cursor="pointer"
       onClick={() => {
@@ -34,6 +34,6 @@ export const Item = ({
       {...props}
     >
       {children}
-    </ListItem>
+    </List.Item>
   );
 };

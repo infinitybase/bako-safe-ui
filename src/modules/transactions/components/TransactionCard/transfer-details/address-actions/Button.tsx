@@ -1,8 +1,7 @@
-import { IconButton, IconButtonProps } from '@chakra-ui/react';
+import { IconButton, IconButtonProps } from 'bako-ui';
 import { forwardRef } from 'react';
 
 import { OptionsIcon } from '@/components/icons';
-import { useScreenSize } from '@/modules/core/hooks';
 
 type AddressActionsButtonProps = Omit<
   IconButtonProps,
@@ -13,8 +12,6 @@ const AddressActionsButton = forwardRef<
   HTMLButtonElement,
   AddressActionsButtonProps
 >((props, ref) => {
-  const { isMobile } = useScreenSize();
-
   return (
     <IconButton
       ref={ref}
@@ -22,16 +19,15 @@ const AddressActionsButton = forwardRef<
       display="flex"
       alignItems="center"
       justifyContent="center"
-      bgColor={isMobile ? 'transparent' : 'grey.825'}
       borderRadius={6}
-      borderWidth={isMobile ? 0 : 1}
-      borderColor="grey.950"
-      p={isMobile ? 0 : 1}
-      size={isMobile ? '2xs' : 'sm'}
-      _hover={{ bgColor: 'dark.950' }}
-      icon={<OptionsIcon color="grey.75" fontSize="xl" />}
+      variant="ghost"
+      _hover={{ bg: 'gray.550' }}
+      _expanded={{ bg: 'gray.550' }}
+      size={{ base: '2xs', sm: 'xs' }}
       {...props}
-    />
+    >
+      <OptionsIcon color="gray.200" boxSize="20px" />
+    </IconButton>
   );
 });
 

@@ -1,33 +1,66 @@
 import {
   Avatar,
   Badge,
-  Flex,
   HStack,
-  Icon,
+  Skeleton,
   Text,
+  TextProps,
   VStack,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 import { memo, useMemo } from 'react';
-import { LuUser2, LuUsers2 } from 'react-icons/lu';
 
 import { Card, CardProps } from '@/components';
+import { BlurredContent } from '@/components/blurredContent';
+import { useWorkspaceContext } from '@/modules';
 import { AddressUtils } from '@/modules/core';
 import {
   useTransactionsSignaturePending,
   WaitingSignatureBadge,
 } from '@/modules/transactions';
+import { moneyFormat } from '@/utils';
 
+import { useHasReservedCoins } from '../../hooks';
 import { PredicateWorkspace } from '../../services';
 
-interface VaultDrawerBoxProps extends CardProps {
-  id?: string;
+interface VaultItemBoxText
+  extends Omit<TextProps, 'color' | 'fontWeight' | 'fontSize' | 'lineHeight'> {
+  type: 'primary' | 'secondary';
   isActive?: boolean;
+  isLoading?: boolean;
+}
+
+const VaultItemBoxText = (props: VaultItemBoxText) => {
+  const { type, isActive, children, isLoading, ...rest } = props;
+
+  if (isLoading) return <Skeleton height="12px" width="40px" />;
+  if (!children) return;
+
+  const isPrimary = type === 'primary';
+  const color = isPrimary ? (isActive ? 'gray.50' : 'gray.200') : 'gray.300';
+  const fontWeight = isPrimary ? 500 : 400;
+
+  return (
+    <Text
+      color={color}
+      fontWeight={fontWeight}
+      fontSize="xs"
+      lineHeight="12px"
+      {...rest}
+    >
+      {children}
+    </Text>
+  );
+};
+
+interface VaultItemBoxComponentProps extends CardProps {
+  id: string;
   name: string;
   address: string;
-  workspace?: PredicateWorkspace;
+  workspace: PredicateWorkspace;
+  isActive?: boolean;
   isSingleWorkspace?: boolean;
-  isInDapp?: boolean;
   members?: number;
+  requiredSigners?: number;
   root?: boolean;
 }
 
@@ -36,22 +69,27 @@ const VaultItemBoxComponent = ({
   name,
   address,
   members,
+  requiredSigners,
   root,
   id,
+  workspace,
   ...rest
-}: VaultDrawerBoxProps) => {
+}: VaultItemBoxComponentProps) => {
+  const { data, isLoading: isLoadingBalance } = useHasReservedCoins(
+    id,
+    workspace.id,
+  );
+  const {
+    workspaceInfos: {
+      infos: { visibleBalance },
+    },
+  } = useWorkspaceContext();
   const isPending = useTransactionsSignaturePending([id!]);
   const showPending = isPending.data?.transactionsBlocked;
   const needSignature = isPending.data?.pendingSignature;
-  const isRootAndPending = showPending && root;
-
-  const userIcon = useMemo(
-    () => (members === 1 ? LuUser2 : LuUsers2),
-    [members],
-  );
 
   const StatusBadge = useMemo(() => {
-    if (!showPending && !needSignature) return null;
+    if (!showPending && !needSignature) return;
 
     return (
       <WaitingSignatureBadge
@@ -62,10 +100,12 @@ const VaultItemBoxComponent = ({
     );
   }, [isPending.data?.ofUser, isPending.isLoading, needSignature, showPending]);
 
-  const RootBadge = useMemo(
-    () => (
+  const RootBadge = useMemo(() => {
+    if (!root) return;
+
+    return (
       <Badge
-        variant="gray"
+        colorPalette="gray"
         fontSize="2xs"
         color="grey.75"
         h="20px"
@@ -74,95 +114,84 @@ const VaultItemBoxComponent = ({
       >
         Personal
       </Badge>
-    ),
-    [],
-  );
+    );
+  }, [root]);
 
-  const MembersBadge = useMemo(
-    () =>
-      members !== undefined ? (
-        <HStack spacing={1} align="center">
-          <Text fontSize="sm" color="grey.75" lineHeight="20px">
-            {members}
-          </Text>
-          <Icon as={userIcon} boxSize={5} color="grey.75" />
-        </HStack>
-      ) : null,
-    [members, userIcon],
-  );
+  const SignersCount = useMemo(() => {
+    if (!requiredSigners || !members) return;
+
+    return (
+      <VaultItemBoxText type="secondary" isActive={isActive}>
+        {requiredSigners}/{members} signers
+      </VaultItemBoxText>
+    );
+  }, [requiredSigners, members, isActive]);
 
   return (
     <Card
       {...rest}
       w="100%"
       cursor="pointer"
-      borderColor={isActive ? 'brand.500' : 'dark.100'}
-      borderWidth="1px"
-      h={76}
+      borderColor={'gray.50'}
+      bg={isActive ? 'gray.600' : 'gray.700'}
+      borderLeft={isActive ? '2px solid' : 'none'}
+      borderWidth={0}
+      borderRadius={8}
       p={3}
       display="flex"
       alignItems="center"
+      justifyContent="space-between"
     >
-      <Flex w="100%" align="center" justify="space-between">
-        <HStack spacing={4} align="center">
-          <Avatar
-            variant="roundedSquare"
-            color="grey.250"
-            bgColor="grey.950"
-            name={name}
-            size={'md'}
-            sx={{
-              '> div': {
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                lineHeight: 'normal',
-              },
-            }}
-          />
-          <VStack spacing={2} align="flex-start">
-            <Text
-              variant="subtitle"
-              isTruncated
-              maxW={{ base: 120, xs: 250 }}
-              color="grey.75"
-              fontSize="xs"
-              lineHeight="16px"
-            >
-              {name}
-            </Text>
-            <Text
-              fontSize="xs"
-              color="grey.500"
-              lineHeight="16px"
-              isTruncated
-              maxW={{ base: 120, xs: 250 }}
-            >
-              {AddressUtils.format(address ?? '', 4)}
-            </Text>
-          </VStack>
-        </HStack>
+      <HStack gap={3} align="center" minW={0}>
+        <Avatar
+          shape="rounded"
+          color="gray.100"
+          bgColor="gray.500"
+          size="sm"
+          css={{
+            '> div': {
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              lineHeight: 'normal',
+            },
+          }}
+          name={name}
+        />
+        <VStack gap={2} align="flex-start" minW={0}>
+          <VaultItemBoxText
+            type="primary"
+            isActive={isActive}
+            truncate
+            w="full"
+            title={name}
+          >
+            {name}
+          </VaultItemBoxText>
 
-        <VStack spacing={2} align="flex-end">
-          {isRootAndPending ? (
-            <>
-              <HStack spacing={3}>
-                {RootBadge}
-                {MembersBadge}
-              </HStack>
-              {StatusBadge}
-            </>
-          ) : (
-            <>
-              {MembersBadge}
-              <HStack spacing={2}>
-                {root && RootBadge}
-                {StatusBadge}
-              </HStack>
-            </>
-          )}
+          <VaultItemBoxText type="secondary" isActive={isActive}>
+            {AddressUtils.format(address ?? '', 4)}
+          </VaultItemBoxText>
         </VStack>
-      </Flex>
+      </HStack>
+
+      <VStack gap={2} align="flex-end" flexShrink={0}>
+        <BlurredContent isBlurred={!visibleBalance} inline>
+          <VaultItemBoxText
+            type="primary"
+            isActive={isActive}
+            isLoading={isLoadingBalance}
+          >
+            {data && moneyFormat(data.currentBalanceUSD)}
+          </VaultItemBoxText>
+        </BlurredContent>
+
+        <HStack gap={3}>
+          {StatusBadge}
+          {RootBadge}
+          {SignersCount}
+        </HStack>
+      </VStack>
     </Card>
   );
 };

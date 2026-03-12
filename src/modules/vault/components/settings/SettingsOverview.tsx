@@ -1,0 +1,236 @@
+import {
+  Card,
+  Flex,
+  Heading,
+  HStack,
+  Icon,
+  IconButton,
+  Text,
+  Tooltip,
+  useClipboard,
+} from 'bako-ui';
+import { Address } from 'fuels';
+import { JSX } from 'react';
+import { RiFileCopyFill } from 'react-icons/ri';
+
+import { EditIcon2, IconTooltipButton, UpRightArrow } from '@/components';
+import { BlurredContent } from '@/components/blurredContent';
+import { CopyTopMenuIcon } from '@/components/icons/copy-top-menu';
+import { useWorkspaceContext } from '@/modules';
+import { AddressUtils } from '@/modules/core';
+import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
+import { NetworkService } from '@/modules/network/services';
+
+import { UseVaultDetailsReturn } from '../../hooks/details';
+import { UpdateVaultDialog } from '../dialog/update';
+
+export interface CardDetailsProps {
+  assets: UseVaultDetailsReturn['assets'];
+  vault: UseVaultDetailsReturn['vault'];
+}
+
+const SettingsOverview = ({
+  vault,
+  assets,
+}: CardDetailsProps): JSX.Element | null => {
+  const updateDialog = useDisclosure();
+  const {
+    authDetails: { userInfos },
+    workspaceInfos: {
+      infos: { visibleBalance },
+    },
+  } = useWorkspaceContext();
+
+  const { balanceUSD } = assets;
+  const workspaceId = userInfos?.workspace.id || '';
+
+  const predicateAddress = vault.data?.predicateAddress
+    ? new Address(vault.data.predicateAddress).toString()
+    : '';
+  const predicateVersion = vault.data?.version || '';
+
+  const { copied: copiedAddress, copy: copyAddress } = useClipboard({
+    value: predicateAddress,
+  });
+  const { copied: copiedVersion, copy: copyVersion } = useClipboard({
+    value: predicateVersion,
+  });
+
+  const redirectToNetwork = () =>
+    window.open(
+      `${NetworkService.getExplorer(vault?.data.provider)}/account/${vault?.data.predicateAddress}/assets`,
+      '_BLANK',
+    );
+
+  if (!vault) return null;
+
+  return (
+    <Card.Root
+      rounded="2xl"
+      variant="subtle"
+      bg="bg.panel"
+      flex={1}
+      alignSelf="stretch"
+      minW={0}
+    >
+      <Card.Header
+        justifyContent="space-between"
+        alignItems="center"
+        flexDirection="row"
+        minW={0}
+      >
+        <Heading
+          fontSize="sm"
+          lineHeight="shorter"
+          truncate
+          title={vault.data?.name}
+        >
+          {vault.data?.name}
+        </Heading>
+        <Flex alignItems="center" gap={2}>
+          <IconTooltipButton
+            onClick={updateDialog.onOpen}
+            tooltipContent="Update Account"
+            placement="top"
+          >
+            <Icon as={EditIcon2} color="gray.200" w="12px" />
+          </IconTooltipButton>
+          <IconTooltipButton
+            onClick={redirectToNetwork}
+            tooltipContent="View on Explorer"
+            placement="top"
+          >
+            <Icon as={UpRightArrow} color="gray.200" w="12px" />
+          </IconTooltipButton>
+        </Flex>
+      </Card.Header>
+      <Card.Body justifyContent="center">
+        <Heading color="gray.50" fontSize="3xl">
+          <BlurredContent isBlurred={!visibleBalance} inline>
+            <Text as="span" color="textSecondary">
+              $
+            </Text>{' '}
+            {balanceUSD}
+          </BlurredContent>
+        </Heading>
+      </Card.Body>
+      <Card.Footer gap={{ base: 2, md: 6 }} flexWrap={{ mdDown: 'wrap' }}>
+        <HStack
+          w={{ base: 'full', md: '241px' }}
+          justifyContent="space-between"
+          bg="bg.muted"
+          rounded="sm"
+          px={2}
+          py={1.5}
+        >
+          <Text color="gray.400" fontSize="xs" lineHeight="shorter">
+            Address
+          </Text>
+          <HStack gap={1}>
+            <Text
+              as="div"
+              display="flex"
+              alignItems="center"
+              gap={1}
+              color="gray.200"
+              fontSize="xs"
+              lineHeight="shorter"
+            >
+              {AddressUtils.format(predicateAddress, 4)}
+            </Text>
+            <Tooltip
+              content={copiedAddress ? 'Copied' : 'Copy Address'}
+              contentProps={{
+                bg: 'bg.muted',
+                color: 'textPrimary',
+                borderRadius: 'lg',
+              }}
+              positioning={{ placement: 'top' }}
+              showArrow={false}
+            >
+              <IconButton
+                variant="plain"
+                cursor="pointer"
+                size="xs"
+                boxSize="20px"
+                minW="20px"
+                onClick={copyAddress}
+              >
+                <Icon
+                  as={copiedAddress ? RiFileCopyFill : CopyTopMenuIcon}
+                  w="12px"
+                  color="gray.200"
+                />
+              </IconButton>
+            </Tooltip>
+          </HStack>
+        </HStack>
+        <HStack
+          w={{ base: 'full', md: '241px' }}
+          justifyContent="space-between"
+          bg="bg.muted"
+          rounded="sm"
+          px={2}
+          py={1.5}
+        >
+          <Text color="gray.400" fontSize="xs" lineHeight="shorter">
+            Predicate
+          </Text>
+          <HStack gap={1}>
+            <Text
+              as="div"
+              display="flex"
+              alignItems="center"
+              gap={1}
+              color="gray.200"
+              fontSize="xs"
+              lineHeight="shorter"
+            >
+              {AddressUtils.format(predicateVersion, 4)}
+            </Text>
+            <Tooltip
+              content={copiedVersion ? 'Copied' : 'Copy Predicate'}
+              contentProps={{
+                bg: 'bg.muted',
+                color: 'textPrimary',
+                borderRadius: 'lg',
+              }}
+              positioning={{ placement: 'top' }}
+              showArrow={false}
+            >
+              <IconButton
+                variant="plain"
+                cursor="pointer"
+                size="xs"
+                boxSize="20px"
+                minW="20px"
+                onClick={copyVersion}
+              >
+                <Icon
+                  as={copiedVersion ? RiFileCopyFill : CopyTopMenuIcon}
+                  w="12px"
+                  color="gray.200"
+                />
+              </IconButton>
+            </Tooltip>
+          </HStack>
+        </HStack>
+      </Card.Footer>
+
+      {/* UPDATE ACCOUNT DIALOG */}
+      <UpdateVaultDialog
+        isOpen={updateDialog.isOpen}
+        onClose={updateDialog.onClose}
+        onOpenChange={updateDialog.onOpenChange}
+        initialValues={{
+          name: vault.data.name,
+          description: vault.data.description,
+          id: vault.data.id,
+        }}
+        workspaceId={workspaceId}
+      />
+    </Card.Root>
+  );
+};
+
+export { SettingsOverview };

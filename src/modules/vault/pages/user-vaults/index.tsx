@@ -1,33 +1,29 @@
 import {
   Box,
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
   Button,
   Grid,
   GridItem,
   HStack,
   Icon,
-  Stack,
   Text,
-  useDisclosure,
   VStack,
-} from '@chakra-ui/react';
-import { FaEye, FaEyeSlash, FaRegPlusSquare } from 'react-icons/fa';
-import { IoChevronBack } from 'react-icons/io5';
+} from 'bako-ui';
+import { RiLockLine } from 'react-icons/ri';
 
-import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
+import { CustomSkeleton, HomeIcon, Plus2Icon } from '@/components';
 import { EmptyState } from '@/components/emptyState';
-import { AddressBookIcon } from '@/components/icons/address-book';
-import { TransactionsIcon } from '@/components/icons/transactions';
+import { EyeCloseIcon } from '@/components/icons/eye-close';
+import { EyeOpenIcon } from '@/components/icons/eye-open';
 import { Pages, PermissionRoles } from '@/modules/core';
-import { ActionCard } from '@/modules/home/components/ActionCard';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
+import { useCheckUserBalances } from '@/modules/home/hooks';
+import { useBalanceOutdatedSocketListener } from '@/modules/home/hooks/events';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { CreateVaultDialog, VaultCard } from '../../components';
 
 const UserVaultsPage = () => {
-  const { isOpen, onClose, onOpen } = useDisclosure();
+  const { isOpen, onOpenChange, onOpen } = useDisclosure();
 
   const { MANAGER, OWNER, ADMIN } = PermissionRoles;
 
@@ -35,15 +31,13 @@ const UserVaultsPage = () => {
     authDetails: { userInfos },
     workspaceInfos: {
       handlers: { hasPermission, handleWorkspaceSelection, goHome },
-      requests: { latestPredicates },
     },
     userVaults: {
       request: { vaults, isLoading },
-      handlers: { navigate },
       inView,
       filter: { value, change },
     },
-    screenSizes: { isSmall, isExtraSmall },
+    screenSizes: { isSmall },
   } = useWorkspaceContext();
 
   const workspaceId = userInfos?.workspace?.id ?? '';
@@ -52,33 +46,27 @@ const UserVaultsPage = () => {
   const showEmptyState = noVaults && !isLoading && value;
   const showVaultGrid = !!vaults?.length;
 
+  useCheckUserBalances();
+  useBalanceOutdatedSocketListener();
+
   return (
-    <VStack
-      w="full"
-      spacing={6}
-      p={{ base: 1, sm: 1 }}
-      px={{ base: 'auto', sm: 8 }}
-    >
-      <CreateVaultDialog isOpen={isOpen} onClose={onClose} />
-      <HStack
-        h="10"
-        w="full"
-        justifyContent={{ base: 'flex-end', sm: 'space-between' }}
-        maxW="full"
-      >
-        <HStack visibility={{ base: 'hidden', sm: 'visible' }}>
+    <VStack w="full" gap={6} p={{ base: 1, sm: 1 }} px={{ base: 0, sm: 8 }}>
+      <CreateVaultDialog open={isOpen} onOpenChange={onOpenChange} />
+
+      <HStack w="full" justifyContent="space-between" pb={2} align="center">
+        <HStack gap={3}>
           <Button
-            variant="primary"
             fontWeight="semibold"
-            fontSize={15}
-            leftIcon={
-              <Box mr={-1}>
-                <IoChevronBack size={22} />
-              </Box>
-            }
-            px={3}
-            bg="dark.100"
-            color="grey.200"
+            fontSize="2xs"
+            size="xs"
+            bgColor="gray.600"
+            color="gray.200"
+            _hover={{
+              bg: 'gray.550',
+              color: 'textPrimary',
+            }}
+            gap={2}
+            p={2}
             onClick={() =>
               userInfos.onSingleWorkspace
                 ? goHome()
@@ -90,180 +78,91 @@ const UserVaultsPage = () => {
                   )
             }
           >
-            Back home
+            <HomeIcon w={5} color="gray.200" />
+            {isSmall ? '' : 'HOME'}
           </Button>
-          <Breadcrumb ml={8}>
-            <BreadcrumbItem>
-              <BreadcrumbLink
-                fontSize="sm"
-                color="grey.200"
-                fontWeight="semibold"
-                onClick={() => goHome()}
-              >
-                <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
-                Home
-              </BreadcrumbLink>
-            </BreadcrumbItem>
 
-            {/* Commented out code to temporarily disable workspaces. */}
-
-            {/* {!userInfos.onSingleWorkspace && (
-              <BreadcrumbItem>
-                <BreadcrumbLink
-                  fontSize="sm"
-                  color="grey.200"
-                  fontWeight="semibold"
-                  onClick={() =>
-                    handleWorkspaceSelection(
-                      workspaceId,
-                      Pages.workspace({
-                        workspaceId,
-                      }),
-                    )
-                  }
-                  maxW={40}
-                  isTruncated
-                >
-                  {userInfos.workspace?.name}
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-            )} */}
-
-            <BreadcrumbItem>
-              <BreadcrumbLink
-                fontSize="sm"
-                color="grey.200"
-                fontWeight="semibold"
-                href="#"
-              >
-                Vaults
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-          </Breadcrumb>
-        </HStack>
-        <Box>
           <Button
-            variant="primary"
-            fontWeight="bold"
-            leftIcon={<FaRegPlusSquare />}
-            isDisabled={!hasPermission([OWNER, MANAGER, ADMIN])}
-            onClick={onOpen}
+            fontWeight="semibold"
+            fontSize="2xs"
+            size="xs"
+            bgColor="gray.550"
+            color="gray.200"
+            cursor="default"
+            gap={2}
+            p={2}
           >
-            Create vault
+            <Icon w={4} h={4} color="gray.200" as={RiLockLine} />
+            ACCOUNTS
           </Button>
-        </Box>
-      </HStack>
+        </HStack>
 
-      <CustomSkeleton display="flex" isLoaded={!latestPredicates.isLoading}>
-        <Stack w="full" direction={{ base: 'column', md: 'row' }} spacing={6}>
-          <ActionCard.Container
-            flex={1}
-            onClick={() =>
-              navigate(
-                Pages.userVaults({
-                  workspaceId: userInfos.workspace?.id,
-                }),
-              )
-            }
-          >
-            <ActionCard.Icon icon={VaultIcon} />
-            <Box>
-              <ActionCard.Title>Vaults</ActionCard.Title>
-              <ActionCard.Description>
-                Access and Manage All Your Vaults in One Place.
-              </ActionCard.Description>
-            </Box>
-          </ActionCard.Container>
-
-          <ActionCard.Container
-            flex={1}
-            onClick={() => {
-              navigate(
-                Pages.userTransactions({
-                  workspaceId: userInfos.workspace?.id,
-                }),
-              );
-            }}
-          >
-            <ActionCard.Icon icon={TransactionsIcon} />
-            <Box>
-              <ActionCard.Title>Transactions</ActionCard.Title>
-              <ActionCard.Description>
-                Manage Transactions Across All Vaults in One Place.
-              </ActionCard.Description>
-            </Box>
-          </ActionCard.Container>
-
-          <ActionCard.Container
-            flex={1}
-            onClick={() =>
-              navigate(
-                Pages.addressBook({
-                  workspaceId: userInfos.workspace?.id,
-                }),
-              )
-            }
-          >
-            <ActionCard.Icon icon={AddressBookIcon} />
-            <Box>
-              <ActionCard.Title>Address book</ActionCard.Title>
-              <ActionCard.Description>
-                Access and Manage Your Contacts for Easy Transfers and Vault
-                Creation.
-              </ActionCard.Description>
-            </Box>
-          </ActionCard.Container>
-        </Stack>
-      </CustomSkeleton>
-
-      <HStack w="full" justifyContent="space-between" pb={2}>
-        <Text color="white" fontWeight="semibold" fontSize="md">
-          Vaults
-        </Text>
-        <HStack spacing={2}>
+        <HStack gap={3}>
           {value ? (
             <Button
-              color="grey.75"
-              variant="txFilterType"
+              size="xs"
+              bg="gray.700"
+              _hover={{
+                bg: 'bg.muted',
+              }}
+              color="secondary.contrast"
+              variant="subtle"
+              px={{ base: 2, sm: 3 }}
               alignSelf={{ base: 'stretch', sm: 'flex-end' }}
-              rightIcon={
-                <Icon
-                  as={() => <FaEyeSlash color="grey.75" />}
-                  fontSize="lg"
-                  ml={isSmall ? -1 : 0}
-                  className="btn-icon"
-                />
-              }
               onClick={() => change(false)}
-              px={isExtraSmall ? 3 : 4}
             >
-              Hide Inactives
+              <EyeCloseIcon w="14px" color="grey.75" className="btn-icon" />
+              <Text display={{ base: 'none', sm: 'inline' }}>
+                Hide inactives
+              </Text>
             </Button>
           ) : (
             <Button
-              color="grey.75"
-              variant="txFilterType"
+              size="xs"
+              bg="gray.700"
+              _hover={{
+                bg: 'bg.muted',
+              }}
+              color="secondary.contrast"
+              variant="subtle"
+              gap={0.5}
+              pr={{ base: 1, sm: 3 }}
+              pl={{ base: 1, sm: 2 }}
               alignSelf={{ base: 'stretch', sm: 'flex-end' }}
-              rightIcon={
-                <Icon
-                  as={() => <FaEye color="grey.75" />}
-                  fontSize="lg"
-                  ml={isSmall ? -1 : 0}
-                  className="btn-icon"
-                />
-              }
               onClick={() => change(true)}
-              px={isExtraSmall ? 3 : 4}
             >
-              Show Inactives
+              <EyeOpenIcon w="20px" color="grey.75" className="btn-icon" />
+              <Text display={{ base: 'none', sm: 'inline' }}>
+                Show inactives
+              </Text>
             </Button>
           )}
+
+          <Button
+            size="xs"
+            bg="gray.700"
+            _hover={{
+              bg: 'bg.muted',
+            }}
+            color="secondary.contrast"
+            variant="subtle"
+            px={{ base: 2, sm: 3 }}
+            onClick={onOpen}
+            disabled={!hasPermission([OWNER, MANAGER, ADMIN])}
+          >
+            <Icon
+              boxSize={4}
+              as={Plus2Icon}
+              display={{ base: 'inline', sm: 'none' }}
+            />
+            <Text display={{ base: 'none', sm: 'inline' }}>Create new</Text>
+          </Button>
         </HStack>
       </HStack>
 
       {showEmptyState ||
         (showHiddenMessage && (
-          <CustomSkeleton isLoaded={!isLoading}>
+          <CustomSkeleton loading={isLoading}>
             <EmptyState
               showAction={hasPermission([OWNER, MANAGER, ADMIN])}
               title="Let's Begin!"
@@ -282,10 +181,11 @@ const UserVaultsPage = () => {
           maxH="79vh"
           mt={-2}
           pb={{ base: 8, sm: 0 }}
+          pt={{ base: '25px', sm: 0 }}
           overflowY="scroll"
           overflowX="hidden"
           scrollBehavior="smooth"
-          sx={{
+          css={{
             '&::-webkit-scrollbar': {
               display: 'none',
               width: '5px',
@@ -304,49 +204,38 @@ const UserVaultsPage = () => {
             mt={{ base: -6, sm: 0 }}
             w="full"
             maxW="full"
-            gap={6}
+            gap={{ base: 4, sm: 6 }}
             templateColumns={{
               base: 'repeat(1, 1fr)',
-              xs: 'repeat(2, 1fr)',
+              sm: 'repeat(2, 1fr)',
               md: 'repeat(3, 1fr)',
               '2xl': 'repeat(4, 1fr)',
             }}
           >
-            {vaults?.map(
-              ({
-                id,
-                name,
-                workspace,
-                members,
-                description,
-                owner,
-                isHidden,
-                predicateAddress,
-              }) => (
-                <CustomSkeleton isLoaded={!isLoading} key={id} maxH="180px">
-                  <GridItem>
-                    <VaultCard
-                      ownerId={owner.id}
-                      name={name}
-                      workspace={workspace}
-                      title={description}
-                      members={members!}
-                      isHidden={isHidden}
-                      onClick={() =>
-                        handleWorkspaceSelection(
-                          workspace.id,
-                          Pages.detailsVault({
-                            workspaceId: workspace.id,
-                            vaultId: id,
-                          }),
-                        )
-                      }
-                      address={predicateAddress}
-                    />
-                  </GridItem>
-                </CustomSkeleton>
-              ),
-            )}
+            {vaults?.map((vault) => (
+              <CustomSkeleton loading={isLoading} key={vault.id} maxH="180px">
+                <GridItem>
+                  <VaultCard
+                    id={vault.id}
+                    name={vault.name}
+                    workspaceId={vault.workspace.id}
+                    title={vault.description}
+                    isHidden={vault.isHidden}
+                    showHideButton
+                    onClick={() =>
+                      handleWorkspaceSelection(
+                        vault.workspace.id,
+                        Pages.detailsVault({
+                          workspaceId: vault.workspace.id,
+                          vaultId: vault.id,
+                        }),
+                      )
+                    }
+                    address={vault.predicateAddress}
+                  />
+                </GridItem>
+              </CustomSkeleton>
+            ))}
           </Grid>
           <Box ref={inView.ref} />
         </Box>

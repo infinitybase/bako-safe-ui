@@ -1,12 +1,4 @@
-import {
-  Box,
-  Button,
-  Center,
-  Divider,
-  Heading,
-  Icon,
-  TabPanel,
-} from '@chakra-ui/react';
+import { Box, Button, Center, Separator, Heading, Icon } from 'bako-ui';
 
 import { VaultSuccessIcon } from '@/components';
 import { ITemplatePayload } from '@/modules/core';
@@ -16,7 +8,7 @@ const SuccesStep = () => {
   const { steps } = useSteps();
   const { step } = useModal();
   return (
-    <TabPanel>
+    <Box>
       <Center flexDirection="column" mb={5}>
         <Box m={8}>
           <Icon fontSize={100} as={VaultSuccessIcon} />
@@ -30,7 +22,7 @@ const SuccesStep = () => {
             stramline your workflow!
           </Heading>
         </Box>
-        <Divider m={4} color="grey.300" />
+        <Separator m={4} color="grey.300" />
         <Button
           m={4}
           variant="primary"
@@ -42,7 +34,7 @@ const SuccesStep = () => {
           Conclude
         </Button>
       </Center>
-    </TabPanel>
+    </Box>
   );
 };
 

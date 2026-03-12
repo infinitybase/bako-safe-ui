@@ -2,7 +2,7 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { TransactionType } from 'bakosafe';
 
 import { SortOptionTx } from '@/modules/core/hooks/bakosafe/utils/types';
-import { useGroupTransactionsByMonth } from '@/modules/core/hooks/useGroupTransactionsByMonth';
+import { useGroupTransactionsByDay } from '@/modules/core/hooks/useGroupTransactionsByDay';
 import {
   GetTransactionsWithIncomingsParams,
   TransactionOrderBy,
@@ -65,9 +65,11 @@ const useVaultTransactionsRequest = (
         return data;
       }),
     refetchOnReconnect: false,
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: false,
     enabled: !!params.predicateId && !!params.predicateId[0],
     initialPageParam: { offsetDb: 0, offsetFuel: 0 },
+    // Socket events handle real-time updates
+    staleTime: 1000 * 60 * 2, // 2 minutes
     getNextPageParam: (lastPage) => {
       if (lastPage?.data?.length === 0) {
         return undefined;
@@ -83,7 +85,7 @@ const useVaultTransactionsRequest = (
   return {
     ...query,
     queryKey,
-    transactions: useGroupTransactionsByMonth(transactionsList),
+    transactions: useGroupTransactionsByDay(transactionsList),
   };
 };
 

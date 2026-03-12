@@ -49,12 +49,16 @@ const useTransactionList = ({
     vaultPageParams: { vaultId },
   } = useGetParams();
 
+  const handleResetStatusFilter = useCallback(() => {
+    if (filter !== StatusFilter.ALL) setFilter(StatusFilter.ALL);
+  }, [filter]);
+
   const {
     txFilterType,
     handleIncomingAction,
     handleOutgoingAction,
     setTxFilterType,
-  } = useFilterTxType();
+  } = useFilterTxType(handleResetStatusFilter);
 
   const navigate = useNavigate();
   const inView = useInView();
@@ -74,7 +78,7 @@ const useTransactionList = ({
     type: txFilterType,
   });
 
-  const observer = useRef<IntersectionObserver>();
+  const observer = useRef<IntersectionObserver>(null);
   const lastElementRef = useCallback(
     (node: HTMLDivElement) => {
       if (isLoading) return;

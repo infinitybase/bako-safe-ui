@@ -1,28 +1,16 @@
-import {
-  Divider,
-  Flex,
-  Icon,
-  Popover,
-  PopoverBody,
-  PopoverCloseButton,
-  PopoverContent,
-  PopoverTrigger,
-  Text,
-  Tooltip,
-  useDisclosure,
-  VStack,
-} from '@chakra-ui/react';
-import { useState } from 'react';
+import { CloseButton, Flex, Heading, Stack, Text, VStack } from 'bako-ui';
+import { useEffect, useMemo, useState } from 'react';
+import { useWatch } from 'react-hook-form';
 
 import { Dialog, DialogModalProps } from '@/components';
-import { TooltipIcon } from '@/components/icons/tooltip';
+import { TotalAmount } from '@/modules/transactions/components/dialog/create/totalAmount';
 import { useCreateTransaction } from '@/modules/transactions/hooks';
-import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useVaultInfosContext } from '@/modules/vault/hooks';
 
 import CreateTxMenuButton, {
   ECreateTransactionMethods,
 } from './createTxMenuButton';
+import { FeeSummary } from './feeSummary';
 import { CreateTransactionForm } from './form';
 
 const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
@@ -31,6 +19,29 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
       ECreateTransactionMethods.CREATE_AND_SIGN,
     );
   const { assets } = useVaultInfosContext();
+
+  const createTransactionParams = useMemo(
+    () => ({
+      assets: assets.assets,
+      nfts: assets.nfts,
+      hasAssetBalance: assets.hasAssetBalance,
+      getCoinAmount: assets.getCoinAmount,
+      onClose: props.onOpenChange,
+      open: props.open,
+      createTransactionAndSign:
+        createTxMethod === ECreateTransactionMethods.CREATE_AND_SIGN,
+    }),
+    [
+      assets.assets,
+      assets.nfts,
+      assets.hasAssetBalance,
+      assets.getCoinAmount,
+      props.onOpenChange,
+      props.open,
+      createTxMethod,
+    ],
+  );
+
   const {
     form,
     nicks,
@@ -40,59 +51,97 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
     resolveTransactionCosts,
     transactionFee,
     isLoadingVault,
+    isPendingSigner,
     getBalanceAvailable,
     handleClose,
-  } = useCreateTransaction({
-    assets: assets.assets,
-    nfts: assets.nfts,
-    hasAssetBalance: assets.hasAssetBalance,
-    getCoinAmount: assets.getCoinAmount,
-    onClose: props.onClose,
-    isOpen: props.isOpen,
-    createTransactionAndSign:
-      createTxMethod === ECreateTransactionMethods.CREATE_AND_SIGN,
+    totalUsdEstimate,
+  } = useCreateTransaction(createTransactionParams);
+
+  const currentAmount = useWatch({
+    control: form.control,
+    name: `transactions.${accordion.index}.amount`,
   });
 
-  const { isOpen, onToggle, onClose } = useDisclosure();
-  const {
-    screenSizes: { isMobile },
-  } = useWorkspaceContext();
+  const isCurrentAmountZero = useMemo(
+    () => Number(currentAmount) === 0,
+    [currentAmount],
+  );
 
-  const currentAmount = form.watch(`transactions.${accordion.index}.amount`);
-  const isCurrentAmountZero = Number(currentAmount) === 0;
-  const isTransactionFeeLoading =
-    isLoadingVault ||
-    resolveTransactionCosts.isPending ||
-    !transactionFee ||
-    Number(transactionFee) === 0;
+  const isTransactionFeeLoading = useMemo(
+    () =>
+      isLoadingVault ||
+      resolveTransactionCosts.isPending ||
+      !transactionFee ||
+      Number(transactionFee) === 0,
+    [isLoadingVault, resolveTransactionCosts.isPending, transactionFee],
+  );
 
-  const isDisabled =
-    !form.formState.isValid ||
-    form.formState.isSubmitting ||
-    isCurrentAmountZero ||
-    isTransactionFeeLoading ||
-    !!resolveTransactionCosts.error;
+  const isDisabled = useMemo(
+    () =>
+      isPendingSigner ||
+      !form.formState.isValid ||
+      form.formState.isSubmitting ||
+      isCurrentAmountZero ||
+      isTransactionFeeLoading ||
+      !!resolveTransactionCosts.error,
+    [
+      isPendingSigner,
+      form.formState.isValid,
+      form.formState.isSubmitting,
+      isCurrentAmountZero,
+      isTransactionFeeLoading,
+      resolveTransactionCosts.error,
+    ],
+  );
 
-  const isLoading = transactionRequest.isPending || form.formState.isSubmitting;
+  const isLoading = useMemo(
+    () => transactionRequest.isPending || form.formState.isSubmitting,
+    [transactionRequest.isPending, form.formState.isSubmitting],
+  );
+
+  useEffect(() => {
+    if (isPendingSigner) {
+      setCreateTxMethod(ECreateTransactionMethods.PENDING_TRANSACTION);
+    } else if (
+      createTxMethod === ECreateTransactionMethods.PENDING_TRANSACTION
+    ) {
+      console.debug('Clearing pending transaction state');
+      setCreateTxMethod(ECreateTransactionMethods.CREATE_AND_SIGN);
+    }
+  }, [isPendingSigner]);
 
   return (
     <Dialog.Modal
       {...props}
-      onClose={handleClose}
-      closeOnOverlayClick={false}
-      size={{ base: 'full', sm: 'lg' }}
+      closeOnInteractOutside={false}
+      modalContentProps={{
+        display: 'flex',
+        flexDirection: 'column',
+        w: { base: '100vw', md: '480px' },
+        h: { base: '100dvh', md: '100vh' },
+        maxW: { base: '100vw', md: '480px' },
+        maxH: { base: '100dvh', md: '600px', xl: '700px' },
+        p: 0,
+      }}
+      size={{
+        base: 'full',
+        md: 'md',
+      }}
     >
-      <Dialog.Header
-        onClose={handleClose}
-        position={{ base: 'static', sm: 'relative' }}
-        mb={0}
-        maxH={40}
-        maxW={480}
-        title="Create Transaction"
-        description={`Send single or batch payments with multi assets. \n You can send multiple types of assets to different addresses.`}
-      />
+      <Stack p={6} gap={3} w="full">
+        <Flex alignItems="center" justifyContent="space-between">
+          <Heading fontSize="sm" color="textPrimary" lineHeight="short">
+            Create Transaction
+          </Heading>
+          <CloseButton size="2xs" onClick={handleClose} />
+        </Flex>
+        <Text fontSize="xs" color="textSecondary">
+          Send single or batch payments with multi assets. You can send multiple
+          types of assets to different addresses.
+        </Text>
+      </Stack>
 
-      <Dialog.Body maxW={480} maxH={'full'} mt={{ sm: 4 }}>
+      <Dialog.Body px={6} pt={{ base: 0.5, sm: 4 }} flex="1" overflowY="hidden">
         <CreateTransactionForm
           form={form}
           nicks={nicks}
@@ -106,72 +155,19 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
 
       <VStack
         w="full"
-        bg={isMobile ? 'dark.950' : 'unset'}
-        maxW={480}
-        justifySelf="center"
-        mt={6}
-        pb={4}
+        bg="bg.muted"
+        p="24px"
+        roundedTop="2xl"
+        roundedBottom={{ base: 'none', sm: '2xl' }}
+        css={{
+          boxShadow: '0px -12px 8px 0px #0D0D0C99',
+        }}
       >
-        <Flex
-          wrap="wrap"
-          justifyContent="space-between"
-          w="full"
-          mb={{ base: 3, sm: 6 }}
-          mt={0.5}
-        >
-          <Divider mb={2} w="full" />
-          <Text
-            visibility={!transactionFee ? 'hidden' : 'visible'}
-            variant="description"
-          >
-            Max fee:{' '}
-            {isMobile ? (
-              <Popover placement="top-start" isOpen={isOpen} onClose={onClose}>
-                <PopoverTrigger>
-                  <Icon
-                    color="grey.200"
-                    boxSize="14px"
-                    as={TooltipIcon}
-                    onClick={onToggle}
-                  />
-                </PopoverTrigger>
-                <PopoverContent
-                  bg="grey.825"
-                  p={2}
-                  borderColor="dark.100"
-                  maxW={270}
-                  display={!isOpen ? 'none' : 'block'}
-                  _focus={{ ring: 'none' }}
-                >
-                  <PopoverCloseButton />
-                  <PopoverBody color="white">
-                    {`Max Fee is the most that you might pay for the transaction. Only the actual fee will be deducted from your wallet. 100% of this fee goes to the network.`}
-                  </PopoverBody>
-                </PopoverContent>
-              </Popover>
-            ) : (
-              <Tooltip
-                label="Max Fee is the most that you might pay for the transaction. Only the actual fee will be deducted from your wallet. 100% of this fee goes to the network."
-                fontSize="xs"
-                bg="grey.825"
-                rounded={8}
-                maxW={270}
-                overflow="hidden"
-                placement="top-start"
-                padding={4}
-                closeOnScroll
-              >
-                <Icon color="grey.200" boxSize="14px" as={TooltipIcon} />
-              </Tooltip>
-            )}
-          </Text>
-          <Text variant="description">
-            {transactionFee} {transactionFee && 'ETH'}
-          </Text>
-        </Flex>
+        <TotalAmount totalAmount={totalUsdEstimate.formatted} />
+        <FeeSummary transactionFee={transactionFee} />
 
-        <Dialog.Actions hideDivider>
-          <Dialog.SecondaryAction onClick={handleClose}>
+        <Dialog.Actions>
+          <Dialog.SecondaryAction variant="ghost" onClick={handleClose}>
             Cancel
           </Dialog.SecondaryAction>
 

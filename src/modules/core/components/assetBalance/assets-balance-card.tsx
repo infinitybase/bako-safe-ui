@@ -1,8 +1,9 @@
-import { Image, Text, VStack } from '@chakra-ui/react';
+import { Image, Text, VStack } from 'bako-ui';
 
 import { Card } from '@/components';
+import { BlurredContent } from '@/components/blurredContent';
 import { Asset } from '@/modules/core/utils';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { useGetTokenInfos } from '../../hooks';
 
@@ -13,7 +14,12 @@ const AssetsBalanceCard = ({
   asset: Asset;
   usdAmount: number;
 }) => {
-  const { assetsMap } = useWorkspaceContext();
+  const {
+    assetsMap,
+    workspaceInfos: {
+      infos: { visibleBalance },
+    },
+  } = useWorkspaceContext();
   const { assetAmount, assetsInfo } = useGetTokenInfos({ ...asset, assetsMap });
 
   const transactionAmount =
@@ -26,36 +32,56 @@ const AssetsBalanceCard = ({
 
   return (
     <Card
-      p={4}
-      borderRadius={8}
-      borderWidth="1px"
-      borderColor="grey.950"
-      backgroundColor="dark.50"
-      backdropFilter="blur(6px)"
-      boxShadow="lg"
+      p={6}
+      borderRadius="2xl"
+      border="none"
+      backgroundColor="bg.panel"
+      transition="background-color 0.3s ease"
+      _hover={{
+        bg: 'bg.muted',
+      }}
     >
-      <VStack alignItems="flex-start" gap={4}>
+      <VStack alignItems="flex-start" gap={4} h="full">
         <Image
-          w={{ base: 8, sm: 10 }}
-          h={{ base: 8, sm: 10 }}
+          w={7}
+          h={7}
           src={assetsInfo?.icon}
-          borderRadius={100}
+          borderRadius="full"
           alt="Asset Icon"
           objectFit="cover"
         />
-        <VStack alignItems="flex-start" spacing={0} w="full">
-          <Text fontSize="sm" color="grey.50" maxW="full" isTruncated>
-            {assetsInfo?.name}
-          </Text>
-          <Text fontSize="sm" color="grey.50" maxW="full" isTruncated>
-            {assetAmount}{' '}
-            <Text as="span" color="grey.400" fontSize="xs">
-              {assetsInfo?.slug?.toUpperCase() ?? ''}
+        <VStack
+          gap={4}
+          w="full"
+          flex={1}
+          alignItems="flex-start"
+          justifyContent="space-between"
+        >
+          <VStack
+            gap={0}
+            w="full"
+            minH="2.25rem"
+            alignItems="flex-start"
+            justifyContent="flex-start"
+          >
+            <Text fontSize="xs" color="textSecondary" maxW="full" truncate>
+              {assetsInfo?.name}
             </Text>
-          </Text>
-          <Text fontSize="xs" color="grey.400" minH="1em">
-            {transactionAmount > 0 ? formattedAmount : ''}
-          </Text>
+            <BlurredContent isBlurred={!visibleBalance} inline>
+              <Text fontSize="xs" color="textSecondary">
+                {transactionAmount > 0 ? formattedAmount : ''}
+              </Text>
+            </BlurredContent>
+          </VStack>
+
+          <BlurredContent isBlurred={!visibleBalance} inline>
+            <Text fontSize="sm" color="gray.50" maxW="full" truncate>
+              {assetAmount}{' '}
+              <Text as="span" color="gray.50" fontSize="sm">
+                {assetsInfo?.slug?.toUpperCase() ?? ''}
+              </Text>
+            </Text>
+          </BlurredContent>
         </VStack>
       </VStack>
     </Card>

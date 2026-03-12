@@ -1,18 +1,17 @@
 import {
   Avatar,
   Box,
-  Divider,
+  Grid,
+  GridItem,
   Heading,
   HStack,
   Icon,
-  Stack,
   Text,
   VStack,
-} from '@chakra-ui/react';
+} from 'bako-ui';
 import React, { useCallback, useMemo } from 'react';
 
 import { Card } from '@/components';
-import { useScreenSize } from '@/modules/core/hooks';
 type ConnectorType = {
   name: string;
   label: string;
@@ -24,7 +23,7 @@ type ConnectorType = {
 interface CardConnectorProps {
   connector: ConnectorType;
   onClick: (connector: string) => void;
-  isAnyWalletConnectorOpen: boolean;
+  isEnabled?: boolean;
 }
 
 interface ConnectorsListProps {
@@ -34,53 +33,58 @@ interface ConnectorsListProps {
   isAnyWalletConnectorOpen: boolean;
 }
 
-const CardConnector = (props: CardConnectorProps) => {
-  const { connector, isAnyWalletConnectorOpen, onClick } = props;
-
+const CardConnector = ({
+  connector,
+  onClick,
+  isEnabled,
+}: CardConnectorProps) => {
   const ConnectorIcon = useMemo(() => {
     if (connector.imageUrl) {
       return (
         <Avatar
           color="white"
-          size="sm"
+          boxSize="16px"
           bgColor="transparent"
-          variant="roundedSquare"
-          src={connector.imageUrl}
+          shape="rounded"
           name={connector.name}
+          src={connector.imageUrl}
         />
       );
     }
 
     if (connector.icon) {
-      return <Icon as={connector.icon} fontSize="4xl" />;
+      return <Icon as={connector.icon} boxSize="16px" />;
     }
 
     return null;
   }, [connector]);
 
   const selectConnector = useCallback(() => {
-    if (!connector.isEnabled) return;
+    if (!isEnabled) return;
     onClick(connector.name);
-  }, [connector.isEnabled, connector.name, onClick]);
+  }, [isEnabled, connector.name, onClick]);
 
   return (
     <Card
       as={HStack}
       w="100%"
+      minW={100}
       h="100%"
-      gap={4}
-      justifyContent="space-between"
-      p={2}
+      gap={2}
+      py={4}
+      px={{ base: 2, sm: 4 }}
+      flexDirection="column"
+      alignItems="center"
       aria-label={`Connect ${connector.label}`}
-      cursor={connector.isEnabled ? 'pointer' : 'initial'}
-      bgColor="grey.825"
-      borderColor="grey.550"
+      cursor={isEnabled ? 'pointer' : 'not-allowed'}
+      border="none"
+      borderRadius={8}
       onClick={selectConnector}
       position="relative"
       transition="0.5s"
-      pointerEvents={isAnyWalletConnectorOpen ? 'none' : 'auto'}
+      pointerEvents="auto"
       _hover={{
-        borderColor: 'grey.75',
+        bg: 'gray.600',
       }}
     >
       <Box
@@ -88,14 +92,21 @@ const CardConnector = (props: CardConnectorProps) => {
         h="full"
         top={0}
         left={0}
-        hidden={connector.isEnabled}
+        display={isEnabled ? 'none' : 'block'}
         position="absolute"
         borderRadius={10}
-        backgroundColor="#121212a8"
+        backgroundColor="#121212d7"
       />
       {ConnectorIcon}
       <Box flex={1}>
-        <Heading fontSize="sm" fontWeight="semibold" color="grey.200">
+        <Heading
+          fontSize="2xs"
+          fontWeight="semibold"
+          color="gray.50"
+          lineHeight={1.2}
+          letterSpacing="wider"
+          textTransform="uppercase"
+        >
           {connector.label}
         </Heading>
       </Box>
@@ -109,32 +120,25 @@ const ConnectorsList = ({
   onConnectorSelect,
   isAnyWalletConnectorOpen,
 }: ConnectorsListProps) => {
-  const { isLitteSmall } = useScreenSize();
-
   return (
-    <VStack hidden={hidden} spacing={{ base: 6, md: 8 }} w="full">
-      <HStack w="full" spacing={5}>
-        <Divider borderColor="grey.500" />
-        <Text color="grey.250" fontSize="xs" fontWeight="light">
-          OR
+    <VStack hidden={hidden} gap={{ base: 6, sm: 8 }} w="full">
+      <HStack w="full" gap={5}>
+        <Text color="gray.200" fontSize="sm" fontWeight="light">
+          Or connect wallet
         </Text>
-        <Divider borderColor="grey.500" />
       </HStack>
 
-      <Stack
-        flexDirection={isLitteSmall ? 'column' : 'row'}
-        w="full"
-        spacing={2}
-      >
+      <Grid gap={2} gridTemplateColumns="repeat(3, 1fr)" w="full">
         {connectors.map((connector) => (
-          <CardConnector
-            isAnyWalletConnectorOpen={isAnyWalletConnectorOpen}
-            key={connector.name}
-            connector={connector}
-            onClick={onConnectorSelect}
-          />
+          <GridItem key={connector.name}>
+            <CardConnector
+              connector={connector}
+              onClick={onConnectorSelect}
+              isEnabled={connector.isEnabled && !isAnyWalletConnectorOpen}
+            />
+          </GridItem>
         ))}
-      </Stack>
+      </Grid>
     </VStack>
   );
 };

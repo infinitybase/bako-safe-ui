@@ -1,7 +1,8 @@
-import { Flex, Image, Text } from '@chakra-ui/react';
+import { Avatar, Flex, Text } from 'bako-ui';
 import { PoolId } from 'mira-dex-ts';
 import { memo } from 'react';
 
+import { UnknownIcon } from '@/components';
 import { useAssetMetadata } from '@/modules/assets-tokens/hooks/useAssetMetadata';
 
 export const SwapRouteItem = memo(function SwapRouteItem({
@@ -15,14 +16,14 @@ export const SwapRouteItem = memo(function SwapRouteItem({
 
   return (
     <Flex alignItems="center">
-      <Image src={assetA?.icon || ''} alt={assetA?.name || ''} boxSize="16px" />
-      <Image
-        src={assetB?.icon || ''}
-        alt={assetB?.name || ''}
+      <Avatar src={assetA?.icon} boxSize="16px" fallback={<UnknownIcon />} />
+      <Avatar
+        src={assetB?.icon}
         boxSize="16px"
         marginLeft={-1}
+        fallback={<UnknownIcon />}
       />
-      <Text fontSize="sm" color="grey.75" ml={2}>
+      <Text fontSize="sm" color="textPrimary" ml={2}>
         ({fee}%)
       </Text>
     </Flex>

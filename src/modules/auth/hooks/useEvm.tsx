@@ -1,15 +1,11 @@
-import { getAccount, Config, reconnect, watchAccount } from '@wagmi/core';
-import {
-  ecrecover,
-  fromRpcSig,
-  hashPersonalMessage,
-  pubToAddress,
-} from '@ethereumjs/util';
-import { useCallback, useEffect, useRef, useState } from 'react';
 import type EventEmitter from 'node:events';
+
+import { Config, getAccount, reconnect, watchAccount } from '@wagmi/core';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { stringToHex } from 'viem';
 
 import { createWagmiConfig, createWeb3ModalInstance } from '@/config/web3Modal';
+import { EvmSignatureUtils } from '@/modules/core/utils';
 
 export interface EIP1193Provider extends EventEmitter {
   request(args: {
@@ -20,20 +16,21 @@ export interface EIP1193Provider extends EventEmitter {
 
 const wagmiConfig: Config = createWagmiConfig();
 
-let modal = createWeb3ModalInstance({
+const modal = createWeb3ModalInstance({
   wagmiConfig,
 });
 
-export const useEvm = () => {
+export const useEvm = (onOpenChange?: (open: boolean) => void) => {
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [address, setAddress] = useState<string>('');
-  const [isReconnecting, setIsReconnecting] = useState<boolean>(true);
   const unwatchRef = useRef<(() => void) | null>(null);
 
   const connect = async () => {
     try {
       await modal.open();
+      onOpenChange?.(true);
     } catch (error) {
+      onOpenChange?.(false);
       console.error('Connection failed:', error);
       throw error;
     }
@@ -43,6 +40,7 @@ export const useEvm = () => {
     const account = getAccount(wagmiConfig);
 
     if (!account.isConnected || !account.connector) {
+      onOpenChange?.(false);
       throw new Error('Wallet not connected');
     }
 
@@ -71,48 +69,36 @@ export const useEvm = () => {
   };
 
   const signAndValidate = async (message: string, _address?: string) => {
-    try {
-      const ethProvider = await getProviders();
-      if (!ethProvider) {
-        throw new Error('Invalid eth provider');
-      }
-
-      if (_address && !_address.startsWith('0x')) {
-        throw new Error('Invalid account address');
-      }
-      const currentAddress = _address || (await getCurrentAccount());
-
-      if (!currentAddress) {
-        throw new Error('No Ethereum account selected');
-      }
-
-      const signature = (await ethProvider.request({
-        method: 'personal_sign',
-        params: [stringToHex(message), currentAddress],
-      })) as string;
-
-      if (!validateSignature(currentAddress, message, signature)) {
-        throw new Error('Signature address validation failed');
-      }
-
-      return signature;
-    } catch (error) {
-      throw error;
+    const ethProvider = await getProviders();
+    if (!ethProvider) {
+      throw new Error('Invalid eth provider');
     }
-  };
 
-  const validateSignature = (
-    _address: string,
-    message: string,
-    signature: string,
-  ) => {
-    const msgBuffer = Uint8Array.from(Buffer.from(message));
-    const msgHash = hashPersonalMessage(msgBuffer);
-    const { v, r, s } = fromRpcSig(signature);
-    const pubKey = ecrecover(msgHash, v, r, s);
-    const recoveredAddress = Buffer.from(pubToAddress(pubKey)).toString('hex');
+    if (_address && !_address.startsWith('0x')) {
+      throw new Error('Invalid account address');
+    }
+    const currentAddress = _address || (await getCurrentAccount());
 
-    return recoveredAddress.toLowerCase() === _address.toLowerCase().slice(2);
+    if (!currentAddress) {
+      throw new Error('No Ethereum account selected');
+    }
+
+    const _message = EvmSignatureUtils.isMessageHex(message)
+      ? message
+      : stringToHex(message);
+
+    const signature = (await ethProvider.request({
+      method: 'personal_sign',
+      params: [_message, currentAddress],
+    })) as string;
+
+    if (
+      !EvmSignatureUtils.validateSignature(currentAddress, message, signature)
+    ) {
+      throw new Error('Signature address validation failed');
+    }
+
+    return signature;
   };
 
   const disconnect = async (): Promise<void> => {
@@ -147,8 +133,6 @@ export const useEvm = () => {
         setAddress(account.address || '');
       } catch (error) {
         console.error('Failed to reconnect:', error);
-      } finally {
-        setIsReconnecting(false);
       }
     };
 

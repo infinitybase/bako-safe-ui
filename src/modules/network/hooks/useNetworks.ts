@@ -1,12 +1,14 @@
+import { useQueryClient } from '@tanstack/react-query';
 import { Provider } from 'fuels';
-import { useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useLocation } from 'react-router-dom';
 
-import { queryClient } from '@/config';
-import { useAuth } from '@/modules';
+import { resetQueriesOnNetworkSwitch, useAuth } from '@/modules';
+import { LATEST_INFO_QUERY_KEY } from '@/modules/auth/hooks/useUserInfoRequest';
 import { localStorageKeys } from '@/modules/auth/services';
 
+import NetworkSwitchContext from '../providers/NetworkSwitchProvider';
 import {
   availableNetWorks,
   CustomNetwork,
@@ -26,6 +28,12 @@ export enum NetworkDrawerMode {
   CONFIRM = 'confirm',
 }
 
+export enum ConnectionStatus {
+  IDLE = 'idle',
+  SUCCESS = 'success',
+  FAILED = 'failed',
+}
+
 export type NetworkFormFields = {
   name: string;
   url: string;
@@ -39,13 +47,19 @@ const formDefaultValues = {
 const useNetworks = (onClose?: () => void) => {
   const [mode, setMode] = useState<NetworkDrawerMode>(NetworkDrawerMode.SELECT);
   const [validNetwork, setValidNetwork] = useState(false);
+  const [connectionStatus, setConnectionStatus] = useState<ConnectionStatus>(
+    ConnectionStatus.IDLE,
+  );
   const networkForm = useForm<NetworkFormFields>({
     defaultValues: formDefaultValues,
   });
+  const urlFormValue = networkForm.watch('url');
 
   const { search } = useLocation();
   const fromConnector = !!new URLSearchParams(search).get('sessionId');
 
+  const networkSwitchContext = useContext(NetworkSwitchContext);
+  const queryClient = useQueryClient();
   const checkNetworkRequest = useCheckNetworkRequest();
   const { data: networks, refetch: refetchNetworks } = useListNetworksRequest();
   const selectNetworkRequest = useSelectNetworkRequest();
@@ -55,6 +69,12 @@ const useNetworks = (onClose?: () => void) => {
   const {
     userInfos: { network: userNetwork },
   } = useAuth();
+
+  const handleClearUrl = useCallback(() => {
+    networkForm.setValue('url', '');
+    setValidNetwork(false);
+    setConnectionStatus(ConnectionStatus.IDLE);
+  }, [networkForm, setValidNetwork]);
 
   const saveNetwork = async (url: string) => {
     const exists = NetworkService.hasNetwork(url);
@@ -67,16 +87,17 @@ const useNetworks = (onClose?: () => void) => {
         url: url!,
         chainId,
       });
+      // Only refetch if we actually created a new network
+      refetchNetworks();
     }
-
-    refetchNetworks();
+    // Skip refetch if network already exists - no changes to list
   };
 
   const handleAddNetwork = networkForm.handleSubmit((data) => {
     if (!data.url) {
       networkForm.setError('url', {
         type: 'required',
-        message: 'Url is required.',
+        message: 'URL is required.',
       });
 
       return;
@@ -89,6 +110,7 @@ const useNetworks = (onClose?: () => void) => {
           setMode(NetworkDrawerMode.SELECT);
           await handleSelectNetwork(data.url);
           setValidNetwork(false);
+          setConnectionStatus(ConnectionStatus.IDLE);
           refetchNetworks();
         },
       },
@@ -116,28 +138,65 @@ const useNetworks = (onClose?: () => void) => {
       return;
     }
 
+    // Close drawer immediately for better UX
+    handleClose();
+
+    // Start network switch loading state
+    networkSwitchContext?.startNetworkSwitch();
+
+    // Save network in background (only creates Provider if network doesn't exist)
     saveNetwork(url!);
 
     selectNetworkRequest.mutate(
       { url },
       {
-        onSuccess: () => {
-          queryClient.clear();
-          handleClose();
+        onSuccess: async (response) => {
+          // Update userInfos.network with the response from API
+          // This is more reliable than optimistic update since API returns the actual network
+          if (response?.network) {
+            queryClient.setQueryData(
+              LATEST_INFO_QUERY_KEY,
+              (oldData: unknown) => {
+                if (!oldData || typeof oldData !== 'object') return oldData;
+                return {
+                  ...oldData,
+                  network: response.network,
+                };
+              },
+            );
+          }
+
+          // Controlled reset on network switch:
+          // cancels ongoing requests and removes network-dependent caches,
+          // preserving only immutable/global queries.
+          await resetQueriesOnNetworkSwitch();
+
+          setTimeout(() => {
+            // Finish network switch loading state after queries are invalidated
+            // Small delay to allow React Query to start fetching
+            networkSwitchContext?.finishNetworkSwitch();
+          }, 500);
+        },
+        onError: () => {
+          // Finish network switch loading state on error
+          networkSwitchContext?.finishNetworkSwitch();
         },
       },
     );
   };
 
   const handleCheckNetwork = async () => {
+    setConnectionStatus(ConnectionStatus.IDLE);
+
     const url = networkForm.watch('url');
     const existingNetwork = NetworkService.hasNetwork(url);
 
     if (!url) {
       networkForm.setError('url', {
         type: 'required',
-        message: 'Url is required',
+        message: 'URL is required',
       });
+      return;
     }
 
     if (existingNetwork) {
@@ -145,7 +204,6 @@ const useNetworks = (onClose?: () => void) => {
         type: 'required',
         message: 'Network already saved.',
       });
-
       return;
     }
 
@@ -155,6 +213,11 @@ const useNetworks = (onClose?: () => void) => {
         onSuccess: (name) => {
           networkForm.setValue('name', name!);
           setValidNetwork(true);
+          setConnectionStatus(ConnectionStatus.SUCCESS);
+        },
+        onError: () => {
+          setValidNetwork(false);
+          setConnectionStatus(ConnectionStatus.FAILED);
         },
       },
     );
@@ -168,6 +231,7 @@ const useNetworks = (onClose?: () => void) => {
   const handleClose = () => {
     setMode(NetworkDrawerMode.SELECT);
     setValidNetwork(false);
+    setConnectionStatus(ConnectionStatus.IDLE);
     networkForm.reset();
     onClose?.();
   };
@@ -178,25 +242,34 @@ const useNetworks = (onClose?: () => void) => {
   };
 
   useEffect(() => {
-    saveNetwork(currentNetwork.url);
-
+    // Only update localStorage, saveNetwork is called when needed
     localStorage.setItem(
       localStorageKeys.SELECTED_CHAIN_ID,
       JSON.stringify(currentNetwork.chainId),
     );
-  }, [currentNetwork]);
+  }, [currentNetwork.chainId]);
+
+  useEffect(() => {
+    setValidNetwork(false);
+    setConnectionStatus(ConnectionStatus.IDLE);
+    networkForm.clearErrors('url');
+  }, [urlFormValue]);
 
   return {
     currentNetwork,
     checkNetworkRequest,
     validNetwork,
+    connectionStatus,
     networkForm,
     mode,
     networks,
     selectNetworkRequest,
     fromConnector,
+    urlFormValue,
     setValidNetwork,
+    setConnectionStatus,
     checkNetwork,
+    handleClearUrl,
     handleSelectNetwork,
     handleAddNetwork,
     handleDeleteCustomNetwork,

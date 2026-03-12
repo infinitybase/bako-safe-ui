@@ -1,4 +1,4 @@
-import { Badge, Flex, Text } from '@chakra-ui/react';
+import { Badge, Flex, Text } from 'bako-ui';
 import { ReactNode } from 'react';
 
 interface ActionCardTitleProps {

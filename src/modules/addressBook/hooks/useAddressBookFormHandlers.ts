@@ -1,10 +1,10 @@
-import { UseDisclosureProps } from '@chakra-ui/react';
 import { UseQueryResult } from '@tanstack/react-query';
 import { BakoProvider } from 'bakosafe';
 import { Assets } from 'fuels';
 import debounce from 'lodash.debounce';
 import { ChangeEvent, useCallback } from 'react';
 
+import { UseDisclosureReturn } from '@/modules/core/hooks/useDisclosure';
 import { AddressUtils } from '@/modules/core/utils/address';
 
 import { ListContactsResponse } from '../services';
@@ -21,9 +21,11 @@ export type IUseAddressBookFormHandlersProps = {
   setContactToEdit: React.Dispatch<
     React.SetStateAction<{
       id: string;
+      address: string;
     }>
   >;
-  contactDialog: UseDisclosureProps;
+  contactDialog: UseDisclosureReturn;
+  editContactDialog: UseDisclosureReturn;
   listContactsRequest: UseQueryResult<ListContactsResponse, Error>;
   setSearch: React.Dispatch<React.SetStateAction<string>>;
   providerInstance: Promise<BakoProvider>;
@@ -33,6 +35,7 @@ export type IUseAddressBookFormHandlersProps = {
 const useAddressBookFormHandlers = ({
   setContactToEdit,
   contactDialog,
+  editContactDialog,
   listContactsRequest,
   setSearch,
   providerInstance,
@@ -51,7 +54,7 @@ const useAddressBookFormHandlers = ({
     form.setValue('address', '');
     form.setValue('nickname', '');
 
-    setContactToEdit({ id: contactToEdit ?? '' });
+    setContactToEdit({ id: contactToEdit ?? '', address: address ?? '' });
     if (address) form.setValue('address', address);
     if (nickname) form.setValue('nickname', nickname);
     if (handle) {
@@ -59,7 +62,7 @@ const useAddressBookFormHandlers = ({
       form.setValue('resolver', address);
     }
 
-    contactDialog.onOpen?.();
+    contactToEdit ? editContactDialog.onOpen?.() : contactDialog.onOpen?.();
   };
 
   const contactByAddress = (address: string) => {

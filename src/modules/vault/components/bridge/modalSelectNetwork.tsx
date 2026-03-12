@@ -1,0 +1,182 @@
+import {
+  Box,
+  DialogOpenChangeDetails,
+  HStack,
+  Image,
+  Input,
+  InputGroup,
+  Loader,
+  Separator,
+  Skeleton,
+  Text,
+  VStack,
+} from 'bako-ui';
+import React, { useCallback, useState } from 'react';
+
+import { Dialog, SearchIcon } from '@/components';
+
+export interface AssetItem {
+  value: string;
+  image: string;
+  name: string;
+  symbol: string | null;
+  balance?: string;
+}
+
+export interface AssetItemBrigdeProps {
+  asset: AssetItem;
+}
+
+export interface ModalSelectAssetsProps {
+  title: string;
+  isOpen?: boolean;
+  options?: AssetItem[];
+  isLoadingOptions: boolean;
+  onClose: () => void;
+  onOpenChange?: (details: DialogOpenChangeDetails) => void;
+  onSelect: (asset: AssetItem) => void;
+}
+
+const AssetItem = React.memo(function AssetItemMemo({
+  asset,
+  onSelect,
+}: AssetItemBrigdeProps & { onSelect: (a: AssetItem) => void }) {
+  const [loaded, setLoaded] = useState(false);
+  const { image, name } = asset;
+
+  return (
+    <HStack
+      border="1px solid"
+      borderColor="bg.muted"
+      padding={4}
+      borderRadius={8}
+      cursor="pointer"
+      _hover={{ bgColor: 'bg.muted/90' }}
+      w="100%"
+      onClick={() => onSelect(asset)}
+    >
+      <Skeleton loading={!loaded} boxSize={6} borderRadius="full">
+        <Image
+          src={image}
+          boxSize={6}
+          borderRadius="full"
+          onLoad={() => setLoaded(true)}
+          onError={() => setLoaded(true)}
+        />
+      </Skeleton>
+
+      <Text fontSize="sm" fontWeight="normal" color="gray.50">
+        {name}
+      </Text>
+    </HStack>
+  );
+});
+
+export function ModalSelectNetworkBridge({
+  title,
+  isOpen = false,
+  options,
+  isLoadingOptions,
+  onClose,
+  onSelect,
+  onOpenChange,
+}: ModalSelectAssetsProps) {
+  const [searchValue, setSearchValue] = useState('');
+
+  const handleClose = () => {
+    onOpenChange?.({ open: false });
+  };
+
+  const filteredNetworks = React.useMemo(() => {
+    if (!options) return [];
+
+    if (!searchValue.trim()) {
+      return options;
+    }
+
+    return options.filter((asset) =>
+      asset.name.toLowerCase().includes(searchValue.toLowerCase()),
+    );
+  }, [options, searchValue]);
+
+  const handleSelectAsset = useCallback(
+    (asset: AssetItem) => {
+      onSelect(asset);
+      onClose();
+    },
+    [onSelect, onClose],
+  );
+
+  return (
+    <Dialog.Modal
+      open={isOpen}
+      onOpenChange={onOpenChange}
+      closeOnInteractOutside={false}
+      size={{ base: 'full', sm: 'sm' }}
+    >
+      <Dialog.Body minH={650} maxH={650} flex={1} overflow="hidden">
+        <Dialog.Header
+          position={{ base: 'static', sm: 'relative' }}
+          title={title}
+          description={`Select the network of your choice.`}
+          mb={0}
+          mt={0}
+          px={6}
+          titleSxProps={{
+            fontSize: 16,
+            fontWeight: 700,
+            color: 'gray.50',
+            marginTop: { base: 5, md: 0 },
+          }}
+          descriptionFontSize="12px"
+          onClose={handleClose}
+        />
+        <Box px={6} mt={6} w="full">
+          <InputGroup endElement={<SearchIcon color="textPrimary" />}>
+            <Input
+              placeholder="Search Network"
+              value={searchValue}
+              onChange={(e) => {
+                setSearchValue(e.target.value);
+              }}
+            />
+          </InputGroup>
+        </Box>
+        <Separator marginTop={6} borderColor="bg.muted" />
+        <VStack
+          maxH={523}
+          overflowY="auto"
+          m={0}
+          p={6}
+          css={{
+            '&::-webkit-scrollbar': {
+              display: 'none',
+              width: '5px',
+              maxHeight: '330px',
+              backgroundColor: 'transparent',
+              borderRadius: '30px',
+            },
+          }}
+        >
+          {isLoadingOptions && <Loader color="textPrimary" size="md" />}
+
+          {!isLoadingOptions &&
+            filteredNetworks.length > 0 &&
+            filteredNetworks.map((net) => (
+              <AssetItem
+                key={net.value}
+                asset={net}
+                onSelect={handleSelectAsset}
+              />
+            ))}
+
+          {!isLoadingOptions && !filteredNetworks.length && (
+            <Text color="gray.50" fontSize="sm">
+              No networks found
+            </Text>
+          )}
+        </VStack>
+      </Dialog.Body>
+    </Dialog.Modal>
+  );
+}

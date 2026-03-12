@@ -1,4 +1,4 @@
-import { Input } from '@chakra-ui/react';
+import { Input } from 'bako-ui';
 import { forwardRef, useCallback, useMemo } from 'react';
 import MaskedInput from 'react-text-mask';
 import { createNumberMask } from 'text-mask-addons';

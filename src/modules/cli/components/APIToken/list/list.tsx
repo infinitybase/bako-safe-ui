@@ -1,134 +1,166 @@
-import {
-  Button,
-  Card,
-  Divider,
-  HStack,
-  Icon,
-  Stack,
-  TabPanel,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
-import { format } from 'date-fns';
-
-import { CustomSkeleton, LineCloseIcon, RemoveIcon } from '@/components';
+import { Box, Button, HStack, Icon, Input, Stack, Text, VStack, InputGroup, Flex, CloseButton } from 'bako-ui';
+import { CustomSkeleton, RemoveIcon, AddIcon, SearchIcon, Dialog } from '@/components';
 import { EmptyState } from '@/components/emptyState';
 import { TabState, UseAPITokenReturn } from '@/modules/cli/hooks';
 import { useRemoveAPIToken } from '@/modules/cli/hooks/APIToken/remove';
 import { APIToken } from '@/modules/cli/services';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { formatCreatedDate } from "@/utils/format-date-full";
+import { useState, useEffect } from "react";
+import { AlertIcon } from "@/components";
+import { useFilteredTokens } from "@/modules/cli/hooks/APIToken/remove/useFilteredTokens";
 
 interface APITokenCardProps {
   apiToken: APIToken;
+  onRemove: () => void;
 }
 
 const APITokenCard = (props: APITokenCardProps) => {
-  const { apiToken } = props;
-  const { confirm, handler, request } = useRemoveAPIToken();
-  const {
-    screenSizes: { isLitteSmall },
-  } = useWorkspaceContext();
+  const { apiToken,onRemove } = props;
 
   return (
-    <Card
-      key={apiToken.id}
+    <VStack
       w="full"
-      maxW={440}
-      bg="dark.950"
+      h="auto"
+      maxH={200}
+      minH="auto"
+      maxW="432px"
+      bg="gray.600"
+      p={3}
+      borderColor="gray.600"
+      alignItems="start"
       borderWidth={1}
-      borderColor="grey.925"
-      p={4}
       borderRadius={8}
+      display="flex"
+      flexDirection="column"
     >
-      <HStack alignItems="center" justifyContent="space-between" spacing={4}>
-        <VStack
-          spacing={3}
-          alignItems="flex-start"
-          justifyContent="space-between"
-          w="full"
-        >
+      <Box w="full" display="flex" justifyContent="space-between">
+        <Text fontSize="xs" color="gray.100" isTruncated maxW="calc(100% - 24px)">
+          {apiToken.name}
+        </Text>
+        <Box display="flex" gap={3}>
+          <Icon
+            as={RemoveIcon}
+            w="12px"
+            color="gray.200"
+            cursor="pointer"
+            onClick={onRemove}
+            aria-label={`Remove API token ${apiToken.name}`}
+          />
+        </Box>
+      </Box>
+      <Stack spacing={0} gap={0}>
+        <HStack align="start" maxW="100%">
           <Text
-            color="grey.50"
             fontSize="xs"
-            fontWeight={700}
-            maxW="full"
-            noOfLines={1}
-            wordBreak="break-all"
+            color="gray.300"
+            wordBreak="break-word"
+            overflowWrap="anywhere"
+            minW={0}
+            flex="1"
+            pb="2px"
           >
-            {apiToken.name}
+            {`Transaction name: ${apiToken.config?.transactionTitle}`}
           </Text>
-          <Text
-            color="grey.250"
-            fontSize="xs"
-            maxW="full"
-            noOfLines={4}
-            wordBreak="break-all"
-            hidden={!apiToken.config?.transactionTitle}
-          >
-            Transaction name: {apiToken.config?.transactionTitle}
-          </Text>
-          <Text color="grey.250" fontSize="xs">
-            Creation date: {format(new Date(apiToken.createdAt), 'yyyy/MM/dd')}
-          </Text>{' '}
-          d
-        </VStack>
+        </HStack>
 
-        <Stack
-          flexDirection={{
-            base: confirm.show && isLitteSmall ? 'column' : 'row',
-            xs: 'row',
-          }}
-          spacing={4}
-          flex={1}
-          maxW={{
-            base: isLitteSmall ? 70 : 'unset',
-            xs: 'unset,',
-          }}
-          alignItems="center"
-          justifyContent="flex-end"
-        >
-          {confirm.show && (
-            <>
-              <LineCloseIcon
-                visibility={confirm.show ? 'visible' : 'hidden'}
-                fontSize="lg"
-                color="grey.75"
-                cursor="pointer"
-                onClick={() => confirm.set(false)}
-              />
-
-              <Button
-                variant="tertiary"
-                border="none"
-                color="grey.825"
-                h="28px"
-                py={0}
-                px={4}
-                fontSize="xs"
-                fontWeight={700}
-                onClick={() => handler(apiToken.id)}
-                isLoading={request.isLoading}
-              >
-                Delete
-              </Button>
-            </>
-          )}
-
-          {!confirm.show && (
-            <Icon
-              visibility={confirm.show ? 'hidden' : 'visible'}
-              as={RemoveIcon}
-              fontSize="md"
-              color="grey.75"
-              cursor="pointer"
-              onClick={() => confirm.set(true)}
-            />
-          )}
-        </Stack>
-      </HStack>
-    </Card>
+        <Text fontSize="xs" color="gray.300" wordBreak="break-all">
+          {`Created: ${formatCreatedDate({ date: new Date(apiToken.createdAt) })}`}
+        </Text>
+      </Stack>
+    </VStack>
   );
 };
+
+interface DoubleCheckoutProps {
+  token: APIToken | null;
+  onClose: () => void;
+  onConfirm: (id: string) => void;
+  loading: boolean;
+}
+
+const DoubleCheckout = ({ token, onClose, onConfirm, loading }: DoubleCheckoutProps) => {
+  if (!token) return null;
+
+  return (
+    <Dialog.Modal
+      open={true}
+      onOpenChange={onClose}
+      closeOnInteractOutside={false}
+      trapFocus={false}
+      modalContentProps={{
+        maxW: { base: '100%', sm: '480px' },
+        p: { base: 4, sm: 0 }
+    }}
+    >
+      <Stack w="100%" maxW={{ base: '100%', sm: '480px' }} pt={{ base: 4, sm: 6 }} px={{ base: 4, sm: 6 }}>
+        <Flex w="100%" justify="end">
+          <CloseButton size="2xs" onClick={onClose} />
+        </Flex>
+      </Stack>
+
+      <Dialog.Body
+        w="full"
+        h={{ base: '100vh', sm: 'full' }}
+        maxW={{ base: '100%', sm: '480px' }}
+        display={{ base: 'flex', sm: 'block' }}
+        alignItems={{ base: 'center', sm: 'stretch' }}
+        justifyContent={{ base: 'center', sm: 'flex-start' }}
+      >
+        <Box>
+          <VStack p={4} pt="52px" pb={0} h="full" gap={{ base: 4, sm: 3 }}>
+            <VStack gap={1}>
+              <Icon mb={5} color="red.100" boxSize={{ base: '40px', sm: '48px' }} as={AlertIcon} />
+              <Text fontWeight={700} fontSize={{ base: 14, sm: 16 }} color="red.100">
+                Double check it!
+              </Text>
+            </VStack>
+            <HStack wrap="wrap" maxW="368px" justify="center" gap={{ base: 1, sm: 2 }}>
+              <Text fontWeight="normal" color="gray.400" fontSize={{ base: 12, sm: 14 }} textAlign="center">
+                Delete
+              </Text>
+              <Text fontWeight={500} fontSize={{ base: 12, sm: 14 }} color="gray.50">
+                {token.name}
+              </Text>
+              <Text fontWeight="normal" color="gray.400" fontSize={{ base: 12, sm: 14 }} textAlign="center">
+                from your API tokens?
+              </Text>
+            </HStack>
+          </VStack>
+          <HStack justifyContent="center" mt={{ base: 4, sm: 6 }}>
+            <Dialog.Actions
+              p={{ base: 4, sm: 6 }}
+              maxW={{ base: '100%', sm: '244px' }}
+              gap={2}
+              flexDirection={{ base: 'column', sm: 'row' }}
+            >
+              <Dialog.SecondaryAction
+                bg="gray.600"
+                w="100%"
+                onClick={onClose}
+                disabled={loading}
+                _hover={{ bg: 'gray.500' }}
+                order={{ base: 1, sm: 0 }}
+              >
+                Cancel
+              </Dialog.SecondaryAction>
+
+              <Dialog.PrimaryAction
+                bg="red.100"
+                w="100%"
+                onClick={() => onConfirm(token.id)}
+                loading={loading}
+                _hover={{ bg: 'red.50' }}
+                order={{ base: 0, sm: 1 }}
+              >
+                Yes, remove it!
+              </Dialog.PrimaryAction>
+            </Dialog.Actions>
+          </HStack>
+        </Box>
+      </Dialog.Body>
+    </Dialog.Modal>
+  )
+}
 
 interface APITokensListProps {
   tabs: UseAPITokenReturn['tabs'];
@@ -136,69 +168,124 @@ interface APITokensListProps {
 }
 
 const APITokensList = (props: APITokensListProps) => {
-  const { tabs, request } = props;
+  const { tabs, request: listRequest } = props;
+
+  const [tokenToRemove, setTokenToRemove] = useState<APIToken | null>(null);
+  const { handler, request: removeRequest } = useRemoveAPIToken();
+  const [searchValue, setSearchValue] = useState('');
+
+  useEffect(() => {
+    if (!tokenToRemove) setSearchValue('');
+  }, [tokenToRemove]);
+
+  const filteredTokens = useFilteredTokens({
+    tokens: listRequest.data,
+    searchValue,
+  });
 
   const handleAddMoreAPITokens = () => {
     tabs.set(TabState.CREATE);
   };
 
   return (
-    <TabPanel p={0} display="flex" flexDirection="column" flex={1} minH="full">
-      <Divider my={{ base: 3, sm: 6 }} borderColor="grey.425" />
-
-      <VStack spacing={{ base: 4, xs: 6 }} pt={{ base: 2, sm: 0 }} flex={1}>
-        <CustomSkeleton isLoaded={!request.isLoading} flex={1} display="flex">
-          {request.data && request.data?.length > 0 ? (
+    <Box
+      px={6}
+      pb={2}
+      display="flex"
+      flexDirection="column"
+      h="100%"
+    >
+      <VStack pb={6} w="full" display="flex" flexDirection="row">
+        <Button
+          bg="gray.600"
+          variant="subtle"
+          cursor="pointer"
+          onClick={handleAddMoreAPITokens}
+          w="48px"
+          h="48px"
+          _hover={{ bg: 'gray.500' }}
+        >
+          <Icon
+            as={AddIcon}
+            w="16px"
+          />
+        </Button>
+        <InputGroup
+          position="relative"
+          bg="gray.600"
+          rounded="8px"
+          startElement={<SearchIcon w="16px" />}
+        >
+          <Input
+            h="48px"
+            border="none"
+            placeholder="Search by name"
+            value={searchValue}
+            outline="none"
+            fontSize="14px"
+            fontWeight="400"
+            _placeholder={{
+              color: 'textSecondary',
+              fontSize: '14px',
+              fontWeight: '400'
+            }}
+            onChange={(e) => setSearchValue(e.target.value)}
+            pl="40px"
+          />
+        </InputGroup>
+      </VStack>
+      <Flex
+        flex="1"
+        minH={0}
+        overflowY="auto"
+        css={{
+        '&::-webkit-scrollbar': {
+          display: 'none',
+          width: '5px',
+          backgroundColor: '#2B2927',
+        },
+        '&::-webkit-scrollbar-thumb': {
+          display: 'none',
+          backgroundColor: 'grey.250',
+          borderRadius: '30px',
+          height: '10px' /* Adjust the height of the scrollbar thumb */,
+        },
+      }}>
+        <CustomSkeleton loading={listRequest.isLoading} flex={1} display="flex">
+          {filteredTokens.length > 0 ? (
             <VStack
-              spacing={{ base: 4, xs: 6 }}
+              gap={{ base: 3, sm: 3 }}
               w="full"
-              maxH={{
-                base: 'calc($100vh - 301px)',
-                xs: 'calc($100vh - 320px)',
-                sm: 360,
-                md: 380,
-              }}
-              minH={300}
-              flex={1}
               alignSelf="stretch"
-              overflowY="scroll"
-              sx={{
-                '&::-webkit-scrollbar': {
-                  display: 'none',
-                  width: '5px',
-                  backgroundColor: '#2B2927',
-                },
-                '&::-webkit-scrollbar-thumb': {
-                  display: 'none',
-                  backgroundColor: 'grey.250',
-                  borderRadius: '30px',
-                  height: '10px' /* Adjust the height of the scrollbar thumb */,
-                },
-              }}
             >
-              {request.data?.map((apiToken) => (
-                <APITokenCard key={apiToken.id} apiToken={apiToken} />
+              {filteredTokens.map((apiToken) => (
+                <APITokenCard key={apiToken.id} apiToken={apiToken} onRemove={() => setTokenToRemove(apiToken)} />
               ))}
             </VStack>
           ) : (
             <EmptyState
               showAction={false}
-              title="No Data available"
-              subTitle="Currently, there is no available data to display in this section."
+              title="No API Tokens"
+              subTitle="Tap the + button to add a new API token."
+              gap={0}
             />
           )}
         </CustomSkeleton>
-
-        <Button
-          variant="emptyState"
-          onClick={handleAddMoreAPITokens}
-          w="full"
-          mt="auto"
-        >
-          Add more API Tokens
-        </Button>
-      </VStack>
-    </TabPanel>
+        <DoubleCheckout
+          token={tokenToRemove}
+          loading={removeRequest.isLoading}
+          onClose={() => setTokenToRemove(null)}
+          onConfirm={async (id) => {
+            try {
+              await handler(id);
+              setTokenToRemove(null);
+            } catch (error) {
+              console.error('Failed to delete token:', error);
+            }
+          }}
+        />
+      </Flex>
+    </Box>
   );
 };
 

@@ -1,4 +1,4 @@
-import { ITransactionResume, TransactionType, Vault } from 'bakosafe';
+import { ITransactionResume, TransactionType, TypeUser, Vault } from 'bakosafe';
 import { Operation } from 'fuels';
 
 import {
@@ -34,13 +34,21 @@ export enum TransactionHistoryType {
   SEND = 'SEND',
 }
 
-export type ITransactionStatusFilter = TransactionStatus[] | string[] | string;
-
-export enum TypeUser {
-  FUEL = 'FUEL',
-  WEB_AUTHN = 'WEB_AUTHN',
-  EVM = 'EVM',
+export enum TransactionTypeWithRamp {
+  ON_RAMP_DEPOSIT = 'ON_RAMP_DEPOSIT',
+  OFF_RAMP_WITHDRAW = 'OFF_RAMP_WITHDRAW',
 }
+
+export const ON_OFF_RAMP_TRANSACTION_TYPES: string[] = [
+  TransactionTypeWithRamp.ON_RAMP_DEPOSIT,
+  TransactionTypeWithRamp.OFF_RAMP_WITHDRAW,
+];
+
+export enum TransactionTypeBridge {
+  BRIDGE = 'BRIDGE',
+}
+
+export type ITransactionStatusFilter = TransactionStatus[] | string[] | string;
 
 export interface ITransactionHistory {
   type: TransactionHistoryType;
@@ -146,16 +154,21 @@ export type OperationWithAssets = Operation & {
   assetsSent?: { assetId?: string; amount?: string }[];
 };
 
+type TTransactionType =
+  | TransactionType
+  | TransactionTypeWithRamp
+  | TransactionTypeBridge;
+
 export type TransactionWithVault = ITransaction & {
   predicate?: PredicateAndWorkspace;
-  type: TransactionType;
+  type: TTransactionType;
 };
 export interface ITransactionWithType extends ITransaction {
-  type: TransactionType;
+  type: TTransactionType;
 }
 
-export interface ITransactionsGroupedByMonth {
-  monthYear: string;
+export interface ITransactionsGroupedByDay {
+  day: string;
   transactions: TransactionWithVault[];
 }
 

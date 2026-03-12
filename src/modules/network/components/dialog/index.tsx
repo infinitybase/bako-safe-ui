@@ -1,128 +1,144 @@
-import {
-  Button,
-  FormControl,
-  FormHelperText,
-  FormLabel,
-  Input,
-  Spinner,
-  VStack,
-} from '@chakra-ui/react';
-import { Controller } from 'react-hook-form';
+import { Button, RhfInput, VStack } from 'bako-ui';
+import { memo } from 'react';
 
-import { Dialog, DialogModalProps } from '@/components';
+import { CloseCircle, Dialog, DialogModalProps } from '@/components';
 
-import { useNetworks } from '../../hooks';
+import { ConnectionStatus, useNetworks } from '../../hooks';
 
 interface NetworkDialogProps extends Omit<DialogModalProps, 'children'> {}
 
-const NetworkDialog = ({ ...props }: NetworkDialogProps) => {
+const NetworkDialog = memo(({ ...props }: NetworkDialogProps) => {
   const {
     handleAddNetwork,
     networkForm,
     handleCheckNetwork,
     validNetwork,
+    connectionStatus,
     handleClose,
     checkNetworkRequest: { isPending: loadingCheck },
-    setValidNetwork,
-  } = useNetworks(props.onClose);
+    urlFormValue,
+    handleClearUrl,
+  } = useNetworks(() => props.onOpenChange?.({ open: false }));
 
   return (
     <Dialog.Modal
-      size={{ base: 'full', sm: 'lg' }}
-      isOpen={props.isOpen}
-      closeOnOverlayClick={false}
-      onClose={handleClose}
+      size={{ base: 'full', sm: 'md' }}
+      open={props.open}
+      closeOnInteractOutside={false}
+      onOpenChange={props.onOpenChange}
+      trapFocus={false}
+      modalContentProps={{ py: 6, px: 0 }}
+      modalBodyProps={{ gap: 6 }}
     >
       <Dialog.Header
         position="relative"
         onClose={handleClose}
-        maxW={420}
-        title={'Add new Network'}
+        title="New Network"
+        description="Define the name and URL of the new network."
+        titleSxProps={{
+          color: 'textPrimary',
+          fontSize: 'sm',
+          lineHeight: 'shorter',
+        }}
+        descriptionColor="textSecondary"
+        descriptionFontSize="12px"
+        mt={0}
+        mb={0}
+        px={6}
       />
 
-      <Dialog.Body maxW={420} mt={{ base: -4, sm: -8 }}>
-        <VStack spacing={10}>
-          <VStack spacing={2} w="full">
-            <Controller
-              control={networkForm.control}
-              name="name"
-              render={({ field, fieldState }) => (
-                <FormControl isInvalid={fieldState.invalid}>
-                  <Input
-                    value={field.value}
-                    onChange={field.onChange}
-                    placeholder=" "
-                    variant="dark"
-                    bg={'grey.825'}
-                    border={'1px solid'}
-                    borderColor={'grey.125'}
-                    disabled={true}
-                  />
-                  <FormLabel>Name</FormLabel>
-                  <FormHelperText color="error.500">
-                    {fieldState.error?.message}
-                  </FormHelperText>
-                </FormControl>
-              )}
-            />
+      <Dialog.Body px={6}>
+        <VStack gap={4} w="full">
+          <RhfInput
+            name="name"
+            control={networkForm.control}
+            defaultValue=""
+            slotProps={{
+              input: {
+                placeholder: 'Name',
+                padding: 3,
+                variant: 'subtle',
+                disabled: true,
+              },
+            }}
+            error={networkForm.formState.errors.name}
+          />
 
-            <Controller
-              control={networkForm.control}
-              name="url"
-              rules={{ required: 'URL is required' }}
-              render={({ field, fieldState }) => (
-                <FormControl isInvalid={fieldState.invalid}>
-                  <Input
-                    value={field.value}
-                    onChange={(e) => {
-                      field.onChange(e);
-                      setValidNetwork(false);
-                      networkForm.clearErrors();
-                    }}
-                    placeholder=" "
-                    variant="dark"
-                    bg={'grey.825'}
-                    border={'1px solid'}
-                    borderColor={validNetwork ? 'brand.500' : 'grey.125'}
+          <RhfInput
+            name="url"
+            control={networkForm.control}
+            defaultValue=""
+            rules={{ required: 'URL is required' }}
+            slotProps={{
+              input: {
+                placeholder: 'URL',
+                padding: 3,
+                variant: 'subtle',
+              },
+              inputGroup: {
+                endElement: urlFormValue && (
+                  <CloseCircle
+                    boxSize={4}
+                    color="gray.200"
+                    cursor="pointer"
+                    onClick={handleClearUrl}
                   />
-                  <FormLabel>URL</FormLabel>
-                  <FormHelperText color="error.500">
-                    {fieldState.error?.message}
-                  </FormHelperText>
-                </FormControl>
-              )}
-            />
+                ),
+              },
+            }}
+            error={networkForm.formState.errors.url}
+          />
 
-            <Button
-              w="full"
-              h={'40px'}
-              variant="outline"
-              color={'grey.75'}
-              borderColor={'grey.75'}
-              onClick={handleCheckNetwork}
-              _hover={{ borderColor: 'inherit', color: 'inherit' }}
-              sx={{ _active: { bg: 'inherit' } }}
-              disabled={loadingCheck}
-            >
-              {loadingCheck ? <Spinner w={4} h={4} /> : 'Test connection'}
-            </Button>
-          </VStack>
+          <Button
+            w="full"
+            variant="outline"
+            color={
+              connectionStatus === ConnectionStatus.FAILED
+                ? 'red.200'
+                : 'textSecondary'
+            }
+            fontWeight="normal"
+            borderColor="secondary.main"
+            onClick={handleCheckNetwork}
+            _hover={{
+              borderColor: 'inherit',
+              color:
+                connectionStatus === ConnectionStatus.FAILED
+                  ? 'red.100'
+                  : 'inherit',
+            }}
+            css={{ _active: { bg: 'inherit' } }}
+            disabled={loadingCheck || !urlFormValue}
+          >
+            {loadingCheck
+              ? 'Testing connection...'
+              : connectionStatus === ConnectionStatus.FAILED
+                ? 'Connection failed!'
+                : connectionStatus === ConnectionStatus.SUCCESS
+                  ? 'Connection successful!'
+                  : 'Test connection'}
+          </Button>
         </VStack>
       </Dialog.Body>
 
-      <Dialog.Actions mt="auto" maxW={420}>
-        <Button
-          w="100%"
-          variant="primary"
-          fontWeight="bold"
+      <Dialog.Actions mt="auto" px={6}>
+        <Dialog.SecondaryAction onClick={handleClose}>
+          Cancel
+        </Dialog.SecondaryAction>
+
+        <Dialog.PrimaryAction
+          w="auto"
+          flex={1}
           onClick={handleAddNetwork}
-          isDisabled={!validNetwork}
+          disabled={!validNetwork}
         >
-          Add network
-        </Button>
+          Add
+        </Dialog.PrimaryAction>
       </Dialog.Actions>
     </Dialog.Modal>
   );
-};
+});
+
+NetworkDialog.displayName = 'NetworkDialog';
 
 export { NetworkDialog };

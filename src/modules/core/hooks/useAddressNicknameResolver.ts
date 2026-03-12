@@ -2,7 +2,7 @@ import { Address } from 'fuels';
 import { useCallback } from 'react';
 
 import { useBakoIDResolveNames } from '@/modules/core/hooks/bako-id';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 const useAddressNicknameResolver = (members: string[] = []) => {
   const {

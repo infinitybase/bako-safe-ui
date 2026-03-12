@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 
 import {
   BitCoinIcon,
-  CoinsIcon,
+  KeyIcon,
   MoreLessIcon,
   RecoveryIcon,
   UploadFile,
@@ -22,8 +22,8 @@ export const requiredCLIRoles = [
 
 export enum CLIFeaturesLabels {
   API_TOKEN = 'API Token',
-  ADD_OTHER_TOKENS = 'Add Custom token',
-  RECOVERY = 'Account Recovery',
+  ADD_OTHER_TOKENS = 'Add other tokens',
+  RECOVERY = 'Recovery',
   SPEND_LIMIT = 'Spending limit',
   EXPORT_WALLET = 'Export Wallet',
 }
@@ -69,7 +69,7 @@ const useCLI = ({ currentWorkspace, userId, vault }: IUseCLIProps) => {
   const settings = [
     {
       label: CLIFeaturesLabels.API_TOKEN,
-      icon: CoinsIcon,
+      icon: KeyIcon,
       disabled: !hasPermission,
       onClick: () => {
         hasToken ? tabs.set(TabState.LIST) : tabs.set(TabState.CREATE);

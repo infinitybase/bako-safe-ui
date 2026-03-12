@@ -1,10 +1,10 @@
-import { Text, TextProps } from '@chakra-ui/react';
+import { Text, TextProps } from 'bako-ui';
 import { AddressUtils as BakoAddressUtils } from 'bakosafe';
 import { Address as FuelsAddress } from 'fuels';
 
 import { useGetParams } from '@/modules/core/hooks';
 import { AddressUtils } from '@/modules/core/utils';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 export interface AddressProps extends TextProps {
   value: string;
@@ -38,13 +38,14 @@ const Address = (props: AddressProps) => {
   } = useWorkspaceContext();
 
   const isPasskey = AddressUtils.isPasskey(value);
+  const isSocial = AddressUtils.isSocial(value);
   const isEvm = BakoAddressUtils.isEvm(value);
   const getB256Address = () => {
     if (isEvm) {
       return 'eth:' + value;
     }
 
-    return value && !isPasskey
+    return value && !isPasskey && !isSocial
       ? FuelsAddress.fromString(value).toString()
       : (value ?? '');
   };
@@ -55,9 +56,9 @@ const Address = (props: AddressProps) => {
     <Text
       color={isDetailDialog ? 'white' : 'grey.75'}
       textOverflow="ellipsis"
-      isTruncated
+      truncate
       textAlign={isExtraSmall ? 'start' : 'end'}
-      fontSize={isLowerThanFourHundredAndThirty ? 'xs' : 'sm'}
+      fontSize="xs"
       maxW={
         isSidebarAddress
           ? 'full'

@@ -1,5 +1,6 @@
 import { bytesToHex } from '@noble/curves/abstract/utils';
 import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query';
+import { TypeUser } from 'bakosafe';
 import { Address, Network, Provider } from 'fuels';
 
 import { api } from '@/config';
@@ -14,17 +15,16 @@ export enum Encoder {
   EVM = 'EVM',
 }
 
-export enum TypeUser {
-  FUEL = 'FUEL',
-  FULLET = 'FULLET',
-  WEB_AUTHN = 'WEB_AUTHN',
-  EVM = 'EVM',
-}
-
 export type SignWebAuthnPayload = {
   id: string;
   challenge: string;
   publicKey: string;
+};
+
+export type SignMessageWebAuthnPayload = {
+  signPayload: SignWebAuthnPayload;
+  address: string;
+  predicateVersion?: string;
 };
 
 export type SignInSignWebAuthnPayload = Omit<
@@ -32,6 +32,11 @@ export type SignInSignWebAuthnPayload = Omit<
   'publicKey'
 > & {
   name: string;
+};
+
+export type WalletSignMessagePayload = {
+  message: string;
+  predicateVersion?: string;
 };
 
 export type CreateUserResponse = {
@@ -171,6 +176,12 @@ export type IGetUserInfosResponse = {
   network: Network;
 };
 
+interface IGetUserWalletResponse {
+  address: string;
+  configurable: string;
+  version: string;
+}
+
 export class UserService {
   static async create(payload: CreateUserPayload) {
     // const invalidNetwork = payload?.provider?.includes(NetworkType.MAINNET);
@@ -233,6 +244,11 @@ export class UserService {
     return data;
   }
 
+  static async userWallet() {
+    const { data } = await api.get<IGetUserWalletResponse>('/user/wallet');
+    return data;
+  }
+
   static async createWebAuthnAccount(name: string) {
     const account = await createAccount(name, Address.fromRandom().toB256());
 
@@ -289,6 +305,7 @@ export const localStorageKeys = {
   FUEL_MAPPED_TOKENS: 'bakosafe/fuel-mapped-tokens',
   FUEL_MAPPED_ASSETS: 'bakosafe/fuel-mapped-assets',
   FUEL_MAPPED_NFTS: 'bakosafe/fuel-mapped-nfts',
+  BAKO_ID_CACHE: 'bakosafe/bako-id-cache',
   USERNAMES: 'bakosafe/usernames',
 };
 

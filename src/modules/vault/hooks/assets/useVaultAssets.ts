@@ -1,15 +1,8 @@
 import { bn } from 'fuels';
 import { useCallback, useMemo, useState } from 'react';
 
-import { AssetMap, NativeAssetId } from '@/modules/core';
-
-const IS_VISIBLE_KEY = '@bakosafe/balance-is-visible';
-
-const isVisibleBalance = () => localStorage.getItem(IS_VISIBLE_KEY) === 'true';
-const setIsVisibleBalance = (isVisible: 'true' | 'false') =>
-  localStorage.setItem(IS_VISIBLE_KEY, isVisible);
-
 import { queryClient } from '@/config';
+import { AssetMap, NativeAssetId } from '@/modules/core';
 import { gasConfig } from '@/modules/core/hooks/bakosafe/utils/gas-config';
 
 import { useVaultTransactionsList } from '../list/useVaultTransactionsList';
@@ -28,8 +21,6 @@ const useVaultAssets = (
   predicateId: string,
   assetsMap: AssetMap,
 ) => {
-  const initialVisibility = isVisibleBalance();
-  const [visibleBalance, setVisibleBalance] = useState(initialVisibility);
   const [isUpdating, setIsUpdating] = useState(false);
 
   const {
@@ -89,11 +80,6 @@ const useVaultAssets = (
     );
   }, [ethBalance]);
 
-  const handleSetVisibleBalance = (visible: any) => {
-    setVisibleBalance(visible);
-    setIsVisibleBalance(visible ? 'true' : 'false');
-  };
-
   const handleManualRefetch = async () => {
     const queryState = queryClient.getQueryState(reservedQueryKey);
     const freshData =
@@ -122,14 +108,12 @@ const useVaultAssets = (
     getAssetInfo,
     getCoinAmount,
     hasAssetBalance,
-    setVisibleBalance: handleSetVisibleBalance,
     isUpdating,
     handleManualRefetch,
     hasBalance,
     ethBalance,
     isEthBalanceLowerThanReservedAmount,
     hasAssets: !!data?.currentBalance?.length,
-    visibleBalance,
     balanceUSD: data?.currentBalanceUSD,
     refetchAssets,
     isNFTAsset,

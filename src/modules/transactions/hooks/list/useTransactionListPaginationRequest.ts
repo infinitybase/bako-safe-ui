@@ -1,8 +1,8 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 
-import { invalidateQueries, WorkspacesQueryKey } from '@/modules/core';
+import { WorkspacesQueryKey } from '@/modules/core';
 import { SortOptionTx } from '@/modules/core/hooks/bakosafe/utils/types';
-import { useGroupTransactionsByMonth } from '@/modules/core/hooks/useGroupTransactionsByMonth';
+import { useGroupTransactionsByDay } from '@/modules/core/hooks/useGroupTransactionsByDay';
 import { DEFAULT_INITIAL_PAGE_PARAM } from '@/utils/constants';
 
 import {
@@ -10,7 +10,6 @@ import {
   TransactionOrderBy,
   TransactionService,
 } from '../../services';
-import { PENDING_TRANSACTIONS_QUERY_KEY } from './useTotalSignaturesPendingRequest';
 import { StatusFilter } from './useTransactionList';
 
 type UseTransactionListPaginationParams = Omit<
@@ -38,17 +37,12 @@ const useTransactionListPaginationRequest = (
         page: pageParam || DEFAULT_INITIAL_PAGE_PARAM,
         orderBy: TransactionOrderBy.CREATED_AT,
         sort: SortOptionTx.DESC,
-      }).then((data) => {
-        const keysToInvalidate = [PENDING_TRANSACTIONS_QUERY_KEY];
-        if (params.predicateId?.length) {
-          keysToInvalidate.push(params.predicateId[0]);
-        }
-        invalidateQueries(keysToInvalidate);
-        return data;
       }),
     enabled: window.location.pathname != '/',
     initialPageParam: DEFAULT_INITIAL_PAGE_PARAM,
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: false,
+    // Socket events handle real-time updates
+    staleTime: 1000 * 60 * 2, // 2 minutes
     getNextPageParam: (lastPage) =>
       lastPage.currentPage !== lastPage.totalPages
         ? lastPage.nextPage
@@ -59,7 +53,7 @@ const useTransactionListPaginationRequest = (
 
   return {
     ...query,
-    transactions: useGroupTransactionsByMonth(transactionsList),
+    transactions: useGroupTransactionsByDay(transactionsList),
   };
 };
 

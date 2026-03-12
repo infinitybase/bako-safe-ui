@@ -1,32 +1,29 @@
-import { Button, VStack } from '@chakra-ui/react';
+import { Button, DialogOpenChangeDetails, Flex, Stack } from 'bako-ui';
 
 import { useNetworks } from '@/modules/network/hooks';
 import { NetworkType } from '@/modules/network/services';
 import { useUpdateSettingsRequest } from '@/modules/settings/hooks';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { Dialog } from '../dialog';
-import { BridgeIcon, CoinsIcon, DownLeftArrow } from '../icons';
+import { BridgeIcon, CoinsIcon, DownLeftArrow2 } from '../icons';
 import WelcomeCard from './card';
+import { WelcomeHeader } from './header';
+import { WelcomeRoot } from './root';
 
 interface IWelcomeDialogProps {
   isOpen: boolean;
-  setIsWelcomeDialogOpen: (value: boolean) => void;
+  onOpenChange: (value: DialogOpenChangeDetails) => void;
   setIsDepositDialogOpen: (value: boolean) => void;
 }
 
 const WelcomeDialog = ({
   isOpen,
   setIsDepositDialogOpen,
-  setIsWelcomeDialogOpen,
+  onOpenChange,
 }: IWelcomeDialogProps) => {
   const {
-    screenSizes: {
-      isMobile,
-      isSmall,
-      isLitteSmall,
-      isLowerThanFourHundredAndThirty,
-    },
+    screenSizes: { isMobile },
     authDetails: {
       userInfos: { first_login, id, refetch },
     },
@@ -52,12 +49,12 @@ const WelcomeDialog = ({
   const handleOpenDepositDialog = () => {
     handleUpdateUser();
     setIsDepositDialogOpen(true);
-    setIsWelcomeDialogOpen(false);
+    onOpenChange({ open: false });
   };
 
   const handleClose = () => {
     handleUpdateUser();
-    setIsWelcomeDialogOpen(false);
+    onOpenChange({ open: false });
   };
 
   const handleRedirectToMainNet = async () => {
@@ -65,96 +62,71 @@ const WelcomeDialog = ({
   };
 
   return (
-    <Dialog.Modal
-      onClose={() => handleClose()}
-      isOpen={(first_login && first_login && isOpen) ?? false}
-      closeOnEsc={false}
-      closeOnOverlayClick={false}
-      size={{ base: 'full', xs: 'lg' }}
-      modalContentProps={{
-        px: 10,
-        py: 10,
-      }}
+    <WelcomeRoot
+      onOpenChange={onOpenChange}
+      open={(first_login && first_login && isOpen) ?? false}
+      isMobile={isMobile}
     >
       <Dialog.Body>
-        <Dialog.Header
-          mt={0}
-          mb={0}
+        <WelcomeHeader
           onClose={() => handleClose()}
-          w="full"
-          maxW={{ base: 480, xs: 'unset' }}
           title="Welcome to Bako Safe!"
-          description={`Let's start by adding some funds to your personal vault.`}
-          descriptionFontSize="12px"
-          titleSxProps={{
-            fontSize: '16px',
-            fontWeight: 700,
-            lineHeight: '19.36px',
-          }}
-          borderBottomWidth={1}
-          borderColor="grey.425"
-          pb={6}
+          subtitle="Let's start by adding some funds to your personal vault."
+          isMobile={isMobile}
         />
 
-        <VStack w="full" my={6} pb={isMobile ? 8 : 0} spacing={4}>
+        <Stack
+          w="full"
+          my={isMobile ? 'unset' : 6}
+          gap={4}
+          flexDir={isMobile ? 'column' : 'row'}
+          px={isMobile ? 6 : 0}
+        >
           <WelcomeCard
-            title="Deposit"
-            description="Deposit using QR Code or vault adress."
-            icon={DownLeftArrow}
-            iconSize="22px"
-            onClick={() => handleOpenDepositDialog()}
-          />
-          <WelcomeCard
-            title="Bridge"
-            description="Transfer between different networks."
+            title="BRIDGE"
+            description="Crypto from Ethereum network to Fuel mainnet."
             icon={BridgeIcon}
-            commingSoon={isTestnet}
-            onClick={isTestnet ? undefined : () => handleRedirectToMainNet()}
+            iconSize="18px"
+            commingSoon
+            /* Hidden until release */
+            // onClick={isTestnet ? undefined : () => handleRedirectToMainNet()}
+            isMobile={isMobile}
           />
           <WelcomeCard
-            title="Purchase"
+            title="DEPOSIT"
+            description="Deposit using QR Code or vault address"
+            icon={DownLeftArrow2}
+            iconSize="22px"
+            onClick={handleOpenDepositDialog}
+            isMobile={isMobile}
+          />
+          <WelcomeCard
+            title="PURCHASE"
             description="Buy crypto using card or bank account."
             icon={CoinsIcon}
             commingSoon
             iconSize="22px"
+            isMobile={isMobile}
           />
-        </VStack>
-
-        <Dialog.Actions
-          position={isMobile ? 'absolute' : 'relative'}
-          bottom={0}
-          left={0}
-          right={0}
-          px={isMobile ? 10 : 'unset'}
-          bg={isMobile ? 'dark.950' : 'unset'}
-          borderRadius={isMobile && !isSmall ? '20px' : 'unset'}
-          pb={isMobile && !isSmall ? 5 : 'unset'}
-          sx={{
-            '&>hr': {
-              marginTop: '0',
-              borderColor: '#868079',
-            },
-          }}
-        >
-          <Button
-            fontSize={isLitteSmall ? '12px' : '14px'}
-            lineHeight="15.85px"
-            fontWeight="normal"
-            letterSpacing={isLowerThanFourHundredAndThirty ? 0 : '.5px'}
-            variant="outline"
-            color="grey.75"
-            borderColor="grey.75"
-            w="full"
-            _hover={{
-              bg: '#f5f5f513',
-            }}
-            onClick={() => handleClose()}
-          >
-            Skip this step and take a look into bako
-          </Button>
+        </Stack>
+        <Dialog.Actions justifyContent="flex-end" p={{ base: 6, sm: 0 }}>
+          <Flex w="full" justifyContent="flex-end">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleClose}
+              fontWeight="normal"
+              color="gray.300"
+              _hover={{
+                color: 'textPrimary',
+              }}
+            >
+              Skip
+            </Button>
+          </Flex>
         </Dialog.Actions>
       </Dialog.Body>
-    </Dialog.Modal>
+    </WelcomeRoot>
   );
 };
 

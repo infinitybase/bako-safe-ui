@@ -1,9 +1,13 @@
-import { useDisclosure } from '@chakra-ui/react';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { queryClient } from '@/config';
 import { IUserInfos } from '@/modules/auth/services';
+import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
+import {
+  getBalanceVisibility,
+  setBalanceVisibility,
+} from '@/modules/core/utils/balanceVisibility';
 import { useHomeDataRequest } from '@/modules/home/hooks/useHomeDataRequest';
 
 // import { useNotification } from '@/modules/notification';
@@ -25,7 +29,7 @@ type HandleWithSocketEventProps = {
   type: string;
 };
 
-const VAULTS_PER_PAGE = 8;
+const VAULTS_PER_PAGE = 6;
 
 export type UseWorkspaceReturn = ReturnType<typeof useWorkspace>;
 
@@ -40,7 +44,9 @@ const useWorkspace = (
   const { workspaceId, vaultId } = useParams();
   const { socket } = useSocket();
 
-  const [visibleBalance, setVisibleBalance] = useState(false);
+  const [visibleBalance, setVisibleBalanceState] = useState(
+    getBalanceVisibility(),
+  );
 
   // const toast = useNotification();
   const workspaceDialog = useDisclosure();
@@ -56,42 +62,50 @@ const useWorkspace = (
 
   const vaultsCounter = latestPredicates?.data?.predicates?.total ?? 0;
 
-  const handleWorkspaceSelection = async (
-    selectedWorkspace: string,
-    redirect?: string,
-    // needUpdateWorkspaceBalance?: boolean,
-  ) => {
-    // All this logic is to handle workspace authentication
-    // const isValid = selectedWorkspace !== userInfos?.workspace?.id;
-    // if (!isValid) {
-    //   console.log(!!redirect);
-    //   !!redirect && navigate(redirect);
-    //   if (redirect?.includes('vault')) {
-    //     // That' means he's accessing a vault, then it should show the gif.
-    //     invalidateGifAnimationRequest();
-    //   }
-    //   needUpdateWorkspaceBalance && workspaceBalance.refetch();
-    //   return;
-    // }
-    // workspaceDialog.onClose();
+  const handleSetVisibleBalance = useCallback((visible: boolean) => {
+    setVisibleBalanceState(visible);
+    setBalanceVisibility(visible);
+  }, []);
 
-    redirect && navigate(redirect);
+  const handleWorkspaceSelection = useCallback(
+    async (
+      selectedWorkspace: string,
+      redirect?: string,
+      // needUpdateWorkspaceBalance?: boolean,
+    ) => {
+      // All this logic is to handle workspace authentication
+      // const isValid = selectedWorkspace !== userInfos?.workspace?.id;
+      // if (!isValid) {
+      //   console.log(!!redirect);
+      //   !!redirect && navigate(redirect);
+      //   if (redirect?.includes('vault')) {
+      //     // That' means he's accessing a vault, then it should show the gif.
+      //     invalidateGifAnimationRequest();
+      //   }
+      //   needUpdateWorkspaceBalance && workspaceBalance.refetch();
+      //   return;
+      // }
+      // workspaceDialog.onClose();
 
-    // This logic below is to show the gif animation when the user enters in some vault
-    // if (redirect) {
-    //   if (redirect.includes('vault')) {
-    //     invalidateGifAnimationRequest();
-    //   }
-    //   navigate(redirect);
-    // }
-  };
+      redirect && navigate(redirect);
 
-  const goHome = () => {
+      // This logic below is to show the gif animation when the user enters in some vault
+      // if (redirect) {
+      //   if (redirect.includes('vault')) {
+      //     invalidateGifAnimationRequest();
+      //   }
+      //   navigate(redirect);
+      // }
+    },
+    [navigate],
+  );
+
+  const goHome = useCallback(() => {
     queryClient.invalidateQueries({
       queryKey: WorkspacesQueryKey.LIST_BY_USER(),
     });
     handleWorkspaceSelection(userInfos.singleWorkspaceId, Pages.home());
-  };
+  }, [userInfos.singleWorkspaceId, handleWorkspaceSelection]);
 
   const hasPermission = useCallback(
     (requiredRoles: PermissionRoles[]) => {
@@ -151,7 +165,7 @@ const useWorkspace = (
     handlers: {
       handleWorkspaceSelection,
       navigate,
-      setVisibleBalance,
+      setVisibleBalance: handleSetVisibleBalance,
       hasPermission,
       goHome,
     },

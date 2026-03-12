@@ -9,6 +9,7 @@ import {
 
 import { useQueryParams } from '../usePopup';
 import { useWebAuthnLastLogin } from '../webAuthn';
+import { useSocialSignIn } from './useSocialSignIn';
 import { useWalletSignIn } from './useWalletSignIn';
 import { useWebAuthnSignIn, WebAuthnModeState } from './useWebAuthnSignIn';
 
@@ -18,7 +19,7 @@ const useDappSignIn = () => {
   const isMounted = useRef(false);
 
   const navigate = useNavigate();
-  const { location, sessionId, byConnector, username } = useQueryParams();
+  const { location, byConnector, username } = useQueryParams();
 
   const redirect = useCallback(() => {
     const isRedirectToPrevious = !!location.state?.from;
@@ -43,6 +44,7 @@ const useDappSignIn = () => {
     ...rest
   } = useWebAuthnSignIn(redirect);
   const { lastLoginUsername } = useWebAuthnLastLogin();
+  const socialSignIn = useSocialSignIn(redirect);
 
   const handleLoginOnSafariBrowser = useCallback(() => {
     const username = formData.form.getValues('username');
@@ -75,17 +77,6 @@ const useDappSignIn = () => {
     },
   };
 
-  const getSessionId = useCallback(() => {
-    let _sessionId = sessionId;
-
-    if (!_sessionId) {
-      _sessionId = crypto.randomUUID();
-      window.localStorage.setItem('sessionId', _sessionId);
-    }
-
-    return _sessionId;
-  }, [sessionId]);
-
   useEffect(() => {
     if (isMounted.current) {
       if (username && !isSigningIn) {
@@ -107,9 +98,11 @@ const useDappSignIn = () => {
   return {
     ...walletSignIn,
     ...rest,
+    ...socialSignIn,
     formData,
     formState: customFormState[mode],
     mode,
+    setMode,
     isRegistering,
   };
 };

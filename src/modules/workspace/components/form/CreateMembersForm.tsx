@@ -1,4 +1,4 @@
-import { Box, FormControl, FormHelperText } from '@chakra-ui/react';
+import { Box, Field } from 'bako-ui';
 import { Address, isB256 } from 'fuels';
 import { Controller } from 'react-hook-form';
 
@@ -10,8 +10,7 @@ import {
 } from '@/modules/addressBook/hooks';
 import { AddressUtils } from '@/modules/core/utils/address';
 
-import { UseChangeMember } from '../../hooks';
-import { useWorkspaceContext } from '../../WorkspaceProvider';
+import { UseChangeMember, useWorkspaceContext } from '../../hooks';
 
 interface MemberAddressForm {
   form: UseChangeMember['form']['memberForm'];
@@ -67,7 +66,7 @@ export const MemberAddressForm = ({ form, addressBook }: MemberAddressForm) => {
 
           return (
             <>
-              <FormControl isInvalid={fieldState.invalid}>
+              <Field.Root invalid={fieldState.invalid}>
                 <Autocomplete
                   label="Name or address"
                   value={field.value}
@@ -78,13 +77,12 @@ export const MemberAddressForm = ({ form, addressBook }: MemberAddressForm) => {
                   isLoading={!optionsRequests[0].isSuccess}
                   inView={addressBook.inView}
                   clearable={false}
-                  variant={'dark'}
                 />
 
-                <FormHelperText color="error.500">
+                <Field.HelperText color="error.500">
                   {fieldState.error?.message}
-                </FormHelperText>
-              </FormControl>
+                </Field.HelperText>
+              </Field.Root>
 
               <AddToAddressBook
                 visible={showAddToAddressBook}

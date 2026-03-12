@@ -1,11 +1,11 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
+import { AutocompleteBadgeStatus } from '@/components';
 import { useTab } from '@/modules/core/hooks';
 import { EnumUtils } from '@/modules/core/utils';
 import { useTermsStore } from '@/modules/termsOfUse/store/useTermsStore';
 import { ActionKeys, handleActionUsingKeys } from '@/utils';
 
-import { TypeUser } from '../../services/methods';
 import {
   useWebAuthnForm,
   useWebAuthnInput,
@@ -16,6 +16,7 @@ import {
 export enum WebAuthnTabState {
   LOGIN = 0,
   ACCOUNT_CREATED = 1,
+  WELCOME = 2,
 }
 
 export enum WebAuthnModeState {
@@ -30,7 +31,7 @@ export type UseWebAuthnSignIn = ReturnType<typeof useWebAuthnSignIn>;
 const useWebAuthnSignIn = (
   signInCallback: (vaultId?: string, workspaceId?: string) => void,
 ) => {
-  const [mode, setMode] = useState(WebAuthnModeState.SEARCH);
+  const [mode, setMode] = useState(WebAuthnModeState.LOGIN);
   const [createdAcccountUsername, setCreatedAcccountUsername] = useState('');
 
   const tabs = useTab({
@@ -39,24 +40,40 @@ const useWebAuthnSignIn = (
   });
 
   const { form } = useWebAuthnForm();
+  const {
+    checkNicknameRequest,
+    accountsRequest,
+    badge,
+    isBadgeStatusValid,
+    ...rest
+  } = useWebAuthnInput(!form.formState.errors.username, undefined, mode);
 
-  const { checkNicknameRequest, accountsRequest, badge, ...rest } =
-    useWebAuthnInput(!form.formState.errors.username);
-  const { handleLogin, isSigningIn, signInProgress } = useWebAuthnSignInMode({
+  const handleSignInCallback = useCallback(
+    (username: string, vaultId?: string, workspaceId?: string) => {
+      setCreatedAcccountUsername(username);
+      tabs.set(WebAuthnTabState.WELCOME);
+      setTimeout(() => signInCallback(vaultId, workspaceId), 1500);
+    },
+    [signInCallback, tabs],
+  );
+
+  const { handleLogin, isSigningIn } = useWebAuthnSignInMode({
     form,
     setMode,
-    callback: signInCallback,
+    callback: handleSignInCallback,
   });
-  const { isRegistering, registerProgress, handleRegister } =
-    useWebAuthnRegisterMode({
-      form,
-      setMode,
-      setTab: tabs.set,
-      setCreatedAcccountUsername,
-    });
+  const { isRegistering, handleRegister } = useWebAuthnRegisterMode({
+    form,
+    setMode,
+    setTab: tabs.set,
+    setCreatedAcccountUsername,
+  });
   const { setModalIsOpen } = useTermsStore();
 
-  const isRegisterMode = mode === WebAuthnModeState.REGISTER;
+  const isRegisterMode = useMemo(
+    () => mode === WebAuthnModeState.REGISTER,
+    [mode],
+  );
 
   const isSearchModeBtnDisabled =
     !form.formState.isValid ||
@@ -67,25 +84,14 @@ const useWebAuthnSignIn = (
     isSigningIn ||
     !form.formState.isValid ||
     !!form.formState.errors.username ||
-    checkNicknameRequest.isLoading ||
+    !isBadgeStatusValid ||
     !window.navigator.credentials;
   const isRegisterModeBtnDisabled =
     isRegistering ||
     !form.formState.isValid ||
     !!form.formState.errors.username ||
-    checkNicknameRequest.isLoading ||
+    !isBadgeStatusValid ||
     !window.navigator.credentials;
-
-  const handleCheckUsername = useCallback(() => {
-    if (checkNicknameRequest.data?.type === TypeUser.WEB_AUTHN) {
-      setMode(WebAuthnModeState.LOGIN);
-    } else if (checkNicknameRequest.data?.type) {
-      setMode(WebAuthnModeState.SEARCH);
-      form.setError('username', { message: 'Username is already being used' });
-    } else {
-      setMode(WebAuthnModeState.REGISTER);
-    }
-  }, [checkNicknameRequest.data?.type]);
 
   const formState = {
     [WebAuthnModeState.SEARCH]: {
@@ -96,10 +102,10 @@ const useWebAuthnSignIn = (
       isDisabled: isSearchModeBtnDisabled,
       disableInput: false,
       actionProgress: 0,
-      showAccountsOptions: !accountsRequest.isLoading,
+      isLoadingOptions: accountsRequest.isLoading,
     },
     [WebAuthnModeState.LOGIN]: {
-      label: 'Login account',
+      label: 'Continue',
       handleAction: handleLogin,
       handleActionUsingEnterKey: (pressedKey: string) =>
         handleActionUsingKeys({
@@ -111,11 +117,10 @@ const useWebAuthnSignIn = (
       isLoading: isSigningIn,
       isDisabled: isLoginModeBtnDisabled,
       disableInput: isSigningIn,
-      actionProgress: signInProgress,
-      showAccountsOptions: !accountsRequest.isLoading,
+      isLoadingOptions: accountsRequest.isLoading,
     },
     [WebAuthnModeState.REGISTER]: {
-      label: 'Create account',
+      label: 'Create',
       handleAction: () => setModalIsOpen(true),
       handleActionUsingEnterKey: (pressedKey: string) =>
         handleActionUsingKeys({
@@ -127,26 +132,28 @@ const useWebAuthnSignIn = (
       isLoading: isRegistering,
       isDisabled: isRegisterModeBtnDisabled,
       disableInput: isRegistering,
-      actionProgress: registerProgress,
-      showAccountsOptions: false,
+      isLoadingOptions: false,
     },
     [WebAuthnModeState.ACCOUNT_CREATED]: {
       label: 'Begin',
       handleAction: handleLogin,
       handleActionUsingEnterKey: undefined,
       isLoading: isSigningIn,
-      isDisabled: isLoginModeBtnDisabled,
+      isDisabled: isSigningIn,
       disableInput: false,
-      actionProgress: signInProgress,
-      showAccountsOptions: false,
+      isLoadingOptions: false,
     },
   };
 
   useEffect(() => {
-    if (checkNicknameRequest.data) {
-      handleCheckUsername();
+    if (badge?.status === AutocompleteBadgeStatus.ERROR) {
+      form.setError('username', {
+        message: badge.label,
+      });
+    } else {
+      form.trigger('username');
     }
-  }, [handleCheckUsername, checkNicknameRequest.data]);
+  }, [badge?.status, badge?.label, mode]);
 
   return {
     formData: {

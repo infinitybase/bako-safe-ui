@@ -1,4 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
+import { DialogOpenChangeDetails } from 'bako-ui';
 import { IAssetGroupById } from 'bakosafe';
 import { BN, bn } from 'fuels';
 import debounce from 'lodash.debounce';
@@ -6,6 +7,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useWatch } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
+import { queryClient } from '@/config';
 import { useContactToast } from '@/modules/addressBook';
 import {
   Asset,
@@ -15,39 +17,29 @@ import {
   useBakoSafeVault,
   useGetTokenInfosArray,
 } from '@/modules/core';
+import { USER_ALLOCATION_QUERY_KEY } from '@/modules/home/hooks';
 import { TransactionService } from '@/modules/transactions/services';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { vaultAllocationQueryKey } from '@/modules/vault/hooks';
+import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { useTransactionsContext } from '../../providers/TransactionsProvider';
 import { generateTransactionName } from '../../utils';
+import { PENDING_TRANSACTIONS_QUERY_KEY } from '../list/useTotalSignaturesPendingRequest';
 import { useCreateTransactionForm } from './useCreateTransactionForm';
+import { useTransactionAccordion } from './useTransactionAccordion';
 
 const recipientMock =
   'fuel1tn37x48zw6e3tylz2p0r6h6ua4l6swanmt8jzzpqt4jxmmkgw3lszpcedp';
 
 interface UseCreateTransactionParams {
-  onClose: () => void;
-  isOpen: boolean;
+  onClose?: (e: DialogOpenChangeDetails) => void;
+  open?: boolean;
   assets: Asset[] | undefined;
   nfts?: NFT[];
   hasAssetBalance: (assetId: string, value: string) => boolean;
   getCoinAmount: (assetId: string, needsFormat?: boolean | undefined) => BN;
   createTransactionAndSign: boolean;
 }
-
-const useTransactionAccordion = () => {
-  const [accordionIndex, setAccordionIndex] = useState(0);
-
-  const close = useCallback(() => setAccordionIndex(-1), []);
-
-  const open = useCallback((index: number) => setAccordionIndex(index), []);
-
-  return {
-    open,
-    close,
-    index: accordionIndex,
-  };
-};
 
 const useCreateTransaction = (props?: UseCreateTransactionParams) => {
   const {
@@ -61,6 +53,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
       request: { refetch: refetchVaultTransactionsList },
     },
     signTransaction: { confirmTransaction },
+    isPendingSigner,
   } = useTransactionsContext();
 
   const {
@@ -101,13 +94,22 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     },
   });
 
-  const transactionFee = resolveTransactionCosts.data?.fee.format();
+  const transactionFee = useMemo(
+    () => resolveTransactionCosts.data?.fee.format(),
+    [resolveTransactionCosts.data],
+  );
+
+  const assets = useMemo(
+    () =>
+      props?.assets?.map((asset) => ({
+        amount: asset.amount!,
+        assetId: asset.assetId,
+      })),
+    [props?.assets],
+  );
 
   const { transactionsFields, form } = useCreateTransactionForm({
-    assets: props?.assets?.map((asset) => ({
-      amount: asset.amount!,
-      assetId: asset.assetId,
-    })),
+    assets,
     nfts: props?.nfts,
     assetsMap,
     getCoinAmount: (asset) => props?.getCoinAmount(asset) ?? bn(''),
@@ -121,6 +123,27 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     id,
   });
 
+  const transactions = useWatch({
+    control: form.control,
+    name: 'transactions',
+  });
+
+  const totalUsdEstimate = useMemo(() => {
+    const total = (transactions || []).reduce((sum, tx) => {
+      return sum + (tx?.usdEstimate ?? 0);
+    }, 0);
+
+    return {
+      value: total,
+      formatted: total.toLocaleString('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }),
+    };
+  }, [transactions]);
+
   const transactionRequest = useBakoSafeCreateTransaction({
     vault: vault!,
     assetsMap,
@@ -133,6 +156,16 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
       refetchTransactionsList();
       refetchHomeTransactionsList();
       refetchVaultTransactionsList();
+      queryClient.invalidateQueries({
+        queryKey: [PENDING_TRANSACTIONS_QUERY_KEY],
+      });
+      queryClient.invalidateQueries({
+        queryKey: vaultAllocationQueryKey.VAULT_ALLOCATION_QUERY_KEY(id),
+      });
+      queryClient.invalidateQueries({
+        queryKey: [USER_ALLOCATION_QUERY_KEY],
+      });
+
       if (props?.createTransactionAndSign) {
         confirmTransaction(transaction.id, undefined, transaction);
       }
@@ -226,6 +259,8 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     (assetId?: string) => {
       const assetToCheck = assetId ?? currentFieldAsset;
 
+      if (!assetToCheck) return '0.000';
+
       const currentAssetBalance = bn.parseUnits(
         formattedCurrentAssetBalance?.find(
           (asset) => asset.assetId === assetToCheck,
@@ -274,7 +309,9 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
   );
 
   const handleClose = () => {
-    props?.onClose();
+    form.reset();
+    accordion.reset();
+    props?.onClose?.({ open: false });
   };
 
   const transactionsForm = useWatch({
@@ -439,6 +476,8 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     transactionFee: validTransactionFee,
     getBalanceAvailable,
     isLoadingVault,
+    isPendingSigner,
+    totalUsdEstimate,
   };
 };
 

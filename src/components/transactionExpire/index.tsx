@@ -1,4 +1,4 @@
-import { Box, Text } from '@chakra-ui/react';
+import { Box, Text } from 'bako-ui';
 import { addHours, differenceInHours } from 'date-fns';
 import React, { useEffect, useState } from 'react';
 
@@ -88,7 +88,7 @@ const TransactionExpire = ({
         top={0}
         left={0}
         w={`${progress ?? defaultProgress}%`}
-        bg={progressColor || 'brand.800'}
+        bg={progressColor || 'primary.main'}
         transition="width .5s ease"
         h="inherit"
       />

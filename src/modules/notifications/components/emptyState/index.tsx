@@ -1,11 +1,10 @@
-import { Box, Card, Heading, Text } from '@chakra-ui/react';
-
-import { EmptyBoxOutline } from '@/components';
+import { Box, Card, Heading, Text } from 'bako-ui';
+import { EmptyIcon } from '@/components';
 
 const NotificationsEmptyState = () => {
   return (
-    <Box h={'100%'} borderRadius={10} borderWidth={1} borderColor="grey.800">
-      <Card
+    <Box h={'100%'} borderRadius={10} borderWidth={1} borderColor="gray.400">
+      <Card.Root
         w="full"
         h={'100%'}
         p={[10, 14]}
@@ -16,12 +15,12 @@ const NotificationsEmptyState = () => {
         alignItems="center"
       >
         <Box mb={4}>
-          <EmptyBoxOutline w={100} h={100} />
+          <EmptyIcon width="60px" height="60px" />
         </Box>
 
         <Box mb={4}>
           <Heading
-            color="grey.75"
+            color="textPrimary"
             fontSize="lg"
             textAlign="center"
             fontWeight={600}
@@ -32,7 +31,7 @@ const NotificationsEmptyState = () => {
 
         <Box>
           <Text
-            color="grey.250"
+            color="textSecondary"
             fontSize="xs"
             textAlign="center"
             fontWeight={200}
@@ -41,7 +40,7 @@ const NotificationsEmptyState = () => {
             {`You don't have any notifications yet. We will notify you as soon as a notification arrives.`}
           </Text>
         </Box>
-      </Card>
+      </Card.Root>
     </Box>
   );
 };

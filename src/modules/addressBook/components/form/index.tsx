@@ -1,62 +1,74 @@
-import {
-  FormControl,
-  FormHelperText,
-  FormLabel,
-  Input,
-  VStack,
-} from '@chakra-ui/react';
-import { Controller } from 'react-hook-form';
+import { Field, RhfInput, VStack } from 'bako-ui';
+import { memo, useCallback } from 'react';
+import { Controller, useFormContext } from 'react-hook-form';
 
+import { CloseCircle } from '@/components';
 import { AddressInput } from '@/components/input';
-import { UseAddressBookReturn } from '@/modules/addressBook/hooks';
+import { ICreateContactFormData } from '@/modules';
 
 export interface CreateContactFormProps {
-  form: UseAddressBookReturn['form'];
   address?: string;
 }
 
-const CreateContactForm = ({ form }: CreateContactFormProps) => {
+const CreateContactForm = memo(({ address }: CreateContactFormProps) => {
+  const form = useFormContext<ICreateContactFormData>();
+  const {
+    control,
+    formState: { errors },
+    setValue,
+  } = form;
+
+  const handleClearName = useCallback(() => {
+    setValue('nickname', '');
+  }, [setValue]);
+
+  const name = form.watch('nickname');
+
   return (
-    <VStack spacing={6}>
-      <Controller
-        control={form.control}
+    <VStack gap={4}>
+      <RhfInput
         name="nickname"
-        render={({ field, fieldState }) => (
-          <FormControl isInvalid={fieldState.invalid}>
-            <Input
-              value={field.value}
-              onChange={field.onChange}
-              placeholder=" "
-              variant="dark"
-              maxLength={27}
-            />
-            <FormLabel>Name or Label</FormLabel>
-            <FormHelperText color="error.500">
-              {fieldState.error?.message}
-            </FormHelperText>
-          </FormControl>
-        )}
+        control={control}
+        defaultValue=""
+        slotProps={{
+          input: {
+            placeholder: 'Name',
+            padding: 3,
+            variant: 'subtle',
+            maxLength: 27,
+          },
+          inputGroup: {
+            endElement: name && (
+              <CloseCircle
+                boxSize={4}
+                color="gray.200"
+                cursor="pointer"
+                onClick={handleClearName}
+              />
+            ),
+          },
+        }}
+        error={errors.nickname}
       />
 
       <Controller
-        control={form.control}
+        control={control}
         name="address"
+        defaultValue={address || ''}
         render={({ field, fieldState }) => (
-          <FormControl isInvalid={fieldState.invalid}>
+          <Field.Root invalid={fieldState.invalid}>
             <AddressInput
-              variant="dark"
               value={field.value}
               onChange={field.onChange}
-              adbForm={form}
+              error={fieldState.error?.message}
             />
-            <FormHelperText color="error.500">
-              {fieldState.error?.message}
-            </FormHelperText>
-          </FormControl>
+          </Field.Root>
         )}
       />
     </VStack>
   );
-};
+});
+
+CreateContactForm.displayName = 'CreateContactForm';
 
 export { CreateContactForm };

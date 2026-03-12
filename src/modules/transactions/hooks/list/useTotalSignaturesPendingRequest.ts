@@ -20,9 +20,10 @@ const useTransactionsSignaturePending = (predicateId?: string[]) => {
       return TransactionService.getTransactionsSignaturePending(predicateId);
     },
     enabled: window.location.pathname != '/',
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: false,
     refetchOnMount: false,
-    staleTime: 500, // 500ms second to prevent request spam
+    // Pending signatures are updated via socket events, no need for aggressive refetch
+    staleTime: 1000 * 60 * 2, // 2 minutes - socket handles real-time updates
   });
   return {
     ...query,

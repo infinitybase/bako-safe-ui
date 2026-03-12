@@ -1,4 +1,4 @@
-import { chakra, HStack, Icon } from '@chakra-ui/react';
+import { HStack, Icon } from 'bako-ui';
 import { AddressType, OperationTransactionAddress } from 'fuels';
 
 import { ForwardIcon, PlayIcon } from '@/components/icons';
@@ -14,19 +14,11 @@ interface FromToProps {
   hasAssets?: boolean;
 }
 
-const FromToContainer = chakra(HStack, {
-  baseStyle: {
-    gap: 0,
-    w: 'full',
-    position: 'relative',
-  },
-});
-
 const DappTransactionFromTo = ({ to, from, vault, hasAssets }: FromToProps) => {
   const isContract = to.type === AddressType.contract;
 
   return (
-    <FromToContainer gap={2}>
+    <HStack gap={2} css={{ gap: 0, w: 'full', position: 'relative' }}>
       <DappTransactionRecipient
         isSender
         type={from.type}
@@ -53,7 +45,7 @@ const DappTransactionFromTo = ({ to, from, vault, hasAssets }: FromToProps) => {
         address={to.address}
         fullBorderRadius={!hasAssets}
       />
-    </FromToContainer>
+    </HStack>
   );
 };
 

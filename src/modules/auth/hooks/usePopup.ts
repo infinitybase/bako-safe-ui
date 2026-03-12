@@ -18,6 +18,7 @@ const useQueryParams = () => {
     const byConnector = searchParams.get('byConnector') === 'true';
     const byLanding = searchParams.get('_gl');
     const username = searchParams.get('username');
+    const connectorType = searchParams.get('connector_type');
 
     return {
       expiredSession,
@@ -32,6 +33,7 @@ const useQueryParams = () => {
       byConnector,
       byLanding,
       username,
+      connectorType,
     };
   }, [location]);
 

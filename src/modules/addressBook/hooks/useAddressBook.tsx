@@ -1,4 +1,3 @@
-import { useDisclosure } from '@chakra-ui/react';
 import { BakoProvider } from 'bakosafe';
 import { Assets } from 'fuels';
 import { useMemo, useState } from 'react';
@@ -7,6 +6,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import { IUseAuthReturn } from '@/modules/auth/services';
 import { PermissionRoles } from '@/modules/core';
+import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
 
 import { useAddressBookFormHandlers } from './useAddressBookFormHandlers';
 import { useAddressBookMutations } from './useAddressBookMutations';
@@ -20,14 +20,16 @@ const useAddressBook = (
   providerInstance: Promise<BakoProvider>,
   fuelsTokens?: Assets,
 ) => {
-  const [contactToEdit, setContactToEdit] = useState({ id: '' });
+  const [contactToEdit, setContactToEdit] = useState({ id: '', address: '' });
   const [search, setSearch] = useState('');
   const [contactToDelete, setContactToDelete] = useState({
     id: '',
     nickname: '',
+    address: '',
   });
 
   const contactDialog = useDisclosure();
+  const editContactDialog = useDisclosure();
   const deleteContactDialog = useDisclosure();
   const { workspaceId } = useParams();
   const inView = useInView({ delay: 300 });
@@ -41,6 +43,7 @@ const useAddressBook = (
   const { contactByAddress, debouncedSearchHandler, handleOpenDialog, form } =
     useAddressBookFormHandlers({
       contactDialog,
+      editContactDialog,
       listContactsRequest,
       setContactToEdit,
       setSearch,
@@ -59,6 +62,7 @@ const useAddressBook = (
     contactDialog,
     contactToEdit,
     deleteContactDialog,
+    editContactDialog,
     form,
     listContactsRequest,
   });
@@ -89,6 +93,7 @@ const useAddressBook = (
           form.setValue('nickname', '');
         },
       },
+      editContactDialog,
       deleteContactDialog,
     },
     requests: {
