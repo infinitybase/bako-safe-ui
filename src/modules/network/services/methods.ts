@@ -46,6 +46,9 @@ export type CheckNetworkResponse = string | undefined;
 
 const appVersion = import.meta.env.VITE_APP_VERSION;
 
+export const TESTNET_URL = 'https://testnet.fuel.network/v1/graphql';
+export const TESTNET_CHAIN_ID = 0;
+
 export const availableNetWorks = {
   [NetworkType.MAINNET]: {
     name: 'Ignition',
@@ -55,15 +58,15 @@ export const availableNetWorks = {
   },
   [NetworkType.TESTNET]: {
     name: 'Fuel Sepolia Testnet',
-    url: 'https://testnet.fuel.network/v1/graphql',
-    chainId: 0,
+    url: TESTNET_URL,
+    chainId: TESTNET_CHAIN_ID,
     explorer: 'https://app-testnet.fuel.network/',
   },
   ...(window.location.hostname.includes('localhost') && {
     [NetworkType.DEV]: {
       name: 'Local',
       url: 'http://localhost:4000/v1/graphql',
-      chainId: 0,
+      chainId: TESTNET_CHAIN_ID,
       explorer: 'http://localhost:4000/explorer',
     },
   }),
