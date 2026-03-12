@@ -19,7 +19,6 @@ import {
 import { ConnectorsList } from './connector';
 import { SigninContainer, SigninContainerMobile } from './container';
 import { SignInFooter } from './footer';
-import { SocialSignIn } from './social';
 import {
   WebAuthnAccountCreated,
   WebAuthnSignIn,
@@ -56,11 +55,11 @@ const SignInWrapper = (props: SignInWrapperProps) => {
     createdAcccountUsername,
     mode,
     currentOpenConnector,
-    unableToConnectWithSocial,
+    //unableToConnectWithSocial,
     handleInputChange,
     handleSelectWallet,
     handleRegister,
-    handleSocialConnect,
+    //handleSocialConnect,
     setMode,
   } = props;
 
@@ -154,11 +153,11 @@ const SignInWrapper = (props: SignInWrapperProps) => {
                   />
 
                   {/* Show with hidden for prevent flick in the box */}
-                  <SocialSignIn
+                  {/* <SocialSignIn
                     hidden
                     onConnect={handleSocialConnect}
                     unableToConnect={unableToConnectWithSocial}
-                  />
+                  /> */}
 
                   {/* Show with hidden for prevent flick in the box */}
                   <ConnectorsList
@@ -170,7 +169,11 @@ const SignInWrapper = (props: SignInWrapperProps) => {
                 </Box>
               )}
               {!isLoading && (
-                <VStack w="full" gap={8} maxW={{ md: 440, base: 'unset' }}>
+                <VStack
+                  w="full"
+                  gap={{ base: 6, sm: 8 }}
+                  maxW={{ md: 440, base: 'unset' }}
+                >
                   <WebAuthnSignIn
                     formData={formData}
                     formState={formState}
@@ -181,10 +184,10 @@ const SignInWrapper = (props: SignInWrapperProps) => {
                     onModeChange={setMode}
                   />
 
-                  <SocialSignIn
+                  {/* <SocialSignIn
                     onConnect={handleSocialConnect}
                     unableToConnect={unableToConnectWithSocial}
-                  />
+                  /> */}
 
                   <ConnectorsList
                     connectors={connectors}
