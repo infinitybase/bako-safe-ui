@@ -2,12 +2,14 @@ import { Box, Flex, Icon, IconButton } from 'bako-ui';
 import { motion, useScroll } from 'framer-motion';
 import { useEffect, useState } from 'react';
 
-import { TestNetBanner } from '@/components';
 import { MenuIcon } from '@/components/icons/menu';
+import { TestNetBanner } from '@/components/testNetBanner';
 import { Drawer } from '@/layouts/dashboard/drawer';
 import { UserBox } from '@/layouts/dashboard/header';
+import { NetworkSelect } from '@/layouts/dashboard/networkSelect';
 import { useScreenSize } from '@/modules';
 import { useDisclosure } from '@/modules/core/hooks/useDisclosure';
+import { NetworkDialog } from '@/modules/network/components/dialog';
 
 const MotionBox = motion(Box);
 
@@ -15,7 +17,10 @@ export const VaultLayoutHeader = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const { scrollY } = useScroll();
   const menuDrawer = useDisclosure();
+  const networkDialogState = useDisclosure();
   const { vaultRequiredSizeToColumnLayout } = useScreenSize();
+
+  const handleOpenNetworkDialog = () => networkDialogState.onOpen();
 
   useEffect(() => {
     const unsubscribe = scrollY.on('change', (latest) => {
@@ -48,6 +53,10 @@ export const VaultLayoutHeader = () => {
           transition: 'all 0.3s ease',
         }}
       >
+        <NetworkDialog
+          open={networkDialogState.isOpen}
+          onOpenChange={networkDialogState.onOpenChange}
+        />
         <Flex
           position="relative"
           zIndex={1}
@@ -77,7 +86,10 @@ export const VaultLayoutHeader = () => {
               onOpenChange={menuDrawer.onOpenChange}
             />
           </Box>
-          <UserBox />
+          <Flex alignItems="center" justifyContent="center" gap={3}>
+            <NetworkSelect onCreateNetwork={handleOpenNetworkDialog} />
+            <UserBox />
+          </Flex>
         </Flex>
       </MotionBox>
     </>

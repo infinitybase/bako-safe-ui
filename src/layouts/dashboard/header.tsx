@@ -57,7 +57,8 @@ import { useWorkspaceContext } from '@/modules/workspace/hooks';
 import { limitCharacters } from '@/utils';
 import { formatAddressByUserType } from '@/utils/format-address-by-user-type';
 
-import NetworkSelect from './network';
+import NetworkPopover from './networkPopover';
+import { NetworkSelect } from './networkSelect';
 
 const UserBox = () => {
   const [openMenu, setOpenMenu] = useState(false);
@@ -382,14 +383,19 @@ const UserBox = () => {
                   justifyContent="center"
                   px={4}
                   h="70px"
+                  display={{ base: 'flex', sm: 'none' }}
                 >
-                  <NetworkSelect
+                  <NetworkPopover
                     onCreateNetwork={handleAddNewNetworkClick}
                     onSelectNetwork={handleCloseMenu}
                   />
                 </VStack>
 
-                <Separator borderColor="gray.550" w="full" />
+                <Separator
+                  borderColor="gray.550"
+                  w="full"
+                  display={{ base: 'block', sm: 'none' }}
+                />
 
                 <VStack
                   cursor="pointer"
@@ -488,6 +494,7 @@ const UserBox = () => {
 const Header = () => {
   const notificationDrawerState = useDisclosure();
   const createWorkspaceDialog = useDisclosure();
+  const networkDialogState = useDisclosure();
   const { data: userWorkspaces } = useUserWorkspacesRequest();
   const {
     workspaceInfos: {
@@ -499,6 +506,7 @@ const Header = () => {
   const { unreadCounter, setUnreadCounter } = useAppNotifications();
 
   const handleGoToCreateWorkspace = () => createWorkspaceDialog.onOpen();
+  const handleOpenNetworkDialog = () => networkDialogState.onOpen();
 
   // Bug fix to unread counter that keeps previous state after redirect
   useEffect(() => {
@@ -546,15 +554,10 @@ const Header = () => {
         >
           <Image width={{ base: 90, sm: 140 }} src={logo} alt="" p={0} />
         </Box>
-        <Box
-          css={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
+        <Flex alignItems="center" justifyContent="center" gap={3}>
+          <NetworkSelect onCreateNetwork={handleOpenNetworkDialog} />
           <UserBox />
-        </Box>
+        </Flex>
       </Flex>
     </>
   );
