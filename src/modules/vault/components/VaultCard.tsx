@@ -30,6 +30,7 @@ import { AddressUtils } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { VaultService } from '../services';
+import { valueWithoutCommas } from '../utils';
 
 interface VaultCardProps extends CardRootProps {
   name: string;
@@ -102,10 +103,12 @@ export const VaultCard = memo(function VaultCard({
     () =>
       Intl.NumberFormat('en-US', {
         style: 'decimal',
-        currency: 'USD',
         maximumFractionDigits: 2,
         minimumFractionDigits: 2,
-      }).format(Number(data?.currentBalanceUSD || 0)),
+      }).format(
+        Number(valueWithoutCommas(data?.currentBalanceUSD ?? '0', 'en-US')),
+      ),
+
     [data?.currentBalanceUSD],
   );
 
