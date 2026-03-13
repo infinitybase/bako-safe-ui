@@ -17,6 +17,8 @@ type UseTransactionListPaginationParams = Omit<
   'perPage' | 'page'
 > & {
   workspaceId: string;
+  dateFrom?: string;
+  dateTo?: string;
 };
 
 const useTransactionListPaginationRequest = (
@@ -29,6 +31,8 @@ const useTransactionListPaginationRequest = (
       params.predicateId?.[0],
       params.id,
       params.type,
+      params.dateFrom,
+      params.dateTo,
     ),
     queryFn: ({ pageParam }) =>
       TransactionService.getTransactionsPagination({
@@ -37,6 +41,8 @@ const useTransactionListPaginationRequest = (
         page: pageParam || DEFAULT_INITIAL_PAGE_PARAM,
         orderBy: TransactionOrderBy.CREATED_AT,
         sort: SortOptionTx.DESC,
+        dateFrom: params.dateFrom,
+        dateTo: params.dateTo,
       }),
     enabled: window.location.pathname != '/',
     initialPageParam: DEFAULT_INITIAL_PAGE_PARAM,
