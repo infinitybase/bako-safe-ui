@@ -80,46 +80,9 @@ export const useTransactionSocketListener = (key?: QueryKey) => {
     });
   }, [queryClient]);
 
-  // When the worker sends minimal tx data (no full transaction object),
-  // the updateTransactions handler skips the cache replacement.
-  // This handler invalidates the relevant queries so React Query refetches
-  // the fully formatted transaction from the API.
-  const handleWorkerUpdate = useCallback(
-    (event: ITransactionReactQueryUpdate) => {
-      if (!event?.transaction) return;
-
-      // Detect minimal payload from worker (missing `name` field)
-      if (!event.transaction.name) {
-        const workspaceId = userInfos.workspace?.id ?? '';
-        const { predicateId, id } = event.transaction;
-
-        queryClient.invalidateQueries({
-          queryKey: HomeQueryKey.HOME_WORKSPACE(workspaceId),
-        });
-        queryClient.invalidateQueries({
-          queryKey:
-            vaultInfinityQueryKey.VAULT_TRANSACTION_LIST_PAGINATION_QUERY_KEY(
-              predicateId,
-            ),
-        });
-        queryClient.invalidateQueries({
-          queryKey:
-            WorkspacesQueryKey.TRANSACTION_LIST_PAGINATION_QUERY_KEY(
-              workspaceId,
-            ),
-        });
-        queryClient.invalidateQueries({
-          queryKey: getTransactionHistoryQueryKey(id, predicateId),
-        });
-      }
-    },
-    [queryClient, userInfos],
-  );
-
   useSocketEvent<ITransactionReactQueryUpdate>(SocketEvents.TRANSACTION, [
     updateTransactions,
     updateHistory,
     handleSignaturePending,
-    handleWorkerUpdate,
   ]);
 };
