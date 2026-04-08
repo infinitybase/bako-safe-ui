@@ -335,6 +335,10 @@ export class TransactionService {
 
     const { type, transaction } = event;
 
+    // Worker sends minimal tx data (id, status, hash, predicateId).
+    // Skip cache replacement — invalidateQueries handles the refetch.
+    if (!transaction?.name) return oldData;
+
     if (type !== '[CREATED]') {
       return {
         ...oldData,
@@ -357,6 +361,10 @@ export class TransactionService {
     if (!oldData) return oldData;
 
     const { type, transaction } = event;
+
+    // Worker sends minimal tx data — skip cache replacement
+    if (!transaction?.name) return oldData;
+
     const { pageParams, pages } = oldData;
 
     if (type !== '[CREATED]') {
