@@ -16,6 +16,8 @@ import { TransactionService } from '@/modules/transactions/services';
 import { ITransactionReactQueryUpdate } from '@/modules/transactions/services/types';
 import { vaultInfinityQueryKey } from '@/modules/vault/hooks/list/useVaultTransactionsRequest';
 
+import { toaster } from '@/components/ui/toaster';
+
 import { useTransactionToast } from '../../providers/toast';
 import { useTransactionState } from '../../states';
 import { TRANSACTION_HISTORY_QUERY_KEY } from '../details';
@@ -47,8 +49,29 @@ const useSendTransaction = ({ onTransactionSuccess }: IUseSendTransaction) => {
         pollRef.current = null;
       }
 
-      if (tx.status === TransactionStatus.SUCCESS) {
-        toast.success(tx);
+      if (
+        tx.status === TransactionStatus.SUCCESS ||
+        tx.status === TransactionStatus.FAILED
+      ) {
+        // Dismiss loading toast and create a new result toast.
+        // toaster.update doesn't work reliably with loading toasts,
+        // so we dismiss + create instead.
+        toaster.dismiss(tx.id);
+        if (tx.status === TransactionStatus.SUCCESS) {
+          toaster.create({
+            type: 'success',
+            title: 'Transaction success',
+            duration: 5000,
+          });
+        } else {
+          toaster.create({
+            type: 'error',
+            title: 'Error on send your transaction',
+            description: 'Transaction failed',
+            duration: 5000,
+          });
+        }
+
         setIsCurrentTxPending({ isPending: false, transactionId: '' });
         queryClient.invalidateQueries({
           queryKey: [TRANSACTION_HISTORY_QUERY_KEY, tx.id, tx.predicateId],
@@ -69,12 +92,6 @@ const useSendTransaction = ({ onTransactionSuccess }: IUseSendTransaction) => {
               workspaceId,
             ),
         });
-        setHasNewNotification(true);
-      }
-
-      if (tx.status === TransactionStatus.FAILED) {
-        toast.error(tx.id, 'Transaction failed');
-        setIsCurrentTxPending({ isPending: false, transactionId: '' });
         setHasNewNotification(true);
       }
     },
