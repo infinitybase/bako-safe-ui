@@ -3,6 +3,7 @@ import {
   Address,
   BN,
   bn,
+  calculateGasFee,
   Provider,
   ScriptTransactionRequest,
 } from 'fuels';
@@ -267,22 +268,33 @@ export class TransactionService {
       // TODO: estimateAndFund is deprecated -> use assembleTx
       transactionRequest = await transactionRequest.estimateAndFund(vault);
 
-      // Keep predicateGasUsed on inputs so estimateTxGasAndFee calculates
-      // the full cost including predicate execution, vmInitialization, and
-      // contractRoot costs.
-      transactionRequest.inputs.forEach((input) => {
+      const totalGasUsed = transactionRequest.inputs.reduce((acc, input) => {
         if ('predicate' in input && input.predicate) {
           input.witnessIndex = 0;
-          (input as any).predicateGasUsed = predicateGasUsed;
+          (input as any).predicateGasUsed = undefined;
+          return acc.add(predicateGasUsed);
         }
-      });
+        return acc;
+      }, bn(0));
 
-      const { maxFee } = await vault.provider.estimateTxGasAndFee({
+      const { gasPriceFactor } = await vault.provider.getGasConfig();
+      const { maxFee, gasPrice } = await vault.provider.estimateTxGasAndFee({
         transactionRequest,
       });
 
+      const predicateSuccessFeeDiff = calculateGasFee({
+        gas: totalGasUsed,
+        priceFactor: gasPriceFactor,
+        gasPrice,
+      });
+
+      const maxFeeWithDiff = maxFee
+        .add(predicateSuccessFeeDiff)
+        .mul(100)
+        .div(10);
+
       return {
-        fee: maxFee.mul(20).div(10),
+        fee: maxFeeWithDiff,
       };
     },
     (input: ResolveTransactionCostInput) => createTxCostHash(input),
