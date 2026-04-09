@@ -3,7 +3,6 @@ import {
   Address,
   BN,
   bn,
-  calculateGasFee,
   Provider,
   ScriptTransactionRequest,
 } from 'fuels';
@@ -268,38 +267,22 @@ export class TransactionService {
       // TODO: estimateAndFund is deprecated -> use assembleTx
       transactionRequest = await transactionRequest.estimateAndFund(vault);
 
-      const totalGasUsed = transactionRequest.inputs.reduce((acc, input) => {
+      // Keep predicateGasUsed on inputs so estimateTxGasAndFee calculates
+      // the full cost including predicate execution, vmInitialization, and
+      // contractRoot costs.
+      transactionRequest.inputs.forEach((input) => {
         if ('predicate' in input && input.predicate) {
           input.witnessIndex = 0;
-          input.predicateGasUsed = undefined;
-          return acc.add(predicateGasUsed);
+          (input as any).predicateGasUsed = predicateGasUsed;
         }
-        return acc;
-      }, bn(0));
+      });
 
-      const { gasPriceFactor } = await vault.provider.getGasConfig();
-      const { maxFee, gasPrice } = await vault.provider.estimateTxGasAndFee({
+      const { maxFee } = await vault.provider.estimateTxGasAndFee({
         transactionRequest,
       });
 
-      const serializedTxCount = bn(
-        transactionRequest.toTransactionBytes().length,
-      );
-      const totalGasWithBytes = totalGasUsed.add(serializedTxCount.mul(64));
-
-      const predicateSuccessFeeDiff = calculateGasFee({
-        gas: totalGasWithBytes,
-        priceFactor: gasPriceFactor,
-        gasPrice,
-      });
-
-      const maxFeeWithDiff = maxFee
-        .add(predicateSuccessFeeDiff)
-        .mul(20)
-        .div(10);
-
       return {
-        fee: maxFeeWithDiff,
+        fee: maxFee.mul(20).div(10),
       };
     },
     (input: ResolveTransactionCostInput) => createTxCostHash(input),
