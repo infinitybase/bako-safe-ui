@@ -69,8 +69,8 @@ importers:
         specifier: 0.5.7
         version: 0.5.7(@chakra-ui/react@3.28.0(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(recharts@3.3.0(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react-is@16.13.1)(react@19.2.0)(redux@5.0.1))
       bakosafe:
-        specifier: 0.6.3
-        version: 0.6.3(bufferutil@4.0.9)(fuels@0.103.0(vitest@3.0.9(@types/debug@4.1.12)(@types/node@20.5.1)(terser@5.43.1)))(typescript@5.4.5)(utf-8-validate@5.0.10)(zod@3.25.76)
+        specifier: 0.6.5
+        version: 0.6.5(bufferutil@4.0.9)(fuels@0.103.0(vitest@3.0.9(@types/debug@4.1.12)(@types/node@20.5.1)(terser@5.43.1)))(typescript@5.4.5)(utf-8-validate@5.0.10)(zod@3.25.76)
       bech32:
         specifier: ^2.0.0
         version: 2.0.0
@@ -3250,8 +3250,8 @@ packages:
       react: ^18.0.0 || ^19.0.0
       react-dom: ^18.0.0 || ^19.0.0
 
-  bakosafe@0.6.3:
-    resolution: {integrity: sha512-nEfaHc7S5LGGe2la4gOwq/VV5eSFnxYk4N093WfVPT6D1dxA/5W/E963N/ag9Ma5Q3O7XKi1BSFDezqp0b94cg==}
+  bakosafe@0.6.5:
+    resolution: {integrity: sha512-M/zF2i2MWxnuuZkUy7nzhDY2V3YfFCGdjlbKVnIP12C0Rm6P4rc+SbS68SMVbS5gilpQacrYn/YMtx/0wRedlA==}
     peerDependencies:
       fuels: ^0.102.0
 
@@ -10301,7 +10301,7 @@ snapshots:
   '@solana/web3.js@1.91.7(bufferutil@4.0.9)(utf-8-validate@5.0.10)':
     dependencies:
       '@babel/runtime': 7.28.2
-      '@noble/curves': 1.9.6
+      '@noble/curves': 1.9.7
       '@noble/hashes': 1.8.0
       '@solana/buffer-layout': 4.0.1
       agentkeepalive: 4.6.0
@@ -13495,7 +13495,7 @@ snapshots:
     transitivePeerDependencies:
       - recharts
 
-  bakosafe@0.6.3(bufferutil@4.0.9)(fuels@0.103.0(vitest@3.0.9(@types/debug@4.1.12)(@types/node@20.5.1)(terser@5.43.1)))(typescript@5.4.5)(utf-8-validate@5.0.10)(zod@3.25.76):
+  bakosafe@0.6.5(bufferutil@4.0.9)(fuels@0.103.0(vitest@3.0.9(@types/debug@4.1.12)(@types/node@20.5.1)(terser@5.43.1)))(typescript@5.4.5)(utf-8-validate@5.0.10)(zod@3.25.76):
     dependencies:
       '@ethereumjs/util': 9.0.3
       '@ethersproject/bytes': 5.7.0
@@ -17892,7 +17892,7 @@ snapshots:
 
   webauthn-p256@0.0.5:
     dependencies:
-      '@noble/curves': 1.9.6
+      '@noble/curves': 1.9.7
       '@noble/hashes': 1.8.0
 
   webextension-polyfill@0.10.0: {}

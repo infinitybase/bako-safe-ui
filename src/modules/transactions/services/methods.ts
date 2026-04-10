@@ -271,7 +271,7 @@ export class TransactionService {
       const totalGasUsed = transactionRequest.inputs.reduce((acc, input) => {
         if ('predicate' in input && input.predicate) {
           input.witnessIndex = 0;
-          input.predicateGasUsed = undefined;
+          (input as any).predicateGasUsed = undefined;
           return acc.add(predicateGasUsed);
         }
         return acc;
@@ -282,20 +282,15 @@ export class TransactionService {
         transactionRequest,
       });
 
-      const serializedTxCount = bn(
-        transactionRequest.toTransactionBytes().length,
-      );
-      const totalGasWithBytes = totalGasUsed.add(serializedTxCount.mul(64));
-
       const predicateSuccessFeeDiff = calculateGasFee({
-        gas: totalGasWithBytes,
+        gas: totalGasUsed,
         priceFactor: gasPriceFactor,
         gasPrice,
       });
 
       const maxFeeWithDiff = maxFee
         .add(predicateSuccessFeeDiff)
-        .mul(20)
+        .mul(100)
         .div(10);
 
       return {
