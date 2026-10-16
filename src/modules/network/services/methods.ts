@@ -54,7 +54,7 @@ export const availableNetWorks = {
     name: 'Ignition',
     url: import.meta.env.VITE_MAINNET_NETWORK,
     chainId: 9889,
-    explorer: 'https://app-mainnet.fuel.network/',
+    explorer: 'https://app.fuel.network/',
   },
   [NetworkType.TESTNET]: {
     name: 'Fuel Sepolia Testnet',
@@ -70,6 +70,11 @@ export const availableNetWorks = {
       explorer: 'http://localhost:4000/explorer',
     },
   }),
+};
+
+// Explorer URLs that stopped working; networks saved in localStorage may still carry them.
+const RETIRED_EXPLORERS: Record<string, string> = {
+  'https://app-mainnet.fuel.network/': 'https://app.fuel.network/',
 };
 
 const sanitizeNetwork = (url: string = '') =>
@@ -176,10 +181,11 @@ export class NetworkService {
     const network = NetworkService.findByUrl(url);
 
     if (network && 'explorer' in network && network.explorer) {
-      return network.explorer;
+      const explorer = RETIRED_EXPLORERS[network.explorer] ?? network.explorer;
+      return explorer.replace(/\/+$/, '');
     }
 
     const defaultNetwork = availableNetWorks[NetworkType.MAINNET];
-    return defaultNetwork.explorer;
+    return defaultNetwork.explorer.replace(/\/+$/, '');
   }
 }
