@@ -7,7 +7,6 @@ import { memo, useCallback, useMemo, useState } from 'react';
 
 import { CustomSkeleton, FileCodeIcon, UpRightArrow } from '@/components';
 import { TrashIcon } from '@/components/icons/trash';
-import env from '@/config/env';
 import { type TransactionState } from '@/modules/core';
 import type { ITransaction } from '@/modules/core/hooks/bakosafe/utils/types';
 import { NetworkService } from '@/modules/network/services';
@@ -16,6 +15,7 @@ import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import {
   ON_OFF_RAMP_TRANSACTION_TYPES,
+  TransactionService,
   TransactionTypeBridge,
   TransactionTypeWithRamp,
 } from '../../services';
@@ -182,21 +182,19 @@ const Details = memo(
                     {/* LADO DIREITO */}
                     <HStack gap={2}>
                       {!isMobile && !isDeposit && (
-                        <a
-                          href={`${env.BASE_API_URL}/transaction/${transaction.id}/advanced-details`}
-                          target="_blank"
-                          rel="noreferrer"
-                          style={{ textDecoration: 'none' }}
+                        <Button
+                          variant="subtle"
+                          alignSelf="flex-end"
+                          size="sm"
+                          onClick={() =>
+                            TransactionService.openAdvancedDetails(
+                              transaction.id,
+                            )
+                          }
                         >
-                          <Button
-                            variant="subtle"
-                            alignSelf="flex-end"
-                            size="sm"
-                          >
-                            <FileCodeIcon boxSize={4} color="gray.200" />
-                            Advanced details
-                          </Button>
-                        </a>
+                          <FileCodeIcon boxSize={4} color="gray.200" />
+                          Advanced details
+                        </Button>
                       )}
 
                       {!isMobile &&

@@ -113,6 +113,19 @@ export class TransactionService {
     return data;
   }
 
+  // The route requires auth, so it can't be a plain <a href>; open the tab
+  // synchronously (popup blockers) and point it at the fetched JSON.
+  static async openAdvancedDetails(id: string) {
+    const tab = window.open('', '_blank', 'noreferrer');
+    const { data } = await api.get(`/transaction/${id}/advanced-details`);
+    const blob = new Blob([JSON.stringify(data, null, 2)], {
+      type: 'application/json',
+    });
+    const url = URL.createObjectURL(blob);
+    if (tab) tab.location.href = url;
+    else window.open(url, '_blank', 'noreferrer');
+  }
+
   static async getTransactionsPagination(params: GetTransactionParams) {
     const { data } = await api.get<GetTransactionsPaginationResponse>(
       `/transaction`,

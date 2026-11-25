@@ -16,7 +16,6 @@ import {
   FileCodeIcon,
   UpRightArrow,
 } from '@/components';
-import env from '@/config/env';
 import { TransactionState } from '@/modules/core/models/transaction';
 import { NetworkService } from '@/modules/network/services';
 import {
@@ -26,6 +25,7 @@ import {
 import { useWorkspaceContext } from '@/modules/workspace/hooks';
 
 import { useTransactionsContext } from '../../providers/TransactionsProvider';
+import { TransactionService } from '../../services';
 import { TransactionWithVault } from '../../services/types';
 
 interface DetailsDialogProps extends Omit<DialogModalProps, 'children'> {
@@ -191,17 +191,17 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
               </>
             )}
             {!isDeposit && (
-              <a
-                href={`${env.BASE_API_URL}/transaction/${transaction.id}/advanced-details`}
-                target="_blank"
-                rel="noreferrer"
-                style={{ width: '100%', textDecoration: 'none' }}
+              <Button
+                variant="subtle"
+                w="100%"
+                size="xs"
+                onClick={() =>
+                  TransactionService.openAdvancedDetails(transaction.id)
+                }
               >
-                <Button variant="subtle" w="100%" size="xs">
-                  <FileCodeIcon boxSize={4} />
-                  Advanced details
-                </Button>
-              </a>
+                <FileCodeIcon boxSize={4} />
+                Advanced details
+              </Button>
             )}
           </VStack>
 
