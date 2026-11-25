@@ -70,6 +70,8 @@ export type SignInPayload = {
   digest: string;
   userAddress?: string | null;
   name?: string;
+  authenticatorData?: string;
+  clientDataJSON?: string;
 };
 
 export type UserSettings = {
@@ -284,6 +286,8 @@ export class UserService {
       signature: bytesToHex(signature!.sig_compact),
       digest: bytesToHex(signature!.dig_compact),
       name,
+      authenticatorData: signature!.authData,
+      clientDataJSON: signature!.clientData,
     });
   }
 

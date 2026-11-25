@@ -125,5 +125,6 @@ export async function signChallange(
     ...getSignature(response.signature, digest, publicKey),
     ...splitCLientData(response.clientDataJSON, challangeBytesInASCII),
     authData: hexlify(authData),
+    clientData: hexlify(new Uint8Array(response.clientDataJSON)),
   };
 }
